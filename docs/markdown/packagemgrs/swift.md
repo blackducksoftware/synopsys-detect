@@ -1,4 +1,4 @@
-# Swift support
+# Swift & Xcode support
 
 ## Related properties
 
@@ -8,29 +8,70 @@
 
 [solution_name] has two detectors for Swift:
 
-* Xcode Swift detector
 * Swift CLI detector
+* Swift Package Resolved detector
+* Xcode Project detector
+* Xcode Workspace detector
 
-## Xcode Swift detector
-The Xcode Swift detector discovers dependencies of Xcode projects utilizing [built-in tools within Xcode](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app) for managing Swift dependencies.
+All of these detectors primarily use the `Package.resolved` file to extract dependencies.
 
-The Xcode Swift detector applies to directories matching the `*.xcodeproj` filename pattern within bounds of the *detect.detector.search.depth* property.
+## Swift CLI detector
 
-Once the Xcode Swift detector finds a matching directory, it searches for a `Package.resolved` file inside your `.xcodeproj` directory at `[appName].xcodeproj/project.workspace/xcshareddata/swiftpm/Package.resolved`.
+The Swift CLI detector discovers dependencies of projects utilizing the Swift CLI.
+
+The Swift CLI detector applies to directories containing a `Package.swift` file.
+
+This detector requires a `swift` executable to run a command `swift package show-dependencies` to create a dependency graph of Swift packages.
+
+All packages of the root node are considered direct dependencies in the BlackDuck BOM.
+
+Packages found with a version of `unspecified` will appear in the BOM without a version.
+
+## Swift Package Resolved detector
+
+The Swift Package Resolved detector discovers dependencies of projects utilizing the Swift Package Resolved.
+
+The Swift Package Resolved detector applies to directories containing either a `Package.swift` file or `Package.resolved` file.
+
+All packages of the packages are considered direct dependencies in the BlackDuck BOM.
+
+Packages found with a version of `unspecified` will appear in the BOM without a version.
 
 This detector does not require any executables to run.
 
-### Running the Xcode Swift detector
+## Xcode Workspace detector
+The Xcode Workspace detector discovers dependencies of Xcode projects utilizing [built-in tools within Xcode](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app) for managing Swift dependencies.
 
-Xcode projects are often found within Xcode workspaces to utilize a shared build environment.
-Although Xcode projects within a workspace share a build environment, the project dependencies are still resolved within each Xcode project.
+The Xcode Workspace detector applies to directories matching the `*.xcworkspace` filename pattern within bounds of the *detect.detector.search.depth* property.
 
-[solution_name] does not currently parse Xcode workspace files to determine project locations.
-Instead [solution_name] will only search for directories matching the `*.xcodeproj` pattern. 
+When [solution_name] finds a matching directory, the Xcode Workspace detector then searches for a `Package.resolved` file inside your `*.xcworkspace` directory at `*.xcworkspace/xcshareddata/swiftpm/Package.resolved` and extracts those dependencies.
 
-If there are Xcode projects not at the root of the scanned directory, you may have to set the *detect.detector.search.depth* property to a depth capable of reaching all projects.
+Additionally, the Xcode Workspace detector will analyze the contents of the `*.xcworkspace/contents.xcworkspacedata` XML file to determine Xcode Workspace reference locations. This ignores the *detect.detector.search.depth* property as [solution_name] is no longer searching, but be directed to a specific location.
 
-### Package.resolved file
+Today supported Workspace reference locations are directories and Xcode Projects.
+Any referenced locations that are not found currently trigger a failure of [solution_name]
+- Xcode Projects are identified with by the suffix `*.xcodeproj`. 
+  - Example `location = "group:src/my-project.xcodeproj">`
+
+- Directories are identified with by the suffix `/`
+  - Example `location = "group:src/my-project/">`
+  - Directories are assumed to be a built Swift Package containing a `Package.resolved` file at the specified location
+
+This detector does not require any executables to run, but the Xcode Workspace must be buildable in Xcode.
+
+## Xcode Project detector
+The Xcode Project detector discovers dependencies of Xcode projects utilizing [built-in tools within Xcode](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app) for managing Swift dependencies.
+
+The Xcode Project detector applies to directories matching the `*.xcodeproj` filename pattern within bounds of the *detect.detector.search.depth* property.
+
+Once the Xcode Project detector finds a matching directory, it searches for a `Package.resolved` file inside your `.xcodeproj` directory at `[appName].xcodeproj/project.workspace/xcshareddata/swiftpm/Package.resolved`.
+
+This detector does not require any executables to run, but the Xcode Workspace must be buildable in Xcode.
+
+
+## Package.resolved file
+
+This file forms the basis for dependency extraction for most of the Swift and Xcode detectors.
 
 The `Package.resolved` is a JSON file containing a flat list of Swift packages required by the project.
 This file can be empty if the project has no dependencies, in which case [solution_name] will create an empty code-location for the Xcode project.
@@ -79,19 +120,3 @@ In the above example, this produces a component name of `apple/swift-argument-pa
 }
 ````
 In the above example, this produces a component version of `1.0.1`.
-
-## Swift CLI detector
-
-The Swift CLI detector discovers dependencies of projects utilizing the Swift CLI.
-
-The Swift CLI detector applies to directories containing a `Package.swift` file.
-
-This detector requires a `swift` executable to run.
-
-### Extraction method
-
-[solution_name] uses the `swift package show-dependencies` command to create a dependency graph of Swift packages.
-
-All packages of the root node are considered direct dependencies in the BlackDuck BOM.
-
-Packages found with a version of `unspecified` will appear in the BOM without a version.
