@@ -2,19 +2,13 @@ package com.synopsys.integration.detect.battery.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
-import org.skyscreamer.jsonassert.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zeroturnaround.zip.ZipUtil;
 
 public class BatteryBdioAssert {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -26,51 +20,37 @@ public class BatteryBdioAssert {
         this.resourcePrefix = resourcePrefix;
     }
 
-    public void assertBdio(File bdioDirectory) throws IOException, JSONException, BdioCompare.BdioCompareException {
+    public void assertBdio(File bdioDirectory, String bdioFileName, File compareDirectory) throws IOException, JSONException {
         File[] bdio = bdioDirectory.listFiles();
         Assertions.assertTrue(bdio != null && bdio.length > 0, "Bdio output files could not be found.");
 
         File expectedBdioFolder = BatteryFiles.asFile("/" + resourcePrefix + "/bdio");
-        File[] expectedBdioFiles = expectedBdioFolder.listFiles();
-        Assertions.assertTrue(
-            expectedBdioFiles != null && expectedBdioFiles.length > 0,
-            "Expected bdio resource files could not be found: " + expectedBdioFolder.getCanonicalPath()
-        );
-        Assertions.assertEquals(expectedBdioFiles.length, bdio.length, "Detect did not create the expected number of bdio files.");
+        File expectedBdioFile = new File(expectedBdioFolder, bdioFileName);
+        Assertions.assertTrue(expectedBdioFile.exists());
 
-        List<File> actualByName = Arrays.stream(bdio).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
-        List<File> expectedByName = Arrays.stream(expectedBdioFiles).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
+        File actualBdioFile = new File(bdioDirectory, bdioFileName);
+        Assertions.assertTrue(actualBdioFile.exists());
 
-        int issueCount = 0;
-        for (int i = 0; i < expectedByName.size(); i++) {
-            logger.info("***BDIO BATTERY TEST|" + testName + "|" + resourcePrefix + "|" + expectedByName.get(i).getName() + "***");
+        logger.info("***BDIO BATTERY TEST|" + testName + "|" + resourcePrefix + "***");
 
-            File expected = expectedByName.get(i);
-            File actual = actualByName.get(i);
-            Assertions.assertEquals(expected.getName(), actual.getName(), "Bdio file names did not match when sorted.");
+        File actualDirectory = new File(compareDirectory, "actual");
+        File expectedDirectory = new File(compareDirectory, "expected");
+        Assertions.assertTrue(actualDirectory.mkdirs());
+        Assertions.assertTrue(expectedDirectory.mkdirs());
 
-            String expectedJson = FileUtils.readFileToString(expected, Charset.defaultCharset());
-            String actualJson = FileUtils.readFileToString(actual, Charset.defaultCharset());
+        ZipUtil.unpack(actualBdioFile, actualDirectory);
+        ZipUtil.unpack(expectedBdioFile, expectedDirectory);
 
-            JSONArray expectedJsonArray = (JSONArray) JSONParser.parseJSON(expectedJson);
-            JSONArray actualJsonArray = (JSONArray) JSONParser.parseJSON(actualJson);
+        List<BdioIssue> issues = Bdio2Compare.compare(actualDirectory, expectedDirectory);
 
-            BdioCompare compare = new BdioCompare();
-            List<BdioCompare.BdioIssue> issues = compare.compare(expectedJsonArray, actualJsonArray);
-            
-            logger.info("Bdio file " + expectedByName.get(i).getName() + " had " + actualJson.length() + " components.");
-
-            if (issues.size() > 0) {
-                logger.error("=================");
-                logger.error("BDIO Issues");
-                logger.error("Expected: " + expected.getCanonicalPath());
-                logger.error("Actual: " + actual.getCanonicalPath());
-                logger.error("=================");
-                issues.forEach(issue -> logger.error(issue.getIssue()));
-                logger.error("=================");
-            }
-            issueCount += issues.size();
+        if (issues.size() > 0) {
+            logger.error("=================");
+            logger.error("BDIO Issues");
+            logger.error("=================");
+            issues.forEach(issue -> logger.error(issue.getIssue()));
+            logger.error("=================");
         }
-        Assertions.assertEquals(0, issueCount, "The BDIO comparison failed, one or more issues were found, please check the logs.");
+
+        Assertions.assertEquals(0, issues.size(), "The BDIO comparison failed, one or more issues were found, please check the logs.");
     }
 }
