@@ -17,8 +17,6 @@ import org.xml.sax.SAXException;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PackageResolvedNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.lock.PackageResolvedExtractor;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
 import com.synopsys.integration.detectable.detectables.swift.lock.model.PackageResolvedResult;
@@ -93,15 +91,8 @@ public class XcodeWorkspaceExtractor {
         File packageResolved = fileFinder.findFile(projectDirectory, SwiftPackageResolvedDetectable.PACKAGE_RESOLVED_FILENAME);
         if (packageResolved != null) {
             return packageResolvedExtractor.extract(packageResolved);
-        } else {
-            File swiftFile = fileFinder.findFile(projectDirectory, SwiftCliDetectable.PACKAGE_SWIFT_FILENAME);
-            if (swiftFile != null) {
-                FailedDetectableResult failedDetectableResult = new PackageResolvedNotFoundDetectableResult(projectDirectory.getAbsolutePath());
-                return PackageResolvedResult.failure(failedDetectableResult);
-            } else {
-                return PackageResolvedResult.empty();
-            }
         }
+        return PackageResolvedResult.empty();
     }
 
     private PackageResolvedResult extractFromXcodeProject(File projectDirectory) throws IOException {
