@@ -55,11 +55,11 @@ public class XcodeWorkspaceExtractor {
         List<CodeLocation> codeLocations = new LinkedList<>();
         List<FailedDetectableResult> failedDetectableResults = new LinkedList<>();
         for (XcodeFileReference fileReference : xcodeWorkspace.getFileReferences()) {
-            File workspaceDefinedDirectory = workspaceDirectory.getParentFile().toPath().resolve(fileReference.getRelativeLocation()).toFile();
-            if (!workspaceDefinedDirectory.exists()) {
+            File workspaceReferencedDirectory = workspaceDirectory.getParentFile().toPath().resolve(fileReference.getRelativeLocation()).toFile();
+            if (!workspaceReferencedDirectory.exists()) {
                 logger.warn(
                     "Failed to find subproject '{}' as defined in the workspace at '{}'",
-                    workspaceDefinedDirectory,
+                    workspaceReferencedDirectory,
                     workspaceDataFile.getParentFile().getAbsolutePath()
                 );
                 continue;
@@ -67,16 +67,16 @@ public class XcodeWorkspaceExtractor {
 
             switch (fileReference.getFileReferenceType()) {
                 case DIRECTORY:
-                    PackageResolvedResult swiftProjectResult = extractStandalonePackageResolved(workspaceDirectory, workspaceDefinedDirectory);
+                    PackageResolvedResult swiftProjectResult = extractStandalonePackageResolved(workspaceReferencedDirectory);
                     swiftProjectResult.getFailedDetectableResult()
                         .ifPresent(failedDetectableResults::add);
-                    codeLocations.add(new CodeLocation(swiftProjectResult.getDependencyGraph(), workspaceDefinedDirectory));
+                    codeLocations.add(new CodeLocation(swiftProjectResult.getDependencyGraph(), workspaceReferencedDirectory));
                     break;
                 case XCODE_PROJECT:
-                    PackageResolvedResult xcodeProjectResult = extractFromXcodeProject(workspaceDirectory, workspaceDefinedDirectory);
+                    PackageResolvedResult xcodeProjectResult = extractFromXcodeProject(workspaceReferencedDirectory);
                     xcodeProjectResult.getFailedDetectableResult()
                         .ifPresent(failedDetectableResults::add);
-                    codeLocations.add(new CodeLocation(xcodeProjectResult.getDependencyGraph(), workspaceDefinedDirectory));
+                    codeLocations.add(new CodeLocation(xcodeProjectResult.getDependencyGraph(), workspaceReferencedDirectory));
                     break;
                 default:
                     throw new UnsupportedOperationException(String.format("Unrecognized FileReferenceType: %s", fileReference.getFileReferenceType()));
@@ -89,28 +89,27 @@ public class XcodeWorkspaceExtractor {
         return XcodeWorkspaceResult.success(codeLocations);
     }
 
-    private PackageResolvedResult extractStandalonePackageResolved(File workspaceDirectory, File projectDirectory) throws IOException {
+    private PackageResolvedResult extractStandalonePackageResolved(File projectDirectory) throws IOException {
         File packageResolved = fileFinder.findFile(projectDirectory, SwiftPackageResolvedDetectable.PACKAGE_RESOLVED_FILENAME);
         if (packageResolved != null) {
             return packageResolvedExtractor.extract(packageResolved);
         } else {
-            FailedDetectableResult failedDetectableResult;
             File swiftFile = fileFinder.findFile(projectDirectory, SwiftCliDetectable.PACKAGE_SWIFT_FILENAME);
             if (swiftFile != null) {
-                failedDetectableResult = new PackageResolvedNotFoundDetectableResult(projectDirectory.getAbsolutePath());
+                FailedDetectableResult failedDetectableResult = new PackageResolvedNotFoundDetectableResult(projectDirectory.getAbsolutePath());
+                return PackageResolvedResult.failure(failedDetectableResult);
             } else {
-                failedDetectableResult = new MissingFromXcodeWorkspacePackageResolved(projectDirectory, workspaceDirectory);
+                return PackageResolvedResult.empty();
             }
-            return PackageResolvedResult.failure(failedDetectableResult);
         }
     }
 
-    private PackageResolvedResult extractFromXcodeProject(File workspaceDirectory, File projectDirectory) throws IOException {
+    private PackageResolvedResult extractFromXcodeProject(File projectDirectory) throws IOException {
         File searchDirectory = new File(projectDirectory, XcodeProjectDetectable.PACKAGE_RESOLVED_RELATIVE_PATH);
         File packageResolved = fileFinder.findFile(searchDirectory, SwiftPackageResolvedDetectable.PACKAGE_RESOLVED_FILENAME);
         if (packageResolved != null) {
             return packageResolvedExtractor.extract(packageResolved);
         }
-        return PackageResolvedResult.failure(new MissingFromXcodeWorkspacePackageResolved(searchDirectory, workspaceDirectory));
+        return PackageResolvedResult.empty();
     }
 }
