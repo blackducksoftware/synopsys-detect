@@ -112,8 +112,6 @@ import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGr
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.IntelligentPersistentUploadOperation;
-import com.synopsys.integration.detect.workflow.blackduck.bdio.LegacyBdio1UploadOperation;
-import com.synopsys.integration.detect.workflow.blackduck.bdio.LegacyBdio2UploadOperation;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitCalculator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.WaitableCodeLocationData;
@@ -356,20 +354,6 @@ public class OperationFactory { //TODO: OperationRunner
 
     public final AggregateDecisionOperation createAggregateOptionsOperation() throws OperationException {
         return auditLog.namedInternal("Create Aggregate Options", () -> new AggregateDecisionOperation(detectConfigurationFactory.createAggregateOptions()));
-    }
-
-    public final BdioUploadResult uploadBdio1(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws OperationException {
-        return auditLog.namedPublic(
-            "Upload Legacy Bdio 1",
-            () -> new LegacyBdio1UploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createBdioUploadService()).uploadBdioFiles(bdioResult)
-        );
-    }
-
-    public final BdioUploadResult uploadBdio2(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws OperationException {
-        return auditLog.namedPublic(
-            "Upload Legacy Bdio 2",
-            () -> new LegacyBdio2UploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createBdio2UploadService()).uploadBdioFiles(bdioResult)
-        );
     }
 
     public final BdioUploadResult uploadBdioIntelligentPersistent(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws OperationException {
