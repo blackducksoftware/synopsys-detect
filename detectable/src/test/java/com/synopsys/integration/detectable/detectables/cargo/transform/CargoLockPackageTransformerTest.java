@@ -46,7 +46,7 @@ public class CargoLockPackageTransformerTest {
     }
 
     @Test
-    public void testCorrectNumberOfRootDependencies() throws DetectableException, MissingExternalIdException, CycleDetectedException {
+    public void testCorrectNumberOfRootDependencies() throws DetectableException, MissingExternalIdException {
         List<CargoLockPackage> input = new ArrayList<>();
         input.add(createPackage("test1", "1.0.0",
             new NameOptionalVersion("dep1"),
@@ -58,7 +58,10 @@ public class CargoLockPackageTransformerTest {
         DependencyGraph graph = cargoLockPackageTransformer.transformToGraph(input);
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph);
-        graphAssert.hasRootSize(1);
+        graphAssert.hasRootDependency("test1", "1.0.0");
+        graphAssert.hasRootDependency("dep1", "0.5.0");
+        graphAssert.hasRootDependency("dep2", "0.6.0");
+        graphAssert.hasRootSize(3);
     }
 
     private CargoLockPackage createPackage(String name, String version, NameOptionalVersion... dependencies) {

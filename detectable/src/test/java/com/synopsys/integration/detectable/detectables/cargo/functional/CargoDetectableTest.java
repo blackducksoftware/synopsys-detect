@@ -73,6 +73,11 @@ public class CargoDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasParentChildRelationship("abscissa_core", "0.5.2", "abscissa_derive", "0.5.0");
         graphAssert.hasParentChildRelationship("abscissa_core", "0.5.2", "backtrace", "0.3.46");
         graphAssert.hasParentChildRelationship("abscissa_derive", "0.5.0", "darling", "0.10.2");
-        graphAssert.hasRootSize(1);
+
+        graphAssert.hasRootDependency("abscissa_derive", "0.5.0");
+        graphAssert.hasRootDependency("backtrace", "0.3.46");
+        graphAssert.hasRootDependency("darling", "0.10.2");
+
+        graphAssert.hasRootSize(4);
     }
 }
