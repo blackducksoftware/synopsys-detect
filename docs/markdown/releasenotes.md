@@ -1,9 +1,18 @@
 # Release notes
 
-## Version 7.13.0
+## Version 8.0.0
 
 ### New features
 
+### Changed features
+* Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.
+
+### Resolved issues
+* (IDETECT-3224) Resolved an issue where Cargo projects with Cyclical dependencies could cause a failure of [solution_name].
+
+## Version 7.13.0
+
+### New features
 * Added support for a buildless Pipenv detector that parses the Pipfile.lock file (see the [python support page](packagemgrs/python.md) for more details).
 * [solution_name] now includes pass-through properties when logging configuration at the beginning of a run.
 * Added support for Xcode Workspaces (see the [swift support page](packagemgrs/swift.md) for more details).
@@ -13,7 +22,6 @@
 * Deprecated property detect.detector.buildless, to be replaced with detect.accuracy.required. See [property description](properties/configuration/detector.md#detector-accuracy-requirements-advanced) for more details.
 
 ### Resolved issues
-
 * (IDETECT-3136) Resolved an issue where NPM's `package-lock.json` was prioritized over `npm-shrinkwrap.json`.
 * (IDETECT-3184) Resolved an issue that prevented matches for Bazel maven_install components with complex (>3 parts) maven_coordinates values.
 * (IDETECT-3207) Resolved an issue that prevented Bazel and Docker Tool issues from being reported in the issues section of the [solution_name] log and status file.
