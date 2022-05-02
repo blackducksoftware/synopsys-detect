@@ -1795,17 +1795,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty BLACKDUCK_LEGACY_UPLOAD_ENABLED =
-        BooleanProperty.newBuilder("blackduck.legacy.upload.enabled", true)
-            .setInfo("Use legacy BDIO upload endpoints in Black Duck", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp(
-                "If set to true, Detect will upload the BDIO files to Black Duck using older REST APIs.  Set this to false if you want to use the intelligent persistent scan endpoints in Black Duck.  The intelligent persistent endpoints are a Black Duck feature to be used with a later Black Duck version.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is being removed as support for the legacy endpoint is dropped.", DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_BDIO2_ENABLED =
         BooleanProperty.newBuilder("detect.bdio2.enabled", true)
             .setInfo("BDIO 2 Enabled", DetectPropertyFromVersion.VERSION_6_1_0)
