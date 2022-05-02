@@ -1,6 +1,8 @@
 package com.synopsys.integration.detect.boot;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
@@ -21,8 +23,8 @@ class ProductDeciderTest {
             createBdioOptions(true)
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertTrue(productDecision.isOffline());
+        assertTrue(productDecision.shouldRun());
+        assertTrue(productDecision.isOffline());
     }
 
     @Test
@@ -34,8 +36,8 @@ class ProductDeciderTest {
             createBdioOptions(true)
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertTrue(productDecision.isOffline());
+        assertTrue(productDecision.shouldRun());
+        assertTrue(productDecision.isOffline());
     }
 
     @Test
@@ -47,8 +49,8 @@ class ProductDeciderTest {
             createBdioOptions(false)
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertTrue(productDecision.isOffline());
+        assertTrue(productDecision.shouldRun());
+        assertTrue(productDecision.isOffline());
     }
 
     @Test
@@ -60,8 +62,8 @@ class ProductDeciderTest {
             createBdioOptions(false)
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertTrue(productDecision.isOffline());
+        assertTrue(productDecision.shouldRun());
+        assertTrue(productDecision.isOffline());
     }
 
     @Test
@@ -73,8 +75,8 @@ class ProductDeciderTest {
             createBdioOptions(false)
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertTrue(productDecision.isOffline());
+        assertTrue(productDecision.shouldRun());
+        assertTrue(productDecision.isOffline());
     }
 
     @Test
@@ -86,8 +88,8 @@ class ProductDeciderTest {
             createBdioOptions(true)
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertFalse(productDecision.isOffline());
+        assertTrue(productDecision.shouldRun());
+        assertFalse(productDecision.isOffline());
     }
 
     @Test
@@ -99,7 +101,7 @@ class ProductDeciderTest {
             createBdioOptions(false)
         );
 
-        Assertions.assertFalse(productDecision.shouldRun());
+        assertFalse(productDecision.shouldRun());
     }
 
     @Test
@@ -111,7 +113,7 @@ class ProductDeciderTest {
             createBdioOptions(false)
         );
 
-        Assertions.assertFalse(productDecision.shouldRun());
+        assertFalse(productDecision.shouldRun());
     }
 
     @Test
@@ -123,7 +125,7 @@ class ProductDeciderTest {
             createBdioOptions(false)
         );
 
-        Assertions.assertFalse(productDecision.shouldRun());
+        assertFalse(productDecision.shouldRun());
     }
 
     @Test
@@ -135,11 +137,11 @@ class ProductDeciderTest {
             createBdioOptions(true)
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
+        assertTrue(productDecision.shouldRun());
     }
 
     @Test
-    public void shouldBlackduckIntelligentModeOfflineAndBDIO2Disabled() {
+    public void shouldRunBlackduckIntelligentModeOfflineAndBDIO2Disabled() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, VALID_URL);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
@@ -147,8 +149,8 @@ class ProductDeciderTest {
             createBdioOptions(false)
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertTrue(productDecision.isOffline());
+        assertTrue(productDecision.shouldRun());
+        assertTrue(productDecision.isOffline());
     }
 
     @Test
@@ -160,19 +162,19 @@ class ProductDeciderTest {
             createBdioOptions(true)
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
+        assertTrue(productDecision.shouldRun());
     }
 
     @Test
-    public void shouldRunBlackduckLegacyEnabledAndIntelligentModeAndBDIO2Disabled() {
+    public void shouldNotRunBlackduckOnlineIntelligentModeAndBDIO2Disabled() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(true)
+            createBdioOptions(false)
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
+        assertFalse(productDecision.shouldRun());
     }
 
     @Test
@@ -184,7 +186,7 @@ class ProductDeciderTest {
             createBdioOptions(true)
         );
 
-        Assertions.assertFalse(productDecision.shouldRun());
+        assertFalse(productDecision.shouldRun());
     }
 
     private BdioOptions createBdioOptions(boolean useBdio2) {
