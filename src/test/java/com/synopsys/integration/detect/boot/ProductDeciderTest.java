@@ -139,7 +139,7 @@ class ProductDeciderTest {
     }
 
     @Test
-    public void something() {
+    public void shouldBlackduckIntelligentModeOfflineAndBDIO2Disabled() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, VALID_URL);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
