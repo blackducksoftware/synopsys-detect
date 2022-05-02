@@ -12,15 +12,13 @@ import com.synopsys.integration.bdio.model.dependency.DependencyFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLockPackage;
-import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.detectable.util.NameOptionalVersion;
-import com.synopsys.integration.detectable.util.RootPruningGraphUtil;
 
 public class CargoLockPackageTransformer {
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
     private final DependencyFactory dependencyFactory = new DependencyFactory(externalIdFactory);
 
-    public DependencyGraph transformToGraph(List<CargoLockPackage> lockPackages) throws MissingExternalIdException, CycleDetectedException, DetectableException {
+    public DependencyGraph transformToGraph(List<CargoLockPackage> lockPackages) throws MissingExternalIdException, DetectableException {
         verifyNoDuplicatePackages(lockPackages);
 
         LazyExternalIdDependencyGraphBuilder graph = new LazyExternalIdDependencyGraphBuilder();
@@ -45,7 +43,7 @@ public class CargoLockPackageTransformer {
             });
         });
 
-        return RootPruningGraphUtil.prune(graph.build());
+        return graph.build();
     }
 
     private void verifyNoDuplicatePackages(List<CargoLockPackage> lockPackages) throws DetectableException {

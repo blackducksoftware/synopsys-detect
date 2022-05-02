@@ -15,7 +15,6 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
-import com.synopsys.integration.detectable.util.CycleDetectedException;
 
 @DetectableInfo(language = "Rust", forge = "crates", requirementsMarkdown = "Files: Cargo.lock, Cargo.toml")
 public class CargoDetectable extends Detectable {
@@ -50,7 +49,7 @@ public class CargoDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException, CycleDetectedException, DetectableException, MissingExternalIdException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException, DetectableException, MissingExternalIdException {
         return cargoExtractor.extract(cargoLock, cargoToml);
     }
 }

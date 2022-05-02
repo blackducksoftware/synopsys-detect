@@ -49,6 +49,7 @@ public class RootPruningGraphUtil {
         for (Dependency currentLevelDependency : currentLevel) {
             Set<Dependency> children = graph.getChildrenForParent(currentLevelDependency);
             if (children.contains(target) || isDependencyInGraph(target, children, graph)) {
+                // TODO: YES! IDETECT-3224 is caused by cycles ^
                 return true;
             }
         }
