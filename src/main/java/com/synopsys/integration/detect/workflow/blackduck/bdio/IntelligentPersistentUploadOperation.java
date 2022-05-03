@@ -8,13 +8,15 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class IntelligentPersistentUploadOperation extends BdioUploadOperation {
     private final IntelligentPersistenceService intelligentPersistenceService;
+    private final Long timeout;
 
-    public IntelligentPersistentUploadOperation(IntelligentPersistenceService intelligentPersistenceService) {
+    public IntelligentPersistentUploadOperation(IntelligentPersistenceService intelligentPersistenceService, Long timeout) {
         this.intelligentPersistenceService = intelligentPersistenceService;
+        this.timeout = timeout;
     }
 
     @Override
     protected CodeLocationCreationData<UploadBatchOutput> executeUpload(UploadBatch uploadBatch) throws IntegrationException {
-        return intelligentPersistenceService.uploadBdio(uploadBatch);
+        return intelligentPersistenceService.uploadBdio(uploadBatch, timeout);
     }
 }

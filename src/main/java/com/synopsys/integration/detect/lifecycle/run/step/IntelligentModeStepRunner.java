@@ -83,7 +83,11 @@ public class IntelligentModeStepRunner {
         logger.debug("Processing Detect Code Locations.");
 
         CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
-        stepHelper.runAsGroup("Upload Bdio", OperationType.INTERNAL, () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator));
+        stepHelper.runAsGroup(
+            "Upload Bdio",
+            OperationType.INTERNAL,
+            () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator, operationFactory.calculateDetectTimeout())
+        );
 
         logger.debug("Completed Detect Code Location processing.");
 
@@ -124,7 +128,7 @@ public class IntelligentModeStepRunner {
         });
     }
 
-    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator)
+    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator, Long timeout)
         throws OperationException, IntegrationException {
         BdioOptions bdioOptions = operationFactory.calculateBdioOptions(); //TODO: Move to a decision
         BdioUploadResult uploadResult;
@@ -135,7 +139,7 @@ public class IntelligentModeStepRunner {
                 uploadResult = operationFactory.uploadBdio1(blackDuckRunData, bdioResult);
             }
         } else {
-            uploadResult = operationFactory.uploadBdioIntelligentPersistent(blackDuckRunData, bdioResult);
+            uploadResult = operationFactory.uploadBdioIntelligentPersistent(blackDuckRunData, bdioResult, timeout);
         }
         uploadResult.getUploadOutput().ifPresent(codeLocationAccumulator::addWaitableCodeLocations);
     }
