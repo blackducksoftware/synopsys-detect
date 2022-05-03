@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 public class BdioOptions {
-    private final boolean enabledBdio2;
     @Nullable
     private final String projectCodeLocationSuffix;
     @Nullable
@@ -13,8 +12,7 @@ public class BdioOptions {
     @Nullable
     private final String bdioFileName;
 
-    public BdioOptions(boolean enabledBdio2, @Nullable String projectCodeLocationPrefix, @Nullable String projectCodeLocationSuffix, @Nullable String bdioFileName) {
-        this.enabledBdio2 = enabledBdio2;
+    public BdioOptions( @Nullable String projectCodeLocationPrefix, @Nullable String projectCodeLocationSuffix, @Nullable String bdioFileName) {
         this.projectCodeLocationSuffix = projectCodeLocationSuffix;
         this.projectCodeLocationPrefix = projectCodeLocationPrefix;
         this.bdioFileName = bdioFileName;
@@ -26,11 +24,6 @@ public class BdioOptions {
 
     public Optional<String> getProjectCodeLocationPrefix() {
         return Optional.ofNullable(projectCodeLocationPrefix);
-    }
-
-    @Deprecated
-    public boolean isBdio2Enabled() {
-        return enabledBdio2;
     }
 
     public Optional<String> getBdioFileName() {

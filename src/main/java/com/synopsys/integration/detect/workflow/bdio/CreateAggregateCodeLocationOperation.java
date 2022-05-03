@@ -29,13 +29,12 @@ public class CreateAggregateCodeLocationOperation {
         File bdioOutputDirectory,
         DependencyGraph aggregateDependencyGraph,
         NameVersion projectNameVersion,
-        String bdioFileName,
-        String extension
+        String bdioFileName
     ) {
         ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion());
         String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
-        String defaultFileName = new IntegrationEscapeUtil().replaceWithUnderscore(projectNameVersion.getName() + "_" + projectNameVersion.getVersion()) + extension;
+        String defaultFileName = new IntegrationEscapeUtil().replaceWithUnderscore(projectNameVersion.getName() + "_" + projectNameVersion.getVersion()) + ".bdio";
         String fileName = StringUtils.defaultIfBlank(bdioFileName, defaultFileName);
         File aggregateBdioFile = new File(bdioOutputDirectory, fileName);
 

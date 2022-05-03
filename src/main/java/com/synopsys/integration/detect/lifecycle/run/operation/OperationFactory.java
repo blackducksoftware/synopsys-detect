@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -98,9 +97,10 @@ import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
-import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio1FileOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio2FileOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateCodeLocationOperation;
+import com.synopsys.integration.detect.workflow.bdio.CreateBdio2FilesOperation;
+import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeDirectOperation;
 import com.synopsys.integration.detect.workflow.bdio.DetectBdioWriter;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
@@ -684,7 +684,6 @@ public class OperationFactory { //TODO: OperationRunner
                 directoryManager.getBdioOutputDirectory(),
                 aggregateDependencyGraph,
                 projectNameVersion,
-                extension,
                 detectConfigurationFactory.createBdioOptions().getBdioFileName().orElse(null)
             ));
     }
@@ -697,13 +696,6 @@ public class OperationFactory { //TODO: OperationRunner
                 detectCodeLocations
             )
         );
-    }
-
-    public void createAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation) throws OperationException {
-        auditLog.namedPublic("Create Aggregate Bdio 1 File", () -> {
-            DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
-            new CreateAggregateBdio1FileOperation(new SimpleBdioFactory(), detectBdioWriter).writeAggregateBdio1File(aggregateCodeLocation);
-        });
     }
 
     public void createAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation) throws OperationException {

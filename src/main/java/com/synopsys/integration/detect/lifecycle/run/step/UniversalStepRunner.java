@@ -82,15 +82,8 @@ public class UniversalStepRunner {
     public BdioResult generateBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws OperationException {
         DependencyGraph aggregateDependencyGraph = operationFactory.aggregateSubProject(universalToolsResult.getDetectCodeLocations());
 
-        boolean isBdio2 = operationFactory.calculateBdioOptions().isBdio2Enabled();
-        String aggregateExtension = isBdio2 ? ".bdio" : ".jsonld";
-        AggregateCodeLocation aggregateCodeLocation = operationFactory.createAggregateCodeLocation(aggregateDependencyGraph, projectNameVersion, aggregateExtension);
-
-        if (isBdio2) {
-            operationFactory.createAggregateBdio2File(aggregateCodeLocation);
-        } else {
-            operationFactory.createAggregateBdio1File(aggregateCodeLocation);
-        }
+        AggregateCodeLocation aggregateCodeLocation = operationFactory.createAggregateCodeLocation(aggregateDependencyGraph, projectNameVersion, aggregateName);
+        operationFactory.createAggregateBdio2File(aggregateCodeLocation);
 
         List<UploadTarget> uploadTargets = new ArrayList<>();
         Map<DetectCodeLocation, String> codeLocationNamesResult = new HashMap<>();
@@ -101,7 +94,7 @@ public class UniversalStepRunner {
 
         uploadTargets.add(UploadTarget.createDefault(projectNameVersion, aggregateCodeLocation.getCodeLocationName(), aggregateCodeLocation.getAggregateFile()));
 
-        return new BdioResult(uploadTargets, new DetectCodeLocationNamesResult(codeLocationNamesResult), isBdio2);
+        return new BdioResult(uploadTargets, new DetectCodeLocationNamesResult(codeLocationNamesResult));
     }
 
     public NameVersion determineProjectInformation(UniversalToolsResult universalToolsResult) throws OperationException, IntegrationException {

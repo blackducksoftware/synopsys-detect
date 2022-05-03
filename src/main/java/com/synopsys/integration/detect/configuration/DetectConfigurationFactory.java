@@ -274,9 +274,8 @@ public class DetectConfigurationFactory {
     public BdioOptions createBdioOptions() {
         String prefix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String suffix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
-        Boolean useBdio2 = detectConfiguration.getValue(DetectProperties.DETECT_BDIO2_ENABLED);
         String bdioFileName = detectConfiguration.getNullableValue(DetectProperties.DETECT_BDIO_FILE_NAME);
-        return new BdioOptions(useBdio2, prefix, suffix, bdioFileName);
+        return new BdioOptions(prefix, suffix, bdioFileName);
     }
 
     public ProjectNameVersionOptions createProjectNameVersionOptions(String sourceDirectoryName) {
