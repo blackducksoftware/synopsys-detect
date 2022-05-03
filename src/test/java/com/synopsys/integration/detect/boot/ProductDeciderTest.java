@@ -20,7 +20,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false)
+            createBlankBdioOptions()
         );
 
         assertTrue(productDecision.shouldRun());
@@ -33,7 +33,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false)
+            createBlankBdioOptions()
         );
 
         assertTrue(productDecision.shouldRun());
@@ -46,7 +46,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false)
+            createBlankBdioOptions()
         );
 
         assertTrue(productDecision.shouldRun());
@@ -59,7 +59,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false)
+            createBlankBdioOptions()
         );
 
         assertTrue(productDecision.shouldRun());
@@ -72,7 +72,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false)
+            createBlankBdioOptions()
         );
 
         assertTrue(productDecision.shouldRun());
@@ -85,7 +85,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(true)
+            createBlankBdioOptions()
         );
 
         assertTrue(productDecision.shouldRun());
@@ -98,7 +98,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.RAPID,
-            createBdioOptions(false)
+            createBlankBdioOptions()
         );
 
         assertFalse(productDecision.shouldRun());
@@ -110,7 +110,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.RAPID,
-            createBdioOptions(false)
+            createBlankBdioOptions()
         );
 
         assertFalse(productDecision.shouldRun());
@@ -122,7 +122,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false)
+            createBlankBdioOptions()
         );
 
         assertFalse(productDecision.shouldRun());
@@ -134,7 +134,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.RAPID,
-            createBdioOptions(true)
+            createBlankBdioOptions()
         );
 
         assertTrue(productDecision.shouldRun());
@@ -146,7 +146,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false)
+            createBlankBdioOptions()
         );
 
         assertTrue(productDecision.shouldRun());
@@ -159,7 +159,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(true)
+            createBlankBdioOptions()
         );
 
         assertTrue(productDecision.shouldRun());
@@ -171,7 +171,7 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false)
+            createBlankBdioOptions()
         );
 
         assertFalse(productDecision.shouldRun());
@@ -183,14 +183,14 @@ class ProductDeciderTest {
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
             BlackduckScanMode.RAPID,
-            createBdioOptions(true)
+            createBlankBdioOptions()
         );
 
         assertFalse(productDecision.shouldRun());
     }
 
-    private BdioOptions createBdioOptions(boolean useBdio2) {
-        return new BdioOptions(useBdio2, null, null);
+    private BdioOptions createBlankBdioOptions() {
+        return new BdioOptions(null, null);
     }
 
     private BlackDuckConnectionDetails blackDuckConnectionDetails(boolean offline, String blackduckUrl) {

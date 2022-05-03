@@ -33,16 +33,16 @@ public class DetectConfigurationTest {
     }
 
     @Test
-    public void testDeprecated() throws DetectUserFriendlyException {
+    public void testGenericProperty() {
         HashMap<String, String> values = new HashMap<>();
-        values.put(DetectProperties.DETECT_BDIO2_ENABLED.getKey(), "false");
+        values.put(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX.getKey(), "some_prefix");
         List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
         DetectPropertyConfiguration detectPropertyConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectPropertyConfiguration, new Gson());
         BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
-        Assertions.assertFalse(bdioOptions.isBdio2Enabled());
+        Assertions.assertEquals("some_prefix", bdioOptions.getProjectCodeLocationPrefix());
     }
 
 }

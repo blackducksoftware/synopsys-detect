@@ -114,15 +114,8 @@ public class UniversalStepRunner {
             );
         }
 
-        boolean isBdio2 = operationFactory.calculateBdioOptions().isBdio2Enabled();
-        String aggregateExtension = isBdio2 ? ".bdio" : ".jsonld";
-        AggregateCodeLocation aggregateCodeLocation = operationFactory.createAggregateCodeLocation(aggregateDependencyGraph, projectNameVersion, aggregateName, aggregateExtension);
-
-        if (isBdio2) {
-            operationFactory.createAggregateBdio2File(aggregateCodeLocation);
-        } else {
-            operationFactory.createAggregateBdio1File(aggregateCodeLocation);
-        }
+        AggregateCodeLocation aggregateCodeLocation = operationFactory.createAggregateCodeLocation(aggregateDependencyGraph, projectNameVersion, aggregateName);
+        operationFactory.createAggregateBdio2File(aggregateCodeLocation);
 
         List<UploadTarget> uploadTargets = new ArrayList<>();
         Map<DetectCodeLocation, String> codeLocationNamesResult = new HashMap<>();
@@ -135,7 +128,7 @@ public class UniversalStepRunner {
         } else {
             logger.warn("The aggregate contained no dependencies, will not upload aggregate at this time.");
         }
-        return new BdioResult(uploadTargets, new DetectCodeLocationNamesResult(codeLocationNamesResult), isBdio2);
+        return new BdioResult(uploadTargets, new DetectCodeLocationNamesResult(codeLocationNamesResult));
     }
 
     private BdioResult generateStandardBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws OperationException {
@@ -147,11 +140,7 @@ public class UniversalStepRunner {
         DetectCodeLocationNamesResult namesResult = new DetectCodeLocationNamesResult(codeLocationResult.getCodeLocationNames());
 
         logger.debug("Creating BDIO files from code locations.");
-        if (operationFactory.calculateBdioOptions().isBdio2Enabled()) {
-            return new BdioResult(operationFactory.createBdio2Files(codeLocationResult, projectNameVersion), namesResult, true);
-        } else {
-            return new BdioResult(operationFactory.createBdio1Files(codeLocationResult, projectNameVersion), namesResult, false);
-        }
+        return new BdioResult(operationFactory.createBdio2Files(codeLocationResult, projectNameVersion), namesResult);
     }
 
     public NameVersion determineProjectInformation(UniversalToolsResult universalToolsResult) throws OperationException, IntegrationException {

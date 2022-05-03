@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
@@ -101,12 +100,9 @@ import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
-import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio1FileOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio2FileOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateCodeLocationOperation;
-import com.synopsys.integration.detect.workflow.bdio.CreateBdio1FilesOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateBdio2FilesOperation;
-import com.synopsys.integration.detect.workflow.bdio.DetectBdioWriter;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeDirectOperation;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
@@ -683,27 +679,12 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public BdioOptions calculateBdioOptions() {
-        return detectConfigurationFactory.createBdioOptions();
-    }
-
     public BdioCodeLocationResult createBdioCodeLocationsFromDetectCodeLocations(List<DetectCodeLocation> detectCodeLocations, NameVersion projectNameVersion)
         throws OperationException {
         return auditLog.namedInternal("Create Bdio Code Locations", () -> {
             BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
             return new CreateBdioCodeLocationsFromDetectCodeLocationsOperation(codeLocationNameManager, directoryManager)
                 .transformDetectCodeLocations(detectCodeLocations, bdioOptions.getProjectCodeLocationPrefix(), bdioOptions.getProjectCodeLocationSuffix(), projectNameVersion);
-        });
-    }
-
-    public List<UploadTarget> createBdio1Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion) throws OperationException {
-        return auditLog.namedPublic("Create Bdio 1 Files", () -> {
-            DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
-            return new CreateBdio1FilesOperation(detectBdioWriter, new SimpleBdioFactory()).createBdioFiles(
-                bdioCodeLocationResult,
-                directoryManager.getBdioOutputDirectory(),
-                projectNameVersion
-            );
         });
     }
 
@@ -717,10 +698,10 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public AggregateCodeLocation createAggregateCodeLocation(DependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion, String aggregateName, String extension)
+    public AggregateCodeLocation createAggregateCodeLocation(DependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion, String aggregateName)
         throws OperationException {
         return auditLog.namedInternal("Create Aggregate Code Location", () -> new CreateAggregateCodeLocationOperation(new ExternalIdFactory(), codeLocationNameManager)
-            .createAggregateCodeLocation(directoryManager.getBdioOutputDirectory(), aggregateDependencyGraph, projectNameVersion, aggregateName, extension));
+            .createAggregateCodeLocation(directoryManager.getBdioOutputDirectory(), aggregateDependencyGraph, projectNameVersion, aggregateName));
     }
 
     public DependencyGraph aggregateDirect(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
@@ -749,13 +730,6 @@ public class OperationFactory { //TODO: OperationRunner
                 detectCodeLocations
             )
         );
-    }
-
-    public void createAggregateBdio1File(AggregateCodeLocation aggregateCodeLocation) throws OperationException {
-        auditLog.namedPublic("Create Aggregate Bdio 1 File", () -> {
-            DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
-            new CreateAggregateBdio1FileOperation(new SimpleBdioFactory(), detectBdioWriter).writeAggregateBdio1File(aggregateCodeLocation);
-        });
     }
 
     public void createAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation) throws OperationException {

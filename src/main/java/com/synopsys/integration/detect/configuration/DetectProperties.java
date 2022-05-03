@@ -1738,7 +1738,6 @@ public class DetectProperties {
 
     //#region Deprecated Properties
     // username/password ==> api token
-    private static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
     private static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. In the future, Detect will always operate in SUBPROJECT aggregation mode (regardless of how it is configured) to more accurately report the dependency graph.";
     private static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
     private static final String DETECT_DOCKER_PATH_REQUIRED_DEPRECATION_MESSAGE = "This property is being removed. A docker executable is only required when running the Docker tool in air gap mode.";
@@ -1792,15 +1791,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(AGGREGATION_MODE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_BDIO2_ENABLED =
-        BooleanProperty.newBuilder("detect.bdio2.enabled", true)
-            .setInfo("BDIO 2 Enabled", DetectPropertyFromVersion.VERSION_6_1_0)
-            .setHelp("The version of BDIO files to generate.", "If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
-            .setDeprecated(BDIO1_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
             .build();
 
     @Deprecated

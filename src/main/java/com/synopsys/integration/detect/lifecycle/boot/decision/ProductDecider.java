@@ -18,9 +18,6 @@ public class ProductDecider {
         if (offline && scanMode != BlackduckScanMode.RAPID) {
             logger.debug("Black Duck will run: Black Duck offline mode was set to true.");
             return BlackDuckDecision.runOffline();
-        } else if (!bdioOptions.isBdio2Enabled()) {
-            logger.debug("Black Duck will NOT run: Detect will not generate BDIO2 files and Black Duck {} scan is enabled which requires BDIO2 file generation", scanMode.name());
-            return BlackDuckDecision.skip();
         } else if (blackDuckUrl.isPresent()) {
             logger.debug("Black Duck will run ONLINE: A Black Duck url was found.");
             return BlackDuckDecision.runOnline(scanMode);

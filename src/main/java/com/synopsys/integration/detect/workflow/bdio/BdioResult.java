@@ -8,20 +8,14 @@ import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationN
 public class BdioResult {
     private final List<UploadTarget> uploadTargets;
     private final DetectCodeLocationNamesResult codeLocationNamesResult;
-    private final boolean isBdio2;
 
-    public BdioResult(List<UploadTarget> uploadTargets, DetectCodeLocationNamesResult codeLocationNamesResult, boolean isBdio2) {
+    public BdioResult(List<UploadTarget> uploadTargets, DetectCodeLocationNamesResult codeLocationNamesResult) {
         this.uploadTargets = uploadTargets;
         this.codeLocationNamesResult = codeLocationNamesResult;
-        this.isBdio2 = isBdio2;
     }
 
     public List<UploadTarget> getUploadTargets() {
         return uploadTargets;
-    }
-
-    public boolean isBdio2() {
-        return isBdio2;
     }
 
     public DetectCodeLocationNamesResult getCodeLocationNamesResult() {
