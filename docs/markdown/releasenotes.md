@@ -6,6 +6,7 @@
 
 ### Changed features
 * Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.
+* Removed the ability to upload BDIO2 documents to legacy endpoints via the `blackduck.legacy.upload.enabled` property.
 
 ### Resolved issues
 * (IDETECT-3224) Resolved an issue where Cargo projects with Cyclical dependencies could cause a failure of [solution_name].
