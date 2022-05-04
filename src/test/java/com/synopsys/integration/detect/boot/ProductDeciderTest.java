@@ -190,7 +190,7 @@ class ProductDeciderTest {
     }
 
     private BdioOptions createBdioOptions(boolean useBdio2) {
-        return new BdioOptions(useBdio2, null, null);
+        return new BdioOptions(useBdio2, null, null, null);
     }
 
     private BlackDuckConnectionDetails blackDuckConnectionDetails(boolean offline, String blackduckUrl) {

@@ -28,9 +28,7 @@ public class CodeLocationNameManager {
         DetectCodeLocation detectCodeLocation,
         File detectSourcePath,
         String projectName,
-        String projectVersionName,
-        String prefix,
-        String suffix
+        String projectVersionName
     ) {
         String codeLocationName;
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
@@ -46,9 +44,7 @@ public class CodeLocationNameManager {
                     detectCodeLocation.getSourcePath(),
                     projectName,
                     projectVersionName,
-                    dockerImage,
-                    prefix,
-                    suffix
+                    dockerImage
                 );
             } else {
                 codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(
@@ -56,9 +52,7 @@ public class CodeLocationNameManager {
                     detectCodeLocation.getSourcePath(),
                     projectName,
                     projectVersionName,
-                    detectCodeLocation,
-                    prefix,
-                    suffix
+                    detectCodeLocation
                 );
             }
         }
@@ -70,39 +64,37 @@ public class CodeLocationNameManager {
         File scanTargetPath,
         @Nullable File dockerTar,
         String projectName,
-        String projectVersionName,
-        String prefix,
-        String suffix
+        String projectVersionName
     ) {
         String scanCodeLocationName;
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN);
         } else if (dockerTar != null) {
-            scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTar, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTar, projectName, projectVersionName);
         } else {
-            scanCodeLocationName = codeLocationNameGenerator.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName);
         }
         return scanCodeLocationName;
     }
 
-    public String createBinaryScanCodeLocationName(File targetFile, String projectName, String projectVersionName, String prefix, String suffix) {
+    public String createBinaryScanCodeLocationName(File targetFile, String projectName, String projectVersionName) {
         String scanCodeLocationName;
 
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN);
         } else {
-            scanCodeLocationName = codeLocationNameGenerator.createBinaryScanCodeLocationName(targetFile, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createBinaryScanCodeLocationName(targetFile, projectName, projectVersionName);
         }
         return scanCodeLocationName;
     }
 
-    public String createImpactAnalysisCodeLocationName(File sourceDirectory, String projectName, String projectVersionName, @Nullable String prefix, @Nullable String suffix) {
+    public String createImpactAnalysisCodeLocationName(File sourceDirectory, String projectName, String projectVersionName) {
         String scanCodeLocationName;
 
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.IMPACT_ANALYSIS);
         } else {
-            scanCodeLocationName = codeLocationNameGenerator.createImpactAnalysisCodeLocationName(sourceDirectory, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createImpactAnalysisCodeLocationName(sourceDirectory, projectName, projectVersionName);
         }
         return scanCodeLocationName;
     }

@@ -4,6 +4,8 @@ import static com.synopsys.integration.detect.tool.detector.CodeLocationConverte
 
 import java.io.File;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraphUtil;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
@@ -27,13 +29,14 @@ public class CreateAggregateCodeLocationOperation {
         File bdioOutputDirectory,
         DependencyGraph aggregateDependencyGraph,
         NameVersion projectNameVersion,
-        String aggregateName,
+        String bdioFileName,
         String extension
     ) {
         ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion());
         String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
-        String fileName = new IntegrationEscapeUtil().replaceWithUnderscore(aggregateName) + extension;
+        String defaultFileName = new IntegrationEscapeUtil().replaceWithUnderscore(projectNameVersion.getName() + "_" + projectNameVersion.getVersion()) + extension;
+        String fileName = StringUtils.defaultIfBlank(bdioFileName, defaultFileName);
         File aggregateBdioFile = new File(bdioOutputDirectory, fileName);
 
         // TODO: Stop-gap measure to avoid changes propagating. Shouldn't be a problem in 8.0.0 JM-04/2022

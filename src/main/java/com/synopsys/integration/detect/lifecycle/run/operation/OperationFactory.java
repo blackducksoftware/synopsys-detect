@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
@@ -33,7 +32,6 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
@@ -54,7 +52,6 @@ import com.synopsys.integration.detect.lifecycle.run.DetectFontLoaderFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateDecisionOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.EventSingletons;
@@ -104,10 +101,7 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio1FileOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio2FileOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateCodeLocationOperation;
-import com.synopsys.integration.detect.workflow.bdio.CreateBdio1FilesOperation;
-import com.synopsys.integration.detect.workflow.bdio.CreateBdio2FilesOperation;
 import com.synopsys.integration.detect.workflow.bdio.DetectBdioWriter;
-import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeDirectOperation;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
@@ -146,10 +140,8 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.Projec
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseOptions;
 import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService;
-import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
-import com.synopsys.integration.detect.workflow.codelocation.CreateBdioCodeLocationsFromDetectCodeLocationsOperation;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -352,10 +344,6 @@ public class OperationFactory { //TODO: OperationRunner
     //Post actions
     //End post actions
 
-    public final AggregateDecisionOperation createAggregateOptionsOperation() throws OperationException {
-        return auditLog.namedInternal("Create Aggregate Options", () -> new AggregateDecisionOperation(detectConfigurationFactory.createAggregateOptions()));
-    }
-
     public final BdioUploadResult uploadBdioIntelligentPersistent(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws OperationException {
         return auditLog.namedPublic(
             "Upload Intelligent Persistent Bdio",
@@ -376,8 +364,7 @@ public class OperationFactory { //TODO: OperationRunner
             ImpactAnalysisNamingOperation impactAnalysisNamingOperation = new ImpactAnalysisNamingOperation(codeLocationNameManager);
             return impactAnalysisNamingOperation.createCodeLocationName(
                 directoryManager.getSourceDirectory(),
-                projectNameVersion,
-                detectConfigurationFactory.createImpactAnalysisOptions()
+                projectNameVersion
             );
         });
     }
@@ -687,58 +674,19 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createBdioOptions();
     }
 
-    public BdioCodeLocationResult createBdioCodeLocationsFromDetectCodeLocations(List<DetectCodeLocation> detectCodeLocations, NameVersion projectNameVersion)
+    public AggregateCodeLocation createAggregateCodeLocation(DependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion, String extension)
         throws OperationException {
-        return auditLog.namedInternal("Create Bdio Code Locations", () -> {
-            BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
-            return new CreateBdioCodeLocationsFromDetectCodeLocationsOperation(codeLocationNameManager, directoryManager)
-                .transformDetectCodeLocations(detectCodeLocations, bdioOptions.getProjectCodeLocationPrefix(), bdioOptions.getProjectCodeLocationSuffix(), projectNameVersion);
-        });
-    }
-
-    public List<UploadTarget> createBdio1Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion) throws OperationException {
-        return auditLog.namedPublic("Create Bdio 1 Files", () -> {
-            DetectBdioWriter detectBdioWriter = new DetectBdioWriter(new SimpleBdioFactory(), detectInfo);
-            return new CreateBdio1FilesOperation(detectBdioWriter, new SimpleBdioFactory()).createBdioFiles(
-                bdioCodeLocationResult,
+        return auditLog.namedInternal("Create Aggregate Code Location", () -> new CreateAggregateCodeLocationOperation(
+            new ExternalIdFactory(),
+            codeLocationNameManager
+        )
+            .createAggregateCodeLocation(
                 directoryManager.getBdioOutputDirectory(),
-                projectNameVersion
-            );
-        });
-    }
-
-    public List<UploadTarget> createBdio2Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion) throws OperationException {
-        return auditLog.namedPublic("Create Bdio 2 Files", () -> {
-            return new CreateBdio2FilesOperation(new Bdio2Factory(), detectInfo).createBdioFiles(
-                bdioCodeLocationResult,
-                directoryManager.getBdioOutputDirectory(),
-                projectNameVersion
-            );
-        });
-    }
-
-    public AggregateCodeLocation createAggregateCodeLocation(DependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion, String aggregateName, String extension)
-        throws OperationException {
-        return auditLog.namedInternal("Create Aggregate Code Location", () -> new CreateAggregateCodeLocationOperation(new ExternalIdFactory(), codeLocationNameManager)
-            .createAggregateCodeLocation(directoryManager.getBdioOutputDirectory(), aggregateDependencyGraph, projectNameVersion, aggregateName, extension));
-    }
-
-    public DependencyGraph aggregateDirect(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
-        return auditLog.namedPublic(
-            "Direct Aggregate",
-            "DirectAggregate",
-            () -> new AggregateModeDirectOperation().aggregateCodeLocations(detectCodeLocations)
-        );
-    }
-
-    public DependencyGraph aggregateTransitive(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
-        return auditLog.namedPublic("Transitive Aggregate", "TransitiveAggregate",
-            () -> (new FullAggregateGraphCreator()).aggregateCodeLocations(
-                Dependency::new,
-                directoryManager.getSourceDirectory(),
-                detectCodeLocations
-            )
-        );
+                aggregateDependencyGraph,
+                projectNameVersion,
+                extension,
+                detectConfigurationFactory.createBdioOptions().getBdioFileName().orElse(null)
+            ));
     }
 
     public DependencyGraph aggregateSubProject(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
