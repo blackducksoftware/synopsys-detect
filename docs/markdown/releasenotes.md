@@ -7,7 +7,9 @@
 ### Changed features
 
 * Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.
-* Removed the ability to upload BDIO2 documents to legacy endpoints via the `blackduck.legacy.upload.enabled` property.
+* Removed the ability to upload BDIO2 documents to legacy endpoints via the now removed `blackduck.legacy.upload.enabled` property.
+* Removed the ability to choose the type of BDIO aggregation strategy via the now removed `detect.bom.aggregate.remediation.mode` property. 
+  * All BDIO will be aggregated similar to SUBPROJECT in [solution_name] version 7.X.
 
 ### Resolved issues
 
