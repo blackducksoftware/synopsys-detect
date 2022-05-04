@@ -24,41 +24,6 @@ public class CodeLocationNameManager {
         return aggregateCodeLocationName;
     }
 
-    public String createCodeLocationName(
-        DetectCodeLocation detectCodeLocation,
-        File detectSourcePath,
-        String projectName,
-        String projectVersionName
-    ) {
-        String codeLocationName;
-        if (codeLocationNameGenerator.useCodeLocationOverride()) {
-            if (detectCodeLocation.getDockerImageName().isPresent()) {
-                codeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.DOCKER);
-            } else {
-                codeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameSourcedBom(detectCodeLocation);
-            }
-        } else {
-            if (detectCodeLocation.getDockerImageName().isPresent()) {
-                String dockerImage = detectCodeLocation.getDockerImageName().get();
-                codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(
-                    detectCodeLocation.getSourcePath(),
-                    projectName,
-                    projectVersionName,
-                    dockerImage
-                );
-            } else {
-                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(
-                    detectSourcePath,
-                    detectCodeLocation.getSourcePath(),
-                    projectName,
-                    projectVersionName,
-                    detectCodeLocation
-                );
-            }
-        }
-        return codeLocationName;
-    }
-
     public String createScanCodeLocationName(
         File sourcePath,
         File scanTargetPath,

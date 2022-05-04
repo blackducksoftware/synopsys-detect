@@ -73,18 +73,6 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, bomCodeLocationNamePieces, suffix, bomCodeLocationEndPieces);
     }
 
-    public String createDockerCodeLocationName(File sourcePath, String projectName, String projectVersionName, String dockerImage) {
-        String canonicalSourcePath = DetectFileUtils.tryGetCanonicalPath(sourcePath);
-        String finalSourcePathPiece = DetectFileUtils.extractFinalPieceFromPath(canonicalSourcePath);
-        String codeLocationTypeString = CodeLocationNameType.DOCKER.toString().toLowerCase();
-        final String bomToolTypeString = "docker";
-
-        List<String> dockerCodeLocationNamePieces = Arrays.asList(finalSourcePathPiece, projectName, projectVersionName, dockerImage);
-        List<String> dockerCodeLocationEndPieces = Arrays.asList(codeLocationTypeString, bomToolTypeString);
-
-        return createCodeLocationName(prefix, dockerCodeLocationNamePieces, suffix, dockerCodeLocationEndPieces);
-    }
-
     public String createDockerScanCodeLocationName(File dockerTar, String projectName, String projectVersionName) {
         String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
 
@@ -194,31 +182,8 @@ public class CodeLocationNameGenerator {
         return deriveUniqueCodeLocationName(baseName, nameIndex);
     }
 
-    public String getNextCodeLocationOverrideNameSourcedBom(DetectCodeLocation detectCodeLocation) {
-        String creator = deriveCreator(detectCodeLocation);
-        String baseName = createBomCodeLocationName(codeLocationNameOverride, creator);
-
-        int nameIndex = deriveNameNumber(baseName);
-        return deriveUniqueCodeLocationName(baseName, nameIndex);
-    }
-
     public String deriveCreator(DetectCodeLocation detectCodeLocation) {
         return detectCodeLocation.getCreatorName().orElse("detect");
-    }
-
-    private String createBomCodeLocationName(String givenCodeLocationName, String creatorName) {
-        String codeLocationTypeString = CodeLocationNameType.BOM.toString().toLowerCase();
-        String bomToolTypeString = creatorName.toLowerCase();
-
-        int givenNameMaxLength = MAXIMUM_CODE_LOCATION_NAME_LENGTH - bomToolTypeString.length() - codeLocationTypeString.length() - 2;
-        String adjustedGivenCodeLocationName;
-        if (givenCodeLocationName.length() > givenNameMaxLength) {
-            adjustedGivenCodeLocationName = givenCodeLocationName.substring(0, givenNameMaxLength);
-        } else {
-            adjustedGivenCodeLocationName = givenCodeLocationName;
-        }
-
-        return String.format("%s %s/%s", adjustedGivenCodeLocationName, bomToolTypeString, codeLocationTypeString);
     }
 
     private String deriveUniqueCodeLocationName(String baseName, int nameIndex) {
