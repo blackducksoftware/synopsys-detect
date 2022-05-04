@@ -1,5 +1,9 @@
 # Release notes
 
+## Version 7.13.1
+
+* (IDETECT-3286) Resolved an issue that caused the 7.13.0 .jar to be unsigned. The 7.13.1 .jar is signed.
+
 ## Version 7.13.0
 
 ### New features
