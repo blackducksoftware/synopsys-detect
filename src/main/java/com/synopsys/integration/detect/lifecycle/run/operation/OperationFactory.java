@@ -95,13 +95,9 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.Signature
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
-import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio2FileOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateCodeLocationOperation;
-import com.synopsys.integration.detect.workflow.bdio.CreateBdio2FilesOperation;
-import com.synopsys.integration.detect.workflow.bdio.aggregation.AggregateModeDirectOperation;
-import com.synopsys.integration.detect.workflow.bdio.DetectBdioWriter;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
@@ -670,11 +666,7 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public BdioOptions calculateBdioOptions() {
-        return detectConfigurationFactory.createBdioOptions();
-    }
-
-    public AggregateCodeLocation createAggregateCodeLocation(DependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion, String extension)
+    public AggregateCodeLocation createAggregateCodeLocation(DependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion)
         throws OperationException {
         return auditLog.namedInternal("Create Aggregate Code Location", () -> new CreateAggregateCodeLocationOperation(
             new ExternalIdFactory(),

@@ -82,7 +82,7 @@ public class UniversalStepRunner {
     public BdioResult generateBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws OperationException {
         DependencyGraph aggregateDependencyGraph = operationFactory.aggregateSubProject(universalToolsResult.getDetectCodeLocations());
 
-        AggregateCodeLocation aggregateCodeLocation = operationFactory.createAggregateCodeLocation(aggregateDependencyGraph, projectNameVersion, aggregateName);
+        AggregateCodeLocation aggregateCodeLocation = operationFactory.createAggregateCodeLocation(aggregateDependencyGraph, projectNameVersion);
         operationFactory.createAggregateBdio2File(aggregateCodeLocation);
 
         List<UploadTarget> uploadTargets = new ArrayList<>();
