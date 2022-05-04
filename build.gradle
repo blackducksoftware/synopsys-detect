@@ -246,3 +246,4 @@ task verifyJar() {
 }
 
 artifactoryPublish.dependsOn publishDitaSource
+artifactoryPublish.dependsOn signJar
