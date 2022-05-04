@@ -34,9 +34,13 @@ public abstract class BatteryTestRunner {
             allArguments.addAll(generateArguments());
             detectOutput = new BatteryDetectRunner(batteryContext.getOutputDirectory(), batteryContext.getScriptDirectory(), "").runDetect(allArguments, false);
             if (shouldAssertBdio) {
-                new BatteryBdioAssert(batteryContext.getTestName(), batteryContext.getResourcePrefix()).assertBdio(batteryContext.getBdioDirectory());
+                new BatteryBdioAssert(batteryContext.getTestName(), batteryContext.getResourcePrefix()).assertBdio(
+                    batteryContext.getBdioDirectory(),
+                    batteryContext.getBdioFileName() + ".bdio",
+                    batteryContext.getCompareDirectory()
+                );
             }
-        } catch (ExecutableRunnerException | JSONException | BdioCompare.BdioCompareException | IOException | TemplateException e) {
+        } catch (ExecutableRunnerException | JSONException | IOException | TemplateException e) {
             Assertions.assertNull(e, "An exception should not have been thrown!");
         } finally {
             batteryContext.checkAndCleanupBatteryDirectory();

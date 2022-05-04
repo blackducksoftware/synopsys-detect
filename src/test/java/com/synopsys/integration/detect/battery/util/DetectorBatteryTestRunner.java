@@ -42,10 +42,10 @@ public final class DetectorBatteryTestRunner extends BatteryTestRunner {
         properties.put(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
         properties.put(DetectProperties.DETECT_OUTPUT_PATH, batteryContext.getOutputDirectory().getCanonicalPath());
         properties.put(DetectProperties.DETECT_BDIO_OUTPUT_PATH, batteryContext.getBdioDirectory().getCanonicalPath());
+        properties.put(DetectProperties.DETECT_BDIO_FILE_NAME, batteryContext.getBdioFileName());
         properties.put(DetectProperties.DETECT_CLEANUP, "false");
         properties.put(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "INFO"); // Leave at INFO for Travis. Long logs cause build to fail.
         properties.put(DetectProperties.DETECT_SOURCE_PATH, batteryContext.getSourceDirectory().getCanonicalPath());
-        properties.put(DetectProperties.DETECT_BDIO2_ENABLED, "false");
         for (Map.Entry<Property, String> entry : properties.entrySet()) {
             detectArguments.add("--" + entry.getKey().getKey() + "=" + entry.getValue());
         }

@@ -10,6 +10,8 @@ import java.util.Optional;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
@@ -21,6 +23,7 @@ class XcodeWorkspaceParserTest {
 
     @Test
     void parse() throws IOException, ParserConfigurationException, SAXException {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
         String workspaceContents = StringUtils.joinWith(
             System.lineSeparator(),
             " <?xml version=\"1.0\" encoding=\"UTF-8\"?>",
