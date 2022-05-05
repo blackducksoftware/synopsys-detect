@@ -40,6 +40,12 @@ public class BatteryContext {
     private File mockDirectory;
     private File outputDirectory;
 
+    public File getCompareDirectory() {
+        return compareDirectory;
+    }
+
+    private File compareDirectory;
+
     private File bdioDirectory;
     private File sourceDirectory;
 
@@ -109,6 +115,7 @@ public class BatteryContext {
         mockDirectory = new File(testDirectory, "mock");
         outputDirectory = new File(testDirectory, "output");
         bdioDirectory = new File(testDirectory, "bdio");
+        compareDirectory = new File(testDirectory, "compare");
         //ah ha
         sourceDirectory = new File(testDirectory, sourceDirectoryName);
 
@@ -116,6 +123,7 @@ public class BatteryContext {
         Assertions.assertTrue(sourceDirectory.mkdirs());
         Assertions.assertTrue(bdioDirectory.mkdirs());
         Assertions.assertTrue(mockDirectory.mkdirs());
+        Assertions.assertTrue(compareDirectory.mkdirs());
     }
 
     private void checkEnvironment() {
@@ -245,5 +253,9 @@ public class BatteryContext {
 
     public File getSourceDirectory() {
         return sourceDirectory;
+    }
+
+    public String getBdioFileName() throws IOException {
+        return "battery";
     }
 }
