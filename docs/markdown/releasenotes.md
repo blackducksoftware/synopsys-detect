@@ -12,6 +12,7 @@
 ### Resolved issues
 
 * (IDETECT-3224) Resolved an issue where Cargo projects with Cyclical dependencies could cause a failure of [solution_name].
+* (IDETECT-3246) Resolved an issue where [solution_name] would fail when scanning flutter projects after a new version of flutter was released.
 
 ## Version 7.13.1
 
