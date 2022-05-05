@@ -34,8 +34,9 @@ public class CreateAggregateCodeLocationOperation {
         ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion());
         String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
-        String defaultFileName = new IntegrationEscapeUtil().replaceWithUnderscore(projectNameVersion.getName() + "_" + projectNameVersion.getVersion()) + ".bdio";
+        String defaultFileName = new IntegrationEscapeUtil().replaceWithUnderscore(projectNameVersion.getName() + "_" + projectNameVersion.getVersion());
         String fileName = StringUtils.defaultIfBlank(bdioFileName, defaultFileName);
+        fileName = fileName + ".bdio";
         File aggregateBdioFile = new File(bdioOutputDirectory, fileName);
 
         // TODO: Stop-gap measure to avoid changes propagating. Shouldn't be a problem in 8.0.0 JM-04/2022
