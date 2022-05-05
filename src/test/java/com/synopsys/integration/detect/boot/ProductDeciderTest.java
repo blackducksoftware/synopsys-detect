@@ -9,188 +9,111 @@ import com.synopsys.integration.detect.configuration.connection.BlackDuckConnect
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
-import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 
 class ProductDeciderTest {
-    private final String VALID_URL = "http://example";
+    private final String VALID_URL = "https://example.com";
 
     @Test
-    public void shouldRunBlackDuckOfflineWhenOverride() {
+    public void shouldRunIntelligentOffline() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT,
-            createBlankBdioOptions()
+            BlackduckScanMode.INTELLIGENT
         );
 
-        assertTrue(productDecision.shouldRun());
-        assertTrue(productDecision.isOffline());
+        assertOfflineDecision(productDecision);
     }
 
     @Test
-    public void shouldRunOfflineEvenWhenUrlProvided() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, "http://example.com");
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT,
-            createBlankBdioOptions()
-        );
-
-        assertTrue(productDecision.shouldRun());
-        assertTrue(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldRunBlackDuckOfflineWhenInstallUrl() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT,
-            createBlankBdioOptions()
-        );
-
-        assertTrue(productDecision.shouldRun());
-        assertTrue(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldRunBlackDuckOfflineWhenInstallPath() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT,
-            createBlankBdioOptions()
-        );
-
-        assertTrue(productDecision.shouldRun());
-        assertTrue(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldNotRunBlackDuckOfflineWhenUserProvidedHostUrl() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT,
-            createBlankBdioOptions()
-        );
-
-        assertTrue(productDecision.shouldRun());
-        assertTrue(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldRunBlackDuckOnline() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT,
-            createBlankBdioOptions()
-        );
-
-        assertTrue(productDecision.shouldRun());
-        assertFalse(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldNotRunBlackduckRapidModeAndOffline() {
+    public void shouldRunIntelligentOfflineEvenWhenUrlProvided() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, VALID_URL);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.RAPID,
-            createBlankBdioOptions()
+            BlackduckScanMode.INTELLIGENT
         );
 
-        assertFalse(productDecision.shouldRun());
+        assertOfflineDecision(productDecision);
     }
 
     @Test
-    public void shouldNotRunBlackduckRapidModeAndBDIO2Disabled() {
+    public void shouldRunIntelligentOnline() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.RAPID,
-            createBlankBdioOptions()
+            BlackduckScanMode.INTELLIGENT
         );
 
-        assertFalse(productDecision.shouldRun());
+        assertOnlineDecision(productDecision);
     }
 
     @Test
-    public void shouldNotRunBlackduckIntelligentModeAndBDIO2Disabled() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT,
-            createBlankBdioOptions()
-        );
-
-        assertFalse(productDecision.shouldRun());
-    }
-
-    @Test
-    public void shouldRunBlackduckRapidModeAndBDIO2Enabled() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            BlackduckScanMode.RAPID,
-            createBlankBdioOptions()
-        );
-
-        assertTrue(productDecision.shouldRun());
-    }
-
-    @Test
-    public void shouldRunBlackduckIntelligentModeOfflineAndBDIO2Disabled() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, VALID_URL);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT,
-            createBlankBdioOptions()
-        );
-
-        assertTrue(productDecision.shouldRun());
-        assertTrue(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldRunBlackduckIntelligentModeAndBDIO2Enabled() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT,
-            createBlankBdioOptions()
-        );
-
-        assertTrue(productDecision.shouldRun());
-    }
-
-    @Test
-    public void shouldNotRunBlackduckOnlineIntelligentModeAndBDIO2Disabled() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT,
-            createBlankBdioOptions()
-        );
-
-        assertFalse(productDecision.shouldRun());
-    }
-
-    @Test
-    public void shouldNotRunBlackduckURLMissing() {
+    public void shouldNotRunIntelligentOnlineWhenMissingURL() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, null);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.RAPID,
-            createBlankBdioOptions()
+            BlackduckScanMode.INTELLIGENT
         );
 
-        assertFalse(productDecision.shouldRun());
+        assertSkipDecision(productDecision);
     }
 
-    private BdioOptions createBlankBdioOptions() {
-        return new BdioOptions(null, null, null);
+    @Test
+    public void shouldNotRunRapidOffline() {
+        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, VALID_URL);
+        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
+            blackDuckConnectionDetails,
+            BlackduckScanMode.RAPID
+        );
+
+        assertSkipDecision(productDecision);
+    }
+
+    @Test
+    public void shouldRunRapidOnline() {
+        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
+        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
+            blackDuckConnectionDetails,
+            BlackduckScanMode.RAPID
+        );
+
+        assertOnlineDecision(productDecision);
+    }
+
+    @Test
+    public void shouldNotRunRapidWhenMissingURL() {
+        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, null);
+        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
+            blackDuckConnectionDetails,
+            BlackduckScanMode.RAPID
+        );
+
+        assertSkipDecision(productDecision);
+    }
+
+    @Test
+    public void shouldNotRunRapidWhenMissingURLEvenOffline() {
+        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
+        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
+            blackDuckConnectionDetails,
+            BlackduckScanMode.RAPID
+        );
+
+        assertSkipDecision(productDecision);
+    }
+
+    private void assertOfflineDecision(BlackDuckDecision productDecision) {
+        assertTrue(productDecision.shouldRun(), "An offline decision is validated and should be cleared to run");
+        assertTrue(productDecision.isOffline(), "An offline run decision should be reported as 'offline'");
+    }
+
+    private void assertOnlineDecision(BlackDuckDecision productDecision) {
+        assertTrue(productDecision.shouldRun(), "An online decision is validated and should be cleared to run");
+        assertFalse(productDecision.isOffline(), "An online decision is should not be 'offline'");
+    }
+
+    private void assertSkipDecision(BlackDuckDecision productDecision) {
+        assertFalse(productDecision.shouldRun(), "A skip decision should not be run");
+        assertTrue(productDecision.isOffline(), "A skip decision is offline");
     }
 
     private BlackDuckConnectionDetails blackDuckConnectionDetails(boolean offline, String blackduckUrl) {

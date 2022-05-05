@@ -7,15 +7,17 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
-import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 
 public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public BlackDuckDecision decideBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackduckScanMode scanMode, BdioOptions bdioOptions) {
+    public BlackDuckDecision decideBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackduckScanMode scanMode) {
         boolean offline = blackDuckConnectionDetails.getOffline();
         Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
-        if (offline && scanMode != BlackduckScanMode.RAPID) {
+        if (offline && BlackduckScanMode.RAPID.equals(scanMode)) {
+            logger.debug("Black Duck will NOT run: Rapid mode cannot be run offline.");
+            return BlackDuckDecision.skip();
+        } else if (offline) {
             logger.debug("Black Duck will run: Black Duck offline mode was set to true.");
             return BlackDuckDecision.runOffline();
         } else if (blackDuckUrl.isPresent()) {

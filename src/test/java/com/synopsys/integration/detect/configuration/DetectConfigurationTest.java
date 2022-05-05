@@ -1,11 +1,13 @@
 package com.synopsys.integration.detect.configuration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
@@ -29,7 +31,7 @@ public class DetectConfigurationTest {
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
 
         Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH);
-        Assertions.assertEquals(givenValue, phoneHomePropertiesMap.get(givenKeyPhoneHomePart));
+        assertEquals(givenValue, phoneHomePropertiesMap.get(givenKeyPhoneHomePart));
     }
 
     @Test
@@ -42,7 +44,8 @@ public class DetectConfigurationTest {
         DetectPropertyConfiguration detectPropertyConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectPropertyConfiguration, new Gson());
         BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
-        Assertions.assertEquals("some_prefix", bdioOptions.getProjectCodeLocationPrefix());
+        assertTrue(bdioOptions.getProjectCodeLocationPrefix().isPresent());
+        assertEquals("some_prefix", bdioOptions.getProjectCodeLocationPrefix().get());
     }
 
 }
