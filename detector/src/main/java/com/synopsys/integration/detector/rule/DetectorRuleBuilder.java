@@ -14,6 +14,8 @@ public class DetectorRuleBuilder<T extends Detectable> {
     private int maxDepth;
     private boolean nestable;
     private boolean selfNestable = false;
+
+    private boolean selfTypeNestable = false;
     private boolean nestInvisible = false;
     private final Set<DetectorType> notNestableBeneath = new HashSet<>();
 
@@ -30,11 +32,11 @@ public class DetectorRuleBuilder<T extends Detectable> {
     }
 
     public DetectorRuleBuilder defaults() {
-        return noMaxDepth().nestable().notSelfNestable().visibleToNesting();
+        return noMaxDepth().nestable().notSelfNestable().notSelfTypeNestable().visibleToNesting();
     }
 
     public DetectorRuleBuilder defaultLock() {
-        return noMaxDepth().nestable().selfNestable().visibleToNesting();
+        return noMaxDepth().nestable().selfNestable().selfTypeNestable().visibleToNesting();
     }
 
     public DetectorRuleBuilder noMaxDepth() {
@@ -94,8 +96,30 @@ public class DetectorRuleBuilder<T extends Detectable> {
         return nestable().notNestableBeneath(detectorType);
     }
 
+    // Not self nestable by DetectorType rather than the Rule itself
+    public DetectorRuleBuilder notSelfTypeNestable() {
+        selfTypeNestable = false;
+        return this;
+    }
+
+    public DetectorRuleBuilder selfTypeNestable() {
+        selfTypeNestable = true;
+        return this;
+    }
+
     public DetectorRule build() {
-        DetectorRule rule = new DetectorRule(detectableCreatable, detectableClass, maxDepth, nestable, selfNestable, detectorType, name, nestInvisible, notNestableBeneath);
+        DetectorRule rule = new DetectorRule(
+            detectableCreatable,
+            detectableClass,
+            maxDepth,
+            nestable,
+            selfNestable,
+            selfTypeNestable,
+            detectorType,
+            name,
+            nestInvisible,
+            notNestableBeneath
+        );
         if (detectorRuleSetBuilder != null) {
             detectorRuleSetBuilder.add(rule);
         }

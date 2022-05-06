@@ -46,6 +46,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndiv
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
+import com.synopsys.integration.detect.workflow.DummyAccuracyEnum;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
@@ -285,8 +286,7 @@ public class DetectConfigurationFactory {
         String prefix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String suffix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
         Boolean useBdio2 = detectConfiguration.getValue(DetectProperties.DETECT_BDIO2_ENABLED);
-        Boolean useLegacyUpload = detectConfiguration.getValue(DetectProperties.BLACKDUCK_LEGACY_UPLOAD_ENABLED);
-        return new BdioOptions(useBdio2, prefix, suffix, useLegacyUpload);
+        return new BdioOptions(useBdio2, prefix, suffix);
     }
 
     public ProjectNameVersionOptions createProjectNameVersionOptions(String sourceDirectoryName) {
@@ -476,6 +476,10 @@ public class DetectConfigurationFactory {
         String projectBomTool = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_DETECTOR);
         List<DetectorType> requiredDetectors = detectConfiguration.getValue(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES);
         boolean buildless = detectConfiguration.getValue(DetectProperties.DETECT_BUILDLESS);
+        AllNoneEnumList<DummyAccuracyEnum> accuracyRequired = detectConfiguration.getValue(DetectProperties.DETECT_ACCURACY_REQUIRED);
+        if (accuracyRequired.containsNone() && !detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BUILDLESS)) {
+            buildless = true;
+        }
         return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless);
     }
 

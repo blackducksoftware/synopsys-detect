@@ -50,6 +50,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
+import com.synopsys.integration.detect.workflow.DummyAccuracyEnum;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
@@ -167,6 +168,19 @@ public class DetectProperties {
             .setHelp("URL of the Black Duck server.")
             .setExample("https://blackduck.mydomain.com")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
+            .build();
+
+    //TODO- in 8.0.0, enum type will change to DetectorType, default value will change
+    public static final AllNoneEnumListProperty<DummyAccuracyEnum> DETECT_ACCURACY_REQUIRED =
+        AllNoneEnumListProperty.newBuilder("detect.accuracy.required", AllNoneEnum.ALL, DummyAccuracyEnum.class)
+            .setInfo("Detector Accuracy Requirements", DetectPropertyFromVersion.VERSION_7_13_0)
+            .setHelp(
+                "Required accuracy for a successful run of Detect.",
+                "Various detectors produce dependency graphs with varying levels of accuracy, either due to circumstances at runtime, the limitations of the detector, or even limitations of the package manager.  Use this property to specify what detector types Detect should enforce accuracy requirements on (ie. when set to NONE, Detect will not fail if only low-accuracy detectors succeed in producing results).  In 8.0.0, Detect will support supplying specific detector types. To run in the equivalent of Detect 7's \"buildless mode\", set this property to NONE"
+            )
+            .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
+            .setExample("ALL,NONE")
+            .setCategory(DetectCategory.Advanced)
             .build();
 
     public static final IntegerProperty DETECT_PARALLEL_PROCESSORS =
@@ -352,10 +366,11 @@ public class DetectProperties {
         NullableStringProperty.newBuilder("detect.blackduck.signature.scanner.arguments")
             .setInfo("Signature Scanner Arguments", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
-                "Additional arguments to use when running the Black Duck signature scanner.",
-                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from \\${HOME}/excludes.txt'"
+                "A space-separated list of additional arguments to use when running the Black Duck signature scanner.",
+                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in the current working directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from ./excludes.txt'"
             )
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+            .setExample("--exclude-from ./excludes.txt")
             .build();
 
     // TODO: JP don't like it
@@ -446,14 +461,6 @@ public class DetectProperties {
             .setHelp(
                 "If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .build();
-
-    // TODO: Outta here!
-    public static final BooleanProperty DETECT_BUILDLESS =
-        BooleanProperty.newBuilder("detect.detector.buildless", false)
-            .setInfo("Buildless Mode", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, only Detector's capable of running without a build will be run.")
-            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .build();
 
     public static final BooleanProperty DETECT_CLEANUP =
@@ -667,22 +674,13 @@ public class DetectProperties {
             .setExample("9.1.1")
             .build();
 
-    // TODO: Remove in 8.0.0. This is never really used, could have been a bad sign if it wasn't there.
+    // The docker exe is only used in air gap mode to load image tarfiles (from the air gap files) for docker inspector
     public static final NullablePathProperty DETECT_DOCKER_PATH =
         NullablePathProperty.newBuilder("detect.docker.path")
             .setInfo("Docker Executable", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Path to the docker executable (used to load image inspector Docker images in order to run the Docker Inspector in air gap mode).")
             .setExample("/usr/local/bin/docker")
             .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
-            .build();
-
-    // TODO: Remove in 8.0.0. Maybe get rid of this? Docker Inspector doesn't require Docker executable
-    public static final BooleanProperty DETECT_DOCKER_PATH_REQUIRED =
-        BooleanProperty.newBuilder("detect.docker.path.required", false)
-            .setInfo("Run Without Docker in Path", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
             .build();
 
     public static final NullableStringProperty DETECT_DOCKER_PLATFORM_TOP_LAYER_ID =
@@ -702,7 +700,9 @@ public class DetectProperties {
             .setInfo("Image Archive File", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "An image .tar file which is either a Docker image saved to a file using the 'docker save' command, or an Open Container Initiative (OCI) image .tar file. The file must be readable by all.",
-                "detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties)."
+                "detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties). "
+                    +
+                    "The .tar file must conform to either of the following image format specifications: 1. Docker Image Specification v1.2.0 (https://github.com/moby/moby/blob/master/image/spec/v1.2.md), which is the format produced by the \"docker save\" command, or 2. Open Container Initiative Image Format Specification (https://github.com/opencontainers/image-spec/blob/main/spec.md)."
             )
             .setExample("./ubuntu21_04.tar")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
@@ -1738,10 +1738,22 @@ public class DetectProperties {
 
     //#region Deprecated Properties
     // username/password ==> api token
-    public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
-    public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. In the future, Detect will always operate in SUBPROJECT aggregation mode (regardless of how it is configured) to more accurately report the dependency graph.";
-    public static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
+    private static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
+    private static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. In the future, Detect will always operate in SUBPROJECT aggregation mode (regardless of how it is configured) to more accurately report the dependency graph.";
+    private static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
+    private static final String DETECT_DOCKER_PATH_REQUIRED_DEPRECATION_MESSAGE = "This property is being removed. A docker executable is only required when running the Docker tool in air gap mode.";
 
+    @Deprecated
+    public static final BooleanProperty DETECT_DOCKER_PATH_REQUIRED =
+        BooleanProperty.newBuilder("detect.docker.path.required", false)
+            .setInfo("Run Without Docker in Path", DetectPropertyFromVersion.VERSION_4_0_0)
+            .setHelp("If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.")
+            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(DETECT_DOCKER_PATH_REQUIRED_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
     public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
         AllNoneEnumListProperty.newBuilder("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class)
             .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
@@ -1783,23 +1795,24 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty BLACKDUCK_LEGACY_UPLOAD_ENABLED =
-        BooleanProperty.newBuilder("blackduck.legacy.upload.enabled", true)
-            .setInfo("Use legacy BDIO upload endpoints in Black Duck", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp(
-                "If set to true, Detect will upload the BDIO files to Black Duck using older REST APIs.  Set this to false if you want to use the intelligent persistent scan endpoints in Black Duck.  The intelligent persistent endpoints are a Black Duck feature to be used with a later Black Duck version.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is being removed as support for the legacy endpoint is dropped.", DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_BDIO2_ENABLED =
         BooleanProperty.newBuilder("detect.bdio2.enabled", true)
             .setInfo("BDIO 2 Enabled", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp("The version of BDIO files to generate.", "If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .setDeprecated(BDIO1_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_BUILDLESS =
+        BooleanProperty.newBuilder("detect.detector.buildless", false)
+            .setInfo("Buildless Mode", DetectPropertyFromVersion.VERSION_5_4_0)
+            .setHelp("If set to true, only Detector's capable of running without a build will be run.")
+            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
+            .setDeprecated(
+                "This is property is being replaced by detect.accuracy.required.  To run in Buildless Mode, set detect.accuracy.required=NONE.",
+                DetectMajorVersion.EIGHT
+            )
             .build();
 
     @Deprecated

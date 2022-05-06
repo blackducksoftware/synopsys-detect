@@ -24,7 +24,6 @@ import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
-import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
@@ -34,7 +33,6 @@ import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
 import com.synopsys.integration.detect.workflow.status.OperationType;
-import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
 
@@ -70,8 +68,7 @@ public class IntelligentModeStepRunner {
         NameVersion projectNameVersion,
         DetectToolFilter detectToolFilter,
         DockerTargetData dockerTargetData
-    )
-        throws OperationException, IntegrationException, IOException, InterruptedException {
+    ) throws OperationException {
 
         ProjectVersionWrapper projectVersion = stepHelper.runAsGroup(
             "Create or Locate Project",
@@ -128,24 +125,13 @@ public class IntelligentModeStepRunner {
         });
     }
 
-    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator, Long timeout)
-        throws OperationException, IntegrationException {
-        BdioOptions bdioOptions = operationFactory.calculateBdioOptions(); //TODO: Move to a decision
-        BdioUploadResult uploadResult;
-        if (bdioOptions.isLegacyUploadEnabled()) {
-            if (bdioOptions.isBdio2Enabled()) {
-                uploadResult = operationFactory.uploadBdio2(blackDuckRunData, bdioResult);
-            } else {
-                uploadResult = operationFactory.uploadBdio1(blackDuckRunData, bdioResult);
-            }
-        } else {
-            uploadResult = operationFactory.uploadBdioIntelligentPersistent(blackDuckRunData, bdioResult, timeout);
-        }
+    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
+        BdioUploadResult uploadResult = operationFactory.uploadBdioIntelligentPersistent(blackDuckRunData, bdioResult, timeout);
         uploadResult.getUploadOutput().ifPresent(codeLocationAccumulator::addWaitableCodeLocations);
     }
 
     public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator)
-        throws OperationException, IntegrationException { //this is waiting....
+        throws OperationException { //this is waiting....
         logger.info(ReportConstants.RUN_SEPARATOR);
 
         Set<String> allCodeLocationNames = new HashSet<>(codeLocationAccumulator.getNonWaitableCodeLocations());

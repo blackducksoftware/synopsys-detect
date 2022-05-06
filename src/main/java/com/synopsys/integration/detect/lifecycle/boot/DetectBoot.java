@@ -185,7 +185,6 @@ public class DetectBoot {
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
                 detectConfigurationFactory.createBlackDuckConnectionDetails(),
-                detectConfigurationFactory.createBlackDuckSignatureScannerOptions(),
                 detectConfigurationFactory.createScanMode(),
                 detectConfigurationFactory.createBdioOptions()
             );

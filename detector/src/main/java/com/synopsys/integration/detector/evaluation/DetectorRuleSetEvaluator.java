@@ -12,6 +12,7 @@ import com.synopsys.integration.detector.result.MaxDepthExceededDetectorResult;
 import com.synopsys.integration.detector.result.NotNestableBeneathDetectorResult;
 import com.synopsys.integration.detector.result.NotNestableDetectorResult;
 import com.synopsys.integration.detector.result.NotSelfNestableDetectorResult;
+import com.synopsys.integration.detector.result.NotSelfTypeNestableDetectorResult;
 import com.synopsys.integration.detector.result.PassedDetectorResult;
 import com.synopsys.integration.detector.result.YieldedDetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
@@ -38,12 +39,17 @@ public class DetectorRuleSetEvaluator {
 
         boolean nestable = detectorRule.isNestable();
         boolean selfNestable = detectorRule.isSelfNestable();
+        boolean selfTypeNestable = detectorRule.isSelfTypeNestable();
+        DetectorType detectorType = detectorRule.getDetectorType();
         Set<DetectorType> notNestableBeneath = detectorRule.getNotNestableBeneath();
         if (environment.isForceNestedSearch()) {
             return new ForcedNestedPassedDetectorResult();
         } else if (nestable) {
-            if (!selfNestable && environment.getAppliedToParent().stream().anyMatch(parentApplied -> parentApplied.equals(detectorRule))) {
+            if (!selfNestable && environment.getAppliedToParent().stream().anyMatch(detectorRule::equals)) {
                 return new NotSelfNestableDetectorResult();
+            }
+            if (!selfTypeNestable && environment.getAppliedToParent().stream().map(DetectorRule::getDetectorType).anyMatch(detectorType::equals)) {
+                return new NotSelfTypeNestableDetectorResult(detectorType);
             }
             if (notNestableBeneath.size() > 0) {
                 Optional<DetectorType> notNestableBeneathType = environment.getAppliedToParent().stream()

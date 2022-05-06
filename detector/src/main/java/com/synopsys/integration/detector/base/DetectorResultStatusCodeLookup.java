@@ -37,6 +37,7 @@ import com.synopsys.integration.detector.result.MaxDepthExceededDetectorResult;
 import com.synopsys.integration.detector.result.NotNestableBeneathDetectorResult;
 import com.synopsys.integration.detector.result.NotNestableDetectorResult;
 import com.synopsys.integration.detector.result.NotSelfNestableDetectorResult;
+import com.synopsys.integration.detector.result.NotSelfTypeNestableDetectorResult;
 import com.synopsys.integration.detector.result.PassedDetectorResult;
 import com.synopsys.integration.detector.result.YieldedDetectorResult;
 
@@ -88,6 +89,7 @@ public class DetectorResultStatusCodeLookup {
         map.put(WrongOperatingSystemResult.class, DetectorStatusCode.WRONG_OPERATING_SYSTEM_RESULT);
         map.put(YieldedDetectorResult.class, DetectorStatusCode.YIELDED);
         map.put(PackageResolvedNotFoundDetectableResult.class, DetectorStatusCode.EXCLUDED);
+        map.put(NotSelfTypeNestableDetectorResult.class, DetectorStatusCode.NOT_NESTABLE);
 
         return map;
     }

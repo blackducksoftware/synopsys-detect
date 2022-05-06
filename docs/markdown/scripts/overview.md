@@ -7,11 +7,17 @@ In Bash, an environment variable is set as follows:
     export ENV_VAR_NAME=value
 
 In Command or Batch, an environment variable is set as follows:
+
     set ENV_VAR_NAME=value
 
 In PowerShell, an environment variable is set as follows:
+
     $Env:ENV_VAR_NAME = value
-Note it is generally recommended to run the [solution_name] PowerShell script from a Command line, not from within PowerShell itself.
+
+It is generally a good idea to quote the value as you assign it.
+Be sure to check that the variable value has been set as expected by displaying its value of the variable after you have set it.
+
+Refer [Running the Synopsys Detect script](../downloadingandrunning/basics/runningscript.md) for more information.
 
 | Variable             | Purpose                                             | Value           | Notes                                      |
 | -------------------- | --------------------------------------------------- | --------------- | ------------------------------------------ |

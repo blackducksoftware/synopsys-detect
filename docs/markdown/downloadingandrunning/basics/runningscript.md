@@ -41,10 +41,12 @@ export DETECT_LATEST_RELEASE_VERSION=5.5.0
 bash <(curl -s -L https://detect.synopsys.com/detect7.sh)
 ````
 
-#### Windows
+## Running the script on Windows
 
-On Windows, there are two ways to execute the [solution_name] script ([powershell_script_name], which is a PowerShell script),   
+On Windows, you can execute the [solution_name] script ([powershell_script_name], which is a PowerShell script),   
 from [Command Prompt](https://en.wikipedia.org/wiki/Cmd.exe) or from inside a PowerShell session. 
+
+### Running from Windows Command Prompt
 
 To download and run the latest version of [solution_name] in a single command from Command Prompt:
 
@@ -52,14 +54,7 @@ To download and run the latest version of [solution_name] in a single command fr
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect"
 ````
 
-To download and run the latest version of [solution_name] in a single command from PowerShell:
-````
-[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect
-````
-
-_Note that when running the above command, the PowerShell session is not exited. See [here](../../scripts/script-escaping-special-characters.md) for more information on the difference between the two commands._
-
-In both cases, append any command line arguments to the end, separated by spaces. For example:
+Append any command line arguments to the end, separated by spaces. For example:
 
 ````
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect" --blackduck.url=https://blackduck.mydomain.com --blackduck.api.token=myaccesstoken
@@ -67,7 +62,7 @@ powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://d
 
 See [Quoting and escaping shell script arguments](../../scripts/script-escaping-special-characters.md) for details about quoting and escaping arguments.
 
-### To run a specific version of [solution_name]:
+#### To run a specific version of [solution_name] from Command Prompt:
 
 ````
 set DETECT_LATEST_RELEASE_VERSION={Synopsys Detect version}
@@ -81,4 +76,43 @@ set DETECT_LATEST_RELEASE_VERSION=5.5.0
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect"
 ````
 
+### Running from Windows Powershell
+
+To download and run the latest version of [solution_name] in a single command from PowerShell:
+````
+[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect
+````
+
+_Note that when running the above command, the PowerShell session is not exited. See [here](../../scripts/script-escaping-special-characters.md) for more information on the difference between the two commands._
+
+Append any command line arguments to the end, separated by spaces.
+
 See [Quoting and escaping shell script arguments](../../scripts/script-escaping-special-characters.md) for details about quoting and escaping arguments.
+
+#### To run a specific version of [solution_name] from Powershell:
+
+````
+$Env:DETECT_LATEST_RELEASE_VERSION = "{Synopsys Detect version}"
+[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect
+````
+
+Or:
+
+````
+[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; $Env:DETECT_LATEST_RELEASE_VERSION = "{Synopsys Detect version}"; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect
+````
+
+
+For example, to run [solution_name] version 7.0.0:
+
+````
+$Env:DETECT_LATEST_RELEASE_VERSION = "7.0.0"
+[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect
+````
+
+Or:
+
+````
+[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; $Env:DETECT_LATEST_RELEASE_VERSION="7.0.0"; irm https://detect.synopsys.com/detect7.ps1?$(Get-Random) | iex; detect
+````
+

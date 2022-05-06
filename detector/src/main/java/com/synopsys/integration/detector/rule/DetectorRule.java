@@ -14,6 +14,7 @@ public class DetectorRule<T extends Detectable> {
     private final int maxDepth;
     private final boolean nestable;
     private final boolean selfNestable;
+    private final boolean selfTypeNestable;
     private final DetectorType detectorType;
     private final String name;
     private final boolean nestInvisible;
@@ -25,6 +26,7 @@ public class DetectorRule<T extends Detectable> {
         int maxDepth,
         boolean nestable,
         boolean selfNestable,
+        boolean selfTypeNestable,
         DetectorType detectorType,
         String name,
         boolean nestInvisible,
@@ -35,6 +37,7 @@ public class DetectorRule<T extends Detectable> {
         this.maxDepth = maxDepth;
         this.nestable = nestable;
         this.selfNestable = selfNestable;
+        this.selfTypeNestable = selfTypeNestable;
         this.detectorType = detectorType;
         this.name = name;
         this.nestInvisible = nestInvisible;
@@ -75,6 +78,10 @@ public class DetectorRule<T extends Detectable> {
 
     public boolean isSelfNestable() {
         return selfNestable;
+    }
+
+    public boolean isSelfTypeNestable() {
+        return selfTypeNestable;
     }
 
     public Class<T> getDetectableClass() {
