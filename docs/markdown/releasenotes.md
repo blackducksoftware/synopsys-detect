@@ -3,7 +3,7 @@
 ## Version 7.13.2
 
 * (IDETECT-3291) Resolved an issue where the NuGet Inspector would only be found for the first applicable detector.
-* (IDETECT-3293) Resolved an issue where the NuGet Inspector could not handle Implicit Dependencies in a Package Reference. 
+* (IDETECT-3289) Resolved an issue where the NuGet Inspector could not handle Implicit Dependencies in a Package Reference. 
 
 ## Version 7.13.1
 
