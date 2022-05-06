@@ -23,6 +23,7 @@ public class OnlineNugetInspectorResolver implements NugetInspectorResolver {
     private final InstalledToolLocator installedToolLocator;
 
     private boolean hasResolvedInspector = false;
+    private ExecutableTarget inspector = null;
 
     public OnlineNugetInspectorResolver(
         ArtifactoryNugetInspectorInstaller installer,
@@ -38,8 +39,8 @@ public class OnlineNugetInspectorResolver implements NugetInspectorResolver {
 
     @Override
     public ExecutableTarget resolveNugetInspector() throws DetectableException {
-        File inspectorFile = null;
         if (!hasResolvedInspector) {
+            File inspectorFile = null;
             hasResolvedInspector = true;
 
             File installDirectory = directoryManager.getPermanentDirectory(INSPECTOR_NAME);
@@ -60,7 +61,9 @@ public class OnlineNugetInspectorResolver implements NugetInspectorResolver {
             } else {
                 installedToolManager.saveInstalledToolLocation(INSPECTOR_NAME, inspectorFile.getAbsolutePath());
             }
+
+            inspector = ExecutableTarget.forFile(inspectorFile);
         }
-        return ExecutableTarget.forFile(inspectorFile);
+        return inspector;
     }
 }
