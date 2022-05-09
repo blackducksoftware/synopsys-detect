@@ -14,6 +14,11 @@
 * (IDETECT-3224) Resolved an issue where Cargo projects with Cyclical dependencies could cause a failure of [solution_name].
 * (IDETECT-3246) Resolved an issue where [solution_name] would fail when scanning flutter projects after a new version of flutter was released.
 
+## Version 7.13.2
+
+* (IDETECT-3291) Resolved an issue where the NuGet Inspector would only be found for the first applicable detector.
+* (IDETECT-3289) Resolved an issue where the NuGet Inspector could not handle Implicit Dependencies in a Package Reference. 
+
 ## Version 7.13.1
 
 * (IDETECT-3286) Resolved an issue that caused the 7.13.0 .jar to be unsigned. The 7.13.1 .jar is signed.
