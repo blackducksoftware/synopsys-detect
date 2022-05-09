@@ -69,6 +69,7 @@ allprojects {
 
         implementation 'org.freemarker:freemarker:2.3.31'
         implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.13'
+        implementation 'com.google.code.gson:gson:2.8.9'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
