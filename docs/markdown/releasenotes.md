@@ -4,6 +4,8 @@
 
 ### New features
 
+* [solution_name] will now retry (until timeout) BDIO2 uploads that fail with a non-fatal exit code.
+
 ### Changed features
 
 * Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.

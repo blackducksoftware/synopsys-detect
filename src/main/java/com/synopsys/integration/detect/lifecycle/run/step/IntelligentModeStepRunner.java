@@ -69,7 +69,7 @@ public class IntelligentModeStepRunner {
         DetectToolFilter detectToolFilter,
         DockerTargetData dockerTargetData
     ) throws OperationException {
-        
+
         ProjectVersionWrapper projectVersion = stepHelper.runAsGroup(
             "Create or Locate Project",
             OperationType.INTERNAL,
@@ -80,7 +80,11 @@ public class IntelligentModeStepRunner {
         logger.debug("Processing Detect Code Locations.");
 
         CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
-        stepHelper.runAsGroup("Upload Bdio", OperationType.INTERNAL, () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator));
+        stepHelper.runAsGroup(
+            "Upload Bdio",
+            OperationType.INTERNAL,
+            () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator, operationFactory.calculateDetectTimeout())
+        );
 
         logger.debug("Completed Detect Code Location processing.");
 
@@ -121,8 +125,8 @@ public class IntelligentModeStepRunner {
         });
     }
 
-    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator) throws OperationException {
-        BdioUploadResult uploadResult = operationFactory.uploadBdioIntelligentPersistent(blackDuckRunData, bdioResult);
+    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
+        BdioUploadResult uploadResult = operationFactory.uploadBdioIntelligentPersistent(blackDuckRunData, bdioResult, timeout);
         uploadResult.getUploadOutput().ifPresent(codeLocationAccumulator::addWaitableCodeLocations);
     }
 
