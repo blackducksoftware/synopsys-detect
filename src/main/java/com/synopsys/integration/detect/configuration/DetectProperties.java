@@ -600,15 +600,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
             .build();
 
-    // TODO: Remove mentions of Polaris. The property potentially still has relevance.
     public static final BooleanProperty DETECT_IGNORE_CONNECTION_FAILURES =
         BooleanProperty.newBuilder("detect.ignore.connection.failures", false)
             .setInfo("Detect Ignore Connection Failures", DetectPropertyFromVersion.VERSION_5_3_0)
             .setHelp(
-                "If true, Detect will ignore any products that it cannot connect to.",
-                "If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product."
+                "If true, Detect will ignore any products (eg. Black Duck) that it cannot connect to.",
+                "If true, when Detect attempts to boot a product (eg. Black Duck) it will also check if it can communicate with it - if it cannot, it will not run the product."
             )
-            .setGroups(DetectGroup.GENERAL, DetectGroup.BLACKDUCK_SERVER, DetectGroup.POLARIS)
+            .setGroups(DetectGroup.GENERAL, DetectGroup.BLACKDUCK_SERVER)
             .setCategory(DetectCategory.Advanced)
             .build();
 

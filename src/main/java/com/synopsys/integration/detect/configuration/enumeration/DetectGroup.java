@@ -29,7 +29,6 @@ public enum DetectGroup implements Group {
 
     //Tool Groups
     DETECTOR("detector"),
-    POLARIS("polaris"),
     SIGNATURE_SCANNER("signature scanner"),
     BINARY_SCANNER("binary scanner"),
     IMPACT_ANALYSIS("impact analysis"),
