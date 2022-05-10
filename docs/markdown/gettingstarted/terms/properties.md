@@ -5,11 +5,11 @@ A property to which you assign a value is like a flag or a parameter on the comm
 When setting a property value, the property name is prefixed with two hyphens (--). 
 
 ````
-bash <(curl -s -L https://detect.synopsys.com/detect7.sh) <--property=value>
+bash <(curl -s -L https://detect.synopsys.com/detect8.sh) <--property=value>
 ````
 
 Example using properties to specify project name and [blackduck_product_name] URL:
 
 ````
-bash <(curl -s -L https://detect.synopsys.com/detect7.sh) --detect.project.name=MyProject --blackduck.url=https://blackduck.yourdomain.com
+bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --detect.project.name=MyProject --blackduck.url=https://blackduck.yourdomain.com
 ````
