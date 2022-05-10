@@ -10,6 +10,7 @@
 
 * Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.
 * Removed the ability to upload BDIO2 documents to legacy endpoints via the `blackduck.legacy.upload.enabled` property.
+* detect8.sh has a fix for a bug present in detect7.sh and detect.sh that necessitated using non-standard quoting/escaping of arguments passed to those older scripts. Pass arguments to detet8.sh using the standard quoting/escaping rules for the shell from which you are executing detect8.sh.
 
 ### Resolved issues
 
