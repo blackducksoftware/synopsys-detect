@@ -73,7 +73,7 @@ public class PubDepsExtractor {
                 } else {
                     // If command does not work with Dart, it could be because at least one of the packages requires Flutter
                     logger.debug("Running dart pub deps was not successful.  Going to try running flutter pub deps.");
-                    pubDepsCommand.add("--no-version-check");
+                    pubDepsCommand.add(0, "--no-version-check");
                     pubDepsOutput = runPubDepsCommand(directory, flutterExe, pubDepsCommand);
                 }
             }
