@@ -1753,16 +1753,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
-        AllNoneEnumListProperty.newBuilder("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class)
-            .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp(
-                "The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
-            .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final NullableStringProperty DETECT_BOM_AGGREGATE_NAME =
         NullableStringProperty.newBuilder("detect.bom.aggregate.name")
             .setInfo("Aggregate BDIO File Name", DetectPropertyFromVersion.VERSION_3_0_0)
