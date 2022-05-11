@@ -11,7 +11,7 @@ For example, if you wanted to set property *detect.project.name* using a configu
 could do it as follows:
 ````
 echo "detect.project.name=myproject" > application.properties
-bash <(curl -s -L https://detect.synopsys.com/detect7.sh) --detect.source.path=/opt/projects/project1
+bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --detect.source.path=/opt/projects/project1
 ````
 Because the configuration file has one of the file names that Spring looks for by default
 (in this case, application.properties) and exists in one of the locations
