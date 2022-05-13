@@ -1567,6 +1567,31 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
+    public static final PathListProperty DETECT_SIGMA_SCAN_PATHS =
+        PathListProperty.newBuilder("detect.sigma.scan.paths", emptyList())
+            .setInfo("Sigma Target Paths", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "If this property is not set, the Sigma target path is the source path (see property detect.source.path). If this property is set, the paths provided in this property's value will be Sigma scanned instead (Sigma will be executed once for each provided path).")
+            .setGroups(DetectGroup.SIGMA, DetectGroup.GLOBAL)
+            .build();
+
+    public static final NullableStringProperty DETECT_SIGMA_SCAN_ARGUMENTS =
+        NullableStringProperty.newBuilder("detect.sigma.scan.arguments")
+            .setInfo("Sigma Arguments", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "A space-separated list of additional arguments to use when running Sigma.")
+            .setGroups(DetectGroup.SIGMA, DetectGroup.GLOBAL)
+            .setExample("--follow-symlinks")
+            .build();
+
+    public static final NullablePathProperty DETECT_SIGMA_LOCAL_PATH =
+        NullablePathProperty.newBuilder("detect.blackduck.signature.scanner.local.path")
+            .setInfo("Sigma Local Path", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "Use this property to specify the path to a local Sigma.")
+            .setGroups(DetectGroup.SIGMA, DetectGroup.GLOBAL)
+            .build();
+
     public static final NullablePathProperty DETECT_SOURCE_PATH =
         NullablePathProperty.newBuilder("detect.source.path")
             .setInfo("Source Path", DetectPropertyFromVersion.VERSION_3_0_0)

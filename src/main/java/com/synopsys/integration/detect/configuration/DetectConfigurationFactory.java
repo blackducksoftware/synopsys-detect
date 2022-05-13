@@ -41,6 +41,7 @@ import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
+import com.synopsys.integration.detect.tool.sigma.SigmaOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
@@ -433,6 +434,13 @@ public class DetectConfigurationFactory {
         String codeLocationPrefix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
         return new ImpactAnalysisOptions(codeLocationPrefix, codeLocationSuffix);
+    }
+
+    public SigmaOptions createSigmaOptions() {
+        List<Path> sigmaPaths = detectConfiguration.getPaths(DetectProperties.DETECT_SIGMA_SCAN_PATHS);
+        Path localSigmaPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_SIGMA_LOCAL_PATH);
+        String additionalArguments = detectConfiguration.getNullableValue(DetectProperties.DETECT_SIGMA_SCAN_ARGUMENTS);
+        return new SigmaOptions(sigmaPaths, localSigmaPath, additionalArguments);
     }
 
     public DetectExecutableOptions createDetectExecutableOptions() {

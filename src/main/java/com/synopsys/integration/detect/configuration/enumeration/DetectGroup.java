@@ -33,6 +33,7 @@ public enum DetectGroup implements Group {
     SIGNATURE_SCANNER("signature scanner"),
     BINARY_SCANNER("binary scanner"),
     IMPACT_ANALYSIS("impact analysis"),
+    SIGMA("sigma"),
 
     //Detector Groups
     BAZEL("bazel", DETECTORS),
