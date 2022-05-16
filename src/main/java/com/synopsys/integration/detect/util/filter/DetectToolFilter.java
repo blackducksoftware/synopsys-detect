@@ -11,7 +11,7 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 
 /**
  * Using this class as a temporary way to handle 'tool' decisions but instead of being an immutable calculation it re-calculates.
- * The idea is in the future, this is pre-calculated at detect-boot and is passed around as a decision so instead of shouldInclude we just ask willPolarisRun
+ * The idea is in the future, this is pre-calculated at detect-boot and is passed around as a decision so instead of shouldInclude we just ask willBlackDuckRun
  * -jp 3/29/20
  */
 public class DetectToolFilter {
