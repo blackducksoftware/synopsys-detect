@@ -12,5 +12,5 @@ There is a space before and between each complete property setting, but there ar
 For example,
 to set property *detect.project.value*:
 ```
-bash <(curl -s -L https://detect.synopsys.com/detect7.sh) --detect.project.name=MyProject
+bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --detect.project.name=MyProject
 ```

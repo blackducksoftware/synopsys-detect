@@ -340,10 +340,13 @@ public class OperationFactory { //TODO: OperationRunner
     //Post actions
     //End post actions
 
-    public final BdioUploadResult uploadBdioIntelligentPersistent(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws OperationException {
+    public final BdioUploadResult uploadBdioIntelligentPersistent(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, Long timeout) throws OperationException {
         return auditLog.namedPublic(
             "Upload Intelligent Persistent Bdio",
-            () -> new IntelligentPersistentUploadOperation(blackDuckRunData.getBlackDuckServicesFactory().createIntelligentPersistenceService()).uploadBdioFiles(bdioResult)
+            () -> new IntelligentPersistentUploadOperation(
+                blackDuckRunData.getBlackDuckServicesFactory().createIntelligentPersistenceService(),
+                timeout
+            ).uploadBdioFiles(bdioResult)
         );
     }
 
@@ -521,6 +524,10 @@ public class OperationFactory { //TODO: OperationRunner
             "Calculate Online Local Scanner Path",
             () -> detectConfigurationFactory.createBlackDuckSignatureScannerOptions().getLocalScannerInstallPath().map(Path::toFile)
         );
+    }
+
+    public Long calculateDetectTimeout() {
+        return detectConfigurationFactory.findTimeoutInSeconds();
     }
 
     public ScanBatchRunner createScanBatchRunnerWithBlackDuck(BlackDuckRunData blackDuckRunData, File installDirectory) throws OperationException {

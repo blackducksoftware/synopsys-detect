@@ -18,7 +18,6 @@ public enum ExitCodeType {
         11,
         "Detect encountered an error while attempting an operation on Black Duck. Ensure your Black Duck is compatible with this version of detect."
     ),
-    FAILURE_POLARIS_CONNECTIVITY(12, "Detect was unable to connect to Polaris. Check your configuration and connection."),
     FAILURE_MINIMUM_INTERVAL_NOT_MET(13, "Detect did not wait the minimum required scan interval."),
     FAILURE_GENERAL_ERROR(99, "Detect encountered a known error, details of the error are provided."),
     FAILURE_UNKNOWN_ERROR(100, "Detect encountered an unknown error.");

@@ -4,16 +4,26 @@
 
 ### New features
 
+* [solution_name] will now retry (until timeout) BDIO2 uploads that fail with a non-fatal exit code.
+
 ### Changed features
 
 * Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.
-* Removed the ability to upload BDIO2 documents to legacy endpoints via the now removed `blackduck.legacy.upload.enabled` property.
+* Removed the ability to upload BDIO2 documents to legacy endpoints via the `blackduck.legacy.upload.enabled` property.
 * Removed the ability to choose the type of BDIO aggregation strategy via the now removed `detect.bom.aggregate.remediation.mode` property. 
   * All BDIO will be aggregated similarly to if detect.bom.aggregate.remediation.mode=SUBPROJECT was set in [solution_name] version 7.X.
+* detect8.sh has improvements (relative to detect7.sh and detect.sh) related to argument handling that simplify its argument quoting/escaping requirements.
+
 
 ### Resolved issues
 
 * (IDETECT-3224) Resolved an issue where Cargo projects with Cyclical dependencies could cause a failure of [solution_name].
+* (IDETECT-3246) Resolved an issue where [solution_name] would fail when scanning flutter projects after a new version of flutter was released.
+
+## Version 7.13.2
+
+* (IDETECT-3291) Resolved an issue where the NuGet Inspector would only be found for the first applicable detector.
+* (IDETECT-3289) Resolved an issue where the NuGet Inspector could not handle Implicit Dependencies in a Package Reference. 
 
 ## Version 7.13.1
 

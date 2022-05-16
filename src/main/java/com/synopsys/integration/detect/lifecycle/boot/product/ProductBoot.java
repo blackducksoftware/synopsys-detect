@@ -44,7 +44,7 @@ public class ProductBoot {
     public ProductRunData boot(BlackDuckDecision blackDuckDecision, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         if (!blackDuckDecision.shouldRun()) {
             throw new DetectUserFriendlyException(
-                "Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.  See online help at: https://detect.synopsys.com/doc/",
+                "Your environment was not sufficiently configured to run Black Duck.  See online help at: https://detect.synopsys.com/doc/",
                 ExitCodeType.FAILURE_CONFIGURATION
             );
 

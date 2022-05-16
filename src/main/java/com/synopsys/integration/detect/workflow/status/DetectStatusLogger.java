@@ -21,7 +21,6 @@ public class DetectStatusLogger {
         ExitCodeType.FAILURE_DETECTOR_REQUIRED,
         ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED,
         ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR,
-        ExitCodeType.FAILURE_POLARIS_CONNECTIVITY,
         ExitCodeType.FAILURE_TIMEOUT,
         ExitCodeType.FAILURE_CONFIGURATION
     );
