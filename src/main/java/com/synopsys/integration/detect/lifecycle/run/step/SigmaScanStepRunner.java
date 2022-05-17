@@ -53,7 +53,8 @@ public class SigmaScanStepRunner {
             projectNameVersion
         );
         UploadTarget uploadTarget = operationFactory.createBdio2Files(bdioCodeLocationResult, projectNameVersion).get(0);
-        return bdio2FileUploadService.uploadFile(uploadTarget).getScanId();
+        return null;
+        //return bdio2FileUploadService.uploadFile(uploadTarget).getScanId(); TODO- uncomment when BD 63.0.3 is released
     }
 
     private DetectCodeLocation createSimpleCodeLocation(NameVersion projectNameVersion, File sourcePath) {

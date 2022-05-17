@@ -113,8 +113,8 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.SIGMA, "Sigma", () -> {
             SigmaScanStepRunner sigmaScanStepRunner = new SigmaScanStepRunner(operationFactory);
-            //TODO- where do other places geet scan targets from operationFactory
-            sigmaScanStepRunner.runSigmaOnline(projectNameVersion, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
+            //TODO- uncomment once BD 63.0.3 is released
+            //sigmaScanStepRunner.runSigmaOnline(projectNameVersion, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
         });
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
