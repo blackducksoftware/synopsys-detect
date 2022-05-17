@@ -30,7 +30,6 @@
 
 <!-- TODO might be able to use elsewhere in detect doc -->
   <keydef keys="source_repo_organization"><topicmeta><keywords><keyword>blackducksoftware</keyword></keywords></topicmeta></keydef>
-  <keydef keys="spring_boot_config_doc_url"><topicmeta><keywords><keyword>https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</keyword></keywords></topicmeta></keydef>
 
 </map>
 

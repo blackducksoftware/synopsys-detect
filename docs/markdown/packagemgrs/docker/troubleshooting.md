@@ -51,7 +51,7 @@ Possible cause: [docker_inspector_name] is built using the Spring Boot applicati
 Spring Boot provides a variety of ways to set property values. This can produce unexpected results if,
 for example, you have an environment variable whose name maps to a [docker_inspector_name] property name.
 Refer to the
-Spring Boot documentation, [spring_boot_config_doc_url],
+[Spring Boot documentation on external configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html)
 for more details.
 
 ### Problem: The image inspector service cannot write to the mounted volume; SELinux is enabled.
