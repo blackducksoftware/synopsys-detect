@@ -19,6 +19,23 @@
   <keydef keys="impact_analysis_name"><topicmeta><keywords><keyword>Vulnerability Impact Analysis Tool</keyword></keywords></topicmeta></keydef>
   <keydef keys="professional_services"><topicmeta><keywords><keyword>Synopsys Software Integrity Group Client Services</keyword></keywords></topicmeta></keydef>
 
+  <keydef keys="docker_inspector_name"><topicmeta><keywords><keyword>Detect Docker Inspector</keyword></keywords></topicmeta></keydef>
+  <keydef keys="docker_inspector_project_name"><topicmeta><keywords><keyword>detect-docker-inspector</keyword></keywords></topicmeta></keydef>
+
+  <keydef keys="image_repo_organization"><topicmeta><keywords><keyword>blackducksoftware</keyword></keywords></topicmeta></keydef>
+  <keydef keys="docker_java_project_url"><topicmeta><keywords><keyword>https://github.com/docker-java/docker-java</keyword></keywords></topicmeta></keydef>
+  <keydef keys="source_raw_content_url_base"><topicmeta><keywords><keyword>https://raw.githubusercontent.com</keyword></keywords></topicmeta></keydef>
+
+<!-- TODO I renamed this one -->
+  <keydef keys="imageinspector_image_name_base"><topicmeta><keywords><keyword>blackduck-imageinspector</keyword></keywords></topicmeta></keydef>
+
+<!-- TODO might be able to use elsewhere in detect doc -->
+  <keydef keys="source_repo_organization"><topicmeta><keywords><keyword>blackducksoftware</keyword></keywords></topicmeta></keydef>
+  <keydef keys="spring_boot_config_doc_url"><topicmeta><keywords><keyword>https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html</keyword></keywords></topicmeta></keydef>
+
 </map>
 
+<!-- TODO these have been removed; replace refs to these with their values:
+container_image_inspector_dir_path=/opt/blackduck
+-->
 

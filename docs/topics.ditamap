@@ -175,6 +175,7 @@
       <topicref href="packagemgrs/docker/isolatingapplication.md" format="markdown"/>
       <topicref href="packagemgrs/docker/windowsimages.md" format="markdown"/>
       <topicref href="packagemgrs/docker/runningonwindows.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/deployment.md" format="markdown"/>
     </topicref>
 
     <topicref href="packagemgrs/git.md" format="markdown"/>
