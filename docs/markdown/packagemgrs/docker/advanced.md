@@ -210,14 +210,14 @@ the request; any service redirects if necessary.
 ## Configuring [docker_inspector_name] for your Docker Engine and registry
 
 If you invoke [docker_inspector_name] with an image reference; in other words, a repo:tag value versus a .tar file,
-it uses the docker-java library, [docker_java_project_url], to access the Docker registry to pull the image.
+it uses the [docker-java library](https://github.com/docker-java/docker-java), to access the Docker registry to pull the image.
 
 If you can pull an image using *docker pull* from the command line, then you will be able to configure [docker_inspector_name] to pull that image.
 The docker-java library can often be configured the same way as the Docker command line utility (*docker*).
 
 There are also other ways to configure docker-java. For more information on configuring docker-java
 (and therefore [docker_inspector_name]) for your Docker registry,
-refer to the docker-java configuration documentation: [docker_java_project_url]/blob/master/docs/getting_started.md.
+refer to the configuration information in the [docker-java documentation](https://github.com/docker-java/docker-java/blob/master/docs/getting_started.md).
 
 For example, one way to configure your Docker registry username and password is to create a file
 in your home directory named *.docker-java.properties* that configures username and password:

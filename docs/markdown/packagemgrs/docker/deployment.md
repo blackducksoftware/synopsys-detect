@@ -24,7 +24,8 @@ and cleans them up when it's done. The Docker command, if installed on the machi
 required or used by [docker_inspector_name].
 
 In this mode, [docker_inspector_name] requires access to a Docker Engine, similar to the way the Docker client requires
-access to a Docker Engine, so it can pull and run Docker images. It uses the [docker_java_project_url]
+access to a Docker Engine, so it can pull and run Docker images. It uses the
+[docker-java](https://github.com/docker-java/docker-java)
 library to perform Docker operations using the Docker Engine.
 
 In this mode, [docker_inspector_name] automatically pulls, runs, stops, and removes the container-based image inspector services
@@ -130,14 +131,17 @@ Download: curl -O [source_raw_content_url_base]/[source_repo_organization]/[dock
 ## Configuring [docker_inspector_name] for your Docker registry
 
 If you invoke [docker_inspector_name] with an image reference versus an image that is saved to a .tar file,
-it uses the docker-java library ([docker_java_project_url]) to access the Docker registry
-to pull the image. 
+it uses the
+[docker-java](https://github.com/docker-java/docker-java)
+library
+to access the Docker registry to pull the image. 
 
 If *docker pull {targetimage]* works from the command line, then [docker_inspector_name] is also able
 to pull that image, because docker-java can be configured the same way as the Docker command line utility. 
 
 There are other ways to configure docker-java. For more information on configuring docker-java
-and [docker_inspector_name] for your Docker registry, refer to: [docker_java_project_url]#Configuration.
+and [docker_inspector_name] for your Docker registry, refer to the configuration information in
+[docker-java documentation](https://github.com/docker-java/docker-java/blob/master/docs/getting_started.md).
 
 [docker_inspector_name] does not override any of the configuration settings in the code,
 so any of the other methods (properties, system properties, system environment) work.
