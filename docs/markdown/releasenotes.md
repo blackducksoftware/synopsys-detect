@@ -1,5 +1,9 @@
 # Release notes
 
+## Version 7.14.0
+
+### New features
+
 ## Version 7.13.2
 
 * (IDETECT-3291) Resolved an issue where the NuGet Inspector would only be found for the first applicable detector.
