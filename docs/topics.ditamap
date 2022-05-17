@@ -181,6 +181,7 @@
       <topicref href="packagemgrs/docker/advanced-properties.md" format="markdown"/>
       <topicref href="packagemgrs/docker/deployment.md" format="markdown"/>
       <topicref href="packagemgrs/docker/troubleshooting.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/releasenotes.md" format="markdown"/>
     </topicref>
 
     <topicref href="packagemgrs/git.md" format="markdown"/>
