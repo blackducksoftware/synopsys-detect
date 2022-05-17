@@ -170,7 +170,6 @@
       <topicref href="packagemgrs/docker/formats.md" format="markdown"/>
       <topicref href="packagemgrs/docker/workflow.md" format="markdown"/>
       <topicref href="packagemgrs/docker/filepermissions.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/properties.md" format="markdown"/>
       <topicref href="packagemgrs/docker/scantarget.md" format="markdown"/>
       <topicref href="packagemgrs/docker/isolatingapplication.md" format="markdown"/>
       <topicref href="packagemgrs/docker/windowsimages.md" format="markdown"/>

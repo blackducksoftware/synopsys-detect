@@ -1,4 +1,4 @@
-# Deployment overview
+# Deploying [docker_inspector_name]
 
 [docker_inspector_name] can be run in either of the following modes:
 

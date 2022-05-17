@@ -7,13 +7,13 @@
 ## Overview
 
 On Linux, Mac, and Windows 10 Enterprise, [solution_name] can invoke [docker_inspector_name] to inspect Linux Docker images to discover packages installed by the Linux package manager.
-For simple use cases, add ```--detect.docker.image={repo}:{tag}```, ```--detect.docker.tar={path to an image archive}```,
+For simple use cases, add ```--detect.docker.image={repo}:{tag}```, ```--detect.docker.tar={path to an image archive}```, or
 ```--detect.docker.image.id={image id}```,
 to the [solution_name] command line.
 
 When passed a value for *detect.docker.image*, *detect.docker.image.id*, or *detect.docker.tar*,
 [solution_name] runs [docker_inspector_name] on the given image (the "target image"),
-creating one code location.
+creating one BDIO file for one code location.
 
 [docker_inspector_name] will:
 
@@ -51,7 +51,7 @@ that contains the container file system (the preferred format for signature scan
 ## Non-linux images
 
 When run on a non-Linux image (for example, a Windows image,
-or an image that contain no operating system), [docker_inspector_name]
+or an image that contains no operating system), [docker_inspector_name]
 will return to [solution_name] a BDIO file with zero components
 along with the signature and binary scan targets.
 Components may be discovered for these images
@@ -82,8 +82,8 @@ using a Docker Engine.
 Host mode requires that [docker_inspector_name] can access a Docker Engine. https://github.com/docker-java/docker-java utilizes the
 [docker-java library](https://github.com/docker-java/docker-java) to act as a client of that Docker Engine.
 This enables [docker_inspector_name] to pull the target image from a Docker registry such
-as Docker Hub. Alternatively, you can save an image to a .tar file by using the *docker save* command. Then, run [docker_inspector_name]
-on the .tar file. [docker_inspector_name] supports Docker Image Specification v1.2.0 format .tar files.
+as Docker Hub. Alternatively, you can save an image to a .tar file by using the *docker save* command. Then, run [docker_inspector_name] (via [solution_name])
+on the .tar file. See [Supported image formats](formats.md) for details on supported .tar file formats.
 
 In Host mode, [docker_inspector_name] can also pull, run, stop, and remove the image inspector service images as needed,
 greatly simplifying usage, and greatly increasing run time.
@@ -133,12 +133,26 @@ See the [solution_name] documentation for details.
 ## Advanced usage (using passthrough properties)
 
 The most common cases of [docker_inspector_name] can be configured using 
-[solution_name] properties. However, there are scenarios (including container mode)
-that require access to [docker_inspector_name] properties for which there is no corresponding
-[solution_name] property. To set these 
-[docker_inspector_name] properties, use the
-[solution_name] detect.docker.passthrough property
-(see the [solution_name] documentation for details on how to use detect.docker.passthrough).
+[solution_name] properties.
+However, there are scenarios (including container mode)
+that require access to [docker_inspector_name] advanced properties for which there is no corresponding
+[solution_name] property.
+For the list of [docker_inspector_name] advanced properties, see [Advanced properties](advanced-properties.md).
+
+When you need to set one of the [docker_inspector_name] advanced properties,
+construct the [solution_name] property name by prefixing the Docker Inspector property name with ```detect.docker.passthrough.```.
+
+Suppose you need to set Docker Inspector's `service.timeout` value (the length of time Docker Inspector waits for a response from the Image Inspector services that it uses) to 480000 milliseconds. You add the prefix to the Docker Inspector property name to derive the [solution_name] property name ```detect.docker.passthrough.service.timeout```. Therefore, add ```--detect.docker.passthrough.service.timeout=480000``` to the [solution_name] command line.
+
+For example:
+```
+./detect8.sh --detect.docker.image=ubuntu:latest --detect.docker.passthrough.service.timeout=480000
+```
+
+You can set any [docker_inspector_name] property using this method.
+However, you should not use this method to change the value of the [docker_inspector_name] property `output.path`.
+[solution_name] sets this property and changing its value via the passthrough mechanism will make it impossible
+for [solution_name] to find [docker_inspector_name]'s output files.
 
 ## Transitioning from Black Duck Docker Inspector to [solution_name]
 
@@ -146,7 +160,7 @@ If you have been running the Black Duck Docker Inspector directly, and need to t
 invoking [docker_inspector_name] from [solution_name], here are some recommendations likely to 
 help you make the transition:
 
-1. If you run Black Duck Docker Inspector with `blackduck-docker-inspector.sh`, replace `blackduck-docker-inspector.sh` in your command line with `detect7.sh` (adjust the [solution_name] major version as necessary).
+1. If you run Black Duck Docker Inspector with `blackduck-docker-inspector.sh`, replace `blackduck-docker-inspector.sh` in your command line with `detect8.sh` (adjust the [solution_name] major version as necessary).
 See the [solution_name] documentation for information on where to get the [solution_name] script.
 1. If you run Black Duck Docker Inspector with `java -jar blackduck-docker-inspector-{version}.jar`, replace `blackduck-docker-inspector-{version}.jar` in your command line with `synopsys-detect-{version}.jar`.
 See the [solution_name] documentation for information on where to get the [solution_name] .jar.
