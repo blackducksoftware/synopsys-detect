@@ -264,7 +264,9 @@ import com.synopsys.integration.detectable.detectables.swift.cli.SwiftExtractor;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftPackageTransformer;
 import com.synopsys.integration.detectable.detectables.swift.lock.PackageResolvedExtractor;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
+import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedDataChecker;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedFormatChecker;
+import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedFormatParser;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedParser;
 import com.synopsys.integration.detectable.detectables.swift.lock.transform.PackageResolvedTransformer;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
@@ -666,9 +668,11 @@ public class DetectableFactory {
     // Used by three Detectables
     private PackageResolvedExtractor createPackageResolvedExtractor() {
         PackageResolvedParser parser = new PackageResolvedParser(gson);
+        PackageResolvedFormatParser formatParser = new PackageResolvedFormatParser(gson);
         PackageResolvedFormatChecker formatChecker = new PackageResolvedFormatChecker();
+        PackageResolvedDataChecker packageResolvedDataChecker = new PackageResolvedDataChecker();
         PackageResolvedTransformer transformer = new PackageResolvedTransformer();
-        return new PackageResolvedExtractor(parser, formatChecker, transformer);
+        return new PackageResolvedExtractor(parser, formatParser, formatChecker, packageResolvedDataChecker, transformer);
     }
 
     //#endregion

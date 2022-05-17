@@ -1,8 +1,9 @@
-package com.synopsys.integration.detectable.detectables.swift.lock.data;
+package com.synopsys.integration.detectable.detectables.swift.lock.data.v1;
 
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedPackage;
 
 public class ResolvedObject {
     @SerializedName("pins")
