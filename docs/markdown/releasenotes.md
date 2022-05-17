@@ -11,6 +11,7 @@
 * Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.
 * Removed the ability to upload BDIO2 documents to legacy endpoints via the `blackduck.legacy.upload.enabled` property.
 * detect8.sh has improvements (relative to detect7.sh and detect.sh) related to argument handling that simplify its argument quoting/escaping requirements.
+* Incorporated [docker_inspector_name] documentation into [solution_name] documentation.
 
 ### Resolved issues
 
