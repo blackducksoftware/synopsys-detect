@@ -177,6 +177,7 @@
       <topicref href="packagemgrs/docker/runningonwindows.md" format="markdown"/>
 
       <topicref href="packagemgrs/docker/architecture.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/advanced-properties.md" format="markdown"/>
       <topicref href="packagemgrs/docker/deployment.md" format="markdown"/>
     </topicref>
 
