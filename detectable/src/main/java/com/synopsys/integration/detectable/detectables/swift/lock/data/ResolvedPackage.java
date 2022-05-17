@@ -1,29 +1,52 @@
 package com.synopsys.integration.detectable.detectables.swift.lock.data;
 
+import java.util.Optional;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
 public class ResolvedPackage {
-    @SerializedName("package")
-    private final String packageName;
+    // 'identity' replaces 'package' in file format "2"
+    @SerializedName(value = "package", alternate = { "identity" })
+    private final String identity;
 
-    @SerializedName("repositoryURL")
-    private final String repositoryURL;
+    // 'location' replaces 'repositoryURL' in file format "2"
+    @SerializedName(value = "repositoryURL", alternate = { "location" })
+    private final String location;
+
+    @SerializedName("kind")
+    @Nullable
+    private final String kind;
 
     @SerializedName("state")
     private final PackageState packageState;
 
-    public ResolvedPackage(String packageName, String repositoryURL, PackageState packageState) {
-        this.packageName = packageName;
-        this.repositoryURL = repositoryURL;
+    public static ResolvedPackage version1(String packageName, String repositoryURL, PackageState packageState) {
+        return new ResolvedPackage(packageName, repositoryURL, null, packageState);
+    }
+
+    public static ResolvedPackage version2(String identity, String location, String kind, PackageState packageState) {
+        return new ResolvedPackage(identity, location, kind, packageState);
+    }
+
+    private ResolvedPackage(String identity, String location, @Nullable String kind, PackageState packageState) {
+        this.identity = identity;
+        this.location = location;
+        this.kind = kind;
         this.packageState = packageState;
     }
 
-    public String getPackageName() {
-        return packageName;
+    public Optional<String> getKind() {
+        return Optional.ofNullable(kind);
     }
 
-    public String getRepositoryURL() {
-        return repositoryURL;
+    public String getIdentity() {
+        return identity;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     public PackageState getPackageState() {
