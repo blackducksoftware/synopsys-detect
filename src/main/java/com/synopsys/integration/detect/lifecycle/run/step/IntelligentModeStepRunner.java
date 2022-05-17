@@ -111,6 +111,12 @@ public class IntelligentModeStepRunner {
             operationFactory::publishImpactFailure
         );
 
+        stepHelper.runToolIfIncluded(DetectTool.SIGMA, "Sigma", () -> {
+            SigmaScanStepRunner sigmaScanStepRunner = new SigmaScanStepRunner(operationFactory);
+            //TODO- where do other places geet scan targets from operationFactory
+            sigmaScanStepRunner.runSigmaOnline(projectNameVersion, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
+        });
+
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
             CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
             waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion, blackDuckRunData);

@@ -83,6 +83,7 @@ import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisNamingO
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadOperation;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
+import com.synopsys.integration.detect.tool.sigma.CalculateSigmaScanTargetsOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLogger;
@@ -646,6 +647,12 @@ public class OperationFactory { //TODO: OperationRunner
 
         return auditLog.namedInternal("Calculate Signature Scanner Waitable Code Locations", () -> {
             return new CalculateWaitableSignatureScanCodeLocations().calculateWaitableCodeLocations(notificationTaskRange, reports);
+        });
+    }
+
+    public List<File> calculateSigmaScanTargets() throws OperationException {
+        return auditLog.namedInternal("Calculate Sigma Scan Targets", () -> {
+            return new CalculateSigmaScanTargetsOperation(detectConfigurationFactory.createSigmaOptions(), directoryManager).calculateSigmaScanTargets();
         });
     }
 

@@ -7,5 +7,6 @@ public enum DetectTool {
     IMPACT_ANALYSIS,
     POLARIS,
     DOCKER,
-    BAZEL
+    BAZEL,
+    SIGMA
 }
