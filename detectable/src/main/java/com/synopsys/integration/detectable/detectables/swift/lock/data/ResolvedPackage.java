@@ -8,11 +8,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class ResolvedPackage {
     // 'identity' replaces 'package' in file format "2"
-    @SerializedName(value = "package", alternate = { "identity" })
+    @SerializedName(value = "identity", alternate = { "package" })
     private final String identity;
 
     // 'location' replaces 'repositoryURL' in file format "2"
-    @SerializedName(value = "repositoryURL", alternate = { "location" })
+    @SerializedName(value = "location", alternate = { "repositoryURL" })
     private final String location;
 
     @SerializedName("kind")
