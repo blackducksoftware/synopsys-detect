@@ -49,6 +49,7 @@ public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
         addFile(
             Paths.get("jake-test.xcworkspace/xcshareddata/swiftpm/Package.resolved"),
             "{",
+            "  \"version\": 1,",
             "  \"object\": {",
             "    \"pins\": [",
             "      {",
@@ -79,6 +80,7 @@ public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
         addFile(
             projectDirectory.resolve("MyLibrary/Package.resolved"),
             "{",
+            "  \"version\": 1,",
             "  \"object\": {",
             "    \"pins\": [",
             "      {",
@@ -97,6 +99,7 @@ public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
         addFile(
             projectDirectory.resolve("jakem-test.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"),
             "{",
+            "  \"version\": 1,",
             "  \"object\": {",
             "    \"pins\": [",
             "      {",

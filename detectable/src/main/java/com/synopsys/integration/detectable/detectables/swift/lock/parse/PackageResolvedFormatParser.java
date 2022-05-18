@@ -4,6 +4,8 @@ import static com.synopsys.integration.detectable.detectables.swift.lock.data.Pa
 import static com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolvedFormat.V_1;
 import static com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolvedFormat.V_2;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolvedBase;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolvedFormat;
@@ -21,7 +23,7 @@ public class PackageResolvedFormatParser {
         return parseFormatFromVersion(version);
     }
 
-    public PackageResolvedFormat parseFormatFromVersion(String version) {
+    public PackageResolvedFormat parseFormatFromVersion(@Nullable String version) {
         if (versionMatches(V_1, version)) {
             return V_1;
         } else if (versionMatches(V_2, version)) {
@@ -31,7 +33,7 @@ public class PackageResolvedFormatParser {
         }
     }
 
-    private boolean versionMatches(PackageResolvedFormat checkedVersion, String version) {
+    private boolean versionMatches(PackageResolvedFormat checkedVersion, @Nullable String version) {
         return checkedVersion.getVersionString().equals(version);
     }
 }
