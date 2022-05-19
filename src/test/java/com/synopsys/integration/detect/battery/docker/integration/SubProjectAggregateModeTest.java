@@ -2,7 +2,6 @@ package com.synopsys.integration.detect.battery.docker.integration;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +18,6 @@ public class SubProjectAggregateModeTest {
     // was created in Black Duck. But that doesn't work yet (in Black Duck).
 
     @Test
-    @Disabled
-        // TODO: Re-enable after BDIO2 update.
     void subProjectAggregateModeSmokeTest() throws IOException, IntegrationException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("subproject-aggregate-mode", "detect-7.1.0:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));

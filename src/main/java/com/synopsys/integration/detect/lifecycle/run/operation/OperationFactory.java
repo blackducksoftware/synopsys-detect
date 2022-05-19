@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
@@ -690,7 +690,7 @@ public class OperationFactory { //TODO: OperationRunner
     public DependencyGraph aggregateSubProject(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
         return auditLog.namedPublic("SubProject Aggregate", "SubProjectAggregate",
             () -> (new FullAggregateGraphCreator()).aggregateCodeLocations(
-                Dependency::new, // TODO: Change this to ProjectDependency::new and update battery after comprehensive passes
+                ProjectDependency::new,
                 directoryManager.getSourceDirectory(),
                 detectCodeLocations
             )
