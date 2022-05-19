@@ -26,8 +26,6 @@ apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-apply from: 'docs.gradle'
-
 final def resources = new File("${projectDir}/src/main/resources")
 final def versionFile = new File(resources, "version.txt")
 resources.mkdirs()
@@ -246,5 +244,14 @@ task verifyJar() {
     }
 }
 
-artifactoryPublish.dependsOn publishDitaSource
+task helpJson(type: JavaExec) {
+    dependsOn build
+    
+    classpath = files(createArtifactName())
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'com.synopsys.integration.detect.Application'
+    args = ['--helpjson']
+}
+
+artifactoryPublish.dependsOn ':documentation:publishDitaSource'
 artifactoryPublish.dependsOn signJar

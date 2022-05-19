@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.configuration.help.json;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -37,7 +38,11 @@ public class HelpJsonWriter {
         data.setBuildDetectors(buildDetectors);
 
         try {
-            try (Writer writer = new FileWriter(filename)) {
+            File file1 = new File(filename);
+            File buildDir = new File(file1.getParentFile(), "documentation/build");
+            buildDir.mkdirs();
+            File file = new File(buildDir, filename);
+            try (Writer writer = new FileWriter(file)) {
                 gson.toJson(data, writer);
             }
 
