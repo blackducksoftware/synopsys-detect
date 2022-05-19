@@ -24,10 +24,6 @@ public class BlackDuckSignatureScannerOptions {
 
     private final boolean uploadSource;
     @Nullable
-    private final String codeLocationPrefix;
-    @Nullable
-    private final String codeLocationSuffix;
-    @Nullable
     private final String additionalArguments;
     private final Integer maxDepth;
     @Nullable
@@ -46,8 +42,6 @@ public class BlackDuckSignatureScannerOptions {
         Boolean dryRun,
         @Nullable SnippetMatching snippetMatching,
         @Nullable Boolean uploadSource,
-        @Nullable String codeLocationPrefix,
-        @Nullable String codeLocationSuffix,
         @Nullable String additionalArguments,
         Integer maxDepth,
         @Nullable IndividualFileMatching individualFileMatching,
@@ -65,8 +59,6 @@ public class BlackDuckSignatureScannerOptions {
         this.dryRun = dryRun;
         this.snippetMatching = snippetMatching;
         this.uploadSource = uploadSource;
-        this.codeLocationPrefix = codeLocationPrefix;
-        this.codeLocationSuffix = codeLocationSuffix;
         this.additionalArguments = additionalArguments;
         this.maxDepth = maxDepth;
         this.individualFileMatching = individualFileMatching;
@@ -102,14 +94,6 @@ public class BlackDuckSignatureScannerOptions {
 
     public Boolean getUploadSource() {
         return uploadSource;
-    }
-
-    public Optional<String> getCodeLocationPrefix() {
-        return Optional.ofNullable(codeLocationPrefix);
-    }
-
-    public Optional<String> getCodeLocationSuffix() {
-        return Optional.ofNullable(codeLocationSuffix);
     }
 
     public Optional<String> getAdditionalArguments() {

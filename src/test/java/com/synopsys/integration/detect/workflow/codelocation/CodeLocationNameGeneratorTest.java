@@ -18,15 +18,13 @@ public class CodeLocationNameGeneratorTest {
     @Test
     public void testScanCodeLocationName() throws IOException {
         final String expected = "common-rest/target/common-rest/2.5.1-SNAPSHOT scan";
-        CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
+        CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.noChanges();
 
         File sourcePath = mockCanonical("/Users/ekerwin/Documents/source/functional/common-rest");
         File scanTargetPath = mockCanonical("/Users/ekerwin/Documents/source/functional/common-rest/target");
         final String projectName = "common-rest";
         final String projectVersionName = "2.5.1-SNAPSHOT";
-        final String prefix = "";
-        final String suffix = "";
-        String actual = codeLocationNameGenerator.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
+        String actual = codeLocationNameGenerator.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName);
 
         assertEquals(expected, actual);
     }
@@ -40,14 +38,12 @@ public class CodeLocationNameGeneratorTest {
     @Test
     public void testDockerScanCodeLocationName() {
         final String expected = "dockerTar.tar.gz/common-rest/2.5.1-SNAPSHOT scan";
-        CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
+        CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.noChanges();
 
         File dockerTar = new File("dockerTar.tar.gz");
         final String projectName = "common-rest";
         final String projectVersionName = "2.5.1-SNAPSHOT";
-        final String prefix = "";
-        final String suffix = "";
-        String actual = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTar, projectName, projectVersionName, prefix, suffix);
+        String actual = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTar, projectName, projectVersionName);
 
         assertEquals(expected, actual);
     }
@@ -59,7 +55,7 @@ public class CodeLocationNameGeneratorTest {
 
         ExternalIdFactory factory = new ExternalIdFactory();
         ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
+        CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.noChanges();
 
         DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
@@ -68,9 +64,7 @@ public class CodeLocationNameGeneratorTest {
         File sourcePath = new File("/Users/ekerwin/Documents/source/functional/common-rest");
         File codeLocationPath = new File("/Users/ekerwin/Documents/source/functional/common-rest/child");
 
-        String prefix = null;
-        String suffix = null;
-        String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, "projectName", "projectVersion", detectCodeLocation, prefix, suffix);
+        String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, "projectName", "projectVersion", detectCodeLocation);
 
         assertEquals(expected, actual);
     }
@@ -86,7 +80,7 @@ public class CodeLocationNameGeneratorTest {
 
         ExternalIdFactory factory = new ExternalIdFactory();
         ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
+        CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.noChanges();
 
         DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
@@ -95,9 +89,7 @@ public class CodeLocationNameGeneratorTest {
         File sourcePath = new File("/Users/ekerwin/Documents/source/functional/common-rest");
         File codeLocationPath = new File("/Users/ekerwin/Documents/source/functional/common-rest/child");
 
-        String prefix = null;
-        String suffix = null;
-        String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, projectName, "projectVersion", detectCodeLocation, prefix, suffix);
+        String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, projectName, "projectVersion", detectCodeLocation);
 
         assertTrue(actual.startsWith(projectNameStart));
     }
@@ -107,7 +99,7 @@ public class CodeLocationNameGeneratorTest {
         final String expected = "projectName/projectVersion/common-rest-common-...n-rest-common-rest/group/name/version npm/bom";
         ExternalIdFactory factory = new ExternalIdFactory();
         ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
+        CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.noChanges();
 
         DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
@@ -116,16 +108,14 @@ public class CodeLocationNameGeneratorTest {
         File sourcePath = new File("/Users/ekerwin/Documents/source/functional/common-rest");
         File codeLocationPath = new File(
             "/Users/ekerwin/Documents/source/functional/common-rest/common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest");
-        final String prefix = "";
-        final String suffix = "";
-        String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, "projectName", "projectVersion", detectCodeLocation, prefix, suffix);
+        String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, "projectName", "projectVersion", detectCodeLocation);
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void testExternalId() {
-        CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
+        CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.withPrefixSuffix("testPrefix", "testSuffix");
         DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
 
         ExternalId externalId = new ExternalId(Forge.MAVEN);
@@ -141,16 +131,14 @@ public class CodeLocationNameGeneratorTest {
             new File("/tmp/aaa/bbb"),
             "projectName",
             "projectVersion",
-            detectCodeLocation,
-            "testPrefix",
-            "testSuffix"
+            detectCodeLocation
         );
         assertEquals("testPrefix/projectName/projectVersion/bbb/externalIdPath/testSuffix detect/bom", actual);
     }
 
     @Test
     public void testGivenNameCounters() {
-        CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator("myscanname");
+        CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.withOverride("myscanname");
 
         assertTrue(codeLocationNameGenerator.useCodeLocationOverride());
 
@@ -162,9 +150,5 @@ public class CodeLocationNameGeneratorTest {
         assertEquals("myscanname scan 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN));
         assertEquals("myscanname bom", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
         assertEquals("myscanname bom 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
-
-        assertEquals("myscanname testcreator/bom", codeLocationNameGenerator.getNextCodeLocationOverrideNameSourcedBom(detectCodeLocation));
-        assertEquals("myscanname testcreator/bom 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameSourcedBom(detectCodeLocation));
-        assertEquals("myscanname testcreator/bom 3", codeLocationNameGenerator.getNextCodeLocationOverrideNameSourcedBom(detectCodeLocation));
     }
 }
