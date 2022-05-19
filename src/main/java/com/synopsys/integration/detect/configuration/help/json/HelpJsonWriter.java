@@ -46,9 +46,9 @@ public class HelpJsonWriter {
                 gson.toJson(data, writer);
             }
 
-            logger.info(filename + " was created in your current directory.");
+            logger.info("{} was created at {}", filename, file.getAbsolutePath());
         } catch (IOException e) {
-            logger.error("There was an error when creating the html file", e);
+            logger.error("There was an error when creating the json file", e);
         }
     }
 

@@ -132,8 +132,11 @@ public class GenerateDocsTask extends DefaultTask {
         for (char character : propertyName.toCharArray()) {
             String charString = String.valueOf(character);
             if (!supportedCharacters.containsKey(charString)) {
-                throw new RuntimeException(
-                    "Unsupported character literal in property name, please add it to supported characters or remove the character (" + character + ") in (" + propertyName + ") ");
+                throw new RuntimeException(String.format(
+                    "Unsupported character literal in property name, please add it to supported characters or remove the character (%s) in (%s) ",
+                    character,
+                    propertyName
+                ));
             } else {
                 encoded.append(supportedCharacters.get(charString));
             }
@@ -169,8 +172,9 @@ public class GenerateDocsTask extends DefaultTask {
                 .collect(Collectors.toList());
 
             List<HelpJsonOption> simple = group.getValue().stream()
-                .filter(helpJsonObject -> !deprecated.contains(helpJsonObject) && (StringUtils.isBlank(helpJsonObject.getCategory())
-                    || "simple".equals(helpJsonObject.getCategory())))
+                .filter(helpJsonObject -> !deprecated.contains(helpJsonObject)
+                    && (StringUtils.isBlank(helpJsonObject.getCategory()) || "simple".equals(helpJsonObject.getCategory()))
+                )
                 .collect(Collectors.toList());
 
             List<HelpJsonOption> advanced = group.getValue().stream()
