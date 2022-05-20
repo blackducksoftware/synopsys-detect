@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.tool.sigma;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -22,11 +23,11 @@ public class SigmaOptions {
         return sigmaPaths;
     }
 
-    public Path getLocalSigmaPath() {
-        return localSigmaPath;
+    public Optional<Path> getLocalSigmaPath() {
+        return Optional.ofNullable(localSigmaPath);
     }
 
-    public String getAdditionalArguments() {
-        return additionalArguments;
+    public Optional<String> getAdditionalArguments() {
+        return Optional.ofNullable(additionalArguments);
     }
 }

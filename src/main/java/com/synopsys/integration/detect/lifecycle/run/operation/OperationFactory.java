@@ -75,6 +75,7 @@ import com.synopsys.integration.detect.tool.detector.DetectorIssuePublisher;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.impactanalysis.GenerateImpactAnalysisOperation;
@@ -84,6 +85,8 @@ import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadO
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.detect.tool.sigma.CalculateSigmaScanTargetsOperation;
+import com.synopsys.integration.detect.tool.sigma.SigmaInstaller;
+import com.synopsys.integration.detect.tool.sigma.SigmaScanOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLogger;
@@ -99,6 +102,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.PublishSi
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
+import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
@@ -170,6 +174,7 @@ import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
@@ -205,6 +210,8 @@ public class OperationFactory { //TODO: OperationRunner
     private final ProductRunData productRunData;
     private final RapidScanResultAggregator rapidScanResultAggregator;
     private final ProjectEventPublisher projectEventPublisher;
+    private final ArtifactResolver artifactResolver;
+    private final DetectExecutableRunner executableRunner;
 
     private final OperationAuditLog auditLog;
 
@@ -234,6 +241,8 @@ public class OperationFactory { //TODO: OperationRunner
         fileFinder = bootSingletons.getFileFinder();
         detectInfo = bootSingletons.getDetectInfo();
         productRunData = bootSingletons.getProductRunData();
+        artifactResolver = utilitySingletons.getArtifactResolver();
+        executableRunner = utilitySingletons.getExecutableRunner();
 
         operationSystem = utilitySingletons.getOperationSystem();
         codeLocationNameManager = utilitySingletons.getCodeLocationNameManager();
@@ -653,6 +662,41 @@ public class OperationFactory { //TODO: OperationRunner
     public List<File> calculateSigmaScanTargets() throws OperationException {
         return auditLog.namedInternal("Calculate Sigma Scan Targets", () -> {
             return new CalculateSigmaScanTargetsOperation(detectConfigurationFactory.createSigmaOptions(), directoryManager).calculateSigmaScanTargets();
+        });
+    }
+
+    public Optional<File> calculateOnlineLocalSigmaInstallPath() throws OperationException {
+        return auditLog.namedInternal(
+            "Calculate Online Local Sigma Path",
+            () -> detectConfigurationFactory.createSigmaOptions().getLocalSigmaPath().map(Path::toFile)
+        );
+    }
+
+    public File resolveSigmaOnline(BlackDuckRunData blackDuckRunData) throws OperationException {
+        return auditLog.namedInternal("Resolve Sigma Online", () -> {
+            return new SigmaInstaller(artifactResolver, detectInfo, blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl(), directoryManager)
+                .installOrUpdateScanner();
+        });
+    }
+
+    public File resolveSigmaFromLocalInstall(File localInstall) throws OperationException {
+        return auditLog.namedInternal("Resolve Sigma Offine", () -> {
+            if (localInstall.isFile()) {
+                logger.debug(String.format("Found user-specified Sigma: %s", localInstall.getAbsolutePath()));
+                return localInstall;
+            } else {
+                throw new IntegrationException(String.format("Provided Sigma path (%s) does not exist or is not a file", localInstall.getAbsolutePath()));
+            }
+        });
+    }
+
+    public Optional<File> performSigmaScan(File scanTarget, File sigmaExe) throws OperationException {
+        return auditLog.namedInternal("Perform Sigma Scan", () -> {
+            return new SigmaScanOperation(directoryManager, executableRunner).performSigmaScan(
+                scanTarget,
+                sigmaExe,
+                detectConfigurationFactory.createSigmaOptions().getAdditionalArguments().orElse(null)
+            );
         });
     }
 

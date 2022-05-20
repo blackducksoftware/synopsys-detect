@@ -60,6 +60,10 @@ public class IntelligentModeStepRunner {
             operationFactory::publishImpactSuccess,
             operationFactory::publishImpactFailure
         );
+        stepHelper.runToolIfIncluded(DetectTool.SIGMA, "Sigma", () -> {
+            SigmaScanStepRunner sigmaScanStepRunner = new SigmaScanStepRunner(operationFactory);
+            sigmaScanStepRunner.runSigmaOffline();
+        });
     }
 
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
@@ -113,8 +117,7 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.SIGMA, "Sigma", () -> {
             SigmaScanStepRunner sigmaScanStepRunner = new SigmaScanStepRunner(operationFactory);
-            //TODO- where do other places geet scan targets from operationFactory
-            sigmaScanStepRunner.runSigmaOnline(projectNameVersion, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
+            sigmaScanStepRunner.runSigmaOnline(projectNameVersion, blackDuckRunData);
         });
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
