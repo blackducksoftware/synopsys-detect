@@ -14,15 +14,15 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
-class SwiftPackageResolvedDetectableTest extends DetectableFunctionalTest {
-    protected SwiftPackageResolvedDetectableTest() throws IOException {
+class SwiftPackageResolvedV1DetectableTest extends DetectableFunctionalTest {
+    protected SwiftPackageResolvedV1DetectableTest() throws IOException {
         super("SwiftPackageResolved");
     }
 
     @Override
     public void setup() throws IOException {
         addFile(Paths.get("Package.swift"));
-        addFileFromResources(Paths.get("Package.resolved"), "/swift/Package.resolved");
+        addFileFromResources(Paths.get("Package.resolved"), "/swift/v1/Package.resolved");
     }
 
     @NotNull
