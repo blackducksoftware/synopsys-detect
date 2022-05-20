@@ -30,8 +30,7 @@ public class SubProjectAggregateModeTest {
             commandBuilder.connectToBlackDuck(blackDuckTestConnection);
             commandBuilder.projectNameVersion(blackduckAssertions);
             String bdioFilename = "testagg";
-            commandBuilder.property("detect.bom.aggregate.name", bdioFilename);
-            commandBuilder.property("detect.bom.aggregate.remediation.mode", "SUBPROJECT");
+            commandBuilder.property("detect.bdio.file.name", bdioFilename);
             commandBuilder.property("detect.tools", "DETECTOR");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
