@@ -1,7 +1,6 @@
 package com.synopsys.integration.detect.lifecycle.run.singleton;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
@@ -19,10 +18,10 @@ import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipIn
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
+import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
-import com.synopsys.integration.detect.workflow.codelocation.CreateBdioCodeLocationsFromDetectCodeLocationsOperation;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
@@ -51,14 +50,13 @@ public class SingletonFactory {
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         ArtifactoryZipInstaller artifactoryZipInstaller = new ArtifactoryZipInstaller(artifactResolver);
         AirGapPathFinder airGapPathFinder = new AirGapPathFinder();
-        CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(detectConfigurationFactory.createCodeLocationOverride());
+
+        BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
+        CodeLocationNameGenerator codeLocationNameGenerator = detectConfigurationFactory.createCodeLocationOverride()
+            .map(CodeLocationNameGenerator::withOverride)
+            .orElse(CodeLocationNameGenerator.withPrefixSuffix(bdioOptions.getProjectCodeLocationPrefix().orElse(null), bdioOptions.getProjectCodeLocationSuffix().orElse(null)));
         CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
-        CreateBdioCodeLocationsFromDetectCodeLocationsOperation createBdioCodeLocationsFromDetectCodeLocationsOperation = new CreateBdioCodeLocationsFromDetectCodeLocationsOperation(
-            codeLocationNameManager,
-            directoryManager
-        );
         AirGapInspectorPaths airGapInspectorPaths = new AirGapInspectorPaths(airGapPathFinder);
-        BdioTransformer bdioTransformer = new BdioTransformer();
         DetectExecutableRunner executableRunner = DetectExecutableRunner.newDebug(eventSystem);
         DirectoryExecutableFinder directoryExecutableFinder = DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);
         SystemPathExecutableFinder systemExecutableFinder = new SystemPathExecutableFinder(directoryExecutableFinder);
@@ -75,9 +73,7 @@ public class SingletonFactory {
             connectionDetails,
             artifactResolver,
             codeLocationNameManager,
-            createBdioCodeLocationsFromDetectCodeLocationsOperation,
             airGapInspectorPaths,
-            bdioTransformer,
             executableRunner,
             detectExecutableResolver,
             operationSystem,

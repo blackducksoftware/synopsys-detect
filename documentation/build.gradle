@@ -1,18 +1,10 @@
 import com.synopsys.integration.detect.docs.GenerateDocsTask
 
-import java.awt.*
-
-task helpJson(type: JavaExec) {
-    dependsOn build
-
-    classpath = files(createArtifactName())
-    classpath += sourceSets.main.runtimeClasspath
-    main = 'com.synopsys.integration.detect.Application'
-    args = ['--helpjson']
-}
+File generatedDir = new File(buildDir, "generated")
+File ditaSiteDir = new File(buildDir, "ditasite")
 
 task generateDocs(type: GenerateDocsTask) {
-    dependsOn helpJson
+    dependsOn rootProject.helpJson
 }
 
 String findDita() {
@@ -30,23 +22,21 @@ task ditasite() {
         ByteArrayOutputStream stdError = new ByteArrayOutputStream()
         exec {
             commandLine findDita(), '-v', '--input=detect.ditamap', '--format=sig-webhelp', '-o', '../ditasite'
-            workingDir "docs/generated"
+            workingDir generatedDir
             standardOutput = stdOut
             errorOutput = stdError
         }
-	for (String outputLine: stdError.toString().split('\n')) {
-	    if (outputLine.matches(".*File.*file:.*not found.*"))
-		throw new Exception("dita error: invalid link: " + outputLine)
-	}
-	for (String outputLine: stdOut.toString().split('\n')) {
-	    if (outputLine.matches(".*\\[DOT.*\\].*\\[ERROR\\].*"))
-		throw new Exception("dita error. To run dita by hand: cd docs/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
+        for (String outputLine : stdError.toString().split('\n')) {
+            if (outputLine.matches(".*File.*helpJsonFile:.*not found.*")) throw new Exception("dita error: invalid link: " + outputLine)
+        }
+        for (String outputLine : stdOut.toString().split('\n')) {
+            if (outputLine.matches(".*\\[DOT.*\\].*\\[ERROR\\].*")) throw new Exception("dita error. To run dita by hand: cd docs/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
 
-	    if (outputLine.matches(".*\\[keyref\\].*\\[DOTJ047I\\].*"))
-		throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes. To run dita by hand: cd docs/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
-	}
-        println "To browse the webhelp: Open docs/ditasite/index.html in a browser"
-        //Desktop.desktop.browse file("docs/ditasite/index.html").toURI()
+            if (outputLine.matches(".*\\[keyref\\].*\\[DOTJ047I\\].*")) throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes. To run dita by hand: cd docs/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
+        }
+        File indexHtmlFile = new File(project.getBuildDir(), "ditasite/index.html")
+        println "To browse the webhelp: Open file://${indexHtmlFile.getAbsolutePath()} in a browser"
+        //Desktop.desktop.browse helpJsonFile("docs/ditasite/index.html").toURI()
     }
 }
 
@@ -55,7 +45,7 @@ task ditasourcezip(type: Zip) {
     dependsOn ditasite
 
     archiveName "${project.name}-${version}-ditasource.zip"
-    from 'docs/generated'
+    from generatedDir
     destinationDir(file("${buildDir}/libs/"))
 }
 
@@ -78,7 +68,7 @@ task helppdf() {
     doLast {
         exec {
             commandLine 'dita', '--input=detect.ditamap', '--format=sig-pdf', "--outputFile.base=${project.name}-${version}-help", '-o', '../../build/libs'
-            workingDir "docs/generated"
+            workingDir generatedDir
         }
     }
 }
@@ -87,7 +77,7 @@ task helpzip(type: Zip) {
     dependsOn ditasite
 
     archiveName "${project.name}-${version}-help.zip"
-    from 'docs/ditasite'
+    from ditaSiteDir
     destinationDir(file("${buildDir}/libs/"))
 }
 
@@ -96,8 +86,8 @@ task docs() {
 }
 
 task cleanDocs(type: Delete) {
-  delete 'docs/generated', 'docs/ditasite'
-  followSymlinks = false
+    delete generatedDir, ditaSiteDir
+    followSymlinks = false
 }
 
 clean.dependsOn cleanDocs

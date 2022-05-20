@@ -16,6 +16,7 @@ public class CondaBattery {
         test.sourceFileNamed("setup.py");
         test.executableFromResourceFiles(DetectProperties.DETECT_CONDA_PATH, "conda-list.xout", "conda-info.xout");
         test.executableFromResourceFiles(DetectProperties.DETECT_PYTHON_PATH, "python-setup.xout", "python-inspector.xout");
+        test.executableFromResourceFiles(DetectProperties.DETECT_PIP_PATH, "python-inspector.xout"); // Needs pip for version logging
         test.expectBdioResources();
         test.run();
     }

@@ -10,8 +10,11 @@
 
 * Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.
 * Removed the ability to upload BDIO2 documents to legacy endpoints via the `blackduck.legacy.upload.enabled` property.
+* Removed the ability to choose the type of BDIO aggregation strategy via the now removed `detect.bom.aggregate.remediation.mode` property. 
+  * All BDIO will be aggregated similarly to if detect.bom.aggregate.remediation.mode=SUBPROJECT was set in [solution_name] version 7.X.
 * detect8.sh has improvements (relative to detect7.sh and detect.sh) related to argument handling that simplify its argument quoting/escaping requirements.
 * Incorporated [docker_inspector_name] documentation into [solution_name] documentation.
+
 
 ### Resolved issues
 

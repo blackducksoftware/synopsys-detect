@@ -1,11 +1,13 @@
 package com.synopsys.integration.detect.configuration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
@@ -29,20 +31,21 @@ public class DetectConfigurationTest {
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
 
         Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH);
-        Assertions.assertEquals(givenValue, phoneHomePropertiesMap.get(givenKeyPhoneHomePart));
+        assertEquals(givenValue, phoneHomePropertiesMap.get(givenKeyPhoneHomePart));
     }
 
     @Test
-    public void testDeprecated() throws DetectUserFriendlyException {
+    public void testGenericProperty() {
         HashMap<String, String> values = new HashMap<>();
-        values.put(DetectProperties.DETECT_BDIO2_ENABLED.getKey(), "false");
+        values.put(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX.getKey(), "some_prefix");
         List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
         DetectPropertyConfiguration detectPropertyConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectPropertyConfiguration, new Gson());
         BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
-        Assertions.assertFalse(bdioOptions.isBdio2Enabled());
+        assertTrue(bdioOptions.getProjectCodeLocationPrefix().isPresent());
+        assertEquals("some_prefix", bdioOptions.getProjectCodeLocationPrefix().get());
     }
 
 }

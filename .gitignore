@@ -22,9 +22,6 @@ version.txt
 swip.yml
 .swip/
 .swip-Coverity-2018.12.zip
-docs/site/
-docs/ditasite/
-docs/generated/
 
 synopsys-detect-*-help.json
 

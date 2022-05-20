@@ -74,8 +74,6 @@ public class CreateScanBatchOperation {
             .ifPresent(scanJobBuilder::individualFileMatching);
 
         File sourcePath = directoryManager.getSourceDirectory();
-        String prefix = signatureScannerOptions.getCodeLocationPrefix().orElse(null);
-        String suffix = signatureScannerOptions.getCodeLocationSuffix().orElse(null);
 
         for (SignatureScanPath scanPath : signatureScanPaths) {
             File dockerTarget = null;
@@ -87,9 +85,7 @@ public class CreateScanBatchOperation {
                 scanPath.getTargetPath(),
                 dockerTarget,
                 projectName,
-                projectVersionName,
-                prefix,
-                suffix
+                projectVersionName
             );
             scanJobBuilder.addTarget(ScanTarget.createBasicTarget(scanPath.getTargetCanonicalPath(), scanPath.getExclusions(), codeLocationName));
         }
