@@ -222,36 +222,10 @@ public class DetectConfigurationFactory {
         return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath, impactOutputPath);
     }
 
-    public List<String> collectSignatureScannerDirectoryExclusions() {
-        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
-
-        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
-            List<String> defaultExcludedFromSignatureScan = Arrays.stream(DefaultSignatureScannerExcludedDirectories.values())
-                .map(DefaultSignatureScannerExcludedDirectories::getDirectoryName)
-                .collect(Collectors.toList());
-            directoryExclusionPatterns.addAll(defaultExcludedFromSignatureScan);
-        }
-
-        return directoryExclusionPatterns;
-    }
-
-    private List<String> collectDetectorSearchDirectoryExclusions() {
-        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
-
-        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
-            List<String> defaultExcludedFromDetectorSearch = Arrays.stream(DefaultDetectorSearchExcludedDirectories.values())
-                .map(DefaultDetectorSearchExcludedDirectories::getDirectoryName)
-                .collect(Collectors.toList());
-            directoryExclusionPatterns.addAll(defaultExcludedFromDetectorSearch);
-        }
-
-        return directoryExclusionPatterns;
-    }
-
     public DetectorFinderOptions createDetectorFinderOptions() {
         //Normal settings
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
-        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(collectDetectorSearchDirectoryExclusions());
+        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(collectDirectoryExclusions(DefaultDetectorSearchExcludedDirectories.getDirectoryNames()));
 
         return new DetectorFinderOptions(fileFilter, maxDepth, getFollowSymLinks());
     }
@@ -352,7 +326,7 @@ public class DetectConfigurationFactory {
 
     public BlackDuckSignatureScannerOptions createBlackDuckSignatureScannerOptions() {
         List<Path> signatureScannerPaths = detectConfiguration.getPaths(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS);
-        List<String> exclusionPatterns = collectSignatureScannerDirectoryExclusions();
+        List<String> exclusionPatterns = collectDirectoryExclusions(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
 
         Integer scanMemory = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY);
         Boolean dryRun = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN);
@@ -462,5 +436,20 @@ public class DetectConfigurationFactory {
     public ProjectGroupOptions createProjectGroupOptions() {
         String projectGroupName = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_GROUP_NAME);
         return new ProjectGroupOptions(projectGroupName);
+    }
+
+    public List<String> collectSignatureScannerDirectoryExclusions() {
+        return collectDirectoryExclusions(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
+    }
+
+    private List<String> collectDirectoryExclusions(List<String> givenExclusions) {
+        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
+
+        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
+            List<String> defaultExcludedFromDetectorSearch = givenExclusions;
+            directoryExclusionPatterns.addAll(defaultExcludedFromDetectorSearch);
+        }
+
+        return directoryExclusionPatterns;
     }
 }
