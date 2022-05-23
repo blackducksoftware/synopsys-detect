@@ -119,11 +119,13 @@ public class Bdio2Compare {
         for (String differentId : differentIds) { //could maybe use assertion set utils but its logic is different enough to make it tricky... -jp
             Optional<Bdio2Node> expectedNode = expected.stream().filter(it -> it.getId().equals(differentId)).findFirst();
             if (expectedNode.isPresent()) {
-                issues.add(new BdioIssue("An expected component was not found in the bdio with id " + expectedNode.get().toDescription() + "."));
+                String expectedNodeType = expectedNode.get().getType().split("#")[1];
+                issues.add(new BdioIssue("An expected " + expectedNodeType + " node was not found in the bdio " + expectedNode.get().toDescription() + "."));
             } else {
                 Optional<Bdio2Node> actualNode = actual.stream().filter(it -> it.getId().equals(differentId)).findFirst();
                 if (actualNode.isPresent()) {
-                    issues.add(new BdioIssue("There was an additional component in the created bdio node " + actualNode.get().toDescription() + "."));
+                    String actualNodeType = actualNode.get().getType().split("#")[1];
+                    issues.add(new BdioIssue("An additional " + actualNodeType + " node was found in the bdio " + actualNode.get().toDescription() + "."));
                 } else {
                     throw new RuntimeException("Something went wrong comparing BDIO. An id was different in " +
                         "actual and in expected but neither actually had the node.");

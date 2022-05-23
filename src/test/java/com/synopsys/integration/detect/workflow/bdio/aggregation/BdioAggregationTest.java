@@ -26,6 +26,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.util.NameVersion;
 
 class BdioAggregationTest {
     private static Gson gson;
@@ -51,8 +52,8 @@ class BdioAggregationTest {
         FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator();
 
         DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations(
-            ProjectDependency::new,
             sourceDir,
+            new NameVersion("aggregate-test", "test"),
             inputCodelocations
         );
 
