@@ -58,9 +58,9 @@ class BdioAggregationTest {
         );
 
         assertEquals(3, aggregatedGraph.getDirectDependencies().size());
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojectone", "unspecified")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojecttwo", "unspecified")));
+        assertTrue(aggregatedGraph.getDirectDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
+        assertTrue(aggregatedGraph.getDirectDependencies().contains(genProjectDependency("basic-multiproject", "subprojectone", "unspecified")));
+        assertTrue(aggregatedGraph.getDirectDependencies().contains(genProjectDependency("basic-multiproject", "subprojecttwo", "unspecified")));
 
         Dependency subProjectOne = aggregatedGraph.getDependency(genProjectExternalId("basic-multiproject", "subprojectone", "unspecified"));
         Set<Dependency> subProjectOneDependencies = aggregatedGraph.getChildrenForParent(subProjectOne);
@@ -99,7 +99,7 @@ class BdioAggregationTest {
     @NotNull
     private ExternalId genProjectExternalId(String group, String artifact, String version) {
         ExternalId extId = new ExternalId(Forge.MAVEN);
-        List<String> moduleNames = Arrays.asList(group, artifact, version, "testcreator");
+        List<String> moduleNames = Arrays.asList(group, artifact, version, "-testcreator");
         String[] moduleNamesArray = new String[moduleNames.size()];
         moduleNames.toArray(moduleNamesArray);
         extId.setModuleNames(moduleNamesArray);
