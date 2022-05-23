@@ -1,7 +1,6 @@
 package com.synopsys.integration.detect.workflow.bdio.aggregation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -26,7 +25,6 @@ import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 
 class BdioAggregationTest {
@@ -49,29 +47,6 @@ class BdioAggregationTest {
     }
 
     @Test
-    void testTransitiveMode() {
-        FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator();
-
-        DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations(
-            Dependency::new,
-            sourceDir,
-            inputCodelocations
-        );
-
-        assertEquals(3, aggregatedGraph.getRootDependencies().size());
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojectone", "unspecified")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojecttwo", "unspecified")));
-
-        Dependency subProjectOne = aggregatedGraph.getDependency(genProjectExternalId("basic-multiproject", "subprojectone", "unspecified"));
-        Set<Dependency> subProjectOneDependencies = aggregatedGraph.getChildrenForParent(subProjectOne);
-        assertTrue(subProjectOneDependencies.contains(Dependency.FACTORY.createMavenDependency("junit", "junit", "4.12")));
-        assertTrue(subProjectOneDependencies.contains(Dependency.FACTORY.createMavenDependency("joda-time", "joda-time", "2.2")));
-
-        assertFalse(subProjectOne instanceof ProjectDependency);
-    }
-
-    @Test
     void testSubProjectMode() {
         FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator();
 
@@ -81,7 +56,7 @@ class BdioAggregationTest {
             inputCodelocations
         );
 
-        assertEquals(3, aggregatedGraph.getRootDependencies().size());
+        assertEquals(3, aggregatedGraph.getDirectDependencies().size());
         assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
         assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojectone", "unspecified")));
         assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojecttwo", "unspecified")));
@@ -92,15 +67,6 @@ class BdioAggregationTest {
         assertTrue(subProjectOneDependencies.contains(Dependency.FACTORY.createMavenDependency("joda-time", "joda-time", "2.2")));
 
         assertTrue(subProjectOne instanceof ProjectDependency);
-    }
-
-    @Test
-    void testDirectMode() throws DetectUserFriendlyException {
-        DependencyGraph aggregatedGraph = new AggregateModeDirectOperation().aggregateCodeLocations(inputCodelocations);
-
-        assertEquals(2, aggregatedGraph.getDirectDependencies().size());
-        assertTrue(aggregatedGraph.getDirectDependencies().contains(Dependency.FACTORY.createMavenDependency("junit", "junit", "4.12")));
-        assertTrue(aggregatedGraph.getDirectDependencies().contains(Dependency.FACTORY.createMavenDependency("joda-time", "joda-time", "2.2")));
     }
 
     @NotNull
