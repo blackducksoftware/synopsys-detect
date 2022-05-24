@@ -1,5 +1,7 @@
 package com.synopsys.integration.detect.tool.binaryscanner;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +28,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public class BinaryUploadOperationTest {
     @Test
     public void testShouldFailOnDirectory() throws OperationException {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), 0, false);
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), Collections.emptyList(), 0, false);
         OperationFactory operationFactory = Mockito.mock(OperationFactory.class);
 
         Mockito.when(operationFactory.calculateBinaryScanOptions()).thenReturn(binaryScanOptions);
@@ -38,6 +40,11 @@ public class BinaryUploadOperationTest {
         Assertions.assertFalse(result.isPresent());
     }
 
+    @Test
+    void testExcludedDirectories() {
+        // TODO implement me
+        // should, ideally, add tests for sig scanner and detector search exclusions too: basically test the DetectConfigurationFactory refactoring that I did first
+    }
     @Test
     public void testMultipleTargetPaths() throws DetectUserFriendlyException, IOException, IntegrationException {
         SimpleFileFinder fileFinder = new SimpleFileFinder();

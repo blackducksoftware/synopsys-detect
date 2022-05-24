@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
@@ -326,7 +328,7 @@ public class DetectConfigurationFactory {
 
     public BlackDuckSignatureScannerOptions createBlackDuckSignatureScannerOptions() {
         List<Path> signatureScannerPaths = detectConfiguration.getPaths(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS);
-        List<String> exclusionPatterns = collectDirectoryExclusions(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
+        List<String> exclusionPatterns = collectSignatureScannerDirectoryExclusions();
 
         Integer scanMemory = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY);
         Boolean dryRun = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN);
@@ -381,8 +383,9 @@ public class DetectConfigurationFactory {
     public BinaryScanOptions createBinaryScanOptions() {
         Path singleTarget = detectConfiguration.getPathOrNull(DetectProperties.DETECT_BINARY_SCAN_FILE);
         List<String> multipleTargets = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS);
+        List<String> exclusionPatterns = collectDirectoryExclusions();
         Integer searchDepth = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_SEARCH_DEPTH);
-        return new BinaryScanOptions(singleTarget, multipleTargets, searchDepth, getFollowSymLinks());
+        return new BinaryScanOptions(singleTarget, multipleTargets, exclusionPatterns, searchDepth, getFollowSymLinks());
     }
 
     public DetectExecutableOptions createDetectExecutableOptions() {
@@ -442,7 +445,10 @@ public class DetectConfigurationFactory {
         return collectDirectoryExclusions(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
     }
 
-    private List<String> collectDirectoryExclusions(List<String> givenExclusions) {
+    private List<String> collectDirectoryExclusions() {
+        return collectDirectoryExclusions(Collections.emptyList());
+    }
+    private List<String> collectDirectoryExclusions(@NotNull List<String> givenExclusions) {
         List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 
         if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
