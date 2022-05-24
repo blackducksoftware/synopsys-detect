@@ -383,9 +383,9 @@ public class DetectConfigurationFactory {
     public BinaryScanOptions createBinaryScanOptions() {
         Path singleTarget = detectConfiguration.getPathOrNull(DetectProperties.DETECT_BINARY_SCAN_FILE);
         List<String> multipleTargets = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS);
-        List<String> exclusionPatterns = collectDirectoryExclusions();
+        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(collectDirectoryExclusions());
         Integer searchDepth = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_SEARCH_DEPTH);
-        return new BinaryScanOptions(singleTarget, multipleTargets, exclusionPatterns, searchDepth, getFollowSymLinks());
+        return new BinaryScanOptions(singleTarget, multipleTargets, fileFilter, searchDepth, getFollowSymLinks());
     }
 
     public DetectExecutableOptions createDetectExecutableOptions() {
