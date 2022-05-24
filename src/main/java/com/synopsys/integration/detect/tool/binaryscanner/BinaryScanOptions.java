@@ -12,35 +12,29 @@ import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter
 
 public class BinaryScanOptions {
     private final Path singleTargetFilePath;
-    private final List<String> multipleTargetFileNamePatterns;
     private final Predicate<File> fileFilter;
     private final int searchDepth;
     private final boolean followSymLinks;
 
     public BinaryScanOptions(
         @Nullable Path singleTargetFilePath,
-        List<String> multipleTargetFileNamePatterns,
-        Predicate<File> fileFilter,
+        @Nullable Predicate<File> fileFilter,
         int searchDepth,
         boolean followSymLinks
     ) {
         this.singleTargetFilePath = singleTargetFilePath;
-        this.multipleTargetFileNamePatterns = multipleTargetFileNamePatterns;
         this.fileFilter = fileFilter;
         this.searchDepth = searchDepth;
         this.followSymLinks = followSymLinks;
-    }
-
-    public List<String> getMultipleTargetFileNamePatterns() {
-        return multipleTargetFileNamePatterns;
     }
 
     public Optional<Path> getSingleTargetFilePath() {
         return Optional.ofNullable(singleTargetFilePath);
     }
 
-    public Predicate<File> getFileFilter() {
-        return fileFilter;
+
+    public Optional<Predicate<File>> getFileFilter() {
+        return Optional.ofNullable(fileFilter);
     }
 
     public int getSearchDepth() {

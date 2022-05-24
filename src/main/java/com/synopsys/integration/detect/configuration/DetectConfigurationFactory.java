@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +47,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndiv
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
+import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryIncludedFileFilter;
 import com.synopsys.integration.detect.workflow.DummyAccuracyEnum;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
@@ -382,10 +384,13 @@ public class DetectConfigurationFactory {
 
     public BinaryScanOptions createBinaryScanOptions() {
         Path singleTarget = detectConfiguration.getPathOrNull(DetectProperties.DETECT_BINARY_SCAN_FILE);
-        List<String> multipleTargets = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS);
-        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(collectDirectoryExclusions());
+        List<String> fileInclusionPatterns = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS);
+        DetectExcludedDirectoryIncludedFileFilter fileFilter = null;
+        if (fileInclusionPatterns.stream().anyMatch(StringUtils::isNotBlank)) {
+            fileFilter = new DetectExcludedDirectoryIncludedFileFilter(collectDirectoryExclusions(), fileInclusionPatterns);
+        }
         Integer searchDepth = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_SEARCH_DEPTH);
-        return new BinaryScanOptions(singleTarget, multipleTargets, fileFilter, searchDepth, getFollowSymLinks());
+        return new BinaryScanOptions(singleTarget, fileFilter, searchDepth, getFollowSymLinks());
     }
 
     public DetectExecutableOptions createDetectExecutableOptions() {

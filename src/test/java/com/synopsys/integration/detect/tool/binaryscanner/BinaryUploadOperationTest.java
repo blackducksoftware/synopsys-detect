@@ -23,14 +23,14 @@ import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.step.BinaryScanStepRunner;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
+import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryIncludedFileFilter;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BinaryUploadOperationTest {
     @Test
     public void testShouldFailOnDirectory() throws OperationException {
-        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(Collections.emptyList());
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), fileFilter, 0, false);
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."),null, 0, false);
         OperationFactory operationFactory = Mockito.mock(OperationFactory.class);
 
         Mockito.when(operationFactory.calculateBinaryScanOptions()).thenReturn(binaryScanOptions);
@@ -67,7 +67,8 @@ public class BinaryUploadOperationTest {
         Mockito.when(directoryManager.getBinaryOutputDirectory()).thenReturn(rootDirectory);
 
         BinaryScanFindMultipleTargetsOperation multipleTargets = new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager);
-        Optional<File> zip = multipleTargets.searchForMultipleTargets(targetPaths, false, 3);
+        DetectExcludedDirectoryIncludedFileFilter fileFilter = new DetectExcludedDirectoryIncludedFileFilter(Collections.emptyList(), targetPaths);
+        Optional<File> zip = multipleTargets.searchForMultipleTargets(fileFilter, false, 3);
         Assertions.assertTrue(zip.isPresent());
         Assertions.assertTrue(zip.get().isFile());
         Assertions.assertTrue(zip.get().canRead());
