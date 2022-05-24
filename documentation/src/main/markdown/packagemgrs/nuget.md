@@ -8,15 +8,30 @@
 
 The NuGet detectors can discover dependencies of NuGet projects.
 
-There are two Nuget detectors: the NuGet solution detector, and the NuGet project detector. Both detectors run the Detect Nuget Inspector, a platform dependent self-contained executable. The currently supported platforms are Windows, Linux and Mac.
+There are two NuGet detectors: the NuGet solution detector, and the NuGet project detector. Both detectors run the Detect NuGet Inspector, a platform dependent self-contained executable. The currently supported platforms are Windows, Linux and Mac.
 
 The NuGet detectors do not work with mono.
 
-### Detect Nuget Inspector
+### Detect NuGet Inspector
 
 Source: https://github.com/blackducksoftware/detect-nuget-inspector
 
 Binary: https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/detect-nuget-inspector/
+
+#### Detect NuGet Inspector on alpine
+
+The Detect NuGet Inspector depends on packages not installed by default on alpine systems, such as the dynamic loader for DLLs.
+
+When these dynamic loader is not present, an error message similar to the following appears in the log as a result of
+[solution_name]'s attempt to execute the NuGet Inspector:
+```
+java.io.IOException: Cannot run program ".../tools/detect-nuget-inspector/detect-nuget-inspector-1.0.1-linux/detect-nuget-inspector" (in directory ...): error=2, No such file or directory
+```
+
+To add these packages to an alpine system:
+```
+apk add libstdc++ gcompat icu
+```
 
 ## Operation
 
@@ -24,7 +39,7 @@ The inspector is fully self-contained and requires no installation. Each executa
 
 The NuGet solution detector derives packages (dependencies) from solution (.sln) files.
 
-The Nuget project detector derives packages (dependencies) from project (.csproj, .fsproj, etc.) files. The supported project files are:
+The NuGet project detector derives packages (dependencies) from project (.csproj, .fsproj, etc.) files. The supported project files are:
 ````
 // C#
 "*.csproj",

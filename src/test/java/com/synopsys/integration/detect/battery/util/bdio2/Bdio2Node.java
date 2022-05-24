@@ -60,11 +60,11 @@ public class Bdio2Node {
 
     public String toDescription() {
         if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(version)) {
-            return "(" + name + ", " + version + ")";
+            return String.format("(%s, %s | identifier: %s)", name, version, identifier);
         } else if (StringUtils.isNotBlank(name)) {
-            return "(" + name + ")";
+            return String.format("(%s | identifier: %s)", name, identifier);
         } else {
-            return "(" + id + ")";
+            return String.format("(%s | identifier: %s)", id, identifier);
         }
     }
 

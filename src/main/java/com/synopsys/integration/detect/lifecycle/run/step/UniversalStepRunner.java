@@ -9,7 +9,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.OperationException;
@@ -80,7 +80,7 @@ public class UniversalStepRunner {
     }
 
     public BdioResult generateBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws OperationException {
-        DependencyGraph aggregateDependencyGraph = operationFactory.aggregateSubProject(universalToolsResult.getDetectCodeLocations());
+        ProjectDependencyGraph aggregateDependencyGraph = operationFactory.aggregateSubProject(projectNameVersion, universalToolsResult.getDetectCodeLocations());
 
         AggregateCodeLocation aggregateCodeLocation = operationFactory.createAggregateCodeLocation(aggregateDependencyGraph, projectNameVersion);
         operationFactory.createAggregateBdio2File(aggregateCodeLocation);

@@ -15,9 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
@@ -674,12 +672,9 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public AggregateCodeLocation createAggregateCodeLocation(DependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion)
+    public AggregateCodeLocation createAggregateCodeLocation(ProjectDependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion)
         throws OperationException {
-        return auditLog.namedInternal("Create Aggregate Code Location", () -> new CreateAggregateCodeLocationOperation(
-            new ExternalIdFactory(),
-            codeLocationNameManager
-        )
+        return auditLog.namedInternal("Create Aggregate Code Location", () -> new CreateAggregateCodeLocationOperation(codeLocationNameManager)
             .createAggregateCodeLocation(
                 directoryManager.getBdioOutputDirectory(),
                 aggregateDependencyGraph,
@@ -688,20 +683,21 @@ public class OperationFactory { //TODO: OperationRunner
             ));
     }
 
-    public DependencyGraph aggregateSubProject(List<DetectCodeLocation> detectCodeLocations) throws OperationException {
+    public ProjectDependencyGraph aggregateSubProject(NameVersion projectNameVersion, List<DetectCodeLocation> detectCodeLocations) throws OperationException {
         return auditLog.namedPublic("SubProject Aggregate", "SubProjectAggregate",
             () -> (new FullAggregateGraphCreator()).aggregateCodeLocations(
-                ProjectDependency::new,
                 directoryManager.getSourceDirectory(),
+                projectNameVersion,
                 detectCodeLocations
             )
         );
     }
 
     public void createAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation) throws OperationException {
-        auditLog.namedInternal("Create Bdio Code Locations", () -> {
-            new CreateAggregateBdio2FileOperation(new Bdio2Factory(), detectInfo).writeAggregateBdio2File(aggregateCodeLocation);
-        });
+        auditLog.namedInternal(
+            "Create Bdio Code Locations",
+            () -> new CreateAggregateBdio2FileOperation(new Bdio2Factory(), detectInfo).writeAggregateBdio2File(aggregateCodeLocation)
+        );
     }
 
     private ExecutorService createExecutorServiceForScanner() throws OperationException {
