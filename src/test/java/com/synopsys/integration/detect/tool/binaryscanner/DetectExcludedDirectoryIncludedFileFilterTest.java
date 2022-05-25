@@ -4,26 +4,62 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryIncludedFileFilter;
 
 public class DetectExcludedDirectoryIncludedFileFilterTest {
+    private static File tempDir;
+    private static File includedFile;
+    private static File includedDir;
+    private static File includedFileInIncludedDir;
+    private static File nonMatchingFile;
+    private static File excludedDir;
+
+    @BeforeAll
+    static void setup() throws IOException {
+        tempDir = Files.createTempDirectory("junit_test_filtertest").toFile();
+
+        includedFile = new File(tempDir, "includeme.txt");
+        includedFile.createNewFile();
+        includedDir = new File(tempDir, "dir");
+        includedDir.mkdir();
+        includedFileInIncludedDir = new File(includedDir, "includeme2.txt");
+        includedFileInIncludedDir.createNewFile();
+        nonMatchingFile = new File(includedDir, "nonmatching.jar");
+        nonMatchingFile.createNewFile();
+        excludedDir = new File(includedDir, "excludeme");
+        excludedDir.mkdir();
+
+    }
+
+    @AfterAll
+    static void cleanup() throws IOException {
+        if (tempDir.isDirectory()) {
+            FileUtils.deleteDirectory(tempDir);
+        }
+    }
 
     @Test
     void testFileInclusion() {
+
         List<String> excludedDirs = Arrays.asList("excludeme");
         List<String> includedFiles = Arrays.asList("*.txt");
         DetectExcludedDirectoryIncludedFileFilter filter = new DetectExcludedDirectoryIncludedFileFilter(excludedDirs, includedFiles);
 
-        assertTrue(filter.test(new File("/tmp/aaa/binarytest/includeme.txt")));
-        assertTrue(filter.test(new File("/tmp/aaa/binarytest/dir/includeme2.txt")));
+        assertTrue(filter.test(includedFile));
+        assertTrue(filter.test(includedFileInIncludedDir));
 
-        assertFalse(filter.test(new File("/tmp/aaa/binarytest/dir/nonexistent.txt")));
-        assertFalse(filter.test(new File("/tmp/aaa/binarytest/dir/nonmatching.jar")));
+        assertFalse(filter.test(new File(tempDir, "dir/nonexistent.txt")));
+        assertFalse(filter.test(nonMatchingFile));
     }
 
     @Test
@@ -32,7 +68,7 @@ public class DetectExcludedDirectoryIncludedFileFilterTest {
         List<String> includedFiles = Arrays.asList("*.txt");
         DetectExcludedDirectoryIncludedFileFilter filter = new DetectExcludedDirectoryIncludedFileFilter(excludedDirs, includedFiles);
 
-        assertFalse(filter.isExcludedDirectory(new File("/tmp/aaa/binarytest/dir")));
-        assertTrue(filter.isExcludedDirectory(new File("/tmp/aaa/binarytest/dir/excludeme")));
+        assertFalse(filter.isExcludedDirectory(includedDir));
+        assertTrue(filter.isExcludedDirectory(excludedDir));
     }
 }
