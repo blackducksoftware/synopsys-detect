@@ -28,7 +28,7 @@ public class DetectExcludedDirectoryIncludedFileFilter implements Predicate<File
 
     @Override
     public boolean test(File file) {
-        return !isExcludedDirectory(file) && isIncludedFile(file);
+        return !isExcludedDirectory(file) && !isExcludedFile(file);
     }
 
     public boolean isExcludedDirectory(File file) {
@@ -70,10 +70,10 @@ public class DetectExcludedDirectoryIncludedFileFilter implements Predicate<File
         return false;
     }
 
-    private boolean isIncludedFile(File file) {
+    private boolean isExcludedFile(File file) {
         if (!file.isFile()) {
             return false;
         }
-        return wildcardFilter.accept(file);
+        return !wildcardFilter.accept(file);
     }
 }

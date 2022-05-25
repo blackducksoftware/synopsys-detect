@@ -12,9 +12,16 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.jetbrains.annotations.NotNull;
 
 public class SimpleFileFinder implements FileFinder {
+
     @NotNull
     @Override
     public List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {
+        return findFiles(directoryToSearch, filter, followSymLinks, depth, findInsideMatchingDirectories, false);
+    }
+
+    @NotNull
+    @Override
+    public List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories, boolean pruneNonMatchingDirectories) {
         List<File> foundFiles = new ArrayList<>();
         if (depth < 0) {
             return foundFiles;
@@ -30,6 +37,9 @@ public class SimpleFileFinder implements FileFinder {
             boolean matches = filter.test(file);
             if (matches) {
                 foundFiles.add(file);
+            }
+            if (file.isDirectory() && !matches && pruneNonMatchingDirectories) {
+                continue; // prune it
             }
             if (!matches || findInsideMatchingDirectories) {
                 if (shouldFindinDirectory(file, followSymLinks)) {

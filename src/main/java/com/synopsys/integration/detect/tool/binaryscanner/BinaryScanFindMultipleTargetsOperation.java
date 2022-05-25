@@ -30,7 +30,7 @@ public class BinaryScanFindMultipleTargetsOperation {
     }
 
     public Optional<File> searchForMultipleTargets(Predicate<File> fileFilter, boolean followSymLinks, int depth) throws DetectUserFriendlyException {
-        List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), fileFilter, followSymLinks, depth);
+        List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), fileFilter, followSymLinks, depth, true, true);
         if (multipleTargets.size() > 0) {
             logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
             return Optional.of(zipFilesForUpload(directoryManager.getSourceDirectory(), multipleTargets));
