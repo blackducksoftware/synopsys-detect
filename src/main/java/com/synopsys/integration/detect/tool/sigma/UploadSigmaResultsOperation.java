@@ -29,9 +29,9 @@ public class UploadSigmaResultsOperation {
         Response response = sigmaUploadService.uploadSigmaResults(resultsFileContent, scanId);
         if (response.isStatusCodeSuccess()) {
             logger.info("Successfully uploaded Sigma results.");
+            return SigmaUploadResult.SUCCESS();
         } else {
-            throw new IntegrationException("Failed to upload Sigma results.");
+            return SigmaUploadResult.FAILURE(response.getStatusCode(), response.getStatusMessage());
         }
-        return new SigmaUploadResult();
     }
 }

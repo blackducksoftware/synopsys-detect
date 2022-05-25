@@ -88,6 +88,7 @@ import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysi
 import com.synopsys.integration.detect.tool.sigma.CalculateSigmaScanTargetsOperation;
 import com.synopsys.integration.detect.tool.sigma.SigmaInstaller;
 import com.synopsys.integration.detect.tool.sigma.SigmaScanOperation;
+import com.synopsys.integration.detect.tool.sigma.SigmaScanResult;
 import com.synopsys.integration.detect.tool.sigma.SigmaUploadResult;
 import com.synopsys.integration.detect.tool.sigma.UploadSigmaResultsOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
@@ -693,7 +694,7 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public Optional<File> performSigmaScan(File scanTarget, File sigmaExe) throws OperationException {
+    public SigmaScanResult performSigmaScan(File scanTarget, File sigmaExe) throws OperationException {
         return auditLog.namedInternal("Perform Sigma Scan", () -> {
             return new SigmaScanOperation(directoryManager, executableRunner).performSigmaScan(
                 scanTarget,

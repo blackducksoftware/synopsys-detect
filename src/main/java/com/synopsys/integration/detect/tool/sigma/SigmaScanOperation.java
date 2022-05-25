@@ -28,7 +28,7 @@ public class SigmaScanOperation {
         this.executableRunner = executableRunner;
     }
 
-    public Optional<File> performSigmaScan(File scanTarget, File sigmaExe, @Nullable String additionalArguments) {
+    public SigmaScanResult performSigmaScan(File scanTarget, File sigmaExe, @Nullable String additionalArguments) {
         String resultsFileName = String.format("results-%s.json", scanTarget.getName());
         File resultsFile = new File(directoryManager.getSigmaOutputDirectory(), resultsFileName);
 
@@ -43,15 +43,13 @@ public class SigmaScanOperation {
 
         //TODO- make a dir whose name includes a counter for each scan, put results file in dir
 
-        File workingDir = new File(System.getProperty("user.dir")); //TODO- what should this be? --> scanTarget or getSigmaOutputDirectory
-        Executable executable = ExecutableUtils.createFromTarget(workingDir, ExecutableTarget.forFile(sigmaExe), sigmaArgs);
+        Executable executable = ExecutableUtils.createFromTarget(scanTarget, ExecutableTarget.forFile(sigmaExe), sigmaArgs);
         try {
             executableRunner.executeSuccessfully(executable);
+            return SigmaScanResult.SUCCESS(resultsFile);
         } catch (ExecutableFailedException e) {
             logger.error("Sigma scan failed with command: " + executable.getExecutableDescription());
-            return Optional.empty();
+            return SigmaScanResult.FAILURE(e.getReturnCode(), e.getMessage());
         }
-
-        return Optional.of(resultsFile);
     }
 }

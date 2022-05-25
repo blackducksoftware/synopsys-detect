@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,9 @@ import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
+import com.synopsys.integration.detect.tool.sigma.SigmaReport;
+import com.synopsys.integration.detect.tool.sigma.SigmaScanResult;
+import com.synopsys.integration.detect.tool.sigma.SigmaUploadResult;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detectable.util.ExternalIdCreator;
@@ -36,30 +40,45 @@ public class SigmaScanStepRunner {
 
     //TODO- need runSigma methods to return some result or pubilsh something to let Detect know if they were successful or not
 
-    public Object runSigmaOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+    public void runSigmaOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException, IntegrationException, InterruptedException {
         List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
         File sigmaExe = resolveSigma(blackDuckRunData);
+
+        List<SigmaReport> sigmaReports = new LinkedList<>();
         for (File scanTarget : sigmaScanTargets) {
             String scanId = initiateScan(projectNameVersion, scanTarget, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
-            Optional<File> sigmaScanResultFile = operationFactory.performSigmaScan(scanTarget, sigmaExe);
-            if (sigmaScanResultFile.isPresent()) {
-                operationFactory.uploadSigmaResults(blackDuckRunData, sigmaScanResultFile.get(), scanId);
+            SigmaScanResult sigmaScanResult = operationFactory.performSigmaScan(scanTarget, sigmaExe);
+
+            String errorMessage = null;
+            if (sigmaScanResult.getResultsFile().isPresent()) {
+                SigmaUploadResult uploadResult = operationFactory.uploadSigmaResults(blackDuckRunData, sigmaScanResult.getResultsFile().get(), scanId);
+                if (uploadResult.getErrorMessage().isPresent()) {
+                    errorMessage = String.format("Upload of Sigma results failed with code %d: %s", uploadResult.getStatusCode(), uploadResult.getErrorMessage().get());
+                }
+            } else {
+                errorMessage = String.format("Sigma scan failed with code %d: %s", sigmaScanResult.getStatusCode(), sigmaScanResult.getErrorMessage());
             }
+            sigmaReports.add(new SigmaReport(scanTarget.getAbsolutePath(), errorMessage));
         }
-        return null;
+        //TODO- publish reports
     }
 
     public void runSigmaOffline() throws OperationException, IntegrationException {
         List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
         File sigmaExe = resolveSigma(null);
+
+        List<SigmaReport> sigmaReports = new LinkedList<>();
         for (File scanTarget : sigmaScanTargets) {
-            Optional<File> sigmaScanResultFile = operationFactory.performSigmaScan(scanTarget, sigmaExe);
-            sigmaScanResultFile.ifPresent(resultsFile -> {
-                    //TODO- publish successful scan
-                }
-            );
+            SigmaScanResult sigmaScanResult = operationFactory.performSigmaScan(scanTarget, sigmaExe);
+            if (sigmaScanResult.getResultsFile().isPresent()) {
+                sigmaReports.add(new SigmaReport(scanTarget.getAbsolutePath(), null));
+            } else {
+                String errorMessage = String.format("Sigma scan failed with code %d: %s", sigmaScanResult.getStatusCode(), sigmaScanResult.getErrorMessage());
+                sigmaReports.add(new SigmaReport(scanTarget.getAbsolutePath(), errorMessage));
+            }
         }
+        //TODO- publish reports
     }
 
     private File resolveSigma(@Nullable BlackDuckRunData blackDuckRunData) throws OperationException, IntegrationException {
