@@ -95,7 +95,7 @@ public class BinaryUploadOperationTest {
 
         List<String> entries = getZipEntries(zip);
         Assertions.assertTrue(entries.contains("includedDir/binaryTestFile_1.txt"));
-        Assertions.assertTrue(entries.contains("includedDir/binaryTestFile_2.text"));
+        Assertions.assertFalse(entries.contains("includedDir/binaryTestFile_2.text"));
         Assertions.assertFalse(entries.contains("excludedDir/binaryTestFile_1.txt"));
         Assertions.assertFalse(entries.contains("excludedDir/binaryTestFile_2.text"));
 
