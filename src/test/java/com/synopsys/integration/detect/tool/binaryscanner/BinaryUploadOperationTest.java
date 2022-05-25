@@ -28,7 +28,6 @@ import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.step.BinaryScanStepRunner;
-import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryIncludedFileFilter;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
@@ -84,8 +83,7 @@ public class BinaryUploadOperationTest {
         createDirWithFiles(rootDirectory, "includedDir");
         createDirWithFiles(rootDirectory, "excludedDir");
         ArrayList<String> targetPaths = new ArrayList<>();
-        targetPaths.add("binaryTestFile_1.txt");
-        targetPaths.add("*.text");
+        targetPaths.add("*.txt");
 
         Mockito.when(directoryManager.getSourceDirectory()).thenReturn(rootDirectory);
         Mockito.when(directoryManager.getBinaryOutputDirectory()).thenReturn(rootDirectory);
