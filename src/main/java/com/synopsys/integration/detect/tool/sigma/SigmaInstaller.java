@@ -45,7 +45,7 @@ public class SigmaInstaller {
         File sigmaInstallation = new File(installDirectory, SIGMA_INSTALL_FILE_NAME);
         String downloadUrl = determineDownloadUrl();
         try {
-            sigmaInstallation.createNewFile();
+            sigmaInstallation.createNewFile(); //TODO- investigate if we actually need to create file first
             if (shouldDownload()) {
                 logger.info("Sigma installation is not up to date.  Will download Sigma."); //TODO- update log message when "am I current" criteria is clear
                 artifactResolver.downloadArtifact(sigmaInstallation, downloadUrl);

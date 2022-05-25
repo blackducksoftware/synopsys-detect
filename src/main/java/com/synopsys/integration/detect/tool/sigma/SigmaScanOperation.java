@@ -41,12 +41,14 @@ public class SigmaScanOperation {
         sigmaArgs.add(resultsFile.getAbsolutePath());
         sigmaArgs.add(scanTarget.getAbsolutePath());
 
-        File workingDir = new File(System.getProperty("user.dir")); //TODO- what should this be?
+        //TODO- make a dir whose name includes a counter for each scan, put results file in dir
+
+        File workingDir = new File(System.getProperty("user.dir")); //TODO- what should this be? --> scanTarget or getSigmaOutputDirectory
         Executable executable = ExecutableUtils.createFromTarget(workingDir, ExecutableTarget.forFile(sigmaExe), sigmaArgs);
         try {
             executableRunner.executeSuccessfully(executable);
         } catch (ExecutableFailedException e) {
-            logger.info("Sigma scan failed with command: " + executable.getExecutableDescription()); //TODO- should this be at ERROR
+            logger.error("Sigma scan failed with command: " + executable.getExecutableDescription());
             return Optional.empty();
         }
 
