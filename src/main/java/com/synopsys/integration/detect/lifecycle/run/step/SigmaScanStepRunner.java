@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.bdio2.Bdio;
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.blackduck.bdio2.Bdio2FileUploadService;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
@@ -42,9 +43,9 @@ public class SigmaScanStepRunner {
         for (File scanTarget : sigmaScanTargets) {
             String scanId = initiateScan(projectNameVersion, scanTarget, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
             Optional<File> sigmaScanResultFile = operationFactory.performSigmaScan(scanTarget, sigmaExe);
-            sigmaScanResultFile.ifPresent(
-                file -> {} //TODO- upload results File to scans/sigma/scanId using library service
-            );
+            if (sigmaScanResultFile.isPresent()) {
+                operationFactory.uploadSigmaResults(blackDuckRunData, sigmaScanResultFile.get(), scanId);
+            }
         }
         return null;
     }
@@ -80,7 +81,7 @@ public class SigmaScanStepRunner {
             Collections.singletonList(codeLocation),
             projectNameVersion
         ); //TODO- in this operation the code location name is created (could override in a hacky way)
-        UploadTarget uploadTarget = operationFactory.createBdio2Files(bdioCodeLocationResult, projectNameVersion).get(0);
+        UploadTarget uploadTarget = operationFactory.createBdio2Files(bdioCodeLocationResult, projectNameVersion, Bdio.ScanType.INFRASTRUCTURE_AS_CODE).get(0);
         return bdio2FileUploadService.uploadFile(uploadTarget).getScanId();
     }
 

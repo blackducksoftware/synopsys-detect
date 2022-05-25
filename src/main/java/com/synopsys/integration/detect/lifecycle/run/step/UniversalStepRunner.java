@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.bdio2.Bdio;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -148,7 +149,7 @@ public class UniversalStepRunner {
 
         logger.debug("Creating BDIO files from code locations.");
         if (operationFactory.calculateBdioOptions().isBdio2Enabled()) {
-            return new BdioResult(operationFactory.createBdio2Files(codeLocationResult, projectNameVersion), namesResult, true);
+            return new BdioResult(operationFactory.createBdio2Files(codeLocationResult, projectNameVersion, Bdio.ScanType.PACKAGE_MANAGER), namesResult, true);
         } else {
             return new BdioResult(operationFactory.createBdio1Files(codeLocationResult, projectNameVersion), namesResult, false);
         }

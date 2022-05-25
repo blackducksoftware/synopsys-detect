@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.bdio2.Bdio;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
@@ -87,6 +88,8 @@ import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysi
 import com.synopsys.integration.detect.tool.sigma.CalculateSigmaScanTargetsOperation;
 import com.synopsys.integration.detect.tool.sigma.SigmaInstaller;
 import com.synopsys.integration.detect.tool.sigma.SigmaScanOperation;
+import com.synopsys.integration.detect.tool.sigma.SigmaUploadResult;
+import com.synopsys.integration.detect.tool.sigma.UploadSigmaResultsOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLogger;
@@ -700,6 +703,13 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
+    public SigmaUploadResult uploadSigmaResults(BlackDuckRunData blackDuckRunData, File sigmaResultsFile, String scanId) throws OperationException {
+        return auditLog.namedInternal("Upload Sigma Results", () -> {
+            return new UploadSigmaResultsOperation(blackDuckRunData.getBlackDuckServicesFactory().createSigmaUploadService())
+                .uploadResults(sigmaResultsFile, scanId);
+        });
+    }
+
     public Optional<File> calculateNoticesDirectory() throws OperationException { //TODO Should be a decision in boot
         return auditLog.namedInternal("Decide Notices Report Path", () -> {
             BlackDuckPostOptions postOptions = detectConfigurationFactory.createBlackDuckPostOptions();
@@ -774,12 +784,13 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public List<UploadTarget> createBdio2Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion) throws OperationException {
+    public List<UploadTarget> createBdio2Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion, Bdio.ScanType scanType) throws OperationException {
         return auditLog.namedPublic("Create Bdio 2 Files", () -> {
             return new CreateBdio2FilesOperation(new Bdio2Factory(), detectInfo).createBdioFiles(
                 bdioCodeLocationResult,
                 directoryManager.getBdioOutputDirectory(),
-                projectNameVersion
+                projectNameVersion,
+                scanType
             );
         });
     }
