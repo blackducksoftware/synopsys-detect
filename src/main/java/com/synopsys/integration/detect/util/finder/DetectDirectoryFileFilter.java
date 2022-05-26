@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.function.Predicate;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
-public class DetectExcludedDirectoryIncludedFileFilter implements Predicate<File>  {
+public class DetectDirectoryFileFilter implements Predicate<File>  {
     private final List<String> directoryExclusionPatterns;
     private final DirectoryMatcher directoryMatcher = new DirectoryMatcher();
     private final WildcardFileFilter wildcardFilter;
 
-    public DetectExcludedDirectoryIncludedFileFilter(List<String> directoryExclusionPatterns, List<String> fileInclusionPatterns) {
+    public DetectDirectoryFileFilter(List<String> directoryExclusionPatterns, List<String> fileInclusionPatterns) {
         this.directoryExclusionPatterns = directoryExclusionPatterns;
         this.wildcardFilter = new WildcardFileFilter(fileInclusionPatterns);
     }

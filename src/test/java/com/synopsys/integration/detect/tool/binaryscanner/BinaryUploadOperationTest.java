@@ -28,7 +28,7 @@ import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.step.BinaryScanStepRunner;
-import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryIncludedFileFilter;
+import com.synopsys.integration.detect.util.finder.DetectDirectoryFileFilter;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -63,7 +63,7 @@ public class BinaryUploadOperationTest {
         Mockito.when(directoryManager.getBinaryOutputDirectory()).thenReturn(rootDirectory);
 
         BinaryScanFindMultipleTargetsOperation multipleTargets = new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager);
-        DetectExcludedDirectoryIncludedFileFilter fileFilter = new DetectExcludedDirectoryIncludedFileFilter(Collections.emptyList(), targetPaths);
+        DetectDirectoryFileFilter fileFilter = new DetectDirectoryFileFilter(Collections.emptyList(), targetPaths);
         Optional<File> zip = multipleTargets.searchForMultipleTargets(fileFilter, false, 3);
         Assertions.assertTrue(zip.isPresent());
 
@@ -89,7 +89,7 @@ public class BinaryUploadOperationTest {
         Mockito.when(directoryManager.getBinaryOutputDirectory()).thenReturn(rootDirectory);
 
         BinaryScanFindMultipleTargetsOperation multipleTargets = new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager);
-        DetectExcludedDirectoryIncludedFileFilter fileFilter = new DetectExcludedDirectoryIncludedFileFilter(Arrays.asList("excludedDir"), targetPaths);
+        DetectDirectoryFileFilter fileFilter = new DetectDirectoryFileFilter(Arrays.asList("excludedDir"), targetPaths);
         Optional<File> zip = multipleTargets.searchForMultipleTargets(fileFilter, false, 3);
         Assertions.assertTrue(zip.isPresent());
 

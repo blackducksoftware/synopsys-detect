@@ -14,9 +14,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryIncludedFileFilter;
+import com.synopsys.integration.detect.util.finder.DetectDirectoryFileFilter;
 
-public class DetectExcludedDirectoryIncludedFileFilterTest {
+public class DetectDirectoryFileFilterTest {
     private static File tempDir;
     private static File includedFile;
     private static File includedDir;
@@ -53,7 +53,7 @@ public class DetectExcludedDirectoryIncludedFileFilterTest {
 
         List<String> excludedDirs = Arrays.asList("excludeme");
         List<String> includedFiles = Arrays.asList("*.txt");
-        DetectExcludedDirectoryIncludedFileFilter filter = new DetectExcludedDirectoryIncludedFileFilter(excludedDirs, includedFiles);
+        DetectDirectoryFileFilter filter = new DetectDirectoryFileFilter(excludedDirs, includedFiles);
 
         assertTrue(filter.test(includedFile));
         assertTrue(filter.test(includedFileInIncludedDir));
@@ -66,7 +66,7 @@ public class DetectExcludedDirectoryIncludedFileFilterTest {
     void testDirExclusion() {
         List<String> excludedDirs = Arrays.asList("excludeme");
         List<String> includedFiles = Arrays.asList("*.txt");
-        DetectExcludedDirectoryIncludedFileFilter filter = new DetectExcludedDirectoryIncludedFileFilter(excludedDirs, includedFiles);
+        DetectDirectoryFileFilter filter = new DetectDirectoryFileFilter(excludedDirs, includedFiles);
 
         assertFalse(filter.isExcludedDirectory(includedDir));
         assertFalse(filter.test(includedDir));
