@@ -38,8 +38,6 @@ public class SigmaScanStepRunner {
         this.operationFactory = operationFactory;
     }
 
-    //TODO- need runSigma methods to return some result or pubilsh something to let Detect know if they were successful or not
-
     public void runSigmaOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException, IntegrationException, InterruptedException {
         List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
@@ -49,19 +47,21 @@ public class SigmaScanStepRunner {
         for (File scanTarget : sigmaScanTargets) {
             String scanId = initiateScan(projectNameVersion, scanTarget, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
             SigmaScanResult sigmaScanResult = operationFactory.performSigmaScan(scanTarget, sigmaExe);
-
             String errorMessage = null;
-            if (sigmaScanResult.getResultsFile().isPresent()) {
+            if (!sigmaScanResult.getErrorMessage().isPresent()) {
                 SigmaUploadResult uploadResult = operationFactory.uploadSigmaResults(blackDuckRunData, sigmaScanResult.getResultsFile().get(), scanId);
                 if (uploadResult.getErrorMessage().isPresent()) {
                     errorMessage = String.format("Upload of Sigma results failed with code %d: %s", uploadResult.getStatusCode(), uploadResult.getErrorMessage().get());
                 }
             } else {
-                errorMessage = String.format("Sigma scan failed with code %d: %s", sigmaScanResult.getStatusCode(), sigmaScanResult.getErrorMessage());
+                errorMessage = String.format("Sigma scan failed with code %d: %s", sigmaScanResult.getStatusCode(), sigmaScanResult.getErrorMessage().get());
+            }
+            if (errorMessage != null) {
+                logger.error(errorMessage);
             }
             sigmaReports.add(new SigmaReport(scanTarget.getAbsolutePath(), errorMessage));
         }
-        //TODO- publish reports
+        operationFactory.publishSigmaReport(sigmaReports);
     }
 
     public void runSigmaOffline() throws OperationException, IntegrationException {
@@ -78,7 +78,7 @@ public class SigmaScanStepRunner {
                 sigmaReports.add(new SigmaReport(scanTarget.getAbsolutePath(), errorMessage));
             }
         }
-        //TODO- publish reports
+        operationFactory.publishSigmaReport(sigmaReports);
     }
 
     private File resolveSigma(@Nullable BlackDuckRunData blackDuckRunData) throws OperationException, IntegrationException {
@@ -104,7 +104,6 @@ public class SigmaScanStepRunner {
         return bdio2FileUploadService.uploadFile(uploadTarget).getScanId();
     }
 
-    //TODO- name is awful
     private DetectCodeLocation createSimpleCodeLocation(NameVersion projectNameVersion, File sourcePath) {
         return DetectCodeLocation.forCreator(
             new BasicDependencyGraph(),

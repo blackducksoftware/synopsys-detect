@@ -86,7 +86,9 @@ import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadO
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.detect.tool.sigma.CalculateSigmaScanTargetsOperation;
+import com.synopsys.integration.detect.tool.sigma.PublishSigmaReportOperation;
 import com.synopsys.integration.detect.tool.sigma.SigmaInstaller;
+import com.synopsys.integration.detect.tool.sigma.SigmaReport;
 import com.synopsys.integration.detect.tool.sigma.SigmaScanOperation;
 import com.synopsys.integration.detect.tool.sigma.SigmaScanResult;
 import com.synopsys.integration.detect.tool.sigma.SigmaUploadResult;
@@ -708,6 +710,12 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.namedInternal("Upload Sigma Results", () -> {
             return new UploadSigmaResultsOperation(blackDuckRunData.getBlackDuckServicesFactory().createSigmaUploadService())
                 .uploadResults(sigmaResultsFile, scanId);
+        });
+    }
+
+    public void publishSigmaReport(List<SigmaReport> sigmaReports) throws OperationException {
+        auditLog.namedInternal("Publish Sigma Report", () -> {
+            new PublishSigmaReportOperation(exitCodePublisher, statusEventPublisher).publishReports(sigmaReports);
         });
     }
 

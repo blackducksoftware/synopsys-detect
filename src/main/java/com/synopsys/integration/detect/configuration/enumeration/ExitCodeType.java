@@ -20,6 +20,7 @@ public enum ExitCodeType {
     ),
     FAILURE_POLARIS_CONNECTIVITY(12, "Detect was unable to connect to Polaris. Check your configuration and connection."),
     FAILURE_MINIMUM_INTERVAL_NOT_MET(13, "Detect did not wait the minimum required scan interval."),
+    FAILURE_SIGMA(14, "Detect was unable to run Sigma against your source. Please check your configuration, and see logs and Sigma documentation for more information."),
     FAILURE_GENERAL_ERROR(99, "Detect encountered a known error, details of the error are provided."),
     FAILURE_UNKNOWN_ERROR(100, "Detect encountered an unknown error.");
 
