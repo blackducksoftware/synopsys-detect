@@ -17,7 +17,13 @@ public class DetectExcludedDirectoryIncludedFileFilter implements Predicate<File
 
     @Override
     public boolean test(File file) {
-        return file.exists() && !isExcludedDirectory(file) && !isExcludedFile(file);
+        if (file.isDirectory()) {
+            return isExcludedDirectory(file);
+        }
+        if (file.isFile()) {
+            return !isExcludedFile(file);
+        }
+        return false;
     }
 
     public boolean isExcludedDirectory(File file) {

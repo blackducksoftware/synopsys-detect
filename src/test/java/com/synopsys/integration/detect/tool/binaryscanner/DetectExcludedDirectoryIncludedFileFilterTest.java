@@ -69,6 +69,9 @@ public class DetectExcludedDirectoryIncludedFileFilterTest {
         DetectExcludedDirectoryIncludedFileFilter filter = new DetectExcludedDirectoryIncludedFileFilter(excludedDirs, includedFiles);
 
         assertFalse(filter.isExcludedDirectory(includedDir));
+        assertFalse(filter.test(includedDir));
+
         assertTrue(filter.isExcludedDirectory(excludedDir));
+        assertTrue(filter.test(excludedDir));
     }
 }

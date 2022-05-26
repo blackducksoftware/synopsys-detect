@@ -38,9 +38,6 @@ public interface FileFinder {
     @NotNull
     List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories);
 
-    @NotNull
-    List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories, boolean pruneNonMatchingDirectories);
-
     // Find with file pame patterns
     @Nullable
     default File findFile(File directoryToSearch, String filenamePattern) {
