@@ -6,8 +6,6 @@ The values of the following [solution_name] properties can utilize filename glob
 * detect.maven.excluded.scopes
 * detect.maven.included.modules
 * detect.maven.excluded.modules
-* detect.sbt.included.configurations
-* detect.sbt.excluded.configurations
 * detect.gradle.included.configurations
 * detect.gradle.excluded.configurations
 * detect.gradle.included.projects

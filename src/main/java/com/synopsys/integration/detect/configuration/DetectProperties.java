@@ -1736,7 +1736,6 @@ public class DetectProperties {
 
     //#region Deprecated Properties
     // username/password ==> api token
-    private static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. In the future, Detect will always operate in SUBPROJECT aggregation mode (regardless of how it is configured) to more accurately report the dependency graph.";
     private static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
     private static final String DETECT_DOCKER_PATH_REQUIRED_DEPRECATION_MESSAGE = "This property is being removed. A docker executable is only required when running the Docker tool in air gap mode.";
 
