@@ -14,5 +14,3 @@ If you wish to specify package manager-specific exclusions you may do so using t
 * [detect.maven.excluded.modules](../../properties/detectors/maven.md#maven-modules-excluded-advanced)
 * [detect.nuget.included.modules](../../properties/detectors/nuget.md#nuget-modules-included-advanced)
 * [detect.nuget.excluded.modules](../../properties/detectors/nuget.md#nuget-projects-excluded-advanced)
-* [detect.sbt.included.configurations](../../properties/detectors/sbt.md#sbt-configurations-included-deprecated)
-* [detect.sbt.excluded.configurations](../../properties/detectors/sbt.md#sbt-configurations-excluded-deprecated)

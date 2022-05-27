@@ -1,44 +1,23 @@
 # BDIO aggregation
 
-## Background
+Starting with version 8.0.0, [solution_name] aggregates into a single BDIO file / codelocation all package manager results;
+that is, all dependency graphs produced by any of the following that executed  during the [solution_name] run:
 
-By default, when run on a complex project (with, say, multiple subprojects), [solution_name] will generate (and upload to [blackduck_product_name])
-multiple BDIO files. Each BDIO file is mapped to a codelocation (scan) in [blackduck_product_name]. The information
-in the codelocation name provides potentially
-valuable information about where components originated. These names are visible on the [blackduck_product_name] Project Version Source tab.
+* Detectors
+* Docker Inspector
+* Bazel
 
-As an alternative, [solution_name] provides the option (enabled by setting the
-*detect.bom.aggregate.name* property) to aggregate those BDIO files into a single BDIO file, which is uploaded
-to [blackduck_product_name] producing a single codelocation name.
+This BDIO takes advantage of
+functionality added to [blackduck_product_name] in version 2021.8.0
+that enables [blackduck_product_name] to preserve both source information (indicating, for example, from which
+subproject a dependency originated) and match type information (direct vs. transitive dependencies).
 
-## For users of [blackduck_product_name] 2021.8.0 or later
+[solution_name] now operates in a way that is similar to [solution_name] 7
+run with property detect.bom.aggregate.remediation.mode=SUBPROJECT.
+The property detect.bom.aggregate.remediation.mode does not exist in [solution_name] 8.
 
-If you are using [blackduck_product_name] 2021.8.0 or later and you want to use BDIO aggregation,
-we recommend you set detect.bom.aggregate.remediation.mode to SUBPROJECT. This takes advantage of
-functionality in newer versions of [blackduck_product_name] that avoids the issues described below.
+## Related properties
 
-## For users of [blackduck_product_name] older than 2021.8.0
+* [detect.bdio.output.path](../properties/configuration/paths.md#bdio-output-directory)
+* [detect.bdio.file.name](../properties/configuration/paths.md#bdio-file-name)
 
-For users of [blackduck_product_name] older than 2021.8.0,
-BDIO aggregation involves tradeoffs,
-and it is important to understand those tradeoffs when using it.
-
-When BDIO is aggregated, the source information (subproject name, etc.)
-that (in the default non-aggregated scenario) would have appeared in the codelocation names is moved to
-top level metadata components, moving the formerly top-level components down a level in the dependency
-graph. The downside to this is that *all* components (including direct dependencies) from the aggregated
-BDIO appear with dependency type *Transitive* in [blackduck_product_name].
-
-In order to preserve the accuracy of the dependency type field in [blackduck_product_name], you can
-set property *detect.bom.aggregate.remediation.mode* to DIRECT, which tells [solution_name] to keep
-direct dependencies at the top level of the graph. The downside of this approach is that the source information
-(which would otherwise be visible on the [blackduck_product_name] Source tab) is removed.
-
-## Summary
-
-If you are using [blackduck_product_name] 2021.8.0 or later, set detect.bom.aggregate.remediation.mode to SUBPROJECT.
-
-For users of older [blackduck_product_name] versions:
-
-* detect.bom.aggregate.remediation.mode=DIRECT provides accurate dependency type values (direct vs. indirect), but loses information about component source.
-* detect.bom.aggregate.remediation.mode=TRANSITIVE preserves source information, but results in inaccurate dependency type values.
