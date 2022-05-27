@@ -43,13 +43,6 @@ class WorkspaceRuleChooserTest {
     }
 
     @Test
-    void testPreferNewProperty() throws IntegrationException {
-        Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_JUST_MAVEN_INSTALL, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
-        assertEquals(1, chosenWorkspaceRules.size());
-        assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
-    }
-
-    @Test
     void testOneRuleProvidedDifferentOneParsed() throws IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_JUST_MAVEN_JAR, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
