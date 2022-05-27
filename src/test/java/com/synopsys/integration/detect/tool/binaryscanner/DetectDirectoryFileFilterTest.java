@@ -68,10 +68,7 @@ public class DetectDirectoryFileFilterTest {
         List<String> includedFiles = Arrays.asList("*.txt");
         DetectDirectoryFileFilter filter = new DetectDirectoryFileFilter(excludedDirs, includedFiles);
 
-        assertFalse(filter.isExcludedDirectory(includedDir));
         assertFalse(filter.test(includedDir));
-
-        assertTrue(filter.isExcludedDirectory(excludedDir));
         assertTrue(filter.test(excludedDir));
     }
 }

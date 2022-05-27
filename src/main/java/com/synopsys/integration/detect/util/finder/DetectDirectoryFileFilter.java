@@ -18,25 +18,11 @@ public class DetectDirectoryFileFilter implements Predicate<File>  {
     @Override
     public boolean test(File file) {
         if (file.isDirectory()) {
-            return isExcludedDirectory(file);
+            return directoryMatcher.nameMatchesExludedDirectory(directoryExclusionPatterns, file) || directoryMatcher.pathMatchesExcludedDirectory(directoryExclusionPatterns, file);
         }
         if (file.isFile()) {
-            return !isExcludedFile(file);
+            return wildcardFilter.accept(file);
         }
         return false;
-    }
-
-    public boolean isExcludedDirectory(File file) {
-        if (!file.isDirectory()) {
-            return false;
-        }
-        return directoryMatcher.nameMatchesExludedDirectory(directoryExclusionPatterns, file) || directoryMatcher.pathMatchesExcludedDirectory(directoryExclusionPatterns, file);
-    }
-
-    private boolean isExcludedFile(File file) {
-        if (!file.isFile()) {
-            return false;
-        }
-        return !wildcardFilter.accept(file);
     }
 }
