@@ -14,6 +14,7 @@ public class PipBattery {
         test.sourceDirectoryNamed("linux-pip");
         test.sourceFileNamed("setup.py");
         test.executableFromResourceFiles(DetectProperties.DETECT_PYTHON_PATH, "pip-name.xout", "pip-inspector.xout");
+        test.executableFromResourceFiles(DetectProperties.DETECT_PIP_PATH, "pip-name.xout"); // Needs pip for version logging
         test.git("https://github.com/nvbn/thefuck.git", "master");
         test.expectBdioResources();
         test.run();

@@ -43,14 +43,10 @@ public class BinaryUploadOperation {
         NameVersion projectNameVersion
     )
         throws DetectUserFriendlyException {
-        String prefix = binaryScanOptions.getCodeLocationPrefix();
-        String suffix = binaryScanOptions.getCodeLocationSuffix();
         String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(
             binaryScanFile,
             projectNameVersion.getName(),
-            projectNameVersion.getVersion(),
-            prefix,
-            suffix
+            projectNameVersion.getVersion()
         );
         try {
             logger.info("Preparing to upload binary scan file: " + binaryScanFile.getAbsolutePath());

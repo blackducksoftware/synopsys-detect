@@ -10,23 +10,17 @@ public class BinaryScanOptions {
     private final Path singleTargetFilePath;
     private final List<String> multipleTargetFileNamePatterns;
 
-    private final String codeLocationPrefix;
-    private final String codeLocationSuffix;
     private final int searchDepth;
     private final boolean followSymLinks;
 
     public BinaryScanOptions(
         @Nullable Path singleTargetFilePath,
         List<String> multipleTargetFileNamePatterns,
-        String codeLocationPrefix,
-        String codeLocationSuffix,
         int searchDepth,
         boolean followSymLinks
     ) {
         this.singleTargetFilePath = singleTargetFilePath;
         this.multipleTargetFileNamePatterns = multipleTargetFileNamePatterns;
-        this.codeLocationPrefix = codeLocationPrefix;
-        this.codeLocationSuffix = codeLocationSuffix;
         this.searchDepth = searchDepth;
         this.followSymLinks = followSymLinks;
     }
@@ -37,14 +31,6 @@ public class BinaryScanOptions {
 
     public Optional<Path> getSingleTargetFilePath() {
         return Optional.ofNullable(singleTargetFilePath);
-    }
-
-    public String getCodeLocationPrefix() {
-        return codeLocationPrefix;
-    }
-
-    public String getCodeLocationSuffix() {
-        return codeLocationSuffix;
     }
 
     public int getSearchDepth() {

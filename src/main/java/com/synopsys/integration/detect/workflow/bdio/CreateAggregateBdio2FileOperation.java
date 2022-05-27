@@ -14,6 +14,7 @@ import com.blackducksoftware.bdio2.Bdio;
 import com.blackducksoftware.bdio2.BdioMetadata;
 import com.blackducksoftware.common.value.Product;
 import com.synopsys.integration.bdio.model.SpdxCreator;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.bdio2.model.Bdio2Document;
 import com.synopsys.integration.blackduck.bdio2.model.ProjectInfo;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
@@ -37,7 +38,8 @@ public class CreateAggregateBdio2FileOperation {
         String detectVersion = detectInfo.getDetectVersion();
         SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
 
-        String group = StringUtils.defaultIfBlank(aggregateCodeLocation.getProjectExternalId().getGroup(), null);
+        ExternalId projectExternalId = aggregateCodeLocation.getAggregateDependencyGraph().getProjectDependency().getExternalId();
+        String group = StringUtils.defaultIfBlank(projectExternalId.getGroup(), null);
         ProjectInfo projectInfo = ProjectInfo.nameVersionGroup(aggregateCodeLocation.getProjectNameVersion(), group);
         BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(
             aggregateCodeLocation.getCodeLocationName(),

@@ -46,16 +46,10 @@ public class DetectOnDetectTest {
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.bdioFiles(6); //7 code locations, 6 bdio, 1 signature scanner
+            dockerAssertions.bdioFiles(1); //7 code locations, 6 bdio, 1 signature scanner
 
             blackduckAssertions.hasCodeLocations(
-                "src/detect-on-detect-docker/happy-path scan",
-                "detect-on-detect-docker/happy-path/detectable/com.synopsys.integration/detectable/7.1.1-SNAPSHOT gradle/bom",
-                "detect-on-detect-docker/happy-path/com.synopsys.integration/synopsys-detect/7.1.1-SNAPSHOT gradle/bom",
-                "detect-on-detect-docker/happy-path/common/com.synopsys.integration/common/7.1.1-SNAPSHOT gradle/bom",
-                "detect-on-detect-docker/happy-path/common-test/com.synopsys.integration/common-test/7.1.1-SNAPSHOT gradle/bom",
-                "detect-on-detect-docker/happy-path/configuration/com.synopsys.integration/configuration/7.1.1-SNAPSHOT gradle/bom",
-                "detect-on-detect-docker/happy-path/detector/com.synopsys.integration/detector/7.1.1-SNAPSHOT gradle/bom"
+                "src/detect-on-detect-docker/happy-path scan"
             );
 
             blackduckAssertions.hasComponents("jackson-core");
