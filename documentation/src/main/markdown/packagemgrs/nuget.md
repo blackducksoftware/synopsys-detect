@@ -22,7 +22,7 @@ Binary: https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/s
 
 The Detect NuGet Inspector depends on packages not installed by default on alpine systems, such as the dynamic loader for DLLs.
 
-When these dynamic loader is not present, an error message similar to the following appears in the log as a result of
+When the dynamic loader is not present, an error message similar to the following appears in the log as a result of
 [solution_name]'s attempt to execute the NuGet Inspector:
 ```
 java.io.IOException: Cannot run program ".../tools/detect-nuget-inspector/detect-nuget-inspector-1.0.1-linux/detect-nuget-inspector" (in directory ...): error=2, No such file or directory
