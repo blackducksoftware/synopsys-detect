@@ -44,9 +44,9 @@ public class BinaryScanStepRunner {
         if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {
             logger.info("Binary upload will upload single file.");
             binaryUpload = binaryScanOptions.getSingleTargetFilePath().get().toFile();
-        } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
+        } else if (binaryScanOptions.getFileFilter().isPresent()) {
             Optional<File> multipleUploadTarget = operationFactory.searchForBinaryTargets(
-                binaryScanOptions.getMultipleTargetFileNamePatterns(),
+                binaryScanOptions.getFileFilter().get(),
                 binaryScanOptions.getSearchDepth(),
                 binaryScanOptions.isFollowSymLinks()
             );

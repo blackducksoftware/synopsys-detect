@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -711,9 +712,9 @@ public class OperationFactory { //TODO: OperationRunner
         return detectConfigurationFactory.createBinaryScanOptions();
     }
 
-    public Optional<File> searchForBinaryTargets(List<String> multipleTargetFileNamePatterns, int searchDepth, boolean followSymLinks) throws OperationException {
+    public Optional<File> searchForBinaryTargets(Predicate<File> fileFilter, int searchDepth, boolean followSymLinks) throws OperationException {
         return auditLog.namedInternal("Binary Search For Targets", () -> {
-            return new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager).searchForMultipleTargets(multipleTargetFileNamePatterns, followSymLinks, searchDepth);
+            return new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager).searchForMultipleTargets(fileFilter, followSymLinks, searchDepth);
         });
     }
 

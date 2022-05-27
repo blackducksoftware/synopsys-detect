@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +12,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
@@ -44,6 +47,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndiv
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
+import com.synopsys.integration.detect.util.finder.DetectDirectoryFileFilter;
 import com.synopsys.integration.detect.workflow.DummyAccuracyEnum;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
@@ -222,36 +226,10 @@ public class DetectConfigurationFactory {
         return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath, impactOutputPath);
     }
 
-    public List<String> collectSignatureScannerDirectoryExclusions() {
-        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
-
-        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
-            List<String> defaultExcludedFromSignatureScan = Arrays.stream(DefaultSignatureScannerExcludedDirectories.values())
-                .map(DefaultSignatureScannerExcludedDirectories::getDirectoryName)
-                .collect(Collectors.toList());
-            directoryExclusionPatterns.addAll(defaultExcludedFromSignatureScan);
-        }
-
-        return directoryExclusionPatterns;
-    }
-
-    private List<String> collectDetectorSearchDirectoryExclusions() {
-        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
-
-        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
-            List<String> defaultExcludedFromDetectorSearch = Arrays.stream(DefaultDetectorSearchExcludedDirectories.values())
-                .map(DefaultDetectorSearchExcludedDirectories::getDirectoryName)
-                .collect(Collectors.toList());
-            directoryExclusionPatterns.addAll(defaultExcludedFromDetectorSearch);
-        }
-
-        return directoryExclusionPatterns;
-    }
-
     public DetectorFinderOptions createDetectorFinderOptions() {
         //Normal settings
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
-        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(collectDetectorSearchDirectoryExclusions());
+        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(collectDirectoryExclusions(DefaultDetectorSearchExcludedDirectories.getDirectoryNames()));
 
         return new DetectorFinderOptions(fileFilter, maxDepth, getFollowSymLinks());
     }
@@ -406,9 +384,13 @@ public class DetectConfigurationFactory {
 
     public BinaryScanOptions createBinaryScanOptions() {
         Path singleTarget = detectConfiguration.getPathOrNull(DetectProperties.DETECT_BINARY_SCAN_FILE);
-        List<String> multipleTargets = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS);
+        List<String> fileInclusionPatterns = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS);
+        DetectDirectoryFileFilter fileFilter = null;
+        if (fileInclusionPatterns.stream().anyMatch(StringUtils::isNotBlank)) {
+            fileFilter = new DetectDirectoryFileFilter(collectDirectoryExclusions(), fileInclusionPatterns);
+        }
         Integer searchDepth = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_SEARCH_DEPTH);
-        return new BinaryScanOptions(singleTarget, multipleTargets, searchDepth, getFollowSymLinks());
+        return new BinaryScanOptions(singleTarget, fileFilter, searchDepth, getFollowSymLinks());
     }
 
     public DetectExecutableOptions createDetectExecutableOptions() {
@@ -462,5 +444,22 @@ public class DetectConfigurationFactory {
     public ProjectGroupOptions createProjectGroupOptions() {
         String projectGroupName = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_GROUP_NAME);
         return new ProjectGroupOptions(projectGroupName);
+    }
+
+    public List<String> collectSignatureScannerDirectoryExclusions() {
+        return collectDirectoryExclusions(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
+    }
+
+    private List<String> collectDirectoryExclusions() {
+        return collectDirectoryExclusions(Collections.emptyList());
+    }
+    private List<String> collectDirectoryExclusions(@NotNull List<String> givenExclusions) {
+        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
+
+        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
+            directoryExclusionPatterns.addAll(givenExclusions);
+        }
+
+        return directoryExclusionPatterns;
     }
 }
