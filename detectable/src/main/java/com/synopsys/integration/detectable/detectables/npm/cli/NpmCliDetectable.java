@@ -15,7 +15,7 @@ import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFo
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: node_modules, package.json. Executable: npm.")
+@DetectableInfo(name = "NPM CLI", language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: node_modules, package.json. Executable: npm.")
 public class NpmCliDetectable extends Detectable {
     public static final String NODE_MODULES = "node_modules";
     public static final String PACKAGE_JSON = "package.json";

@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: pom.groovy. Executable: mvnw or mvn.")
+@DetectableInfo(name = "Maven Wrapper CLI", language = "various", forge = "Maven Central", requirementsMarkdown = "File: pom.groovy. Executable: mvnw or mvn.")
 public class MavenPomWrapperDetectable extends Detectable {
     public static final String POM_WRAPPER_FILENAME = "pom.groovy";
 

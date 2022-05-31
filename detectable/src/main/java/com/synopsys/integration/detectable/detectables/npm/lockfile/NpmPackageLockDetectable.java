@@ -15,7 +15,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: package-lock.json. Optionally for better results: package.json also.")
+@DetectableInfo(name = "NPM Package Lock", language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: package-lock.json. Optionally for better results: package.json also.")
 public class NpmPackageLockDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String PACKAGE_LOCK_JSON = "package-lock.json";

@@ -20,7 +20,7 @@ import com.synopsys.integration.detectable.detectable.result.PropertyInsufficien
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: WORKSPACE. Executable: bazel.")
+@DetectableInfo(name = "Bazel CLI", language = "various", forge = "Maven Central", requirementsMarkdown = "File: WORKSPACE. Executable: bazel.")
 public class BazelDetectable extends Detectable {
     public static final String WORKSPACE_FILENAME = "WORKSPACE";
     private final FileFinder fileFinder;

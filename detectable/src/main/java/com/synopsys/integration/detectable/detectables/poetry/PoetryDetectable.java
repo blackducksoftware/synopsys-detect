@@ -16,7 +16,7 @@ import com.synopsys.integration.detectable.detectables.poetry.parser.ToolPoetryS
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Python", forge = "pypi", requirementsMarkdown = "Files: Poetry.lock, pyproject.toml")
+@DetectableInfo(name = "Poetry Lock", language = "Python", forge = "pypi", requirementsMarkdown = "Files: Poetry.lock, pyproject.toml")
 public class PoetryDetectable extends Detectable {
     private static final String PYPROJECT_TOML_FILE_NAME = "pyproject.toml";
     private static final String POETRY_LOCK = "poetry.lock";

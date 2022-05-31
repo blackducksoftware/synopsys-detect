@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Golang", forge = "GitHub", requirementsMarkdown = "File: Gopkg.lock.")
+@DetectableInfo(name = "GoDep Lock", language = "Golang", forge = "GitHub", requirementsMarkdown = "File: Gopkg.lock.")
 public class GoDepLockDetectable extends Detectable {
     public static final String GOPKG_LOCK_FILENAME = "Gopkg.lock";
     public static final String GOFILE_FILENAME_PATTERN = "Gopkg.toml";

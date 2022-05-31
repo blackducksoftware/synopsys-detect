@@ -14,7 +14,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "PHP", forge = "Pear", requirementsMarkdown = "Files: package.xml. Executable: pear.")
+@DetectableInfo(name = "Pear CLI", language = "PHP", forge = "Pear", requirementsMarkdown = "Files: package.xml. Executable: pear.")
 public class PearCliDetectable extends Detectable {
     public static final String PACKAGE_XML_FILENAME = "package.xml";
 

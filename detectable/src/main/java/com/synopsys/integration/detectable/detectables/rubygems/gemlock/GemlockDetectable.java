@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Ruby", forge = "RubyGems", requirementsMarkdown = "File: Gemfile.lock.")
+@DetectableInfo(name = "Gemfile Lock", language = "Ruby", forge = "RubyGems", requirementsMarkdown = "File: Gemfile.lock.")
 public class GemlockDetectable extends Detectable {
     private static final String GEMFILE_LOCK_FILENAME = "Gemfile.lock";
 

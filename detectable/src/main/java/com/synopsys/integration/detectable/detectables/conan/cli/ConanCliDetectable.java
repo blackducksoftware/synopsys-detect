@@ -15,7 +15,7 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "C/C++", forge = "conan", requirementsMarkdown = "Files: conanfile.txt or conanfile.py. Executable: conan.")
+@DetectableInfo(name = "Conan CLI", language = "C/C++", forge = "conan", requirementsMarkdown = "Files: conanfile.txt or conanfile.py. Executable: conan.")
 public class ConanCliDetectable extends Detectable {
     public static final String CONANFILETXT = "conanfile.txt";
     public static final String CONANFILEPY = "conanfile.py";

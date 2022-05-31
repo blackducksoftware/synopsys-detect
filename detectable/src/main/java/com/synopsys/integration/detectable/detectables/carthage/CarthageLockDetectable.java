@@ -16,7 +16,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "GitHub", requirementsMarkdown = "Files: Cartfile, Cartfile.resolved")
+@DetectableInfo(name = "Carthage Lock", language = "various", forge = "GitHub", requirementsMarkdown = "Files: Cartfile, Cartfile.resolved")
 public class CarthageLockDetectable extends Detectable {
     private static final String CARTFILE_FILENAME = "Cartfile";
     private static final String CARTFILE_RESOLVED_FILENAME = "Cartfile.resolved";

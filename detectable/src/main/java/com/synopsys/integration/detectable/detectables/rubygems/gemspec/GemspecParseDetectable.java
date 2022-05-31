@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Ruby", forge = "RubyGems", requirementsMarkdown = "File: A gemspec file (with .gemspec extension).")
+@DetectableInfo(name = "Gemspec Parse", language = "Ruby", forge = "RubyGems", requirementsMarkdown = "File: A gemspec file (with .gemspec extension).")
 public class GemspecParseDetectable extends Detectable {
     private static final String GEMSPEC_FILENAME = "*.gemspec";
 

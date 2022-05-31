@@ -24,7 +24,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Python", forge = "Pypi", requirementsMarkdown = "A setup.py file, or one or more requirements.txt files. Executables: python and pip, or python3 and pip3.")
+@DetectableInfo(name = "PIP Native Inspector", language = "Python", forge = "Pypi", requirementsMarkdown = "A setup.py file, or one or more requirements.txt files. Executables: python and pip, or python3 and pip3.")
 public class PipInspectorDetectable extends Detectable {
     private static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
     private static final String REQUIREMENTS_DEFAULT_FILE_NAME = "requirements.txt";

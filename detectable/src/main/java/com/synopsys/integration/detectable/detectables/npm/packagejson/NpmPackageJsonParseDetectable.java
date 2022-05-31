@@ -14,7 +14,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: package.json.")
+@DetectableInfo(name = "NPM Package Json Parse", language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: package.json.")
 public class NpmPackageJsonParseDetectable extends Detectable {
     public static final String PACKAGE_JSON = "package.json";
 

@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJ
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: pnpm-lock.yaml and package.json.")
+@DetectableInfo(name = "Pnpm Lock", language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: pnpm-lock.yaml and package.json.")
 public class PnpmLockDetectable extends Detectable {
     public static final String PNPM_LOCK_YAML_FILENAME = "pnpm-lock.yaml";
     public static final String PACKAGE_JSON = "package.json";

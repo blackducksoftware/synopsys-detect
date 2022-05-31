@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.detectables.swift.lock.model.PackageR
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift, Package.resolved")
+@DetectableInfo(name = "Swift Lock", language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift, Package.resolved")
 public class SwiftPackageResolvedDetectable extends Detectable {
     public static final String PACKAGE_SWIFT_FILENAME = "Package.swift";
     public static final String PACKAGE_RESOLVED_FILENAME = "Package.resolved";

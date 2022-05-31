@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.detectables.projectinspector.ProjectI
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle")
+@DetectableInfo(name = "Gradle Project Inspector", language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle")
 public class GradleProjectInspectorDetectable extends Detectable {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 

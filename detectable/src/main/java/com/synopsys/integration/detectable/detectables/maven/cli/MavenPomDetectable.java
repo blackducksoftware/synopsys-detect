@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: pom.xml. Executable: mvnw or mvn.")
+@DetectableInfo(name = "Maven CLI", language = "various", forge = "Maven Central", requirementsMarkdown = "File: pom.xml. Executable: mvnw or mvn.")
 public class MavenPomDetectable extends Detectable {
     public static final String POM_FILENAME = "pom.xml";
 

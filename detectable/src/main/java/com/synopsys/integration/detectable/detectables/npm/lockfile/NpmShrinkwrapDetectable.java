@@ -15,7 +15,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: npm-shrinkwrap.json. Optionally for better results: package.json also.")
+@DetectableInfo(name = "NPM Shrinkwrap", language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: npm-shrinkwrap.json. Optionally for better results: package.json also.")
 public class NpmShrinkwrapDetectable extends Detectable {
     public static final String SHRINKWRAP_JSON = "npm-shrinkwrap.json";
     public static final String PACKAGE_JSON = "package.json";

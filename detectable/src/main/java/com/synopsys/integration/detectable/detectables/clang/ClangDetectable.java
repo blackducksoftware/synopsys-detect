@@ -22,7 +22,7 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "C or C++", forge = "Derived from the Linux distribution.", requirementsMarkdown = "File: compile_commands.json. Executable: Linux package manager.")
+@DetectableInfo(name = "Clang CLI", language = "C or C++", forge = "Derived from the Linux distribution.", requirementsMarkdown = "File: compile_commands.json. Executable: Linux package manager.")
 public class ClangDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

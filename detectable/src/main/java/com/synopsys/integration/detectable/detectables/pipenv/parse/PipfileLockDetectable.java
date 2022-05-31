@@ -16,7 +16,7 @@ import com.synopsys.integration.detectable.detectable.result.PipfileLockNotFound
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Python", forge = "PyPi", requirementsMarkdown = "Files: Pipfile, Pipfile.lock")
+@DetectableInfo(name = "Pipfile Lock", language = "Python", forge = "PyPi", requirementsMarkdown = "Files: Pipfile, Pipfile.lock")
 public class PipfileLockDetectable extends Detectable {
     private static final String PIPFILE_FILENAME = "Pipfile";
     private static final String PIPFILE_LOCK_FILENAME = "Pipfile.lock";

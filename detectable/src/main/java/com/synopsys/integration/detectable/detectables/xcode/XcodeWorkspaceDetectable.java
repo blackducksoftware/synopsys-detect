@@ -26,7 +26,7 @@ import com.synopsys.integration.detectable.detectables.xcode.model.XcodeWorkspac
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Swift", forge = "GITHUB", requirementsMarkdown = "Directory: *.xcworkspace")
+@DetectableInfo(name = "Xcode Workspace Lock", language = "Swift", forge = "GITHUB", requirementsMarkdown = "Directory: *.xcworkspace")
 public class XcodeWorkspaceDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final PackageResolvedExtractor packageResolvedExtractor;

@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Golang", forge = "GitHub", requirementsMarkdown = "File: vendor.conf.")
+@DetectableInfo(name = "GoVndr CLI", language = "Golang", forge = "GitHub", requirementsMarkdown = "File: vendor.conf.")
 public class GoVndrDetectable extends Detectable {
     public static final String VNDR_CONF_FILENAME = "vendor.conf";
 

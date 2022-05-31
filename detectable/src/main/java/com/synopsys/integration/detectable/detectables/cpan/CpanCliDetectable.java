@@ -14,7 +14,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
-@DetectableInfo(language = "Perl", forge = "CPAN", requirementsMarkdown = "File: Makefile.PL. Executable: cpan.")
+@DetectableInfo(name = "Cpan CLI", language = "Perl", forge = "CPAN", requirementsMarkdown = "File: Makefile.PL. Executable: cpan.")
 public class CpanCliDetectable extends Detectable {
     private static final String MAKEFILE = "Makefile.PL";
 

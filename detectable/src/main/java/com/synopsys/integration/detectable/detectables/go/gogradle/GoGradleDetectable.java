@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Golang", forge = "GitHub", requirementsMarkdown = "File: gogradle.lock.")
+@DetectableInfo(name = "GoGradle Lock", language = "Golang", forge = "GitHub", requirementsMarkdown = "File: gogradle.lock.")
 public class GoGradleDetectable extends Detectable {
     public static final String GO_GRADLE_LOCK = "gogradle.lock";
 

@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 //TODO: Rename to Cargo Lock
-@DetectableInfo(language = "Rust", forge = "crates", requirementsMarkdown = "Files: Cargo.lock, Cargo.toml")
+@DetectableInfo(name = "Cargo Lock", language = "Rust", forge = "crates", requirementsMarkdown = "Files: Cargo.lock, Cargo.toml")
 public class CargoLockDetectable extends Detectable {
     public static final String CARGO_LOCK_FILENAME = "Cargo.lock";
     public static final String CARGO_TOML_FILENAME = "Cargo.toml";

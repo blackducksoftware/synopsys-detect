@@ -19,7 +19,7 @@ import com.synopsys.integration.detectable.detectables.swift.lock.model.PackageR
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Swift", forge = "GITHUB", requirementsMarkdown = "Directory: *.xcodeproj, Files: Package.resolved")
+@DetectableInfo(name = "Xcode Project Lock", language = "Swift", forge = "GITHUB", requirementsMarkdown = "Directory: *.xcodeproj, Files: Package.resolved")
 public class XcodeProjectDetectable extends Detectable {
     public static final String PACKAGE_RESOLVED_RELATIVE_PATH = "project.xcworkspace/xcshareddata/swiftpm";
 

@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: yarn.lock and package.json.")
+@DetectableInfo(name = "Yarn Lock", language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: yarn.lock and package.json.")
 public class YarnLockDetectable extends Detectable {
     public static final String YARN_LOCK_FILENAME = "yarn.lock";
     public static final String YARN_PACKAGE_JSON = "package.json";

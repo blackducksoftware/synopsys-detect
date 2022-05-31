@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Erlang", forge = "Hex", requirementsMarkdown = "File: rebar.config. Executable: rebar3.")
+@DetectableInfo(name = "Rebar CLI", language = "Erlang", forge = "Hex", requirementsMarkdown = "File: rebar.config. Executable: rebar3.")
 public class RebarDetectable extends Detectable {
     public static final String REBAR_CONFIG = "rebar.config";
 

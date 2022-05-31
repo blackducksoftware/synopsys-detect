@@ -25,7 +25,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle or build.gradle.kts. Executable: gradlew or gradle.")
+@DetectableInfo(name = "Gradle Native Inspector", language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle or build.gradle.kts. Executable: gradlew or gradle.")
 public class GradleInspectorDetectable extends Detectable {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
     public static final String KOTLIN_BUILD_GRADLE_FILENAME = "build.gradle.kts";

@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Python", forge = "Anaconda", requirementsMarkdown = "File: environment.yml. Executable: conda.")
+@DetectableInfo(name = "Conda CLI", language = "Python", forge = "Anaconda", requirementsMarkdown = "File: environment.yml. Executable: conda.")
 public class CondaCliDetectable extends Detectable {
     public static final String ENVIRONMENT_YML = "environment.yml";
 

@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift. Executables: swift.")
+@DetectableInfo(name = "Swift CLI", language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift. Executables: swift.")
 public class SwiftCliDetectable extends Detectable {
     public static final String PACKAGE_SWIFT_FILENAME = "Package.swift";
 

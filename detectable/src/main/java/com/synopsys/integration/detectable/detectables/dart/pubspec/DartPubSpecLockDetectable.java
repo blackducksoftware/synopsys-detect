@@ -18,7 +18,7 @@ import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFound
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Dart", forge = "Dart", requirementsMarkdown = "Files: pubspec.yaml, pubspec.lock.")
+@DetectableInfo(name = "Dart PubSpec Lock", language = "Dart", forge = "Dart", requirementsMarkdown = "Files: pubspec.yaml, pubspec.lock.")
 public class DartPubSpecLockDetectable extends Detectable {
     public static final String PUBSPEC_YAML_FILENAME = "pubspec.yaml";
     public static final String PUBSPEC_LOCK_FILENAME = "pubspec.lock";

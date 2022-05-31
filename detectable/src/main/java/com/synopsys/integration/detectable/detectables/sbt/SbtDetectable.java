@@ -29,7 +29,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 //Even though this is technically two differenct extractors it's been combined because one of the approaches is deprecated. In the future only the plugin approach will be taken.
-@DetectableInfo(language = "Scala", forge = "Maven Central", requirementsMarkdown = "File: build.sbt. Plugin: Dependency Graph")
+@DetectableInfo(name = "Sbt Native Inspector", language = "Scala", forge = "Maven Central", requirementsMarkdown = "File: build.sbt. Plugin: Dependency Graph")
 public class SbtDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String BUILD_SBT_FILENAME = "build.sbt";

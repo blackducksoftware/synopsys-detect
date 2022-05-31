@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 // TODO: I'm confused by the interchangeability of 'composer' and 'packagist' in the names of classes here and tests. JM-01/2022
-@DetectableInfo(language = "PHP", forge = "Packagist.org", requirementsMarkdown = "Files: composer.lock, composer.json.")
+@DetectableInfo(name = "Composer Lock", language = "PHP", forge = "Packagist.org", requirementsMarkdown = "Files: composer.lock, composer.json.")
 public class ComposerLockDetectable extends Detectable {
     private static final String COMPOSER_LOCK = "composer.lock";
     private static final String COMPOSER_JSON = "composer.json";

@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "R", forge = "CRAN", requirementsMarkdown = "File: packrat.lock.")
+@DetectableInfo(name = "Packrat Lock", language = "R", forge = "CRAN", requirementsMarkdown = "File: packrat.lock.")
 public class PackratLockDetectable extends Detectable {
     public static final String PACKRATLOCK_FILE_NAME = "packrat.lock";
 

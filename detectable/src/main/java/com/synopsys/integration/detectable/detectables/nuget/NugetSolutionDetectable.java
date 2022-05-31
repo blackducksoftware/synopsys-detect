@@ -21,7 +21,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "C#", forge = "NuGet.org", requirementsMarkdown = "File: a solution file with a .sln extension.")
+@DetectableInfo(name = "NuGet Solution Native Inspector", language = "C#", forge = "NuGet.org", requirementsMarkdown = "File: a solution file with a .sln extension.")
 public class NugetSolutionDetectable extends Detectable {
     private static final List<String> SUPPORTED_SOLUTION_PATTERNS = Collections.singletonList("*.sln");
 
