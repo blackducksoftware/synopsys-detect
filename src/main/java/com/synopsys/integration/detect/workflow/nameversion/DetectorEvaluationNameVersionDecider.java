@@ -36,8 +36,10 @@ public class DetectorEvaluationNameVersionDecider {
             if (foundDetector.wasExtractionSuccessful() && foundDetector.getExtraction().isPresent()) {
                 Extraction extraction = foundDetector.getExtraction().get();
 
-                NameVersion nameVersion = new NameVersion(extraction.getProjectName(), extraction.getProjectVersion());
-                projectInfos.add(new DetectorProjectInfo(foundDetector.getRule().getDetectorType(), evaluation.getDepth(), nameVersion));
+                if (StringUtils.isNotBlank(extraction.getProjectName())) {
+                    NameVersion nameVersion = new NameVersion(extraction.getProjectName(), extraction.getProjectVersion());
+                    projectInfos.add(new DetectorProjectInfo(foundDetector.getRule().getDetectorType(), evaluation.getDepth(), nameVersion));
+                }
             }
         });
 
