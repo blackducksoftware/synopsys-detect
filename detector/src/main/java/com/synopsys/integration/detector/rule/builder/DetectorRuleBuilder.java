@@ -132,7 +132,7 @@ public class DetectorRuleBuilder {
         for (int i = entryPointBuilders.size() - 1; i >= 0; i--) {
             EntryPointBuilder current = entryPointBuilders.get(i);
             next = current.build(detectableLookup, next);
-            entryPoints.add(next);
+            entryPoints.add(0, next);
         }
 
         return entryPoints;
