@@ -25,9 +25,6 @@ import com.synopsys.integration.detect.workflow.status.OperationType;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
-import com.synopsys.integration.detectable.detectable.explanation.Explanation;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.util.NameVersion;
 
 public class FormattedOutputManager {
@@ -71,12 +68,12 @@ public class FormattedOutputManager {
             .toList();
         formattedOutput.operations = visibleOperations();
 
-        if (detectorToolResult != null) {
-            formattedOutput.detectors = Bds.of(detectorToolResult.getRootDetectorEvaluationTree())
-                .flatMap(DetectorEvaluationTree::allDescendentEvaluations)
-                .filter(DetectorEvaluation::isApplicable)
-                .map(this::convertDetector)
-                .toList();
+        if (detectorToolResult != null) { //TODO (Detector): Add formatted output results...
+            //            formattedOutput.detectors = Bds.of(detectorToolResult.getRootDetectorEvaluation())
+            //                .flatMap(DetectorEvaluation::a)
+            //                .filter(DetectorEvaluation::isApplicable)
+            //                .map(this::convertDetector)
+            //                .toList();
         }
         if (projectNameVersion != null) {
             formattedOutput.projectName = projectNameVersion.getName();
@@ -99,7 +96,8 @@ public class FormattedOutputManager {
         return Bds.of(detectOperations)
             .filter(operation -> operation.getOperationType() == OperationType.PUBLIC
                 || operation.getStatusType() != StatusType.SUCCESS) //EITHER a public operation or a failed internal operation
-            .map(operation -> new FormattedOperationOutput(Operation.formatTimestamp(operation.getStartTime()),
+            .map(operation -> new FormattedOperationOutput(
+                Operation.formatTimestamp(operation.getStartTime()),
                 Operation.formatTimestamp(operation.getEndTime().orElse(null)),
                 operation.getName(),
                 operation.getStatusType().name()
@@ -119,31 +117,31 @@ public class FormattedOutputManager {
             .collect(Collectors.toList());
     }
 
-    private FormattedDetectorOutput convertDetector(DetectorEvaluation evaluation) {
-        FormattedDetectorOutput detectorOutput = new FormattedDetectorOutput();
-        detectorOutput.folder = evaluation.getDetectableEnvironment().getDirectory().toString();
-        detectorOutput.descriptiveName = evaluation.getDetectorRule().getDescriptiveName();
-        detectorOutput.detectorName = evaluation.getDetectorRule().getName();
-        detectorOutput.detectorType = evaluation.getDetectorType().toString();
-
-        detectorOutput.extracted = evaluation.wasExtractionSuccessful();
-        detectorOutput.status = evaluation.getStatus().name();
-        detectorOutput.statusCode = evaluation.getStatusCode();
-        detectorOutput.statusReason = evaluation.getStatusReason();
-        detectorOutput.explanations = Bds.of(evaluation.getAllExplanations()).map(Explanation::describeSelf).toList();
-
-        if (evaluation.getExtraction() != null) {
-            detectorOutput.extractedReason = evaluation.getExtraction().getDescription();
-            detectorOutput.relevantFiles = Bds.of(evaluation.getExtraction().getRelevantFiles()).map(File::toString).toList();
-            detectorOutput.projectName = evaluation.getExtraction().getProjectName();
-            detectorOutput.projectVersion = evaluation.getExtraction().getProjectVersion();
-            if (evaluation.getExtraction().getCodeLocations() != null) {
-                detectorOutput.codeLocationCount = evaluation.getExtraction().getCodeLocations().size();
-            }
-        }
-
-        return detectorOutput;
-    }
+    //    private FormattedDetectorOutput convertDetector(DetectorEvaluation evaluation) {
+    //        FormattedDetectorOutput detectorOutput = new FormattedDetectorOutput();
+    //        detectorOutput.folder = evaluation.getDetectableEnvironment().getDirectory().toString();
+    //        detectorOutput.descriptiveName = evaluation.getDetectorRule().getDescriptiveName();
+    //        detectorOutput.detectorName = evaluation.getDetectorRule().getName();
+    //        detectorOutput.detectorType = evaluation.getDetectorType().toString();
+    //
+    //        detectorOutput.extracted = evaluation.wasExtractionSuccessful();
+    //        detectorOutput.status = evaluation.getStatus().name();
+    //        detectorOutput.statusCode = evaluation.getStatusCode();
+    //        detectorOutput.statusReason = evaluation.getStatusReason();
+    //        detectorOutput.explanations = Bds.of(evaluation.getAllExplanations()).map(Explanation::describeSelf).toList();
+    //
+    //        if (evaluation.getExtraction() != null) {
+    //            detectorOutput.extractedReason = evaluation.getExtraction().getDescription();
+    //            detectorOutput.relevantFiles = Bds.of(evaluation.getExtraction().getRelevantFiles()).map(File::toString).toList();
+    //            detectorOutput.projectName = evaluation.getExtraction().getProjectName();
+    //            detectorOutput.projectVersion = evaluation.getExtraction().getProjectVersion();
+    //            if (evaluation.getExtraction().getCodeLocations() != null) {
+    //                detectorOutput.codeLocationCount = evaluation.getExtraction().getCodeLocations().size();
+    //            }
+    //        }
+    //
+    //        return detectorOutput;
+    //    }
 
     private void addUnrecognizedPaths(UnrecognizedPaths unrecognizedPaths) {
         if (!this.unrecognizedPaths.containsKey(unrecognizedPaths.getGroup())) {

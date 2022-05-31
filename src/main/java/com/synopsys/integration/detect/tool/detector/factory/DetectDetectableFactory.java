@@ -9,8 +9,8 @@ import com.synopsys.integration.detectable.detectable.inspector.ProjectInspector
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
-import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
-import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
+import com.synopsys.integration.detectable.detectables.cargo.CargoLockDetectable;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageLockDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
@@ -29,13 +29,12 @@ import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetec
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
@@ -111,11 +110,11 @@ public class DetectDetectableFactory {
         return detectableFactory.createBitbakeDetectable(environment, detectableOptionFactory.createBitbakeDetectableOptions(), detectExecutableResolver);
     }
 
-    public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
+    public CargoLockDetectable createCargoDetectable(DetectableEnvironment environment) {
         return detectableFactory.createCargoDetectable(environment);
     }
 
-    public CarthageDetectable createCarthageDetectable(DetectableEnvironment environment) {
+    public CarthageLockDetectable createCarthageDetectable(DetectableEnvironment environment) {
         return detectableFactory.createCarthageDetectable(environment);
     }
 
@@ -180,7 +179,7 @@ public class DetectDetectableFactory {
         return detectableFactory.createGoGradleDetectable(environment);
     }
 
-    public GradleDetectable createGradleDetectable(DetectableEnvironment environment) {
+    public GradleInspectorDetectable createGradleDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGradleDetectable(environment, detectableOptionFactory.createGradleInspectorOptions(), gradleInspectorResolver, detectExecutableResolver);
     }
 
@@ -198,10 +197,6 @@ public class DetectDetectableFactory {
 
     public MavenPomWrapperDetectable createMavenPomWrapperDetectable(DetectableEnvironment environment) {
         return detectableFactory.createMavenPomWrapperDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
-    }
-
-    public MavenParseDetectable createMavenParseDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createMavenParseDetectable(environment, detectableOptionFactory.createMavenParseOptions());
     }
 
     public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment) {
@@ -313,7 +308,6 @@ public class DetectDetectableFactory {
         return detectableFactory.createMavenProjectInspectorDetectable(
             detectableEnvironment,
             projectInspectorResolver,
-            detectableOptionFactory.createMavenParseOptions(),
             detectableOptionFactory.createProjectInspectorOptions()
         );
     }

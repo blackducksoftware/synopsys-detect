@@ -35,7 +35,7 @@ public abstract class PhoneHomeManager {
         this.eventSystem = eventSystem;
         this.additionalMetaData = additionalMetaData;
 
-        eventSystem.registerListener(Event.ApplicableCompleted, this::startPhoneHome);
+        //eventSystem.registerListener(Event.ApplicableCompleted, this::startPhoneHome);
         eventSystem.registerListener(Event.DetectorsProfiled, event -> startPhoneHome(event.getAggregateTimings()));
         eventSystem.registerListener(Event.DetectOperationsComplete, operations::addAll);
     }

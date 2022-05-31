@@ -4,6 +4,6 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 
 @FunctionalInterface
-public interface DetectableCreatable<T extends Detectable> {
-    T createDetectable(DetectableEnvironment environment);
+public interface DetectableCreatable {
+    Detectable createDetectable(DetectableEnvironment environment);
 }

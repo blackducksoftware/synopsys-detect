@@ -23,27 +23,34 @@ import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionDecider;
-import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detector.accuracy.DetectableEvaluationResult;
+import com.synopsys.integration.detector.accuracy.DetectableEvaluator;
+import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
+import com.synopsys.integration.detector.accuracy.DetectorEvaluationOptions;
+import com.synopsys.integration.detector.accuracy.DetectorEvaluator;
+import com.synopsys.integration.detector.accuracy.DetectorExtract;
+import com.synopsys.integration.detector.accuracy.DetectorRuleEvaluation;
+import com.synopsys.integration.detector.accuracy.DetectorSearch;
+import com.synopsys.integration.detector.accuracy.EntryPointEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationUtil;
 import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.evaluation.DetectorAggregateEvaluationResult;
-import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
-import com.synopsys.integration.detector.evaluation.DetectorEvaluator;
-import com.synopsys.integration.detector.finder.DetectorFinder;
-import com.synopsys.integration.detector.finder.DetectorFinderOptions;
+import com.synopsys.integration.detector.finder.DirectoryFindResult;
+import com.synopsys.integration.detector.finder.DirectoryFinder;
+import com.synopsys.integration.detector.finder.DirectoryFinderOptions;
+import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DetectorFinder detectorFinder;
+    private final DirectoryFinder directoryFinder;
     private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
     private final EventSystem eventSystem;
     private final CodeLocationConverter codeLocationConverter;
@@ -53,7 +60,7 @@ public class DetectorTool {
     private final DetectorEventPublisher detectorEventPublisher;
 
     public DetectorTool(
-        DetectorFinder detectorFinder,
+        DirectoryFinder directoryFinder,
         ExtractionEnvironmentProvider extractionEnvironmentProvider,
         EventSystem eventSystem,
         CodeLocationConverter codeLocationConverter,
@@ -62,7 +69,7 @@ public class DetectorTool {
         ExitCodePublisher exitCodePublisher,
         DetectorEventPublisher detectorEventPublisher
     ) {
-        this.detectorFinder = detectorFinder;
+        this.directoryFinder = directoryFinder;
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.eventSystem = eventSystem;
         this.codeLocationConverter = codeLocationConverter;
@@ -75,77 +82,56 @@ public class DetectorTool {
     public DetectorToolResult performDetectors(
         File directory,
         DetectorRuleSet detectorRuleSet,
-        DetectorFinderOptions detectorFinderOptions,
+        DirectoryFinderOptions directoryFinderOptions,
         DetectorEvaluationOptions evaluationOptions,
         String projectDetector,
         List<DetectorType> requiredDetectors,
         FileFinder fileFinder
     ) {
-        logger.debug("Initializing detector system.");
-        Optional<DetectorEvaluationTree> possibleRootEvaluation;
-
         logger.debug("Starting detector file system traversal.");
-        possibleRootEvaluation = detectorFinder.findDetectors(directory, detectorRuleSet, detectorFinderOptions, fileFinder);
+        Optional<DirectoryFindResult> findResultOptional = directoryFinder.findDirectories(directory, directoryFinderOptions, fileFinder);
 
-        if (!possibleRootEvaluation.isPresent()) {
+        if (!findResultOptional.isPresent()) {
             logger.error("The source directory could not be searched for detectors - detector tool failed.");
             logger.error("Please ensure the provided source path is a directory and detect has access.");
             exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_CONFIGURATION, "Detector tool failed to run on the configured source path.");
             return new DetectorToolResult();
         }
 
-        DetectorEvaluationTree rootEvaluation = possibleRootEvaluation.get();
-        List<DetectorEvaluation> detectorEvaluations = rootEvaluation.allDescendentEvaluations();
+        DirectoryFindResult findResult = findResultOptional.get();
 
-        logger.trace("Setting up detector events.");
-        //DetectorNameVersionHandler detectorNameVersionHandler = createNameVersionHandler(projectDetector);
-        DetectorEvaluatorBroadcaster eventBroadcaster = new DetectorEvaluatorBroadcaster(eventSystem);
+        DetectorSearch detectorSearch = new DetectorSearch();
+        DetectorExtract detectorExtract = new DetectorExtract(new DetectableEvaluator());
+        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(detectorSearch, detectorExtract, evaluationOptions, extractionEnvironmentProvider::createExtractionEnvironment);
 
-        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, extractionEnvironmentProvider::createExtractionEnvironment);
-        detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
+        DetectorEvaluation evaluation = detectorEvaluator.evaluate(findResult, detectorRuleSet);
+        logger.debug("Finished detectors.");
 
-        detectorEvaluator.registerPostApplicableCallback(detectorAggregateEvaluationResult -> {
-            detectorEventPublisher.publishApplicableCompleted(detectorAggregateEvaluationResult.getApplicableDetectorTypesRecursively());
-            detectorEventPublisher.publishSearchCompleted(detectorAggregateEvaluationResult.getEvaluationTree());
-            logger.info("");
-        });
-
-        detectorEvaluator.registerPostExtractableCallback(detectorAggregateEvaluationResult -> {
-            detectorEventPublisher.publishPreparationsCompleted(detectorAggregateEvaluationResult.getEvaluationTree());
-            logger.debug("Counting detectors that will be evaluated.");
-
-            Integer extractionCount = detectorAggregateEvaluationResult.getExtractionCount();
-            detectorEventPublisher.publishExtractionCount(extractionCount);
-
-            logger.debug("Total number of detectors: {}", extractionCount);
-        });
-
-        detectorEvaluator.registerPostExtractionCallback(detectorAggregateEvaluationResult -> detectorEventPublisher.publishExtractionsCompleted(detectorAggregateEvaluationResult.getEvaluationTree()));
-
-        DetectorAggregateEvaluationResult evaluationResult = detectorEvaluator.evaluate(rootEvaluation);
-
-        logger.debug("Finished detectors."); // TODO- finished extractions?
-
-        printExplanations(rootEvaluation);
-
-        Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
+        printExplanations(evaluation);
+        List<DetectorRuleEvaluation> allFound = DetectorEvaluationUtil.allDescendentFound(evaluation);
+        Map<DetectorType, StatusType> statusMap = extractStatus(allFound);
         publishStatusEvents(statusMap);
-        publishFileEvents(detectorEvaluations);
-        detectorIssuePublisher.publishEvents(statusEventPublisher, rootEvaluation);
-        publishMissingDetectorEvents(requiredDetectors, evaluationResult.getApplicableDetectorTypesRecursively());
+        publishFileEvents(allFound);
 
-        Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(detectorEvaluations, directory);
+        detectorIssuePublisher.publishIssues(statusEventPublisher, allFound);
+        Set<DetectorType> allFoundTypes = allFound.stream()
+            .map(DetectorRuleEvaluation::getRule)
+            .map(DetectorRule::getDetectorType)
+            .collect(Collectors.toSet());
+        publishMissingDetectorEvents(requiredDetectors, allFoundTypes);
+
+        Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(allFound, directory);
 
         DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
-        Optional<NameVersion> bomToolProjectNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorEvaluations, projectDetector);
+        Optional<NameVersion> bomToolProjectNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(evaluation, projectDetector);
         logger.debug("Finished evaluating detectors for project info.");
 
         DetectorToolResult detectorToolResult = new DetectorToolResult(
             bomToolProjectNameVersion.orElse(null),
             new ArrayList<>(codeLocationMap.values()),
-            evaluationResult.getApplicableDetectorTypes(),
+            allFoundTypes,
             new HashSet<>(),
-            rootEvaluation,
+            evaluation, //TODO: REmove?
             codeLocationMap
         );
 
@@ -156,20 +142,42 @@ public class DetectorTool {
         return detectorToolResult;
     }
 
-    private void printExplanations(DetectorEvaluationTree root) {
+    private void printExplanations(DetectorEvaluation root) {
         logger.info(ReportConstants.HEADING);
         logger.info("Detector Report");
         logger.info(ReportConstants.HEADING);
         boolean anyFound = false;
-        for (DetectorEvaluationTree tree : root.asFlatList()) {
-            List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(tree);
-            if (!applicable.isEmpty()) {
+        for (DetectorEvaluation detectorEvaluation : DetectorEvaluationUtil.asFlatList(root)) {
+            List<DetectorRuleEvaluation> found = detectorEvaluation.getFoundDetectorRuleEvaluations();
+            if (!found.isEmpty()) {
                 anyFound = true;
-                logger.info("\t" + tree.getDirectory() + " (depth " + tree.getDepthFromRoot() + ")");
-                applicable.forEach(evaluation -> {
-                    logger.info("\t\t" + evaluation.getDetectorRule().getDescriptiveName());
-                    evaluation.getAllExplanations().forEach(explanation ->
-                        logger.info("\t\t\t" + explanation.describeSelf()));
+                logger.info("\t" + detectorEvaluation.getDirectory() + " (depth " + detectorEvaluation.getDepth() + ")");
+
+                found.forEach(ruleEvaluation -> {
+                    EntryPointEvaluation selectedEntryPoint = ruleEvaluation.getSelectedEntryPointEvaluation();
+                    for (DetectableEvaluationResult detectable : selectedEntryPoint.getEvaluatedDetectables()) {
+                        boolean isTheExtracted = selectedEntryPoint.getExtractedEvaluation()
+                            .map(detectable::equals)
+                            .orElse(false);
+
+                        String detectableStatus;
+                        if (isTheExtracted) {
+                            if (detectable.wasExtractionSuccessful()) {
+                                detectableStatus = "SUCCESS";
+                            } else {
+                                detectableStatus = "FAILED";
+                            }
+                        } else {
+                            detectableStatus = "SKIPPED";
+                        }
+                        logger.info("\t\t" + detectable.getDetectableDefinition().getName() + ": " + detectableStatus);
+                        detectable.getExplanations().forEach(explanation -> {
+                            logger.info("\t\t\t" + explanation.describeSelf());
+                        });
+                        if (isTheExtracted) {
+                            break;
+                        }
+                    }
                 });
             }
         }
@@ -179,45 +187,30 @@ public class DetectorTool {
         logger.info(ReportConstants.RUN_SEPARATOR);
     }
 
-    private Map<DetectorType, StatusType> extractStatus(List<DetectorEvaluation> detectorEvaluations) {
+    private Map<DetectorType, StatusType> extractStatus(List<DetectorRuleEvaluation> detectorEvaluations) {
         EnumMap<DetectorType, StatusType> statusMap = new EnumMap<>(DetectorType.class);
-        for (DetectorEvaluation detectorEvaluation : detectorEvaluations) {
-            DetectorType detectorType = detectorEvaluation.getDetectorType();
-            Optional<StatusType> foundStatusType = determineDetectorExtractionStatus(detectorEvaluation);
-            if (foundStatusType.isPresent()) {
-                StatusType statusType = foundStatusType.get();
-                if (statusType == StatusType.FAILURE || !statusMap.containsKey(detectorType)) {
-                    statusMap.put(detectorType, statusType);
-                }
+        for (DetectorRuleEvaluation detectorEvaluation : detectorEvaluations) {
+            DetectorType detectorType = detectorEvaluation.getRule().getDetectorType();
+            StatusType statusType = determineDetectorExtractionStatus(detectorEvaluation);
+            if (statusType == StatusType.FAILURE || !statusMap.containsKey(detectorType)) {
+                statusMap.put(detectorType, statusType);
             }
         }
         return statusMap;
     }
 
-    private Optional<StatusType> determineDetectorExtractionStatus(DetectorEvaluation detectorEvaluation) {
-        StatusType statusType = null;
-        if (detectorEvaluation.isApplicable()) {
-            if (detectorEvaluation.isExtractable()) {
-                if (detectorEvaluation.wasExtractionSuccessful()) {
-                    statusType = StatusType.SUCCESS;
-                } else {
-                    statusType = StatusType.FAILURE;
-
-                    boolean extractionUnknownFailure = !detectorEvaluation.wasExtractionFailure() && !detectorEvaluation.wasExtractionException();
-                    if (extractionUnknownFailure) {
-                        logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please contact support.");
-                    }
-                }
-            } else {
-                statusType = StatusType.FAILURE;
-            }
+    //This assumes the DetectorRuleEvaluation was found. (
+    private StatusType determineDetectorExtractionStatus(DetectorRuleEvaluation detectorEvaluation) {
+        EntryPointEvaluation selectedEntryPointEvaluation = detectorEvaluation.getSelectedEntryPointEvaluation();
+        Optional<DetectableEvaluationResult> extractedEvaluation = selectedEntryPointEvaluation.getExtractedEvaluation();
+        if (extractedEvaluation.map(DetectableEvaluationResult::wasExtractionSuccessful).orElse(false)) {
+            return StatusType.SUCCESS;
         }
-        return Optional.ofNullable(statusType);
+        return StatusType.FAILURE;
     }
 
-    private Map<CodeLocation, DetectCodeLocation> createCodeLocationMap(List<DetectorEvaluation> detectorEvaluations, File directory) {
-        return detectorEvaluations.stream()
-            .filter(DetectorEvaluation::wasExtractionSuccessful)
+    private Map<CodeLocation, DetectCodeLocation> createCodeLocationMap(List<DetectorRuleEvaluation> foundDetectorEvaluations, File directory) {
+        return foundDetectorEvaluations.stream()
             .map(it -> codeLocationConverter.toDetectCodeLocation(directory, it))
             .map(Map::entrySet)
             .flatMap(Collection::stream)
@@ -232,21 +225,26 @@ public class DetectorTool {
         }
     }
 
-    private void publishFileEvents(List<DetectorEvaluation> detectorEvaluations) {
+    private void publishFileEvents(List<DetectorRuleEvaluation> foundDetectors) {
         logger.debug("Publishing file events.");
-        for (DetectorEvaluation detectorEvaluation : detectorEvaluations) {
-            if (detectorEvaluation.getDetectable() != null) {
-                for (File file : detectorEvaluation.getAllRelevantFiles()) {
+        for (DetectorRuleEvaluation detectorEvaluation : foundDetectors) {
+            Optional<DetectableEvaluationResult> extractedEvaluationOptional = detectorEvaluation.getSelectedEntryPointEvaluation().getExtractedEvaluation();
+            if (!extractedEvaluationOptional.isPresent())
+                continue;
+            DetectableEvaluationResult extractedEvaluation = extractedEvaluationOptional.get();
+            if (extractedEvaluation.getExplanations() != null) {
+                for (File file : extractedEvaluation.getRelevantFiles()) {
                     detectorEventPublisher.publishCustomerFileOfInterest(file);
                 }
             }
-            if (detectorEvaluation.getExtraction() != null) {
-                for (File file : detectorEvaluation.getExtraction().getRelevantFiles()) {
+            if (detectorEvaluation.getExtraction().isPresent()) {
+                Extraction extraction = detectorEvaluation.getExtraction().get();
+                for (File file : extraction.getRelevantFiles()) {
                     detectorEventPublisher.publishCustomerFileOfInterest(file);
                 }
-                List<File> paths = detectorEvaluation.getExtraction().getUnrecognizedPaths();
+                List<File> paths = extraction.getUnrecognizedPaths();
                 if (paths != null && !paths.isEmpty()) {
-                    detectorEventPublisher.publishUnrecognizedPaths(new UnrecognizedPaths(detectorEvaluation.getDetectorType().toString(), paths));
+                    detectorEventPublisher.publishUnrecognizedPaths(new UnrecognizedPaths(detectorEvaluation.getRule().getDetectorType().toString(), paths));
                 }
             }
         }

@@ -2,48 +2,41 @@ package com.synopsys.integration.detect.tool.detector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import com.synopsys.integration.detect.workflow.report.ExceptionUtil;
-import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detector.accuracy.DetectableEvaluationResult;
+import com.synopsys.integration.detector.accuracy.DetectorRuleEvaluation;
 
 public class DetectorIssuePublisher {
-
-    public void publishEvents(StatusEventPublisher statusEventPublisher, DetectorEvaluationTree rootEvaluationTree) {
-        publishEvents(statusEventPublisher, rootEvaluationTree.asFlatList());
-    }
-
-    private void publishEvents(StatusEventPublisher statusEventPublisher, List<DetectorEvaluationTree> trees) {
+    public void publishIssues(StatusEventPublisher statusEventPublisher, List<DetectorRuleEvaluation> evaluations) {
         String spacer = "\t";
-        for (DetectorEvaluationTree tree : trees) {
-            List<DetectorEvaluation> excepted = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionException);
-            List<DetectorEvaluation> failed = DetectorEvaluationUtils.filteredChildren(tree, DetectorEvaluation::wasExtractionFailure);
-            List<DetectorEvaluation> notExtractable = DetectorEvaluationUtils.filteredChildren(tree, evaluation -> evaluation.isApplicable() && !evaluation.isExtractable());
-
-            List<String> messages = new ArrayList<>();
-
-            addIfNotEmpty(messages, "Not Extractable: ", spacer, notExtractable, DetectorEvaluation::getExtractabilityMessage);
-            addIfNotEmpty(messages, "Failure: ", spacer, failed, detectorEvaluation -> detectorEvaluation.getExtraction().getDescription());
-            addIfNotEmpty(messages, "Exception: ", spacer, excepted, detectorEvaluation -> ExceptionUtil.oneSentenceDescription(detectorEvaluation.getExtraction().getError()));
-
-            if (messages.size() > 0) {
-                messages.add(0, tree.getDirectory().toString());
+        for (DetectorRuleEvaluation evaluation : evaluations) {
+            if (!evaluation.wasExtractionSuccessful()) {
+                List<String> messages = new ArrayList<>();
+                if (evaluation.getExtractedDetectableEvaluation().isPresent()) {
+                    DetectableEvaluationResult extracted = evaluation.getExtractedDetectableEvaluation().get();
+                    Extraction extraction = extracted.getExtraction();
+                    if (extraction.getResult() == Extraction.ExtractionResultType.FAILURE) {
+                        messages.add("Failure: " + extracted.getDetectableDefinition().getName());
+                        messages.add(spacer + extraction.getDescription());
+                    } else if (extraction.getResult() == Extraction.ExtractionResultType.EXCEPTION) {
+                        messages.add("Exception: " + extracted.getDetectableDefinition().getName());
+                        messages.add(spacer + ExceptionUtil.oneSentenceDescription(extraction.getError()));
+                    }
+                } else {
+                    evaluation.getSelectedEntryPointEvaluation().getEvaluatedDetectables().forEach(detectable -> {
+                        messages.add("Not Extractable: " + detectable.getDetectableDefinition().getName());
+                        detectable.getExplanations().forEach(explanation -> {
+                            messages.add(spacer + explanation.describeSelf());
+                        });
+                    });
+                }
                 statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, "Detector Issue", messages));
             }
-        }
-    }
-
-    private void addIfNotEmpty(List<String> messages, String prefix, String spacer, List<DetectorEvaluation> evaluations, Function<DetectorEvaluation, String> reason) {
-        if (evaluations.size() > 0) {
-            evaluations.forEach(evaluation -> {
-                messages.add(prefix + evaluation.getDetectorRule().getDescriptiveName());
-                messages.add(spacer + reason.apply(evaluation));
-            });
         }
     }
 

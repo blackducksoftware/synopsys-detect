@@ -15,7 +15,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Golang", forge = "GitHub", requirementsMarkdown = "File: vendor/vendor.json.")
+@DetectableInfo(name = "Go Vendor", language = "Golang", forge = "GitHub", requirementsMarkdown = "File: vendor/vendor.json.")
 public class GoVendorDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String VENDOR_JSON_DIRNAME = "vendor";

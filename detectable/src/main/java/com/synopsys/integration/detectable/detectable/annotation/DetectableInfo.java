@@ -13,4 +13,6 @@ public @interface DetectableInfo {
     String language();
 
     String requirementsMarkdown();
+
+    String name() default "TBD"; //TODO: Actually add these values in the detectable
 }

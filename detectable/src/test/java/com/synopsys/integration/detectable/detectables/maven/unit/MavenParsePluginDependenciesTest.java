@@ -1,7 +1,5 @@
 package com.synopsys.integration.detectable.detectables.maven.unit;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,16 +9,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.xml.parsers.SAXParserFactory;
-
-import org.junit.jupiter.api.Test;
-
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
-import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class MavenParsePluginDependenciesTest {
 
@@ -79,15 +67,4 @@ public class MavenParsePluginDependenciesTest {
         pluginDependencies.add("org.codehaus.groovy:groovy-eclipse-compiler:2.9.2-01");
         return pluginDependencies;
     }
-
-    @Test
-    public void testIncludingPluginDependencies() throws Exception {
-        MavenParseExtractor pomXmlParser = new MavenParseExtractor(SAXParserFactory.newInstance().newSAXParser());
-        Extraction extraction = pomXmlParser.extract(getInput(), new MavenParseOptions(true, true));
-        DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
-
-        Set<String> externalIds = dependencyGraph.getRootDependencies().stream().map(dependency -> dependency.getExternalId().createExternalId()).collect(Collectors.toSet());
-        assertTrue(externalIds.containsAll(getPluginDependencies()));
-    }
-
 }

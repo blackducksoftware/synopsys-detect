@@ -152,7 +152,7 @@ import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
-import com.synopsys.integration.detector.finder.DetectorFinder;
+import com.synopsys.integration.detector.finder.DirectoryFinder;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -273,9 +273,9 @@ public class OperationFactory { //TODO: OperationRunner
         return auditLog.namedPublic("Execute Detectors", "Detectors", () -> {
             DetectorToolOptions detectorToolOptions = detectConfigurationFactory.createDetectorToolOptions();
             DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
-            DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, detectorToolOptions.isBuildless());
+            DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory);
             DetectorTool detectorTool = new DetectorTool(
-                new DetectorFinder(),
+                new DirectoryFinder(),
                 extractionEnvironmentProvider,
                 eventSystem,
                 codeLocationConverter,

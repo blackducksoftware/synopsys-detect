@@ -24,7 +24,7 @@ import com.synopsys.integration.detect.workflow.report.SearchSummaryReporter;
 import com.synopsys.integration.detect.workflow.report.writer.FileReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
 
 public class DiagnosticReportHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -85,9 +85,9 @@ public class DiagnosticReportHandler {
     public void completedBomToolEvaluations(DetectorToolResult detectorToolResult) {
         this.detectorToolResult = detectorToolResult;
 
-        DetectorEvaluationTree rootEvaluation;
-        if (detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
-            rootEvaluation = detectorToolResult.getRootDetectorEvaluationTree().get();
+        DetectorEvaluation rootEvaluation;
+        if (detectorToolResult.getRootDetectorEvaluation().isPresent()) {
+            rootEvaluation = detectorToolResult.getRootDetectorEvaluation().get();
         } else {
             logger.warn("Detectors completed, but no evaluation was found, unable to write detector reports.");
             return;
@@ -116,7 +116,7 @@ public class DiagnosticReportHandler {
     }
 
     public void completedCodeLocations(Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (detectorToolResult == null || !detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
+        if (detectorToolResult == null || !detectorToolResult.getRootDetectorEvaluation().isPresent()) {
             return;
         }
 
@@ -127,7 +127,7 @@ public class DiagnosticReportHandler {
             clReporter.writeCodeLocationReport(
                 clWriter,
                 dcWriter,
-                detectorToolResult.getRootDetectorEvaluationTree().get(),
+                detectorToolResult.getRootDetectorEvaluation().get(),
                 detectorToolResult.getCodeLocationMap(),
                 codeLocationNameMap
             );

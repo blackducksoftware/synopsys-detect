@@ -5,7 +5,7 @@ import java.io.File;
 import com.synopsys.integration.detect.tool.detector.DetectExtractionEnvironment;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class ExtractionEnvironmentProvider {
     private final DirectoryManager directoryManager;
@@ -15,8 +15,8 @@ public class ExtractionEnvironmentProvider {
         this.directoryManager = directoryManager;
     }
 
-    public ExtractionEnvironment createExtractionEnvironment(DetectorEvaluation detectorEvaluation) {
-        ExtractionId extractionId = new ExtractionId(detectorEvaluation.getDetectorType(), count);
+    public ExtractionEnvironment createExtractionEnvironment(DetectorType detectorType) {
+        ExtractionId extractionId = new ExtractionId(detectorType, count);
         count = count + 1;
 
         File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);

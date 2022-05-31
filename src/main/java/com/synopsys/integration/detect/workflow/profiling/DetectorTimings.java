@@ -3,20 +3,19 @@ package com.synopsys.integration.detect.workflow.profiling;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorType;
 
 public class DetectorTimings {
     private final Map<DetectorType, Long> aggregateTimings;
-    private final List<Timing<DetectorEvaluation>> applicableTimings;
-    private final List<Timing<DetectorEvaluation>> extractableTimings;
-    private final List<Timing<DetectorEvaluation>> extractionTimings;
+    private final List<Timing<DetectorType>> applicableTimings;
+    private final List<Timing<DetectorType>> extractableTimings;
+    private final List<Timing<DetectorType>> extractionTimings;
 
     public DetectorTimings(
         Map<DetectorType, Long> aggregateTimings,
-        List<Timing<DetectorEvaluation>> applicableTimings,
-        List<Timing<DetectorEvaluation>> extractableTimings,
-        List<Timing<DetectorEvaluation>> extractionTimings
+        List<Timing<DetectorType>> applicableTimings,
+        List<Timing<DetectorType>> extractableTimings,
+        List<Timing<DetectorType>> extractionTimings
     ) {
         this.aggregateTimings = aggregateTimings;
         this.applicableTimings = applicableTimings;
@@ -28,15 +27,15 @@ public class DetectorTimings {
         return aggregateTimings;
     }
 
-    public List<Timing<DetectorEvaluation>> getApplicableTimings() {
+    public List<Timing<DetectorType>> getApplicableTimings() {
         return applicableTimings;
     }
 
-    public List<Timing<DetectorEvaluation>> getExtractableTimings() {
+    public List<Timing<DetectorType>> getExtractableTimings() {
         return extractableTimings;
     }
 
-    public List<Timing<DetectorEvaluation>> getExtractionTimings() {
+    public List<Timing<DetectorType>> getExtractionTimings() {
         return extractionTimings;
     }
 }

@@ -59,14 +59,14 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseMani
 import com.synopsys.integration.detectable.detectables.bitbake.parse.PwdOutputParser;
 import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeDependencyGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeGraphTransformer;
-import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
+import com.synopsys.integration.detectable.detectables.cargo.CargoLockDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoTomlParser;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageDataTransformer;
 import com.synopsys.integration.detectable.detectables.cargo.transform.CargoLockPackageTransformer;
-import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageExtractor;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageLockDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.parse.CartfileResolvedParser;
 import com.synopsys.integration.detectable.detectables.carthage.transform.CarthageDeclarationTransformer;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
@@ -154,7 +154,7 @@ import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetecta
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorExtractor;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrExtractor;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleRunner;
@@ -175,9 +175,6 @@ import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtract
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
@@ -342,20 +339,20 @@ public class DetectableFactory {
         return new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor, bashResolver);
     }
 
-    public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
+    public CargoLockDetectable createCargoDetectable(DetectableEnvironment environment) {
         CargoTomlParser cargoTomlParser = new CargoTomlParser();
         CargoDependencyLineParser cargoDependencyLineParser = new CargoDependencyLineParser();
         CargoLockPackageDataTransformer cargoLockPackageDataTransformer = new CargoLockPackageDataTransformer(cargoDependencyLineParser);
         CargoLockPackageTransformer cargoLockPackageTransformer = new CargoLockPackageTransformer();
         CargoExtractor cargoExtractor = new CargoExtractor(cargoTomlParser, cargoLockPackageDataTransformer, cargoLockPackageTransformer);
-        return new CargoDetectable(environment, fileFinder, cargoExtractor);
+        return new CargoLockDetectable(environment, fileFinder, cargoExtractor);
     }
 
-    public CarthageDetectable createCarthageDetectable(DetectableEnvironment environment) {
+    public CarthageLockDetectable createCarthageDetectable(DetectableEnvironment environment) {
         CartfileResolvedParser cartfileResolvedParser = new CartfileResolvedParser();
         CarthageDeclarationTransformer carthageDeclarationTransformer = new CarthageDeclarationTransformer();
         CarthageExtractor carthageExtractor = new CarthageExtractor(cartfileResolvedParser, carthageDeclarationTransformer);
-        return new CarthageDetectable(environment, fileFinder, carthageExtractor);
+        return new CarthageLockDetectable(environment, fileFinder, carthageExtractor);
     }
 
     public ClangDetectable createClangDetectable(DetectableEnvironment environment, ClangDetectableOptions clangDetectableOptions) {
@@ -437,13 +434,20 @@ public class DetectableFactory {
         return new GoGradleDetectable(environment, fileFinder, goGradleExtractor());
     }
 
-    public GradleDetectable createGradleDetectable(
+    public GradleInspectorDetectable createGradleDetectable(
         DetectableEnvironment environment,
         GradleInspectorOptions gradleInspectorOptions,
         GradleInspectorResolver gradleInspectorResolver,
         GradleResolver gradleResolver
     ) {
-        return new GradleDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor(gradleInspectorOptions), gradleInspectorOptions);
+        return new GradleInspectorDetectable(
+            environment,
+            fileFinder,
+            gradleResolver,
+            gradleInspectorResolver,
+            gradleInspectorExtractor(gradleInspectorOptions),
+            gradleInspectorOptions
+        );
     }
 
     public GradleProjectInspectorDetectable createMavenGradleInspectorDetectable(
@@ -477,12 +481,8 @@ public class DetectableFactory {
         return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
     }
 
-    public MavenParseDetectable createMavenParseDetectable(DetectableEnvironment environment, MavenParseOptions mavenParseOptions) {
-        return new MavenParseDetectable(environment, fileFinder, mavenParseExtractor(), mavenParseOptions);
-    }
-
     public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(
-        DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver, MavenParseOptions mavenParseOptions,
+        DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver,
         ProjectInspectorOptions projectInspectorOptions
     ) {
         return new MavenProjectInspectorDetectable(
@@ -490,7 +490,6 @@ public class DetectableFactory {
             fileFinder,
             projectInspectorResolver,
             projectInspectorExtractor(),
-            mavenParseOptions,
             projectInspectorOptions
         );
     }
@@ -1052,10 +1051,6 @@ public class DetectableFactory {
         } catch (ParserConfigurationException | SAXException e) {
             throw new RuntimeException("Unable to create SAX Parser.", e);
         }
-    }
-
-    private MavenParseExtractor mavenParseExtractor() {
-        return new MavenParseExtractor(saxParser());
     }
 
     private SwiftCliParser swiftCliParser() {

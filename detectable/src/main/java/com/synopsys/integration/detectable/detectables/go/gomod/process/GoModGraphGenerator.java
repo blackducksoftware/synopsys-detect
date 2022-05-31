@@ -55,7 +55,7 @@ public class GoModGraphGenerator {
         if (parent != null) {
             graph.addChildWithParent(dependency, parent);
         } else {
-            graph.addChildToRoot(dependency);
+            graph.addDirectDependency(dependency);
         }
 
         if (!fullyGraphedModules.contains(moduleName) && goRelationshipManager.hasRelationshipsFor(moduleName)) {

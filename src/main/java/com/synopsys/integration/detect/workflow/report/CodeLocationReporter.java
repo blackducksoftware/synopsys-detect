@@ -1,21 +1,27 @@
 package com.synopsys.integration.detect.workflow.report;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detect.tool.detector.DetectExtractionEnvironment;
+import com.synopsys.integration.detect.tool.detector.extraction.ExtractionId;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detector.accuracy.DetectableEvaluationResult;
+import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
+import com.synopsys.integration.detector.accuracy.DetectorRuleEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationUtil;
 
 public class CodeLocationReporter {
     public void writeCodeLocationReport(
         ReportWriter writer,
         ReportWriter writer2,
-        DetectorEvaluationTree rootEvaluation,
+        DetectorEvaluation rootEvaluation,
         Map<CodeLocation, DetectCodeLocation> detectCodeLocationMap,
         Map<DetectCodeLocation, String> codeLocationNameMap
     ) {
@@ -23,7 +29,7 @@ public class CodeLocationReporter {
         Map<DetectCodeLocation, Integer> dependencyCounts = counter.countCodeLocations(codeLocationNameMap.keySet());
         Map<String, Integer> dependencyAggregates = counter.aggregateCountsByCreatorName(dependencyCounts);
 
-        DetectorEvaluationUtils.extractionSuccessDescendents(rootEvaluation)
+        DetectorEvaluationUtil.allDescendentFound(rootEvaluation)
             .forEach(it -> writeBomToolEvaluationDetails(writer, it, dependencyCounts, detectCodeLocationMap, codeLocationNameMap));
 
         writeBomToolCounts(writer2, dependencyAggregates);
@@ -32,20 +38,33 @@ public class CodeLocationReporter {
 
     private void writeBomToolEvaluationDetails(
         ReportWriter writer,
-        DetectorEvaluation evaluation,
+        DetectorRuleEvaluation evaluation,
         Map<DetectCodeLocation, Integer> dependencyCounts,
         Map<CodeLocation, DetectCodeLocation> detectCodeLocationMap,
         Map<DetectCodeLocation, String> codeLocationNameMap
     ) {
-        for (CodeLocation codeLocation : evaluation.getExtraction().getCodeLocations()) {
-            DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) evaluation.getExtractionEnvironment();
+        List<CodeLocation> codeLocations = evaluation.getExtraction()
+            .map(Extraction::getCodeLocations)
+            .orElse(new ArrayList<>());
+
+        String extractionEnvironmentId = evaluation.getExtractedDetectableEvaluation()
+            .map(DetectableEvaluationResult::getExtractionEnvironment)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .filter(it -> DetectExtractionEnvironment.class.isAssignableFrom(it.getClass()))
+            .map(it -> (DetectExtractionEnvironment) it)
+            .map(DetectExtractionEnvironment::getExtractionId)
+            .map(ExtractionId::toUniqueString)
+            .orElse("No Id");
+
+        for (CodeLocation codeLocation : codeLocations) {
             DetectCodeLocation detectCodeLocation = detectCodeLocationMap.get(codeLocation);
             writeCodeLocationDetails(
                 writer,
                 detectCodeLocation,
                 dependencyCounts.get(detectCodeLocation),
                 codeLocationNameMap.get(detectCodeLocation),
-                detectExtractionEnvironment.getExtractionId().toUniqueString()
+                extractionEnvironmentId
             );
         }
     }

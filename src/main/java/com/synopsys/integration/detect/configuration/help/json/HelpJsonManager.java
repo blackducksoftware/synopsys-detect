@@ -1,16 +1,13 @@
 package com.synopsys.integration.detect.configuration.help.json;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
-import com.synopsys.integration.detectable.Detectable;
-import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
+import com.synopsys.integration.detector.rule.DetectableDefinition;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
@@ -33,38 +30,32 @@ public class HelpJsonManager {
         DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
         // TODO: Is there a better way to build a fake set of rules?
         DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null, null);
-        DetectorRuleSet ruleSet = ruleFactory.createRules(mockFactory, buildless);
-        return ruleSet.getOrderedDetectorRules()
-            .stream()
-            .map(detectorRule -> convertDetectorRule(detectorRule, ruleSet))
-            .collect(Collectors.toList());
+
+        DetectorRuleSet ruleSet = ruleFactory.createRules(mockFactory);
+        return ruleSet.getDetectorRules().stream()
+            .flatMap(detectorRule ->
+                detectorRule.getEntryPoints().stream()
+                    .flatMap(entryPoint -> entryPoint.allDetectables().stream())
+                    .map(detectable -> convertDetectorRule(detectorRule, detectable, ruleSet))
+            ).collect(Collectors.toList());
     }
 
-    private HelpJsonDetector convertDetectorRule(DetectorRule rule, DetectorRuleSet ruleSet) {
+    private HelpJsonDetector convertDetectorRule(DetectorRule detector, DetectableDefinition detectable, DetectorRuleSet ruleSet) {
         HelpJsonDetector helpData = new HelpJsonDetector();
-        helpData.setDetectorName(rule.getName());
-        helpData.setDetectorDescriptiveName(rule.getDescriptiveName());
-        helpData.setDetectorType(rule.getDetectorType().toString());
-        helpData.setMaxDepth(rule.getMaxDepth());
-        helpData.setNestable(rule.isNestable());
-        helpData.setNestInvisible(rule.isNestInvisible());
-        helpData.setYieldsTo(ruleSet.getYieldsTo(rule).stream().map(DetectorRule::getDescriptiveName).collect(Collectors.toList()));
+        helpData.setDetectorName(detectable.getName());
+        //TODO: This may also need revamp.
+        helpData.setDetectorDescriptiveName(detector.getDetectorType() + " - " + detectable.getName());
 
-        //Attempt to create the detectable.
-        //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.
-        Class<Detectable> detectableClass = rule.getDetectableClass();
-        Optional<DetectableInfo> infoSearch = Arrays.stream(detectableClass.getAnnotations())
-            .filter(annotation -> annotation instanceof DetectableInfo)
-            .map(annotation -> (DetectableInfo) annotation)
-            .findFirst();
+        helpData.setDetectorType(detector.getDetectorType().toString());
+        helpData.setMaxDepth(detector.getMaxDepth());
+        helpData.setNestable(detector.isNestable());
+        helpData.setNestInvisible(detector.isNestInvisible());
+        //TODO: This needs work...
+        //helpData.setYieldsTo(ruleSet.getYieldsTo(rule).stream().map(DetectorRule::getDescriptiveName).collect(Collectors.toList()));
 
-        if (infoSearch.isPresent()) {
-            DetectableInfo info = infoSearch.get();
-            helpData.setDetectableLanguage(info.language());
-            helpData.setDetectableRequirementsMarkdown(info.requirementsMarkdown());
-            helpData.setDetectableForge(info.forge());
-        }
-
+        helpData.setDetectableLanguage(detectable.getLanguage());
+        helpData.setDetectableRequirementsMarkdown(detectable.getRequirementsMarkdown());
+        helpData.setDetectableForge(detectable.getForge());
         return helpData;
     }
 }

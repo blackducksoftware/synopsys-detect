@@ -24,14 +24,14 @@ public class GoVendorJsonParser {
 
     public DependencyGraph parseVendorJson(Gson gson, String vendorJsonContents) {
         DependencyGraph graph = new BasicDependencyGraph();
-        VendorJson vendorJsonData = gson.fromJson(vendorJsonContents, VendorJson.class);
+        VendorJson vendorJsonData = gson.fromJson(vendorJsonContents, VendorJson.class); // this is technically the parsing, could be in the extractor.
         logger.trace(String.format("vendorJsonData: %s", vendorJsonData));
-        for (PackageData pkg : vendorJsonData.getPackages()) {
+        for (PackageData pkg : vendorJsonData.getPackages()) { //this would be in the transformer
             if (StringUtils.isNotBlank(pkg.getPath()) && StringUtils.isNotBlank(pkg.getRevision())) {
                 ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, pkg.getPath(), pkg.getRevision());
                 Dependency dependency = new Dependency(pkg.getPath(), pkg.getRevision(), dependencyExternalId);
                 logger.trace(String.format("dependency: %s", dependency.getExternalId().toString()));
-                graph.addChildToRoot(dependency);
+                graph.addDirectDependency(dependency);
             } else {
                 logger.debug(String.format("Omitting package path:'%s', revision:'%s' (one or both of path, revision is/are missing)", pkg.getPath(), pkg.getRevision()));
             }
