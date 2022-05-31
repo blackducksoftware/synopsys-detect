@@ -75,19 +75,21 @@ public class DetectorRuleFactory {
         });
 
         rules.addDetector(DetectorType.XCODE, detector -> {
-            detector.entryPoint(XcodeProjectDetectable.class);
-            detector.entryPoint(XcodeWorkspaceDetectable.class);
-        }).notSelfNestable();
+                detector.entryPoint(XcodeProjectDetectable.class);
+                detector.entryPoint(XcodeWorkspaceDetectable.class);
+            }).allEntryPointsFallbackToNext()
+            .notSelfNestable();
 
         rules.addDetector(DetectorType.SWIFT, detector -> {
-            detector.entryPoint(SwiftPackageResolvedDetectable.class);
-            detector.entryPoint(SwiftCliDetectable.class);
-        }).nestableExceptTo(DetectorType.XCODE);
+                detector.entryPoint(SwiftPackageResolvedDetectable.class);
+                detector.entryPoint(SwiftCliDetectable.class);
+            }).allEntryPointsFallbackToNext()
+            .nestableExceptTo(DetectorType.XCODE);
 
         rules.addDetector(DetectorType.CONAN, detector -> {
             detector.entryPoint(ConanLockfileDetectable.class);
             detector.entryPoint(ConanCliDetectable.class);
-        });
+        }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.CONDA, detector -> {
             detector.entryPoint(CondaCliDetectable.class);
@@ -159,10 +161,11 @@ public class DetectorRuleFactory {
         }).yieldsTo(DetectorType.LERNA);
 
         rules.addDetector(DetectorType.NPM, detector -> {
-            detector.entryPoint(NpmPackageLockDetectable.class);
-            detector.entryPoint(NpmShrinkwrapDetectable.class);
-            detector.entryPoint(NpmCliDetectable.class);
-        }).yieldsTo(DetectorType.LERNA, DetectorType.YARN, DetectorType.PNPM);
+                detector.entryPoint(NpmPackageLockDetectable.class);
+                detector.entryPoint(NpmShrinkwrapDetectable.class);
+                detector.entryPoint(NpmCliDetectable.class);
+            }).allEntryPointsFallbackToNext()
+            .yieldsTo(DetectorType.LERNA, DetectorType.YARN, DetectorType.PNPM);
 
         rules.addDetector(DetectorType.PNPM, detector -> {
             detector.entryPoint(PnpmLockDetectable.class)
@@ -170,9 +173,11 @@ public class DetectorRuleFactory {
         }).yieldsTo(DetectorType.LERNA);
 
         rules.addDetector(DetectorType.NUGET, detector -> {
-            detector.entryPoint(NugetSolutionDetectable.class);
-            detector.entryPoint(NugetProjectDetectable.class);
-            detector.entryPoint(NugetProjectInspectorDetectable.class);
+            detector.entryPoint(NugetSolutionDetectable.class)
+                .fallback(NugetProjectInspectorDetectable.class);
+
+            detector.entryPoint(NugetProjectDetectable.class)
+                .fallback(NugetProjectInspectorDetectable.class);
         });
 
         rules.addDetector(DetectorType.POETRY, detector -> {
@@ -188,12 +193,12 @@ public class DetectorRuleFactory {
         rules.addDetector(DetectorType.RUBYGEMS, detector -> {
             detector.entryPoint(GemlockDetectable.class);
             detector.entryPoint(GemspecParseDetectable.class);
-        });
+        }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.GIT, detector -> {
             detector.entryPoint(GitDetectable.class);
             detector.entryPoint(GitParseDetectable.class); //TODO: Is this necessary?
-        });
+        }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.SBT, detector -> {
             detector.entryPoint(SbtDetectable.class);
