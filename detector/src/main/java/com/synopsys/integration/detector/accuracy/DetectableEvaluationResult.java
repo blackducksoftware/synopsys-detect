@@ -119,6 +119,6 @@ public class DetectableEvaluationResult {
     }
 
     public Extraction getExtraction() {
-        return null;
+        return extraction;
     }
 }
