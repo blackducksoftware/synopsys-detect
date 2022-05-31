@@ -46,8 +46,8 @@ import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureS
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
-import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.util.finder.DetectDirectoryFileFilter;
+import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.workflow.DummyAccuracyEnum;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
@@ -230,10 +230,7 @@ public class DetectConfigurationFactory {
         List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 
         if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
-            List<String> defaultExcludedFromSignatureScan = Arrays.stream(DefaultSignatureScannerExcludedDirectories.values())
-                .map(DefaultSignatureScannerExcludedDirectories::getDirectoryName)
-                .collect(Collectors.toList());
-            directoryExclusionPatterns.addAll(defaultExcludedFromSignatureScan);
+            directoryExclusionPatterns.addAll(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
         }
 
         return directoryExclusionPatterns;
@@ -243,10 +240,7 @@ public class DetectConfigurationFactory {
         List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 
         if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
-            List<String> defaultExcludedFromDetectorSearch = Arrays.stream(DefaultDetectorSearchExcludedDirectories.values())
-                .map(DefaultDetectorSearchExcludedDirectories::getDirectoryName)
-                .collect(Collectors.toList());
-            directoryExclusionPatterns.addAll(defaultExcludedFromDetectorSearch);
+            directoryExclusionPatterns.addAll(DefaultDetectorSearchExcludedDirectories.getDirectoryNames());
         }
 
         return directoryExclusionPatterns;
@@ -472,13 +466,10 @@ public class DetectConfigurationFactory {
         return new ProjectGroupOptions(projectGroupName);
     }
 
-    public List<String> collectSignatureScannerDirectoryExclusions() {
-        return collectDirectoryExclusions(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
-    }
-
     private List<String> collectDirectoryExclusions() {
         return collectDirectoryExclusions(Collections.emptyList());
     }
+
     private List<String> collectDirectoryExclusions(@NotNull List<String> givenExclusions) {
         List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 

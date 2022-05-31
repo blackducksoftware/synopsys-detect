@@ -22,8 +22,8 @@ public class DetectorRuleBuilder {
     private final Set<DetectorType> notNestableBeneath = new HashSet<>();
 
     private final DetectorType detectorType;
-    private List<EntryPointBuilder> entryPointBuilders;
-    private Set<DetectorType> yieldsTo;
+    private final List<EntryPointBuilder> entryPointBuilders = new ArrayList<>();
+    private final Set<DetectorType> yieldsTo = new HashSet<>();
     private boolean allEntryPointsFallbackToNext = false;
 
     public DetectorRuleBuilder(DetectorType detectorType, DetectableLookup detectableLookup) {
