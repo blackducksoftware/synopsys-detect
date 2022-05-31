@@ -132,7 +132,7 @@ public class DetectorRuleFactory {
         rules.addDetector(DetectorType.GRADLE, detector -> {
             detector.entryPoint(GradleInspectorDetectable.class);
             detector.entryPoint(GradleProjectInspectorDetectable.class);
-        });
+        }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.IVY, detector -> {
             detector.entryPoint(IvyParseDetectable.class);
@@ -165,8 +165,8 @@ public class DetectorRuleFactory {
         }).yieldsTo(DetectorType.LERNA, DetectorType.YARN, DetectorType.PNPM);
 
         rules.addDetector(DetectorType.PNPM, detector -> {
-            detector.entryPoint(PnpmLockDetectable.class);
-            detector.entryPoint(NpmCliDetectable.class);
+            detector.entryPoint(PnpmLockDetectable.class)
+                .fallback(NpmCliDetectable.class);
         }).yieldsTo(DetectorType.LERNA);
 
         rules.addDetector(DetectorType.NUGET, detector -> {
