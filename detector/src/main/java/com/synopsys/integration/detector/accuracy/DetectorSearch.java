@@ -51,12 +51,13 @@ public class DetectorSearch {
             return new MaxDepthExceededDetectorResult(environment.getDepth(), maxDepth);
         }
 
-        Set<DetectorRule> yieldTo = environment.getAppliedSoFar().stream()
+        Set<DetectorType> yieldTo = environment.getAppliedSoFar().stream()
+            .map(DetectorRule::getDetectorType)
             .filter(it -> detectorRule.getYieldsTo().contains(it))
             .collect(Collectors.toSet());
 
         if (yieldTo.size() > 0) {
-            return new YieldedDetectorResult(yieldTo.stream().map(DetectorRule::getDetectorType).map(Objects::toString)
+            return new YieldedDetectorResult(yieldTo.stream().map(Objects::toString)
                 .collect(Collectors.toSet()));
         }
 
