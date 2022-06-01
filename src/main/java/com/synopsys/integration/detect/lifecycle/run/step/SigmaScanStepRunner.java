@@ -47,6 +47,7 @@ public class SigmaScanStepRunner {
         for (File scanTarget : sigmaScanTargets) {
             SigmaReport sigmaReport = performScan(projectNameVersion, blackDuckRunData, sigmaExe, scanTarget);
             sigmaReport.getErrorMessage().ifPresent(message -> logger.error(String.format("%s for target %s", message, sigmaReport.getScanTarget())));
+            sigmaReports.add(sigmaReport);
         }
         operationFactory.publishSigmaReport(sigmaReports);
     }
