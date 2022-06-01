@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.configuration.help.json;
+package com.synopsys.integration.detect.configuration.help.json.model;
 
 public class HelpJsonExitCode {
     private String exitCodeKey = "";

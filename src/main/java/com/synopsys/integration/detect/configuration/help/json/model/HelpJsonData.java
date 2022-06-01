@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.configuration.help.json;
+package com.synopsys.integration.detect.configuration.help.json.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ public class HelpJsonData {
     private List<HelpJsonExitCode> exitCodes = new ArrayList<>();
     private List<HelpJsonDetector> buildDetectors = new ArrayList<>();
     private List<HelpJsonDetector> buildlessDetectors = new ArrayList<>();
+    private List<HelpJsonDetectorRule> detectors = new ArrayList<>();
     private List<HelpJsonOption> options = new ArrayList<>();
     private List<HelpJsonDetectorStatusCode> detectorStatusCodes = new ArrayList<>();
 
@@ -48,5 +49,13 @@ public class HelpJsonData {
 
     public void setDetectorStatusCodes(List<HelpJsonDetectorStatusCode> detectorStatusCodes) {
         this.detectorStatusCodes = detectorStatusCodes;
+    }
+
+    public List<HelpJsonDetectorRule> getDetectors() {
+        return detectors;
+    }
+
+    public void setDetectors(List<HelpJsonDetectorRule> detectors) {
+        this.detectors = detectors;
     }
 }
