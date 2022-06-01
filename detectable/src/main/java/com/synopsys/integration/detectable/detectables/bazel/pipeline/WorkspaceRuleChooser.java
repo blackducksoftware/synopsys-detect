@@ -10,12 +10,10 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 public class WorkspaceRuleChooser {
 
     @NotNull
-    public Set<WorkspaceRule> choose(Set<WorkspaceRule> rulesFromWorkspaceFile, Set<WorkspaceRule> rulesFromDeprecatedProperty, Set<WorkspaceRule> rulesFromProperty)
+    public Set<WorkspaceRule> choose(Set<WorkspaceRule> rulesFromWorkspaceFile, Set<WorkspaceRule> rulesFromProperty)
         throws DetectableException {
         if (rulesFromProperty != null && !rulesFromProperty.isEmpty()) {
             return rulesFromProperty;
-        } else if (rulesFromDeprecatedProperty != null && !rulesFromDeprecatedProperty.isEmpty()) {
-            return rulesFromDeprecatedProperty;
         } else if (!rulesFromWorkspaceFile.isEmpty()) {
             return rulesFromWorkspaceFile;
         } else {

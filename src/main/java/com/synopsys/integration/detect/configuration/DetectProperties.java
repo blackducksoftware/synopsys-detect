@@ -304,7 +304,7 @@ public class DetectProperties {
         StringListProperty.newBuilder("detect.binary.scan.file.name.patterns", emptyList())
             .setInfo("Binary Scan Filename Patterns", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp(
-                "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "If specified, files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. Directories specified via property detect.excluded.directories are excluded from the file search. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH)
             .setExample("*.jar")
             .build();
@@ -874,7 +874,7 @@ public class DetectProperties {
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.",
-                "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
+                "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, will not be searched to find files for binary scanning when property detect.binary.scan.file.name.patterns is set, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1736,7 +1736,6 @@ public class DetectProperties {
 
     //#region Deprecated Properties
     // username/password ==> api token
-    private static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. In the future, Detect will always operate in SUBPROJECT aggregation mode (regardless of how it is configured) to more accurately report the dependency graph.";
     private static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
     private static final String DETECT_DOCKER_PATH_REQUIRED_DEPRECATION_MESSAGE = "This property is being removed. A docker executable is only required when running the Docker tool in air gap mode.";
 
@@ -1750,15 +1749,6 @@ public class DetectProperties {
             .setDeprecated(DETECT_DOCKER_PATH_REQUIRED_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
             .build();
 
-    @Deprecated
-    public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
-        AllNoneEnumListProperty.newBuilder("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class)
-            .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp(
-                "The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
-            .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
     @Deprecated
     public static final BooleanProperty DETECT_BUILDLESS =
         BooleanProperty.newBuilder("detect.detector.buildless", false)

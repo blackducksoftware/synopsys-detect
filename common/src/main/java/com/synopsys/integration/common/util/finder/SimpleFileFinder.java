@@ -12,6 +12,8 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.jetbrains.annotations.NotNull;
 
 public class SimpleFileFinder implements FileFinder {
+
+    // filter.test(file) should return true for: dirs to EXclude, and files to INclude
     @NotNull
     @Override
     public List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {

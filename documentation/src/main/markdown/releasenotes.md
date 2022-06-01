@@ -13,7 +13,9 @@
 * Removed the ability to choose the type of BDIO aggregation strategy via the now removed `detect.bom.aggregate.remediation.mode` property. 
   * All BDIO will be aggregated similarly to if detect.bom.aggregate.remediation.mode=SUBPROJECT was set in [solution_name] version 7.X.
 * detect8.sh has improvements (relative to detect7.sh and detect.sh) related to argument handling that simplify its argument quoting/escaping requirements.
+* [solution_name] requires and runs [docker_inspector_name] version 10.
 * Incorporated [docker_inspector_name] documentation into [solution_name] documentation.
+* The search for files for binary scanning (when property detect.binary.scan.file.name.patterns is set) now excludes directories specified by property detect.excluded.directories.
 
 
 ### Resolved issues
@@ -21,6 +23,7 @@
 * (IDETECT-3224) Resolved an issue where Cargo projects with Cyclical dependencies could cause a failure of [solution_name].
 * (IDETECT-3246) Resolved an issue where [solution_name] would fail when scanning flutter projects after a new version of flutter was released.
 * (IDETECT-3275) Resolved an issue that caused impact analysis to fail with an "Unsupported class file major version" error when an analyzed .class file contained invaid version bytes (byte 7 and 8).
+* (IDETECT-3180) Resolved an issue that caused the Binary Search tool to throw an exception when the patterns provided via property detect.binary.scan.file.name.patterns matched one or more directories.
 
 ## Version 7.13.2
 

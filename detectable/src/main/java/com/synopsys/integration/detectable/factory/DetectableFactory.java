@@ -692,7 +692,6 @@ public class DetectableFactory {
             toolVersionLogger,
             haskellCabalLibraryJsonProtoParser,
             bazelDetectableOptions.getTargetName().orElse(null),
-            bazelDetectableOptions.getWorkspaceRulesFromDeprecatedProperty(),
             bazelDetectableOptions.getWorkspaceRulesFromProperty(),
             bazelVariableSubstitutor,
             bazelProjectNameGenerator

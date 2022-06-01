@@ -61,14 +61,4 @@ graph C belongs. Its position in the test scope is irrelevant since test scope i
 
 ## Maven Parse detector
 
-The Maven buildless parser has two different methods of finding dependencies.
-
-The original implementation, now called legacy mode, is a simple parse of the pom for dependency information and supports finding maven plugins.
-
-The new implementation, which uses Project Inspector, is more accurate but currently does not support plugins.
-
-In 7.6.0, legacy mode is the default. You can enable the new mode by setting --detect.maven.buildless.legacy.mode=false.
-
-In 8.0.0, support for legacy mode will be dropped, as will support for finding plugins. Though Project Inspector support for plugins will likely be added in the future.
-
-In 7.6.0, when maven legacy mode is active, plugins can be enabled by setting --detect.maven.include.plugins=true.
+The Maven parse detector uses Project Inspector, which currently does not support plugins.

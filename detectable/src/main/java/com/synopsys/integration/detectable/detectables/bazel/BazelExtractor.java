@@ -42,7 +42,6 @@ public class BazelExtractor {
     private final ToolVersionLogger toolVersionLogger;
     private final HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser;
     private final String bazelTarget;
-    private final Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty;
     private final Set<WorkspaceRule> workspaceRulesFromProperty;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
     private final BazelProjectNameGenerator bazelProjectNameGenerator;
@@ -55,7 +54,6 @@ public class BazelExtractor {
         ToolVersionLogger toolVersionLogger,
         HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser,
         String bazelTarget,
-        Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty,
         Set<WorkspaceRule> workspaceRulesFromProperty,
         BazelVariableSubstitutor bazelVariableSubstitutor,
         BazelProjectNameGenerator bazelProjectNameGenerator
@@ -67,7 +65,6 @@ public class BazelExtractor {
         this.toolVersionLogger = toolVersionLogger;
         this.haskellCabalLibraryJsonProtoParser = haskellCabalLibraryJsonProtoParser;
         this.bazelTarget = bazelTarget;
-        this.workspaceRulesFromDeprecatedProperty = workspaceRulesFromDeprecatedProperty;
         this.workspaceRulesFromProperty = workspaceRulesFromProperty;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
         this.bazelProjectNameGenerator = bazelProjectNameGenerator;
@@ -78,7 +75,7 @@ public class BazelExtractor {
         BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
         Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
         Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
-        Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, workspaceRulesFromDeprecatedProperty, workspaceRulesFromProperty);
+        Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, workspaceRulesFromProperty);
         CodeLocation codeLocation = generateCodelocation(pipelines, workspaceRulesToQuery);
         return buildResults(codeLocation, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
     }

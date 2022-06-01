@@ -1,6 +1,6 @@
 # Directory Exclusions
 
-Use [detect.excluded.directories](../../properties/configuration/paths.md#detect-excluded-directories-advanced) to exclude directories from search when looking for detectors, and when finding paths to pass to the signature scanner as values for an '--exclude' flag.
+Use [detect.excluded.directories](../../properties/configuration/paths.md#detect-excluded-directories-advanced) to exclude directories from search when looking for detectors, searching for files to binary scan when using property detect.binary.scan.file.name.patterns, and when finding paths to pass to the signature scanner as values for an '--exclude' flag.
 
 ## Exclude directories by name
 
@@ -54,3 +54,4 @@ Let's say you want to exclude /project/folder while scanning /project:
 
 * [detect.excluded.directories.defaults.disabled](../../properties/configuration/paths.md#detect-excluded-directories-defaults-disabled-advanced)
 * [detect.excluded.directories.search.depth](../../properties/configuration/signature-scanner.md#detect-excluded-directories-search-depth)
+* [detect.binary.scan.file.name.patterns](../../properties/configuration/binary-scanner.md#binary-scan-filename-patterns)
