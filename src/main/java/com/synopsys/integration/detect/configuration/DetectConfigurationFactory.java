@@ -440,7 +440,9 @@ public class DetectConfigurationFactory {
         List<Path> sigmaPaths = detectConfiguration.getPaths(DetectProperties.DETECT_SIGMA_SCAN_PATHS);
         Path localSigmaPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_SIGMA_LOCAL_PATH);
         String additionalArguments = detectConfiguration.getNullableValue(DetectProperties.DETECT_SIGMA_SCAN_ARGUMENTS);
-        return new SigmaOptions(sigmaPaths, localSigmaPath, additionalArguments);
+        String codeLocationPrefix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
+        String codeLocationSuffix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
+        return new SigmaOptions(sigmaPaths, localSigmaPath, additionalArguments, codeLocationPrefix, codeLocationSuffix);
     }
 
     public DetectExecutableOptions createDetectExecutableOptions() {

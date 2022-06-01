@@ -12,11 +12,23 @@ public class SigmaOptions {
     private final Path localSigmaPath;
     @Nullable
     private final String additionalArguments;
+    @Nullable
+    private final String codeLocationPrefix;
+    @Nullable
+    private final String codeLocationSuffix;
 
-    public SigmaOptions(List<Path> sigmaPaths, Path localSigmaPath, String additionalArguments) {
+    public SigmaOptions(
+        List<Path> sigmaPaths,
+        Path localSigmaPath,
+        String additionalArguments,
+        @Nullable String codeLocationPrefix,
+        @Nullable String codeLocationSuffix
+    ) {
         this.sigmaPaths = sigmaPaths;
         this.localSigmaPath = localSigmaPath;
         this.additionalArguments = additionalArguments;
+        this.codeLocationPrefix = codeLocationPrefix;
+        this.codeLocationSuffix = codeLocationSuffix;
     }
 
     public List<Path> getSigmaPaths() {
@@ -30,4 +42,8 @@ public class SigmaOptions {
     public Optional<String> getAdditionalArguments() {
         return Optional.ofNullable(additionalArguments);
     }
+
+    public Optional<String> getCodeLocationPrefix() {return Optional.ofNullable(codeLocationPrefix);}
+
+    public Optional<String> getCodeLocationSuffix() {return Optional.ofNullable(codeLocationSuffix);}
 }

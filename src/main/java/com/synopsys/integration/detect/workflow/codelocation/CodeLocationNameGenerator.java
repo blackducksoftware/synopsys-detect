@@ -120,6 +120,19 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
     }
 
+    public String createSigmaCodeLocationName(
+        File targetFile, String projectName, String projectVersionName, @Nullable String prefix,
+        @Nullable String suffix
+    ) {
+        String codeLocationTypeString = CodeLocationNameType.SIGMA.toString().toLowerCase();
+
+        String canonicalFileName = DetectFileUtils.tryGetCanonicalName(targetFile);
+        List<String> fileCodeLocationNamePieces = Arrays.asList(canonicalFileName, projectName, projectVersionName);
+        List<String> fileCodeLocationEndPieces = Collections.singletonList(codeLocationTypeString);
+
+        return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
+    }
+
     private String createCodeLocationName(@Nullable String prefix, List<String> codeLocationNamePieces, @Nullable String suffix, List<String> codeLocationEndPieces) {
         String codeLocationName = createCommonName(prefix, codeLocationNamePieces, suffix, codeLocationEndPieces);
 

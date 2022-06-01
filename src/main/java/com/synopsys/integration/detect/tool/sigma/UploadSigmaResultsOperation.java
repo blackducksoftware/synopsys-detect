@@ -19,7 +19,7 @@ public class UploadSigmaResultsOperation {
 
     public UploadSigmaResultsOperation(SigmaUploadService sigmaUploadService) {this.sigmaUploadService = sigmaUploadService;}
 
-    public SigmaUploadResult uploadResults(File resultsFile, String scanId) throws IntegrationException {
+    public void uploadResults(File resultsFile, String scanId) throws IntegrationException {
         String resultsFileContent;
         try {
             resultsFileContent = FileUtils.readFileToString(resultsFile, Charset.defaultCharset());
@@ -29,9 +29,8 @@ public class UploadSigmaResultsOperation {
         Response response = sigmaUploadService.uploadSigmaResults(resultsFileContent, scanId);
         if (response.isStatusCodeSuccess()) {
             logger.info("Successfully uploaded Sigma results.");
-            return SigmaUploadResult.SUCCESS();
         } else {
-            return SigmaUploadResult.FAILURE(response.getStatusCode(), response.getStatusMessage());
+            throw new IntegrationException(String.format("Sigma upload failed with code %d: %s", response.getStatusCode(), response.getStatusMessage()));
         }
     }
 }

@@ -90,8 +90,6 @@ import com.synopsys.integration.detect.tool.sigma.PublishSigmaReportOperation;
 import com.synopsys.integration.detect.tool.sigma.SigmaInstaller;
 import com.synopsys.integration.detect.tool.sigma.SigmaReport;
 import com.synopsys.integration.detect.tool.sigma.SigmaScanOperation;
-import com.synopsys.integration.detect.tool.sigma.SigmaScanResult;
-import com.synopsys.integration.detect.tool.sigma.SigmaUploadResult;
 import com.synopsys.integration.detect.tool.sigma.UploadSigmaResultsOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
@@ -180,7 +178,6 @@ import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
-import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
@@ -685,30 +682,30 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public File resolveSigmaFromLocalInstall(File localInstall) throws OperationException {
-        return auditLog.namedInternal("Resolve Sigma Offine", () -> {
-            if (localInstall.isFile()) {
-                logger.debug(String.format("Found user-specified Sigma: %s", localInstall.getAbsolutePath()));
-                return localInstall;
-            } else {
-                throw new IntegrationException(String.format("Provided Sigma path (%s) does not exist or is not a file", localInstall.getAbsolutePath()));
-            }
-        });
+    public String createSigmaCodeLocationName(File scanTarget, NameVersion pojectNameVersion) {
+        return codeLocationNameManager.createSigmaCodeLocationName(
+            scanTarget,
+            pojectNameVersion.getName(),
+            pojectNameVersion.getVersion(),
+            detectConfigurationFactory.createSigmaOptions().getCodeLocationPrefix().orElse(null),
+            detectConfigurationFactory.createSigmaOptions().getCodeLocationSuffix().orElse(null)
+        );
     }
 
-    public SigmaScanResult performSigmaScan(File scanTarget, File sigmaExe) throws OperationException {
-        return auditLog.namedInternal("Perform Sigma Scan", () -> {
+    public File performSigmaScan(File scanTarget, File sigmaExe, int count) throws OperationException {
+        return auditLog.namedInternal("Perform Sigma Scan", "Sigma", () -> {
             return new SigmaScanOperation(directoryManager, executableRunner).performSigmaScan(
                 scanTarget,
                 sigmaExe,
-                detectConfigurationFactory.createSigmaOptions().getAdditionalArguments().orElse(null)
+                detectConfigurationFactory.createSigmaOptions().getAdditionalArguments().orElse(null),
+                count
             );
         });
     }
 
-    public SigmaUploadResult uploadSigmaResults(BlackDuckRunData blackDuckRunData, File sigmaResultsFile, String scanId) throws OperationException {
-        return auditLog.namedInternal("Upload Sigma Results", () -> {
-            return new UploadSigmaResultsOperation(blackDuckRunData.getBlackDuckServicesFactory().createSigmaUploadService())
+    public void uploadSigmaResults(BlackDuckRunData blackDuckRunData, File sigmaResultsFile, String scanId) throws OperationException {
+        auditLog.namedInternal("Upload Sigma Results", () -> {
+            new UploadSigmaResultsOperation(blackDuckRunData.getBlackDuckServicesFactory().createSigmaUploadService())
                 .uploadResults(sigmaResultsFile, scanId);
         });
     }

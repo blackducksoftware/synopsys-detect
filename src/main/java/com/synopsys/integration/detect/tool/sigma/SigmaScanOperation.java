@@ -15,6 +15,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.Executable;
 
 public class SigmaScanOperation {
@@ -28,9 +29,11 @@ public class SigmaScanOperation {
         this.executableRunner = executableRunner;
     }
 
-    public SigmaScanResult performSigmaScan(File scanTarget, File sigmaExe, @Nullable String additionalArguments) {
+    public File performSigmaScan(File scanTarget, File sigmaExe, @Nullable String additionalArguments, int count) throws IntegrationException {
         String resultsFileName = String.format("results-%s.json", scanTarget.getName());
-        File resultsFile = new File(directoryManager.getSigmaOutputDirectory(), resultsFileName);
+        File outputDir = new File(directoryManager.getSigmaOutputDirectory(), "SIGMA-" + count);
+        outputDir.mkdirs();
+        File resultsFile = new File(outputDir, resultsFileName);
 
         List<String> sigmaArgs = new LinkedList<>();
         sigmaArgs.add("analyze");
@@ -41,15 +44,17 @@ public class SigmaScanOperation {
         sigmaArgs.add(resultsFile.getAbsolutePath());
         sigmaArgs.add(scanTarget.getAbsolutePath());
 
-        //TODO- make a dir whose name includes a counter for each scan, put results file in dir
-
         Executable executable = ExecutableUtils.createFromTarget(scanTarget, ExecutableTarget.forFile(sigmaExe), sigmaArgs);
         try {
             executableRunner.executeSuccessfully(executable);
-            return SigmaScanResult.SUCCESS(resultsFile);
+            return resultsFile;
         } catch (ExecutableFailedException e) {
-            logger.error("Sigma scan failed with command: " + executable.getExecutableDescription());
-            return SigmaScanResult.FAILURE(e.getReturnCode(), e.getMessage());
+            throw new IntegrationException(String.format(
+                "Sigma scan command %s failed with code %d: %s",
+                executable.getExecutableDescription(),
+                e.getReturnCode(),
+                e.getMessage()
+            ));
         }
     }
 }
