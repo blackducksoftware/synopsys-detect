@@ -29,31 +29,31 @@ public class DetectorFinder {
     private Optional<DetectorEvaluationTree> findDetectors(File directory, DetectorRuleSet detectorRuleSet, int depth, DetectorFinderOptions options, FileFinder fileFinder) {
 
         if (depth > options.getMaximumDepth()) {
-            logger.trace("Skipping directory as it exceeds max depth: " + directory.toString());
+            logger.trace("Skipping directory as it exceeds max depth: {}", directory);
             return Optional.empty();
         }
 
         String directoryString = Optional.ofNullable(directory).map(File::toString).orElse("null");
         if (null == directory || !directory.isDirectory()) {
-            logger.trace("Skipping file as it is not a directory: " + directoryString);
+            logger.trace("Skipping file as it is not a directory: {}", directoryString);
             return Optional.empty();
         }
 
         if (Files.isSymbolicLink(directory.toPath())) {
             if (!options.followSymLinks()) {
-                logger.debug("Skipping file as it is a symbolic link and following symbolic links has been disabled: " + directoryString);
+                logger.debug("Skipping file as it is a symbolic link and following symbolic links has been disabled: {}", directoryString);
                 return Optional.empty();
             } else {
-                logger.debug("Following symbolic link: " + directoryString);
+                logger.debug("Following symbolic link: {}", directoryString);
                 Path linkTarget;
                 try {
                     linkTarget = directory.toPath().toRealPath();
                 } catch (IOException e) {
-                    logger.debug("Symbolic link: " + directoryString + " does not point to a valid directory; skipping it");
+                    logger.debug("Symbolic link: {} does not point to a valid directory; skipping it", directoryString);
                     return Optional.empty();
                 }
-                if (!Files.isDirectory(linkTarget)) {
-                    logger.debug("Symbolic link: " + directoryString + " does not point to a valid directory; skipping it");
+                if (!linkTarget.toFile().isDirectory()) {
+                    logger.debug("Symbolic link: {} does not point to a valid directory; skipping it", directoryString);
                     return Optional.empty();
                 }
                 directory = linkTarget.toFile();
@@ -64,12 +64,12 @@ public class DetectorFinder {
             .map(DetectorEvaluation::new)
             .collect(Collectors.toList());
 
-        logger.trace("Traversing directory: " + directory.getPath());
+        logger.trace("Traversing directory: {}", directory.getPath());
 
         Set<DetectorEvaluationTree> children = new HashSet<>();
 
         List<File> subDirectories = fileFinder.findFiles(directory, options.getFileFilter());
-        logger.debug("filteredSubDirectories: {}", subDirectories.toString());
+        logger.debug("filteredSubDirectories: {}", subDirectories);
 
         for (File subDirectory : subDirectories) {
             Optional<DetectorEvaluationTree> childEvaluationSet = findDetectors(subDirectory, detectorRuleSet, depth + 1, options, fileFinder);
