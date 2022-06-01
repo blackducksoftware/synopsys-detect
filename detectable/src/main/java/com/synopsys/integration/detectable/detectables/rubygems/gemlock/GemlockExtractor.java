@@ -25,7 +25,6 @@ public class GemlockExtractor {
     public Extraction extract(File gemlock) {
         try {
             List<String> gemlockText = Files.readAllLines(gemlock.toPath(), StandardCharsets.UTF_8);
-            logger.debug(String.join(System.lineSeparator(), gemlockText));
 
             GemlockParser gemlockParser = new GemlockParser(externalIdFactory);
             DependencyGraph dependencyGraph = gemlockParser.parseProjectDependencies(gemlockText);
