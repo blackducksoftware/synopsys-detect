@@ -38,4 +38,8 @@ public class SigmaScanResult {
     public Optional<String> getErrorMessage() {
         return Optional.ofNullable(errorMessage);
     }
+
+    public boolean wasSuccessful() {
+        return resultsFile != null && errorMessage == null;
+    }
 }

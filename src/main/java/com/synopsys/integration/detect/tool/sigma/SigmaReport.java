@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.tool.sigma;
 
+import java.io.File;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +11,15 @@ public class SigmaReport {
     @Nullable
     private final String errorMessage;
 
-    public SigmaReport(String scanTarget, String errorMessage) {
+    public static SigmaReport SUCCESS(File scanTarget) {
+        return new SigmaReport(scanTarget.getAbsolutePath(), null);
+    }
+
+    public static SigmaReport FAILURE(File scanTarget, String errorMessage) {
+        return new SigmaReport(scanTarget.getAbsolutePath(), errorMessage);
+    }
+
+    private SigmaReport(String scanTarget, @Nullable String errorMessage) {
         this.scanTarget = scanTarget;
         this.errorMessage = errorMessage;
     }

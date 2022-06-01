@@ -30,4 +30,8 @@ public class SigmaUploadResult {
     public Optional<String> getErrorMessage() {
         return Optional.ofNullable(errorMessage);
     }
+
+    public boolean wasSuccessful() {
+        return errorMessage != null;
+    }
 }

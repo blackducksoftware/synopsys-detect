@@ -45,23 +45,31 @@ public class SigmaScanStepRunner {
 
         List<SigmaReport> sigmaReports = new LinkedList<>();
         for (File scanTarget : sigmaScanTargets) {
-            String scanId = initiateScan(projectNameVersion, scanTarget, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
-            SigmaScanResult sigmaScanResult = operationFactory.performSigmaScan(scanTarget, sigmaExe);
-            String errorMessage = null;
-            if (!sigmaScanResult.getErrorMessage().isPresent()) {
-                SigmaUploadResult uploadResult = operationFactory.uploadSigmaResults(blackDuckRunData, sigmaScanResult.getResultsFile().get(), scanId);
-                if (uploadResult.getErrorMessage().isPresent()) {
-                    errorMessage = String.format("Upload of Sigma results failed with code %d: %s", uploadResult.getStatusCode(), uploadResult.getErrorMessage().get());
-                }
-            } else {
-                errorMessage = String.format("Sigma scan failed with code %d: %s", sigmaScanResult.getStatusCode(), sigmaScanResult.getErrorMessage().get());
-            }
-            if (errorMessage != null) {
-                logger.error(errorMessage);
-            }
-            sigmaReports.add(new SigmaReport(scanTarget.getAbsolutePath(), errorMessage));
+            SigmaReport sigmaReport = performScan(projectNameVersion, blackDuckRunData, sigmaExe, scanTarget);
+            sigmaReport.getErrorMessage().ifPresent(message -> logger.error(String.format("%s for target %s", message, sigmaReport.getScanTarget())));
         }
         operationFactory.publishSigmaReport(sigmaReports);
+    }
+
+    private SigmaReport performScan(
+        NameVersion projectNameVersion,
+        BlackDuckRunData blackDuckRunData,
+        File sigmaExe,
+        File scanTarget
+    ) throws OperationException, IntegrationException, InterruptedException {
+        String scanId = initiateScan(projectNameVersion, scanTarget, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
+        SigmaScanResult sigmaScanResult = SigmaScanResult.FAILURE(16, "TEST FAILURRE"); //operationFactory.performSigmaScan(scanTarget, sigmaExe);
+        if (!sigmaScanResult.wasSuccessful()) {
+            return SigmaReport.FAILURE(scanTarget, String.format("Sigma scan failed with code %d: %s", sigmaScanResult.getStatusCode(), sigmaScanResult.getErrorMessage().get()));
+        }
+        SigmaUploadResult uploadResult = operationFactory.uploadSigmaResults(blackDuckRunData, sigmaScanResult.getResultsFile().get(), scanId);
+        if (!uploadResult.wasSuccessful()) {
+            return SigmaReport.FAILURE(
+                scanTarget,
+                String.format("Upload of Sigma results failed with code %d: %s", uploadResult.getStatusCode(), uploadResult.getErrorMessage().get())
+            );
+        }
+        return SigmaReport.SUCCESS(scanTarget);
     }
 
     public void runSigmaOffline() throws OperationException, IntegrationException {
@@ -71,11 +79,11 @@ public class SigmaScanStepRunner {
         List<SigmaReport> sigmaReports = new LinkedList<>();
         for (File scanTarget : sigmaScanTargets) {
             SigmaScanResult sigmaScanResult = operationFactory.performSigmaScan(scanTarget, sigmaExe);
-            if (sigmaScanResult.getResultsFile().isPresent()) {
-                sigmaReports.add(new SigmaReport(scanTarget.getAbsolutePath(), null));
+            if (sigmaScanResult.wasSuccessful()) {
+                sigmaReports.add(SigmaReport.SUCCESS(scanTarget));
             } else {
                 String errorMessage = String.format("Sigma scan failed with code %d: %s", sigmaScanResult.getStatusCode(), sigmaScanResult.getErrorMessage());
-                sigmaReports.add(new SigmaReport(scanTarget.getAbsolutePath(), errorMessage));
+                sigmaReports.add(SigmaReport.FAILURE(scanTarget, errorMessage));
             }
         }
         operationFactory.publishSigmaReport(sigmaReports);
