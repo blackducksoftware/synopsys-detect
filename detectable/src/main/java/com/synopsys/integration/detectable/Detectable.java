@@ -37,7 +37,14 @@ public abstract class Detectable {
      * Perform the extraction and in case of error ideally return an Extraction with the exception and additional context such as failure description.
      * If there is no additional context, Detect can catch exceptions listed below. Feel free to add your own.
      */
-    public abstract Extraction extract(ExtractionEnvironment extractionEnvironment)
-        throws ExecutableRunnerException, ExecutableFailedException, IOException, JsonSyntaxException, CycleDetectedException, DetectableException, MissingExternalIdException,
-        ParserConfigurationException, SAXException;
+    public abstract Extraction extract(ExtractionEnvironment extractionEnvironment) throws
+        ExecutableRunnerException,
+        ExecutableFailedException,
+        IOException,
+        JsonSyntaxException,
+        CycleDetectedException,
+        DetectableException,
+        MissingExternalIdException,
+        ParserConfigurationException,
+        SAXException;
 }

@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.swift.cli;
 
 import java.io.File;
+import java.net.MalformedURLException;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
@@ -30,7 +31,7 @@ public class SwiftExtractor {
         this.toolVersionLogger = toolVersionLogger;
     }
 
-    public Extraction extract(File environmentDirectory, ExecutableTarget swiftExecutable) throws ExecutableFailedException {
+    public Extraction extract(File environmentDirectory, ExecutableTarget swiftExecutable) throws ExecutableFailedException, MalformedURLException {
         toolVersionLogger.log(environmentDirectory, swiftExecutable);
         SwiftPackage rootSwiftPackage = getRootSwiftPackage(environmentDirectory, swiftExecutable);
         CodeLocation codeLocation = swiftPackageTransformer.transform(rootSwiftPackage);

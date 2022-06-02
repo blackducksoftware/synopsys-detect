@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolvedFormat;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageState;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedPackage;
@@ -34,7 +35,7 @@ class PackageResolvedTransformerTest {
         );
         List<ResolvedPackage> resolvedPackages = createResolvedPackagesForFormat(testedFormat, swiftCollectionsPackage);
 
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer(new GitUrlParser());
         DependencyGraph dependencyGraph = transformer.transform(resolvedPackages);
 
         GraphAssert graphAssert = new GraphAssert(Forge.GITHUB, dependencyGraph);
@@ -54,7 +55,7 @@ class PackageResolvedTransformerTest {
         );
         List<ResolvedPackage> resolvedPackages = createResolvedPackagesForFormat(testedFormat, auth0Package);
 
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer(new GitUrlParser());
         DependencyGraph dependencyGraph = transformer.transform(resolvedPackages);
 
         GraphAssert graphAssert = new GraphAssert(Forge.GITHUB, dependencyGraph);
@@ -74,7 +75,7 @@ class PackageResolvedTransformerTest {
         );
         List<ResolvedPackage> resolvedPackages = createResolvedPackagesForFormat(testedFormat, malformedUrlPackage);
 
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer(new GitUrlParser());
         DependencyGraph dependencyGraph = transformer.transform(resolvedPackages);
 
         GraphAssert graphAssert = new GraphAssert(Forge.GITHUB, dependencyGraph);
@@ -92,7 +93,7 @@ class PackageResolvedTransformerTest {
         );
         List<ResolvedPackage> resolvedPackages = createResolvedPackagesForFormat(testedFormat, rSwiftLibraryPackage);
 
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer(new GitUrlParser());
         DependencyGraph dependencyGraph = transformer.transform(resolvedPackages);
 
         GraphAssert graphAssert = new GraphAssert(Forge.GITHUB, dependencyGraph);
@@ -112,7 +113,7 @@ class PackageResolvedTransformerTest {
         );
         List<ResolvedPackage> resolvedPackages = createResolvedPackagesForFormat(testedFormat, swiftLogPackage);
 
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer(new GitUrlParser());
         DependencyGraph dependencyGraph = transformer.transform(resolvedPackages);
 
         GraphAssert graphAssert = new GraphAssert(Forge.GITHUB, dependencyGraph);
