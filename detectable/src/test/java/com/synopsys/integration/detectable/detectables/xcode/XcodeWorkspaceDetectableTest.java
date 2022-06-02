@@ -145,8 +145,8 @@ public class XcodeWorkspaceDetectableTest extends DetectableFunctionalTest {
         CodeLocation workspaceLocalCodeLocation = extraction.getCodeLocations().get(0);
         graphAssert = new NameVersionGraphAssert(Forge.GITHUB, workspaceLocalCodeLocation.getDependencyGraph());
         graphAssert.hasRootDependency("apple/swift-argument-parser", "1.0.1");
-        graphAssert.hasNoDependency("invalid/url", "1.2.3");
-        graphAssert.hasRootSize(1);
+        graphAssert.hasRootDependency("invalid/url", "1.2.3"); // The GitUrlParser can handle this
+        graphAssert.hasRootSize(2);
 
         CodeLocation myLibraryCodeLocation = extraction.getCodeLocations().get(1);
         graphAssert = new NameVersionGraphAssert(Forge.GITHUB, myLibraryCodeLocation.getDependencyGraph());
