@@ -1,7 +1,6 @@
 package com.synopsys.integration.detectable.detectables.swift.lock.transform;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -14,16 +13,21 @@ import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageState;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedPackage;
 
 public class PackageResolvedTransformer {
-    private static final String[] REPO_SUFFIX_TO_STRIP = { ".git" };
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private final GitUrlParser gitUrlParser;
+
+    public PackageResolvedTransformer(GitUrlParser gitUrlParser) {
+        this.gitUrlParser = gitUrlParser;
+    }
+
     public DependencyGraph transform(List<ResolvedPackage> resolvedPackages) {
-        DependencyGraph dependencyGraph = new BasicDependencyGraph();// ProjectDependencyGraph(new ProjectDependency(SWIFT_FORGE, relativePackageResolvedPath))
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
         resolvedPackages.stream()
             .filter(Objects::nonNull)
             .map(this::convertToDependency)
@@ -38,7 +42,7 @@ public class PackageResolvedTransformer {
         PackageState packageState = resolvedPackage.getPackageState();
         String location = resolvedPackage.getLocation();
         try {
-            String name = extractPackageName(location);
+            String name = gitUrlParser.getRepoName(location);
             String version = packageState.getVersion();
             return Optional.of(Dependency.FACTORY.createNameVersionDependency(Forge.GITHUB, name, version));
         } catch (MalformedURLException exception) {
@@ -54,14 +58,5 @@ public class PackageResolvedTransformer {
             ), exception);
             return Optional.empty();
         }
-    }
-
-    private String extractPackageName(String location) throws MalformedURLException {
-        String cleanPackageName = new URL(location).getPath(); // TODO: Can paths be URLs? Expecting this to cause problems at some point. JM-05/2022
-        cleanPackageName = StringUtils.strip(cleanPackageName, "/");
-        for (String suffix : REPO_SUFFIX_TO_STRIP) {
-            cleanPackageName = StringUtils.removeEnd(cleanPackageName, suffix);
-        }
-        return cleanPackageName;
     }
 }

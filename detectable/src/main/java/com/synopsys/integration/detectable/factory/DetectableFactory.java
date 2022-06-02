@@ -671,7 +671,8 @@ public class DetectableFactory {
         PackageResolvedFormatParser formatParser = new PackageResolvedFormatParser(gson);
         PackageResolvedFormatChecker formatChecker = new PackageResolvedFormatChecker();
         PackageResolvedDataChecker packageResolvedDataChecker = new PackageResolvedDataChecker();
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer(gitUrlParser);
         return new PackageResolvedExtractor(parser, formatParser, formatChecker, packageResolvedDataChecker, transformer);
     }
 
@@ -1068,7 +1069,8 @@ public class DetectableFactory {
     }
 
     private SwiftPackageTransformer swiftPackageTransformer() {
-        return new SwiftPackageTransformer(externalIdFactory);
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        return new SwiftPackageTransformer(gitUrlParser);
     }
 
     private SwiftExtractor swiftExtractor() {
