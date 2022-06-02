@@ -60,8 +60,6 @@ public class DetectorRuleFactory {
             detector.entryPoint(CargoLockDetectable.class);
         });
 
-        rules.addDetector(DetectorType.CARGO, CargoLockDetectable.class);
-
         rules.addDetector(DetectorType.CARTHAGE, detector -> {
             detector.entryPoint(CarthageLockDetectable.class);
         });

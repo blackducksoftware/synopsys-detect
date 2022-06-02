@@ -8,13 +8,16 @@ public class HelpJsonDetectorRule {
     private Integer maxDepth = 0;
     private Boolean nestable = false;
     private Boolean nestInvisible = false;
+    private List<HelpJsonDetectorEntryPoint> entryPoints = new ArrayList<>();
+    private List<String> yieldsTo = new ArrayList<>();
 
     public List<HelpJsonDetectorEntryPoint> getEntryPoints() {
         return entryPoints;
     }
 
-    private final List<HelpJsonDetectorEntryPoint> entryPoints = new ArrayList<>();
-    private List<String> yieldsTo = new ArrayList<>();
+    public void setEntryPoints(List<HelpJsonDetectorEntryPoint> entryPoints) {
+        this.entryPoints = entryPoints;
+    }
 
     public String getDetectorType() {
         return detectorType;

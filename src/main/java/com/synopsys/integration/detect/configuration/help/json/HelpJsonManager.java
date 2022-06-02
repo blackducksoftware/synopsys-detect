@@ -54,6 +54,7 @@ public class HelpJsonManager {
         List<HelpJsonDetectorEntryPoint> entryPoints = detector.getEntryPoints().stream()
             .map(this::convertEntryPoint)
             .collect(Collectors.toList());
+        helpData.setEntryPoints(entryPoints);
 
         return helpData;
     }

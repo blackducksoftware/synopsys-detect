@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelpJsonDetectorEntryPoint {
-    private String name;
+    private String name; //TODO (detectors): May not need this.
     private List<HelpJsonDetectable> detectables = new ArrayList<>();
 
     public List<HelpJsonDetectable> getDetectables() {
