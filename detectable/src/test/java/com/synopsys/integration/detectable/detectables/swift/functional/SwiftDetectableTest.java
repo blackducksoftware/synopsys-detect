@@ -77,8 +77,8 @@ public class SwiftDetectableTest extends DetectableFunctionalTest {
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GITHUB, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(2);
-        graphAssert.hasRootDependency("FisherYates", "2.0.5");
-        graphAssert.hasRootDependency("PlayingCard", "3.0.5");
-        graphAssert.hasParentChildRelationship("PlayingCard", "3.0.5", "GenericLibrary", "1.0.1");
+        graphAssert.hasRootDependency("apple/example-package-fisheryates", "2.0.5");
+        graphAssert.hasRootDependency("apple/example-package-playingcard", "3.0.5");
+        graphAssert.hasParentChildRelationship("apple/example-package-playingcard", "3.0.5", "apple/example-package-genericLibrary", "1.0.1");
     }
 }

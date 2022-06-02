@@ -1,7 +1,5 @@
 package com.synopsys.integration.detectable.detectables.swift.cli;
 
-import java.net.MalformedURLException;
-
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -47,7 +45,7 @@ public class SwiftCliDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, MalformedURLException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
         return swiftExtractor.extract(environment.getDirectory(), swiftExecutable);
     }
 

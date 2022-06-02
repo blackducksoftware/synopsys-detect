@@ -10,19 +10,20 @@ import com.google.gson.annotations.SerializedName;
 public class SwiftPackage {
     @SerializedName("name")
     private final String name;
-    @SerializedName("name")
+
+    @SerializedName("version")
     private final String version;
+
+    @SerializedName("url")
+    private final String url;
+
     @SerializedName("dependencies")
     private final List<SwiftPackage> dependencies;
 
-    // The fields below were introduced in Swift 5.6
+    // This field was introduced in Swift 5.6
     @Nullable
     @SerializedName("identity")
     private final String identity;
-
-    @Nullable
-    @SerializedName("identity")
-    private final String url;
 
     public SwiftPackage(String name, String version, List<SwiftPackage> dependencies, @Nullable String identity, @Nullable String url) {
         this.name = name;
@@ -48,7 +49,7 @@ public class SwiftPackage {
         return Optional.ofNullable(identity);
     }
 
-    public Optional<String> getUrl() {
-        return Optional.ofNullable(url);
+    public String getUrl() {
+        return url;
     }
 }

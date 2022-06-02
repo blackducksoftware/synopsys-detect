@@ -2,6 +2,9 @@ package com.synopsys.integration.detectable.detectables.swift.cli;
 
 import java.net.MalformedURLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
@@ -12,6 +15,7 @@ import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.swift.cli.model.SwiftPackage;
 
 public class SwiftPackageTransformer {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final GitUrlParser gitUrlParser;
 
@@ -19,7 +23,7 @@ public class SwiftPackageTransformer {
         this.gitUrlParser = gitUrlParser;
     }
 
-    public CodeLocation transform(SwiftPackage rootSwiftPackage) throws MalformedURLException {
+    public CodeLocation transform(SwiftPackage rootSwiftPackage) {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
         for (SwiftPackage swiftPackageDependency : rootSwiftPackage.getDependencies()) {
             Dependency dependency = convertToDependency(dependencyGraph, swiftPackageDependency);
@@ -29,7 +33,7 @@ public class SwiftPackageTransformer {
         return new CodeLocation(dependencyGraph);
     }
 
-    private Dependency convertToDependency(DependencyGraph dependencyGraph, SwiftPackage swiftPackage) throws MalformedURLException {
+    private Dependency convertToDependency(DependencyGraph dependencyGraph, SwiftPackage swiftPackage) {
         ExternalId externalId = createExternalId(swiftPackage);
         Dependency dependency = new Dependency(externalId);
 
@@ -41,13 +45,18 @@ public class SwiftPackageTransformer {
         return dependency;
     }
 
-    private ExternalId createExternalId(SwiftPackage swiftPackage) throws MalformedURLException {
+    private ExternalId createExternalId(SwiftPackage swiftPackage) {
         ExternalId externalId;
-        Forge forge = Forge.COCOAPODS;
-        String packageName = swiftPackage.getName();
-        if (swiftPackage.getUrl().isPresent()) {
-            packageName = gitUrlParser.getRepoName(swiftPackage.getUrl().get());
+        Forge forge;
+        String packageName;
+
+        try {
             forge = Forge.GITHUB;
+            packageName = gitUrlParser.getRepoName(swiftPackage.getUrl());
+        } catch (MalformedURLException e) {
+            forge = Forge.COCOAPODS;
+            packageName = swiftPackage.getName();
+            logger.warn("Failed to parse url for package {}. Falling back to ExternalId which may not match a component. Please contact support", packageName, e);
         }
 
         if ("unspecified".equals(swiftPackage.getVersion())) {
