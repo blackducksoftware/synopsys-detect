@@ -21,6 +21,7 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
     private final InstalledToolManager installedToolManager;
     private final InstalledToolLocator installedToolLocator;
 
+    File inspectorFile = null;
     private boolean hasResolvedInspector = false;
 
     public OnlineProjectInspectorResolver(
@@ -37,7 +38,6 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
 
     @Override
     public ExecutableTarget resolveProjectInspector() throws DetectableException {
-        File inspectorFile = null;
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
             File installDirectory = directoryManager.getPermanentDirectory(INSTALLED_TOOL_JSON_KEY);
