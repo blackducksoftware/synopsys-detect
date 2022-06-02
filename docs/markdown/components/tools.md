@@ -11,5 +11,6 @@ value specified in parentheses are:
 * [Black Duck Signature Scanner](../downloadingandrunning/basics/runningwithblackduck.md) (--detect.tools=SIGNATURE_SCAN)
 * [Black Duck - Binary Analysis](../downloadingandrunning/basics/runningwithblackduck.md) (--detect.tools=BINARY_SCAN)
 * [Vulnerability Impact Analysis Tool](../downloadingandrunning/basics/runningwithblackduck.md) (--detect.tools=IMPACT_ANALYSIS)
+* [Sigma](../downloadingandrunning/basics/runningwithblackduck.md) (--detect.tools=SIGMA)
 
 The detector tool runs any applicable [detectors](detectors.md).
