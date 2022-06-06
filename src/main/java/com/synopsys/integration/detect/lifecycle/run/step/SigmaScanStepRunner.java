@@ -35,7 +35,7 @@ public class SigmaScanStepRunner {
         List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
 
         File sigmaExe;
-        Optional<File> localSigma = operationFactory.calculateLocalSigmaInstallPath();
+        Optional<File> localSigma = operationFactory.calculateUserProvidedSigmaPath();
         if (localSigma.isPresent()) {
             sigmaExe = localSigma.get();
         } else {
@@ -53,7 +53,7 @@ public class SigmaScanStepRunner {
 
     public void runSigmaOffline() throws OperationException, IntegrationException {
         List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
-        File sigmaExe = operationFactory.calculateLocalSigmaInstallPath()
+        File sigmaExe = operationFactory.calculateUserProvidedSigmaPath()
             .orElseThrow(() -> new IntegrationException("Was not able to install or locate Sigma.  Must either connect to a Black Duck or provide a path to a local Sigma."));
         List<SigmaReport> sigmaReports = new LinkedList<>();
         int count = 0;
