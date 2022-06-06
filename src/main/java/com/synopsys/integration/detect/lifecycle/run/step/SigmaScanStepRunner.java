@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +38,15 @@ public class SigmaScanStepRunner {
     public void runSigmaOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException {
         List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
-        File sigmaExe = operationFactory.calculateOnlineLocalSigmaInstallPath()
-            .orElse(operationFactory.resolveSigmaOnline(blackDuckRunData));
+
+        File sigmaExe;
+        Optional<File> localSigma = operationFactory.calculateOnlineLocalSigmaInstallPath();
+        if (localSigma.isPresent()) {
+            sigmaExe = localSigma.get();
+        } else {
+            sigmaExe = operationFactory.resolveSigmaOnline(blackDuckRunData);
+        }
+
         List<SigmaReport> sigmaReports = new LinkedList<>();
         int count = 0;
         for (File scanTarget : sigmaScanTargets) {
