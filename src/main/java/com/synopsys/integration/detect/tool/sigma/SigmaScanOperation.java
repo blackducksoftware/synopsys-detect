@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -19,8 +17,6 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.Executable;
 
 public class SigmaScanOperation {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final DirectoryManager directoryManager;
     private final DetectExecutableRunner executableRunner;
 
@@ -38,7 +34,7 @@ public class SigmaScanOperation {
         List<String> sigmaArgs = new LinkedList<>();
         sigmaArgs.add("analyze");
         Optional.ofNullable(additionalArguments)
-            .map(arg -> arg.split(" ")) //TODO- is split necessary?
+            .map(arg -> arg.split(" "))
             .ifPresent(args -> sigmaArgs.addAll(Arrays.asList(args)));
         sigmaArgs.add("-o");
         sigmaArgs.add(resultsFile.getAbsolutePath());

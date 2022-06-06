@@ -6,9 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.blackducksoftware.bdio2.Bdio;
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.blackduck.bdio2.Bdio2FileUploadService;
@@ -26,8 +23,6 @@ import com.synopsys.integration.util.NameVersion;
 
 public class SigmaScanStepRunner {
     private static final String SCAN_CREATOR = "sigma";
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final OperationFactory operationFactory;
 

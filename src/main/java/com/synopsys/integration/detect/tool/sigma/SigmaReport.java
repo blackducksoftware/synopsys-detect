@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-//TODO- should this class have a method wasSuccess?
 public class SigmaReport {
     private final String scanTarget;
     @Nullable
