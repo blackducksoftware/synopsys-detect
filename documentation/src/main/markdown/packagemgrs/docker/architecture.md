@@ -38,11 +38,11 @@ starts a container, mounting a shared volume.
 
 The following steps are performed inside the image inspector container:
 
-1. Builds the container file system that a container has if you ran the target image. It does not run the target image.
+1. Builds the container file system that a container would have if you ran the target image. It does not run the target image.
 2. Determines the target image package manager database format, and redirects to a different image inspector service if necessary.
-3. Runs the image inspector's Linux package manager on the target image package manager database to get the list of
+3. Runs the image inspector's Linux package manager on the target image package manager database to get details of
 installed packages.
-4. Produces and returns a BDIO (.jsonld) file consisting of a list of target image packages and, optionally, the container filesystem.
+4. Produces and returns a BDIO1 (.jsonld) file consisting of a graph of target image packages and, optionally, the container filesystem.
 
 The following steps are performed back on the host when the request to the image inspector service returns:
 
@@ -54,23 +54,25 @@ The following steps are performed back on the host when the request to the image
 In container mode, you start four containers in such a way that they share a mounted volume and can reach each other through HTTP GET operations using
 base URLs that you provide:
 
-* One container for [docker_inspector_name].
+* One container for [solution_name] / [docker_inspector_name].
 * One container for each of the three image inspector services: Alpine, CentOS, and Ubuntu.
 
 In container mode you must provide the target image in a .tar file with one of the supported formats; you cannot specify that target image by repo:tag.
 
-[docker_inspector_name]:
-
-1. Requests the Black Duck input/output (BDIO) file and container file system using HTTP from the default image inspector service using a 
+[solution_name] invokes [docker_inspector_name], which
+requests the dependency graph (in BDIO format) and signature/binary scan targets using HTTP from the default image inspector service using a 
 base URL that you have provided.
 
 The following steps are performed inside the image inspector container:
 
-1. Builds the container file system that a container has if you ran the target image. It does not run the target image.
+1. Builds the container file system that a container would have if you ran the target image. It does not run the target image.
 1. Determines the target image package manager database format, and redirects to a different image inspector service if necessary.
-1. Runs the image inspector's Linux package manager on the target image package manager database.
-1. Produces and returns a BDIO (.jsonld) file consisting of a list of target image packages and, optionally, the container filesystem.
+1. Runs the image inspector's Linux package manager on the target image package manager database to get details of the installed packages.
+1. Produces and returns a BDIO1 (.jsonld) file consisting of a graph of target image packages and, optionally, the container filesystem.
 
-The following steps are performed back in the [docker_inspector_name] container when the request to the image inspector service returns:
+The following steps are performed by [docker_inspector_name]/[solution_name] back in the [solution_name]  container when the request to the image inspector service returns:
 
-1. Returns the output files (BDIO and signature and binary scan targets) to [solution_name] by copying them to the output directory.
+1. [docker_inspector_name] returns the output files (BDIO and signature and binary scan targets) to [solution_name] by copying them to the output directory.
+1. [solution_name] converts the BDIO to BDIO2, adjusts the project, project version, and codelocation names, and uploads it to [blackduck_product_name].
+1. [solution_name] performs [blackduck_signature_scan_act] and [blackduck_binary_scan_capability] on the scan targets.
+
