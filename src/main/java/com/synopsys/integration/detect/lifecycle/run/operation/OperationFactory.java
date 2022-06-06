@@ -665,9 +665,9 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public Optional<File> calculateOnlineLocalSigmaInstallPath() throws OperationException {
+    public Optional<File> calculateLocalSigmaInstallPath() throws OperationException {
         return auditLog.namedInternal(
-            "Calculate Online Local Sigma Path",
+            "Calculate Local Sigma Path",
             () -> detectConfigurationFactory.createSigmaOptions().getLocalSigmaPath().map(Path::toFile)
         );
     }

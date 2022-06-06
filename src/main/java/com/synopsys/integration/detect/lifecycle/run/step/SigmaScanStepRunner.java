@@ -35,7 +35,7 @@ public class SigmaScanStepRunner {
         List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
 
         File sigmaExe;
-        Optional<File> localSigma = operationFactory.calculateOnlineLocalSigmaInstallPath();
+        Optional<File> localSigma = operationFactory.calculateLocalSigmaInstallPath();
         if (localSigma.isPresent()) {
             sigmaExe = localSigma.get();
         } else {
@@ -53,7 +53,7 @@ public class SigmaScanStepRunner {
 
     public void runSigmaOffline() throws OperationException, IntegrationException {
         List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
-        File sigmaExe = operationFactory.calculateOnlineLocalSigmaInstallPath()
+        File sigmaExe = operationFactory.calculateLocalSigmaInstallPath()
             .orElseThrow(() -> new IntegrationException("Was not able to install or locate Sigma.  Must either connect to a Black Duck or provide a path to a local Sigma."));
         List<SigmaReport> sigmaReports = new LinkedList<>();
         int count = 0;
@@ -99,7 +99,7 @@ public class SigmaScanStepRunner {
             projectNameVersion
         );
         UploadTarget uploadTarget = createUploadTarget(bdioCodeLocationResult, scanTarget, projectNameVersion);
-        return bdio2FileUploadService.uploadFile(uploadTarget).getScanId();
+        return bdio2FileUploadService.uploadFileAndGetResult(uploadTarget).getScanId();
     }
 
     private UploadTarget createUploadTarget(BdioCodeLocationResult bdioCodeLocationResult, File scanTarget, NameVersion projectNameVersion) throws OperationException {

@@ -24,7 +24,7 @@ public class UploadSigmaResultsOperation {
         try {
             resultsFileContent = FileUtils.readFileToString(resultsFile, Charset.defaultCharset());
         } catch (IOException e) {
-            throw new IntegrationException("Unable to parse Sigma results file: " + resultsFile.getAbsolutePath());
+            throw new IntegrationException("Unable to parse Sigma results file: " + resultsFile.getAbsolutePath(), e);
         }
         Response response = sigmaUploadService.uploadSigmaResults(resultsFileContent, scanId);
         if (response.isStatusCodeSuccess()) {
