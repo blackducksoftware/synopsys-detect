@@ -76,3 +76,9 @@ The following steps are performed by [docker_inspector_name]/[solution_name] bac
 1. [solution_name] converts the BDIO to BDIO2, adjusts the project, project version, and codelocation names, and uploads it to [blackduck_product_name].
 1. [solution_name] performs [blackduck_signature_scan_act] and [blackduck_binary_scan_capability] on the scan targets.
 
+#### Deploying in container mode
+
+Deploying in container mode is challenging and requires expertise in the container platform on which you will deploy.
+We recommend engaging Synopsys [professional_services] for a solution tailored to your environment. 
+
+You can find several container mode deployment examples on the [deployment page](deployment.md).
