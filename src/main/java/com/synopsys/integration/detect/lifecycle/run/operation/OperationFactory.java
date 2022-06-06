@@ -106,7 +106,6 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.PublishSi
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
@@ -213,7 +212,6 @@ public class OperationFactory { //TODO: OperationRunner
     private final ProductRunData productRunData;
     private final RapidScanResultAggregator rapidScanResultAggregator;
     private final ProjectEventPublisher projectEventPublisher;
-    private final ArtifactResolver artifactResolver;
     private final DetectExecutableRunner executableRunner;
 
     private final OperationAuditLog auditLog;
@@ -244,7 +242,6 @@ public class OperationFactory { //TODO: OperationRunner
         fileFinder = bootSingletons.getFileFinder();
         detectInfo = bootSingletons.getDetectInfo();
         productRunData = bootSingletons.getProductRunData();
-        artifactResolver = utilitySingletons.getArtifactResolver();
         executableRunner = utilitySingletons.getExecutableRunner();
 
         operationSystem = utilitySingletons.getOperationSystem();
@@ -677,7 +674,12 @@ public class OperationFactory { //TODO: OperationRunner
 
     public File resolveSigmaOnline(BlackDuckRunData blackDuckRunData) throws OperationException {
         return auditLog.namedInternal("Resolve Sigma Online", () -> {
-            return new SigmaInstaller(artifactResolver, detectInfo, blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl(), directoryManager)
+            return new SigmaInstaller(
+                blackDuckRunData.getBlackDuckServerConfig().createBlackDuckHttpClient(new Slf4jIntLogger(logger)),
+                detectInfo,
+                blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl(),
+                directoryManager
+            )
                 .installOrUpdateScanner();
         });
     }
