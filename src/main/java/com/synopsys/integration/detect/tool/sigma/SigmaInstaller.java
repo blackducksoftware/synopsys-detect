@@ -59,7 +59,6 @@ public class SigmaInstaller {
         File sigmaInstallation = new File(installDirectory, SIGMA_INSTALL_FILE_NAME);
         HttpUrl downloadUrl = buildDownloadUrl();
         try {
-            sigmaInstallation.createNewFile();
             Optional<String> currentInstalledVersion = determineInstalledVersion(installDirectory);
             String newInstalledVersion = download(sigmaInstallation, downloadUrl, currentInstalledVersion.orElse("")); // if we pass empty string, will trigger download
             sigmaInstallation.setExecutable(true);
@@ -123,7 +122,6 @@ public class SigmaInstaller {
 
     private void updateVersionFile(String installedVersion, File installDirectory) throws IOException {
         File versionFile = new File(installDirectory, SIGMA_INSTALLED_VERSION_FILE_NAME);
-        versionFile.createNewFile();
         FileUtils.writeStringToFile(versionFile, installedVersion, Charset.defaultCharset());
     }
 
