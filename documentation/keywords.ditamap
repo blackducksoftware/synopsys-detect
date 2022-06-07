@@ -18,6 +18,7 @@
   <keydef keys="blackduck_kb"><topicmeta><keywords><keyword>Black Duck KnowledgeBase</keyword></keywords></topicmeta></keydef>
   <keydef keys="impact_analysis_name"><topicmeta><keywords><keyword>Vulnerability Impact Analysis Tool</keyword></keywords></topicmeta></keydef>
   <keydef keys="professional_services"><topicmeta><keywords><keyword>Synopsys Software Integrity Group Client Services</keyword></keywords></topicmeta></keydef>
+  <keydef keys="support"><topicmeta><keywords><keyword>Synopsys Technical Support</keyword></keywords></topicmeta></keydef>
 
   <keydef keys="docker_inspector_name"><topicmeta><keywords><keyword>Detect Docker Inspector</keyword></keywords></topicmeta></keydef>
   <keydef keys="docker_inspector_project_name"><topicmeta><keywords><keyword>detect-docker-inspector</keyword></keywords></topicmeta></keydef>
