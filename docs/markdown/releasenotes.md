@@ -3,6 +3,7 @@
 ## Version 7.14.0
 
 ### New features
+* Added support for Swift projects built with Swift 5.6 or later.
 
 * Added support for running Sigma scans via [solution_name]. See [Sigma properties](properties/configuration/sigma.md) for more details.
 
