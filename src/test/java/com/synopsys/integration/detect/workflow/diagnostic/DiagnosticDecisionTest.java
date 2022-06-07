@@ -23,8 +23,7 @@ class DiagnosticDecisionTest {
 
         Assertions.assertTrue(diagnosticDecision.shouldCreateDiagnosticSystem());
     }
-
-    // TODO this can be removed
+    
     @Test
     void commandLineDecisionExtended() {
         PropertyConfiguration propertyConfiguration = createPropertyConfiguration(false, false);
@@ -45,7 +44,6 @@ class DiagnosticDecisionTest {
         Assertions.assertTrue(diagnosticDecision.shouldCreateDiagnosticSystem());
     }
 
-    // TODO this can be removed
     @Test
     void propertyDecisionExtended() {
         PropertyConfiguration propertyConfiguration = createPropertyConfiguration(false, true);
