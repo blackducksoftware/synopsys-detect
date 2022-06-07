@@ -9,20 +9,29 @@ public class CleanupDecision {
     private final boolean shouldPreserveScan;
     private final boolean shouldPreserveBdio;
     private final boolean shouldPreserveAirGap;
+    private final boolean shouldPreserveSigma;
 
     @Nullable
     private final File airGapZip;
 
-    public CleanupDecision(boolean shouldCleanup, boolean shouldPreserveScan, boolean shouldPreserveBdio, boolean shouldPreserveAirGap, @Nullable File airGapZip) {
+    public CleanupDecision(
+        boolean shouldCleanup,
+        boolean shouldPreserveScan,
+        boolean shouldPreserveBdio,
+        boolean shouldPreserveAirGap,
+        boolean shouldPreserveSigma,
+        @Nullable File airGapZip
+    ) {
         this.shouldCleanup = shouldCleanup;
         this.shouldPreserveScan = shouldPreserveScan;
         this.shouldPreserveBdio = shouldPreserveBdio;
         this.shouldPreserveAirGap = shouldPreserveAirGap;
+        this.shouldPreserveSigma = shouldPreserveSigma;
         this.airGapZip = airGapZip;
     }
 
     public static CleanupDecision skip() {
-        return new CleanupDecision(false, false, false, false, null);
+        return new CleanupDecision(false, false, false, false, false, null);
     }
 
     public boolean shouldCleanup() {
@@ -39,6 +48,10 @@ public class CleanupDecision {
 
     public boolean shouldPreserveAirGap() {
         return shouldPreserveAirGap;
+    }
+
+    public boolean shouldPreserveSigma() {
+        return shouldPreserveSigma;
     }
 
     public File getAirGapZip() {

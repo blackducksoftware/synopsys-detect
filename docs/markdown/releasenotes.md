@@ -5,6 +5,8 @@
 ### New features
 * Added support for Swift projects built with Swift 5.6 or later.
 
+* Added support for running Sigma scans via [solution_name]. See [Sigma properties](properties/configuration/sigma.md) for more details.
+
 ## Version 7.13.2
 
 * (IDETECT-3291) Resolved an issue where the NuGet Inspector would only be found for the first applicable detector.

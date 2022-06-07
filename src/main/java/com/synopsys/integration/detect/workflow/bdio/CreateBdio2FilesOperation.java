@@ -41,7 +41,7 @@ public class CreateBdio2FilesOperation {
         this.detectInfo = detectInfo;
     }
 
-    public List<UploadTarget> createBdioFiles(BdioCodeLocationResult bdioCodeLocationResult, File outputDirectory, NameVersion projectNameVersion)
+    public List<UploadTarget> createBdioFiles(BdioCodeLocationResult bdioCodeLocationResult, File outputDirectory, NameVersion projectNameVersion, Bdio.ScanType scanType)
         throws DetectUserFriendlyException {
         List<UploadTarget> uploadTargets = new ArrayList<>();
         for (BdioCodeLocation bdioCodeLocation : bdioCodeLocationResult.getBdioCodeLocations()) {
@@ -60,7 +60,7 @@ public class CreateBdio2FilesOperation {
                 ZonedDateTime.now(),
                 new Product.Builder().name(detectCreator.getIdentifier()).build()
             );
-            bdioMetadata.scanType(Bdio.ScanType.PACKAGE_MANAGER);
+            bdioMetadata.scanType(scanType);
 
             Bdio2Document bdio2Document = bdio2Factory.createLegacyBdio2Document(bdioMetadata, dependencyGraph, projectInfo, externalId);
 

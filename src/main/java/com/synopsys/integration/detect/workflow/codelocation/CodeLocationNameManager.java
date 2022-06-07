@@ -106,4 +106,15 @@ public class CodeLocationNameManager {
         }
         return scanCodeLocationName;
     }
+    
+    public String createSigmaCodeLocationName(
+        File targetFile, String projectName, String projectVersionName, @Nullable String prefix,
+        @Nullable String suffix
+    ) {
+        if (codeLocationNameGenerator.useCodeLocationOverride()) {
+            return codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SIGMA);
+        } else {
+            return codeLocationNameGenerator.createSigmaCodeLocationName(targetFile, projectName, projectVersionName, prefix, suffix);
+        }
+    }
 }

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.bdio2.Bdio;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
@@ -75,6 +76,7 @@ import com.synopsys.integration.detect.tool.detector.DetectorIssuePublisher;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.impactanalysis.GenerateImpactAnalysisOperation;
@@ -84,6 +86,11 @@ import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadO
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.detect.tool.sigma.CalculateSigmaScanTargetsOperation;
+import com.synopsys.integration.detect.tool.sigma.PublishSigmaReportOperation;
+import com.synopsys.integration.detect.tool.sigma.SigmaInstaller;
+import com.synopsys.integration.detect.tool.sigma.SigmaReport;
+import com.synopsys.integration.detect.tool.sigma.SigmaScanOperation;
+import com.synopsys.integration.detect.tool.sigma.UploadSigmaResultsOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLogger;
@@ -205,6 +212,7 @@ public class OperationFactory { //TODO: OperationRunner
     private final ProductRunData productRunData;
     private final RapidScanResultAggregator rapidScanResultAggregator;
     private final ProjectEventPublisher projectEventPublisher;
+    private final DetectExecutableRunner executableRunner;
 
     private final OperationAuditLog auditLog;
 
@@ -234,6 +242,7 @@ public class OperationFactory { //TODO: OperationRunner
         fileFinder = bootSingletons.getFileFinder();
         detectInfo = bootSingletons.getDetectInfo();
         productRunData = bootSingletons.getProductRunData();
+        executableRunner = utilitySingletons.getExecutableRunner();
 
         operationSystem = utilitySingletons.getOperationSystem();
         codeLocationNameManager = utilitySingletons.getCodeLocationNameManager();
@@ -656,6 +665,59 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
+    public Optional<File> calculateUserProvidedSigmaPath() throws OperationException {
+        return auditLog.namedInternal(
+            "Calculate Local Sigma Path",
+            () -> detectConfigurationFactory.createSigmaOptions().getLocalSigmaPath().map(Path::toFile)
+        );
+    }
+
+    public File resolveSigmaOnline(BlackDuckRunData blackDuckRunData) throws OperationException {
+        return auditLog.namedInternal("Resolve Sigma Online", () -> {
+            return new SigmaInstaller(
+                blackDuckRunData.getBlackDuckServerConfig().createBlackDuckHttpClient(new Slf4jIntLogger(logger)),
+                detectInfo,
+                blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl(),
+                directoryManager
+            )
+                .installOrUpdateScanner();
+        });
+    }
+
+    public String createSigmaCodeLocationName(File scanTarget, NameVersion pojectNameVersion) {
+        return codeLocationNameManager.createSigmaCodeLocationName(
+            scanTarget,
+            pojectNameVersion.getName(),
+            pojectNameVersion.getVersion(),
+            detectConfigurationFactory.createSigmaOptions().getCodeLocationPrefix().orElse(null),
+            detectConfigurationFactory.createSigmaOptions().getCodeLocationSuffix().orElse(null)
+        );
+    }
+
+    public File performSigmaScan(File scanTarget, File sigmaExe, int count) throws OperationException {
+        return auditLog.namedInternal("Perform Sigma Scan", "Sigma", () -> {
+            return new SigmaScanOperation(directoryManager, executableRunner).performSigmaScan(
+                scanTarget,
+                sigmaExe,
+                detectConfigurationFactory.createSigmaOptions().getAdditionalArguments().orElse(null),
+                count
+            );
+        });
+    }
+
+    public void uploadSigmaResults(BlackDuckRunData blackDuckRunData, File sigmaResultsFile, String scanId) throws OperationException {
+        auditLog.namedInternal("Upload Sigma Results", () -> {
+            new UploadSigmaResultsOperation(blackDuckRunData.getBlackDuckServicesFactory().createSigmaUploadService())
+                .uploadResults(sigmaResultsFile, scanId);
+        });
+    }
+
+    public void publishSigmaReport(List<SigmaReport> sigmaReports) throws OperationException {
+        auditLog.namedInternal("Publish Sigma Report", () -> {
+            new PublishSigmaReportOperation(exitCodePublisher, statusEventPublisher).publishReports(sigmaReports);
+        });
+    }
+
     public Optional<File> calculateNoticesDirectory() throws OperationException { //TODO Should be a decision in boot
         return auditLog.namedInternal("Decide Notices Report Path", () -> {
             BlackDuckPostOptions postOptions = detectConfigurationFactory.createBlackDuckPostOptions();
@@ -730,12 +792,13 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public List<UploadTarget> createBdio2Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion) throws OperationException {
+    public List<UploadTarget> createBdio2Files(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion, Bdio.ScanType scanType) throws OperationException {
         return auditLog.namedPublic("Create Bdio 2 Files", () -> {
             return new CreateBdio2FilesOperation(new Bdio2Factory(), detectInfo).createBdioFiles(
                 bdioCodeLocationResult,
                 directoryManager.getBdioOutputDirectory(),
-                projectNameVersion
+                projectNameVersion,
+                scanType
             );
         });
     }

@@ -1585,7 +1585,7 @@ public class DetectProperties {
             .build();
 
     public static final NullablePathProperty DETECT_SIGMA_LOCAL_PATH =
-        NullablePathProperty.newBuilder("detect.blackduck.signature.scanner.local.path")
+        NullablePathProperty.newBuilder("detect.sigma.local.path")
             .setInfo("Sigma Local Path", DetectPropertyFromVersion.VERSION_7_14_0)
             .setHelp(
                 "Use this property to specify the path to a local Sigma.")
