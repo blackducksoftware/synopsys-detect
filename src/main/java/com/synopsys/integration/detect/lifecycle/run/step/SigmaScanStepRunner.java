@@ -92,7 +92,7 @@ public class SigmaScanStepRunner {
 
     //TODO- this should only be necessary if we didn't already upload BDIO during DETECTORS phase
     public String initiateScan(File scanTarget, NameVersion projectNameVersion, File sourcePath, Bdio2FileUploadService bdio2FileUploadService)
-        throws OperationException, IntegrationException, InterruptedException {
+        throws OperationException, IntegrationException {
         DetectCodeLocation codeLocation = createSimpleCodeLocation(projectNameVersion, sourcePath);
         BdioCodeLocationResult bdioCodeLocationResult = operationFactory.createBdioCodeLocationsFromDetectCodeLocations(
             Collections.singletonList(codeLocation),
