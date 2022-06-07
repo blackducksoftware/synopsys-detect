@@ -6,6 +6,7 @@ import java.io.IOException;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -16,7 +17,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(name = "Carthage Lock", language = "various", forge = "GitHub", requirementsMarkdown = "Files: Cartfile, Cartfile.resolved")
+@DetectableInfo(name = "Carthage Lock", language = "various", forge = "GitHub", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Files: Cartfile, Cartfile.resolved")
 public class CarthageLockDetectable extends Detectable {
     private static final String CARTFILE_FILENAME = "Cartfile";
     private static final String CARTFILE_RESOLVED_FILENAME = "Cartfile.resolved";

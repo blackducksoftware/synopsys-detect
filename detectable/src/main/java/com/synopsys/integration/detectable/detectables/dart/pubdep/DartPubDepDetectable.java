@@ -8,6 +8,7 @@ import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -23,7 +24,7 @@ import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFound
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(name = "Dart PubDep Lock", language = "Dart", forge = "Dart", requirementsMarkdown = "Files: pubspec.yaml, pubspec.lock. Executable: dart, flutter")
+@DetectableInfo(name = "Dart PubDep Lock", language = "Dart", forge = "Dart", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Files: pubspec.yaml, pubspec.lock. Executable: dart, flutter")
 public class DartPubDepDetectable extends Detectable {
     public static final String PUBSPEC_YAML_FILENAME = "pubspec.yaml";
     public static final String PUBSPEC_LOCK_FILENAME = "pubspec.lock";

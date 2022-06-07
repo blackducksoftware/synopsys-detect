@@ -6,6 +6,7 @@ import java.io.IOException;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -17,7 +18,7 @@ import com.synopsys.integration.detectable.detectables.swift.lock.model.PackageR
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(name = "Swift Lock", language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift, Package.resolved")
+@DetectableInfo(name = "Swift Lock", language = "Swift", forge = "Swift.org", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "File: Package.swift, Package.resolved")
 public class SwiftPackageResolvedDetectable extends Detectable {
     public static final String PACKAGE_SWIFT_FILENAME = "Package.swift";
     public static final String PACKAGE_RESOLVED_FILENAME = "Package.resolved";

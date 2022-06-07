@@ -9,6 +9,7 @@ import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -19,7 +20,7 @@ import com.synopsys.integration.detectable.detectables.swift.lock.model.PackageR
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(name = "Xcode Project Lock", language = "Swift", forge = "GITHUB", requirementsMarkdown = "Directory: *.xcodeproj, Files: Package.resolved")
+@DetectableInfo(name = "Xcode Project Lock", language = "Swift", forge = "GITHUB", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Directory: *.xcodeproj, Files: Package.resolved")
 public class XcodeProjectDetectable extends Detectable {
     public static final String PACKAGE_RESOLVED_RELATIVE_PATH = "project.xcworkspace/xcshareddata/swiftpm";
 

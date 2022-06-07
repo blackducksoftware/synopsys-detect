@@ -5,6 +5,7 @@ import java.io.File;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -12,7 +13,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(name = "Packrat Lock", language = "R", forge = "CRAN", requirementsMarkdown = "File: packrat.lock.")
+@DetectableInfo(name = "Packrat Lock", language = "R", forge = "CRAN", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "File: packrat.lock.")
 public class PackratLockDetectable extends Detectable {
     public static final String PACKRATLOCK_FILE_NAME = "packrat.lock";
 

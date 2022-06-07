@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface DetectableInfo {
@@ -15,4 +17,6 @@ public @interface DetectableInfo {
     String requirementsMarkdown();
 
     String name();
+    
+    DetectableAccuracyType accuracy();
 }

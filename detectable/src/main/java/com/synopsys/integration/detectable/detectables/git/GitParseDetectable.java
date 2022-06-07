@@ -5,6 +5,7 @@ import java.io.File;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -13,7 +14,7 @@ import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtra
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(name = "Git Parse", language = "various", forge = "N/A", requirementsMarkdown = "Files: .git/config, .git/HEAD.")
+@DetectableInfo(name = "Git Parse", language = "various", forge = "N/A", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Files: .git/config, .git/HEAD.")
 public class GitParseDetectable extends Detectable {
     private static final String GIT_DIRECTORY_NAME = ".git";
     private static final String GIT_CONFIG_FILENAME = "config";
