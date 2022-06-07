@@ -22,9 +22,9 @@ class DiagnosticDecisionTest {
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
 
         Assertions.assertTrue(diagnosticDecision.shouldCreateDiagnosticSystem());
-        Assertions.assertFalse(diagnosticDecision.isExtended());
     }
 
+    // TODO this can be removed
     @Test
     void commandLineDecisionExtended() {
         PropertyConfiguration propertyConfiguration = createPropertyConfiguration(false, false);
@@ -33,7 +33,6 @@ class DiagnosticDecisionTest {
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
 
         Assertions.assertTrue(diagnosticDecision.shouldCreateDiagnosticSystem());
-        Assertions.assertTrue(diagnosticDecision.isExtended());
     }
 
     @Test
@@ -44,9 +43,9 @@ class DiagnosticDecisionTest {
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
 
         Assertions.assertTrue(diagnosticDecision.shouldCreateDiagnosticSystem());
-        Assertions.assertFalse(diagnosticDecision.isExtended());
     }
 
+    // TODO this can be removed
     @Test
     void propertyDecisionExtended() {
         PropertyConfiguration propertyConfiguration = createPropertyConfiguration(false, true);
@@ -55,7 +54,6 @@ class DiagnosticDecisionTest {
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
 
         Assertions.assertTrue(diagnosticDecision.shouldCreateDiagnosticSystem());
-        Assertions.assertTrue(diagnosticDecision.isExtended());
     }
 
     @Test
@@ -66,7 +64,6 @@ class DiagnosticDecisionTest {
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
 
         Assertions.assertFalse(diagnosticDecision.shouldCreateDiagnosticSystem());
-        Assertions.assertFalse(diagnosticDecision.isExtended());
     }
 
     private PropertyConfiguration createPropertyConfiguration(boolean isDiagnostic, boolean isExtended) {
