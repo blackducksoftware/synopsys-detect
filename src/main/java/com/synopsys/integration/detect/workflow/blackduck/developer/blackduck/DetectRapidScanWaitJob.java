@@ -21,6 +21,7 @@ import com.synopsys.integration.wait.ResilientJob;
 public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScanComponentResultView>> {
     private final BlackDuckApiClient blackDuckApiClient;
     private final List<HttpUrl> remainingUrls;
+    private List<HttpUrl> completedUrls = new ArrayList<>();
 
     private static final String JOB_NAME = "Waiting for Rapid Scans";
 
@@ -39,14 +40,14 @@ public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScanCo
             return;
         }
 
-        List<HttpUrl> completed = new ArrayList<>();
+        completedUrls = new ArrayList<>();
         for (HttpUrl url : remainingUrls) {
             if (isComplete(url)) {
-                completed.add(url);
+                completedUrls.add(url);
             }
         }
 
-        remainingUrls.removeAll(completed);
+        remainingUrls.removeAll(completedUrls);
         complete = remainingUrls.isEmpty();
     }
 
@@ -79,7 +80,7 @@ public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScanCo
     @Override
     public List<DeveloperScanComponentResultView> onCompletion() throws IntegrationException {
         List<DeveloperScanComponentResultView> allComponents = new ArrayList<>();
-        for (HttpUrl url : remainingUrls) {
+        for (HttpUrl url : completedUrls) {
             allComponents.addAll(getScanResultsForUrl(url));
         }
         return allComponents;
