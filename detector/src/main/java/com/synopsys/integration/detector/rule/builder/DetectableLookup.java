@@ -22,7 +22,7 @@ public class DetectableLookup {
     public DetectableDefinition forClass(Class<?> detectableClass) {
         DetectableCreatable creatable = findDetectableCreator(detectableFactory, detectableClass);
         DetectableInfo info = findDetectableInfo(detectableClass);
-        return new DetectableDefinition(creatable, info.name(), info.forge(), info.language(), info.requirementsMarkdown());
+        return new DetectableDefinition(creatable, info.name(), info.forge(), info.language(), info.requirementsMarkdown(), info.accuracy());
     }
 
     @NotNull

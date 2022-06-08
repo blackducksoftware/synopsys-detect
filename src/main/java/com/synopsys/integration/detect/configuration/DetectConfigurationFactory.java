@@ -453,7 +453,11 @@ public class DetectConfigurationFactory {
         String projectBomTool = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_DETECTOR);
         List<DetectorType> requiredDetectors = detectConfiguration.getValue(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES);
         AllNoneEnumList<DetectorType> accuracyRequired = detectConfiguration.getValue(DetectProperties.DETECT_ACCURACY_REQUIRED);
-        return new DetectorToolOptions(projectBomTool, requiredDetectors, accuracyRequired);
+        ExcludeIncludeEnumFilter<DetectorType> accuracyFilter = new ExcludeIncludeEnumFilter<>(
+            new AllNoneEnumList<>(new ArrayList<>(), DetectorType.class),
+            accuracyRequired
+        );
+        return new DetectorToolOptions(projectBomTool, requiredDetectors, accuracyFilter);
     }
 
     public ProjectGroupOptions createProjectGroupOptions() {

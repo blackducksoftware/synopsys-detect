@@ -284,13 +284,14 @@ public class OperationFactory { //TODO: OperationRunner
                 exitCodePublisher,
                 detectorEventPublisher
             );
-            return detectorTool.performDetectors(directoryManager.getSourceDirectory(),
+            return detectorTool.performDetectors(
+                directoryManager.getSourceDirectory(),
                 detectRuleSet,
                 detectConfigurationFactory.createDetectorFinderOptions(),
                 detectConfigurationFactory.createDetectorEvaluationOptions(),
                 detectorToolOptions.getProjectBomTool(),
                 detectorToolOptions.getRequiredDetectors(),
-                detectorToolOptions.get,
+                detectorToolOptions.getRequiredAccuracyTypes(),
                 fileFinder
             );
         });

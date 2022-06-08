@@ -25,10 +25,13 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detector.accuracy.DetectableEvaluationResult;
@@ -116,6 +119,8 @@ public class DetectorTool {
         publishFileEvents(allFound);
 
         detectorIssuePublisher.publishIssues(statusEventPublisher, allFound);
+        checkForAccuracy(allFound, requiredAccuracyTypes);
+
         Set<DetectorType> allFoundTypes = allFound.stream()
             .map(DetectorRuleEvaluation::getRule)
             .map(DetectorRule::getDetectorType)
@@ -248,6 +253,31 @@ public class DetectorTool {
                 if (paths != null && !paths.isEmpty()) {
                     detectorEventPublisher.publishUnrecognizedPaths(new UnrecognizedPaths(detectorEvaluation.getRule().getDetectorType().toString(), paths));
                 }
+            }
+        }
+    }
+
+    private void checkForAccuracy(List<DetectorRuleEvaluation> foundDetectors, ExcludeIncludeEnumFilter<DetectorType> requiredAccuracyTypes) {
+        for (DetectorRuleEvaluation detectorEvaluation : foundDetectors) {
+            Optional<DetectableEvaluationResult> extractedEvaluationOptional = detectorEvaluation.getSelectedEntryPointEvaluation().getExtractedEvaluation();
+            if (!extractedEvaluationOptional.isPresent())
+                continue;
+
+            DetectableEvaluationResult extractedEvaluation = extractedEvaluationOptional.get();
+
+            if (!requiredAccuracyTypes.shouldInclude(detectorEvaluation.getRule().getDetectorType())) {
+                continue;
+            }
+
+            if (extractedEvaluation.getDetectableDefinition().getAccuracyType() != DetectableAccuracyType.HIGH) {
+                //Accuracy not met!
+                exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_ACCURACY_NOT_MET));
+                List<String> messages = new ArrayList<>();
+
+                messages.add("Accuracy Not Met: " + detectorEvaluation.getRule().getDetectorType());
+                messages.add("\tExtraction for " + extractedEvaluation.getDetectableDefinition().getName() + " has accuracy of " + extractedEvaluation.getDetectableDefinition()
+                    .getAccuracyType() + " but HIGH is required.");
+                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, "Detector Issue", messages));
             }
         }
     }

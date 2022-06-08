@@ -19,6 +19,7 @@ public enum ExitCodeType {
         "Detect encountered an error while attempting an operation on Black Duck. Ensure your Black Duck is compatible with this version of detect."
     ),
     FAILURE_MINIMUM_INTERVAL_NOT_MET(13, "Detect did not wait the minimum required scan interval."),
+    FAILURE_ACCURACY_NOT_MET(14, "Detect was unable to meet the required accuracy."),
     FAILURE_GENERAL_ERROR(99, "Detect encountered a known error, details of the error are provided."),
     FAILURE_UNKNOWN_ERROR(100, "Detect encountered an unknown error.");
 
