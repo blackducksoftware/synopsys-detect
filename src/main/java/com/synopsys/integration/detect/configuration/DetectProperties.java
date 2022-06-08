@@ -1571,7 +1571,7 @@ public class DetectProperties {
         PathListProperty.newBuilder("detect.sigma.scan.paths", emptyList())
             .setInfo("Sigma Target Paths", DetectPropertyFromVersion.VERSION_7_14_0)
             .setHelp(
-                "If this property is not set, the Sigma target path is the source path (see property detect.source.path). If this property is set, the paths provided in this property's value will be Sigma scanned instead (Sigma will be executed once for each provided path).")
+                "If this property is set, a Sigma scan will be performed on each of the paths provided. If this property is not set, but Sigma is enabled via detect.tools, the Sigma target path is the source path (see property detect.source.path).")
             .setGroups(DetectGroup.SIGMA, DetectGroup.GLOBAL)
             .build();
 

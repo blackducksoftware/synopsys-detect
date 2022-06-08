@@ -17,13 +17,21 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 public class DetectToolFilter {
     private final ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter;
     private final boolean impactEnabled;
+    private final boolean sigmaEnabled;
     private final RunDecision runDecision;
     private final BlackDuckDecision blackDuckDecision;
     private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.DOCKER);
 
-    public DetectToolFilter(ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter, boolean impactEnabled, RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
+    public DetectToolFilter(
+        ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter,
+        boolean impactEnabled,
+        boolean sigmaEnabled,
+        RunDecision runDecision,
+        BlackDuckDecision blackDuckDecision
+    ) {
         this.excludedIncludedFilter = excludedIncludedFilter;
         this.impactEnabled = impactEnabled;
+        this.sigmaEnabled = sigmaEnabled;
         this.runDecision = runDecision;
         this.blackDuckDecision = blackDuckDecision;
     }
@@ -31,6 +39,9 @@ public class DetectToolFilter {
     public boolean shouldInclude(DetectTool detectTool) { //Only turn tools OFF, turning a tool ON prevents the user from being able to turn an undesired tool OFF.
         if (detectTool == DetectTool.IMPACT_ANALYSIS) {
             return impactEnabled;
+        }
+        if (detectTool == DetectTool.SIGMA) {
+            return sigmaEnabled;
         }
 
         if (detectTool == DetectTool.DETECTOR && runDecision.isDockerMode()) {

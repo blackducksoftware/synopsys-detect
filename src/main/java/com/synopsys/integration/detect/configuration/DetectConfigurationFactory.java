@@ -196,7 +196,9 @@ public class DetectConfigurationFactory {
         AllNoneEnumCollection<DetectTool> includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
         AllNoneEnumCollection<DetectTool> excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
         ExcludeIncludeEnumFilter<DetectTool> filter = new ExcludeIncludeEnumFilter<>(excludedTools, includedTools);
-        return new DetectToolFilter(filter, impactEnabled.orElse(false), runDecision, blackDuckDecision);
+
+        boolean sigmaEnabled = includedTools.containsValue(DetectTool.SIGMA) || !detectConfiguration.getValue(DetectProperties.DETECT_SIGMA_SCAN_PATHS).isEmpty();
+        return new DetectToolFilter(filter, impactEnabled.orElse(false), sigmaEnabled, runDecision, blackDuckDecision);
     }
 
     public AggregateOptions createAggregateOptions() {
