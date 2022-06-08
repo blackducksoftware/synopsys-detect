@@ -61,7 +61,9 @@ public class SigmaInstaller {
         try {
             Optional<String> currentInstalledVersion = determineInstalledVersion(installDirectory);
             String newInstalledVersion = download(sigmaInstallation, downloadUrl, currentInstalledVersion.orElse("")); // if we pass empty string, will trigger download
-            sigmaInstallation.setExecutable(true);
+            if (!sigmaInstallation.setExecutable(true)) {
+                throw new IntegrationException(String.format("Attempt to make %s executable failed.", sigmaInstallation.getAbsolutePath()));
+            }
             updateVersionFile(newInstalledVersion, installDirectory);
             logger.info("Sigma was downloaded/found successfully: " + installDirectory.getAbsolutePath());
             return sigmaInstallation;
