@@ -5,7 +5,7 @@
 ### New features
 * Added support for Swift projects built with Swift 5.6 or later.
 
-* Added support for running Sigma scans via [solution_name]. See [Sigma properties](properties/configuration/sigma.md) for more details.
+* Added support for running Sigma scans via [solution_name]. See [Sigma properties](properties/configuration/sigma.md) for more details. Note: Sigma capabilities require Black Duck 2022.7.0 or later.
 
 ## Version 7.13.2
 
