@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -86,6 +87,7 @@ public class DetectorTool {
         DetectorEvaluationOptions evaluationOptions,
         String projectDetector,
         List<DetectorType> requiredDetectors,
+        ExcludeIncludeEnumFilter<DetectorType> requiredAccuracyTypes,
         FileFinder fileFinder
     ) {
         logger.debug("Starting detector file system traversal.");
@@ -131,7 +133,7 @@ public class DetectorTool {
             new ArrayList<>(codeLocationMap.values()),
             allFoundTypes,
             new HashSet<>(),
-            evaluation, //TODO: REmove?
+            evaluation,
             codeLocationMap
         );
 
@@ -168,7 +170,7 @@ public class DetectorTool {
                                 detectableStatus = "FAILED";
                             }
                         } else {
-                            detectableStatus = "SKIPPED";
+                            detectableStatus = "ATTEMPTED";
                         }
                         logger.info("\t\t" + detectable.getDetectableDefinition().getName() + ": " + detectableStatus);
                         detectable.getExplanations().forEach(explanation -> {

@@ -50,7 +50,6 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
-import com.synopsys.integration.detect.workflow.DummyAccuracyEnum;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
@@ -169,9 +168,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .build();
 
-    //TODO- in 8.0.0, enum type will change to DetectorType, default value will change
-    public static final AllNoneEnumListProperty<DummyAccuracyEnum> DETECT_ACCURACY_REQUIRED =
-        AllNoneEnumListProperty.newBuilder("detect.accuracy.required", AllNoneEnum.ALL, DummyAccuracyEnum.class)
+    public static final AllNoneEnumListProperty<DetectorType> DETECT_ACCURACY_REQUIRED =
+        AllNoneEnumListProperty.newBuilder("detect.accuracy.required", AllNoneEnum.ALL, DetectorType.class)
             .setInfo("Detector Accuracy Requirements", DetectPropertyFromVersion.VERSION_7_13_0)
             .setHelp(
                 "Required accuracy for a successful run of Detect.",
@@ -1747,18 +1745,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(DETECT_DOCKER_PATH_REQUIRED_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_BUILDLESS =
-        BooleanProperty.newBuilder("detect.detector.buildless", false)
-            .setInfo("Buildless Mode", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, only Detector's capable of running without a build will be run.")
-            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
-            .setDeprecated(
-                "This is property is being replaced by detect.accuracy.required.  To run in Buildless Mode, set detect.accuracy.required=NONE.",
-                DetectMajorVersion.EIGHT
-            )
             .build();
 
     @Deprecated

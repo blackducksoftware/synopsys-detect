@@ -48,7 +48,6 @@ import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnipp
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.util.finder.DetectDirectoryFileFilter;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
-import com.synopsys.integration.detect.workflow.DummyAccuracyEnum;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanOptions;
@@ -453,12 +452,8 @@ public class DetectConfigurationFactory {
     public DetectorToolOptions createDetectorToolOptions() {
         String projectBomTool = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_DETECTOR);
         List<DetectorType> requiredDetectors = detectConfiguration.getValue(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES);
-        boolean buildless = detectConfiguration.getValue(DetectProperties.DETECT_BUILDLESS);
-        AllNoneEnumList<DummyAccuracyEnum> accuracyRequired = detectConfiguration.getValue(DetectProperties.DETECT_ACCURACY_REQUIRED);
-        if (accuracyRequired.containsNone() && !detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BUILDLESS)) {
-            buildless = true;
-        }
-        return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless);
+        AllNoneEnumList<DetectorType> accuracyRequired = detectConfiguration.getValue(DetectProperties.DETECT_ACCURACY_REQUIRED);
+        return new DetectorToolOptions(projectBomTool, requiredDetectors, accuracyRequired);
     }
 
     public ProjectGroupOptions createProjectGroupOptions() {
