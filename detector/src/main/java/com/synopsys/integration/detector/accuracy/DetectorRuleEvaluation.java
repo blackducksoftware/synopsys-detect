@@ -1,13 +1,11 @@
 package com.synopsys.integration.detector.accuracy;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detector.rule.DetectorRule;
-import com.synopsys.integration.detector.rule.EntryPoint;
 
 public class DetectorRuleEvaluation {
     @NotNull
@@ -15,20 +13,20 @@ public class DetectorRuleEvaluation {
     @NotNull
     private final DetectorRule rule;
     @NotNull
-    private final EntryPoint selectedEntryPoint;
+    private final List<DetectorSearchEntryPointResult> notFoundEntryPoints;
     @NotNull
-    private final EntryPointEvaluation selectedEntryPointEvaluation;
+    private final EntryPointEvaluation evaluatedEntryPoint;
 
     public DetectorRuleEvaluation(
-        @NotNull DetectableEnvironment environment,
         @NotNull DetectorRule rule,
-        @NotNull EntryPoint selectedEntryPoint,
-        @NotNull EntryPointEvaluation selectedEntryPointEvaluation
+        @NotNull DetectableEnvironment environment,
+        @NotNull List<DetectorSearchEntryPointResult> notFoundEntryPoints,
+        @NotNull EntryPointEvaluation evaluatedEntryPoint
     ) {
         this.environment = environment;
         this.rule = rule;
-        this.selectedEntryPoint = selectedEntryPoint;
-        this.selectedEntryPointEvaluation = selectedEntryPointEvaluation;
+        this.evaluatedEntryPoint = evaluatedEntryPoint;
+        this.notFoundEntryPoints = notFoundEntryPoints;
     }
 
     @NotNull
@@ -37,32 +35,15 @@ public class DetectorRuleEvaluation {
     }
 
     @NotNull
-    public EntryPoint getSelectedEntryPoint() {
-        return selectedEntryPoint;
-    }
-
-    @NotNull
-    public EntryPointEvaluation getSelectedEntryPointEvaluation() {
-        return selectedEntryPointEvaluation;
-    }
-
-    public Optional<DetectableEvaluationResult> getExtractedDetectableEvaluation() {
-        return selectedEntryPointEvaluation.getExtractedEvaluation();
-    }
-
-    public Optional<Extraction> getExtraction() {
-        return getExtractedDetectableEvaluation().map(DetectableEvaluationResult::getExtraction);
-    }
-
-    public boolean wasExtractionSuccessful() {
-        return selectedEntryPointEvaluation.getExtractedEvaluation()
-            .map(DetectableEvaluationResult::wasExtractionSuccessful)
-            .orElse(false);
-    }
-
-    @NotNull
     public DetectableEnvironment getEnvironment() {
         return environment;
     }
 
+    public List<DetectorSearchEntryPointResult> getNotFoundEntryPoints() {
+        return notFoundEntryPoints;
+    }
+
+    public EntryPointEvaluation getEvaluatedEntryPoint() {
+        return evaluatedEntryPoint;
+    }
 }

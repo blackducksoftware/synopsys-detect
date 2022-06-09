@@ -16,6 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
+import com.synopsys.integration.detect.tool.detector.report.detectable.AttemptedDetectableReport;
+import com.synopsys.integration.detect.tool.detector.report.detectable.ExtractedDetectableReport;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
@@ -27,13 +29,8 @@ import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detector.DetectorStatusUtil;
-import com.synopsys.integration.detector.accuracy.DetectableEvaluationResult;
-import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
-import com.synopsys.integration.detector.accuracy.DetectorRuleEvaluation;
-import com.synopsys.integration.detector.accuracy.EntryPointEvaluation;
-import com.synopsys.integration.detector.base.DetectorEvaluationUtil;
-import com.synopsys.integration.detector.base.DetectorStatusType;
+import com.synopsys.integration.detector.base.DetectorStatusCode;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class FormattedOutputManager {
@@ -124,67 +121,68 @@ public class FormattedOutputManager {
 
     private List<FormattedDetectorOutput> convertDetectors() {
         List<FormattedDetectorOutput> outputs = new ArrayList<>();
-        if (detectorToolResult != null && detectorToolResult.getRootDetectorEvaluation().isPresent()) {
-            for (DetectorEvaluation detectorEvaluation : DetectorEvaluationUtil.asFlatList(detectorToolResult.getRootDetectorEvaluation().get())) {
-                List<DetectorRuleEvaluation> found = detectorEvaluation.getFoundDetectorRuleEvaluations();
-                found.stream()
-                    .map(this::convertFoundDetector)
-                    .forEach(outputs::addAll);
-            }
+        if (detectorToolResult != null) {
+
+            detectorToolResult.getDetectorReports().forEach(report -> {
+                report.getExtractedDetectors().forEach(extracted -> {
+                    extracted.getAttemptedDetectables().stream()
+                        .map(attempted -> convertAttempted(report.getDirectory(), extracted.getRule().getDetectorType(), attempted, "ATTEMPTED", DetectorStatusCode.ATTEMPTED))
+                        .forEach(outputs::add);
+
+                    convertExtracted(report.getDirectory(), extracted.getRule().getDetectorType(), extracted.getExtractedDetectable(), "SUCCESS");
+                });
+                report.getNotExtractedDetectors().forEach(notExtracted -> {
+                    notExtracted.getAttemptedDetectables().stream()
+                        .map(attempted -> convertAttempted(report.getDirectory(), notExtracted.getRule().getDetectorType(), attempted, "FAILURE", attempted.getStatusCode()))
+                        .forEach(outputs::add);
+                });
+            });
         }
         return outputs;
     }
 
-    private List<FormattedDetectorOutput> convertFoundDetector(DetectorRuleEvaluation ruleEvaluation) {
+    private FormattedDetectorOutput convertAttempted(
+        File directory,
+        DetectorType detectorType,
+        AttemptedDetectableReport attempted,
+        String status,
+        DetectorStatusCode overrideStatusCode
+    ) {
+        FormattedDetectorOutput detectorOutput = new FormattedDetectorOutput();
+        detectorOutput.folder = directory.toString();
+        detectorOutput.detectorName = attempted.getDetectable().getName();
+        detectorOutput.detectorType = detectorType.toString();
 
-        List<FormattedDetectorOutput> detectorOutputs = new ArrayList<>();
+        detectorOutput.extracted = false;
+        detectorOutput.status = status;
+        detectorOutput.statusCode = overrideStatusCode;
+        detectorOutput.statusReason = attempted.getStatusReason();
+        detectorOutput.explanations = Bds.of(attempted.getExplanations()).map(Explanation::describeSelf).toList();
+        return detectorOutput;
+    }
 
-        EntryPointEvaluation selectedEntryPoint = ruleEvaluation.getSelectedEntryPointEvaluation();
-        for (DetectableEvaluationResult detectable : selectedEntryPoint.getEvaluatedDetectables()) {
-            boolean isTheExtracted = selectedEntryPoint.getExtractedEvaluation()
-                .map(detectable::equals)
-                .orElse(false);
+    private FormattedDetectorOutput convertExtracted(File directory, DetectorType detectorType, ExtractedDetectableReport extracted, String status) {
+        FormattedDetectorOutput detectorOutput = new FormattedDetectorOutput();
+        detectorOutput.folder = directory.toString();
+        detectorOutput.detectorName = extracted.getDetectable().getName();
+        detectorOutput.detectorType = detectorType.toString();
 
-            DetectorStatusType detectorStatus;
-            if (isTheExtracted && detectable.wasExtractionSuccessful()) {
-                detectorStatus = DetectorStatusType.SUCCESS;
-            } else if (isTheExtracted) {
-                detectorStatus = DetectorStatusType.FAILURE;
-            } else {
-                detectorStatus = DetectorStatusType.ATTEMPTED;
-            }
+        detectorOutput.extracted = false;
+        detectorOutput.status = status;
+        detectorOutput.statusCode = DetectorStatusCode.PASSED;
+        detectorOutput.statusReason = "Passed.";
+        detectorOutput.explanations = Bds.of(extracted.getExplanations()).map(Explanation::describeSelf).toList();
 
-            FormattedDetectorOutput detectorOutput = new FormattedDetectorOutput();
-            detectorOutput.folder = ruleEvaluation.getEnvironment().getDirectory().toString();
-            detectorOutput.detectorName = detectable.getDetectableDefinition().getName();
-            ;
-            detectorOutput.detectorType = ruleEvaluation.getRule().getDetectorType().toString();
-
-            detectorOutput.extracted = detectable.wasExtractionSuccessful();
-            detectorOutput.status = detectorStatus.toString(); //TODO (detector): This is tricky...
-            detectorOutput.statusCode = DetectorStatusUtil.getStatusCode(detectable);
-            detectorOutput.statusReason = DetectorStatusUtil.getStatusReason(detectable).toString();
-            detectorOutput.explanations = Bds.of(detectable.getAllExplanations()).map(Explanation::describeSelf).toList();
-
-            if (isTheExtracted) {
-                Extraction extraction = selectedEntryPoint.getExtractedEvaluation().map(DetectableEvaluationResult::getExtraction).orElse(null);
-                if (extraction == null)
-                    continue;
-
-                detectorOutput.extractedReason = extraction.getDescription();
-                detectorOutput.relevantFiles = Bds.of(extraction.getRelevantFiles()).map(File::toString).toList();
-                detectorOutput.projectName = extraction.getProjectName();
-                detectorOutput.projectVersion = extraction.getProjectVersion();
-                if (extraction.getCodeLocations() != null) {
-                    detectorOutput.codeLocationCount = extraction.getCodeLocations().size();
-                }
-            }
-            detectorOutputs.add(detectorOutput);
-
-            if (isTheExtracted)
-                break; //Only add up to the extracted, that is all ATTEMPTED and the final EXTRACTED
+        Extraction extraction = extracted.getExtraction();
+        detectorOutput.extractedReason = extraction.getDescription();
+        detectorOutput.relevantFiles = Bds.of(extraction.getRelevantFiles()).map(File::toString).toList();
+        detectorOutput.projectName = extraction.getProjectName();
+        detectorOutput.projectVersion = extraction.getProjectVersion();
+        if (extraction.getCodeLocations() != null) {
+            detectorOutput.codeLocationCount = extraction.getCodeLocations().size();
         }
-        return detectorOutputs;
+
+        return detectorOutput;
     }
 
     private void addUnrecognizedPaths(UnrecognizedPaths unrecognizedPaths) {

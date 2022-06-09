@@ -1,18 +1,19 @@
 package com.synopsys.integration.detect.workflow.report;
 
+import java.util.List;
 import java.util.Map;
 
+import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.report.util.ReporterUtils;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
 
 public class ExtractionSummaryReporter {
 
     public void writeSummary(
         ReportWriter writer,
-        DetectorEvaluation rootEvaluation,
+        List<DetectorDirectoryReport> rootEvaluation,
         Map<CodeLocation, DetectCodeLocation> detectableMap,
         Map<DetectCodeLocation, String> codeLocationNameMap,
         boolean writeCodeLocationNames

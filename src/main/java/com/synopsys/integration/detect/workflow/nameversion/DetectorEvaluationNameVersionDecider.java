@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
@@ -22,31 +22,26 @@ public class DetectorEvaluationNameVersionDecider {
         this.detectorNameVersionDecider = detectorNameVersionDecider;
     }
 
-    public Optional<NameVersion> decideSuggestion(DetectorEvaluation rootEvaluation, String projectDetector) {
-        List<DetectorProjectInfo> detectorProjectInfoList = convertEvaluationToProjectInfo(rootEvaluation);
+    public Optional<NameVersion> decideSuggestion(List<DetectorDirectoryReport> reports, String projectDetector) {
+        List<DetectorProjectInfo> detectorProjectInfoList = convertEvaluationToProjectInfo(reports);
 
-        DetectorType detectorType = preferredDetectorTypeFromString(projectDetector);
+        DetectorType detectorType = preferredDetectorTypeFromString(projectDetector); //TODO (detectors): this should not be done here, should be done in option factory
 
         return detectorNameVersionDecider.decideProjectNameVersion(detectorProjectInfoList, detectorType);
     }
 
-    List<DetectorProjectInfo> convertEvaluationToProjectInfo(DetectorEvaluation evaluation) {
+    List<DetectorProjectInfo> convertEvaluationToProjectInfo(List<DetectorDirectoryReport> reports) {
         List<DetectorProjectInfo> projectInfos = new ArrayList<>();
-        evaluation.getFoundDetectorRuleEvaluations().forEach(foundDetector -> {
-            if (foundDetector.wasExtractionSuccessful() && foundDetector.getExtraction().isPresent()) {
-                Extraction extraction = foundDetector.getExtraction().get();
 
+        reports.forEach(report -> {
+            report.getExtractedDetectors().forEach(extracted -> {
+                Extraction extraction = extracted.getExtractedDetectable().getExtraction();
                 if (StringUtils.isNotBlank(extraction.getProjectName())) {
                     NameVersion nameVersion = new NameVersion(extraction.getProjectName(), extraction.getProjectVersion());
-                    projectInfos.add(new DetectorProjectInfo(foundDetector.getRule().getDetectorType(), evaluation.getDepth(), nameVersion));
+                    projectInfos.add(new DetectorProjectInfo(extracted.getRule().getDetectorType(), report.getDepth(), nameVersion));
                 }
-            }
+            });
         });
-
-        evaluation.getChildren()
-            .stream()
-            .flatMap(child -> convertEvaluationToProjectInfo(child).stream())
-            .forEach(projectInfos::add);
 
         return projectInfos;
     }

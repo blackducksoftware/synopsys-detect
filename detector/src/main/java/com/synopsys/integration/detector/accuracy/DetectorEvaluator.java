@@ -76,7 +76,12 @@ public class DetectorEvaluator {
                     () -> extractionEnvironmentSupplier.apply(rule.getDetectorType())
                 );
 
-                DetectorRuleEvaluation detectorRuleEvaluation = new DetectorRuleEvaluation(detectableEnvironment, rule, entryPoint, entryPointEvaluation);
+                DetectorRuleEvaluation detectorRuleEvaluation = new DetectorRuleEvaluation(
+                    rule,
+                    detectableEnvironment,
+                    searchResult.getNotFoundEntryPoints(),
+                    entryPointEvaluation
+                );
                 foundRules.add(detectorRuleEvaluation);
 
                 logger.trace("Extracted: {}", rule.getDetectorType());

@@ -1,6 +1,7 @@
 package com.synopsys.integration.detector.base;
 
 public enum DetectorStatusCode {
+    ATTEMPTED("Detector attempted to run but did not succeed."),
     CARGO_LOCKFILE_NOT_FOUND("A Cargo.toml was located in the target project, but the Cargo.lock file was NOT located."),
     CARTFILE_RESOLVED_FILE_NOT_FOUND("A Cartfile was located in the target project, but the Cartfile.resolved file was NOT located."),
     EXCEPTION("An exception occurred."),

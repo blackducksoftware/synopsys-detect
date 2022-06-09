@@ -18,18 +18,16 @@ public class DetectorExtract { //TODO: Rename?
         List<DetectableDefinition> toCascade = entryPoint.allDetectables();
 
         List<DetectableEvaluationResult> evaluated = new ArrayList<>();
-        DetectableEvaluationResult extracted = null;
 
         for (DetectableDefinition detectable : toCascade) {
             DetectableEvaluationResult detectableEvaluationResult = detectableEvaluator.evaluate(detectable, detectableEnvironment, extractionEnvironmentSupplier);
             evaluated.add(detectableEvaluationResult);
             if (detectableEvaluationResult.wasExtractionSuccessful()) {
-                extracted = detectableEvaluationResult;
                 break;
             }
         }
 
-        return new EntryPointEvaluation(evaluated, extracted);
+        return new EntryPointEvaluation(entryPoint, evaluated);
     }
 
 }

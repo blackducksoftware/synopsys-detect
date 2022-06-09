@@ -10,7 +10,6 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.report.writer.DebugLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.TraceLogReportWriter;
-import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
 
 public class ReportListener {
     // all entry points to reporting
@@ -47,24 +46,22 @@ public class ReportListener {
         eventSystem.registerListener(Event.DetectCodeLocationNamesCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
     }
 
-    // Reports
-    public void searchCompleted(DetectorEvaluation rootEvaluation) {
-        searchSummaryReporter.print(debugLogWriter, rootEvaluation);
-        DetailedSearchSummaryReporter detailedSearchSummaryReporter = new DetailedSearchSummaryReporter();
-        detailedSearchSummaryReporter.print(traceLogWriter, rootEvaluation);
-    }
-
     private DetectorToolResult detectorToolResult;
 
     public void bomToolsComplete(DetectorToolResult detectorToolResult) {
         this.detectorToolResult = detectorToolResult;
+
+        searchSummaryReporter.print(debugLogWriter, detectorToolResult.getDetectorReports());
+        DetailedSearchSummaryReporter detailedSearchSummaryReporter = new DetailedSearchSummaryReporter();
+        detailedSearchSummaryReporter.print(traceLogWriter, detectorToolResult.getDetectorReports());
+
     }
 
     public void codeLocationsCompleted(Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (detectorToolResult != null && detectorToolResult.getRootDetectorEvaluation().isPresent()) {
+        if (detectorToolResult != null) {
             extractionSummaryReporter.writeSummary(
                 debugLogWriter,
-                detectorToolResult.getRootDetectorEvaluation().get(),
+                detectorToolResult.getDetectorReports(),
                 detectorToolResult.getCodeLocationMap(),
                 codeLocationNameMap,
                 false

@@ -1,11 +1,13 @@
 package com.synopsys.integration.detect.workflow.report;
 
+import java.util.List;
+
+import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
 
 // TODO(detectors): Decide if this can be removed
 public class DetailedSearchSummaryReporter {
-    public void print(ReportWriter writer, DetectorEvaluation rootEvaluation) {
+    public void print(ReportWriter writer, List<DetectorDirectoryReport> rootEvaluation) {
         //        printDirectoriesDebug(writer, DetectorEvaluationUtil.asFlatList(rootEvaluation));
     }
 

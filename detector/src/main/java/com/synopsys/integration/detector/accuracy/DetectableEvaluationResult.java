@@ -21,7 +21,7 @@ public class DetectableEvaluationResult {
     private final DetectableEvaluationResultType resultType;
     @NotNull
     private final DetectableDefinition detectableDefinition;
-    @Nullable
+    @NotNull
     private final DetectableResult applicableResult;
     @Nullable
     private final DetectableResult extractableResult;
@@ -33,7 +33,7 @@ public class DetectableEvaluationResult {
     public DetectableEvaluationResult(
         @NotNull DetectableEvaluationResultType resultType,
         @NotNull DetectableDefinition detectableDefinition,
-        @Nullable DetectableResult applicableResult,
+        @NotNull DetectableResult applicableResult,
         @Nullable DetectableResult extractableResult,
         @Nullable ExtractionEnvironment extractionEnvironment,
         @Nullable Extraction extraction
@@ -76,7 +76,7 @@ public class DetectableEvaluationResult {
         return Optional.ofNullable(extractionEnvironment);
     }
 
-    @Nullable
+    @NotNull
     public DetectableResult getApplicable() {
         return applicableResult;
     }

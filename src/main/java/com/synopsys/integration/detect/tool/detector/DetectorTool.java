@@ -2,8 +2,8 @@ package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +20,10 @@ import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
+import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
+import com.synopsys.integration.detect.tool.detector.report.rule.EvaluatedDetectorRuleReport;
+import com.synopsys.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;
+import com.synopsys.integration.detect.tool.detector.report.util.DetectorReporter;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorEvaluationNameVersionDecider;
@@ -33,21 +37,17 @@ import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detector.accuracy.DetectableEvaluationResult;
 import com.synopsys.integration.detector.accuracy.DetectableEvaluator;
 import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
 import com.synopsys.integration.detector.accuracy.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.accuracy.DetectorEvaluator;
 import com.synopsys.integration.detector.accuracy.DetectorExtract;
-import com.synopsys.integration.detector.accuracy.DetectorRuleEvaluation;
 import com.synopsys.integration.detector.accuracy.DetectorSearch;
-import com.synopsys.integration.detector.accuracy.EntryPointEvaluation;
-import com.synopsys.integration.detector.base.DetectorEvaluationUtil;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.finder.DirectoryFindResult;
 import com.synopsys.integration.detector.finder.DirectoryFinder;
 import com.synopsys.integration.detector.finder.DirectoryFinderOptions;
+import com.synopsys.integration.detector.rule.DetectableDefinition;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.util.NameVersion;
@@ -112,83 +112,81 @@ public class DetectorTool {
         DetectorEvaluation evaluation = detectorEvaluator.evaluate(findResult, detectorRuleSet);
         logger.debug("Finished detectors.");
 
-        printExplanations(evaluation);
-        List<DetectorRuleEvaluation> allFound = DetectorEvaluationUtil.allDescendentFound(evaluation);
-        Map<DetectorType, StatusType> statusMap = extractStatus(allFound);
+        List<DetectorDirectoryReport> reports = new DetectorReporter().generateReport(evaluation);
+        DetectorToolResult toolResult = publishAllResults(reports, directory, projectDetector, requiredDetectors, requiredAccuracyTypes);
+
+        //Completed.
+        logger.debug("Finished running detectors.");
+        detectorEventPublisher.publishDetectorsComplete(toolResult);
+
+        return toolResult;
+    }
+
+    private DetectorToolResult publishAllResults(
+        List<DetectorDirectoryReport> reports,
+        File directory,
+        String projectDetector,
+        List<DetectorType> requiredDetectors,
+        ExcludeIncludeEnumFilter<DetectorType> requiredAccuracyTypes
+    ) {
+
+        printExplanations(reports);
+        Map<DetectorType, StatusType> statusMap = extractStatus(reports);
         publishStatusEvents(statusMap);
-        publishFileEvents(allFound);
+        publishFileEvents(reports);
 
-        detectorIssuePublisher.publishIssues(statusEventPublisher, allFound);
-        checkForAccuracy(allFound, requiredAccuracyTypes);
+        detectorIssuePublisher.publishIssues(statusEventPublisher, reports);
+        checkForAccuracy(reports, requiredAccuracyTypes);
 
-        Set<DetectorType> allFoundTypes = allFound.stream()
-            .map(DetectorRuleEvaluation::getRule)
-            .map(DetectorRule::getDetectorType)
-            .collect(Collectors.toSet());
+        Set<DetectorType> allFoundTypes = statusMap.keySet();
         publishMissingDetectorEvents(requiredDetectors, allFoundTypes);
 
-        Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(allFound, directory);
+        Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(reports, directory);
 
         DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
-        Optional<NameVersion> bomToolProjectNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(evaluation, projectDetector);
+        Optional<NameVersion> bomToolProjectNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(reports, projectDetector);
+
         logger.debug("Finished evaluating detectors for project info.");
 
-        DetectorToolResult detectorToolResult = new DetectorToolResult(
+        return new DetectorToolResult(
             bomToolProjectNameVersion.orElse(null),
             new ArrayList<>(codeLocationMap.values()),
             allFoundTypes,
             new HashSet<>(),
-            evaluation,
+            reports,
             codeLocationMap
         );
-
-        //Completed.
-        logger.debug("Finished running detectors.");
-        detectorEventPublisher.publishDetectorsComplete(detectorToolResult);
-
-        return detectorToolResult;
     }
 
-    private void printExplanations(DetectorEvaluation root) {
+    private void printExplanations(List<DetectorDirectoryReport> reports) {
         logger.info(ReportConstants.HEADING);
         logger.info("Detector Report");
         logger.info(ReportConstants.HEADING);
         boolean anyFound = false;
-        for (DetectorEvaluation detectorEvaluation : DetectorEvaluationUtil.asFlatList(root)) {
-            List<DetectorRuleEvaluation> found = detectorEvaluation.getFoundDetectorRuleEvaluations();
-            if (!found.isEmpty()) {
+        for (DetectorDirectoryReport report : reports) {
+            if (report.anyFound()) {
                 anyFound = true;
-                logger.info("\t" + detectorEvaluation.getDirectory() + " (depth " + detectorEvaluation.getDepth() + ")");
+                logger.info("\t" + report.getDirectory() + " (depth " + report.getDepth() + ")");
+                report.getExtractedDetectors().forEach(extracted -> {
+                    logger.info("\t\t" + extracted.getExtractedDetectable().getDetectable().getName() + ": SUCCESS");
+                    extracted.getExtractedDetectable().getExplanations().forEach(explanation -> {
+                        logger.info("\t\t\t" + explanation.describeSelf());
+                    });
 
-                found.forEach(ruleEvaluation -> {
-                    EntryPointEvaluation selectedEntryPoint = ruleEvaluation.getSelectedEntryPointEvaluation();
-                    for (DetectableEvaluationResult detectable : selectedEntryPoint.getEvaluatedDetectables()) {
-                        boolean isTheExtracted = selectedEntryPoint.getExtractedEvaluation()
-                            .map(detectable::equals)
-                            .orElse(false);
-
-                        String detectableStatus;
-                        if (isTheExtracted) {
-                            if (detectable.wasExtractionSuccessful()) {
-                                detectableStatus = "SUCCESS";
-                            } else {
-                                detectableStatus = "FAILED";
-                                //TODO (Detectors) This won't actually be hit... The extracted evaluation is only the SUCCESFUL extracted evaluation because other evaluations fall back (cascade)
-                                //The main question is: Should we lock it in when extraction happens, IE if we decide to extract should that be it or should extract continue.
-                                //Like we leverage Applicable/Extractable - otherwise there is no 'extraction' really, like if there are three Detectables and all three fail to extract you don't have an 'Extracted' one
-                                //And how do you display those three failures, do you display them all or just the one.
-                            }
-                        } else {
-                            detectableStatus = "ATTEMPTED";
-                        }
-                        logger.info("\t\t" + detectable.getDetectableDefinition().getName() + ": " + detectableStatus);
-                        detectable.getExplanations().forEach(explanation -> {
+                    extracted.getAttemptedDetectables().forEach(attempted -> {
+                        logger.info("\t\t" + attempted.getDetectable().getName() + ": ATTEMPTED");
+                        attempted.getExplanations().forEach(explanation -> {
                             logger.info("\t\t\t" + explanation.describeSelf());
                         });
-                        if (isTheExtracted) {
-                            break;
-                        }
-                    }
+                    });
+                });
+                report.getNotExtractedDetectors().forEach(notExtracted -> {
+                    notExtracted.getAttemptedDetectables().forEach(attempted -> {
+                        logger.info("\t\t" + attempted.getDetectable().getName() + ": FAILED");
+                        attempted.getExplanations().forEach(explanation -> {
+                            logger.info("\t\t\t" + explanation.describeSelf());
+                        });
+                    });
                 });
             }
         }
@@ -198,34 +196,39 @@ public class DetectorTool {
         logger.info(ReportConstants.RUN_SEPARATOR);
     }
 
-    private Map<DetectorType, StatusType> extractStatus(List<DetectorRuleEvaluation> detectorEvaluations) {
+    private Map<DetectorType, StatusType> extractStatus(List<DetectorDirectoryReport> reports) {
+        Set<DetectorType> success = reports.stream()
+            .flatMap(directory -> directory.getExtractedDetectors().stream())
+            .map(ExtractedDetectorRuleReport::getRule)
+            .map(DetectorRule::getDetectorType)
+            .collect(Collectors.toSet());
+
+        Set<DetectorType> failure = reports.stream()
+            .flatMap(directory -> directory.getNotExtractedDetectors().stream())
+            .map(EvaluatedDetectorRuleReport::getRule)
+            .map(DetectorRule::getDetectorType)
+            .collect(Collectors.toSet());
+
         EnumMap<DetectorType, StatusType> statusMap = new EnumMap<>(DetectorType.class);
-        for (DetectorRuleEvaluation detectorEvaluation : detectorEvaluations) {
-            DetectorType detectorType = detectorEvaluation.getRule().getDetectorType();
-            StatusType statusType = determineDetectorExtractionStatus(detectorEvaluation);
-            if (statusType == StatusType.FAILURE || !statusMap.containsKey(detectorType)) {
-                statusMap.put(detectorType, statusType);
-            }
-        }
+
+        success.forEach(detector -> statusMap.put(detector, StatusType.SUCCESS));
+        failure.forEach(detector -> statusMap.put(detector, StatusType.FAILURE));
+
         return statusMap;
     }
 
-    //This assumes the DetectorRuleEvaluation was found. (
-    private StatusType determineDetectorExtractionStatus(DetectorRuleEvaluation detectorEvaluation) {
-        EntryPointEvaluation selectedEntryPointEvaluation = detectorEvaluation.getSelectedEntryPointEvaluation();
-        Optional<DetectableEvaluationResult> extractedEvaluation = selectedEntryPointEvaluation.getExtractedEvaluation();
-        if (extractedEvaluation.map(DetectableEvaluationResult::wasExtractionSuccessful).orElse(false)) {
-            return StatusType.SUCCESS;
-        }
-        return StatusType.FAILURE;
-    }
+    private Map<CodeLocation, DetectCodeLocation> createCodeLocationMap(List<DetectorDirectoryReport> reports, File sourcePath) {
+        Map<CodeLocation, DetectCodeLocation> codeLocations = new HashMap<>();
+        reports.forEach(report -> report.getExtractedDetectors().stream()
+            .map(extracted -> codeLocationConverter.toDetectCodeLocation(
+                sourcePath,
+                extracted.getExtractedDetectable().getExtraction(),
+                report.getDirectory(),
+                extracted.getRule().getDetectorType().toString()
+            ))
+            .forEach(codeLocations::putAll));
 
-    private Map<CodeLocation, DetectCodeLocation> createCodeLocationMap(List<DetectorRuleEvaluation> foundDetectorEvaluations, File directory) {
-        return foundDetectorEvaluations.stream()
-            .map(it -> codeLocationConverter.toDetectCodeLocation(directory, it))
-            .map(Map::entrySet)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return codeLocations;
     }
 
     private void publishStatusEvents(Map<DetectorType, StatusType> statusMap) {
@@ -236,53 +239,42 @@ public class DetectorTool {
         }
     }
 
-    private void publishFileEvents(List<DetectorRuleEvaluation> foundDetectors) {
+    private void publishFileEvents(List<DetectorDirectoryReport> reports) { //TODO (detectors): What to publish here? Only succesfull? For now publishing only extracted.
         logger.debug("Publishing file events.");
-        for (DetectorRuleEvaluation detectorEvaluation : foundDetectors) {
-            Optional<DetectableEvaluationResult> extractedEvaluationOptional = detectorEvaluation.getSelectedEntryPointEvaluation().getExtractedEvaluation();
-            if (!extractedEvaluationOptional.isPresent())
-                continue;
-            DetectableEvaluationResult extractedEvaluation = extractedEvaluationOptional.get();
-            if (extractedEvaluation.getExplanations() != null) {
-                for (File file : extractedEvaluation.getRelevantFiles()) {
-                    detectorEventPublisher.publishCustomerFileOfInterest(file);
-                }
-            }
-            if (detectorEvaluation.getExtraction().isPresent()) {
-                Extraction extraction = detectorEvaluation.getExtraction().get();
-                for (File file : extraction.getRelevantFiles()) {
-                    detectorEventPublisher.publishCustomerFileOfInterest(file);
-                }
-                List<File> paths = extraction.getUnrecognizedPaths();
-                if (paths != null && !paths.isEmpty()) {
-                    detectorEventPublisher.publishUnrecognizedPaths(new UnrecognizedPaths(detectorEvaluation.getRule().getDetectorType().toString(), paths));
-                }
-            }
-        }
+        reports.stream()
+            .flatMap(directory -> directory.getExtractedDetectors().stream())
+            .forEach(extracted -> {
+                extracted.getExtractedDetectable().getRelevantFiles().forEach(detectorEventPublisher::publishCustomerFileOfInterest);
+                extracted.getExtractedDetectable().getExtraction().getRelevantFiles()
+                    .forEach(detectorEventPublisher::publishCustomerFileOfInterest); //TODO (detectors): Is it weird i have to seperately publish extraction?
+
+                List<File> paths = extracted.getExtractedDetectable().getExtraction().getUnrecognizedPaths();
+                detectorEventPublisher.publishUnrecognizedPaths(new UnrecognizedPaths(extracted.getRule().getDetectorType().toString(), paths));
+
+                extracted.getAttemptedDetectables().forEach(attempted -> {
+                    attempted.getRelevantFiles().forEach(detectorEventPublisher::publishCustomerFileOfInterest);
+                });
+            });
+
     }
 
-    private void checkForAccuracy(List<DetectorRuleEvaluation> foundDetectors, ExcludeIncludeEnumFilter<DetectorType> requiredAccuracyTypes) {
-        for (DetectorRuleEvaluation detectorEvaluation : foundDetectors) {
-            Optional<DetectableEvaluationResult> extractedEvaluationOptional = detectorEvaluation.getSelectedEntryPointEvaluation().getExtractedEvaluation();
-            if (!extractedEvaluationOptional.isPresent())
-                continue;
+    private void checkForAccuracy(List<DetectorDirectoryReport> reports, ExcludeIncludeEnumFilter<DetectorType> requiredAccuracyTypes) {
+        //TODO (detectors): Should this check not-extracted too? Here is the potential for remediation, was there an attempted one that met accuracy?
+        for (DetectorDirectoryReport report : reports) {
+            report.getExtractedDetectors().forEach(extracted -> {
+                if (requiredAccuracyTypes.shouldInclude(extracted.getRule().getDetectorType())) {
+                    DetectableDefinition extractedDetectable = extracted.getExtractedDetectable().getDetectable();
+                    if (extractedDetectable.getAccuracyType() != DetectableAccuracyType.HIGH) {
+                        //Accuracy not met!
+                        exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_ACCURACY_NOT_MET));
+                        List<String> messages = new ArrayList<>();
 
-            DetectableEvaluationResult extractedEvaluation = extractedEvaluationOptional.get();
-
-            if (!requiredAccuracyTypes.shouldInclude(detectorEvaluation.getRule().getDetectorType())) {
-                continue;
-            }
-
-            if (extractedEvaluation.getDetectableDefinition().getAccuracyType() != DetectableAccuracyType.HIGH) {
-                //Accuracy not met!
-                exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_ACCURACY_NOT_MET));
-                List<String> messages = new ArrayList<>();
-
-                messages.add("Accuracy Not Met: " + detectorEvaluation.getRule().getDetectorType());
-                messages.add("\tExtraction for " + extractedEvaluation.getDetectableDefinition().getName() + " has accuracy of " + extractedEvaluation.getDetectableDefinition()
-                    .getAccuracyType() + " but HIGH is required.");
-                statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, "Detector Issue", messages));
-            }
+                        messages.add("Accuracy Not Met: " + extracted.getRule().getDetectorType());
+                        messages.add("\tExtraction for " + extractedDetectable.getName() + " has accuracy of " + extractedDetectable.getAccuracyType() + " but HIGH is required.");
+                        statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, "Detector Issue", messages));
+                    }
+                }
+            });
         }
     }
 

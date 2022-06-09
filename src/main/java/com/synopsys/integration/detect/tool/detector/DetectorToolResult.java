@@ -10,9 +10,9 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
@@ -24,8 +24,7 @@ public class DetectorToolResult {
     private final Set<DetectorType> applicableDetectorTypes;
     private final Set<DetectorType> failedDetectorTypes;
 
-    @Nullable
-    private final DetectorEvaluation rootDetectorEvaluation;
+    private final List<DetectorDirectoryReport> reports;
     private final Map<CodeLocation, DetectCodeLocation> codeLocationMap;
 
     public DetectorToolResult(
@@ -33,14 +32,14 @@ public class DetectorToolResult {
         List<DetectCodeLocation> bomToolCodeLocations,
         Set<DetectorType> applicableDetectorTypes,
         Set<DetectorType> failedDetectorTypes,
-        @Nullable DetectorEvaluation rootDetectorEvaluation,
+        List<DetectorDirectoryReport> reports,
         Map<CodeLocation, DetectCodeLocation> codeLocationMap
     ) {
         this.bomToolProjectNameVersion = bomToolProjectNameVersion;
         this.bomToolCodeLocations = bomToolCodeLocations;
         this.applicableDetectorTypes = applicableDetectorTypes;
         this.failedDetectorTypes = failedDetectorTypes;
-        this.rootDetectorEvaluation = rootDetectorEvaluation;
+        this.reports = reports;
         this.codeLocationMap = codeLocationMap;
     }
 
@@ -49,7 +48,7 @@ public class DetectorToolResult {
         this.bomToolCodeLocations = new ArrayList<>();
         this.applicableDetectorTypes = new HashSet<>();
         this.failedDetectorTypes = new HashSet<>();
-        this.rootDetectorEvaluation = null;
+        this.reports = new ArrayList<>();
         this.codeLocationMap = new HashMap<>();
     }
 
@@ -73,8 +72,8 @@ public class DetectorToolResult {
         return !getFailedDetectorTypes().isEmpty();
     }
 
-    public Optional<DetectorEvaluation> getRootDetectorEvaluation() {
-        return Optional.ofNullable(rootDetectorEvaluation);
+    public List<DetectorDirectoryReport> getDetectorReports() {
+        return reports;
     }
 
     public Map<CodeLocation, DetectCodeLocation> getCodeLocationMap() {

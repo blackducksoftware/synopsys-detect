@@ -22,7 +22,6 @@ public class ProjectInspectorTests {
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
             commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
-            commandBuilder.property(DetectProperties.DETECT_BUILDLESS, "true");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.NUGET.toString());
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
@@ -40,7 +39,6 @@ public class ProjectInspectorTests {
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
             commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
-            commandBuilder.property(DetectProperties.DETECT_BUILDLESS, "true");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.GRADLE.toString());
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
@@ -58,7 +56,6 @@ public class ProjectInspectorTests {
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
             commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
-            commandBuilder.property(DetectProperties.DETECT_BUILDLESS, "true");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.MAVEN.toString());
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
@@ -77,7 +74,6 @@ public class ProjectInspectorTests {
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
             commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
-            commandBuilder.property(DetectProperties.DETECT_BUILDLESS, "true");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.MAVEN.toString());
             commandBuilder.property(DetectProperties.DETECT_MAVEN_BUILDLESS_LEGACY_MODE, "false");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
