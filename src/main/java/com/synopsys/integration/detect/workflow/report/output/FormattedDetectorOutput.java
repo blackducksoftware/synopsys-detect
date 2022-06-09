@@ -18,9 +18,6 @@ public class FormattedDetectorOutput {
     @SerializedName("detectorName")
     public String detectorName = "";
 
-    @SerializedName("descriptiveName")
-    public String descriptiveName = "";
-
     @SerializedName("extracted")
     public boolean extracted = true;
 
