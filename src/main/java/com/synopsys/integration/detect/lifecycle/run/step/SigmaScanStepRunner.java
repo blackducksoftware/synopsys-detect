@@ -31,13 +31,14 @@ public class SigmaScanStepRunner {
     }
 
     public void runSigmaOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
-        throws OperationException {
+        throws OperationException, IntegrationException {
         List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
 
         File sigmaExe;
         Optional<File> localSigma = operationFactory.calculateUserProvidedSigmaPath();
         if (localSigma.isPresent()) {
             sigmaExe = localSigma.get();
+            validateSigma(sigmaExe);
         } else {
             sigmaExe = operationFactory.resolveSigmaOnline(blackDuckRunData);
         }
@@ -55,6 +56,7 @@ public class SigmaScanStepRunner {
         List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
         File sigmaExe = operationFactory.calculateUserProvidedSigmaPath()
             .orElseThrow(() -> new IntegrationException("Was not able to install or locate Sigma.  Must either connect to a Black Duck or provide a path to a local Sigma."));
+        validateSigma(sigmaExe);
         List<SigmaReport> sigmaReports = new LinkedList<>();
         int count = 0;
         for (File scanTarget : sigmaScanTargets) {
@@ -62,6 +64,12 @@ public class SigmaScanStepRunner {
             sigmaReports.add(sigmaReport);
         }
         operationFactory.publishSigmaReport(sigmaReports);
+    }
+
+    private void validateSigma(File sigmaExe) throws IntegrationException {
+        if (!sigmaExe.exists()) {
+            throw new IntegrationException(String.format("Provided Sigma %s does not exist.", sigmaExe.getAbsolutePath()));
+        }
     }
 
     public SigmaReport performOnlineScan(
