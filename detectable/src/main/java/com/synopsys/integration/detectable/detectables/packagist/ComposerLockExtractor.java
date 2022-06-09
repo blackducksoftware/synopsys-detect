@@ -4,15 +4,12 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.packagist.model.PackagistParseResult;
 import com.synopsys.integration.detectable.detectables.packagist.parse.PackagistParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class ComposerLockExtractor {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PackagistParser packagistParser;
 
     public ComposerLockExtractor(PackagistParser packagistParser) {
