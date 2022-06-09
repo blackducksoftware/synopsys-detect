@@ -136,12 +136,11 @@ public class DetectBootFactory {
     }
 
     public DiagnosticSystem createDiagnosticSystem(
-        boolean isDiagnosticExtended,
         PropertyConfiguration detectConfiguration,
         DirectoryManager directoryManager,
         SortedMap<String, String> maskedRawPropertyValues
     ) {
-        return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRunId, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues);
+        return new DiagnosticSystem(detectConfiguration, detectRunId, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues);
     }
 
     public AirGapCreator createAirGapCreator(

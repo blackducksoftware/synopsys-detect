@@ -16,6 +16,7 @@
 * [solution_name] requires and runs [docker_inspector_name] version 10.
 * Incorporated [docker_inspector_name] documentation into [solution_name] documentation.
 * The search for files for binary scanning (when property detect.binary.scan.file.name.patterns is set) now excludes directories specified by property detect.excluded.directories.
+* There is no longer a distinction between extended and non-extended diagnostic zip files. All diagnostic zip files now include all relevant files.
 
 
 ### Resolved issues

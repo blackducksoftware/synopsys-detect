@@ -146,7 +146,6 @@ public class DetectBoot {
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
         if (diagnosticDecision.shouldCreateDiagnosticSystem()) {
             diagnosticSystem = detectBootFactory.createDiagnosticSystem(
-                diagnosticDecision.isExtended(),
                 propertyConfiguration,
                 directoryManager,
                 maskedRawPropertyValues

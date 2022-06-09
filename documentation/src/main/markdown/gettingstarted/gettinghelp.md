@@ -6,7 +6,6 @@
 | ---- | ------------------- | ----------- | ----------- |
 | Help | --help | -h | Provides basic help information (including how to get more detailed help). |
 | Interactive | --interactive | -i | Guides you through configuring [solution_name]. |
-| Diagnostic (Extended) | --detect.diagnostic.extended=true | -de | Creates a zip file containing a full set of diagnostic information valuable for troubleshooting by support. |
-| Diagnostic | --detect.diagnostic=true | -d | Creates a zip file containing a subset of diagnostic information for support. (An extended diagnostic zip is preferable.) |
+| Diagnostic | --detect.diagnostic=true | -d | Creates a zip file containing diagnostic information for support. |
 
 Additional resources are available at [Synopsys Software Integrity Community](https://community.synopsys.com).
