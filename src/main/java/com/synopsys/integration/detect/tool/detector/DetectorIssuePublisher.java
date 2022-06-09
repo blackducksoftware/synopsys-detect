@@ -29,10 +29,20 @@ public class DetectorIssuePublisher {
                     }
                 } else {
                     evaluation.getSelectedEntryPointEvaluation().getEvaluatedDetectables().forEach(detectable -> {
-                        messages.add("Not Extractable: " + detectable.getDetectableDefinition().getName());
+                        messages.add("Attempted: " + detectable.getDetectableDefinition().getName());
                         detectable.getExplanations().forEach(explanation -> {
                             messages.add(spacer + explanation.describeSelf());
                         });
+                        if (detectable.getExtraction() != null) {
+                            if (detectable.getExtraction().getDescription() != null) {
+                                messages.add(spacer + detectable.getExtraction().getDescription());
+                            }
+                            if (detectable.getExtraction().getError() != null) {
+                                String errorDescription = ExceptionUtil.oneSentenceDescription(detectable.getExtraction().getError());
+                                messages.add(spacer + errorDescription);
+                            }
+
+                        }
                     });
                 }
                 statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, "Detector Issue", messages));

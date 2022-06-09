@@ -173,6 +173,10 @@ public class DetectorTool {
                                 detectableStatus = "SUCCESS";
                             } else {
                                 detectableStatus = "FAILED";
+                                //TODO (Detectors) This won't actually be hit... The extracted evaluation is only the SUCCESFUL extracted evaluation because other evaluations fall back (cascade)
+                                //The main question is: Should we lock it in when extraction happens, IE if we decide to extract should that be it or should extract continue.
+                                //Like we leverage Applicable/Extractable - otherwise there is no 'extraction' really, like if there are three Detectables and all three fail to extract you don't have an 'Extracted' one
+                                //And how do you display those three failures, do you display them all or just the one.
                             }
                         } else {
                             detectableStatus = "ATTEMPTED";

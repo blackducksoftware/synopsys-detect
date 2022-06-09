@@ -25,6 +25,15 @@ import com.synopsys.integration.detect.workflow.status.OperationType;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
+import com.synopsys.integration.detectable.detectable.explanation.Explanation;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detector.DetectorStatusUtil;
+import com.synopsys.integration.detector.accuracy.DetectableEvaluationResult;
+import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
+import com.synopsys.integration.detector.accuracy.DetectorRuleEvaluation;
+import com.synopsys.integration.detector.accuracy.EntryPointEvaluation;
+import com.synopsys.integration.detector.base.DetectorEvaluationUtil;
+import com.synopsys.integration.detector.base.DetectorStatusType;
 import com.synopsys.integration.util.NameVersion;
 
 public class FormattedOutputManager {
@@ -69,11 +78,7 @@ public class FormattedOutputManager {
         formattedOutput.operations = visibleOperations();
 
         if (detectorToolResult != null) { //TODO (Detector): Add formatted output results...
-            //            formattedOutput.detectors = Bds.of(detectorToolResult.getRootDetectorEvaluation())
-            //                .flatMap(DetectorEvaluation::a)
-            //                .filter(DetectorEvaluation::isApplicable)
-            //                .map(this::convertDetector)
-            //                .toList();
+            formattedOutput.detectors = convertDetectors();
         }
         if (projectNameVersion != null) {
             formattedOutput.projectName = projectNameVersion.getName();
@@ -117,31 +122,70 @@ public class FormattedOutputManager {
             .collect(Collectors.toList());
     }
 
-    //    private FormattedDetectorOutput convertDetector(DetectorEvaluation evaluation) {
-    //        FormattedDetectorOutput detectorOutput = new FormattedDetectorOutput();
-    //        detectorOutput.folder = evaluation.getDetectableEnvironment().getDirectory().toString();
-    //        detectorOutput.descriptiveName = evaluation.getDetectorRule().getDescriptiveName();
-    //        detectorOutput.detectorName = evaluation.getDetectorRule().getName();
-    //        detectorOutput.detectorType = evaluation.getDetectorType().toString();
-    //
-    //        detectorOutput.extracted = evaluation.wasExtractionSuccessful();
-    //        detectorOutput.status = evaluation.getStatus().name();
-    //        detectorOutput.statusCode = evaluation.getStatusCode();
-    //        detectorOutput.statusReason = evaluation.getStatusReason();
-    //        detectorOutput.explanations = Bds.of(evaluation.getAllExplanations()).map(Explanation::describeSelf).toList();
-    //
-    //        if (evaluation.getExtraction() != null) {
-    //            detectorOutput.extractedReason = evaluation.getExtraction().getDescription();
-    //            detectorOutput.relevantFiles = Bds.of(evaluation.getExtraction().getRelevantFiles()).map(File::toString).toList();
-    //            detectorOutput.projectName = evaluation.getExtraction().getProjectName();
-    //            detectorOutput.projectVersion = evaluation.getExtraction().getProjectVersion();
-    //            if (evaluation.getExtraction().getCodeLocations() != null) {
-    //                detectorOutput.codeLocationCount = evaluation.getExtraction().getCodeLocations().size();
-    //            }
-    //        }
-    //
-    //        return detectorOutput;
-    //    }
+    private List<FormattedDetectorOutput> convertDetectors() {
+        List<FormattedDetectorOutput> outputs = new ArrayList<>();
+        if (detectorToolResult != null && detectorToolResult.getRootDetectorEvaluation().isPresent()) {
+            for (DetectorEvaluation detectorEvaluation : DetectorEvaluationUtil.asFlatList(detectorToolResult.getRootDetectorEvaluation().get())) {
+                List<DetectorRuleEvaluation> found = detectorEvaluation.getFoundDetectorRuleEvaluations();
+                found.stream()
+                    .map(this::convertFoundDetector)
+                    .forEach(outputs::addAll);
+            }
+        }
+        return outputs;
+    }
+
+    private List<FormattedDetectorOutput> convertFoundDetector(DetectorRuleEvaluation ruleEvaluation) {
+
+        List<FormattedDetectorOutput> detectorOutputs = new ArrayList<>();
+
+        EntryPointEvaluation selectedEntryPoint = ruleEvaluation.getSelectedEntryPointEvaluation();
+        for (DetectableEvaluationResult detectable : selectedEntryPoint.getEvaluatedDetectables()) {
+            boolean isTheExtracted = selectedEntryPoint.getExtractedEvaluation()
+                .map(detectable::equals)
+                .orElse(false);
+
+            DetectorStatusType detectorStatus;
+            if (isTheExtracted && detectable.wasExtractionSuccessful()) {
+                detectorStatus = DetectorStatusType.SUCCESS;
+            } else if (isTheExtracted) {
+                detectorStatus = DetectorStatusType.FAILURE;
+            } else {
+                detectorStatus = DetectorStatusType.ATTEMPTED;
+            }
+
+            FormattedDetectorOutput detectorOutput = new FormattedDetectorOutput();
+            detectorOutput.folder = ruleEvaluation.getEnvironment().getDirectory().toString();
+            detectorOutput.detectorName = detectable.getDetectableDefinition().getName();
+            ;
+            detectorOutput.detectorType = ruleEvaluation.getRule().getDetectorType().toString();
+
+            detectorOutput.extracted = detectable.wasExtractionSuccessful();
+            detectorOutput.status = detectorStatus.toString(); //TODO (detector): This is tricky...
+            detectorOutput.statusCode = DetectorStatusUtil.getStatusCode(detectable);
+            detectorOutput.statusReason = DetectorStatusUtil.getStatusReason(detectable).toString();
+            detectorOutput.explanations = Bds.of(detectable.getAllExplanations()).map(Explanation::describeSelf).toList();
+
+            if (isTheExtracted) {
+                Extraction extraction = selectedEntryPoint.getExtractedEvaluation().map(DetectableEvaluationResult::getExtraction).orElse(null);
+                if (extraction == null)
+                    continue;
+
+                detectorOutput.extractedReason = extraction.getDescription();
+                detectorOutput.relevantFiles = Bds.of(extraction.getRelevantFiles()).map(File::toString).toList();
+                detectorOutput.projectName = extraction.getProjectName();
+                detectorOutput.projectVersion = extraction.getProjectVersion();
+                if (extraction.getCodeLocations() != null) {
+                    detectorOutput.codeLocationCount = extraction.getCodeLocations().size();
+                }
+            }
+            detectorOutputs.add(detectorOutput);
+
+            if (isTheExtracted)
+                break; //Only add up to the extracted, that is all ATTEMPTED and the final EXTRACTED
+        }
+        return detectorOutputs;
+    }
 
     private void addUnrecognizedPaths(UnrecognizedPaths unrecognizedPaths) {
         if (!this.unrecognizedPaths.containsKey(unrecognizedPaths.getGroup())) {

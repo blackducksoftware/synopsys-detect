@@ -76,10 +76,30 @@ public class DetectableEvaluationResult {
         return Optional.ofNullable(extractionEnvironment);
     }
 
+    @Nullable
+    public DetectableResult getApplicable() {
+        return applicableResult;
+    }
+
+    @Nullable
+    public DetectableResult getExtractable() {
+        return extractableResult;
+    }
+
+    public List<Explanation> getAllExplanations() {
+        List<Explanation> explanations = new ArrayList<>();
+        if (applicableResult != null) {
+            explanations.addAll(applicableResult.getExplanation());
+        }
+        if (extractableResult != null) {
+            explanations.addAll(extractableResult.getExplanation());
+        }
+        return explanations;
+    }
+
     private enum DetectableEvaluationResultType {
         NOT_APPLICABLE,
         NOT_EXTRACTABLE,
-        EXTRACTION_FAILED,
         EXTRACTED
     }
 
@@ -89,17 +109,6 @@ public class DetectableEvaluationResult {
 
     public static DetectableEvaluationResult notExtractable(DetectableDefinition detectableDefinition, DetectableResult applicable, DetectableResult extractable) {
         return new DetectableEvaluationResult(DetectableEvaluationResultType.NOT_EXTRACTABLE, detectableDefinition, applicable, extractable, null, null);
-
-    }
-
-    public static DetectableEvaluationResult extractionFailed(
-        DetectableDefinition detectableDefinition,
-        DetectableResult applicable,
-        DetectableResult extractable,
-        ExtractionEnvironment extractionEnvironment,
-        Extraction extraction
-    ) {
-        return new DetectableEvaluationResult(DetectableEvaluationResultType.EXTRACTION_FAILED, detectableDefinition, applicable, extractable, extractionEnvironment, extraction);
 
     }
 
@@ -115,10 +124,11 @@ public class DetectableEvaluationResult {
     }
 
     public boolean wasExtractionSuccessful() {
-        return resultType == DetectableEvaluationResultType.EXTRACTED;
+        return resultType == DetectableEvaluationResultType.EXTRACTED && extraction != null && extraction.isSuccess();
     }
 
-    public Extraction getExtraction() {
+    public @Nullable Extraction getExtraction() {
         return extraction;
     }
+
 }

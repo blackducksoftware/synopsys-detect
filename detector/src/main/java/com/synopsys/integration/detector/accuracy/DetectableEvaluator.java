@@ -34,11 +34,12 @@ public class DetectableEvaluator {
         }
 
         ExtractionEnvironment extractionEnvironment = extractionEnvironmentSupplier.get();
+        Extraction extraction;
         try {
-            Extraction extraction = detectable.extract(extractionEnvironment);
-            return DetectableEvaluationResult.extracted(detectableDefinition, applicable, extractable, extractionEnvironment, extraction);
+            extraction = detectable.extract(extractionEnvironment);
         } catch (Exception e) {
-            return DetectableEvaluationResult.extractionFailed(detectableDefinition, applicable, extractable, extractionEnvironment, new Extraction.Builder().exception(e).build());
+            extraction = new Extraction.Builder().exception(e).build();
         }
+        return DetectableEvaluationResult.extracted(detectableDefinition, applicable, extractable, extractionEnvironment, extraction);
     }
 }
