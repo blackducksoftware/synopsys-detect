@@ -23,10 +23,6 @@ public class ComposerLockExtractor {
         try {
             String composerJsonText = FileUtils.readFileToString(composerJson, StandardCharsets.UTF_8);
             String composerLockText = FileUtils.readFileToString(composerLock, StandardCharsets.UTF_8);
-
-            logger.debug(composerJsonText);
-            logger.debug(composerLockText);
-
             PackagistParseResult result = packagistParser.getDependencyGraphFromProject(composerJsonText, composerLockText);
 
             return new Extraction.Builder()
