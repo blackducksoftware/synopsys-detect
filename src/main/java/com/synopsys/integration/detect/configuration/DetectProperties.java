@@ -1571,8 +1571,11 @@ public class DetectProperties {
         PathListProperty.newBuilder("detect.sigma.scan.paths", emptyList())
             .setInfo("Sigma Target Paths", DetectPropertyFromVersion.VERSION_7_14_0)
             .setHelp(
-                "If this property is set, a Sigma scan will be performed on each of the paths provided. If this property is not set, but Sigma is enabled via detect.tools, the Sigma target path is the source path (see property detect.source.path).")
+                "A comma-separated list of paths to perform Sigma scans on.",
+                "If this property is set, a Sigma scan will be performed on each of the paths provided. If this property is not set, but Sigma is enabled via detect.tools, the Sigma target path is the source path (see property detect.source.path)."
+            )
             .setGroups(DetectGroup.SIGMA, DetectGroup.GLOBAL)
+            .setExample("/user/source/target1,/user/source/target2")
             .build();
 
     public static final NullableStringProperty DETECT_SIGMA_SCAN_ARGUMENTS =
