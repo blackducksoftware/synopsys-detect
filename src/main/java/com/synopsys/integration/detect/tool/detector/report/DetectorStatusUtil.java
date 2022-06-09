@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.tool.detector.report;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detect.workflow.report.ExceptionUtil;
@@ -37,6 +38,8 @@ public class DetectorStatusUtil {
             }
         } else if (extraction.getError() != null) {
             return ExceptionUtil.oneSentenceDescription(extraction.getError());
+        } else if (StringUtils.isNotBlank(extraction.getDescription())) {
+            return extraction.getDescription();
         } else {
             return "See logs for further explanation";
         }
