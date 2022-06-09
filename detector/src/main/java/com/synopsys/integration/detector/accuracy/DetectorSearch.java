@@ -1,5 +1,7 @@
 package com.synopsys.integration.detector.accuracy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -27,18 +29,29 @@ public class DetectorSearch {
         DetectorType detectorType = detector.getDetectorType();
         DetectorResult searchableResult = evaluateSearchable(detector, searchEnvironment);
         if (!searchableResult.getPassed()) {
-            return DetectorSearchResult.notSearchable(detectorType, searchableResult);
+            return DetectorSearchResult.notSearchable(searchableResult);
         }
 
+        List<DetectorSearchEntryPointResult> evaluated = new ArrayList<>();
+        DetectorSearchEntryPointResult found = null;
         for (EntryPoint entryPoint : detector.getEntryPoints()) {
             Detectable primaryDetectable = entryPoint.getPrimary().getDetectableCreatable().createDetectable(detectableEnvironment);
 
             DetectableResult applicable = primaryDetectable.applicable();
+            DetectorSearchEntryPointResult entryPointResult = new DetectorSearchEntryPointResult(entryPoint, applicable);
             if (applicable.getPassed()) {
-                return DetectorSearchResult.found(detectorType, entryPoint);
+                found = entryPointResult;
+                break;
+            } else {
+                evaluated.add(entryPointResult);
             }
         }
-        return DetectorSearchResult.notFound(detectorType);
+
+        if (found != null) {
+            return DetectorSearchResult.found(found, evaluated);
+        } else {
+            return DetectorSearchResult.notFound(evaluated);
+        }
     }
 
     private DetectorResult evaluateSearchable(DetectorRule detectorRule, SearchEnvironment environment) {

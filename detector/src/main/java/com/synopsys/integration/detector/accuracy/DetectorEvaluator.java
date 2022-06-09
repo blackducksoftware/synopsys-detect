@@ -48,7 +48,8 @@ public class DetectorEvaluator {
 
         File directory = findResult.getDirectory();
         Set<DetectorRule> appliedSoFar = new HashSet<>();
-        List<DetectorRuleEvaluation> detectorRuleEvaluations = new LinkedList<>();
+        List<DetectorRuleEvaluation> foundRules = new LinkedList<>();
+        List<DetectorRuleNotFoundResult> notFoundRules = new LinkedList<>();
 
         for (DetectorRule rule : rules.getDetectorRules()) {
             SearchEnvironment searchEnvironment = new SearchEnvironment(
@@ -65,10 +66,10 @@ public class DetectorEvaluator {
 
             logger.trace("Evaluating detector: {}", rule.getDetectorType());
 
-            if (searchResult.wasFound() && searchResult.getEntryPoint().isPresent()) {
-                logger.trace("Found detector, will continue evaluating."); //TODO: May need a log here.
+            if (searchResult.getFoundEntryPoint().isPresent()) {
+                logger.trace("Found detector, will continue evaluating.");
 
-                EntryPoint entryPoint = searchResult.getEntryPoint().get();
+                EntryPoint entryPoint = searchResult.getFoundEntryPoint().get().getEntryPoint();
                 EntryPointEvaluation entryPointEvaluation = detectorExtract.extract(
                     entryPoint,
                     detectableEnvironment,
@@ -76,14 +77,18 @@ public class DetectorEvaluator {
                 );
 
                 DetectorRuleEvaluation detectorRuleEvaluation = new DetectorRuleEvaluation(detectableEnvironment, rule, entryPoint, entryPointEvaluation);
-                detectorRuleEvaluations.add(detectorRuleEvaluation);
+                foundRules.add(detectorRuleEvaluation);
 
                 logger.trace("Extracted: {}", rule.getDetectorType());
                 appliedSoFar.add(rule);
             } else {
-                logger.trace("Not searchable or not applicable: {}", searchResult.getMessage());
+                notFoundRules.add(new DetectorRuleNotFoundResult(rule, searchResult));
+                if (searchResult.getNotSearchableResult().isPresent()) {
+                    logger.trace("Not searchable or none found: {}", searchResult.getNotSearchableResult().get().getDescription());
+                } else {
+                    logger.trace("Not found but was searchable.");
+                }
             }
-
         }
 
         if (!appliedSoFar.isEmpty()) {
@@ -100,7 +105,7 @@ public class DetectorEvaluator {
             children.add(child);
         }
 
-        return new DetectorEvaluation(directory, findResult.getDepthFromRoot(), detectorRuleEvaluations, children);
+        return new DetectorEvaluation(directory, findResult.getDepthFromRoot(), foundRules, notFoundRules, children);
     }
 }
 

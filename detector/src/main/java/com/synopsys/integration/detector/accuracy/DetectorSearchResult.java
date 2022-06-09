@@ -1,65 +1,58 @@
 package com.synopsys.integration.detector.accuracy;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.result.DetectorResult;
-import com.synopsys.integration.detector.rule.EntryPoint;
 
 public class DetectorSearchResult {
-    @NotNull
-    private final DetectorType detectorType;
-    @NotNull
-    private final DetectorSearchResultType searchResult;
-    @Nullable //Only present when one or more entry points applied.
-    private final EntryPoint entryPoint;
-    @Nullable //Only present when searchable is not passed, aka NOT_SEARCHABLE. Otherwise it is passed.
-    private final DetectorResult searchableResult;
+    @Nullable
+    private final DetectorResult notSearchable;
+    @Nullable //The found entry point, there will only be one.
+    private final DetectorSearchEntryPointResult foundEntryPoint;
+    @NotNull //All entry points evaluated but not found.
+    private final List<DetectorSearchEntryPointResult> notFoundEntryPoints;
 
     private DetectorSearchResult(
-        DetectorType detectorType,
-        DetectorSearchResultType searchResult,
-        EntryPoint entryPoint,
-        @Nullable DetectorResult searchableResult
+        @Nullable DetectorResult notSearchable,
+        @Nullable DetectorSearchEntryPointResult foundEntryPoint,
+        @NotNull List<DetectorSearchEntryPointResult> notFoundEntryPoints
     ) {
-        this.detectorType = detectorType;
-        this.searchResult = searchResult;
-        this.entryPoint = entryPoint;
-        this.searchableResult = searchableResult;
+        this.notSearchable = notSearchable;
+        this.foundEntryPoint = foundEntryPoint;
+        this.notFoundEntryPoints = notFoundEntryPoints;
     }
 
-    public static DetectorSearchResult notSearchable(DetectorType detectorType, DetectorResult detectableResult) {
-        return new DetectorSearchResult(detectorType, DetectorSearchResultType.NOT_SEARCHABLE, null, detectableResult);
+    public static DetectorSearchResult notSearchable(DetectorResult detectableResult) {
+        return new DetectorSearchResult(detectableResult, null, Collections.emptyList());
     }
 
-    public static DetectorSearchResult found(DetectorType detectorType, EntryPoint entryPoint) {
-        return new DetectorSearchResult(detectorType, DetectorSearchResultType.FOUND, entryPoint, null);
+    public static DetectorSearchResult found(DetectorSearchEntryPointResult found, @NotNull List<DetectorSearchEntryPointResult> notFoundEntryPoints) {
+        return new DetectorSearchResult(null, found, notFoundEntryPoints);
     }
 
-    public static DetectorSearchResult notFound(DetectorType detectorType) {
-        return new DetectorSearchResult(detectorType, DetectorSearchResultType.NOT_FOUND, null, null);
+    public static DetectorSearchResult notFound(@NotNull List<DetectorSearchEntryPointResult> notFoundEntryPoints) {
+        return new DetectorSearchResult(null, null, notFoundEntryPoints);
     }
 
-    public DetectorSearchResultType getSearchResult() {
-        return searchResult;
+    public Optional<DetectorResult> getNotSearchableResult() {
+        return Optional.ofNullable(notSearchable);
     }
 
     public boolean wasFound() {
-        return searchResult == DetectorSearchResultType.FOUND;
+        return foundEntryPoint != null;
     }
 
-    public Optional<EntryPoint> getEntryPoint() {
-        return Optional.ofNullable(entryPoint);
+    public Optional<DetectorSearchEntryPointResult> getFoundEntryPoint() {
+        return Optional.ofNullable(foundEntryPoint);
     }
 
-    public String getMessage() {
-        if (searchableResult != null) {
-            return searchableResult.getDescription();
-        }
-        return "Unknown";
+    public @NotNull List<DetectorSearchEntryPointResult> getNotFoundEntryPoints() {
+        return notFoundEntryPoints;
     }
 }
 
