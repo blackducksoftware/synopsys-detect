@@ -55,7 +55,7 @@ public class DetectZipUtil { //TODO: Add method for extracting without the wrapp
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 Path entryPath = destPath.resolve(entry.getName());
-                if (!entryPath.normalize().startsWith(dest.toPath())) {
+                if (!entryPath.normalize().startsWith(dest.toPath().normalize())) {
                     throw new IOException("Zip entry contained path traversal");
                 }
                 if (entry.isDirectory()) {
