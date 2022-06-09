@@ -29,6 +29,7 @@ import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjec
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwrapDetectable;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
@@ -162,6 +163,7 @@ public class DetectorRuleFactory {
                 detector.entryPoint(NpmPackageLockDetectable.class);
                 detector.entryPoint(NpmShrinkwrapDetectable.class);
                 detector.entryPoint(NpmCliDetectable.class);
+                detector.entryPoint(NpmPackageJsonParseDetectable.class);
             }).allEntryPointsFallbackToNext()
             .yieldsTo(DetectorType.LERNA, DetectorType.YARN, DetectorType.PNPM);
 
