@@ -18,7 +18,6 @@ Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties
  * Rapid Scan does not support ```detect.policy.check.fail.on.names```
  * Rapid Scan cannot create a Risk or Notices report.
  * Rapid Scan will not create a Project or Version on Black Duck.
- * Rapid Scan requires that bdio2 is enabled.
  * Rapid Scan should be run with aggregation so server-side metrics can be accurately collected.
 
 ## Configuration
