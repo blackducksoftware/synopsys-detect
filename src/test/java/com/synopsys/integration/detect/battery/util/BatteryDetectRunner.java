@@ -35,7 +35,7 @@ public class BatteryDetectRunner {
         this.detectVersion = detectVersion;
     }
 
-    public DetectOutput runDetect(List<String> detectArguments, boolean forceScript) throws IOException, ExecutableRunnerException {
+    public List<String> runDetect(List<String> detectArguments, boolean forceScript) throws IOException, ExecutableRunnerException {
         if (forceScript) {
             logger.info("Executing as script.");
             return executeDetectScript(detectArguments);
@@ -51,7 +51,7 @@ public class BatteryDetectRunner {
         return executeDetectStatic(detectArguments);
     }
 
-    private DetectOutput executeDetectStatic(List<String> detectArguments) {
+    private List<String> executeDetectStatic(List<String> detectArguments) {
         BatterySysOutCapture capture = new BatterySysOutCapture();
 
         boolean previous = Application.shouldExit();
@@ -62,7 +62,7 @@ public class BatteryDetectRunner {
         List<String> results = capture.stopCapture();
 
         Application.setShouldExit(previous);
-        return new DetectOutput(results);
+        return results;
     }
 
     private ExecutableOutput downloadDetectBash(File target) throws ExecutableRunnerException {
@@ -78,7 +78,7 @@ public class BatteryDetectRunner {
         return executableRunner.execute(executable);
     }
 
-    private DetectOutput executeDetectScript(List<String> detectArguments) throws ExecutableRunnerException {
+    private List<String> executeDetectScript(List<String> detectArguments) throws ExecutableRunnerException {
         List<String> shellArguments = new ArrayList<>();
         String target = "";
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -112,10 +112,10 @@ public class BatteryDetectRunner {
 
         Assertions.assertTrue(lines.size() > 0, "Detect wrote nothing to standard out.");
 
-        return new DetectOutput(result.getStandardOutputAsList());
+        return result.getStandardOutputAsList();
     }
 
-    private DetectOutput executeDetectJar(DetectJar detectJar, List<String> detectArguments) throws ExecutableRunnerException {
+    private List<String> executeDetectJar(DetectJar detectJar, List<String> detectArguments) throws ExecutableRunnerException {
         List<String> javaArguments = new ArrayList<>();
         javaArguments.add("-jar");
         javaArguments.add(detectJar.getJar());
@@ -130,6 +130,6 @@ public class BatteryDetectRunner {
 
         Assertions.assertTrue(lines.size() > 0, "Detect wrote nothing to standard out.");
 
-        return new DetectOutput(result.getStandardOutputAsList());
+        return result.getStandardOutputAsList();
     }
 }

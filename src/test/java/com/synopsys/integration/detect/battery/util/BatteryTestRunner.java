@@ -32,7 +32,8 @@ public abstract class BatteryTestRunner {
             List<String> allArguments = new ArrayList<>();
             allArguments.addAll(batteryContext.initialize());
             allArguments.addAll(generateArguments());
-            detectOutput = new BatteryDetectRunner(batteryContext.getOutputDirectory(), batteryContext.getScriptDirectory(), "").runDetect(allArguments, false);
+            List<String> standardOut = new BatteryDetectRunner(batteryContext.getOutputDirectory(), batteryContext.getScriptDirectory(), "").runDetect(allArguments, false);
+            detectOutput = new DetectOutput(standardOut, batteryContext.getSourceDirectory(), batteryContext.getStatusJson());
             if (shouldAssertBdio) {
                 new BatteryBdioAssert(batteryContext.getTestName(), batteryContext.getResourcePrefix()).assertBdio(
                     batteryContext.getBdioDirectory(),

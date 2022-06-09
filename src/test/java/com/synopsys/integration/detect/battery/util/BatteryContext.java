@@ -19,8 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeroturnaround.zip.ZipUtil;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.workflow.report.output.FormattedOutput;
 
 import freemarker.template.TemplateException;
 
@@ -33,6 +35,7 @@ public class BatteryContext {
     private final List<String> emptyFileNames = new ArrayList<>();
     private final List<String> resourceFileNames = new ArrayList<>();
     private final List<String> resourceZipNames = new ArrayList<>();
+
     private String resourceZipIntoSource = null;
     private String sourceDirectoryName = "source";
 
@@ -257,5 +260,21 @@ public class BatteryContext {
 
     public String getBdioFileName() throws IOException {
         return "battery";
+    }
+
+    public FormattedOutput getStatusJson() {
+        File runs = new File(outputDirectory, "runs");
+        File[] children = runs.listFiles();
+        if (children == null || children.length != 1)
+            return null;
+        File run = children[0];
+        File status = new File(run, "status");
+        File statusFile = new File(status, "status.json");
+
+        try {
+            return new Gson().fromJson(Files.newBufferedReader(statusFile.toPath()), FormattedOutput.class);
+        } catch (IOException e) {
+            return null;
+        }
     }
 }
