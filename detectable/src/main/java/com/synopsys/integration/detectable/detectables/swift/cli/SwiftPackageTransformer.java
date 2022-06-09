@@ -22,7 +22,7 @@ public class SwiftPackageTransformer {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
         for (SwiftPackage swiftPackageDependency : rootSwiftPackage.getDependencies()) {
             Dependency dependency = convertToDependency(dependencyGraph, swiftPackageDependency);
-            dependencyGraph.addChildToRoot(dependency);
+            dependencyGraph.addDirectDependency(dependency);
         }
 
         return new CodeLocation(dependencyGraph);
