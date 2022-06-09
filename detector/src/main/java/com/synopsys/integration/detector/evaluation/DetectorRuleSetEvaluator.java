@@ -37,6 +37,10 @@ public class DetectorRuleSetEvaluator {
             return new YieldedDetectorResult(yieldTo.stream().map(DetectorRule::getName).collect(Collectors.toSet()));
         }
 
+        return evaluateNestable(detectorRule, environment);
+    }
+
+    private DetectorResult evaluateNestable(DetectorRule detectorRule, SearchEnvironment environment) {
         boolean nestable = detectorRule.isNestable();
         boolean selfNestable = detectorRule.isSelfNestable();
         boolean selfTypeNestable = detectorRule.isSelfTypeNestable();
@@ -63,7 +67,6 @@ public class DetectorRuleSetEvaluator {
         } else if (environment.getAppliedToParent().stream().anyMatch(it -> !it.isNestInvisible())) {
             return new NotNestableDetectorResult();
         }
-
         return new PassedDetectorResult();
     }
 }
