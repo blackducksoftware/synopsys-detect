@@ -16,6 +16,7 @@
 * [solution_name] requires and runs [docker_inspector_name] version 10.
 * Incorporated [docker_inspector_name] documentation into [solution_name] documentation.
 * The search for files for binary scanning (when property detect.binary.scan.file.name.patterns is set) now excludes directories specified by property detect.excluded.directories.
+* There is no longer a distinction between extended and non-extended diagnostic zip files. All diagnostic zip files now include all relevant files.
 
 
 ### Resolved issues
@@ -24,6 +25,7 @@
 * (IDETECT-3246) Resolved an issue where [solution_name] would fail when scanning flutter projects after a new version of flutter was released.
 * (IDETECT-3275) Resolved an issue that caused impact analysis to fail with an "Unsupported class file major version" error when an analyzed .class file contained invaid version bytes (byte 7 and 8).
 * (IDETECT-3180) Resolved an issue that caused the Binary Search tool to throw an exception when the patterns provided via property detect.binary.scan.file.name.patterns matched one or more directories.
+* (IDETECT-3352) Resolved an issue that caused the Gradle Project Inspector detector to fail when the value of detect.output.path was a relative path.
 
 ## Version 7.13.2
 
