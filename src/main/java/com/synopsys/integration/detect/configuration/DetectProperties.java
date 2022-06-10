@@ -1729,19 +1729,6 @@ public class DetectProperties {
 
     //#region Deprecated Properties
     // username/password ==> api token
-    private static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
-    private static final String DETECT_DOCKER_PATH_REQUIRED_DEPRECATION_MESSAGE = "This property is being removed. A docker executable is only required when running the Docker tool in air gap mode.";
-
-    @Deprecated
-    public static final BooleanProperty DETECT_DOCKER_PATH_REQUIRED =
-        BooleanProperty.newBuilder("detect.docker.path.required", false)
-            .setInfo("Run Without Docker in Path", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(DETECT_DOCKER_PATH_REQUIRED_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
     @Deprecated
     public static final BooleanProperty DETECT_BUILDLESS =
         BooleanProperty.newBuilder("detect.detector.buildless", false)
@@ -1951,7 +1938,10 @@ public class DetectProperties {
             .setInfo("Diagnostic Mode Extended", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp("When enabled, Synopsys Detect performs the actions of --detect.diagnostic, but also includes relevant files such as lock files and build artifacts.")
             .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
-            .setDeprecated("This property is being removed. Use property detect.diagnostic instead. There is no longer any distinction between extended and non-extended diagnostic zip files.", DetectMajorVersion.NINE)
+            .setDeprecated(
+                "This property is being removed. Use property detect.diagnostic instead. There is no longer any distinction between extended and non-extended diagnostic zip files.",
+                DetectMajorVersion.NINE
+            )
             .build();
 
     // TODO: Revise in 8.0.0
