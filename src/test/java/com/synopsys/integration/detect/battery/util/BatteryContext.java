@@ -285,7 +285,7 @@ public class BatteryContext {
         File runs = new File(outputDirectory, "runs");
         File[] children = runs.listFiles();
         Assertions.assertNotNull(children, "Run directory created no output!");
-        Assertions.assertTrue(children.length > 1, "Run directory created no output!");
+        Assertions.assertTrue(children.length >= 1, "Run directory created no output!");
         File run = children[0];
         if (run.getName().startsWith("detect-run")) {
             run = children[1];
