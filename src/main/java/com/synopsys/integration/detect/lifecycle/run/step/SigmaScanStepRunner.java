@@ -80,8 +80,8 @@ public class SigmaScanStepRunner {
         int count
     ) {
         try {
-            String scanId = initiateScan(scanTarget, projectNameVersion, scanTarget, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
             File resultsFile = operationFactory.performSigmaScan(scanTarget, sigmaExe, count);
+            String scanId = initiateScan(scanTarget, projectNameVersion, scanTarget, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
             operationFactory.uploadSigmaResults(blackDuckRunData, resultsFile, scanId);
             return SigmaReport.SUCCESS(scanTarget);
         } catch (Exception e) {
