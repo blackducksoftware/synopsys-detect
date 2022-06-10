@@ -46,8 +46,8 @@ import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureS
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
-import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.util.finder.DetectDirectoryFileFilter;
+import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.synopsys.integration.detect.workflow.DummyAccuracyEnum;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
@@ -433,12 +433,8 @@ public class DetectConfigurationFactory {
     public DetectorToolOptions createDetectorToolOptions() {
         String projectBomTool = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_DETECTOR);
         List<DetectorType> requiredDetectors = detectConfiguration.getValue(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES);
-        boolean buildless = detectConfiguration.getValue(DetectProperties.DETECT_BUILDLESS);
         AllNoneEnumList<DummyAccuracyEnum> accuracyRequired = detectConfiguration.getValue(DetectProperties.DETECT_ACCURACY_REQUIRED);
-        if (accuracyRequired.containsNone() && !detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BUILDLESS)) {
-            buildless = true;
-        }
-        return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless);
+        return new DetectorToolOptions(projectBomTool, requiredDetectors, accuracyRequired.containsNone());
     }
 
     public ProjectGroupOptions createProjectGroupOptions() {
@@ -453,6 +449,7 @@ public class DetectConfigurationFactory {
     private List<String> collectDirectoryExclusions() {
         return collectDirectoryExclusions(Collections.emptyList());
     }
+
     private List<String> collectDirectoryExclusions(@NotNull List<String> givenExclusions) {
         List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 

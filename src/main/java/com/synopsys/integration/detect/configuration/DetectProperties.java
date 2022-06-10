@@ -1743,18 +1743,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_BUILDLESS =
-        BooleanProperty.newBuilder("detect.detector.buildless", false)
-            .setInfo("Buildless Mode", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, only Detector's capable of running without a build will be run.")
-            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
-            .setDeprecated(
-                "This is property is being replaced by detect.accuracy.required.  To run in Buildless Mode, set detect.accuracy.required=NONE.",
-                DetectMajorVersion.EIGHT
-            )
-            .build();
-
-    @Deprecated
     public static final NullableStringProperty DETECT_GRADLE_INSPECTOR_VERSION =
         NullableStringProperty.newBuilder("detect.gradle.inspector.version")
             .setInfo("Gradle Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1951,7 +1939,10 @@ public class DetectProperties {
             .setInfo("Diagnostic Mode Extended", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp("When enabled, Synopsys Detect performs the actions of --detect.diagnostic, but also includes relevant files such as lock files and build artifacts.")
             .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
-            .setDeprecated("This property is being removed. Use property detect.diagnostic instead. There is no longer any distinction between extended and non-extended diagnostic zip files.", DetectMajorVersion.NINE)
+            .setDeprecated(
+                "This property is being removed. Use property detect.diagnostic instead. There is no longer any distinction between extended and non-extended diagnostic zip files.",
+                DetectMajorVersion.NINE
+            )
             .build();
 
     // TODO: Revise in 8.0.0
