@@ -49,7 +49,7 @@ public class DiagnosticReportHandler {
             this.reportDescription = reportDescription;
         }
 
-        String getReportFileName() {
+        public String getReportFileName() {
             return reportFileName;
         }
 

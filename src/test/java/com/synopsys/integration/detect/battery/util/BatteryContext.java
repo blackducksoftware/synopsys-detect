@@ -7,13 +7,17 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +26,7 @@ import org.zeroturnaround.zip.ZipUtil;
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOutput;
 
 import freemarker.template.TemplateException;
@@ -33,6 +38,7 @@ public class BatteryContext {
     private final List<BatteryExecutable> executables = new ArrayList<>();
 
     private final List<String> emptyFileNames = new ArrayList<>();
+    private final Map<String, List<String>> contentFileNames = new HashMap<>();
     private final List<String> resourceFileNames = new ArrayList<>();
     private final List<String> resourceZipNames = new ArrayList<>();
 
@@ -42,6 +48,7 @@ public class BatteryContext {
     private File batteryDirectory;
     private File mockDirectory;
     private File outputDirectory;
+    private File diagnosticsDirectory;
 
     public File getCompareDirectory() {
         return compareDirectory;
@@ -118,6 +125,7 @@ public class BatteryContext {
         mockDirectory = new File(testDirectory, "mock");
         outputDirectory = new File(testDirectory, "output");
         bdioDirectory = new File(testDirectory, "bdio");
+        diagnosticsDirectory = new File(testDirectory, "diagnostics");
         compareDirectory = new File(testDirectory, "compare");
         //ah ha
         sourceDirectory = new File(testDirectory, sourceDirectoryName);
@@ -127,6 +135,7 @@ public class BatteryContext {
         Assertions.assertTrue(bdioDirectory.mkdirs());
         Assertions.assertTrue(mockDirectory.mkdirs());
         Assertions.assertTrue(compareDirectory.mkdirs());
+        Assertions.assertTrue(diagnosticsDirectory.mkdirs());
     }
 
     private void checkEnvironment() {
@@ -177,6 +186,11 @@ public class BatteryContext {
         for (String filename : emptyFileNames) {
             File file = new File(sourceDirectory, filename);
             FileUtils.writeStringToFile(file, "THIS FILE INTENTIONALLY LEFT BLANK", Charset.defaultCharset());
+        }
+
+        for (Map.Entry<String, List<String>> content : contentFileNames.entrySet()) {
+            File file = new File(sourceDirectory, content.getKey());
+            FileUtils.writeStringToFile(file, StringUtils.join(content.getValue(), System.lineSeparator()), Charset.defaultCharset());
         }
 
         for (String resourceFileName : resourceFileNames) {
@@ -242,6 +256,11 @@ public class BatteryContext {
         emptyFileNames.add(filename);
     }
 
+    @NotNull
+    public void sourceFileNamed(String filename, @NotNull String... lines) {
+        contentFileNames.put(filename, Arrays.asList(lines));
+    }
+
     public void addDirectlyToSourceFolderFromExpandedResource(String filename) {
         resourceZipIntoSource = filename;
     }
@@ -265,16 +284,40 @@ public class BatteryContext {
     public FormattedOutput getStatusJson() {
         File runs = new File(outputDirectory, "runs");
         File[] children = runs.listFiles();
-        if (children == null || children.length != 1)
-            return null;
+        Assertions.assertNotNull(children, "Run directory created no output!");
+        Assertions.assertTrue(children.length > 1, "Run directory created no output!");
         File run = children[0];
+        if (run.getName().startsWith("detect-run")) {
+            run = children[1];
+        }
+        Assertions.assertFalse(run.getName().startsWith("detect-run"), "Could not find run directory, only a diagnostic zip...");
         File status = new File(run, "status");
         File statusFile = new File(status, "status.json");
-
+        Assertions.assertTrue(statusFile.exists(), "Status file did not exist!");
         try {
             return new Gson().fromJson(Files.newBufferedReader(statusFile.toPath()), FormattedOutput.class);
         } catch (IOException e) {
             return null;
         }
+    }
+
+    public Optional<File> getExtractedDiagnosticZip() {
+        File runs = new File(outputDirectory, "runs");
+        File[] children = runs.listFiles();
+        Assertions.assertNotNull(children, "Run directory created no output!");
+        Assertions.assertTrue(children.length > 1, "Run directory created no output!");
+        File zip = children[0];
+        if (!zip.getName().startsWith("detect-run")) {
+            zip = children[1];
+        }
+        if (zip.getName().startsWith("detect-run")) {
+            try {
+                DetectZipUtil.unzip(zip, diagnosticsDirectory);
+            } catch (IOException e) {
+                return Optional.empty();
+            }
+            return Optional.of(diagnosticsDirectory);
+        }
+        return Optional.empty();
     }
 }

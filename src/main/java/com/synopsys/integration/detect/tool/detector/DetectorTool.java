@@ -175,6 +175,7 @@ public class DetectorTool {
 
                     extracted.getAttemptedDetectables().forEach(attempted -> {
                         logger.info("\t\t" + attempted.getDetectable().getName() + ": ATTEMPTED");
+                        logger.info("\t\t\t" + attempted.getStatusReason());
                         attempted.getExplanations().forEach(explanation -> {
                             logger.info("\t\t\t" + explanation.describeSelf());
                         });

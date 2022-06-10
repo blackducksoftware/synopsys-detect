@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.detect.workflow.report.output.FormattedDetectorOutput;
 import com.synopsys.integration.detector.base.DetectorStatusCode;
 
-public class FormattedDetectorAssertions {
+public class FormattedDetectorAssert {
     private final FormattedDetectorOutput detector;
 
-    public FormattedDetectorAssertions(FormattedDetectorOutput detector) {this.detector = detector;}
+    public FormattedDetectorAssert(FormattedDetectorOutput detector) {this.detector = detector;}
 
     public void assertStatus(String status, String message) {
         Assertions.assertEquals(status, detector.status, message);

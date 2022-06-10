@@ -15,7 +15,7 @@ public class OverviewSummaryReporter {
             report.getExtractedDetectors().forEach(extracted -> {
                 writer.writeLine("DETECTOR: " + extracted.getRule().getDetectorType());
                 writer.writeLine("EXTRACTED: " + extracted.getExtractedDetectable().getDetectable().getName());
-                writer.writeLine("\tEXTRACTION: " + extracted.getExtractedDetectable().getExtraction().getDescription());
+                writer.writeLine("\tEXTRACTION: " + extracted.getExtractedDetectable().getExtraction().getCodeLocations().size() + " Code Locations");
                 extracted.getExtractedDetectable().getExplanations().forEach(explanation -> {
                     writer.writeLine("\t\t" + explanation.describeSelf());
                 });
