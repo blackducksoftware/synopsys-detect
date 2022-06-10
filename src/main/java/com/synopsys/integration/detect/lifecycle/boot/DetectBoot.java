@@ -165,10 +165,8 @@ public class DetectBoot {
                         installedToolManager,
                         installedToolLocator
                     );
-                String gradleInspectorVersion = propertyConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION)
-                    .orElse(null);
 
-                File airGapZip = airGapCreator.createAirGapZip(airGapType, directoryManager.getRunHomeDirectory(), gradleInspectorVersion);
+                File airGapZip = airGapCreator.createAirGapZip(airGapType, directoryManager.getRunHomeDirectory());
 
                 return Optional.of(DetectBootResult.exit(propertyConfiguration, airGapZip, directoryManager, diagnosticSystem));
             } catch (DetectUserFriendlyException e) {
