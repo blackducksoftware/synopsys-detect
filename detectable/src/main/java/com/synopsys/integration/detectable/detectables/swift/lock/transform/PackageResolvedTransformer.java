@@ -23,7 +23,7 @@ public class PackageResolvedTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public DependencyGraph transform(PackageResolved packageResolved) {
-        DependencyGraph dependencyGraph = new BasicDependencyGraph();// ProjectDependencyGraph(new ProjectDependency(SWIFT_FORGE, relativePackageResolvedPath))
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
         packageResolved.getResolvedObject().getPackages().stream()
             .filter(Objects::nonNull)
             .map(this::convertToDependency)
