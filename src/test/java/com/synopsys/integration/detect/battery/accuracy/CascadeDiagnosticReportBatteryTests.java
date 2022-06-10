@@ -37,7 +37,6 @@ class CascadeDiagnosticReportBatteryTests {
 
         searchDetailedReport.assertContains("NOT FOUND: GRADLE");
         searchDetailedReport.assertContains("Gradle Native Inspector: No files were found");
-        searchDetailedReport.assertContains("Gradle Project Inspector: No file was found ");
         test.cleanup();
     }
 
@@ -63,8 +62,8 @@ class CascadeDiagnosticReportBatteryTests {
 
         OutputAssert searchDetailedReport = diagnostics.getReport(DiagnosticReportHandler.ReportTypes.SEARCH_DETAILED);
         searchDetailedReport.assertContains("EXTRACTED: NPM - NPM Package Json Parse");
-        searchDetailedReport.assertContains("ATTEMPTED: NPM - NPM Package Json Parse - EXTRACTION_FAILED");
         searchDetailedReport.assertContains("ATTEMPTED: NPM - NPM Shrinkwrap - EXTRACTION_FAILED");
+        searchDetailedReport.assertContains("ATTEMPTED: NPM - NPM CLI - NPM_NODE_MODULES_NOT_FOUND");
         test.cleanup();
     }
 }

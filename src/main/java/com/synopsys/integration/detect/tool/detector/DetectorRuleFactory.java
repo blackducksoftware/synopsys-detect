@@ -131,9 +131,9 @@ public class DetectorRuleFactory {
         });
 
         rules.addDetector(DetectorType.GRADLE, detector -> {
-            detector.entryPoint(GradleInspectorDetectable.class);
-            detector.entryPoint(GradleProjectInspectorDetectable.class);
-        }).allEntryPointsFallbackToNext();
+            detector.entryPoint(GradleInspectorDetectable.class)
+                .fallback(GradleProjectInspectorDetectable.class);
+        });
 
         rules.addDetector(DetectorType.IVY, detector -> {
             detector.entryPoint(IvyParseDetectable.class);
@@ -173,6 +173,7 @@ public class DetectorRuleFactory {
         }).yieldsTo(DetectorType.LERNA);
 
         rules.addDetector(DetectorType.NUGET, detector -> {
+            //four different detectables, last one will be the project inspector
             detector.entryPoint(NugetSolutionDetectable.class)
                 .fallback(NugetProjectInspectorDetectable.class);
 
