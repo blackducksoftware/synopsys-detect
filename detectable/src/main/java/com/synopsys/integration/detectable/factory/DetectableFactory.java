@@ -175,9 +175,6 @@ import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtract
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
@@ -477,20 +474,14 @@ public class DetectableFactory {
         return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
     }
 
-    public MavenParseDetectable createMavenParseDetectable(DetectableEnvironment environment, MavenParseOptions mavenParseOptions) {
-        return new MavenParseDetectable(environment, fileFinder, mavenParseExtractor(), mavenParseOptions);
-    }
-
     public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(
-        DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver, MavenParseOptions mavenParseOptions,
-        ProjectInspectorOptions projectInspectorOptions
+        DetectableEnvironment detectableEnvironment, ProjectInspectorResolver projectInspectorResolver, ProjectInspectorOptions projectInspectorOptions
     ) {
         return new MavenProjectInspectorDetectable(
             detectableEnvironment,
             fileFinder,
             projectInspectorResolver,
             projectInspectorExtractor(),
-            mavenParseOptions,
             projectInspectorOptions
         );
     }
@@ -1053,11 +1044,7 @@ public class DetectableFactory {
             throw new RuntimeException("Unable to create SAX Parser.", e);
         }
     }
-
-    private MavenParseExtractor mavenParseExtractor() {
-        return new MavenParseExtractor(saxParser());
-    }
-
+    
     private SwiftCliParser swiftCliParser() {
         return new SwiftCliParser(gson);
     }

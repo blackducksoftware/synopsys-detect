@@ -35,7 +35,6 @@ import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetecta
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
@@ -200,10 +199,6 @@ public class DetectDetectableFactory {
         return detectableFactory.createMavenPomWrapperDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
     }
 
-    public MavenParseDetectable createMavenParseDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createMavenParseDetectable(environment, detectableOptionFactory.createMavenParseOptions());
-    }
-
     public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment) {
         return detectableFactory.createConanCliDetectable(environment, detectExecutableResolver, detectableOptionFactory.createConanCliOptions());
     }
@@ -313,7 +308,6 @@ public class DetectDetectableFactory {
         return detectableFactory.createMavenProjectInspectorDetectable(
             detectableEnvironment,
             projectInspectorResolver,
-            detectableOptionFactory.createMavenParseOptions(),
             detectableOptionFactory.createProjectInspectorOptions()
         );
     }

@@ -26,7 +26,6 @@ import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetecta
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
@@ -228,7 +227,6 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.IVY, "Ivy Parse", IvyParseDetectable.class, detectableFactory::createIvyParseDetectable).defaultLock().build();
 
-        ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom Parse", MavenParseDetectable.class, detectableFactory::createMavenParseDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Project Inspector", MavenProjectInspectorDetectable.class, detectableFactory::createMavenProjectInspectorDetectable)
             .defaults().build();
 

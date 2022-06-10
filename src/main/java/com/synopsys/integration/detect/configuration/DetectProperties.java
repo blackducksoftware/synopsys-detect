@@ -1743,29 +1743,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_MAVEN_INCLUDE_PLUGINS =
-        BooleanProperty.newBuilder("detect.maven.include.plugins", false)
-            .setInfo("Maven Include Plugins", DetectPropertyFromVersion.VERSION_5_6_0)
-            .setHelp("Whether or not detect will include the plugins section when parsing a pom.xml in buildless legacy mode. ")
-            .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(
-                "This property is being removed. The project inspector will be used to parse maven projects. Please configure the project inspector to include modules.",
-                DetectMajorVersion.EIGHT
-            )
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_MAVEN_BUILDLESS_LEGACY_MODE =
-        BooleanProperty.newBuilder("detect.maven.buildless.legacy.mode", true)
-            .setInfo("Maven Buildless Legacy Mode", DetectPropertyFromVersion.VERSION_7_5_0)
-            .setHelp("Legacy maven parsing supports plugins but the newer project inspector parser does not. Setting to false enables the project inspector for maven.")
-            .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is being removed. The legacy maven buildless parser is being replaced by the project inspector.", DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
         BooleanProperty.newBuilder("detect.conan.include.build.dependencies", true)
             .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)

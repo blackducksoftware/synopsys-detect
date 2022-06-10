@@ -79,7 +79,6 @@ public class ProjectInspectorTests {
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.MAVEN.toString());
-            commandBuilder.property(DetectProperties.DETECT_MAVEN_BUILDLESS_LEGACY_MODE, "false");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.successfulDetectorType("MAVEN");
