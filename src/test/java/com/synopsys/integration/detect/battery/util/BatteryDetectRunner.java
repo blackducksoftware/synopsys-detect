@@ -106,8 +106,6 @@ public class BatteryDetectRunner {
         ProcessBuilderRunner executableRunner = new ProcessBuilderRunner(new Slf4jIntLogger(logger));
         ExecutableOutput result = executableRunner.execute(executable);
 
-        Assertions.assertEquals(0, result.getReturnCode(), "Detect returned a non-zero exit code:" + result.getReturnCode());
-
         List<String> lines = result.getStandardOutputAsList();
 
         Assertions.assertTrue(lines.size() > 0, "Detect wrote nothing to standard out.");
@@ -123,8 +121,6 @@ public class BatteryDetectRunner {
 
         ProcessBuilderRunner executableRunner = new ProcessBuilderRunner(new Slf4jIntLogger(logger));
         ExecutableOutput result = executableRunner.execute(Executable.create(outputDirectory, detectJar.getJava(), javaArguments));
-
-        Assertions.assertEquals(0, result.getReturnCode(), "Detect returned a non-zero exit code:" + result.getReturnCode());
 
         List<String> lines = result.getStandardOutputAsList();
 

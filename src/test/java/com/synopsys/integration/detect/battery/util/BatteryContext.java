@@ -297,6 +297,7 @@ public class BatteryContext {
         try {
             return new Gson().fromJson(Files.newBufferedReader(statusFile.toPath()), FormattedOutput.class);
         } catch (IOException e) {
+            Assertions.fail("Could not read status.json", e);
             return null;
         }
     }
@@ -305,7 +306,8 @@ public class BatteryContext {
         File runs = new File(outputDirectory, "runs");
         File[] children = runs.listFiles();
         Assertions.assertNotNull(children, "Run directory created no output!");
-        Assertions.assertTrue(children.length > 1, "Run directory created no output!");
+        if (children.length < 2)
+            return Optional.empty();
         File zip = children[0];
         if (!zip.getName().startsWith("detect-run")) {
             zip = children[1];

@@ -114,7 +114,7 @@ class CascadeBatteryTests {
         output.assertContains("NPM Package Json Parse: FAILED");
         output.assertContainsBlock(
             "Detector Issue",
-            "EXTRACTION_FAILED: NPM Shrinkwrap"
+            "EXTRACTION_FAILED: NPM Package Json Parse"
         );
 
         output.assertContains("NPM Shrinkwrap: FAILED");
