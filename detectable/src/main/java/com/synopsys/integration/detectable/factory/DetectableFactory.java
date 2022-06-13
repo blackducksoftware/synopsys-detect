@@ -130,6 +130,7 @@ import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspe
 import com.synopsys.integration.detectable.detectables.git.GitDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
+import com.synopsys.integration.detectable.detectables.git.cli.GitCommandRunner;
 import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
@@ -789,7 +790,8 @@ public class DetectableFactory {
     }
 
     private GitCliExtractor gitCliExtractor() {
-        return new GitCliExtractor(executableRunner, gitUrlParser(), toolVersionLogger);
+        GitCommandRunner gitCommandRunner = new GitCommandRunner(executableRunner);
+        return new GitCliExtractor(gitUrlParser(), toolVersionLogger, gitCommandRunner);
     }
 
     private GoModCliExtractor goModCliExtractor(GoModCliDetectableOptions options) {

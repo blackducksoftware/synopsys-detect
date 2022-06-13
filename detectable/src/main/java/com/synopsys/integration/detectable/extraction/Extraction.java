@@ -71,8 +71,12 @@ public class Extraction {
         }
     }
 
+    public <T> boolean hasMetadata(ExtractionMetadata<T> extractionMetadata) {
+        return metaData.containsKey(extractionMetadata);
+    }
+
     public <T> Optional<T> getMetaData(ExtractionMetadata<T> extractionMetadata) {
-        if (metaData.containsKey(extractionMetadata)) {
+        if (hasMetadata(extractionMetadata)) {
             Class<T> clazz = extractionMetadata.getMetadataClass();
             Object value = metaData.get(extractionMetadata);
             if (value != null && clazz.isAssignableFrom(value.getClass())) {
