@@ -22,6 +22,7 @@ import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
+import com.synopsys.integration.detect.tool.sigma.SigmaCodeLocationData;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
@@ -117,7 +118,8 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.SIGMA, "Sigma", () -> {
             SigmaScanStepRunner sigmaScanStepRunner = new SigmaScanStepRunner(operationFactory);
-            sigmaScanStepRunner.runSigmaOnline(projectNameVersion, blackDuckRunData);
+            SigmaCodeLocationData sigmaCodeLocationData = sigmaScanStepRunner.runSigmaOnline(projectNameVersion, blackDuckRunData);
+            codeLocationAccumulator.addNonWaitableCodeLocation(sigmaCodeLocationData.getCodeLocationNames());
         });
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {

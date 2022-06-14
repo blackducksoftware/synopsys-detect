@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.blackducksoftware.bdio2.Bdio;
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
@@ -14,6 +16,7 @@ import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
+import com.synopsys.integration.detect.tool.sigma.SigmaCodeLocationData;
 import com.synopsys.integration.detect.tool.sigma.SigmaReport;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
@@ -26,11 +29,13 @@ public class SigmaScanStepRunner {
 
     private final OperationFactory operationFactory;
 
-    public SigmaScanStepRunner(OperationFactory operationFactory) {
+    public SigmaScanStepRunner(
+        OperationFactory operationFactory
+    ) {
         this.operationFactory = operationFactory;
     }
 
-    public void runSigmaOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+    public SigmaCodeLocationData runSigmaOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException, IntegrationException {
         List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
 
@@ -50,6 +55,13 @@ public class SigmaScanStepRunner {
             sigmaReports.add(sigmaReport);
         }
         operationFactory.publishSigmaReport(sigmaReports);
+
+        Set<String> codeLocationNames = sigmaReports.stream()
+            .map(SigmaReport::getCodeLocationName)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toSet());
+        return new SigmaCodeLocationData(codeLocationNames);
     }
 
     public void runSigmaOffline() throws OperationException, IntegrationException {
@@ -81,9 +93,10 @@ public class SigmaScanStepRunner {
     ) {
         try {
             File resultsFile = operationFactory.performSigmaScan(scanTarget, sigmaExe, count);
-            String scanId = initiateScan(scanTarget, projectNameVersion, scanTarget, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService());
+            String codeLocationName = operationFactory.createSigmaCodeLocationName(scanTarget, projectNameVersion);
+            String scanId = initiateScan(projectNameVersion, scanTarget, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService(), codeLocationName);
             operationFactory.uploadSigmaResults(blackDuckRunData, resultsFile, scanId);
-            return SigmaReport.SUCCESS(scanTarget);
+            return SigmaReport.SUCCESS_ONLINE(scanTarget, codeLocationName);
         } catch (Exception e) {
             return SigmaReport.FAILURE(scanTarget, e.getMessage());
         }
@@ -95,27 +108,28 @@ public class SigmaScanStepRunner {
         } catch (OperationException e) {
             return SigmaReport.FAILURE(scanTarget, e.getMessage());
         }
-        return SigmaReport.SUCCESS(scanTarget);
+        return SigmaReport.SUCCESS_OFFLINE(scanTarget);
     }
 
     //TODO- this should only be necessary if we didn't already upload BDIO during DETECTORS phase
-    public String initiateScan(File scanTarget, NameVersion projectNameVersion, File sourcePath, Bdio2FileUploadService bdio2FileUploadService)
+    public String initiateScan(NameVersion projectNameVersion, File sourcePath, Bdio2FileUploadService bdio2FileUploadService, String codeLocationNameOverride)
         throws OperationException, IntegrationException {
         DetectCodeLocation codeLocation = createSimpleCodeLocation(projectNameVersion, sourcePath);
         BdioCodeLocationResult bdioCodeLocationResult = operationFactory.createBdioCodeLocationsFromDetectCodeLocations(
             Collections.singletonList(codeLocation),
             projectNameVersion
         );
-        UploadTarget uploadTarget = createUploadTarget(bdioCodeLocationResult, scanTarget, projectNameVersion);
+        UploadTarget uploadTarget = createUploadTarget(bdioCodeLocationResult, projectNameVersion, codeLocationNameOverride);
         return bdio2FileUploadService.uploadFileAndGetResult(uploadTarget).getScanId();
     }
 
-    private UploadTarget createUploadTarget(BdioCodeLocationResult bdioCodeLocationResult, File scanTarget, NameVersion projectNameVersion) throws OperationException {
+    private UploadTarget createUploadTarget(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion, String codeLocationNameOverride)
+        throws OperationException {
         UploadTarget uploadTargetWithBadCodeLocationName = operationFactory.createBdio2Files(bdioCodeLocationResult, projectNameVersion, Bdio.ScanType.INFRASTRUCTURE_AS_CODE)
             .get(0);
         return UploadTarget.createWithMediaType(
             projectNameVersion,
-            operationFactory.createSigmaCodeLocationName(scanTarget, projectNameVersion), //TODO- name doesn't ever get used...
+            codeLocationNameOverride, //TODO- name doesn't ever get used...
             uploadTargetWithBadCodeLocationName.getUploadFile(),
             uploadTargetWithBadCodeLocationName.getMediaType()
         );
