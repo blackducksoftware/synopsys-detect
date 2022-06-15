@@ -9,10 +9,16 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detector.base.DetectorResultStatusCodeLookup;
 import com.synopsys.integration.detector.base.DetectorStatusCode;
+import com.synopsys.integration.detector.result.DetectorResult;
 
 public class DetectorStatusUtil {
     @Nullable
     public static DetectorStatusCode getStatusCode(DetectableResult detectableResult) {
+        return DetectorResultStatusCodeLookup.standardLookup.getStatusCode(detectableResult.getClass());
+    }
+
+    @Nullable
+    public static DetectorStatusCode getStatusCode(DetectorResult detectableResult) {
         return DetectorResultStatusCodeLookup.standardLookup.getStatusCode(detectableResult.getClass());
     }
 

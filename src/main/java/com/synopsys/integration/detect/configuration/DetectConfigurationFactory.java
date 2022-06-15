@@ -3,7 +3,6 @@ package com.synopsys.integration.detect.configuration;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +59,7 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.Projec
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
-import com.synopsys.integration.detector.accuracy.DetectorEvaluationOptions;
+import com.synopsys.integration.detector.accuracy.search.SearchOptions;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.finder.DirectoryFinderOptions;
 import com.synopsys.integration.rest.credentials.Credentials;
@@ -253,7 +252,7 @@ public class DetectConfigurationFactory {
         return new DirectoryFinderOptions(fileFilter, maxDepth, getFollowSymLinks());
     }
 
-    public DetectorEvaluationOptions createDetectorEvaluationOptions() {
+    public SearchOptions createDetectorSearchOptions() {
         Boolean forceNestedSearch = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_CONTINUE);
 
         //Detector Filter
@@ -261,11 +260,7 @@ public class DetectConfigurationFactory {
         AllNoneEnumList<DetectorType> included = detectConfiguration.getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES);
         ExcludeIncludeEnumFilter<DetectorType> detectorFilter = new ExcludeIncludeEnumFilter<>(excluded, included);
 
-        Set<DetectorType> includedTypes = Arrays.stream(DetectorType.values())
-            .filter(detectorFilter::shouldInclude)
-            .collect(Collectors.toSet());
-
-        return new DetectorEvaluationOptions(forceNestedSearch, getFollowSymLinks(), (rule -> includedTypes.contains(rule.getDetectorType())));
+        return new SearchOptions(detectorFilter::shouldInclude, forceNestedSearch);
     }
 
     public BdioOptions createBdioOptions() {

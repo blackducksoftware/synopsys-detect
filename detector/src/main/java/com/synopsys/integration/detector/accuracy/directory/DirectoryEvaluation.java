@@ -1,34 +1,30 @@
-package com.synopsys.integration.detector.accuracy;
+package com.synopsys.integration.detector.accuracy.directory;
 
 import java.io.File;
 import java.util.List;
 
-public class DetectorEvaluation {
+import com.synopsys.integration.detector.accuracy.entrypoint.DetectorRuleEvaluation;
+
+public class DirectoryEvaluation {
     private final File directory;
     private final int depth; //Don't love that this is here, but it's not captured elsewhere. Maybe capturing DirectoryFindResult?
-    private final List<DetectorRuleEvaluation> foundDetectorRuleEvaluations;
-    private final List<DetectorRuleNotFoundResult> notFoundDetectorSearches;
-    private final List<DetectorEvaluation> children;
+    private final List<DetectorRuleEvaluation> evaluations;
+    private final List<DirectoryEvaluation> children;
 
-    public DetectorEvaluation(
+    public DirectoryEvaluation(
         File directory,
         int depth,
-        List<DetectorRuleEvaluation> foundDetectorRuleEvaluations,
-        List<DetectorRuleNotFoundResult> notFoundDetectorSearches, List<DetectorEvaluation> children
+        List<DetectorRuleEvaluation> evaluations,
+        List<DirectoryEvaluation> children
     ) {
         this.directory = directory;
         this.depth = depth;
-        this.foundDetectorRuleEvaluations = foundDetectorRuleEvaluations;
-        this.notFoundDetectorSearches = notFoundDetectorSearches;
+        this.evaluations = evaluations;
         this.children = children;
     }
 
-    public List<DetectorEvaluation> getChildren() {
+    public List<DirectoryEvaluation> getChildren() {
         return children;
-    }
-
-    public List<DetectorRuleEvaluation> getFoundDetectorRuleEvaluations() {
-        return foundDetectorRuleEvaluations;
     }
 
     public File getDirectory() {
@@ -39,7 +35,7 @@ public class DetectorEvaluation {
         return depth;
     }
 
-    public List<DetectorRuleNotFoundResult> getNotFoundDetectorSearches() {
-        return notFoundDetectorSearches;
+    public List<DetectorRuleEvaluation> getEvaluations() {
+        return evaluations;
     }
 }

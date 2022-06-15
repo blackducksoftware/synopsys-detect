@@ -18,7 +18,6 @@ import com.synopsys.integration.configuration.property.deprecation.PropertyRemov
 import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonData;
-import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDetector;
 import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDetectorRule;
 import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDetectorStatusCode;
 import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonExitCode;
@@ -38,8 +37,6 @@ public class HelpJsonWriter {
     public void writeGsonDocument(
         String filename,
         List<Property> detectOptions,
-        List<HelpJsonDetector> buildDetectors,
-        List<HelpJsonDetector> buildlessDetectors,
         List<HelpJsonDetectorRule> detectorRules
     ) {
         HelpJsonData data = new HelpJsonData();
@@ -47,10 +44,8 @@ public class HelpJsonWriter {
         data.getOptions().addAll(detectOptions.stream().map(this::convertOption).collect(Collectors.toList()));
         data.getExitCodes().addAll(Stream.of(ExitCodeType.values()).map(this::convertExitCode).collect(Collectors.toList()));
         data.getDetectorStatusCodes().addAll(Stream.of(DetectorStatusCode.values()).map(this::convertDetectorStatusCode).collect(Collectors.toList()));
-        data.setBuildlessDetectors(buildlessDetectors);
-        data.setBuildDetectors(buildDetectors);
         data.setDetectors(detectorRules);
-        
+
         try {
             File file1 = new File(filename);
             File buildDir = new File(file1.getParentFile(), "documentation/build");

@@ -1,7 +1,8 @@
-package com.synopsys.integration.detector.accuracy;
+package com.synopsys.integration.detector.accuracy.entrypoint;
 
 import java.util.List;
 
+import com.synopsys.integration.detector.accuracy.detectable.DetectableEvaluationResult;
 import com.synopsys.integration.detector.rule.EntryPoint;
 
 public class EntryPointEvaluation {

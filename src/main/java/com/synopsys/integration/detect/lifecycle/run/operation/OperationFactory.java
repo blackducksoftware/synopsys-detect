@@ -152,6 +152,11 @@ import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
+import com.synopsys.integration.detector.accuracy.detectable.DetectableEvaluator;
+import com.synopsys.integration.detector.accuracy.directory.DirectoryEvaluator;
+import com.synopsys.integration.detector.accuracy.entrypoint.DetectorRuleEvaluator;
+import com.synopsys.integration.detector.accuracy.search.SearchEvaluator;
+import com.synopsys.integration.detector.accuracy.search.SearchOptions;
 import com.synopsys.integration.detector.finder.DirectoryFinder;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.log.IntLogger;
@@ -272,23 +277,28 @@ public class OperationFactory { //TODO: OperationRunner
     public final DetectorToolResult executeDetectors() throws OperationException {
         return auditLog.namedPublic("Execute Detectors", "Detectors", () -> {
             DetectorToolOptions detectorToolOptions = detectConfigurationFactory.createDetectorToolOptions();
+            SearchOptions searchOptions = detectConfigurationFactory.createDetectorSearchOptions();
             DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
             DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory);
+            DetectorRuleEvaluator detectorRuleEvaluator = new DetectorRuleEvaluator(new SearchEvaluator(searchOptions), new DetectableEvaluator());
+            DirectoryEvaluator directoryEvaluator = new DirectoryEvaluator(
+                detectorRuleEvaluator,
+                extractionEnvironmentProvider::createExtractionEnvironment
+            );
+
             DetectorTool detectorTool = new DetectorTool(
                 new DirectoryFinder(),
-                extractionEnvironmentProvider,
-                eventSystem,
                 codeLocationConverter,
                 new DetectorIssuePublisher(),
                 statusEventPublisher,
                 exitCodePublisher,
-                detectorEventPublisher
+                detectorEventPublisher,
+                directoryEvaluator
             );
             return detectorTool.performDetectors(
                 directoryManager.getSourceDirectory(),
                 detectRuleSet,
                 detectConfigurationFactory.createDetectorFinderOptions(),
-                detectConfigurationFactory.createDetectorEvaluationOptions(),
                 detectorToolOptions.getProjectBomTool(),
                 detectorToolOptions.getRequiredDetectors(),
                 detectorToolOptions.getRequiredAccuracyTypes(),

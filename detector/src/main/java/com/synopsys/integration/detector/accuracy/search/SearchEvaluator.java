@@ -1,4 +1,4 @@
-package com.synopsys.integration.detector.accuracy;
+package com.synopsys.integration.detector.accuracy.search;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -19,8 +19,12 @@ import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.SearchRule;
 
 public class SearchEvaluator {
-    private DetectorResult evaluateSearchable(DetectorType detectorType, SearchRule rule, SearchEnvironment environment) {
-        if (!environment.getDetectorFilter().test(detectorType)) {
+    private final SearchOptions searchOptions;
+
+    public SearchEvaluator(SearchOptions searchOptions) {this.searchOptions = searchOptions;}
+
+    public DetectorResult evaluateSearchable(DetectorType detectorType, SearchRule rule, SearchEnvironment environment) {
+        if (!searchOptions.getDetectorFilter().test(detectorType)) {
             return new ExcludedDetectorResult();
         }
 
@@ -43,10 +47,10 @@ public class SearchEvaluator {
         boolean selfNestable = rule.isSelfNestable();
         boolean selfTypeNestable = rule.isSelfTypeNestable();
         Set<DetectorType> notNestableBeneath = rule.getNotNestableBeneath();
-        if (environment.isForceNestedSearch()) {
+        if (searchOptions.isForceNestedSearch()) {
             return new ForcedNestedPassedDetectorResult();
         } else if (nestable) {
-            if (!selfNestable && environment.getAppliedToParent().stream().anyMatch(rule::equals)) {
+            if (!selfNestable && environment.getAppliedToParent().stream().map(DetectorRule::getDetectorType).anyMatch(detectorType::equals)) {
                 return new NotSelfNestableDetectorResult();
             }
             if (!selfTypeNestable && environment.getAppliedToParent().stream().map(DetectorRule::getDetectorType).anyMatch(detectorType::equals)) {

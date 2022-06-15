@@ -1,4 +1,4 @@
-package com.synopsys.integration.detector.accuracy;
+package com.synopsys.integration.detector.accuracy.entrypoint;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detector.accuracy.entrypoint.EntryPointFoundResult;
-import com.synopsys.integration.detector.accuracy.entrypoint.EntryPointNotFoundResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectorRuleEvaluation {

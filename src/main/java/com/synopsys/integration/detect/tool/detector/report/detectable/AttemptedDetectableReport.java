@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.tool.detector.report.detectable;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.synopsys.integration.detect.tool.detector.report.DetectorStatusUtil;
@@ -9,6 +10,7 @@ import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detector.base.DetectorStatusCode;
+import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectableDefinition;
 
 public class AttemptedDetectableReport { //Tosses some info from failed extractions (metaData, unrecognizedpaths, relevant files, may be worth it to keep? might be easier to hold onto the extraction? a passed extraction is kept (see ExtractedDetectableReport)
@@ -60,6 +62,16 @@ public class AttemptedDetectableReport { //Tosses some info from failed extracti
             DetectorReportUtil.combineRelevantFiles(applicable, extractable),
             DetectorStatusUtil.getFailedStatusCode(extraction),
             DetectorStatusUtil.getFailedStatusReason(extraction)
+        );
+    }
+
+    public static AttemptedDetectableReport notSearchable(DetectableDefinition detectable, DetectorResult searchable) {
+        return new AttemptedDetectableReport(
+            detectable,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            DetectorStatusUtil.getStatusCode(searchable),
+            searchable.getDescription()
         );
     }
 

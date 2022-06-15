@@ -1,53 +1,80 @@
-package com.synopsys.integration.detector.accuracy.detector;
+package com.synopsys.integration.detector.accuracy.entrypoint;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detector.accuracy.DetectorRuleEvaluation;
-import com.synopsys.integration.detector.accuracy.DetectorRuleNotFoundResult;
-import com.synopsys.integration.detector.accuracy.EntryPointEvaluation;
+import com.synopsys.integration.detectable.Detectable;
+import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detector.accuracy.detectable.DetectableEvaluationResult;
+import com.synopsys.integration.detector.accuracy.detectable.DetectableEvaluator;
 import com.synopsys.integration.detector.accuracy.search.SearchEnvironment;
 import com.synopsys.integration.detector.accuracy.search.SearchEvaluator;
+import com.synopsys.integration.detector.result.DetectorResult;
+import com.synopsys.integration.detector.rule.DetectableDefinition;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.EntryPoint;
 
-public class DetectorEntryPointsEvaluator {
+public class DetectorRuleEvaluator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SearchEvaluator searchEvaluator;
+    private final DetectableEvaluator detectableEvaluator;
 
-    public DetectorEntryPointsEvaluator(SearchEvaluator searchEvaluator) {this.searchEvaluator = searchEvaluator;}
+    public DetectorRuleEvaluator(SearchEvaluator searchEvaluator, DetectableEvaluator detectableEvaluator) {
+        this.searchEvaluator = searchEvaluator;
+        this.detectableEvaluator = detectableEvaluator;
+    }
 
-    public void evaluate(File directory, SearchEnvironment searchEnvironment, DetectorRule detectorRule) {
-
-        if (searchResult.getFoundEntryPoint().isPresent()) {
-            logger.trace("Found detector, will continue evaluating.");
-
-            EntryPoint entryPoint = searchResult.getFoundEntryPoint().get().getEntryPoint();
-            EntryPointEvaluation entryPointEvaluation = detectorExtract.extract(
-                entryPoint,
-                detectableEnvironment,
-                () -> extractionEnvironmentSupplier.apply(rule.getDetectorType())
+    public DetectorRuleEvaluation evaluate(
+        File directory,
+        SearchEnvironment searchEnvironment,
+        DetectorRule detectorRule,
+        Supplier<ExtractionEnvironment> extractionEnvironmentSupplier
+    ) {
+        List<EntryPointNotFoundResult> notFoundEntryPoints = new ArrayList<>();
+        EntryPointFoundResult foundEntryPoint = null;
+        DetectableEnvironment detectableEnvironment = new DetectableEnvironment(directory);
+        for (EntryPoint entryPoint : detectorRule.getEntryPoints()) {
+            DetectorResult searchResult = searchEvaluator.evaluateSearchable(
+                detectorRule.getDetectorType(),
+                entryPoint.getSearchRule(),
+                searchEnvironment
             );
+            if (!searchResult.getPassed()) {
+                notFoundEntryPoints.add(EntryPointNotFoundResult.notSearchable(entryPoint, searchResult));
+                continue;
+            }
 
-            DetectorRuleEvaluation detectorRuleEvaluation = new DetectorRuleEvaluation(
-                rule,
-                detectableEnvironment,
-                searchResult.getNotFoundEntryPoints(),
-                entryPointEvaluation
-            );
-            foundRules.add(detectorRuleEvaluation);
+            Detectable primaryDetectable = entryPoint.getPrimary().getDetectableCreatable().createDetectable(detectableEnvironment);
+            DetectableResult applicable = primaryDetectable.applicable();
+            if (!applicable.getPassed()) {
+                notFoundEntryPoints.add(EntryPointNotFoundResult.notApplicable(entryPoint, searchResult, applicable));
+                continue;
+            }
 
-            logger.trace("Extracted: {}", rule.getDetectorType());
-            appliedSoFar.add(rule);
-        } else {
-            notFoundRules.add(new DetectorRuleNotFoundResult(rule, searchResult));
-            if (searchResult.getNotSearchableResult().isPresent()) {
-                logger.trace("Not searchable or none found: {}", searchResult.getNotSearchableResult().get().getDescription());
-            } else {
-                logger.trace("Not found but was searchable.");
+            EntryPointEvaluation entryPointEvaluation = extract(entryPoint, detectableEnvironment, extractionEnvironmentSupplier);
+            foundEntryPoint = EntryPointFoundResult.evaluated(entryPoint, searchResult, applicable, entryPointEvaluation);
+            break; //Either way, we have found an entry point and extracted. We are done.
+        }
+        return new DetectorRuleEvaluation(detectorRule, detectableEnvironment, notFoundEntryPoints, foundEntryPoint);
+    }
+
+    public EntryPointEvaluation extract(EntryPoint entryPoint, DetectableEnvironment detectableEnvironment, Supplier<ExtractionEnvironment> extractionEnvironmentSupplier) {
+        List<DetectableDefinition> toCascade = entryPoint.allDetectables();
+        List<DetectableEvaluationResult> evaluated = new ArrayList<>();
+        for (DetectableDefinition detectable : toCascade) {
+            DetectableEvaluationResult detectableEvaluationResult = detectableEvaluator.evaluate(detectable, detectableEnvironment, extractionEnvironmentSupplier);
+            evaluated.add(detectableEvaluationResult);
+            if (detectableEvaluationResult.wasExtractionSuccessful()) {
+                break;
             }
         }
+        return new EntryPointEvaluation(entryPoint, evaluated);
     }
 }

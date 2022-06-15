@@ -5,6 +5,7 @@ import java.util.List;
 
 public class HelpJsonDetectorEntryPoint {
     private String name; //TODO (detectors): May not need this.
+    private HelpJsonSearchRule searchRule;
     private List<HelpJsonDetectable> detectables = new ArrayList<>();
 
     public List<HelpJsonDetectable> getDetectables() {
@@ -21,5 +22,13 @@ public class HelpJsonDetectorEntryPoint {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public HelpJsonSearchRule getSearchRule() {
+        return searchRule;
+    }
+
+    public void setSearchRule(HelpJsonSearchRule searchRule) {
+        this.searchRule = searchRule;
     }
 }

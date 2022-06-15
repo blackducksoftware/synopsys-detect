@@ -74,10 +74,9 @@ public class DetectorRuleFactory {
         });
 
         rules.addDetector(DetectorType.XCODE, detector -> {
-                detector.entryPoint(XcodeProjectDetectable.class);
-                detector.entryPoint(XcodeWorkspaceDetectable.class);
-            }).allEntryPointsFallbackToNext()
-            .notSelfNestable();
+            detector.entryPoint(XcodeProjectDetectable.class);
+            detector.entryPoint(XcodeWorkspaceDetectable.class);
+        }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.SWIFT, detector -> {
                 detector.entryPoint(SwiftPackageResolvedDetectable.class);

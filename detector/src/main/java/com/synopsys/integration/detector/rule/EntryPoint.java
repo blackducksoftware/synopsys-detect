@@ -8,10 +8,12 @@ import org.jetbrains.annotations.NotNull;
 public class EntryPoint {
     private final DetectableDefinition primary;
     private final List<DetectableDefinition> fallbacks;
+    private final SearchRule searchRule;
 
-    public EntryPoint(DetectableDefinition primary, List<DetectableDefinition> fallbacks) {
+    public EntryPoint(DetectableDefinition primary, List<DetectableDefinition> fallbacks, SearchRule searchRule) {
         this.primary = primary;
         this.fallbacks = fallbacks;
+        this.searchRule = searchRule;
     }
 
     public DetectableDefinition getPrimary() {
@@ -28,5 +30,9 @@ public class EntryPoint {
         combined.add(primary);
         combined.addAll(fallbacks);
         return combined;
+    }
+
+    public SearchRule getSearchRule() {
+        return searchRule;
     }
 }

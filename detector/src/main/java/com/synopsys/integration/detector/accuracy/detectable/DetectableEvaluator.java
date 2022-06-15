@@ -1,4 +1,4 @@
-package com.synopsys.integration.detector.accuracy;
+package com.synopsys.integration.detector.accuracy.detectable;
 
 import java.util.function.Supplier;
 

@@ -19,13 +19,11 @@ import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.synopsys.integration.detect.tool.detector.report.rule.EvaluatedDetectorRuleReport;
 import com.synopsys.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;
 import com.synopsys.integration.detect.tool.detector.report.util.DetectorReporter;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
@@ -37,12 +35,8 @@ import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detector.accuracy.DetectableEvaluator;
-import com.synopsys.integration.detector.accuracy.DetectorEvaluation;
-import com.synopsys.integration.detector.accuracy.DetectorEvaluationOptions;
-import com.synopsys.integration.detector.accuracy.DetectorEvaluator;
-import com.synopsys.integration.detector.accuracy.DetectorExtract;
-import com.synopsys.integration.detector.accuracy.DetectorSearch;
+import com.synopsys.integration.detector.accuracy.directory.DirectoryEvaluation;
+import com.synopsys.integration.detector.accuracy.directory.DirectoryEvaluator;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.finder.DirectoryFindResult;
 import com.synopsys.integration.detector.finder.DirectoryFinder;
@@ -55,39 +49,35 @@ import com.synopsys.integration.util.NameVersion;
 public class DetectorTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DirectoryFinder directoryFinder;
-    private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
-    private final EventSystem eventSystem;
     private final CodeLocationConverter codeLocationConverter;
     private final DetectorIssuePublisher detectorIssuePublisher;
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
     private final DetectorEventPublisher detectorEventPublisher;
+    private final DirectoryEvaluator directoryEvaluator;
 
     public DetectorTool(
         DirectoryFinder directoryFinder,
-        ExtractionEnvironmentProvider extractionEnvironmentProvider,
-        EventSystem eventSystem,
         CodeLocationConverter codeLocationConverter,
         DetectorIssuePublisher detectorIssuePublisher,
         StatusEventPublisher statusEventPublisher,
         ExitCodePublisher exitCodePublisher,
-        DetectorEventPublisher detectorEventPublisher
+        DetectorEventPublisher detectorEventPublisher,
+        DirectoryEvaluator directoryEvaluator
     ) {
         this.directoryFinder = directoryFinder;
-        this.extractionEnvironmentProvider = extractionEnvironmentProvider;
-        this.eventSystem = eventSystem;
         this.codeLocationConverter = codeLocationConverter;
         this.detectorIssuePublisher = detectorIssuePublisher;
         this.statusEventPublisher = statusEventPublisher;
         this.exitCodePublisher = exitCodePublisher;
         this.detectorEventPublisher = detectorEventPublisher;
+        this.directoryEvaluator = directoryEvaluator;
     }
 
     public DetectorToolResult performDetectors(
         File directory,
         DetectorRuleSet detectorRuleSet,
         DirectoryFinderOptions directoryFinderOptions,
-        DetectorEvaluationOptions evaluationOptions,
         String projectDetector,
         List<DetectorType> requiredDetectors,
         ExcludeIncludeEnumFilter<DetectorType> requiredAccuracyTypes,
@@ -105,11 +95,7 @@ public class DetectorTool {
 
         DirectoryFindResult findResult = findResultOptional.get();
 
-        DetectorSearch detectorSearch = new DetectorSearch();
-        DetectorExtract detectorExtract = new DetectorExtract(new DetectableEvaluator());
-        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(detectorSearch, detectorExtract, evaluationOptions, extractionEnvironmentProvider::createExtractionEnvironment);
-
-        DetectorEvaluation evaluation = detectorEvaluator.evaluate(findResult, detectorRuleSet);
+        DirectoryEvaluation evaluation = directoryEvaluator.evaluate(findResult, detectorRuleSet);
         logger.debug("Finished detectors.");
 
         List<DetectorDirectoryReport> reports = new DetectorReporter().generateReport(evaluation);

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detector.accuracy;
+package com.synopsys.integration.detector.accuracy.directory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,90 +11,55 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detector.accuracy.entrypoint.DetectorRuleEvaluation;
+import com.synopsys.integration.detector.accuracy.entrypoint.DetectorRuleEvaluator;
+import com.synopsys.integration.detector.accuracy.entrypoint.EntryPointFoundResult;
+import com.synopsys.integration.detector.accuracy.search.SearchEnvironment;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.finder.DirectoryFindResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
-import com.synopsys.integration.detector.rule.EntryPoint;
 
 public class DirectoryEvaluator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final SearchEvaluator searchEvaluator;
-    private final DetectorExtract detectorExtract;
-    private final DetectorEvaluationOptions evaluationOptions;
+    private final DetectorRuleEvaluator detectorRuleEvaluator;
     private final Function<DetectorType, ExtractionEnvironment> extractionEnvironmentSupplier;
 
     public DirectoryEvaluator(
-        SearchEvaluator searchEvaluator,
-        DetectorExtract detectorExtract,
-        DetectorEvaluationOptions evaluationOptions,
+        DetectorRuleEvaluator detectorRuleEvaluator,
         Function<DetectorType, ExtractionEnvironment> extractionEnvironmentSupplier
     ) {
-        this.searchEvaluator = searchEvaluator;
-        this.detectorExtract = detectorExtract;
-        this.evaluationOptions = evaluationOptions;
+        this.detectorRuleEvaluator = detectorRuleEvaluator;
         this.extractionEnvironmentSupplier = extractionEnvironmentSupplier;
     }
 
-    public DetectorEvaluation evaluate(DirectoryFindResult rootDirectory, DetectorRuleSet rules) {
+    public DirectoryEvaluation evaluate(DirectoryFindResult rootDirectory, DetectorRuleSet rules) {
         logger.info("Evaluating detectors. This may take a while.");
         return evaluate(rootDirectory, rules, new HashSet<>());
     }
 
-    protected DetectorEvaluation evaluate(DirectoryFindResult findResult, DetectorRuleSet rules, Set<DetectorRule> appliedInParent) {
+    protected DirectoryEvaluation evaluate(DirectoryFindResult findResult, DetectorRuleSet rules, Set<DetectorRule> appliedInParent) {
         logger.trace("Determining applicable detectors on the directory: {}", findResult.getDirectory());
 
         File directory = findResult.getDirectory();
         Set<DetectorRule> appliedSoFar = new HashSet<>();
-        List<DetectorRuleEvaluation> foundRules = new LinkedList<>();
-        List<DetectorRuleNotFoundResult> notFoundRules = new LinkedList<>();
+        List<DetectorRuleEvaluation> evaluations = new LinkedList<>();
 
         for (DetectorRule rule : rules.getDetectorRules()) {
-            SearchEnvironment searchEnvironment = new SearchEnvironment(
-                findResult.getDepthFromRoot(),
-                evaluationOptions.getDetectorFilter(),
-                evaluationOptions.isForceNested(),
-                evaluationOptions.isFollowSymLinks(),
-                appliedInParent,
-                appliedSoFar
+            SearchEnvironment searchEnvironment = new SearchEnvironment(findResult.getDepthFromRoot(), appliedSoFar, appliedInParent);
+            DetectorRuleEvaluation detectorRuleEvaluation = detectorRuleEvaluator.evaluate(
+                directory,
+                searchEnvironment,
+                rule,
+                () -> extractionEnvironmentSupplier.apply(rule.getDetectorType())
             );
+            if (detectorRuleEvaluation.wasFound() && detectorRuleEvaluation.getFoundEntryPoint().isPresent()) { //should this capture only success?
+                EntryPointFoundResult foundEntryPoint = detectorRuleEvaluation.getFoundEntryPoint().get();
+                // foundEntryPoint // CAPTURE the details //ie fill appliedSoFar
 
-            DetectableEnvironment detectableEnvironment = new DetectableEnvironment(directory);
-            
-            DetectorSearchResult searchResult = searchEvaluator.evaluate(searchEnvironment, detectableEnvironment, rule);
-
-            logger.trace("Evaluating detector: {}", rule.getDetectorType());
-
-            if (searchResult.getFoundEntryPoint().isPresent()) {
-                logger.trace("Found detector, will continue evaluating.");
-
-                EntryPoint entryPoint = searchResult.getFoundEntryPoint().get().getEntryPoint();
-                EntryPointEvaluation entryPointEvaluation = detectorExtract.extract(
-                    entryPoint,
-                    detectableEnvironment,
-                    () -> extractionEnvironmentSupplier.apply(rule.getDetectorType())
-                );
-
-                DetectorRuleEvaluation detectorRuleEvaluation = new DetectorRuleEvaluation(
-                    rule,
-                    detectableEnvironment,
-                    searchResult.getNotFoundEntryPoints(),
-                    entryPointEvaluation
-                );
-                foundRules.add(detectorRuleEvaluation);
-
-                logger.trace("Extracted: {}", rule.getDetectorType());
-                appliedSoFar.add(rule);
-            } else {
-                notFoundRules.add(new DetectorRuleNotFoundResult(rule, searchResult));
-                if (searchResult.getNotSearchableResult().isPresent()) {
-                    logger.trace("Not searchable or none found: {}", searchResult.getNotSearchableResult().get().getDescription());
-                } else {
-                    logger.trace("Not found but was searchable.");
-                }
             }
+            evaluations.add(detectorRuleEvaluation);
         }
 
         if (!appliedSoFar.isEmpty()) {
@@ -105,13 +70,13 @@ public class DirectoryEvaluator {
         nextAppliedInParent.addAll(appliedInParent);
         nextAppliedInParent.addAll(appliedSoFar);
 
-        List<DetectorEvaluation> children = new ArrayList<>();
+        List<DirectoryEvaluation> children = new ArrayList<>();
         for (DirectoryFindResult subdirectory : findResult.getChildren()) {
-            DetectorEvaluation child = evaluate(subdirectory, rules, nextAppliedInParent);
+            DirectoryEvaluation child = evaluate(subdirectory, rules, nextAppliedInParent);
             children.add(child);
         }
 
-        return new DetectorEvaluation(directory, findResult.getDepthFromRoot(), foundRules, notFoundRules, children);
+        return new DirectoryEvaluation(directory, findResult.getDepthFromRoot(), evaluations, children);
     }
 }
 

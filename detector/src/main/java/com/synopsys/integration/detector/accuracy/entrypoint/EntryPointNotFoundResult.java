@@ -1,21 +1,46 @@
-package com.synopsys.integration.detector.accuracy;
+package com.synopsys.integration.detector.accuracy.entrypoint;
 
-import com.synopsys.integration.detector.rule.DetectorRule;
+import java.util.Optional;
 
-public class DetectorRuleNotFoundResult {
-    private final DetectorRule rule;
-    private final DetectorSearchResult searchResult;
+import org.jetbrains.annotations.Nullable;
 
-    public DetectorRuleNotFoundResult(DetectorRule rule, DetectorSearchResult searchResult) {
-        this.rule = rule;
+import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detector.result.DetectorResult;
+import com.synopsys.integration.detector.rule.EntryPoint;
+
+public class EntryPointNotFoundResult {
+    private final EntryPoint entryPoint;
+    private final DetectorResult searchResult;
+    @Nullable
+    private final DetectableResult applicableResult;
+
+    public EntryPointNotFoundResult(
+        EntryPoint entryPoint,
+        DetectorResult searchResult,
+        @Nullable DetectableResult applicableResult
+    ) {
+        this.entryPoint = entryPoint;
         this.searchResult = searchResult;
+        this.applicableResult = applicableResult;
     }
 
-    public DetectorRule getRule() {
-        return rule;
+    public static EntryPointNotFoundResult notSearchable(EntryPoint entryPoint, DetectorResult searchResult) {
+        return new EntryPointNotFoundResult(entryPoint, searchResult, null);
     }
 
-    public DetectorSearchResult getSearchResult() {
+    public static EntryPointNotFoundResult notApplicable(EntryPoint entryPoint, DetectorResult searchResult, DetectableResult applicableResult) {
+        return new EntryPointNotFoundResult(entryPoint, searchResult, applicableResult);
+    }
+
+    public EntryPoint getEntryPoint() {
+        return entryPoint;
+    }
+
+    public Optional<DetectableResult> getApplicableResult() {
+        return Optional.ofNullable(applicableResult);
+    }
+
+    public DetectorResult getSearchResult() {
         return searchResult;
     }
 }

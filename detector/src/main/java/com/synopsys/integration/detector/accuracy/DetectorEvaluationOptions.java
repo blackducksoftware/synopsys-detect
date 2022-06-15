@@ -2,14 +2,14 @@ package com.synopsys.integration.detector.accuracy;
 
 import java.util.function.Predicate;
 
-import com.synopsys.integration.detector.rule.DetectorRule;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class DetectorEvaluationOptions {
     private final boolean forceNested;
     private final boolean followSymLinks;
-    private final Predicate<DetectorRule> detectorFilter;
+    private final Predicate<DetectorType> detectorFilter;
 
-    public DetectorEvaluationOptions(boolean forceNested, boolean followSymLinks, Predicate<DetectorRule> detectorFilter) {
+    public DetectorEvaluationOptions(boolean forceNested, boolean followSymLinks, Predicate<DetectorType> detectorFilter) {
         this.forceNested = forceNested;
         this.followSymLinks = followSymLinks;
         this.detectorFilter = detectorFilter;
@@ -23,7 +23,7 @@ public class DetectorEvaluationOptions {
         return followSymLinks;
     }
 
-    public Predicate<DetectorRule> getDetectorFilter() {
+    public Predicate<DetectorType> getDetectorFilter() {
         return detectorFilter;
     }
 }

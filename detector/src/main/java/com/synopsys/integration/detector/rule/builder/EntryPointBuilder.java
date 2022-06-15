@@ -16,6 +16,7 @@ public class EntryPointBuilder {
     private final List<Class<?>> fallbacks;
 
     private boolean fallbackToNextEntryPoint = false;
+    private final SearchRuleBuilder searchRuleBuilder = new SearchRuleBuilder();
 
     public EntryPointBuilder(Class<?> primary) {
         this.primary = primary;
@@ -31,6 +32,10 @@ public class EntryPointBuilder {
         return this;
     }
 
+    public SearchRuleBuilder search() {
+        return searchRuleBuilder;
+    }
+
     public EntryPoint build(@NotNull DetectableLookup lookup, @Nullable EntryPoint nextEntryPoint) {
         DetectableDefinition primaryDefinition = lookup.forClass(primary);
         List<DetectableDefinition> fallbackDefinitions = fallbacks.stream()
@@ -40,6 +45,6 @@ public class EntryPointBuilder {
         if (fallbackToNextEntryPoint && nextEntryPoint != null) {
             fallbackDefinitions.addAll(nextEntryPoint.allDetectables());
         }
-        return new EntryPoint(primaryDefinition, fallbackDefinitions);
+        return new EntryPoint(primaryDefinition, fallbackDefinitions, searchRuleBuilder.build());
     }
 }

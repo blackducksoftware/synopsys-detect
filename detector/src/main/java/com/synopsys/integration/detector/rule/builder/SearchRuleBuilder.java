@@ -1,18 +1,13 @@
 package com.synopsys.integration.detector.rule.builder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.rule.DetectorRule;
-import com.synopsys.integration.detector.rule.EntryPoint;
+import com.synopsys.integration.detector.rule.SearchRule;
 
-public class DetectorRuleBuilder {
-    private final DetectableLookup detectableLookup;
+public class SearchRuleBuilder {
     private int maxDepth;
     private boolean nestable;
     private boolean selfNestable = false;
@@ -20,138 +15,108 @@ public class DetectorRuleBuilder {
     private boolean selfTypeNestable = false;
     private boolean nestInvisible = false;
     private final Set<DetectorType> notNestableBeneath = new HashSet<>();
-
-    private final DetectorType detectorType;
-    private final List<EntryPointBuilder> entryPointBuilders = new ArrayList<>();
+    private final Set<Class<?>> notNestableBeneathDetectables = new HashSet<>();
     private final Set<DetectorType> yieldsTo = new HashSet<>();
-    private boolean allEntryPointsFallbackToNext = false;
 
-    public DetectorRuleBuilder(DetectorType detectorType, DetectableLookup detectableLookup) {
-        this.detectorType = detectorType;
-        this.detectableLookup = detectableLookup;
+    public SearchRuleBuilder() {
     }
 
-    public DetectorRuleBuilder defaults() {
-        return allEntryPointsFallbackToNext().noMaxDepth().nestable().notSelfNestable().notSelfTypeNestable().visibleToNesting();
+    public SearchRuleBuilder defaults() {
+        return noMaxDepth().nestable().notSelfNestable().notSelfTypeNestable().visibleToNesting();
     }
 
-    public DetectorRuleBuilder defaultLock() {
-        return allEntryPointsFallbackToNext().noMaxDepth().nestable().selfNestable().selfTypeNestable().visibleToNesting();
+    public SearchRuleBuilder defaultLock() {
+        return noMaxDepth().nestable().selfNestable().selfTypeNestable().visibleToNesting();
     }
 
-    public DetectorRuleBuilder noMaxDepth() {
+    public SearchRuleBuilder noMaxDepth() {
         return maxDepth(Integer.MAX_VALUE);
     }
 
-    public DetectorRuleBuilder maxDepth(int maxDepth) {
+    public SearchRuleBuilder maxDepth(int maxDepth) {
         this.maxDepth = maxDepth;
         return this;
     }
 
-    public DetectorRuleBuilder isNestable(boolean nestable) {
+    public SearchRuleBuilder isNestable(boolean nestable) {
         this.nestable = nestable;
         return this;
     }
 
-    public DetectorRuleBuilder isSelfNestable(boolean selfNestable) {
+    public SearchRuleBuilder isSelfNestable(boolean selfNestable) {
         this.selfNestable = selfNestable;
         return this;
     }
 
-    public DetectorRuleBuilder isNestInvisible(boolean nestable) {
+    public SearchRuleBuilder isNestInvisible(boolean nestable) {
         this.nestInvisible = nestable;
         return this;
     }
 
-    public DetectorRuleBuilder invisibleToNesting() {
+    public SearchRuleBuilder invisibleToNesting() {
         return isNestInvisible(true);
     }
 
-    public DetectorRuleBuilder visibleToNesting() {
+    public SearchRuleBuilder visibleToNesting() {
         return isNestInvisible(false);
     }
 
-    public DetectorRuleBuilder nestable() {
+    public SearchRuleBuilder nestable() {
         return isNestable(true);
     }
 
-    public DetectorRuleBuilder notNestable() {
+    public SearchRuleBuilder notNestable() {
         return isNestable(false);
     }
 
-    public DetectorRuleBuilder selfNestable() {
+    public SearchRuleBuilder selfNestable() {
         return isSelfNestable(true);
     }
 
-    public DetectorRuleBuilder notSelfNestable() {
+    public SearchRuleBuilder notSelfNestable() {
         return isSelfNestable(false);
     }
 
-    public DetectorRuleBuilder notNestableBeneath(DetectorType... detectorType) {
+    public SearchRuleBuilder notNestableBeneath(DetectorType... detectorType) {
         notNestableBeneath.addAll(Arrays.asList(detectorType));
         return this;
     }
 
-    public DetectorRuleBuilder nestableExceptTo(DetectorType... detectorType) {
+    public SearchRuleBuilder notNestableBeneath(Class<?>... detectable) {
+        notNestableBeneathDetectables.addAll(Arrays.asList(detectable));
+        return this;
+    }
+
+    public SearchRuleBuilder nestableExceptTo(DetectorType... detectorType) {
         return nestable().notNestableBeneath(detectorType);
     }
 
     // Not self nestable by DetectorType rather than the Rule itself
-    public DetectorRuleBuilder notSelfTypeNestable() {
+    public SearchRuleBuilder notSelfTypeNestable() {
         selfTypeNestable = false;
         return this;
     }
 
-    public DetectorRuleBuilder selfTypeNestable() {
+    public SearchRuleBuilder selfTypeNestable() {
         selfTypeNestable = true;
         return this;
     }
 
-    public DetectorRule build() {
-        return new DetectorRule(
+    public SearchRule build() {
+        return new SearchRule(
             maxDepth,
             nestable,
             selfNestable,
             selfTypeNestable,
-            detectorType,
             nestInvisible,
             notNestableBeneath,
-            buildEntryPoints(),
+            notNestableBeneathDetectables,
             yieldsTo
         );
     }
 
-    private List<EntryPoint> buildEntryPoints() {
-        if (allEntryPointsFallbackToNext) {
-            entryPointBuilders.forEach(EntryPointBuilder::fallbackToNextEntryPoint);
-        }
-
-        List<EntryPoint> entryPoints = new ArrayList<>();
-        //Build these from back to front so the 'next' point can be passed along.
-        EntryPoint next = null;
-        for (int i = entryPointBuilders.size() - 1; i >= 0; i--) {
-            EntryPointBuilder current = entryPointBuilders.get(i);
-            next = current.build(detectableLookup, next);
-            entryPoints.add(0, next);
-        }
-
-        return entryPoints;
-    }
-
-    public <T extends Detectable> EntryPointBuilder entryPoint(Class<T> detectableClass) {
-        EntryPointBuilder builder = new EntryPointBuilder(detectableClass);
-        entryPointBuilders.add(builder);
-        return builder;
-    }
-
-    public DetectorRuleBuilder yieldsTo(DetectorType... detectorTypes) {
+    public SearchRuleBuilder yieldsTo(DetectorType... detectorTypes) {
         yieldsTo.addAll(Arrays.asList(detectorTypes));
         return this;
     }
-
-    public DetectorRuleBuilder allEntryPointsFallbackToNext() {
-        allEntryPointsFallbackToNext = true;
-        return this;
-    }
-
 }
