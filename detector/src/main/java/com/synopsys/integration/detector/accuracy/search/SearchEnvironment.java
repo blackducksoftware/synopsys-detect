@@ -3,11 +3,12 @@ package com.synopsys.integration.detector.accuracy;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class SearchEnvironment {
     private final int depth;
-    private final Predicate<DetectorRule> detectorFilter;
+    private final Predicate<DetectorType> detectorFilter;
     private final boolean forceNestedSearch;
     private final boolean followSymLinks;
 
@@ -16,7 +17,7 @@ public class SearchEnvironment {
 
     public SearchEnvironment(
         int depth,
-        Predicate<DetectorRule> detectorFilter,
+        Predicate<DetectorType> detectorFilter,
         boolean forceNestedSearch,
         boolean followSymLinks,
         Set<DetectorRule> appliedToParent,
@@ -34,7 +35,7 @@ public class SearchEnvironment {
         return depth;
     }
 
-    public Predicate<DetectorRule> getDetectorFilter() {
+    public Predicate<DetectorType> getDetectorFilter() {
         return detectorFilter;
     }
 

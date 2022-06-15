@@ -19,20 +19,20 @@ import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.detector.rule.EntryPoint;
 
-public class DetectorEvaluator {
+public class DirectoryEvaluator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DetectorSearch detectorSearch;
+    private final SearchEvaluator searchEvaluator;
     private final DetectorExtract detectorExtract;
     private final DetectorEvaluationOptions evaluationOptions;
     private final Function<DetectorType, ExtractionEnvironment> extractionEnvironmentSupplier;
 
-    public DetectorEvaluator(
-        DetectorSearch detectorSearch,
+    public DirectoryEvaluator(
+        SearchEvaluator searchEvaluator,
         DetectorExtract detectorExtract,
         DetectorEvaluationOptions evaluationOptions,
         Function<DetectorType, ExtractionEnvironment> extractionEnvironmentSupplier
     ) {
-        this.detectorSearch = detectorSearch;
+        this.searchEvaluator = searchEvaluator;
         this.detectorExtract = detectorExtract;
         this.evaluationOptions = evaluationOptions;
         this.extractionEnvironmentSupplier = extractionEnvironmentSupplier;
@@ -62,7 +62,8 @@ public class DetectorEvaluator {
             );
 
             DetectableEnvironment detectableEnvironment = new DetectableEnvironment(directory);
-            DetectorSearchResult searchResult = detectorSearch.evaluate(searchEnvironment, detectableEnvironment, rule);
+            
+            DetectorSearchResult searchResult = searchEvaluator.evaluate(searchEnvironment, detectableEnvironment, rule);
 
             logger.trace("Evaluating detector: {}", rule.getDetectorType());
 

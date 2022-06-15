@@ -1,10 +1,14 @@
 package com.synopsys.integration.detector.accuracy;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detector.accuracy.entrypoint.EntryPointFoundResult;
+import com.synopsys.integration.detector.accuracy.entrypoint.EntryPointNotFoundResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectorRuleEvaluation {
@@ -13,20 +17,20 @@ public class DetectorRuleEvaluation {
     @NotNull
     private final DetectorRule rule;
     @NotNull
-    private final List<DetectorSearchEntryPointResult> notFoundEntryPoints;
-    @NotNull
-    private final EntryPointEvaluation evaluatedEntryPoint;
+    private final List<EntryPointNotFoundResult> notFoundEntryPoints;
+    @Nullable
+    private final EntryPointFoundResult foundEntryPoint;
 
     public DetectorRuleEvaluation(
         @NotNull DetectorRule rule,
         @NotNull DetectableEnvironment environment,
-        @NotNull List<DetectorSearchEntryPointResult> notFoundEntryPoints,
-        @NotNull EntryPointEvaluation evaluatedEntryPoint
+        @NotNull List<EntryPointNotFoundResult> notFoundEntryPoints,
+        @Nullable EntryPointFoundResult foundEntryPoint
     ) {
         this.environment = environment;
         this.rule = rule;
-        this.evaluatedEntryPoint = evaluatedEntryPoint;
         this.notFoundEntryPoints = notFoundEntryPoints;
+        this.foundEntryPoint = foundEntryPoint;
     }
 
     @NotNull
@@ -39,11 +43,15 @@ public class DetectorRuleEvaluation {
         return environment;
     }
 
-    public List<DetectorSearchEntryPointResult> getNotFoundEntryPoints() {
+    public List<EntryPointNotFoundResult> getNotFoundEntryPoints() {
         return notFoundEntryPoints;
     }
 
-    public EntryPointEvaluation getEvaluatedEntryPoint() {
-        return evaluatedEntryPoint;
+    public Optional<EntryPointFoundResult> getFoundEntryPoint() {
+        return Optional.ofNullable(foundEntryPoint);
+    }
+
+    public boolean wasFound() {
+        return getFoundEntryPoint().isPresent();
     }
 }
