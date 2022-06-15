@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.util;
+package com.synopsys.integration.detect.battery.util.executable;
 
 import java.io.File;
 

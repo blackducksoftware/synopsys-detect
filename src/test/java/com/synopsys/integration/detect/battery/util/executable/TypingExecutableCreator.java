@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.util;
+package com.synopsys.integration.detect.battery.util.executable;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
+
+import com.synopsys.integration.detect.battery.util.BatteryFiles;
 
 import freemarker.template.TemplateException;
 

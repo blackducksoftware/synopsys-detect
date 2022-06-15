@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.util;
+package com.synopsys.integration.detect.battery.util.assertions;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,10 @@ import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeroturnaround.zip.ZipUtil;
+
+import com.synopsys.integration.detect.battery.util.BatteryFiles;
+import com.synopsys.integration.detect.battery.util.Bdio2Compare;
+import com.synopsys.integration.detect.battery.util.BdioIssue;
 
 public class BatteryBdioAssert {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

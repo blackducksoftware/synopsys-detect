@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.accuracy;
+package com.synopsys.integration.detect.battery.util.assertions;
 
 import org.junit.jupiter.api.Assertions;
 

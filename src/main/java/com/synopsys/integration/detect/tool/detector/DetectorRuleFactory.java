@@ -148,6 +148,11 @@ public class DetectorRuleFactory {
 
             detector.entryPoint(MavenPomWrapperDetectable.class)
                 .fallback(MavenProjectInspectorDetectable.class);
+
+            detector.entryPoint(MavenProjectInspectorDetectable.class)
+                .search()
+                .nestable()
+                .notNestableBeneath(MavenPomDetectable.class, MavenPomWrapperDetectable.class);
         });
 
         rules.addDetector(DetectorType.LERNA, detector -> {

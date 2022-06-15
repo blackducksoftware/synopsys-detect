@@ -129,7 +129,7 @@ public class FormattedOutputManager {
                         .map(attempted -> convertAttempted(report.getDirectory(), extracted.getRule().getDetectorType(), attempted, "ATTEMPTED", DetectorStatusCode.ATTEMPTED))
                         .forEach(outputs::add);
 
-                    convertExtracted(report.getDirectory(), extracted.getRule().getDetectorType(), extracted.getExtractedDetectable(), "SUCCESS");
+                    outputs.add(convertExtracted(report.getDirectory(), extracted.getRule().getDetectorType(), extracted.getExtractedDetectable(), "SUCCESS"));
                 });
                 report.getNotExtractedDetectors().forEach(notExtracted -> {
                     notExtracted.getAttemptedDetectables().stream()

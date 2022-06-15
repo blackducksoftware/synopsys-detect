@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.util;
+package com.synopsys.integration.detect.battery.util.executable;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,12 +13,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Assertions;
 
+import com.synopsys.integration.detect.battery.util.BatteryFiles;
+
 import freemarker.template.TemplateException;
 
 public class ResourceTypingExecutableCreator extends TypingExecutableCreator {
     private final List<String> toType;
 
-    protected ResourceTypingExecutableCreator(List<String> toType) {
+    public ResourceTypingExecutableCreator(List<String> toType) {
         this.toType = toType;
     }
 

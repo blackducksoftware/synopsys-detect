@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.detect.battery.util.assertions.BatteryBdioAssert;
+import com.synopsys.integration.detect.battery.util.executable.ResourceCopyingExecutableCreator;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 import freemarker.template.TemplateException;
@@ -121,5 +123,9 @@ public abstract class BatteryTestRunner {
 
     public void cleanup() {
         batteryContext.checkAndCleanupBatteryDirectory();
+    }
+
+    public void executableWithExitCode(Property pathProperty, String exitCode) {
+        batteryContext.executableWithExitCode(pathProperty, exitCode);
     }
 }

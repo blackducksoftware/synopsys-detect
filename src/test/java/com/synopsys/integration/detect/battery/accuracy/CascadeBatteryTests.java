@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
 import com.synopsys.integration.detect.battery.util.DetectOutput;
 import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
+import com.synopsys.integration.detect.battery.util.assertions.FormattedDetectorAssert;
+import com.synopsys.integration.detect.battery.util.assertions.FormattedOutputAssert;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detector.base.DetectorStatusCode;
 

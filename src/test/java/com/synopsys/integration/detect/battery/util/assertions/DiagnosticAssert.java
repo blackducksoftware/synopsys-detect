@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.accuracy;
+package com.synopsys.integration.detect.battery.util.assertions;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.detect.battery.util.DetectOutput;
-import com.synopsys.integration.detect.battery.util.OutputAssert;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticReportHandler;
 
 public class DiagnosticAssert {

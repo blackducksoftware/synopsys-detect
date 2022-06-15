@@ -25,6 +25,12 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.detect.battery.util.executable.BatteryExecutable;
+import com.synopsys.integration.detect.battery.util.executable.BatteryExecutableInfo;
+import com.synopsys.integration.detect.battery.util.executable.ExitCodeExecutableCreator;
+import com.synopsys.integration.detect.battery.util.executable.ResourceCopyingExecutableCreator;
+import com.synopsys.integration.detect.battery.util.executable.ResourceTypingExecutableCreator;
+import com.synopsys.integration.detect.battery.util.executable.StringTypingExecutableCreator;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOutput;
@@ -182,14 +188,29 @@ public class BatteryContext {
         return properties;
     }
 
+    private File createNamedSourceFile(String name) {
+        if (name.contains("/")) {
+            String[] pieces = name.split("/");
+            File current = sourceDirectory;
+            for (int i = 0; i < pieces.length - 1; i++) {
+                current = new File(current, pieces[i]);
+                Assertions.assertTrue(current.mkdirs(), "Failed to build path for source directory name: " + name);
+            }
+            current = new File(current, pieces[pieces.length - 1]);
+            return current;
+        } else {
+            return new File(sourceDirectory, name);
+        }
+    }
+
     private void createFiles() throws IOException {
         for (String filename : emptyFileNames) {
-            File file = new File(sourceDirectory, filename);
+            File file = createNamedSourceFile(filename);
             FileUtils.writeStringToFile(file, "THIS FILE INTENTIONALLY LEFT BLANK", Charset.defaultCharset());
         }
 
         for (Map.Entry<String, List<String>> content : contentFileNames.entrySet()) {
-            File file = new File(sourceDirectory, content.getKey());
+            File file = createNamedSourceFile(content.getKey());
             FileUtils.writeStringToFile(file, StringUtils.join(content.getValue(), System.lineSeparator()), Charset.defaultCharset());
         }
 
@@ -241,6 +262,11 @@ public class BatteryContext {
         ResourceCopyingExecutableCreator resourceCopyingExecutable = new ResourceCopyingExecutableCreator(prefixResources(resourceFiles));
         executables.add(BatteryExecutable.sourceFileExecutable(windowsName, linuxName, resourceCopyingExecutable));
         return resourceCopyingExecutable;
+    }
+
+    public void executableWithExitCode(Property detectProperty, String exitCode) {
+        ExitCodeExecutableCreator creator = new ExitCodeExecutableCreator(exitCode);
+        executables.add(BatteryExecutable.propertyOverrideExecutable(detectProperty, creator));
     }
 
     public void executable(Property detectProperty, String... responses) {

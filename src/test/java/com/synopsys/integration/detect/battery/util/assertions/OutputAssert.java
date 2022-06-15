@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.util;
+package com.synopsys.integration.detect.battery.util.assertions;
 
 import java.util.List;
 

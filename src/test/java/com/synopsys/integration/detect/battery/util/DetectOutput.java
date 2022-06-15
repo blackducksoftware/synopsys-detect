@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.detect.battery.util.assertions.OutputAssert;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOutput;
 
 public class DetectOutput extends OutputAssert {

@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
-import com.synopsys.integration.detect.battery.util.OutputAssert;
+import com.synopsys.integration.detect.battery.util.assertions.DiagnosticAssert;
+import com.synopsys.integration.detect.battery.util.assertions.OutputAssert;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticReportHandler;
 
 @Tag("battery")

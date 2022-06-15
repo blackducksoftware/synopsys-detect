@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.util;
+package com.synopsys.integration.detect.battery.util.executable;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.Assertions;
+
+import com.synopsys.integration.detect.battery.util.BatteryFiles;
 
 import freemarker.template.TemplateException;
 
@@ -31,7 +33,7 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
         }
     }
 
-    ResourceCopyingExecutableCreator(List<String> toCopy) {
+    public ResourceCopyingExecutableCreator(List<String> toCopy) {
         this.toCopy = toCopy;
     }
 

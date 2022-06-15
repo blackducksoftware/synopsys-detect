@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.battery.util;
+package com.synopsys.integration.detect.battery.util.executable;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import org.apache.commons.io.FileUtils;
 public class StringTypingExecutableCreator extends TypingExecutableCreator {
     private final List<String> toType;
 
-    protected StringTypingExecutableCreator(List<String> toType) {
+    public StringTypingExecutableCreator(List<String> toType) {
         this.toType = toType;
     }
 
