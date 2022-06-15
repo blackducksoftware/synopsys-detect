@@ -44,7 +44,7 @@ public class DetectorRuleBuilder {
     }
 
     public <T extends Detectable> EntryPointBuilder entryPoint(Class<T> detectableClass) {
-        EntryPointBuilder builder = new EntryPointBuilder(detectableClass);
+        EntryPointBuilder builder = new EntryPointBuilder(detectableClass, detectorType);
         entryPointBuilders.add(builder);
         return builder;
     }
@@ -60,7 +60,7 @@ public class DetectorRuleBuilder {
     }
 
     public DetectorRuleBuilder yieldsTo(DetectorType... detectorTypes) {
-        entryPointBuilders.forEach(builder -> builder.search().yieldsTo(detectorType));
+        entryPointBuilders.forEach(builder -> builder.search().yieldsTo(detectorTypes));
         return this;
     }
 }

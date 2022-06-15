@@ -7,7 +7,6 @@ public class HelpJsonSearchRule {
     private List<String> yieldsTo = new ArrayList<>();
     private Integer maxDepth = 0;
     private Boolean nestable = false;
-    private Boolean nestInvisible = false;
 
     public Integer getMaxDepth() {
         return maxDepth;
@@ -23,14 +22,6 @@ public class HelpJsonSearchRule {
 
     public void setNestable(Boolean nestable) {
         this.nestable = nestable;
-    }
-
-    public Boolean getNestInvisible() {
-        return nestInvisible;
-    }
-
-    public void setNestInvisible(Boolean nestInvisible) {
-        this.nestInvisible = nestInvisible;
     }
 
     public List<String> getYieldsTo() {

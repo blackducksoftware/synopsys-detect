@@ -65,9 +65,8 @@ public class HelpJsonManager {
         HelpJsonSearchRule searchRule = new HelpJsonSearchRule();
         searchRule.setMaxDepth(entryPoint.getSearchRule().getMaxDepth());
         searchRule.setNestable(entryPoint.getSearchRule().isNestable());
-        searchRule.setNestInvisible(entryPoint.getSearchRule().isNestInvisible());
         searchRule.setYieldsTo(entryPoint.getSearchRule().getYieldsTo().stream().map(Object::toString).collect(Collectors.toList()));
-        //TODO(detectors): Should we capture the detectable?
+        //TODO(detectors): Should we capture the more complex nesting rules?
 
         return entryPointData;
     }

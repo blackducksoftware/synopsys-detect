@@ -10,12 +10,11 @@ import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.result.ExcludedDetectorResult;
 import com.synopsys.integration.detector.result.ForcedNestedPassedDetectorResult;
 import com.synopsys.integration.detector.result.MaxDepthExceededDetectorResult;
+import com.synopsys.integration.detector.result.NotNestableBeneathDetectableDetectorResult;
 import com.synopsys.integration.detector.result.NotNestableBeneathDetectorResult;
-import com.synopsys.integration.detector.result.NotSelfNestableDetectorResult;
-import com.synopsys.integration.detector.result.NotSelfTypeNestableDetectorResult;
 import com.synopsys.integration.detector.result.PassedDetectorResult;
 import com.synopsys.integration.detector.result.YieldedDetectorResult;
-import com.synopsys.integration.detector.rule.DetectorRule;
+import com.synopsys.integration.detector.rule.DetectableDefinition;
 import com.synopsys.integration.detector.rule.SearchRule;
 
 public class SearchEvaluator {
@@ -34,7 +33,6 @@ public class SearchEvaluator {
         }
 
         Set<DetectorType> yieldTo = environment.getAppliedSoFar().stream()
-            .map(DetectorRule::getDetectorType)
             .filter(it -> rule.getYieldsTo().contains(it))
             .collect(Collectors.toSet());
 
@@ -44,29 +42,31 @@ public class SearchEvaluator {
         }
 
         boolean nestable = rule.isNestable();
-        boolean selfNestable = rule.isSelfNestable();
-        boolean selfTypeNestable = rule.isSelfTypeNestable();
-        Set<DetectorType> notNestableBeneath = rule.getNotNestableBeneath();
+        Set<DetectorType> notNestableBeneathDetectors = rule.getNotNestableBeneath();
+        Set<String> notNestableBeneathDetectableNames = rule.getNotNestableBeneathDetectables().stream()
+            .map(DetectableDefinition::getName)
+            .collect(Collectors.toSet());
+
         if (searchOptions.isForceNestedSearch()) {
             return new ForcedNestedPassedDetectorResult();
         } else if (nestable) {
-            if (!selfNestable && environment.getAppliedToParent().stream().map(DetectorRule::getDetectorType).anyMatch(detectorType::equals)) {
-                return new NotSelfNestableDetectorResult();
-            }
-            if (!selfTypeNestable && environment.getAppliedToParent().stream().map(DetectorRule::getDetectorType).anyMatch(detectorType::equals)) {
-                return new NotSelfTypeNestableDetectorResult(detectorType);
-            }
-            if (notNestableBeneath.size() > 0) {
+            if (notNestableBeneathDetectors.size() > 0) {
                 Optional<DetectorType> notNestableBeneathType = environment.getAppliedToParent().stream()
-                    .map(DetectorRule::getDetectorType)
-                    .filter(notNestableBeneath::contains)
+                    .filter(notNestableBeneathDetectors::contains)
                     .findAny();
                 if (notNestableBeneathType.isPresent()) {
                     return new NotNestableBeneathDetectorResult(notNestableBeneathType.get());
                 }
             }
-            //} else if (environment.getAppliedToParent().stream().anyMatch(it -> !it.isNestInvisible())) { TODO: (Nest invisible?)
-            //    return new NotNestableDetectorResult();
+            if (notNestableBeneathDetectableNames.size() > 0) {
+                Optional<String> notNestableBeneathName = environment.getExtractedInParent().stream()
+                    .map(DetectableDefinition::getName)
+                    .filter(notNestableBeneathDetectableNames::contains)
+                    .findAny();
+                if (notNestableBeneathName.isPresent()) {
+                    return new NotNestableBeneathDetectableDetectorResult(notNestableBeneathName.get());
+                }
+            }
         }
 
         return new PassedDetectorResult();

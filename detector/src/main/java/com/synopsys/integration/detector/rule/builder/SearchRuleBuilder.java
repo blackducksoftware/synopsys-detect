@@ -3,30 +3,37 @@ package com.synopsys.integration.detector.rule.builder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.SearchRule;
 
 public class SearchRuleBuilder {
-    private int maxDepth;
-    private boolean nestable;
-    private boolean selfNestable = false;
+    private final DetectorType owningDetectorType;
 
-    private boolean selfTypeNestable = false;
-    private boolean nestInvisible = false;
+    private int maxDepth;
+
+    private boolean nestable;
     private final Set<DetectorType> notNestableBeneath = new HashSet<>();
     private final Set<Class<?>> notNestableBeneathDetectables = new HashSet<>();
+
     private final Set<DetectorType> yieldsTo = new HashSet<>();
 
-    public SearchRuleBuilder() {
+    public SearchRuleBuilder(DetectorType owningDetectorType) {
+        this.owningDetectorType = owningDetectorType;
     }
 
     public SearchRuleBuilder defaults() {
-        return noMaxDepth().nestable().notSelfNestable().notSelfTypeNestable().visibleToNesting();
+        return noMaxDepth()
+            .nestable()
+            .notNestableBeneath(owningDetectorType);
     }
 
     public SearchRuleBuilder defaultLock() {
-        return noMaxDepth().nestable().selfNestable().selfTypeNestable().visibleToNesting();
+        return noMaxDepth()
+            .nestable();
     }
 
     public SearchRuleBuilder noMaxDepth() {
@@ -43,38 +50,8 @@ public class SearchRuleBuilder {
         return this;
     }
 
-    public SearchRuleBuilder isSelfNestable(boolean selfNestable) {
-        this.selfNestable = selfNestable;
-        return this;
-    }
-
-    public SearchRuleBuilder isNestInvisible(boolean nestable) {
-        this.nestInvisible = nestable;
-        return this;
-    }
-
-    public SearchRuleBuilder invisibleToNesting() {
-        return isNestInvisible(true);
-    }
-
-    public SearchRuleBuilder visibleToNesting() {
-        return isNestInvisible(false);
-    }
-
     public SearchRuleBuilder nestable() {
         return isNestable(true);
-    }
-
-    public SearchRuleBuilder notNestable() {
-        return isNestable(false);
-    }
-
-    public SearchRuleBuilder selfNestable() {
-        return isSelfNestable(true);
-    }
-
-    public SearchRuleBuilder notSelfNestable() {
-        return isSelfNestable(false);
     }
 
     public SearchRuleBuilder notNestableBeneath(DetectorType... detectorType) {
@@ -91,26 +68,14 @@ public class SearchRuleBuilder {
         return nestable().notNestableBeneath(detectorType);
     }
 
-    // Not self nestable by DetectorType rather than the Rule itself
-    public SearchRuleBuilder notSelfTypeNestable() {
-        selfTypeNestable = false;
-        return this;
-    }
-
-    public SearchRuleBuilder selfTypeNestable() {
-        selfTypeNestable = true;
-        return this;
-    }
-
-    public SearchRule build() {
+    public SearchRule build(@NotNull DetectableLookup lookup) {
         return new SearchRule(
             maxDepth,
             nestable,
-            selfNestable,
-            selfTypeNestable,
-            nestInvisible,
             notNestableBeneath,
-            notNestableBeneathDetectables,
+            notNestableBeneathDetectables.stream()
+                .map(lookup::forClass)
+                .collect(Collectors.toSet()),
             yieldsTo
         );
     }
@@ -118,5 +83,9 @@ public class SearchRuleBuilder {
     public SearchRuleBuilder yieldsTo(DetectorType... detectorTypes) {
         yieldsTo.addAll(Arrays.asList(detectorTypes));
         return this;
+    }
+
+    public void notSelfNestable() {
+        notNestableBeneath(owningDetectorType);
     }
 }

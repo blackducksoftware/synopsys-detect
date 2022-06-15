@@ -18,7 +18,7 @@ public enum DetectorStatusCode {
     INSPECTOR_NOT_FOUND("The necessary inspector was not found"),
     MAX_DEPTH_EXCEEDED("Max depth was exceeded."),
     NOT_NESTABLE("Not nestable and a detector already applied in parent directory."),
-    NOT_SELF_NESTABLE("Nestable but this detector already applied in a parent directory."),
+    NOT_NESTABLE_BENEATH("Nestable but another detector prevented nesting."),
     NPM_NODE_MODULES_NOT_FOUND("A package.json was located in the target project, but the node_modules folder was NOT located."),
     PASSED("Detector passed."),
     PIPFILE_LOCK_NOT_FOUND("A Pipfile was located in the target project, but a Pipfile.lock was NOT located."),

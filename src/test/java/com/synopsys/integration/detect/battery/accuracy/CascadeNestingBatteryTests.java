@@ -38,7 +38,7 @@ class CascadeNestingBatteryTests { //TODO(detector-tests): Way too much noise in
 
         test.sourceFileNamed("pom.xml", "");
         test.sourceFileNamed("child/pom.xml", "");
-        test.executableWithExitCode(DetectProperties.DETECT_MAVEN_PATH, "-1"); //TODO: Is there a better way to force an executable not found? Is it safe to assume an exe won't be?
+        test.executableWithExitCode(DetectProperties.DETECT_MAVEN_PATH, "-1");
         DetectOutput output = test.run();
 
         FormattedOutputAssert statusAssert = new FormattedOutputAssert(output.getStatusJson());

@@ -58,163 +58,207 @@ public class DetectorRuleFactory {
         DetectorRuleSetBuilder rules = new DetectorRuleSetBuilder(detectableFactory);
 
         rules.addDetector(DetectorType.CARGO, detector -> {
-            detector.entryPoint(CargoLockDetectable.class);
+            detector.entryPoint(CargoLockDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.CARTHAGE, detector -> {
-            detector.entryPoint(CarthageLockDetectable.class);
+            detector.entryPoint(CarthageLockDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.COCOAPODS, detector -> {
-            detector.entryPoint(PodlockDetectable.class);
+            detector.entryPoint(PodlockDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.BITBAKE, detector -> {
-            detector.entryPoint(BitbakeDetectable.class);
+            detector.entryPoint(BitbakeDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.XCODE, detector -> {
-            detector.entryPoint(XcodeProjectDetectable.class);
-            detector.entryPoint(XcodeWorkspaceDetectable.class);
+            detector.entryPoint(XcodeProjectDetectable.class)
+                .search().defaults();
+            detector.entryPoint(XcodeWorkspaceDetectable.class)
+                .search().defaults();
         }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.SWIFT, detector -> {
-                detector.entryPoint(SwiftPackageResolvedDetectable.class);
-                detector.entryPoint(SwiftCliDetectable.class);
-            }).allEntryPointsFallbackToNext()
-            .nestableExceptTo(DetectorType.XCODE);
+            detector.entryPoint(SwiftPackageResolvedDetectable.class)
+                .search().defaults().nestableExceptTo(DetectorType.XCODE);
+            detector.entryPoint(SwiftCliDetectable.class)
+                .search().defaults().nestableExceptTo(DetectorType.XCODE);
+        }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.CONAN, detector -> {
-            detector.entryPoint(ConanLockfileDetectable.class);
-            detector.entryPoint(ConanCliDetectable.class);
+            detector.entryPoint(ConanLockfileDetectable.class)
+                .search().defaults();
+            detector.entryPoint(ConanCliDetectable.class)
+                .search().defaults();
         }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.CONDA, detector -> {
-            detector.entryPoint(CondaCliDetectable.class);
+            detector.entryPoint(CondaCliDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.CPAN, detector -> {
-            detector.entryPoint(CpanCliDetectable.class);
+            detector.entryPoint(CpanCliDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.CRAN, detector -> {
-            detector.entryPoint(PackratLockDetectable.class);
+            detector.entryPoint(PackratLockDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.PACKAGIST, detector -> {
-            detector.entryPoint(ComposerLockDetectable.class);
+            detector.entryPoint(ComposerLockDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.DART, detector -> {
-            detector.entryPoint(DartPubDepDetectable.class);
+            detector.entryPoint(DartPubDepDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.GO_MOD, detector -> {
-            detector.entryPoint(GoModCliDetectable.class);
+            detector.entryPoint(GoModCliDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.GO_DEP, detector -> {
-            detector.entryPoint(GoDepLockDetectable.class);
+            detector.entryPoint(GoDepLockDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.GO_VNDR, detector -> {
-            detector.entryPoint(GoVndrDetectable.class);
+            detector.entryPoint(GoVndrDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.GO_VENDOR, detector -> {
-            detector.entryPoint(GoVendorDetectable.class);
+            detector.entryPoint(GoVendorDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.GO_GRADLE, detector -> {
-            detector.entryPoint(GoGradleDetectable.class);
+            detector.entryPoint(GoGradleDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.GRADLE, detector -> {
             detector.entryPoint(GradleInspectorDetectable.class)
-                .fallback(GradleProjectInspectorDetectable.class);
+                .fallback(GradleProjectInspectorDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.IVY, detector -> {
-            detector.entryPoint(IvyParseDetectable.class);
+            detector.entryPoint(IvyParseDetectable.class)
+                .search().defaultLock();
         });
 
         rules.addDetector(DetectorType.HEX, detector -> {
-            detector.entryPoint(RebarDetectable.class);
+            detector.entryPoint(RebarDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.MAVEN, detector -> {
             detector.entryPoint(MavenPomDetectable.class)
-                .fallback(MavenProjectInspectorDetectable.class);
+                .fallback(MavenProjectInspectorDetectable.class)
+                .search().defaults();
 
             detector.entryPoint(MavenPomWrapperDetectable.class)
-                .fallback(MavenProjectInspectorDetectable.class);
+                .fallback(MavenProjectInspectorDetectable.class)
+                .search().defaults();
 
             detector.entryPoint(MavenProjectInspectorDetectable.class)
                 .search()
+                .noMaxDepth()
                 .nestable()
                 .notNestableBeneath(MavenPomDetectable.class, MavenPomWrapperDetectable.class);
         });
 
         rules.addDetector(DetectorType.LERNA, detector -> {
-            detector.entryPoint(LernaDetectable.class);
+            detector.entryPoint(LernaDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.YARN, detector -> {
-            detector.entryPoint(YarnLockDetectable.class);
+            detector.entryPoint(YarnLockDetectable.class)
+                .search().defaultLock();
         }).yieldsTo(DetectorType.LERNA);
 
         rules.addDetector(DetectorType.NPM, detector -> {
-                detector.entryPoint(NpmPackageLockDetectable.class);
-                detector.entryPoint(NpmShrinkwrapDetectable.class);
-                detector.entryPoint(NpmCliDetectable.class);
-                detector.entryPoint(NpmPackageJsonParseDetectable.class);
+                detector.entryPoint(NpmPackageLockDetectable.class)
+                    .search().defaultLock();
+                detector.entryPoint(NpmShrinkwrapDetectable.class)
+                    .search().defaultLock();
+                detector.entryPoint(NpmCliDetectable.class)
+                    .search().defaults();
+                detector.entryPoint(NpmPackageJsonParseDetectable.class)
+                    .search().defaults(); //maybe this one should be defaultLock?
             }).allEntryPointsFallbackToNext()
             .yieldsTo(DetectorType.LERNA, DetectorType.YARN, DetectorType.PNPM);
 
         rules.addDetector(DetectorType.PNPM, detector -> {
             detector.entryPoint(PnpmLockDetectable.class)
-                .fallback(NpmCliDetectable.class);
+                .search().defaultLock();
         }).yieldsTo(DetectorType.LERNA);
 
         rules.addDetector(DetectorType.NUGET, detector -> {
             //four different detectables, last one will be the project inspector
             detector.entryPoint(NugetSolutionDetectable.class)
-                .fallback(NugetProjectInspectorDetectable.class);
+                .fallback(NugetProjectInspectorDetectable.class)
+                .search().defaults();
 
             detector.entryPoint(NugetProjectDetectable.class)
-                .fallback(NugetProjectInspectorDetectable.class);
+                .fallback(NugetProjectInspectorDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.POETRY, detector -> {
-            detector.entryPoint(PoetryDetectable.class);
+            detector.entryPoint(PoetryDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.PIP, detector -> {
-            detector.entryPoint(PipenvDetectable.class);
-            detector.entryPoint(PipInspectorDetectable.class);
-            detector.entryPoint(PipfileLockDetectable.class);
+            detector.entryPoint(PipenvDetectable.class)
+                .search().defaults();
+            detector.entryPoint(PipInspectorDetectable.class)
+                .search().defaults();
+            detector.entryPoint(PipfileLockDetectable.class)
+                .search().defaults();
         }).yieldsTo(DetectorType.POETRY);
 
         rules.addDetector(DetectorType.RUBYGEMS, detector -> {
-            detector.entryPoint(GemlockDetectable.class);
-            detector.entryPoint(GemspecParseDetectable.class);
+            detector.entryPoint(GemlockDetectable.class)
+                .search().defaults();//should this be default lock?
+            detector.entryPoint(GemspecParseDetectable.class)
+                .search().defaults();
         }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.GIT, detector -> {
-            detector.entryPoint(GitDetectable.class);
-            detector.entryPoint(GitParseDetectable.class); //TODO: Is this necessary?
+            detector.entryPoint(GitDetectable.class)
+                .search().defaults();
+            detector.entryPoint(GitParseDetectable.class)
+                .search().defaults();
         }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.SBT, detector -> {
-            detector.entryPoint(SbtDetectable.class);
+            detector.entryPoint(SbtDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.PEAR, detector -> {
-            detector.entryPoint(PearCliDetectable.class);
+            detector.entryPoint(PearCliDetectable.class)
+                .search().defaults();
         });
 
         rules.addDetector(DetectorType.CLANG, detector -> {
-            detector.entryPoint(ClangDetectable.class);
+            detector.entryPoint(ClangDetectable.class)
+                .search().defaults();
         });
 
         return rules.build();
