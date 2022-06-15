@@ -2,11 +2,15 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.bdio2.Bdio;
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
@@ -18,21 +22,25 @@ import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.sigma.SigmaCodeLocationData;
 import com.synopsys.integration.detect.tool.sigma.SigmaReport;
+import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detectable.util.ExternalIdCreator;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
 public class SigmaScanStepRunner {
     private static final String SCAN_CREATOR = "sigma";
 
     private final OperationFactory operationFactory;
+    private final IntegrationEscapeUtil integrationEscapeUtil; //TODO- IntegrationEscapeUtil's methods should be static
 
     public SigmaScanStepRunner(
         OperationFactory operationFactory
     ) {
         this.operationFactory = operationFactory;
+        this.integrationEscapeUtil = new IntegrationEscapeUtil();
     }
 
     public SigmaCodeLocationData runSigmaOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
@@ -111,28 +119,20 @@ public class SigmaScanStepRunner {
         return SigmaReport.SUCCESS_OFFLINE(scanTarget);
     }
 
+    //TODO- look into extracting scan initiation to another class
+
     //TODO- this should only be necessary if we didn't already upload BDIO during DETECTORS phase
     public String initiateScan(NameVersion projectNameVersion, File sourcePath, Bdio2FileUploadService bdio2FileUploadService, String codeLocationNameOverride)
         throws OperationException, IntegrationException {
         DetectCodeLocation codeLocation = createSimpleCodeLocation(projectNameVersion, sourcePath);
-        BdioCodeLocationResult bdioCodeLocationResult = operationFactory.createBdioCodeLocationsFromDetectCodeLocations(
+        BdioCodeLocationResult bdioCodeLocationResult = overrideBdioCodeLocationResult(codeLocationNameOverride, operationFactory.createBdioCodeLocationsFromDetectCodeLocations(
             Collections.singletonList(codeLocation),
             projectNameVersion
-        );
-        UploadTarget uploadTarget = createUploadTarget(bdioCodeLocationResult, projectNameVersion, codeLocationNameOverride);
-        return bdio2FileUploadService.uploadFileAndGetResult(uploadTarget).getScanId();
-    }
+        ));
 
-    private UploadTarget createUploadTarget(BdioCodeLocationResult bdioCodeLocationResult, NameVersion projectNameVersion, String codeLocationNameOverride)
-        throws OperationException {
-        UploadTarget uploadTargetWithBadCodeLocationName = operationFactory.createBdio2Files(bdioCodeLocationResult, projectNameVersion, Bdio.ScanType.INFRASTRUCTURE_AS_CODE)
+        UploadTarget uploadTarget = operationFactory.createBdio2Files(bdioCodeLocationResult, projectNameVersion, Bdio.ScanType.INFRASTRUCTURE_AS_CODE)
             .get(0);
-        return UploadTarget.createWithMediaType(
-            projectNameVersion,
-            codeLocationNameOverride, //TODO- name doesn't ever get used...
-            uploadTargetWithBadCodeLocationName.getUploadFile(),
-            uploadTargetWithBadCodeLocationName.getMediaType()
-        );
+        return bdio2FileUploadService.uploadFileAndGetResult(uploadTarget).getScanId();
     }
 
     private DetectCodeLocation createSimpleCodeLocation(NameVersion projectNameVersion, File sourcePath) {
@@ -142,5 +142,21 @@ public class SigmaScanStepRunner {
             ExternalIdCreator.nameVersion(CodeLocationConverter.DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion()),
             SCAN_CREATOR
         );
+    }
+
+    private BdioCodeLocationResult overrideBdioCodeLocationResult(String codeLocationNameOverride, BdioCodeLocationResult original) {
+        List<BdioCodeLocation> bdioCodeLocations = original.getBdioCodeLocations().stream()
+            .map(bdioCodeLocation -> new BdioCodeLocation(bdioCodeLocation.getDetectCodeLocation(), codeLocationNameOverride, createBdioName(codeLocationNameOverride)))
+            .collect(Collectors.toList());
+        Map<DetectCodeLocation, String> codeLocationNameMap = new HashMap<>();
+        Map.Entry<DetectCodeLocation, String> entry = original.getCodeLocationNames().entrySet().iterator().next();
+        codeLocationNameMap.put(entry.getKey(), codeLocationNameOverride);
+
+        return new BdioCodeLocationResult(bdioCodeLocations, codeLocationNameMap);
+    }
+
+    private String createBdioName(String codeLocationName) {
+        String filenameRaw = StringUtils.replaceEach(codeLocationName, new String[] { "/", "\\", " " }, new String[] { "_", "_", "_" });
+        return integrationEscapeUtil.replaceWithUnderscore(filenameRaw);
     }
 }
