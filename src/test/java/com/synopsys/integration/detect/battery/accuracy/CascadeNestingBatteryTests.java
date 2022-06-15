@@ -27,30 +27,4 @@ class CascadeNestingBatteryTests { //TODO(detector-tests): Way too much noise in
         statusAssert.assertDetectorCount(1, "Expected only the Maven CLI to have run.");
         statusAssert.assertDetectableStatusNamed("Maven CLI", DetectorStatusCode.PASSED);
     }
-
-    @Test
-    void mavenParseNests() {
-        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("maven-cli-parse-nest", "none");
-        test.enableDiagnostics();
-        test.withToolsValue("DETECTOR");
-        test.property(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH, "2");
-        test.sourceDirectoryNamed("maven-nest");
-
-        test.sourceFileNamed("pom.xml", "");
-        test.sourceFileNamed("child/pom.xml", "");
-        test.executableWithExitCode(DetectProperties.DETECT_MAVEN_PATH, "-1");
-        DetectOutput output = test.run();
-
-        FormattedOutputAssert statusAssert = new FormattedOutputAssert(output.getStatusJson());
-        statusAssert.assertDetectorCount(3, "Expected (1) Maven CLI and (2) Maven Project Inspectors to have run.");
-        statusAssert.assertDetectableStatusNamed("Maven CLI", DetectorStatusCode.ATTEMPTED);
-        statusAssert.assertDetectableStatus(
-            detectable -> detectable.folder.endsWith("child") && detectable.detectorName.equals("Maven Project Inspector"),
-            DetectorStatusCode.PASSED
-        );
-        statusAssert.assertDetectableStatus(
-            detectable -> !detectable.folder.endsWith("child") && detectable.detectorName.equals("Maven Project Inspector"),
-            DetectorStatusCode.PASSED
-        );
-    }
 }

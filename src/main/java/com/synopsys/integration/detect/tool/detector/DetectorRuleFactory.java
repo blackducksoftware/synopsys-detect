@@ -54,6 +54,7 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.detector.rule.builder.DetectorRuleSetBuilder;
 
 public class DetectorRuleFactory {
+    //TODO (8.0.0): Decide if things called lock should use the lock default or not.
     public DetectorRuleSet createRules(DetectDetectableFactory detectableFactory) {
         DetectorRuleSetBuilder rules = new DetectorRuleSetBuilder(detectableFactory);
 
@@ -78,10 +79,13 @@ public class DetectorRuleFactory {
         });
 
         rules.addDetector(DetectorType.XCODE, detector -> {
-            detector.entryPoint(XcodeProjectDetectable.class)
-                .search().defaults();
             detector.entryPoint(XcodeWorkspaceDetectable.class)
                 .search().defaults();
+            detector.entryPoint(XcodeProjectDetectable.class)
+                .search()
+                .noMaxDepth()
+                .nestable()
+                .notNestableBeneath(XcodeWorkspaceDetectable.class);
         }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.SWIFT, detector -> {
@@ -172,12 +176,6 @@ public class DetectorRuleFactory {
             detector.entryPoint(MavenPomWrapperDetectable.class)
                 .fallback(MavenProjectInspectorDetectable.class)
                 .search().defaults();
-
-            detector.entryPoint(MavenProjectInspectorDetectable.class)
-                .search()
-                .noMaxDepth()
-                .nestable()
-                .notNestableBeneath(MavenPomDetectable.class, MavenPomWrapperDetectable.class);
         });
 
         rules.addDetector(DetectorType.LERNA, detector -> {

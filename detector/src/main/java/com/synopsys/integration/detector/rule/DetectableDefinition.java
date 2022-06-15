@@ -3,7 +3,7 @@ package com.synopsys.integration.detector.rule;
 import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detector.base.DetectableCreatable;
 
-public class DetectableDefinition { //TODO: Could add an id field that is set from .getClassName(), right now name is used as an ID for applied in parent. OR could make this hashable or something.
+public class DetectableDefinition { //TODO (8.0.0): Could add an id field that is set from .getClassName(), right now name is used as an ID for applied in parent. OR could make this hashable or something.
     private final DetectableCreatable detectableCreatable;
     private final String name;
     private final String forge;
