@@ -21,8 +21,8 @@ import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
+import com.synopsys.integration.detect.tool.iac.IacScanCodeLocationData;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
-import com.synopsys.integration.detect.tool.sigma.SigmaCodeLocationData;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
@@ -61,9 +61,9 @@ public class IntelligentModeStepRunner {
             operationFactory::publishImpactSuccess,
             operationFactory::publishImpactFailure
         );
-        stepHelper.runToolIfIncluded(DetectTool.SIGMA, "Sigma", () -> {
-            SigmaScanStepRunner sigmaScanStepRunner = new SigmaScanStepRunner(operationFactory);
-            sigmaScanStepRunner.runSigmaOffline();
+        stepHelper.runToolIfIncluded(DetectTool.IAC_SCAN, "IaC Scanner", () -> {
+            IacScanStepRunner iacScanStepRunner = new IacScanStepRunner(operationFactory);
+            iacScanStepRunner.runIacScanOffline();
         });
     }
 
@@ -116,10 +116,10 @@ public class IntelligentModeStepRunner {
             operationFactory::publishImpactFailure
         );
 
-        stepHelper.runToolIfIncluded(DetectTool.SIGMA, "Sigma", () -> {
-            SigmaScanStepRunner sigmaScanStepRunner = new SigmaScanStepRunner(operationFactory);
-            SigmaCodeLocationData sigmaCodeLocationData = sigmaScanStepRunner.runSigmaOnline(projectNameVersion, blackDuckRunData);
-            codeLocationAccumulator.addNonWaitableCodeLocation(sigmaCodeLocationData.getCodeLocationNames());
+        stepHelper.runToolIfIncluded(DetectTool.IAC_SCAN, "IaC Scanner", () -> {
+            IacScanStepRunner iacScanStepRunner = new IacScanStepRunner(operationFactory);
+            IacScanCodeLocationData iacScanCodeLocationData = iacScanStepRunner.runIacScanOnline(projectNameVersion, blackDuckRunData);
+            codeLocationAccumulator.addNonWaitableCodeLocation(iacScanCodeLocationData.getCodeLocationNames());
         });
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {

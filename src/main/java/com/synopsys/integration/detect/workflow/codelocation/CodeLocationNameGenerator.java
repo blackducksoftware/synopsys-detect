@@ -120,11 +120,11 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
     }
 
-    public String createSigmaCodeLocationName(
+    public String createIacScanCodeLocationName(
         File targetFile, String projectName, String projectVersionName, @Nullable String prefix,
         @Nullable String suffix
     ) {
-        String codeLocationTypeString = CodeLocationNameType.SIGMA.toString().toLowerCase();
+        String codeLocationTypeString = CodeLocationNameType.IAC.toString().toLowerCase();
 
         String canonicalFileName = DetectFileUtils.tryGetCanonicalName(targetFile);
         List<String> fileCodeLocationNamePieces = Arrays.asList(canonicalFileName, projectName, projectVersionName);

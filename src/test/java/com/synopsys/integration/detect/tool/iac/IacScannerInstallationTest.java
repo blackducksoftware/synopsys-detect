@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.sigma;
+package com.synopsys.integration.detect.tool.iac;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 
 @Tag("integration")
-public class SigmaInstallationTest {
+public class IacScannerInstallationTest {
     @Disabled //TODO- remove this when Detect tests with a BD version >= 2022.7.0
     @Test
     public void testInstall() throws IOException, IntegrationException {
@@ -34,15 +34,15 @@ public class SigmaInstallationTest {
         Mockito.when(detectInfo.getCurrentOs()).thenReturn(detectInfoUtility.findOperatingSystemType());
 
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
-        File installationDir = Files.createTempDirectory("SigmaInstallationTest").toFile();
-        Mockito.when(directoryManager.getPermanentDirectory(SigmaInstaller.SIGMA_INSTALL_DIR_NAME)).thenReturn(installationDir);
+        File installationDir = Files.createTempDirectory("IacScannerInstallationTest").toFile();
+        Mockito.when(directoryManager.getPermanentDirectory(IacScannerInstaller.IAC_SCANNER_INSTALL_DIR_NAME)).thenReturn(installationDir);
 
-        SigmaInstaller sigmaInstaller = new SigmaInstaller(blackDuckHttpClient, detectInfo, blackDuckHttpClient.getBlackDuckUrl(), directoryManager);
-        File sigma = sigmaInstaller.installOrUpdateScanner();
-        File versionFile = new File(installationDir, SigmaInstaller.SIGMA_INSTALLED_VERSION_FILE_NAME);
+        IacScannerInstaller iacScannerInstaller = new IacScannerInstaller(blackDuckHttpClient, detectInfo, blackDuckHttpClient.getBlackDuckUrl(), directoryManager);
+        File iacScanner = iacScannerInstaller.installOrUpdateScanner();
+        File versionFile = new File(installationDir, IacScannerInstaller.IAC_SCANNER_INSTALLED_VERSION_FILE_NAME);
 
-        Assertions.assertNotNull(sigma);
-        Assertions.assertEquals(SigmaInstaller.SIGMA_INSTALL_FILE_NAME, sigma.getName());
+        Assertions.assertNotNull(iacScanner);
+        Assertions.assertEquals(IacScannerInstaller.IAC_SCANNER_INSTALL_FILE_NAME, iacScanner.getName());
         Assertions.assertNotNull(versionFile);
         Assertions.assertNotEquals(0, FileUtils.readFileToString(versionFile, Charset.defaultCharset()).length());
     }

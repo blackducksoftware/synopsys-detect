@@ -1,11 +1,11 @@
-package com.synopsys.integration.detect.tool.sigma;
+package com.synopsys.integration.detect.tool.iac;
 
 import java.util.Set;
 
-public class SigmaCodeLocationData {
+public class IacScanCodeLocationData {
     private final Set<String> codeLocationNames;
 
-    public SigmaCodeLocationData(Set<String> codeLocationNames) {
+    public IacScanCodeLocationData(Set<String> codeLocationNames) {
         this.codeLocationNames = codeLocationNames;
     }
 

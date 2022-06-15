@@ -1567,32 +1567,32 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
-    public static final PathListProperty DETECT_SIGMA_SCAN_PATHS =
-        PathListProperty.newBuilder("detect.sigma.scan.paths", emptyList())
-            .setInfo("Sigma Target Paths", DetectPropertyFromVersion.VERSION_7_14_0)
+    public static final PathListProperty DETECT_IAC_SCAN_PATHS =
+        PathListProperty.newBuilder("detect.iac.scan.paths", emptyList())
+            .setInfo("IaC Scan Target Paths", DetectPropertyFromVersion.VERSION_7_14_0)
             .setHelp(
-                "A comma-separated list of paths to perform Sigma scans on.",
-                "If this property is set, a Sigma scan will be performed on each of the paths provided. If this property is not set, but Sigma is enabled via detect.tools, the Sigma target path is the source path (see property detect.source.path)."
+                "A comma-separated list of paths to perform IaC scans on.",
+                "If this property is set, an IaC scan will be performed on each of the paths provided. If this property is not set, but Iac Scanning is enabled via detect.tools, the IaC scan target path is the source path (see property detect.source.path)."
             )
-            .setGroups(DetectGroup.SIGMA, DetectGroup.GLOBAL)
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
             .setExample("/user/source/target1,/user/source/target2")
             .build();
 
-    public static final NullableStringProperty DETECT_SIGMA_SCAN_ARGUMENTS =
-        NullableStringProperty.newBuilder("detect.sigma.scan.arguments")
-            .setInfo("Sigma Arguments", DetectPropertyFromVersion.VERSION_7_14_0)
+    public static final NullableStringProperty DETECT_IAC_SCAN_ARGUMENTS =
+        NullableStringProperty.newBuilder("detect.iac.scan.arguments")
+            .setInfo("IaC Scan Arguments", DetectPropertyFromVersion.VERSION_7_14_0)
             .setHelp(
-                "A space-separated list of additional arguments to use when running Sigma.")
-            .setGroups(DetectGroup.SIGMA, DetectGroup.GLOBAL)
+                "A space-separated list of additional arguments to use when running the IaC Scanner.")
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
             .setExample("--follow-symlinks")
             .build();
 
-    public static final NullablePathProperty DETECT_SIGMA_LOCAL_PATH =
-        NullablePathProperty.newBuilder("detect.sigma.local.path")
-            .setInfo("Sigma Local Path", DetectPropertyFromVersion.VERSION_7_14_0)
+    public static final NullablePathProperty DETECT_IAC_SCANNER_LOCAL_PATH =
+        NullablePathProperty.newBuilder("detect.iac.scanner.local.path")
+            .setInfo("IaC Scanner Local Path", DetectPropertyFromVersion.VERSION_7_14_0)
             .setHelp(
-                "Use this property to specify the path to a local Sigma.")
-            .setGroups(DetectGroup.SIGMA, DetectGroup.GLOBAL)
+                "Use this property to specify the path to a local IaC Scanner.")
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathProperty DETECT_SOURCE_PATH =

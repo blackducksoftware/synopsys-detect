@@ -44,7 +44,7 @@ public class DirectoryManager {
         SCAN("scan"),
         SHARED("shared"),
         STATUS("status"),
-        SIGMA("sigma");
+        IAC("iac");
 
         private final String directoryName;
 
@@ -186,8 +186,8 @@ public class DirectoryManager {
         return getRunDirectory(RunDirectory.EXECUTABLES);
     }
 
-    public File getSigmaOutputDirectory() {
-        return getRunDirectory(RunDirectory.SIGMA);
+    public File getIacScanOutputDirectory() {
+        return getRunDirectory(RunDirectory.IAC);
     }
 
     public File getRunHomeDirectory() {

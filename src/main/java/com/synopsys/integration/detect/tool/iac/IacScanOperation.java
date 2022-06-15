@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.sigma;
+package com.synopsys.integration.detect.tool.iac;
 
 import java.io.File;
 import java.util.Arrays;
@@ -16,37 +16,37 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableFaile
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.Executable;
 
-public class SigmaScanOperation {
+public class IacScanOperation {
     private final DirectoryManager directoryManager;
     private final DetectExecutableRunner executableRunner;
 
-    public SigmaScanOperation(DirectoryManager directoryManager, DetectExecutableRunner executableRunner) {
+    public IacScanOperation(DirectoryManager directoryManager, DetectExecutableRunner executableRunner) {
         this.directoryManager = directoryManager;
         this.executableRunner = executableRunner;
     }
 
-    public File performSigmaScan(File scanTarget, File sigmaExe, @Nullable String additionalArguments, int count) throws IntegrationException {
+    public File performIacScan(File scanTarget, File iacScanExe, @Nullable String additionalArguments, int count) throws IntegrationException {
         String resultsFileName = String.format("results-%s.json", scanTarget.getName());
-        File outputDir = new File(directoryManager.getSigmaOutputDirectory(), "SIGMA-" + count);
+        File outputDir = new File(directoryManager.getIacScanOutputDirectory(), "SIGMA-" + count);
         outputDir.mkdirs();
         File resultsFile = new File(outputDir, resultsFileName);
 
-        List<String> sigmaArgs = new LinkedList<>();
-        sigmaArgs.add("analyze");
+        List<String> iacScanArgs = new LinkedList<>();
+        iacScanArgs.add("analyze");
         Optional.ofNullable(additionalArguments)
             .map(arg -> arg.split(" "))
-            .ifPresent(args -> sigmaArgs.addAll(Arrays.asList(args)));
-        sigmaArgs.add("-o");
-        sigmaArgs.add(resultsFile.getAbsolutePath());
-        sigmaArgs.add(scanTarget.getAbsolutePath());
+            .ifPresent(args -> iacScanArgs.addAll(Arrays.asList(args)));
+        iacScanArgs.add("-o");
+        iacScanArgs.add(resultsFile.getAbsolutePath());
+        iacScanArgs.add(scanTarget.getAbsolutePath());
 
-        Executable executable = ExecutableUtils.createFromTarget(scanTarget, ExecutableTarget.forFile(sigmaExe), sigmaArgs);
+        Executable executable = ExecutableUtils.createFromTarget(scanTarget, ExecutableTarget.forFile(iacScanExe), iacScanArgs);
         try {
             executableRunner.executeSuccessfully(executable);
             return resultsFile;
         } catch (ExecutableFailedException e) {
             throw new IntegrationException(String.format(
-                "Sigma scan command %s failed with code %d: %s",
+                "Iac scan command %s failed with code %d: %s",
                 executable.getExecutableDescription(),
                 e.getReturnCode(),
                 e.getMessage()

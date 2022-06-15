@@ -8,5 +8,5 @@ public enum DetectTool {
     POLARIS,
     DOCKER,
     BAZEL,
-    SIGMA
+    IAC_SCAN
 }

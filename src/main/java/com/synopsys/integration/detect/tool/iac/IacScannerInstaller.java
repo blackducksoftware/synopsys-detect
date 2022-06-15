@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.sigma;
+package com.synopsys.integration.detect.tool.iac;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,17 +23,17 @@ import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.OperatingSystemType;
 
-public class SigmaInstaller {
-    public static final String SIGMA_DOWNLOAD_URL = "api/tools/sigma";
-    public static final String SIGMA_DOWNLOAD_ARCH_QUERY_PARAMETER_KEY = "arch";
-    public static final String WINDOWS_SIGMA_DOWNLOAD_QUERY_PARAMETER_VALUE = "windows_x86_64";
-    public static final String MAC_SIGMA_DOWNLOAD_QUERY_PARAMETER_VALUE = "macos_x86_64";
-    public static final String LINUX_SIGMA_DOWNLOAD_QUERY_PARAMETER_VALUE = "linux_x86_64";
-    public static final String SIGMA_DOWNLOAD_VERSION_HEADER = "Version";
-    public static final String SIGMA_INSTALLED_VERSION_FILE_NAME = "sigma-version.txt";
+public class IacScannerInstaller {
+    public static final String IAC_SCANNER_DOWNLOAD_URL = "api/tools/sigma";
+    public static final String IAC_SCANNER_DOWNLOAD_ARCH_QUERY_PARAMETER_KEY = "arch";
+    public static final String WINDOWS_IAC_SCANNER_DOWNLOAD_QUERY_PARAMETER_VALUE = "windows_x86_64";
+    public static final String MAC_IAC_SCANNER_DOWNLOAD_QUERY_PARAMETER_VALUE = "macos_x86_64";
+    public static final String LINUX_IAC_SCANNER_DOWNLOAD_QUERY_PARAMETER_VALUE = "linux_x86_64";
+    public static final String IAC_SCANNER_DOWNLOAD_VERSION_HEADER = "Version";
+    public static final String IAC_SCANNER_INSTALLED_VERSION_FILE_NAME = "iac-scanner-version.txt";
 
-    public static final String SIGMA_INSTALL_DIR_NAME = "sigma";
-    public static final String SIGMA_INSTALL_FILE_NAME = "sigma";
+    public static final String IAC_SCANNER_INSTALL_DIR_NAME = "iac";
+    public static final String IAC_SCANNER_INSTALL_FILE_NAME = "iac";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -42,7 +42,7 @@ public class SigmaInstaller {
     private final HttpUrl blackDuckServerUrl;
     private final DirectoryManager directoryManager;
 
-    public SigmaInstaller(
+    public IacScannerInstaller(
         BlackDuckHttpClient blackDuckHttpClient, DetectInfo detectInfo,
         HttpUrl blackDuckServerUrl,
         DirectoryManager directoryManager
@@ -54,21 +54,21 @@ public class SigmaInstaller {
     }
 
     public File installOrUpdateScanner() throws IntegrationException {
-        File installDirectory = directoryManager.getPermanentDirectory(SIGMA_INSTALL_DIR_NAME);
+        File installDirectory = directoryManager.getPermanentDirectory(IAC_SCANNER_INSTALL_DIR_NAME);
         installDirectory.mkdirs();
-        File sigmaInstallation = new File(installDirectory, SIGMA_INSTALL_FILE_NAME);
+        File iacScannerInstallation = new File(installDirectory, IAC_SCANNER_INSTALL_FILE_NAME);
         HttpUrl downloadUrl = buildDownloadUrl();
         try {
             Optional<String> currentInstalledVersion = determineInstalledVersion(installDirectory);
-            String newInstalledVersion = download(sigmaInstallation, downloadUrl, currentInstalledVersion.orElse("")); // if we pass empty string, will trigger download
-            if (!sigmaInstallation.setExecutable(true)) {
-                throw new IntegrationException(String.format("Attempt to make %s executable failed.", sigmaInstallation.getAbsolutePath()));
+            String newInstalledVersion = download(iacScannerInstallation, downloadUrl, currentInstalledVersion.orElse("")); // if we pass empty string, will trigger download
+            if (!iacScannerInstallation.setExecutable(true)) {
+                throw new IntegrationException(String.format("Attempt to make %s executable failed.", iacScannerInstallation.getAbsolutePath()));
             }
             updateVersionFile(newInstalledVersion, installDirectory);
-            logger.info("Sigma was downloaded/found successfully: " + installDirectory.getAbsolutePath());
-            return sigmaInstallation;
+            logger.info("Iac Scanner was downloaded/found successfully: " + installDirectory.getAbsolutePath());
+            return iacScannerInstallation;
         } catch (Exception e) {
-            throw new BlackDuckIntegrationException("Sigma could not be downloaded successfully: " + e.getMessage(), e);
+            throw new BlackDuckIntegrationException("Iac Scanner could not be downloaded successfully: " + e.getMessage(), e);
         }
     }
 
@@ -77,27 +77,27 @@ public class SigmaInstaller {
         if (!blackDuckServerUrl.string().endsWith("/")) {
             url.append("/");
         }
-        url.append(SIGMA_DOWNLOAD_URL);
+        url.append(IAC_SCANNER_DOWNLOAD_URL);
         return new HttpUrl(url.toString());
     }
 
     private String determineDownloadArchQueryParameter() {
         if (detectInfo.getCurrentOs().equals(OperatingSystemType.MAC)) {
-            return MAC_SIGMA_DOWNLOAD_QUERY_PARAMETER_VALUE;
+            return MAC_IAC_SCANNER_DOWNLOAD_QUERY_PARAMETER_VALUE;
         } else if (detectInfo.getCurrentOs().equals(OperatingSystemType.WINDOWS)) {
-            return WINDOWS_SIGMA_DOWNLOAD_QUERY_PARAMETER_VALUE;
+            return WINDOWS_IAC_SCANNER_DOWNLOAD_QUERY_PARAMETER_VALUE;
         } else {
-            return LINUX_SIGMA_DOWNLOAD_QUERY_PARAMETER_VALUE;
+            return LINUX_IAC_SCANNER_DOWNLOAD_QUERY_PARAMETER_VALUE;
         }
     }
 
-    // Downloads Sigma from BD.  If successful, returns downloaded version, otherwise throws exception
+    // Downloads Iac Scanner from BD.  If successful, returns downloaded version, otherwise throws exception
     private String download(File installDirectory, HttpUrl downloadUrl, String currentVersion) throws IntegrationException, IOException {
         logger.debug(String.format("Downloading artifact to '%s' from '%s'.", installDirectory.getAbsolutePath(), downloadUrl));
         BlackDuckRequestBuilder requestBuilder = new BlackDuckRequestBuilder()
             .url(downloadUrl)
-            .addHeader(SIGMA_DOWNLOAD_VERSION_HEADER, currentVersion)
-            .addQueryParameter(SIGMA_DOWNLOAD_ARCH_QUERY_PARAMETER_KEY, determineDownloadArchQueryParameter());
+            .addHeader(IAC_SCANNER_DOWNLOAD_VERSION_HEADER, currentVersion)
+            .addQueryParameter(IAC_SCANNER_DOWNLOAD_ARCH_QUERY_PARAMETER_KEY, determineDownloadArchQueryParameter());
         BlackDuckRequest<BlackDuckResponse, UrlSingleResponse<BlackDuckResponse>> request = BlackDuckRequest.createSingleRequest(
             requestBuilder,
             downloadUrl,
@@ -111,9 +111,9 @@ public class SigmaInstaller {
                 InputStream jarBytesInputStream = response.getContent();
                 FileUtils.copyInputStreamToFile(jarBytesInputStream, installDirectory);
                 logger.debug("Successfully wrote response to file.");
-                return response.getHeaderValue(SIGMA_DOWNLOAD_VERSION_HEADER);
+                return response.getHeaderValue(IAC_SCANNER_DOWNLOAD_VERSION_HEADER);
             } else if (response.getStatusCode() == 304) {
-                logger.debug("Present Sigma installation is up to date - skipping download.");
+                logger.debug("Present Iac Scanner installation is up to date - skipping download.");
                 return currentVersion;
             } else {
                 logger.trace("Unable to download artifact. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
@@ -123,12 +123,12 @@ public class SigmaInstaller {
     }
 
     private void updateVersionFile(String installedVersion, File installDirectory) throws IOException {
-        File versionFile = new File(installDirectory, SIGMA_INSTALLED_VERSION_FILE_NAME);
+        File versionFile = new File(installDirectory, IAC_SCANNER_INSTALLED_VERSION_FILE_NAME);
         FileUtils.writeStringToFile(versionFile, installedVersion, Charset.defaultCharset());
     }
 
     private Optional<String> determineInstalledVersion(File installDirectory) throws IOException {
-        File versionFile = new File(installDirectory, SIGMA_INSTALLED_VERSION_FILE_NAME);
+        File versionFile = new File(installDirectory, IAC_SCANNER_INSTALLED_VERSION_FILE_NAME);
         if (versionFile.exists()) {
             return Optional.of(FileUtils.readFileToString(versionFile, Charset.defaultCharset()));
         } else {

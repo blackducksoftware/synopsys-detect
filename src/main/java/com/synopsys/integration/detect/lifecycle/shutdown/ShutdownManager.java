@@ -63,9 +63,9 @@ public class ShutdownManager {
             logger.debug("Will not cleanup Air Gap file.");
             cleanupToSkip.add(cleanupDecision.getAirGapZip());
         }
-        if (cleanupDecision.shouldPreserveSigma()) {
-            logger.debug("Will not cleanup sigma folder.");
-            cleanupToSkip.add(directoryManager.getSigmaOutputDirectory());
+        if (cleanupDecision.shouldPreserveIac()) {
+            logger.debug("Will not cleanup iac folder.");
+            cleanupToSkip.add(directoryManager.getIacScanOutputDirectory());
         }
         return cleanupToSkip;
     }

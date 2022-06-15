@@ -8,5 +8,5 @@ public enum DetectIssueType {
     BINARY_SCAN,
     IMPACT_ANALYSIS,
     DETECTABLE_TOOL,
-    SIGMA
+    IAC_SCANNER
 }

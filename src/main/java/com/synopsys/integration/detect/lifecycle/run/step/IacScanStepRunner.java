@@ -20,8 +20,8 @@ import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
-import com.synopsys.integration.detect.tool.sigma.SigmaCodeLocationData;
-import com.synopsys.integration.detect.tool.sigma.SigmaReport;
+import com.synopsys.integration.detect.tool.iac.IacScanCodeLocationData;
+import com.synopsys.integration.detect.tool.iac.IacScanReport;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
@@ -30,93 +30,93 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
-public class SigmaScanStepRunner {
-    private static final String SCAN_CREATOR = "sigma";
+public class IacScanStepRunner {
+    private static final String SCAN_CREATOR = "IaC";
 
     private final OperationFactory operationFactory;
     private final IntegrationEscapeUtil integrationEscapeUtil; //TODO- IntegrationEscapeUtil's methods should be static
 
-    public SigmaScanStepRunner(
+    public IacScanStepRunner(
         OperationFactory operationFactory
     ) {
         this.operationFactory = operationFactory;
         this.integrationEscapeUtil = new IntegrationEscapeUtil();
     }
 
-    public SigmaCodeLocationData runSigmaOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+    public IacScanCodeLocationData runIacScanOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException, IntegrationException {
-        List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
+        List<File> iacScanTargets = operationFactory.calculateIacScanScanTargets();
 
-        File sigmaExe;
-        Optional<File> localSigma = operationFactory.calculateUserProvidedSigmaPath();
-        if (localSigma.isPresent()) {
-            sigmaExe = localSigma.get();
-            validateSigma(sigmaExe);
+        File iacScanExe;
+        Optional<File> localIacScan = operationFactory.calculateUserProvidedIacScanPath();
+        if (localIacScan.isPresent()) {
+            iacScanExe = localIacScan.get();
+            validateIacScan(iacScanExe);
         } else {
-            sigmaExe = operationFactory.resolveSigmaOnline(blackDuckRunData);
+            iacScanExe = operationFactory.resolveIacScanOnline(blackDuckRunData);
         }
 
-        List<SigmaReport> sigmaReports = new LinkedList<>();
+        List<IacScanReport> iacScanReports = new LinkedList<>();
         int count = 0;
-        for (File scanTarget : sigmaScanTargets) {
-            SigmaReport sigmaReport = performOnlineScan(projectNameVersion, blackDuckRunData, sigmaExe, scanTarget, count++);
-            sigmaReports.add(sigmaReport);
+        for (File scanTarget : iacScanTargets) {
+            IacScanReport iacScanReport = performOnlineScan(projectNameVersion, blackDuckRunData, iacScanExe, scanTarget, count++);
+            iacScanReports.add(iacScanReport);
         }
-        operationFactory.publishSigmaReport(sigmaReports);
+        operationFactory.publishIacScanReport(iacScanReports);
 
-        Set<String> codeLocationNames = sigmaReports.stream()
-            .map(SigmaReport::getCodeLocationName)
+        Set<String> codeLocationNames = iacScanReports.stream()
+            .map(IacScanReport::getCodeLocationName)
             .filter(Optional::isPresent)
             .map(Optional::get)
             .collect(Collectors.toSet());
-        return new SigmaCodeLocationData(codeLocationNames);
+        return new IacScanCodeLocationData(codeLocationNames);
     }
 
-    public void runSigmaOffline() throws OperationException, IntegrationException {
-        List<File> sigmaScanTargets = operationFactory.calculateSigmaScanTargets();
-        File sigmaExe = operationFactory.calculateUserProvidedSigmaPath()
-            .orElseThrow(() -> new IntegrationException("Was not able to install or locate Sigma.  Must either connect to a Black Duck or provide a path to a local Sigma."));
-        validateSigma(sigmaExe);
-        List<SigmaReport> sigmaReports = new LinkedList<>();
+    public void runIacScanOffline() throws OperationException, IntegrationException {
+        List<File> iacScanTargets = operationFactory.calculateIacScanScanTargets();
+        File iacScanExe = operationFactory.calculateUserProvidedIacScanPath()
+            .orElseThrow(() -> new IntegrationException("Was not able to install or locate IacScan.  Must either connect to a Black Duck or provide a path to a local IacScan."));
+        validateIacScan(iacScanExe);
+        List<IacScanReport> iacScanReports = new LinkedList<>();
         int count = 0;
-        for (File scanTarget : sigmaScanTargets) {
-            SigmaReport sigmaReport = performOfflineScan(scanTarget, sigmaExe, count++);
-            sigmaReports.add(sigmaReport);
+        for (File scanTarget : iacScanTargets) {
+            IacScanReport iacScanReport = performOfflineScan(scanTarget, iacScanExe, count++);
+            iacScanReports.add(iacScanReport);
         }
-        operationFactory.publishSigmaReport(sigmaReports);
+        operationFactory.publishIacScanReport(iacScanReports);
     }
 
-    private void validateSigma(File sigmaExe) throws IntegrationException {
-        if (!sigmaExe.exists()) {
-            throw new IntegrationException(String.format("Provided Sigma %s does not exist.", sigmaExe.getAbsolutePath()));
+    private void validateIacScan(File iacScanExe) throws IntegrationException {
+        if (!iacScanExe.exists()) {
+            throw new IntegrationException(String.format("Provided Iac Scanner %s does not exist.", iacScanExe.getAbsolutePath()));
         }
     }
 
-    public SigmaReport performOnlineScan(
+    public IacScanReport performOnlineScan(
         NameVersion projectNameVersion,
         BlackDuckRunData blackDuckRunData,
-        File sigmaExe,
+        File iacScanExe,
         File scanTarget,
         int count
     ) {
         try {
-            File resultsFile = operationFactory.performSigmaScan(scanTarget, sigmaExe, count);
-            String codeLocationName = operationFactory.createSigmaCodeLocationName(scanTarget, projectNameVersion);
+            File resultsFile = operationFactory.performIacScanScan(scanTarget, iacScanExe, count);
+            String codeLocationName = operationFactory.createIacScanCodeLocationName(scanTarget, projectNameVersion);
             String scanId = initiateScan(projectNameVersion, scanTarget, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService(), codeLocationName);
-            operationFactory.uploadSigmaResults(blackDuckRunData, resultsFile, scanId);
-            return SigmaReport.SUCCESS_ONLINE(scanTarget, codeLocationName);
+            operationFactory.uploadIacScanResults(blackDuckRunData, resultsFile, scanId);
+            return IacScanReport.SUCCESS_ONLINE(scanTarget, codeLocationName);
         } catch (Exception e) {
-            return SigmaReport.FAILURE(scanTarget, e.getMessage());
+            return IacScanReport.FAILURE(scanTarget, e.getMessage());
         }
     }
 
-    public SigmaReport performOfflineScan(File scanTarget, File sigmaExe, int count) {
+    public IacScanReport performOfflineScan(File scanTarget, File iacScanExe, int count) {
         try {
-            operationFactory.performSigmaScan(scanTarget, sigmaExe, count);
+            operationFactory.performIacScanScan(scanTarget, iacScanExe, count);
         } catch (OperationException e) {
-            return SigmaReport.FAILURE(scanTarget, e.getMessage());
+            return IacScanReport.FAILURE(scanTarget, e.getMessage());
         }
-        return SigmaReport.SUCCESS_OFFLINE(scanTarget);
+        return IacScanReport.SUCCESS_OFFLINE(scanTarget);
     }
 
     //TODO- look into extracting scan initiation to another class

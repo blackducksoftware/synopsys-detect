@@ -79,18 +79,18 @@ import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
+import com.synopsys.integration.detect.tool.iac.CalculateIacScanTargetsOperation;
+import com.synopsys.integration.detect.tool.iac.IacScanOperation;
+import com.synopsys.integration.detect.tool.iac.IacScanReport;
+import com.synopsys.integration.detect.tool.iac.IacScannerInstaller;
+import com.synopsys.integration.detect.tool.iac.PublishIacScanReportOperation;
+import com.synopsys.integration.detect.tool.iac.UploadIacScanResultsOperation;
 import com.synopsys.integration.detect.tool.impactanalysis.GenerateImpactAnalysisOperation;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisMapCodeLocationsOperation;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisNamingOperation;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadOperation;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
-import com.synopsys.integration.detect.tool.sigma.CalculateSigmaScanTargetsOperation;
-import com.synopsys.integration.detect.tool.sigma.PublishSigmaReportOperation;
-import com.synopsys.integration.detect.tool.sigma.SigmaInstaller;
-import com.synopsys.integration.detect.tool.sigma.SigmaReport;
-import com.synopsys.integration.detect.tool.sigma.SigmaScanOperation;
-import com.synopsys.integration.detect.tool.sigma.UploadSigmaResultsOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLogger;
@@ -659,22 +659,22 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public List<File> calculateSigmaScanTargets() throws OperationException {
-        return auditLog.namedInternal("Calculate Sigma Scan Targets", () -> {
-            return new CalculateSigmaScanTargetsOperation(detectConfigurationFactory.createSigmaOptions(), directoryManager).calculateSigmaScanTargets();
+    public List<File> calculateIacScanScanTargets() throws OperationException {
+        return auditLog.namedInternal("Calculate IacScan Scan Targets", () -> {
+            return new CalculateIacScanTargetsOperation(detectConfigurationFactory.createIacScanOptions(), directoryManager).calculateIacScanTargets();
         });
     }
 
-    public Optional<File> calculateUserProvidedSigmaPath() throws OperationException {
+    public Optional<File> calculateUserProvidedIacScanPath() throws OperationException {
         return auditLog.namedInternal(
-            "Calculate Local Sigma Path",
-            () -> detectConfigurationFactory.createSigmaOptions().getLocalSigmaPath().map(Path::toFile)
+            "Calculate Local IacScan Path",
+            () -> detectConfigurationFactory.createIacScanOptions().getLocalIacScannerPath().map(Path::toFile)
         );
     }
 
-    public File resolveSigmaOnline(BlackDuckRunData blackDuckRunData) throws OperationException {
-        return auditLog.namedInternal("Resolve Sigma Online", () -> {
-            return new SigmaInstaller(
+    public File resolveIacScanOnline(BlackDuckRunData blackDuckRunData) throws OperationException {
+        return auditLog.namedInternal("Resolve IacScan Online", () -> {
+            return new IacScannerInstaller(
                 blackDuckRunData.getBlackDuckServerConfig().createBlackDuckHttpClient(new Slf4jIntLogger(logger)),
                 detectInfo,
                 blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl(),
@@ -684,37 +684,37 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public String createSigmaCodeLocationName(File scanTarget, NameVersion pojectNameVersion) {
-        return codeLocationNameManager.createSigmaCodeLocationName(
+    public String createIacScanCodeLocationName(File scanTarget, NameVersion pojectNameVersion) {
+        return codeLocationNameManager.createIacScanCodeLocationName(
             scanTarget,
             pojectNameVersion.getName(),
             pojectNameVersion.getVersion(),
-            detectConfigurationFactory.createSigmaOptions().getCodeLocationPrefix().orElse(null),
-            detectConfigurationFactory.createSigmaOptions().getCodeLocationSuffix().orElse(null)
+            detectConfigurationFactory.createIacScanOptions().getCodeLocationPrefix().orElse(null),
+            detectConfigurationFactory.createIacScanOptions().getCodeLocationSuffix().orElse(null)
         );
     }
 
-    public File performSigmaScan(File scanTarget, File sigmaExe, int count) throws OperationException {
-        return auditLog.namedInternal("Perform Sigma Scan", "Sigma", () -> {
-            return new SigmaScanOperation(directoryManager, executableRunner).performSigmaScan(
+    public File performIacScanScan(File scanTarget, File iacScanExe, int count) throws OperationException {
+        return auditLog.namedInternal("Perform IacScan Scan", "IacScan", () -> {
+            return new IacScanOperation(directoryManager, executableRunner).performIacScan(
                 scanTarget,
-                sigmaExe,
-                detectConfigurationFactory.createSigmaOptions().getAdditionalArguments().orElse(null),
+                iacScanExe,
+                detectConfigurationFactory.createIacScanOptions().getAdditionalArguments().orElse(null),
                 count
             );
         });
     }
 
-    public void uploadSigmaResults(BlackDuckRunData blackDuckRunData, File sigmaResultsFile, String scanId) throws OperationException {
-        auditLog.namedInternal("Upload Sigma Results", () -> {
-            new UploadSigmaResultsOperation(blackDuckRunData.getBlackDuckServicesFactory().createSigmaUploadService())
-                .uploadResults(sigmaResultsFile, scanId);
+    public void uploadIacScanResults(BlackDuckRunData blackDuckRunData, File iacScanResultsFile, String scanId) throws OperationException {
+        auditLog.namedInternal("Upload IacScan Results", () -> {
+            new UploadIacScanResultsOperation(blackDuckRunData.getBlackDuckServicesFactory().createIacScanUploadService())
+                .uploadResults(iacScanResultsFile, scanId);
         });
     }
 
-    public void publishSigmaReport(List<SigmaReport> sigmaReports) throws OperationException {
-        auditLog.namedInternal("Publish Sigma Report", () -> {
-            new PublishSigmaReportOperation(exitCodePublisher, statusEventPublisher).publishReports(sigmaReports);
+    public void publishIacScanReport(List<IacScanReport> iacScanReports) throws OperationException {
+        auditLog.namedInternal("Publish IacScan Report", () -> {
+            new PublishIacScanReportOperation(exitCodePublisher, statusEventPublisher).publishReports(iacScanReports);
         });
     }
 

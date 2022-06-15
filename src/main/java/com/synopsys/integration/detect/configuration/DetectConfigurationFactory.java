@@ -40,8 +40,8 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
+import com.synopsys.integration.detect.tool.iac.IacScanOptions;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
-import com.synopsys.integration.detect.tool.sigma.SigmaOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
@@ -197,8 +197,8 @@ public class DetectConfigurationFactory {
         AllNoneEnumCollection<DetectTool> excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
         ExcludeIncludeEnumFilter<DetectTool> filter = new ExcludeIncludeEnumFilter<>(excludedTools, includedTools);
 
-        boolean sigmaEnabled = includedTools.containsValue(DetectTool.SIGMA) || !detectConfiguration.getValue(DetectProperties.DETECT_SIGMA_SCAN_PATHS).isEmpty();
-        return new DetectToolFilter(filter, impactEnabled.orElse(false), sigmaEnabled, runDecision, blackDuckDecision);
+        boolean iacEnabled = includedTools.containsValue(DetectTool.IAC_SCAN) || !detectConfiguration.getValue(DetectProperties.DETECT_IAC_SCAN_PATHS).isEmpty();
+        return new DetectToolFilter(filter, impactEnabled.orElse(false), iacEnabled, runDecision, blackDuckDecision);
     }
 
     public AggregateOptions createAggregateOptions() {
@@ -438,13 +438,13 @@ public class DetectConfigurationFactory {
         return new ImpactAnalysisOptions(codeLocationPrefix, codeLocationSuffix);
     }
 
-    public SigmaOptions createSigmaOptions() {
-        List<Path> sigmaPaths = detectConfiguration.getPaths(DetectProperties.DETECT_SIGMA_SCAN_PATHS);
-        Path localSigmaPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_SIGMA_LOCAL_PATH);
-        String additionalArguments = detectConfiguration.getNullableValue(DetectProperties.DETECT_SIGMA_SCAN_ARGUMENTS);
+    public IacScanOptions createIacScanOptions() {
+        List<Path> iacScanPaths = detectConfiguration.getPaths(DetectProperties.DETECT_IAC_SCAN_PATHS);
+        Path localIacScannerPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_IAC_SCANNER_LOCAL_PATH);
+        String additionalArguments = detectConfiguration.getNullableValue(DetectProperties.DETECT_IAC_SCAN_ARGUMENTS);
         String codeLocationPrefix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
-        return new SigmaOptions(sigmaPaths, localSigmaPath, additionalArguments, codeLocationPrefix, codeLocationSuffix);
+        return new IacScanOptions(iacScanPaths, localIacScannerPath, additionalArguments, codeLocationPrefix, codeLocationSuffix);
     }
 
     public DetectExecutableOptions createDetectExecutableOptions() {

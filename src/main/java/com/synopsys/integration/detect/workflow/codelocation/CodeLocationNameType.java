@@ -5,5 +5,5 @@ public enum CodeLocationNameType {
     DOCKER,
     IMPACT_ANALYSIS,
     SCAN,
-    SIGMA
+    IAC
 }

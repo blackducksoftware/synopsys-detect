@@ -106,15 +106,15 @@ public class CodeLocationNameManager {
         }
         return scanCodeLocationName;
     }
-    
-    public String createSigmaCodeLocationName(
+
+    public String createIacScanCodeLocationName(
         File targetFile, String projectName, String projectVersionName, @Nullable String prefix,
         @Nullable String suffix
     ) {
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
-            return codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SIGMA);
+            return codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.IAC);
         } else {
-            return codeLocationNameGenerator.createSigmaCodeLocationName(targetFile, projectName, projectVersionName, prefix, suffix);
+            return codeLocationNameGenerator.createIacScanCodeLocationName(targetFile, projectName, projectVersionName, prefix, suffix);
         }
     }
 }

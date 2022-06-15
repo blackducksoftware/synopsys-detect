@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +32,9 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
 
     private DetectExecutableRunner(Logger logger, Consumer<String> outputConsumer, Consumer<String> traceConsumer, EventSystem eventSystem, boolean shouldLogOutput) {
         this.logger = logger;
-        runner = new ProcessBuilderRunner(new Slf4jIntLogger(logger), outputConsumer, traceConsumer);
-        secretRunner = new ProcessBuilderRunner(new Slf4jIntLogger(logger), (line) -> {}, line -> {});
+        logger.info("\n\n********** Charset: " + Charset.defaultCharset() + " ***********\n\n");
+        runner = new ProcessBuilderRunner(new Slf4jIntLogger(logger), outputConsumer, traceConsumer, Charset.defaultCharset());
+        secretRunner = new ProcessBuilderRunner(new Slf4jIntLogger(logger), (line) -> {}, line -> {}, Charset.defaultCharset());
         this.eventSystem = eventSystem;
         this.shouldLogOutput = shouldLogOutput;
 
