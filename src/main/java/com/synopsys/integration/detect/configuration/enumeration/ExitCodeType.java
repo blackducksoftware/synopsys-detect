@@ -20,7 +20,7 @@ public enum ExitCodeType {
     ),
     FAILURE_POLARIS_CONNECTIVITY(12, "Detect was unable to connect to Polaris. Check your configuration and connection."),
     FAILURE_MINIMUM_INTERVAL_NOT_MET(13, "Detect did not wait the minimum required scan interval."),
-    FAILURE_SIGMA(
+    FAILURE_IAC(
         14,
         "Detect was unable to perform IaC Scan against your source. Please check your configuration, and see logs and IaC Scanner documentation for more information."
     ),

@@ -27,7 +27,7 @@ public class IacScanOperation {
 
     public File performIacScan(File scanTarget, File iacScanExe, @Nullable String additionalArguments, int count) throws IntegrationException {
         String resultsFileName = String.format("results-%s.json", scanTarget.getName());
-        File outputDir = new File(directoryManager.getIacScanOutputDirectory(), "SIGMA-" + count);
+        File outputDir = new File(directoryManager.getIacScanOutputDirectory(), "IAC-" + count);
         outputDir.mkdirs();
         File resultsFile = new File(outputDir, resultsFileName);
 
