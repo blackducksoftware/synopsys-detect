@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Directory: .git. (Executable: git OR Files: .git/config, .git/HEAD).")
+@DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Directory: .git. (Executable: git).")
 public class GitCliDetectable extends Detectable {
     private static final String GIT_DIRECTORY_NAME = ".git";
 
@@ -46,13 +46,7 @@ public class GitCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        Extraction extraction = gitCliExtractor.extract(gitExecutable, environment.getDirectory());
-        if (extraction.isSuccess()) {
-            return extraction;
-        }
-
-        // We don't care if GitDetectable doesn't get results, it's essentially just a best-effort project name/version utility
-        return new Extraction.Builder().success().build(); // TODO: Let's talk about this
+        return gitCliExtractor.extract(gitExecutable, environment.getDirectory());
     }
 
 }

@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtra
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Files: .git/config, .git/HEAD.")
+@DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Files: .git/config, .git/HEAD, .git/ORIG_HEAD.")
 public class GitParseDetectable extends Detectable {
     private static final String GIT_DIRECTORY_NAME = ".git";
     private static final String GIT_CONFIG_FILENAME = "config";
@@ -40,8 +40,6 @@ public class GitParseDetectable extends Detectable {
         requires.ifCurrentlyMet(() -> {
             gitConfigFile = requires.file(gitDirectory, GIT_CONFIG_FILENAME);
             gitHeadFile = requires.file(gitDirectory, GIT_HEAD_FILENAME);
-
-            // TODO: Should this be an optional file? Not needed for ProjectInfo. Needed for GitInfo
             gitOriginHeadFile = requires.file(gitDirectory, GIT_ORIGIN_HEAD_FILENAME);
         });
         return requires.result();
