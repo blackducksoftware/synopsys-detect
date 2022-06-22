@@ -127,7 +127,7 @@ import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGenerator;
 import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
-import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCommandRunner;
@@ -408,8 +408,8 @@ public class DetectableFactory {
         return new GemlockDetectable(environment, fileFinder, gemlockExtractor());
     }
 
-    public GitDetectable createGitDetectable(DetectableEnvironment environment, GitResolver gitResolver) {
-        return new GitDetectable(environment, fileFinder, gitCliExtractor(), gitResolver, gitParseExtractor());
+    public GitCliDetectable createGitDetectable(DetectableEnvironment environment, GitResolver gitResolver) {
+        return new GitCliDetectable(environment, fileFinder, gitCliExtractor(), gitResolver);
     }
 
     public GitParseDetectable createGitParseDetectable(DetectableEnvironment environment) {
