@@ -18,12 +18,14 @@ public class GitParseDetectable extends Detectable {
     private static final String GIT_DIRECTORY_NAME = ".git";
     private static final String GIT_CONFIG_FILENAME = "config";
     private static final String GIT_HEAD_FILENAME = "HEAD";
+    private static final String GIT_ORIGIN_HEAD_FILENAME = "ORIG_HEAD";
 
     private final FileFinder fileFinder;
     private final GitParseExtractor gitParseExtractor;
 
     private File gitConfigFile;
     private File gitHeadFile;
+    private File gitOriginHeadFile;
 
     public GitParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, GitParseExtractor gitParseExtractor) {
         super(environment);
@@ -38,6 +40,9 @@ public class GitParseDetectable extends Detectable {
         requires.ifCurrentlyMet(() -> {
             gitConfigFile = requires.file(gitDirectory, GIT_CONFIG_FILENAME);
             gitHeadFile = requires.file(gitDirectory, GIT_HEAD_FILENAME);
+
+            // TODO: Should this be an optional file? Not needed for ProjectInfo. Needed for GitInfo
+            gitOriginHeadFile = requires.file(gitDirectory, GIT_ORIGIN_HEAD_FILENAME);
         });
         return requires.result();
     }
@@ -49,7 +54,7 @@ public class GitParseDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return gitParseExtractor.extract(gitConfigFile, gitHeadFile);
+        return gitParseExtractor.extract(gitConfigFile, gitHeadFile, gitOriginHeadFile);
     }
 
 }
