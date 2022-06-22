@@ -11,7 +11,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
-public class IvyDependenciesHandler extends DefaultHandler {
+public class IvyDependenciesSaxHandler extends DefaultHandler {
     private static final String DEPENDENCY = "dependency";
     private static final String ORG_KEY = "org";
     private static final String NAME_KEY = "name";
@@ -25,8 +25,8 @@ public class IvyDependenciesHandler extends DefaultHandler {
     private String name;
     private String rev;
 
-    public IvyDependenciesHandler(ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
+    public IvyDependenciesSaxHandler() {
+        this.externalIdFactory = ExternalId.FACTORY;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class IvyDependenciesHandler extends DefaultHandler {
         super.characters(ch, start, length);
     }
 
-    List<Dependency> getDependencies() {
+    public List<Dependency> getDependencies() {
         return dependencies;
     }
 
