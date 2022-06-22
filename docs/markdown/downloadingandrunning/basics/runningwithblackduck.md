@@ -20,9 +20,9 @@ project directory.
 * Run the [dockerinspector_name] on a given [Docker image](../../packagemgrs/docker/intro.md).
 * Generate a [report](../../properties/configuration/report.md).
 * Fail on [policy violation](../../properties/configuration/project.md#fail-on-policy-violation-severities-advanced).
-* Run [IaC Scan](../../properties/configuration/iac-scan.md) on provided targets. Note: Iac Scan capabilities require [blackduck_product_name] 2022.7.0 or later.
+* Run [IaC Scan](../iac.md) on provided targets. Note: Iac Scan capabilities require [blackduck_product_name] 2022.7.0 or later.
 
-Refer to [Black Duck Server properties](../../properties/configuration/blackduck-server.md), [Black Duck Signature Scanner properties](../../properties/configuration/signature-scanner.md), and [IaC properties](../../properties/configuration/iac-scan.md) for details.
+Refer to [Black Duck Server properties](../../properties/configuration/blackduck-server.md), [Black Duck Signature Scanner properties](../../properties/configuration/signature-scanner.md), and [IaC Scan](../iac.md) for details.
 
 ## Offline mode
 
