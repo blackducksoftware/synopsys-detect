@@ -5,7 +5,7 @@
 ### New features
 * Added support for Swift projects built with Swift 5.6 or later.
 
-* Added support for running IaC scans via [solution_name]. See [IaC Scan](downloadingandrunning/iac.md) for more details. Note: IaC capabilities require Black Duck 2022.7.0 or later.
+* Added support for running IaC scans via [solution_name]. See [IaC Scan](downloadingandrunning/iacscan.md) for more details. Note: IaC capabilities require Black Duck 2022.7.0 or later.
 
 ## Version 7.13.2
 
