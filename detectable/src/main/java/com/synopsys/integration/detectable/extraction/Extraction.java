@@ -144,11 +144,14 @@ public class Extraction {
             return this;
         }
 
+        public Builder nameVersion(NameVersion nameVersion) {
+            this.projectName(nameVersion.getName());
+            this.projectVersion(nameVersion.getVersion());
+            return this;
+        }
+
         public Builder nameVersionIfPresent(Optional<NameVersion> nameVersion) {
-            if (nameVersion.isPresent()) {
-                this.projectName(nameVersion.get().getName());
-                this.projectVersion(nameVersion.get().getVersion());
-            }
+            nameVersion.ifPresent(this::nameVersion);
             return this;
         }
 
