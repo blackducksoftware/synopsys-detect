@@ -14,8 +14,8 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.executable.ExecutableOutput;
 
-public class GitDetectableCliTest extends DetectableFunctionalTest {
-    public GitDetectableCliTest() throws IOException {
+public class GitCliDetectableTest extends DetectableFunctionalTest {
+    public GitCliDetectableTest() throws IOException {
         super("git-cli");
     }
 
