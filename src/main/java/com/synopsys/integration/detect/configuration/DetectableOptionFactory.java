@@ -200,7 +200,6 @@ public class DetectableOptionFactory {
             }
         }
 
-        String onlineInspectorVersion = detectConfiguration.getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION);
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(
             excludedProjectNames,
             includedProjectNames,
@@ -208,8 +207,7 @@ public class DetectableOptionFactory {
             includedProjectPaths,
             excludedConfigurationNames,
             includedConfigurationNames,
-            customRepository,
-            onlineInspectorVersion
+            customRepository
         );
         String gradleBuildCommand = detectConfiguration.getNullableValue(DetectProperties.DETECT_GRADLE_BUILD_COMMAND);
         return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo, dependencyTypeFilter);

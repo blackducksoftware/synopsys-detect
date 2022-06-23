@@ -1,10 +1,10 @@
-package com.synopsys.integration.detectable.detectables.ivy;
+package com.synopsys.integration.detectable.detectables.ivy.parse;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class IvyProjectNameHandler extends DefaultHandler {
+public class IvyProjectNameSaxHandler extends DefaultHandler {
     private static final String PROJECT = "project";
     private static final String NAME = "name";
 

@@ -1,7 +1,6 @@
 package com.synopsys.integration.detectable.detectables.gradle.inspection.inspector;
 
 import java.util.List;
-import java.util.Optional;
 
 public class GradleInspectorScriptOptions {
     private final List<String> excludedProjectNames;
@@ -11,7 +10,6 @@ public class GradleInspectorScriptOptions {
     private final List<String> excludedConfigurationNames;
     private final List<String> includedConfigurationNames;
     private final String gradleInspectorRepositoryUrl;
-    private final String providedOnlineInspectorVersion;
 
     public GradleInspectorScriptOptions(
         List<String> excludedProjectNames,
@@ -20,8 +18,7 @@ public class GradleInspectorScriptOptions {
         List<String> includedProjectPaths,
         List<String> excludedConfigurationNames,
         List<String> includedConfigurationNames,
-        String gradleInspectorRepositoryUrl,
-        String providedOnlineInspectorVersion
+        String gradleInspectorRepositoryUrl
     ) {
         this.excludedProjectNames = excludedProjectNames;
         this.includedProjectNames = includedProjectNames;
@@ -30,7 +27,6 @@ public class GradleInspectorScriptOptions {
         this.excludedConfigurationNames = excludedConfigurationNames;
         this.includedConfigurationNames = includedConfigurationNames;
         this.gradleInspectorRepositoryUrl = gradleInspectorRepositoryUrl;
-        this.providedOnlineInspectorVersion = providedOnlineInspectorVersion;
     }
 
     public String getGradleInspectorRepositoryUrl() {
@@ -51,10 +47,6 @@ public class GradleInspectorScriptOptions {
 
     public List<String> getIncludedConfigurationNames() {
         return includedConfigurationNames;
-    }
-
-    public Optional<String> getProvidedOnlineInspectorVersion() {
-        return Optional.ofNullable(providedOnlineInspectorVersion);
     }
 
     public List<String> getExcludedProjectPaths() {

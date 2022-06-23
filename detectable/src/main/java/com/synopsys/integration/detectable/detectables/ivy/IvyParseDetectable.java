@@ -1,7 +1,9 @@
-package com.synopsys.integration.detectable.detectables.ivy.parse;
+package com.synopsys.integration.detectable.detectables.ivy;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -23,6 +25,7 @@ public class IvyParseDetectable extends Detectable {
     private final IvyParseExtractor ivyParseExtractor;
 
     private File ivyXmlFile;
+    @Nullable
     private File buildXml;
 
     public IvyParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, IvyParseExtractor ivyParseExtractor) {

@@ -45,7 +45,7 @@ public class AirGapCreator {
         this.projectInspectorAirGapCreator = projectInspectorAirGapCreator;
     }
 
-    public File createAirGapZip(AirGapType airGapType, File outputPath, String gradleInspectorVersion) throws DetectUserFriendlyException {
+    public File createAirGapZip(AirGapType airGapType, File outputPath) throws DetectUserFriendlyException {
         try {
             logger.info("");
             logger.info(ReportConstants.RUN_SEPARATOR);
@@ -80,7 +80,7 @@ public class AirGapCreator {
             logger.info("Will build the zip in the following folder: " + installFolder.getCanonicalPath());
 
             logger.info("Installing dependencies.");
-            installAllAirGapDependencies(airGapType, installFolder, gradleInspectorVersion);
+            installAllAirGapDependencies(airGapType, installFolder);
 
             logger.info("Copying detect jar.");
             FileUtils.copyFile(detectJar, new File(installFolder, detectJar.getName()));
@@ -103,7 +103,7 @@ public class AirGapCreator {
         }
     }
 
-    public void installAllAirGapDependencies(AirGapType airGapType, File zipFolder, String gradleInspectorVersion) throws DetectUserFriendlyException {
+    public void installAllAirGapDependencies(AirGapType airGapType, File zipFolder) throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
 
         logger.info("Installing font dependencies.");
@@ -115,7 +115,7 @@ public class AirGapCreator {
         logger.info("Installing gradle dependencies.");
         File gradleTemp = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.GRADLE + "-temp");
         File gradleTarget = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.GRADLE);
-        gradleAirGapCreator.installGradleDependencies(gradleTemp, gradleTarget, gradleInspectorVersion);
+        gradleAirGapCreator.installGradleDependencies(gradleTemp, gradleTarget);
 
         logger.info(ReportConstants.RUN_SEPARATOR);
 
