@@ -34,16 +34,17 @@ public class GitCliExtractor {
     public Extraction extract(ExecutableTarget gitExecutable, File directory) {
         try {
             toolVersionLogger.log(directory, gitExecutable);
+
             String remoteUrl = gitCommandRunner.getRepoUrl(gitExecutable, directory);
             String repoName = gitUrlParser.getRepoName(remoteUrl);
-            String commitHash = gitCommandRunner.getCommitHash(gitExecutable, directory);
 
             Optional<String> branch = Optional.ofNullable(gitCommandRunner.getRepoBranch(gitExecutable, directory));
-
             if (branch.isPresent() && "HEAD".equals(branch.get())) {
                 logger.info("HEAD is detached for this repo, using heuristics to find Git branch.");
                 branch = gitCommandRunner.getRepoBranchBackup(gitExecutable, directory);
             }
+
+            String commitHash = gitCommandRunner.getCommitHash(gitExecutable, directory);
 
             GitInfo gitInfo = new GitInfo(remoteUrl, commitHash, branch.orElse(null));
 
