@@ -66,7 +66,7 @@ public class DetectDockerRunner {
             .withStdErr(true)
             .withStdOut(true)
             .exec(new LogContainerTestCallback()).awaitCompletion().toString();
-        System.out.println("container log: " + logs);
+        
         try {
             dockerClient.stopContainerCmd(containerId).exec();
         } catch (NotModifiedException e) {
