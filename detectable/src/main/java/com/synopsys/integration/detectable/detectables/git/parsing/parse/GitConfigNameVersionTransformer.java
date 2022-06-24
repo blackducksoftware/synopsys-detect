@@ -61,7 +61,7 @@ public class GitConfigNameVersionTransformer {
             nameVersion,
             remoteUrl,
             currentBranch
-                .map(GitConfigBranch::getRemoteName)
+                .map(GitConfigBranch::getName)
                 .orElse(null)
         );
     }

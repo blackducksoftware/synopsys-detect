@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.git.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.MalformedURLException;
@@ -30,7 +31,7 @@ class GitConfigNameVersionTransformerTest {
         List<GitConfigBranch> gitConfigBranches = Arrays.asList(gitConfigBranch, badBranch);
 
         GitConfig gitConfig = new GitConfig(gitConfigRemotes, gitConfigBranches);
-        final String gitHead = "refs/heads/master";
+        String gitHead = "refs/heads/master";
 
         GitUrlParser gitUrlParser = new GitUrlParser();
         GitConfigNameVersionTransformer gitConfigNameVersionTransformer = new GitConfigNameVersionTransformer(gitUrlParser);
@@ -66,7 +67,6 @@ class GitConfigNameVersionTransformerTest {
         assertEquals("blackducksoftware/synopsys-detect", nameVersion.getName());
         assertEquals("9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c", nameVersion.getVersion());
         assertEquals("https://github.com/blackducksoftware/synopsys-detect.git", gitConfigResult.getRemoteUrl());
-        assertTrue(gitConfigResult.getBranch().isPresent());
-        assertEquals("master", gitConfigResult.getBranch().get());
+        assertFalse(gitConfigResult.getBranch().isPresent(), "This test should be testing backups to branches.");
     }
 }

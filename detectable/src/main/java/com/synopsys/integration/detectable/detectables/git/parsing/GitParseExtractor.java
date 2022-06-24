@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
@@ -47,6 +48,7 @@ public class GitParseExtractor {
             GitConfigResult gitConfigResult = gitConfigExtractor.transformToProjectInfo(gitConfig, gitHead);
 
             String headCommitHash = FileUtils.readFileToString(gitOriginHeadFile, StandardCharsets.UTF_8);
+            headCommitHash = StringUtils.trimToNull(headCommitHash);
 
             GitInfo gitInfo = new GitInfo(
                 gitConfigResult.getRemoteUrl(),

@@ -30,6 +30,10 @@ public class GitCliDetectableTest extends DetectableFunctionalTest {
         String gitBranchOutput = "branch-version";
         ExecutableOutput gitBranchExecutableOutput = new ExecutableOutput(0, gitBranchOutput, "");
         addExecutableOutput(gitBranchExecutableOutput, "git", "rev-parse", "--abbrev-ref", "HEAD");
+
+        String gitCommitOutput = "c173aa3ea902e8ccef6d78137f3a48e275a1a820";
+        ExecutableOutput gitCommitExecutableOutput = new ExecutableOutput(0, gitCommitOutput, "");
+        addExecutableOutput(gitCommitExecutableOutput, "git", "rev-parse", "HEAD");
     }
 
     @NotNull
