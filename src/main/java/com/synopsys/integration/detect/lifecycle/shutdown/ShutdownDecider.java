@@ -45,6 +45,7 @@ public class ShutdownDecider {
         boolean preserveScan = dryRun || offline;
         boolean preserveBdio = offline;
         boolean preserveAirGap = airGapZip != null;
-        return new CleanupDecision(true, preserveScan, preserveBdio, preserveAirGap, airGapZip);
+        boolean preserveIac = offline;
+        return new CleanupDecision(true, preserveScan, preserveBdio, preserveAirGap, preserveIac, airGapZip);
     }
 }

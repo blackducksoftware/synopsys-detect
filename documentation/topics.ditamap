@@ -66,6 +66,7 @@
     </topicref>
 
     <topicref href="downloadingandrunning/rapidscan.md" format="markdown"/>
+    <topicref href="downloadingandrunning/iacscan.md" format="markdown"/>
     <topicref href="downloadingandrunning/status-file.md" format="markdown"/>
     <topicref href="downloadingandrunning/proxies.md" format="markdown"/>
     <topicref href="downloadingandrunning/concurrent.md" format="markdown"/>

@@ -27,6 +27,13 @@
 * (IDETECT-3180) Resolved an issue that caused the Binary Search tool to throw an exception when the patterns provided via property detect.binary.scan.file.name.patterns matched one or more directories.
 * (IDETECT-3352) Resolved an issue that caused the Gradle Project Inspector detector to fail when the value of detect.output.path was a relative path.
 
+## Version 7.14.0
+
+### New features
+* Added support for Swift projects built with Swift 5.6 or later.
+
+* Added support for running IaC scans via [solution_name]. See [IaC Scan](downloadingandrunning/iacscan.md) for more details. Note: IaC capabilities require Black Duck 2022.7.0 or later.
+
 ## Version 7.13.2
 
 * (IDETECT-3291) Resolved an issue where the NuGet Inspector would only be found for the first applicable detector.
