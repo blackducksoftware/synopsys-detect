@@ -23,6 +23,7 @@ public class GitConfigNameVersionTransformer {
         this.gitUrlParser = gitUrlParser;
     }
 
+    @SuppressWarnings("java:S2637") // Sonar isn't reading the @Nullable annotation on GitConfigResult
     public GitConfigResult transformToProjectInfo(GitConfig gitConfig, String gitHead) throws IntegrationException, MalformedURLException {
         Optional<GitConfigBranch> currentBranch = gitConfig.getGitConfigBranches().stream()
             .filter(it -> it.getMerge().equalsIgnoreCase(gitHead))
