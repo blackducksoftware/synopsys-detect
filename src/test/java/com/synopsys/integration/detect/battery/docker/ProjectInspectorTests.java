@@ -24,6 +24,7 @@ public class ProjectInspectorTests {
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.NUGET.toString());
+            commandBuilder.property(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL, "invalidurl"); // force nuget inspector failure
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.successfulDetectorType("NUGET");
@@ -42,6 +43,7 @@ public class ProjectInspectorTests {
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.GRADLE.toString());
+            commandBuilder.property(DetectProperties.DETECT_GRADLE_PATH, "/tmp"); // force cli failure
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.successfulDetectorType("GRADLE");
@@ -65,7 +67,7 @@ public class ProjectInspectorTests {
             dockerAssertions.successfulDetectorType("MAVEN");
             dockerAssertions.atLeastOneBdioFile();
             dockerAssertions.logDoesNotContain("Maven Project Inspector");
-            dockerAssertions.logContains("Maven Pom Parse");
+            dockerAssertions.logContains("Maven CLI");
         }
     }
 
@@ -79,6 +81,7 @@ public class ProjectInspectorTests {
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.MAVEN.toString());
+            commandBuilder.property(DetectProperties.DETECT_MAVEN_PATH, "/tmp"); // force cli failure
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.successfulDetectorType("MAVEN");
