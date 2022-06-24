@@ -1775,15 +1775,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.packagist.include.dev.dependencies", true)
-            .setInfo("Include Packagist Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set this value to false if you would like to exclude your dev requires dependencies when ran.")
-            .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_PEAR_ONLY_REQUIRED_DEPS =
         BooleanProperty.newBuilder("detect.pear.only.required.deps", false)
             .setInfo("Include Only Required Pear Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
