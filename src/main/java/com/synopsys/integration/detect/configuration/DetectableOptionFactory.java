@@ -164,18 +164,7 @@ public class DetectableOptionFactory {
     }
 
     public GoModCliDetectableOptions createGoModCliDetectableOptions() {
-        GoModDependencyType excludedDependencyType;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED)) {
-            excludedDependencyType = detectConfiguration.getValue(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED);
-        } else {
-            boolean dependencyVerificationEnabled = detectConfiguration.getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION);
-            if (dependencyVerificationEnabled) {
-                excludedDependencyType = GoModDependencyType.UNUSED;
-            } else {
-                excludedDependencyType = GoModDependencyType.NONE;
-            }
-        }
-
+        GoModDependencyType excludedDependencyType = detectConfiguration.getValue(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED);
         return new GoModCliDetectableOptions(excludedDependencyType);
     }
 

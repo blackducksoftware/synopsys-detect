@@ -1775,15 +1775,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_GO_ENABLE_VERIFICATION =
-        BooleanProperty.newBuilder("detect.go.mod.enable.verification", true)
-            .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_1_0)
-            .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies. Set to false if you have an empty BOM.")
-            .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS =
         BooleanProperty.newBuilder("detect.gradle.include.unresolved.configurations", false)
             .setInfo("Gradle Include Unresolved Configurations", DetectPropertyFromVersion.VERSION_7_6_0)
