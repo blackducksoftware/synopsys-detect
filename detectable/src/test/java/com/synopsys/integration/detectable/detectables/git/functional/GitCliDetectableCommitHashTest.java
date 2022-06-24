@@ -13,8 +13,8 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.ExecutableOutputUtil;
 
-public class GitDetectableCliCommitHashTest extends DetectableFunctionalTest {
-    public GitDetectableCliCommitHashTest() throws IOException {
+public class GitCliDetectableCommitHashTest extends DetectableFunctionalTest {
+    public GitCliDetectableCommitHashTest() throws IOException {
         super("git-cli");
     }
 

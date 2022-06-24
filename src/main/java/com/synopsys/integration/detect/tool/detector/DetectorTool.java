@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -24,6 +25,8 @@ import com.synopsys.integration.detect.tool.detector.report.rule.EvaluatedDetect
 import com.synopsys.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;
 import com.synopsys.integration.detect.tool.detector.report.util.DetectorReporter;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.git.DetectorGitProjectInfoDecider;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
@@ -134,8 +137,12 @@ public class DetectorTool {
 
         logger.debug("Finished evaluating detectors for project info.");
 
+        DetectorGitProjectInfoDecider detectorGitProjectInfoDecider = new DetectorGitProjectInfoDecider();
+        GitInfo gitInfo = detectorGitProjectInfoDecider.decideSuggestion(reports).orElse(GitInfo.none());
+
         return new DetectorToolResult(
             bomToolProjectNameVersion.orElse(null),
+            gitInfo,
             new ArrayList<>(codeLocationMap.values()),
             allFoundTypes,
             new HashSet<>(),

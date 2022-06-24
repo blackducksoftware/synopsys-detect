@@ -273,9 +273,9 @@ public class BatteryContext {
         executables.add(BatteryExecutable.propertyOverrideExecutable(detectProperty, new StringTypingExecutableCreator(Arrays.asList(responses))));
     }
 
-    public void git(String origin, String branch) {
+    public void git(String origin, String branch, String commitHash) {
         sourceFileNamed(".git");
-        executable(DetectProperties.DETECT_GIT_PATH, origin, branch);
+        executable(DetectProperties.DETECT_GIT_PATH, origin, branch, commitHash);
     }
 
     public void sourceFileNamed(String filename) {

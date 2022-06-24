@@ -40,7 +40,11 @@ public class CreateAggregateBdio2FileOperation {
 
         ExternalId projectExternalId = aggregateCodeLocation.getAggregateDependencyGraph().getProjectDependency().getExternalId();
         String group = StringUtils.defaultIfBlank(projectExternalId.getGroup(), null);
-        ProjectInfo projectInfo = ProjectInfo.nameVersionGroup(aggregateCodeLocation.getProjectNameVersion(), group);
+        ProjectInfo projectInfo = ProjectInfo.nameVersionGroupGit(
+            aggregateCodeLocation.getProjectNameVersion(),
+            group,
+            aggregateCodeLocation.getGitInfo()
+        );
         BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(
             aggregateCodeLocation.getCodeLocationName(),
             projectInfo,

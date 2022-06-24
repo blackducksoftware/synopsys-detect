@@ -20,6 +20,7 @@ import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
+import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
@@ -689,13 +690,14 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
-    public AggregateCodeLocation createAggregateCodeLocation(ProjectDependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion)
+    public AggregateCodeLocation createAggregateCodeLocation(ProjectDependencyGraph aggregateDependencyGraph, NameVersion projectNameVersion, GitInfo gitInfo)
         throws OperationException {
         return auditLog.namedInternal("Create Aggregate Code Location", () -> new CreateAggregateCodeLocationOperation(codeLocationNameManager)
             .createAggregateCodeLocation(
                 directoryManager.getBdioOutputDirectory(),
                 aggregateDependencyGraph,
                 projectNameVersion,
+                gitInfo,
                 detectConfigurationFactory.createBdioOptions().getBdioFileName().orElse(null)
             ));
     }

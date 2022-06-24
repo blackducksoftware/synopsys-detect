@@ -55,6 +55,9 @@ public class DirectoryEvaluator {
         List<DetectorRuleEvaluation> evaluations = new LinkedList<>();
 
         for (DetectorRule rule : rules.getDetectorRules()) {
+            if (rule.getDetectorType() == DetectorType.GIT) {
+                System.out.printf("*** GIT!");
+            }
             SearchEnvironment searchEnvironment = new SearchEnvironment(findResult.getDepthFromRoot(), appliedSoFar, appliedInParent, extractedInParentDetectables);
             DetectorRuleEvaluation detectorRuleEvaluation = detectorRuleEvaluator.evaluate(
                 directory,

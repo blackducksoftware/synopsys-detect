@@ -22,7 +22,7 @@ import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDet
 import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
-import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetectable;
@@ -151,7 +151,7 @@ public class DetectDetectableFactory {
         return detectableFactory.createGemlockDetectable(environment);
     }
 
-    public GitDetectable createGitDetectable(DetectableEnvironment environment) {
+    public GitCliDetectable createGitDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGitDetectable(environment, detectExecutableResolver);
     }
 

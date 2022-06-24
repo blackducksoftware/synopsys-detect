@@ -89,7 +89,12 @@ public abstract class BatteryTestRunner {
     }
 
     public void git(String origin, String branch) {
-        batteryContext.git(origin, branch);
+        // If the hash is not important to the Battery test, use this random Detect commit as a default response.
+        batteryContext.git(origin, branch, "3b86215aba7e704799da79609911ba8838ad1779");
+    }
+
+    public void git(String origin, String branch, String commitHash) {
+        batteryContext.git(origin, branch, commitHash);
     }
 
     public void sourceDirectoryNamed(String name) {

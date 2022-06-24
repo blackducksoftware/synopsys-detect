@@ -8,38 +8,47 @@ import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class EvaluatedDetectorRuleReport {
     private final DetectorRule rule;
+    private final int depth;
     private final List<AttemptedDetectableReport> skippedEntryPoints;
     private final List<AttemptedDetectableReport> attemptedDetectables;
 
     public EvaluatedDetectorRuleReport(
         DetectorRule rule,
+        int depth,
         List<AttemptedDetectableReport> skippedEntryPoints,
         List<AttemptedDetectableReport> attemptedDetectables
     ) {
         this.rule = rule;
+        this.depth = depth;
         this.skippedEntryPoints = skippedEntryPoints;
         this.attemptedDetectables = attemptedDetectables;
     }
 
     public static ExtractedDetectorRuleReport extracted(
         DetectorRule rule,
+        int depth,
         List<AttemptedDetectableReport> skippedEntryPoints,
         List<AttemptedDetectableReport> attemptedDetectables,
         ExtractedDetectableReport extractedDetectableReport
     ) {
-        return new ExtractedDetectorRuleReport(rule, skippedEntryPoints, attemptedDetectables, extractedDetectableReport);
+        return new ExtractedDetectorRuleReport(rule, depth, skippedEntryPoints, attemptedDetectables, extractedDetectableReport);
     }
 
     public static EvaluatedDetectorRuleReport notExtracted(
         DetectorRule rule,
+        int depth,
         List<AttemptedDetectableReport> skippedEntryPoints,
         List<AttemptedDetectableReport> attemptedDetectables
     ) {
-        return new EvaluatedDetectorRuleReport(rule, skippedEntryPoints, attemptedDetectables);
+        return new EvaluatedDetectorRuleReport(rule, depth, skippedEntryPoints, attemptedDetectables);
     }
 
     public DetectorRule getRule() {
         return rule;
+    }
+
+    public int getDepth() {
+        return depth;
     }
 
     public List<AttemptedDetectableReport> getSkippedEntryPoints() {

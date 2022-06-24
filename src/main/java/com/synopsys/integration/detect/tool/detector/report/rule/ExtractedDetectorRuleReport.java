@@ -11,11 +11,12 @@ public class ExtractedDetectorRuleReport extends EvaluatedDetectorRuleReport {
 
     public ExtractedDetectorRuleReport(
         DetectorRule rule,
+        int depth,
         List<AttemptedDetectableReport> skippedEntryPoints,
         List<AttemptedDetectableReport> attemptedDetectables,
         ExtractedDetectableReport extractedDetectable
     ) {
-        super(rule, skippedEntryPoints, attemptedDetectables);
+        super(rule, depth, skippedEntryPoints, attemptedDetectables);
         this.extractedDetectable = extractedDetectable;
     }
 

@@ -9,8 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
-
 import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
+import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -19,6 +19,7 @@ import com.synopsys.integration.util.NameVersion;
 public class DetectorToolResult {
     @Nullable
     private final NameVersion bomToolProjectNameVersion;
+    private final GitInfo gitInfo;
     private final List<DetectCodeLocation> bomToolCodeLocations;
 
     private final Set<DetectorType> applicableDetectorTypes;
@@ -29,6 +30,7 @@ public class DetectorToolResult {
 
     public DetectorToolResult(
         @Nullable NameVersion bomToolProjectNameVersion,
+        GitInfo gitInfo,
         List<DetectCodeLocation> bomToolCodeLocations,
         Set<DetectorType> applicableDetectorTypes,
         Set<DetectorType> failedDetectorTypes,
@@ -36,6 +38,7 @@ public class DetectorToolResult {
         Map<CodeLocation, DetectCodeLocation> codeLocationMap
     ) {
         this.bomToolProjectNameVersion = bomToolProjectNameVersion;
+        this.gitInfo = gitInfo;
         this.bomToolCodeLocations = bomToolCodeLocations;
         this.applicableDetectorTypes = applicableDetectorTypes;
         this.failedDetectorTypes = failedDetectorTypes;
@@ -45,6 +48,7 @@ public class DetectorToolResult {
 
     public DetectorToolResult() {
         this.bomToolProjectNameVersion = new NameVersion();
+        this.gitInfo = GitInfo.none();
         this.bomToolCodeLocations = new ArrayList<>();
         this.applicableDetectorTypes = new HashSet<>();
         this.failedDetectorTypes = new HashSet<>();
@@ -54,6 +58,10 @@ public class DetectorToolResult {
 
     public Optional<NameVersion> getBomToolProjectNameVersion() {
         return Optional.ofNullable(bomToolProjectNameVersion);
+    }
+
+    public GitInfo getGitInfo() {
+        return gitInfo;
     }
 
     public List<DetectCodeLocation> getBomToolCodeLocations() {

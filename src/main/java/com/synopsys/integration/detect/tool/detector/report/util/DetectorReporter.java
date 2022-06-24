@@ -36,7 +36,7 @@ public class DetectorReporter {
                 if (!detectorRuleEvaluation.wasFound()) {
                     notFoundDetectors.add(generateNotFoundReport(detectorRuleEvaluation));
                 } else if (detectorRuleEvaluation.getFoundEntryPoint().isPresent()) { //just to check :)
-                    addFoundReport(detectorRuleEvaluation, detectorRuleEvaluation.getFoundEntryPoint().get(), extractedDetectors, notExtractedDetectors);
+                    addFoundReport(directoryEvaluation.getDepth(), detectorRuleEvaluation, detectorRuleEvaluation.getFoundEntryPoint().get(), extractedDetectors, notExtractedDetectors);
                 } else {
                     logger.error("Something has gone wrong in the detector system, please contact support.");
                 }
@@ -54,6 +54,7 @@ public class DetectorReporter {
     }
 
     private void addFoundReport(
+        int depth,
         DetectorRuleEvaluation ruleEvaluation,
         EntryPointFoundResult foundEntryPoint,
         List<ExtractedDetectorRuleReport> extractedDetectors,
@@ -93,9 +94,9 @@ public class DetectorReporter {
                 extracted.getExtraction(),
                 extracted.getExtractionEnvironment().orElse(null) //TODO(detectors): why is this optional but not extraction?
             );
-            extractedDetectors.add(EvaluatedDetectorRuleReport.extracted(ruleEvaluation.getRule(), notFoundEntryPoints, attemptedDetectables, extractedDetectableReport));
+            extractedDetectors.add(EvaluatedDetectorRuleReport.extracted(ruleEvaluation.getRule(), depth, notFoundEntryPoints, attemptedDetectables, extractedDetectableReport));
         } else {
-            notExtractedDetectors.add(EvaluatedDetectorRuleReport.notExtracted(ruleEvaluation.getRule(), notFoundEntryPoints, attemptedDetectables));
+            notExtractedDetectors.add(EvaluatedDetectorRuleReport.notExtracted(ruleEvaluation.getRule(), depth, notFoundEntryPoints, attemptedDetectables));
         }
     }
 
