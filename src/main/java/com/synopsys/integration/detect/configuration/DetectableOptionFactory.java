@@ -121,11 +121,6 @@ public class DetectableOptionFactory {
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED)) {
             Set<DartPubDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
             dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
-        } else {
-            boolean excludeDevDependencies = detectConfiguration.getValue(DetectProperties.DETECT_PUD_DEPS_EXCLUDE_DEV);
-            if (excludeDevDependencies) {
-                dependencyTypeFilter = EnumListFilter.fromExcluded(DartPubDependencyType.DEV);
-            }
         }
         return new DartPubDepsDetectableOptions(dependencyTypeFilter);
     }

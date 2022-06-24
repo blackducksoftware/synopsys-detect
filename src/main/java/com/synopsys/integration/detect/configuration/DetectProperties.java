@@ -1775,18 +1775,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_PUD_DEPS_EXCLUDE_DEV =
-        BooleanProperty.newBuilder("detect.pub.deps.exclude.dev", false)
-            .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_5_0)
-            .setHelp(
-                "If true, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
-            )
-            .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_GO_ENABLE_VERIFICATION =
         BooleanProperty.newBuilder("detect.go.mod.enable.verification", true)
             .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_1_0)
