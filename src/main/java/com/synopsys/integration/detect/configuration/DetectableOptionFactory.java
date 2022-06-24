@@ -183,12 +183,7 @@ public class DetectableOptionFactory {
                 .representedValueSet();
             dependencyTypeFilter = EnumListFilter.fromExcluded(excludedConfigurationTypes);
         } else {
-            boolean includeUnresolvedConfigurations = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS);
-            if (includeUnresolvedConfigurations) {
-                dependencyTypeFilter = EnumListFilter.excludeNone();
-            } else {
-                dependencyTypeFilter = EnumListFilter.fromExcluded(GradleConfigurationType.UNRESOLVED);
-            }
+            dependencyTypeFilter = EnumListFilter.fromExcluded(GradleConfigurationType.UNRESOLVED);
         }
 
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(
