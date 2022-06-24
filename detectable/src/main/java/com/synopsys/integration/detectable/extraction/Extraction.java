@@ -71,8 +71,12 @@ public class Extraction {
         }
     }
 
+    public <T> boolean hasMetadata(ExtractionMetadata<T> extractionMetadata) {
+        return metaData.containsKey(extractionMetadata);
+    }
+
     public <T> Optional<T> getMetaData(ExtractionMetadata<T> extractionMetadata) {
-        if (metaData.containsKey(extractionMetadata)) {
+        if (hasMetadata(extractionMetadata)) {
             Class<T> clazz = extractionMetadata.getMetadataClass();
             Object value = metaData.get(extractionMetadata);
             if (value != null && clazz.isAssignableFrom(value.getClass())) {
@@ -140,11 +144,14 @@ public class Extraction {
             return this;
         }
 
+        public Builder nameVersion(NameVersion nameVersion) {
+            this.projectName(nameVersion.getName());
+            this.projectVersion(nameVersion.getVersion());
+            return this;
+        }
+
         public Builder nameVersionIfPresent(Optional<NameVersion> nameVersion) {
-            if (nameVersion.isPresent()) {
-                this.projectName(nameVersion.get().getName());
-                this.projectVersion(nameVersion.get().getVersion());
-            }
+            nameVersion.ifPresent(this::nameVersion);
             return this;
         }
 

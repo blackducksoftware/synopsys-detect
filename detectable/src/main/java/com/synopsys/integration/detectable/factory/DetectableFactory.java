@@ -127,9 +127,10 @@ import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGenerator;
 import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
-import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
+import com.synopsys.integration.detectable.detectables.git.cli.GitCommandRunner;
 import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
@@ -407,8 +408,8 @@ public class DetectableFactory {
         return new GemlockDetectable(environment, fileFinder, gemlockExtractor());
     }
 
-    public GitDetectable createGitDetectable(DetectableEnvironment environment, GitResolver gitResolver) {
-        return new GitDetectable(environment, fileFinder, gitCliExtractor(), gitResolver, gitParseExtractor());
+    public GitCliDetectable createGitDetectable(DetectableEnvironment environment, GitResolver gitResolver) {
+        return new GitCliDetectable(environment, fileFinder, gitCliExtractor(), gitResolver);
     }
 
     public GitParseDetectable createGitParseDetectable(DetectableEnvironment environment) {
@@ -789,7 +790,8 @@ public class DetectableFactory {
     }
 
     private GitCliExtractor gitCliExtractor() {
-        return new GitCliExtractor(executableRunner, gitUrlParser(), toolVersionLogger);
+        GitCommandRunner gitCommandRunner = new GitCommandRunner(executableRunner);
+        return new GitCliExtractor(gitUrlParser(), toolVersionLogger, gitCommandRunner);
     }
 
     private GoModCliExtractor goModCliExtractor(GoModCliDetectableOptions options) {
