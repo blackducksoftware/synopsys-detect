@@ -269,20 +269,7 @@ public class DetectableOptionFactory {
     }
 
     private EnumListFilter<NpmDependencyType> createNpmDependencyTypeFilter() {
-        Set<NpmDependencyType> excludedDependencyTypes;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED)) {
-            excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
-        } else {
-            boolean excludeDevDependencies = Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES));
-            boolean excludePeerDependencies = Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES));
-            excludedDependencyTypes = new LinkedHashSet<>();
-            if (excludeDevDependencies) {
-                excludedDependencyTypes.add(NpmDependencyType.DEV);
-            }
-            if (excludePeerDependencies) {
-                excludedDependencyTypes.add(NpmDependencyType.PEER);
-            }
-        }
+        Set<NpmDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
         return EnumListFilter.fromExcluded(excludedDependencyTypes);
     }
 

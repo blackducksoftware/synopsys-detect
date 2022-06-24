@@ -1775,24 +1775,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_NPM_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.npm.include.dev.dependencies", true)
-            .setInfo("Include NPM Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set this value to false if you would like to exclude your dev dependencies when ran.")
-            .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_NPM_INCLUDE_PEER_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.npm.include.peer.dependencies", true)
-            .setInfo("Include NPM Peer Dependencies", DetectPropertyFromVersion.VERSION_7_1_0)
-            .setHelp("Set this value to false if you would like to exclude your peer dependencies when ran.")
-            .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES =
         BooleanProperty.newBuilder("detect.packagist.include.dev.dependencies", true)
             .setInfo("Include Packagist Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
