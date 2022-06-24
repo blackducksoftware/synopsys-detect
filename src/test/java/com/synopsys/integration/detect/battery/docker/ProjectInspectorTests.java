@@ -27,9 +27,11 @@ public class ProjectInspectorTests {
             commandBuilder.property(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL, "invalidurl"); // force nuget inspector failure
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulDetectorType("NUGET");
+            // TODO need to fix this method for cascade; reporting has changed:
+            //dockerAssertions.successfulDetectorType("NUGET");
+            dockerAssertions.logContains("NuGet Project Inspector: SUCCESS");
+            dockerAssertions.logContains("NuGet Solution Native Inspector: ATTEMPTED");
             dockerAssertions.atLeastOneBdioFile();
-            dockerAssertions.logContains("NuGet Project Inspector");
         }
     }
 
@@ -46,9 +48,11 @@ public class ProjectInspectorTests {
             commandBuilder.property(DetectProperties.DETECT_GRADLE_PATH, "/tmp"); // force cli failure
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulDetectorType("GRADLE");
+            // TODO need to fix this method for cascade; reporting has changed:
+            //dockerAssertions.successfulDetectorType("GRADLE");
+            dockerAssertions.logContains("Gradle Native Inspector: ATTEMPTED");
+            dockerAssertions.logContains("Gradle Project Inspector: SUCCESS");
             dockerAssertions.atLeastOneBdioFile();
-            dockerAssertions.logContains("Gradle Project Inspector");
         }
     }
 
@@ -64,10 +68,11 @@ public class ProjectInspectorTests {
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.MAVEN.toString());
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulDetectorType("MAVEN");
+            // TODO need to fix this method for cascade; reporting has changed:
+            //dockerAssertions.successfulDetectorType("MAVEN");
+            dockerAssertions.logDoesNotContain("Maven Project Inspector:");
+            dockerAssertions.logContains("Maven CLI: SUCCESS");
             dockerAssertions.atLeastOneBdioFile();
-            dockerAssertions.logDoesNotContain("Maven Project Inspector");
-            dockerAssertions.logContains("Maven CLI");
         }
     }
 
@@ -84,9 +89,11 @@ public class ProjectInspectorTests {
             commandBuilder.property(DetectProperties.DETECT_MAVEN_PATH, "/tmp"); // force cli failure
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulDetectorType("MAVEN");
+            // TODO need to fix this method for cascade; reporting has changed:
+            //dockerAssertions.successfulDetectorType("MAVEN");
+            dockerAssertions.logContains("Maven CLI: ATTEMPTED");
+            dockerAssertions.logContains("Maven Project Inspector: SUCCESS");
             dockerAssertions.atLeastOneBdioFile();
-            dockerAssertions.logContains("Maven Project Inspector");
         }
     }
 }
