@@ -205,12 +205,7 @@ public class DetectableOptionFactory {
             Set<LernaPackageType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED).representedValueSet();
             lernaPackageTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         } else {
-            boolean includePrivate = Boolean.TRUE.equals(detectConfiguration.getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE));
-            if (includePrivate) {
-                lernaPackageTypeFilter = EnumListFilter.excludeNone();
-            } else {
-                lernaPackageTypeFilter = EnumListFilter.fromExcluded(LernaPackageType.PRIVATE);
-            }
+            lernaPackageTypeFilter = EnumListFilter.fromExcluded(LernaPackageType.PRIVATE);
         }
 
         List<String> excludedPackages = detectConfiguration.getValue(DetectProperties.DETECT_LERNA_EXCLUDED_PACKAGES);

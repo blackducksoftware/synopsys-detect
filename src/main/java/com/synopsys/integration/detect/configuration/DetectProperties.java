@@ -1775,15 +1775,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_LERNA_INCLUDE_PRIVATE =
-        BooleanProperty.newBuilder("detect.lerna.include.private", false)
-            .setInfo("Include Lerna Packages defined as private.", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("Lerna allows for private packages that do not get published. Set this to true to include all packages including private packages.")
-            .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_LERNA_PACKAGE_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_NPM_INCLUDE_DEV_DEPENDENCIES =
         BooleanProperty.newBuilder("detect.npm.include.dev.dependencies", true)
             .setInfo("Include NPM Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
