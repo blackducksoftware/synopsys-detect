@@ -1766,15 +1766,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.conan.include.build.dependencies", true)
-            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
-            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_PUD_DEPS_EXCLUDE_DEV =
         BooleanProperty.newBuilder("detect.pub.deps.exclude.dev", false)
             .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_5_0)
