@@ -4,5 +4,6 @@ public enum CodeLocationNameType {
     BOM,
     DOCKER,
     IMPACT_ANALYSIS,
-    SCAN
+    SCAN,
+    IAC
 }

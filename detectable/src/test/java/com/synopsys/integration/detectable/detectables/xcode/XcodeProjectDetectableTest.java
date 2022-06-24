@@ -61,7 +61,9 @@ public class XcodeProjectDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasRootDependency("auth0/Auth0.swift", "1.35.0");
         graphAssert.hasRootDependency("mac-cain13/R.swift.Library", "5.4.0");
 
-        graphAssert.hasNoDependency("invalid/url", "1.2.3");
-        graphAssert.hasRootSize(3);
+        // The GitUrlParser can handle this
+        graphAssert.hasRootDependency("invalid/url", "1.2.3");
+
+        graphAssert.hasRootSize(4);
     }
 }
