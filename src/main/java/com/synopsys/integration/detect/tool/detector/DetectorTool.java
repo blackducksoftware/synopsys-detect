@@ -264,7 +264,7 @@ public class DetectorTool {
                         List<String> messages = new ArrayList<>();
 
                         messages.add("Accuracy Not Met: " + extracted.getRule().getDetectorType());
-                        messages.add("\tExtraction for " + extractedDetectable.getName() + " has accuracy of " + extractedDetectable.getAccuracyType() + " but HIGH is required.");
+                        messages.add("\tExtraction for " + extractedDetectable.getName() + " has accuracy of " + extractedDetectable.getAccuracyType() + " but HIGH is required by the current detect.accuracy.required configuration.");
                         statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, "Detector Issue", messages));
                     }
                 }
