@@ -1,7 +1,6 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.nio.file.Path;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +50,7 @@ import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmD
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
+import com.synopsys.integration.detectable.detectables.sbt.SbtDetectableOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnDependencyType;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.log.LogLevel;
@@ -290,12 +289,9 @@ public class DetectableOptionFactory {
         return new GemspecParseDetectableOptions(dependencyTypeFilter);
     }
 
-    public SbtResolutionCacheOptions createSbtResolutionCacheDetectableOptions() {
+    public SbtDetectableOptions createSbtDetectableOptions() {
         String sbtCommandAdditionalArguments = detectConfiguration.getNullableValue(DetectProperties.DETECT_SBT_ARGUMENTS);
-        List<String> includedConfigurations = detectConfiguration.getValue(DetectProperties.DETECT_SBT_INCLUDED_CONFIGURATIONS);
-        List<String> excludedConfigurations = detectConfiguration.getValue(DetectProperties.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
-        Integer reportDepth = detectConfiguration.getValue(DetectProperties.DETECT_SBT_REPORT_DEPTH);
-        return new SbtResolutionCacheOptions(sbtCommandAdditionalArguments, includedConfigurations, excludedConfigurations, reportDepth, getFollowSymLinks());
+        return new SbtDetectableOptions(sbtCommandAdditionalArguments);
     }
 
     public YarnLockOptions createYarnLockOptions() {

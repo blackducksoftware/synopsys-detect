@@ -250,6 +250,7 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecP
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.SbtDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtCommandArgumentGenerator;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotExtractor;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphNodeParser;
@@ -257,8 +258,6 @@ import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParse
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtGraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftExtractor;
@@ -615,8 +614,8 @@ public class DetectableFactory {
         return new RebarDetectable(environment, fileFinder, rebar3Resolver, rebarExtractor());
     }
 
-    public SbtDetectable createSbtDetectable(DetectableEnvironment environment, SbtResolver sbtResolver, SbtResolutionCacheOptions sbtResolutionCacheOptions) {
-        return new SbtDetectable(environment, fileFinder, sbtResolutionCacheExtractor(), sbtResolutionCacheOptions, sbtResolver, sbtDotExtractor(), sbtPluginFinder());
+    public SbtDetectable createSbtDetectable(DetectableEnvironment environment, SbtResolver sbtResolver, SbtDetectableOptions sbtDetectableOptions) {
+        return new SbtDetectable(environment, fileFinder, sbtDetectableOptions.getSbtCommandAdditionalArguments(), sbtResolver, sbtDotExtractor(), sbtPluginFinder());
     }
 
     public SwiftCliDetectable createSwiftCliDetectable(DetectableEnvironment environment, SwiftResolver swiftResolver) {
@@ -949,10 +948,6 @@ public class DetectableFactory {
 
     private GemlockExtractor gemlockExtractor() {
         return new GemlockExtractor(externalIdFactory);
-    }
-
-    private SbtResolutionCacheExtractor sbtResolutionCacheExtractor() {
-        return new SbtResolutionCacheExtractor(fileFinder, externalIdFactory);
     }
 
     public SbtPluginFinder sbtPluginFinder() {

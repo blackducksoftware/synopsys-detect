@@ -1524,38 +1524,6 @@ public class DetectProperties {
             .setExample("\"-Djline.terminal=jline.UnsupportedTerminal\"")
             .build();
 
-    public static final CaseSensitiveStringListProperty DETECT_SBT_EXCLUDED_CONFIGURATIONS =
-        CaseSensitiveStringListProperty.newBuilder("detect.sbt.excluded.configurations")
-            .setInfo("SBT Configurations Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp(
-                "The names of the sbt configurations to exclude.",
-                "This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
-            )
-            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
-    public static final CaseSensitiveStringListProperty DETECT_SBT_INCLUDED_CONFIGURATIONS =
-        CaseSensitiveStringListProperty.newBuilder("detect.sbt.included.configurations")
-            .setInfo("SBT Configurations Included", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp(
-                "The names of the sbt configurations to include.",
-                "This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
-            )
-            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
-    public static final IntegerProperty DETECT_SBT_REPORT_DEPTH =
-        IntegerProperty.newBuilder("detect.sbt.report.search.depth", 3)
-            .setInfo("SBT Report Search Depth", DetectPropertyFromVersion.VERSION_4_3_0)
-            .setHelp("Depth the sbt detector will use to search for report files.")
-            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
     public static final NullablePathProperty DETECT_SCAN_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.scan.output.path")
             .setInfo("Scan Output Path", DetectPropertyFromVersion.VERSION_3_0_0)
