@@ -19,14 +19,13 @@ Inspectors are used by detectors when the package manager requires an integratio
 
 Finally, detectors perform their extraction to find your dependencies. This may require, but is not limited to, running executables, performing builds, parsing files, and communicating with web services.
 
-## Detector Cascade
+## [detector_cascade] and accuracy
 
-Each Detector has multiple ways it can extract dependencies from your project. The most accurate approaches are always attempted first
-however if extraction cannot be completed, the next approach will be automatically attempted which may be less accurate.
-By default, [solution_name] will only include extractions with high accuracy and low accuracy extractions will cause a non-zero exit code.
-For example, if Gradle CLI applies but cannot extract because no Gradle executable could be found, the Gradle Project Inspector will be attempted but because it does not produce
-accurate results, [solution_name] will exit with a non-zero exit code.
+[detector_cascade] and accuracy capabilities together replace the previous (pre-[solution_name] 8) distinction between "build mode" and "buildless mode",
+and provide a better way to get the best results possible, while ensuring that you are alterted (via a [solution_name] failure)
+if your accuracy requirements are not met.
 
+See [Detector cascade and accuracy](../downloadingandrunning/detectorcascade.md) for details.
 
 
 |Name|Language|Forge|Requirements
