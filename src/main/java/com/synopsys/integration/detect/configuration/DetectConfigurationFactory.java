@@ -425,7 +425,6 @@ public class DetectConfigurationFactory {
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_HEX_REBAR3_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_JAVA_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_DOCKER_PATH),
-            detectConfiguration.getPathOrNull(DetectProperties.DETECT_DOTNET_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_GIT_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_GO_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_SWIFT_PATH),
