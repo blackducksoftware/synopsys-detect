@@ -63,7 +63,6 @@ import com.synopsys.integration.detectable.detectables.packagist.PackagistDepend
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipenvDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyTypeV2;
 import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detectable.detectables.yarn.YarnDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -1201,8 +1200,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL)
             .build();
 
-    public static final NoneEnumListProperty<PnpmDependencyTypeV2> DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED =
-        NoneEnumListProperty.newBuilder("detect.pnpm.dependency.types.excluded", NoneEnum.NONE, PnpmDependencyTypeV2.class)
+    public static final NoneEnumListProperty<PnpmDependencyType> DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED =
+        NoneEnumListProperty.newBuilder("detect.pnpm.dependency.types.excluded", NoneEnum.NONE, PnpmDependencyType.class)
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_11_0)
             .setHelp(createDefaultDrivenPropertyHelpText("Pnpm dependency type", "detect.pnpm.dependency.types"))
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
@@ -1800,18 +1799,6 @@ public class DetectProperties {
             .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final AllNoneEnumListProperty<PnpmDependencyType> DETECT_PNPM_DEPENDENCY_TYPES =
-        AllNoneEnumListProperty.newBuilder("detect.pnpm.dependency.types", AllNoneEnum.ALL, PnpmDependencyType.class)
-            .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp(
-                "Set this value to indicate which pnpm dependency types for should include in the BOM.",
-                "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported."
-            )
-            .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
             .build();
 
     @Deprecated
