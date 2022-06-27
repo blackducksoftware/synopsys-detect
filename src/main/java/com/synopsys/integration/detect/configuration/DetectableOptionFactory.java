@@ -32,7 +32,6 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.inspect
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
 import com.synopsys.integration.detectable.detectables.lerna.LernaPackageType;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
@@ -110,12 +109,6 @@ public class DetectableOptionFactory {
             dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         }
         return new DartPubDepsDetectableOptions(dependencyTypeFilter);
-    }
-
-    public MavenParseOptions createMavenParseOptions() {
-        Boolean includePlugins = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_INCLUDE_PLUGINS);
-        Boolean legacyMode = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_BUILDLESS_LEGACY_MODE);
-        return new MavenParseOptions(includePlugins, legacyMode);
     }
 
     public DockerDetectableOptions createDockerDetectableOptions() {
