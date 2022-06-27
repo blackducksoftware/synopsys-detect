@@ -1207,8 +1207,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<PnpmDependencyType> DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.pnpm.dependency.types.excluded", NoneEnum.NONE, PnpmDependencyType.class)
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_11_0)
-            // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
-            .setHelp(createTypeFilterHelpText("Pnpm dependency type", "detect.pnpm.dependency.types"))
+            .setHelp(createTypeFilterHelpText("pnpm dependency types"))
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
