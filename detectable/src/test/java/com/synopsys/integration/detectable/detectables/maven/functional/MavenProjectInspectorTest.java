@@ -15,7 +15,6 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -75,7 +74,6 @@ public class MavenProjectInspectorTest extends DetectableFunctionalTest {
         return detectableFactory.createMavenProjectInspectorDetectable(
             detectableEnvironment,
             () -> ExecutableTarget.forFile(new File("inspector")),
-            new MavenParseOptions(false, false),
             new ProjectInspectorOptions(null)
         );
     }
