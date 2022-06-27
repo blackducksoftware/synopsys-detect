@@ -1799,19 +1799,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS =
-        BooleanProperty.newBuilder("detect.gradle.include.unresolved.configurations", false)
-            .setInfo("Gradle Include Unresolved Configurations", DetectPropertyFromVersion.VERSION_7_6_0)
-            .setHelp(
-                "When set to true, dependencies discovered from unresolved Gradle configurations will be included. It is set to false by default for a more accurate BOM.",
-                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
-            )
-            .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_LERNA_INCLUDE_PRIVATE =
         BooleanProperty.newBuilder("detect.lerna.include.private", false)
             .setInfo("Include Lerna Packages defined as private.", DetectPropertyFromVersion.VERSION_6_0_0)
