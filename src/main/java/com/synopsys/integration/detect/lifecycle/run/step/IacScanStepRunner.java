@@ -120,15 +120,6 @@ public class IacScanStepRunner {
     //TODO- this should only be necessary if we didn't already upload BDIO during DETECTORS phase
     public String initiateScan(NameVersion projectNameVersion, Bdio2FileUploadService bdio2FileUploadService, String codeLocationNameOverride)
         throws OperationException, IntegrationException, InterruptedException {
-        //        DetectCodeLocation codeLocation = createSimpleCodeLocation(projectNameVersion, sourcePath);
-        //        BdioCodeLocationResult bdioCodeLocationResult = overrideBdioCodeLocationResult(codeLocationNameOverride, operationFactory.createBdioCodeLocationsFromDetectCodeLocations(
-        //            Collections.singletonList(codeLocation),
-        //            projectNameVersion
-        //        ));
-        //
-        //        UploadTarget uploadTarget = operationFactory.createBdio2Files(bdioCodeLocationResult, projectNameVersion, Bdio.ScanType.INFRASTRUCTURE_AS_CODE)
-        //            .get(0);
-        //        return bdio2FileUploadService.uploadFileAndGetResult(uploadTarget).getScanId();
         ExternalId externalId = ExternalIdCreator.nameVersion(CodeLocationConverter.DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion());
         ProjectDependency projectDependency = new ProjectDependency(externalId);
         AggregateCodeLocation codeLocation = overrideAggregateCodeLocationName(

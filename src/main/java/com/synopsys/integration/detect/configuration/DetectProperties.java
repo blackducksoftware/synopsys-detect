@@ -1798,18 +1798,6 @@ public class DetectProperties {
             .setDeprecated("This property is being removed. The legacy maven buildless parser is being replaced by the project inspector.", DetectMajorVersion.EIGHT)
             .build();
 
-    @Deprecated
-    public static final BooleanProperty DETECT_DIAGNOSTIC_EXTENDED =
-        BooleanProperty.newBuilder("detect.diagnostic.extended", false)
-            .setInfo("Diagnostic Mode Extended", DetectPropertyFromVersion.VERSION_6_5_0)
-            .setHelp("When enabled, Synopsys Detect performs the actions of --detect.diagnostic, but also includes relevant files such as lock files and build artifacts.")
-            .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
-            .setDeprecated(
-                "This property is being removed. Use property detect.diagnostic instead. There is no longer any distinction between extended and non-extended diagnostic zip files.",
-                DetectMajorVersion.NINE
-            )
-            .build();
-
     // Can't take in the DetectProperty<?> due to an illegal forward reference :(
     private static String createTypeFilterHelpText(String exclusionTypePlural, String... replacements) {
         // TODO: 8.0.0 check if Options are built correctly, then remove replacements text

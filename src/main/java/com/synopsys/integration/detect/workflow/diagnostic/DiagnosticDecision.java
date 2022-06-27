@@ -9,8 +9,7 @@ public class DiagnosticDecision {
 
     public static DiagnosticDecision decide(DetectArgumentState detectArgumentState, PropertyConfiguration propertyConfiguration) {
         boolean isDiagnostic = detectArgumentState.isDiagnostic() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC);
-        boolean isExtended = detectArgumentState.isDiagnosticExtended() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED);
-        return new DiagnosticDecision(isDiagnostic || isExtended);
+        return new DiagnosticDecision(isDiagnostic);
     }
 
     private DiagnosticDecision(boolean isDiagnostic) {
