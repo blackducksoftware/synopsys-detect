@@ -1794,12 +1794,109 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.conan.include.build.dependencies", true)
-            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
-            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+    public static final BooleanProperty DETECT_PUD_DEPS_EXCLUDE_DEV =
+        BooleanProperty.newBuilder("detect.pub.deps.exclude.dev", false)
+            .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_5_0)
+            .setHelp(
+                "If true, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
+            )
+            .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_GO_ENABLE_VERIFICATION =
+        BooleanProperty.newBuilder("detect.go.mod.enable.verification", true)
+            .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_1_0)
+            .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies. Set to false if you have an empty BOM.")
+            .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS =
+        BooleanProperty.newBuilder("detect.gradle.include.unresolved.configurations", false)
+            .setInfo("Gradle Include Unresolved Configurations", DetectPropertyFromVersion.VERSION_7_6_0)
+            .setHelp(
+                "When set to true, dependencies discovered from unresolved Gradle configurations will be included. It is set to false by default for a more accurate BOM.",
+                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
+            )
+            .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_LERNA_INCLUDE_PRIVATE =
+        BooleanProperty.newBuilder("detect.lerna.include.private", false)
+            .setInfo("Include Lerna Packages defined as private.", DetectPropertyFromVersion.VERSION_6_0_0)
+            .setHelp("Lerna allows for private packages that do not get published. Set this to true to include all packages including private packages.")
+            .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_LERNA_PACKAGE_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_NPM_INCLUDE_DEV_DEPENDENCIES =
+        BooleanProperty.newBuilder("detect.npm.include.dev.dependencies", true)
+            .setInfo("Include NPM Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Set this value to false if you would like to exclude your dev dependencies when ran.")
+            .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_NPM_INCLUDE_PEER_DEPENDENCIES =
+        BooleanProperty.newBuilder("detect.npm.include.peer.dependencies", true)
+            .setInfo("Include NPM Peer Dependencies", DetectPropertyFromVersion.VERSION_7_1_0)
+            .setHelp("Set this value to false if you would like to exclude your peer dependencies when ran.")
+            .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES =
+        BooleanProperty.newBuilder("detect.packagist.include.dev.dependencies", true)
+            .setInfo("Include Packagist Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Set this value to false if you would like to exclude your dev requires dependencies when ran.")
+            .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_PEAR_ONLY_REQUIRED_DEPS =
+        BooleanProperty.newBuilder("detect.pear.only.required.deps", false)
+            .setInfo("Include Only Required Pear Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("Set to true if you would like to include only required packages.")
+            .setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES =
+        BooleanProperty.newBuilder("detect.ruby.include.runtime.dependencies", true)
+            .setInfo("Ruby Runtime Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
+            .setHelp("If set to false, runtime dependencies will not be included when parsing *.gemspec files.")
+            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES =
+        BooleanProperty.newBuilder("detect.ruby.include.dev.dependencies", false)
+            .setInfo("Ruby Development Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
+            .setHelp("If set to true, development dependencies will be included when parsing *.gemspec files.")
+            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
+            .build();
+
+    @Deprecated
+    public static final BooleanProperty DETECT_YARN_PROD_ONLY =
+        BooleanProperty.newBuilder("detect.yarn.prod.only", false)
+            .setInfo("Include Yarn Production Dependencies Only", DetectPropertyFromVersion.VERSION_4_0_0)
+            .setHelp("Set this to true to only scan production dependencies.")
+            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
             .build();
 
     @Deprecated
