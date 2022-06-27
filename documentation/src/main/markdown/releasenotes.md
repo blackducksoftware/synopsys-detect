@@ -8,6 +8,7 @@
 
 ### Changed features
 
+* Removed support for parsing SBT report files, and removed properties detect.sbt.excluded.configurations, detect.sbt.included.configurations, and detect.sbt.report.search.depth.
 * Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.
 * Removed the ability to upload BDIO2 documents to legacy endpoints via the `blackduck.legacy.upload.enabled` property.
 * Removed the ability to choose the type of BDIO aggregation strategy via the now removed `detect.bom.aggregate.remediation.mode` property. 
