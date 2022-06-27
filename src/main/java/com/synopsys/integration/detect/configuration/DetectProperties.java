@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
@@ -63,7 +62,6 @@ import com.synopsys.integration.detectable.detectables.packagist.PackagistDepend
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipenvDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyTypeV2;
 import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detectable.detectables.yarn.YarnDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -240,7 +238,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<ConanDependencyType> DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.conan.dependency.types.excluded", NoneEnum.NONE, ConanDependencyType.class)
             .setInfo("Conan Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Conan dependency types", "detect.conan.include.build.dependencies"))
+            .setHelp(createTypeFilterHelpText("Conan dependency types"))
             .setExample(ConanDependencyType.BUILD.name())
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -553,7 +551,8 @@ public class DetectProperties {
         NoneEnumListProperty.newBuilder("detect.pub.dependency.types.excluded", NoneEnum.NONE, DartPubDependencyType.class)
             .setInfo("Dart Pub Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
-                createDefaultDrivenPropertyHelpText("Dart pub dependency types", "detect.pub.deps.exclude.dev"),
+                // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
+                createTypeFilterHelpText("Dart pub dependency types", "detect.pub.deps.exclude.dev"),
                 "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
             )
             .setExample(DartPubDependencyType.DEV.name())
@@ -748,7 +747,7 @@ public class DetectProperties {
         EnumProperty.newBuilder("detect.go.mod.dependency.types.excluded", GoModDependencyType.NONE, GoModDependencyType.class)
             .setInfo("Go Mod Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
-                createDefaultDrivenPropertyHelpText("Go Mod dependency types", "detect.go.mod.enable.verification"),
+                createTypeFilterHelpText("Go Mod dependency types"),
                 String.format(
                     "If %s is provided, Detect will use the results of 'go mod why' to filter out unused dependencies from Go modules declaring Go 1.16 or higher. If %s is provided, Detect will use the results of 'go mod why -vendor' to filter out all unused dependencies.",
                     GoModDependencyType.UNUSED.name(),
@@ -818,7 +817,8 @@ public class DetectProperties {
         NoneEnumListProperty.newBuilder("detect.gradle.configuration.types.excluded", NoneEnum.NONE, GradleConfigurationType.class)
             .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
-                createDefaultDrivenPropertyHelpText("Gradle configuration types", "detect.gradle.include.unresolved.configurations"),
+                // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
+                createTypeFilterHelpText("Gradle configuration types", "detect.gradle.include.unresolved.configurations"),
                 "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
             )
             .setExample(GradleConfigurationType.UNRESOLVED.name())
@@ -965,7 +965,8 @@ public class DetectProperties {
     public static final NoneEnumListProperty<LernaPackageType> DETECT_LERNA_PACKAGE_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.lerna.package.types.excluded", NoneEnum.NONE, LernaPackageType.class)
             .setInfo("Lerna Package Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Lerna package types", "detect.lerna.include.private"))
+            // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
+            .setHelp(createTypeFilterHelpText("Lerna package types", "detect.lerna.include.private"))
             .setExample(LernaPackageType.PRIVATE.name())
             .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
             .build();
@@ -1055,7 +1056,8 @@ public class DetectProperties {
     public static final NoneEnumListProperty<NpmDependencyType> DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.npm.dependency.types.excluded", NoneEnum.NONE, NpmDependencyType.class)
             .setInfo("Npm Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Npm dependency types", "detect.npm.include.dev.dependencies", "detect.npm.include.peer.dependencies"))
+            // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
+            .setHelp(createTypeFilterHelpText("Npm dependency types", "detect.npm.include.dev.dependencies", "detect.npm.include.peer.dependencies"))
             .setExample(String.format("%s,%s", NpmDependencyType.DEV.name(), NpmDependencyType.PEER.name()))
             .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1136,14 +1138,15 @@ public class DetectProperties {
     public static final NoneEnumListProperty<PackagistDependencyType> DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.packagist.dependency.types.excluded", NoneEnum.NONE, PackagistDependencyType.class)
             .setInfo("Packagist Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Packagist dependency types", "detect.packagist.include.dev.dependencies"))
+            .setHelp(createTypeFilterHelpText("Packagist dependency types"))
             .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final NoneEnumListProperty<PearDependencyType> DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.pear.dependency.types.excluded", NoneEnum.NONE, PearDependencyType.class)
             .setInfo("Pear Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Pear dependency types", "detect.pear.only.required.deps"))
+            // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
+            .setHelp(createTypeFilterHelpText("Pear dependency types", "detect.pear.only.required.deps"))
             .setExample(PearDependencyType.OPTIONAL.name())
             .setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1201,10 +1204,10 @@ public class DetectProperties {
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL)
             .build();
 
-    public static final NoneEnumListProperty<PnpmDependencyTypeV2> DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED =
-        NoneEnumListProperty.newBuilder("detect.pnpm.dependency.types.excluded", NoneEnum.NONE, PnpmDependencyTypeV2.class)
+    public static final NoneEnumListProperty<PnpmDependencyType> DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED =
+        NoneEnumListProperty.newBuilder("detect.pnpm.dependency.types.excluded", NoneEnum.NONE, PnpmDependencyType.class)
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_11_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Pnpm dependency type", "detect.pnpm.dependency.types"))
+            .setHelp(createTypeFilterHelpText("pnpm dependency types"))
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -1498,7 +1501,8 @@ public class DetectProperties {
     public static final NoneEnumListProperty<GemspecDependencyType> DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.ruby.dependency.types.excluded", NoneEnum.NONE, GemspecDependencyType.class)
             .setInfo("Ruby Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Ruby(Gempsec) dependency types", "detect.ruby.include.dev.dependencies", "detect.ruby.include.runtime.dependencies"))
+            // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
+            .setHelp(createTypeFilterHelpText("Ruby(Gempsec) dependency types", "detect.ruby.include.dev.dependencies", "detect.ruby.include.runtime.dependencies"))
             .setExample(String.format("%s,%s", GemspecDependencyType.DEV.name(), GemspecDependencyType.RUNTIME))
             .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1558,6 +1562,34 @@ public class DetectProperties {
             .setHelp(
                 "The output directory for all signature scanner output files. If not set, the signature scanner output files will be in a 'scan' subdirectory of the output directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .build();
+
+    public static final PathListProperty DETECT_IAC_SCAN_PATHS =
+        PathListProperty.newBuilder("detect.iac.scan.paths", emptyList())
+            .setInfo("IaC Scan Target Paths", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "A comma-separated list of paths to perform IaC scans on.",
+                "If this property is set, an IaC scan will be performed on each of the paths provided. If this property is not set, but Iac Scanning is enabled via detect.tools, the IaC scan target path is the source path (see property detect.source.path)."
+            )
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
+            .setExample("/user/source/target1,/user/source/target2")
+            .build();
+
+    public static final NullableStringProperty DETECT_IAC_SCAN_ARGUMENTS =
+        NullableStringProperty.newBuilder("detect.iac.scan.arguments")
+            .setInfo("IaC Scan Arguments", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "A space-separated list of additional arguments to use when running the IaC Scanner.")
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
+            .setExample("--follow-symlinks")
+            .build();
+
+    public static final NullablePathProperty DETECT_IAC_SCANNER_LOCAL_PATH =
+        NullablePathProperty.newBuilder("detect.iac.scanner.local.path")
+            .setInfo("IaC Scanner Local Path", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "Use this property to specify the path to a local IaC Scanner.")
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathProperty DETECT_SOURCE_PATH =
@@ -1626,7 +1658,8 @@ public class DetectProperties {
     public static final NoneEnumListProperty<YarnDependencyType> DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.yarn.dependency.types.excluded", NoneEnum.NONE, YarnDependencyType.class)
             .setInfo("Yarn Dependency Types Excluded", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Yarn dependency types", "detect.yarn.prod.only"))
+            // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
+            .setHelp(createTypeFilterHelpText("Yarn dependency types", "detect.yarn.prod.only"))
             .setExample(YarnDependencyType.NON_PRODUCTION.name())
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1730,34 +1763,6 @@ public class DetectProperties {
     //#region Deprecated Properties
     // username/password ==> api token
     @Deprecated
-    public static final BooleanProperty DETECT_BUILDLESS =
-        BooleanProperty.newBuilder("detect.detector.buildless", false)
-            .setInfo("Buildless Mode", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, only Detector's capable of running without a build will be run.")
-            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
-            .setDeprecated(
-                "This is property is being replaced by detect.accuracy.required.  To run in Buildless Mode, set detect.accuracy.required=NONE.",
-                DetectMajorVersion.EIGHT
-            )
-            .build();
-
-    @Deprecated
-    public static final NullableStringProperty DETECT_GRADLE_INSPECTOR_VERSION =
-        NullableStringProperty.newBuilder("detect.gradle.inspector.version")
-            .setInfo("Gradle Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp(
-                "The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.",
-                "The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector."
-            )
-            .setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(
-                "This property is being removed because it no longer provides functionality. The gradle inspector library is no longer used to gather Gradle dependencies. The init script generated by Detect has all the necessary functionality.",
-                DetectMajorVersion.EIGHT
-            )
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_MAVEN_INCLUDE_PLUGINS =
         BooleanProperty.newBuilder("detect.maven.include.plugins", false)
             .setInfo("Maven Include Plugins", DetectPropertyFromVersion.VERSION_5_6_0)
@@ -1780,180 +1785,10 @@ public class DetectProperties {
             .setDeprecated("This property is being removed. The legacy maven buildless parser is being replaced by the project inspector.", DetectMajorVersion.EIGHT)
             .build();
 
-    @Deprecated
-    public static final BooleanProperty DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.conan.include.build.dependencies", true)
-            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
-            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_PUD_DEPS_EXCLUDE_DEV =
-        BooleanProperty.newBuilder("detect.pub.deps.exclude.dev", false)
-            .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_5_0)
-            .setHelp(
-                "If true, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
-            )
-            .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_GO_ENABLE_VERIFICATION =
-        BooleanProperty.newBuilder("detect.go.mod.enable.verification", true)
-            .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_1_0)
-            .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies. Set to false if you have an empty BOM.")
-            .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS =
-        BooleanProperty.newBuilder("detect.gradle.include.unresolved.configurations", false)
-            .setInfo("Gradle Include Unresolved Configurations", DetectPropertyFromVersion.VERSION_7_6_0)
-            .setHelp(
-                "When set to true, dependencies discovered from unresolved Gradle configurations will be included. It is set to false by default for a more accurate BOM.",
-                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
-            )
-            .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_LERNA_INCLUDE_PRIVATE =
-        BooleanProperty.newBuilder("detect.lerna.include.private", false)
-            .setInfo("Include Lerna Packages defined as private.", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("Lerna allows for private packages that do not get published. Set this to true to include all packages including private packages.")
-            .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_LERNA_PACKAGE_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_NPM_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.npm.include.dev.dependencies", true)
-            .setInfo("Include NPM Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set this value to false if you would like to exclude your dev dependencies when ran.")
-            .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_NPM_INCLUDE_PEER_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.npm.include.peer.dependencies", true)
-            .setInfo("Include NPM Peer Dependencies", DetectPropertyFromVersion.VERSION_7_1_0)
-            .setHelp("Set this value to false if you would like to exclude your peer dependencies when ran.")
-            .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.packagist.include.dev.dependencies", true)
-            .setInfo("Include Packagist Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set this value to false if you would like to exclude your dev requires dependencies when ran.")
-            .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_PEAR_ONLY_REQUIRED_DEPS =
-        BooleanProperty.newBuilder("detect.pear.only.required.deps", false)
-            .setInfo("Include Only Required Pear Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set to true if you would like to include only required packages.")
-            .setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.ruby.include.runtime.dependencies", true)
-            .setInfo("Ruby Runtime Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to false, runtime dependencies will not be included when parsing *.gemspec files.")
-            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.ruby.include.dev.dependencies", false)
-            .setInfo("Ruby Development Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, development dependencies will be included when parsing *.gemspec files.")
-            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_YARN_PROD_ONLY =
-        BooleanProperty.newBuilder("detect.yarn.prod.only", false)
-            .setInfo("Include Yarn Production Dependencies Only", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("Set this to true to only scan production dependencies.")
-            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final AllNoneEnumListProperty<PnpmDependencyType> DETECT_PNPM_DEPENDENCY_TYPES =
-        AllNoneEnumListProperty.newBuilder("detect.pnpm.dependency.types", AllNoneEnum.ALL, PnpmDependencyType.class)
-            .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp(
-                "Set this value to indicate which pnpm dependency types for should include in the BOM.",
-                "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported."
-            )
-            .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final NullableStringProperty DETECT_NUGET_INSPECTOR_VERSION =
-        NullableStringProperty.newBuilder("detect.nuget.inspector.version")
-            .setInfo("Nuget Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version.")
-            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(
-                "This property is being removed. The version of the NuGet inspector downloaded is always the latest. To continue to control which NuGet inspector is used, switch to Air Gap.",
-                DetectMajorVersion.EIGHT
-            )
-            .build();
-
-    @Deprecated
-    public static final NullablePathProperty DETECT_DOTNET_PATH =
-        NullablePathProperty.newBuilder("detect.dotnet.path")
-            .setInfo("dotnet Executable", DetectPropertyFromVersion.VERSION_4_4_0)
-            .setHelp("The path to the dotnet executable.")
-            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
-            .setDeprecated(
-                "This property is being removed. The NuGet inspector is now a self contained executable and no longer requires dotnet to run.",
-                DetectMajorVersion.EIGHT
-            )
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_DIAGNOSTIC_EXTENDED =
-        BooleanProperty.newBuilder("detect.diagnostic.extended", false)
-            .setInfo("Diagnostic Mode Extended", DetectPropertyFromVersion.VERSION_6_5_0)
-            .setHelp("When enabled, Synopsys Detect performs the actions of --detect.diagnostic, but also includes relevant files such as lock files and build artifacts.")
-            .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
-            .setDeprecated(
-                "This property is being removed. Use property detect.diagnostic instead. There is no longer any distinction between extended and non-extended diagnostic zip files.",
-                DetectMajorVersion.NINE
-            )
-            .build();
-
-    // TODO: Revise in 8.0.0
     // Can't take in the DetectProperty<?> due to an illegal forward reference :(
-    private static String createDefaultDrivenPropertyHelpText(String exclusionTypePlural, String... propertyKeysDrivingDefaults) {
-        String defaults = StringUtils.join(propertyKeysDrivingDefaults, ", ");
-        return String.format(
-            "Set this value to indicate which %s Detect should exclude from the BOM. Currently if this property is not set, the default value is driven by the default values of these properties: %s. In version 8.0.0, all %s will be reported by default.",
-            exclusionTypePlural,
-            defaults,
-            exclusionTypePlural
-        );
+    private static String createTypeFilterHelpText(String exclusionTypePlural, String... replacements) {
+        // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
+        return String.format("Set this value to indicate which %s Detect should exclude from the BOM.", exclusionTypePlural);
     }
 
     // TODO: Remove in 8.0.0

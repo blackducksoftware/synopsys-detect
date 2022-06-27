@@ -16,18 +16,8 @@ class DiagnosticDecisionTest {
 
     @Test
     void commandLineDecision() {
-        PropertyConfiguration propertyConfiguration = createPropertyConfiguration(false, false);
-        DetectArgumentState detectArgumentState = createDetectArgumentState(true, false);
-
-        DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
-
-        Assertions.assertTrue(diagnosticDecision.shouldCreateDiagnosticSystem());
-    }
-    
-    @Test
-    void commandLineDecisionExtended() {
-        PropertyConfiguration propertyConfiguration = createPropertyConfiguration(false, false);
-        DetectArgumentState detectArgumentState = createDetectArgumentState(false, true);
+        PropertyConfiguration propertyConfiguration = createPropertyConfiguration(false);
+        DetectArgumentState detectArgumentState = createDetectArgumentState(true);
 
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
 
@@ -36,18 +26,8 @@ class DiagnosticDecisionTest {
 
     @Test
     void propertyDecision() {
-        PropertyConfiguration propertyConfiguration = createPropertyConfiguration(true, false);
-        DetectArgumentState detectArgumentState = createDetectArgumentState(false, false);
-
-        DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
-
-        Assertions.assertTrue(diagnosticDecision.shouldCreateDiagnosticSystem());
-    }
-
-    @Test
-    void propertyDecisionExtended() {
-        PropertyConfiguration propertyConfiguration = createPropertyConfiguration(false, true);
-        DetectArgumentState detectArgumentState = createDetectArgumentState(false, false);
+        PropertyConfiguration propertyConfiguration = createPropertyConfiguration(true);
+        DetectArgumentState detectArgumentState = createDetectArgumentState(false);
 
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
 
@@ -56,25 +36,24 @@ class DiagnosticDecisionTest {
 
     @Test
     void noDiagnostic() {
-        PropertyConfiguration propertyConfiguration = createPropertyConfiguration(false, false);
-        DetectArgumentState detectArgumentState = createDetectArgumentState(false, false);
+        PropertyConfiguration propertyConfiguration = createPropertyConfiguration(false);
+        DetectArgumentState detectArgumentState = createDetectArgumentState(false);
 
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
 
         Assertions.assertFalse(diagnosticDecision.shouldCreateDiagnosticSystem());
     }
 
-    private PropertyConfiguration createPropertyConfiguration(boolean isDiagnostic, boolean isExtended) {
+    private PropertyConfiguration createPropertyConfiguration(boolean isDiagnostic) {
         HashMap<String, String> propertySourceMap = new HashMap<>();
         propertySourceMap.put(DetectProperties.DETECT_DIAGNOSTIC.getKey(), String.valueOf(isDiagnostic));
-        propertySourceMap.put(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getKey(), String.valueOf(isExtended));
         MapPropertySource mapPropertySource = new MapPropertySource(TEST_PROPERTY_SOURCE_NAME, propertySourceMap);
 
         return new PropertyConfiguration(Collections.singletonList(mapPropertySource));
     }
 
-    private DetectArgumentState createDetectArgumentState(boolean isDiagnostic, boolean isExtended) {
-        return new DetectArgumentState(false, false, false, false, false, null, isDiagnostic, isExtended, false);
+    private DetectArgumentState createDetectArgumentState(boolean isDiagnostic) {
+        return new DetectArgumentState(false, false, false, false, false, null, isDiagnostic, false);
     }
 
 }

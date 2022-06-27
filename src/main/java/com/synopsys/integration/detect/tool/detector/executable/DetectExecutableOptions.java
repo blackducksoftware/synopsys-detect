@@ -21,7 +21,6 @@ public class DetectExecutableOptions {
     private final Path rebarUserPath;
     private final Path javaUserPath;
     private final Path dockerUserPath;
-    private final Path dotnetUserPath;
     private final Path gitUserPath;
     private final Path goUserPath;
     private final Path swiftUserPath;
@@ -47,7 +46,6 @@ public class DetectExecutableOptions {
         Path rebarUserPath,
         Path javaUserPath,
         Path dockerUserPath,
-        Path dotnetUserPath,
         Path gitUserPath,
         Path goUserPath,
         Path swiftUserPath,
@@ -72,7 +70,6 @@ public class DetectExecutableOptions {
         this.rebarUserPath = rebarUserPath;
         this.javaUserPath = javaUserPath;
         this.dockerUserPath = dockerUserPath;
-        this.dotnetUserPath = dotnetUserPath;
         this.gitUserPath = gitUserPath;
         this.goUserPath = goUserPath;
         this.swiftUserPath = swiftUserPath;
@@ -146,10 +143,6 @@ public class DetectExecutableOptions {
 
     public Path getDockerUserPath() {
         return dockerUserPath;
-    }
-
-    public Path getDotnetUserPath() {
-        return dotnetUserPath;
     }
 
     public Path getGitUserPath() {

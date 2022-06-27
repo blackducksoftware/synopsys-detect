@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
@@ -21,6 +22,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.git.DetectorGitProjectInfoDecider;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionDecider;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
@@ -140,8 +142,12 @@ public class DetectorTool {
         Optional<NameVersion> bomToolProjectNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(detectorEvaluations, projectDetector);
         logger.debug("Finished evaluating detectors for project info.");
 
+        DetectorGitProjectInfoDecider detectorGitProjectInfoDecider = new DetectorGitProjectInfoDecider();
+        GitInfo gitInfo = detectorGitProjectInfoDecider.decideSuggestion(detectorEvaluations).orElse(GitInfo.none());
+
         DetectorToolResult detectorToolResult = new DetectorToolResult(
             bomToolProjectNameVersion.orElse(null),
+            gitInfo,
             new ArrayList<>(codeLocationMap.values()),
             evaluationResult.getApplicableDetectorTypes(),
             new HashSet<>(),

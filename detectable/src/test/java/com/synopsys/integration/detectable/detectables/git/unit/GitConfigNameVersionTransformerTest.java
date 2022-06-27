@@ -1,17 +1,21 @@
 package com.synopsys.integration.detectable.detectables.git.unit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfig;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigBranch;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigRemote;
+import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigResult;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -27,14 +31,18 @@ class GitConfigNameVersionTransformerTest {
         List<GitConfigBranch> gitConfigBranches = Arrays.asList(gitConfigBranch, badBranch);
 
         GitConfig gitConfig = new GitConfig(gitConfigRemotes, gitConfigBranches);
-        final String gitHead = "refs/heads/master";
+        String gitHead = "refs/heads/master";
 
         GitUrlParser gitUrlParser = new GitUrlParser();
         GitConfigNameVersionTransformer gitConfigNameVersionTransformer = new GitConfigNameVersionTransformer(gitUrlParser);
-        NameVersion nameVersion = gitConfigNameVersionTransformer.transformToProjectInfo(gitConfig, gitHead);
+        GitConfigResult gitConfigResult = gitConfigNameVersionTransformer.transformToProjectInfo(gitConfig, gitHead);
+        NameVersion nameVersion = gitConfigResult.getNameVersion();
 
-        Assertions.assertEquals("blackducksoftware/blackduck-artifactory", nameVersion.getName());
-        Assertions.assertEquals("master", nameVersion.getVersion());
+        assertEquals("blackducksoftware/blackduck-artifactory", nameVersion.getName());
+        assertEquals("master", nameVersion.getVersion());
+        assertEquals("https://github.com/blackducksoftware/blackduck-artifactory.git", gitConfigResult.getRemoteUrl());
+        assertTrue(gitConfigResult.getBranch().isPresent());
+        assertEquals("master", gitConfigResult.getBranch().get());
     }
 
     /**
@@ -49,13 +57,16 @@ class GitConfigNameVersionTransformerTest {
         List<GitConfigBranch> gitConfigBranches = Collections.singletonList(gitConfigBranch);
 
         GitConfig gitConfig = new GitConfig(gitConfigRemotes, gitConfigBranches);
-        final String gitHead = "9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c";
+        String gitHead = "9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c";
 
         GitUrlParser gitUrlParser = new GitUrlParser();
         GitConfigNameVersionTransformer gitConfigNameVersionTransformer = new GitConfigNameVersionTransformer(gitUrlParser);
-        NameVersion nameVersion = gitConfigNameVersionTransformer.transformToProjectInfo(gitConfig, gitHead);
+        GitConfigResult gitConfigResult = gitConfigNameVersionTransformer.transformToProjectInfo(gitConfig, gitHead);
+        NameVersion nameVersion = gitConfigResult.getNameVersion();
 
-        Assertions.assertEquals("blackducksoftware/synopsys-detect", nameVersion.getName());
-        Assertions.assertEquals("9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c", nameVersion.getVersion());
+        assertEquals("blackducksoftware/synopsys-detect", nameVersion.getName());
+        assertEquals("9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c", nameVersion.getVersion());
+        assertEquals("https://github.com/blackducksoftware/synopsys-detect.git", gitConfigResult.getRemoteUrl());
+        assertFalse(gitConfigResult.getBranch().isPresent(), "This test should be testing backups to branches.");
     }
 }

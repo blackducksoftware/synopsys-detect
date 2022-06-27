@@ -58,6 +58,7 @@ public class LernaPackager {
         this.lernaPackageTypeFilter = lernaPackageTypeFilter;
     }
 
+    // TODO: Should be multiple transformer classes. Don't go from File to CodeLocation in one swoop.
     public LernaResult generateLernaResult(File sourceDirectory, File rootPackageJson, List<LernaPackage> lernaPackages) {
         LernaLockFileResult rootLockFile = findLockFiles(sourceDirectory);
         LernaResult rootLernaResult = parse(sourceDirectory, rootPackageJson, rootLockFile, new ArrayList<>());

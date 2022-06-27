@@ -127,9 +127,10 @@ import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGenerator;
 import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
-import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
+import com.synopsys.integration.detectable.detectables.git.cli.GitCommandRunner;
 import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
@@ -162,9 +163,9 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.ivy.IvyProjectNameParser;
-import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetectable;
-import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseExtractor;
+import com.synopsys.integration.detectable.detectables.ivy.IvyParseDetectable;
+import com.synopsys.integration.detectable.detectables.ivy.IvyParseExtractor;
+import com.synopsys.integration.detectable.detectables.ivy.parse.IvyProjectNameParser;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
@@ -264,7 +265,9 @@ import com.synopsys.integration.detectable.detectables.swift.cli.SwiftExtractor;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftPackageTransformer;
 import com.synopsys.integration.detectable.detectables.swift.lock.PackageResolvedExtractor;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
+import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedDataChecker;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedFormatChecker;
+import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedFormatParser;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedParser;
 import com.synopsys.integration.detectable.detectables.swift.lock.transform.PackageResolvedTransformer;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
@@ -407,8 +410,8 @@ public class DetectableFactory {
         return new GemlockDetectable(environment, fileFinder, gemlockExtractor());
     }
 
-    public GitDetectable createGitDetectable(DetectableEnvironment environment, GitResolver gitResolver) {
-        return new GitDetectable(environment, fileFinder, gitCliExtractor(), gitResolver, gitParseExtractor());
+    public GitCliDetectable createGitDetectable(DetectableEnvironment environment, GitResolver gitResolver) {
+        return new GitCliDetectable(environment, fileFinder, gitCliExtractor(), gitResolver);
     }
 
     public GitParseDetectable createGitParseDetectable(DetectableEnvironment environment) {
@@ -666,9 +669,12 @@ public class DetectableFactory {
     // Used by three Detectables
     private PackageResolvedExtractor createPackageResolvedExtractor() {
         PackageResolvedParser parser = new PackageResolvedParser(gson);
+        PackageResolvedFormatParser formatParser = new PackageResolvedFormatParser(gson);
         PackageResolvedFormatChecker formatChecker = new PackageResolvedFormatChecker();
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
-        return new PackageResolvedExtractor(parser, formatChecker, transformer);
+        PackageResolvedDataChecker packageResolvedDataChecker = new PackageResolvedDataChecker();
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer(gitUrlParser);
+        return new PackageResolvedExtractor(parser, formatParser, formatChecker, packageResolvedDataChecker, transformer);
     }
 
     //#endregion
@@ -789,7 +795,8 @@ public class DetectableFactory {
     }
 
     private GitCliExtractor gitCliExtractor() {
-        return new GitCliExtractor(executableRunner, gitUrlParser(), toolVersionLogger);
+        GitCommandRunner gitCommandRunner = new GitCommandRunner(executableRunner);
+        return new GitCliExtractor(gitUrlParser(), toolVersionLogger, gitCommandRunner);
     }
 
     private GoModCliExtractor goModCliExtractor(GoModCliDetectableOptions options) {
@@ -832,7 +839,7 @@ public class DetectableFactory {
     }
 
     private IvyParseExtractor ivyParseExtractor() {
-        return new IvyParseExtractor(externalIdFactory, saxParser(), ivyProjectNameParser());
+        return new IvyParseExtractor(saxParser(), ivyProjectNameParser());
     }
 
     private IvyProjectNameParser ivyProjectNameParser() {
@@ -1063,7 +1070,8 @@ public class DetectableFactory {
     }
 
     private SwiftPackageTransformer swiftPackageTransformer() {
-        return new SwiftPackageTransformer(externalIdFactory);
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        return new SwiftPackageTransformer(gitUrlParser);
     }
 
     private SwiftExtractor swiftExtractor() {

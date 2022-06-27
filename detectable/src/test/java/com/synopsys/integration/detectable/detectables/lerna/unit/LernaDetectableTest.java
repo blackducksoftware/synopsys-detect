@@ -121,6 +121,7 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
         addPackageJson(directory, packageName, packageVersion, Arrays.stream(dependencies).collect(Collectors.toList()), Collections.emptyList(), Collections.emptyList());
     }
 
+    // TODO: Don't add the file to the test here. It's confusing
     private void addPackageJson(
         Path directory,
         String packageName,

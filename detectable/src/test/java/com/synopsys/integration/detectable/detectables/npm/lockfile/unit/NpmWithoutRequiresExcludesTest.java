@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -17,8 +18,6 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.model.Packag
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileGraphTransformer;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
-import jdk.internal.joptsimple.internal.Strings;
-
 public class NpmWithoutRequiresExcludesTest {
     @Test
     public void testDevDependencyExcluded() {
@@ -27,7 +26,14 @@ public class NpmWithoutRequiresExcludesTest {
 
         List<NpmDependency> resolvedDependencies = new ArrayList<>();
         resolvedDependencies.add(new NpmDependency("example", "1.0.0", true, true));
-        NpmProject npmProject = new NpmProject(Strings.EMPTY, Strings.EMPTY, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), resolvedDependencies);
+        NpmProject npmProject = new NpmProject(
+            StringUtils.EMPTY,
+            StringUtils.EMPTY,
+            Collections.emptyList(),
+            Collections.emptyList(),
+            Collections.emptyList(),
+            resolvedDependencies
+        );
 
         NpmLockfileGraphTransformer graphTransformer = new NpmLockfileGraphTransformer(
             EnumListFilter.fromExcluded(NpmDependencyType.DEV, NpmDependencyType.PEER)

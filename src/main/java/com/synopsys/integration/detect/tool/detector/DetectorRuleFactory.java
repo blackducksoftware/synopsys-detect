@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
 import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
-import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetectable;
@@ -22,7 +22,7 @@ import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetecta
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetectable;
+import com.synopsys.integration.detectable.detectables.ivy.IvyParseDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
@@ -193,7 +193,7 @@ public class DetectorRuleFactory {
 
         ruleSet.addDetector(DetectorType.CLANG, "Clang", ClangDetectable.class, detectableFactory::createClangDetectable).defaults().build();
 
-        ruleSet.addDetector(DetectorType.GIT, "Git", GitDetectable.class, detectableFactory::createGitDetectable).defaults().build();
+        ruleSet.addDetector(DetectorType.GIT, "Git", GitCliDetectable.class, detectableFactory::createGitDetectable).defaults().build();
 
         return ruleSet.build();
     }
