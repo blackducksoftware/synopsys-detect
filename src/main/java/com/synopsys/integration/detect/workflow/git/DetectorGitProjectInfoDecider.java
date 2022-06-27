@@ -11,19 +11,7 @@ import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryRep
 import com.synopsys.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detector.base.DetectorType;
-// TODO clean up
-/*
-public class DetectorGitProjectInfoDecider {
-    public Optional<GitInfo> decideSuggestion(List<DetectorEvaluation> detectorEvaluations) {
-        return detectorEvaluations.stream()
-            .filter(DetectorEvaluation::wasExtractionSuccessful)
-            .filter(detectorEvaluation -> detectorEvaluation.getDetectorType().equals(DetectorType.GIT))
-            .filter(evaluation -> evaluation.getExtraction().hasMetadata(GitCliExtractor.EXTRACTION_METADATA_KEY))
-            .min(Comparator.comparingInt(eval -> eval.getSearchEnvironment().getDepth()))
-            .flatMap(evaluation -> evaluation.getExtraction().getMetaData(GitCliExtractor.EXTRACTION_METADATA_KEY));
-    }
-}
-*/
+
 public class DetectorGitProjectInfoDecider {
     public Optional<GitInfo> decideSuggestion(List<DetectorDirectoryReport> detectorDirectoryReports) {
         List<ExtractedDetectorRuleReport> gitExtractions = new ArrayList<>();
@@ -35,6 +23,7 @@ public class DetectorGitProjectInfoDecider {
                 .collect(Collectors.toList());
             gitExtractions.addAll(gitExtractionsForDir);
         }
+        // The current rules actually make this unnecessary; The git detector will only run at the highest possible level, never underneath it
         return gitExtractions.stream()
             .min(Comparator.comparingInt(eval -> eval.getDepth()))
             .flatMap(evaluation -> evaluation.getExtractedDetectable().getExtraction().getMetaData(GitCliExtractor.EXTRACTION_METADATA_KEY));
