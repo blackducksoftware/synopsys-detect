@@ -9,6 +9,7 @@ if your accuracy requirements are not met.
 
 Accuracy is an assessment of how complete and reliable a detector's results are. Each detector has one of two possible accuracy values: HIGH, or LOW.
 A detector's accuracy value is not configurable.
+You can find the accuracy for each detector in the [detector table](../components/detectors.md).
 
 Detectors that run the project's package manager and
 discover dependencies from its output are generally assigned high accuracy because the package manager is generally a reliable source of truth
