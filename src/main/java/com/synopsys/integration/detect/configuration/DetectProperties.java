@@ -1799,69 +1799,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_NPM_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.npm.include.dev.dependencies", true)
-            .setInfo("Include NPM Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set this value to false if you would like to exclude your dev dependencies when ran.")
-            .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_NPM_INCLUDE_PEER_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.npm.include.peer.dependencies", true)
-            .setInfo("Include NPM Peer Dependencies", DetectPropertyFromVersion.VERSION_7_1_0)
-            .setHelp("Set this value to false if you would like to exclude your peer dependencies when ran.")
-            .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.packagist.include.dev.dependencies", true)
-            .setInfo("Include Packagist Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set this value to false if you would like to exclude your dev requires dependencies when ran.")
-            .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_PEAR_ONLY_REQUIRED_DEPS =
-        BooleanProperty.newBuilder("detect.pear.only.required.deps", false)
-            .setInfo("Include Only Required Pear Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set to true if you would like to include only required packages.")
-            .setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.ruby.include.runtime.dependencies", true)
-            .setInfo("Ruby Runtime Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to false, runtime dependencies will not be included when parsing *.gemspec files.")
-            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.ruby.include.dev.dependencies", false)
-            .setInfo("Ruby Development Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, development dependencies will be included when parsing *.gemspec files.")
-            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_YARN_PROD_ONLY =
-        BooleanProperty.newBuilder("detect.yarn.prod.only", false)
-            .setInfo("Include Yarn Production Dependencies Only", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("Set this to true to only scan production dependencies.")
-            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final NullableStringProperty DETECT_NUGET_INSPECTOR_VERSION =
         NullableStringProperty.newBuilder("detect.nuget.inspector.version")
             .setInfo("Nuget Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
