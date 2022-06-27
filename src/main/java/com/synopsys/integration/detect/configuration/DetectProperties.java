@@ -1803,24 +1803,6 @@ public class DetectProperties {
             .build();
 
     @Deprecated
-    public static final BooleanProperty DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.ruby.include.runtime.dependencies", true)
-            .setInfo("Ruby Runtime Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to false, runtime dependencies will not be included when parsing *.gemspec files.")
-            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.ruby.include.dev.dependencies", false)
-            .setInfo("Ruby Development Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, development dependencies will be included when parsing *.gemspec files.")
-            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
     public static final BooleanProperty DETECT_YARN_PROD_ONLY =
         BooleanProperty.newBuilder("detect.yarn.prod.only", false)
             .setInfo("Include Yarn Production Dependencies Only", DetectPropertyFromVersion.VERSION_4_0_0)

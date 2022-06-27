@@ -327,20 +327,7 @@ public class DetectableOptionFactory {
     }
 
     public GemspecParseDetectableOptions createGemspecParseDetectableOptions() {
-        Set<GemspecDependencyType> excludedDependencyTypes;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED)) {
-            excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
-        } else {
-            boolean excludeRuntimeDependencies = Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES));
-            boolean excludeDevDependencies = Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES));
-            excludedDependencyTypes = new LinkedHashSet<>();
-            if (excludeDevDependencies) {
-                excludedDependencyTypes.add(GemspecDependencyType.DEV);
-            }
-            if (excludeRuntimeDependencies) {
-                excludedDependencyTypes.add(GemspecDependencyType.RUNTIME);
-            }
-        }
+        Set<GemspecDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
         EnumListFilter<GemspecDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         return new GemspecParseDetectableOptions(dependencyTypeFilter);
     }
