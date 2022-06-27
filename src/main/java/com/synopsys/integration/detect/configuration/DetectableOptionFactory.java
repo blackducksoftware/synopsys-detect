@@ -94,15 +94,8 @@ public class DetectableOptionFactory {
     }
 
     public ComposerLockDetectableOptions createComposerLockDetectableOptions() {
-
-        EnumListFilter<PackagistDependencyType> packagistDependencyTypeFilter;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED)) {
-            Set<PackagistDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
-            packagistDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
-        } else {
-            packagistDependencyTypeFilter = EnumListFilter.fromExcluded(PackagistDependencyType.DEV);
-        }
-
+        Set<PackagistDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
+        EnumListFilter<PackagistDependencyType> packagistDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         return new ComposerLockDetectableOptions(packagistDependencyTypeFilter);
     }
 
