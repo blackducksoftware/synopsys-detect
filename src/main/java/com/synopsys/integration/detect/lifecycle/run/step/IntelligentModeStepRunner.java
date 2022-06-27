@@ -21,6 +21,7 @@ import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
+import com.synopsys.integration.detect.tool.iac.IacScanCodeLocationData;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -58,6 +59,10 @@ public class IntelligentModeStepRunner {
             operationFactory::publishImpactSuccess,
             operationFactory::publishImpactFailure
         );
+        stepHelper.runToolIfIncluded(DetectTool.IAC_SCAN, "IaC Scanner", () -> {
+            IacScanStepRunner iacScanStepRunner = new IacScanStepRunner(operationFactory);
+            iacScanStepRunner.runIacScanOffline();
+        });
     }
 
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
@@ -80,11 +85,16 @@ public class IntelligentModeStepRunner {
         logger.debug("Processing Detect Code Locations.");
 
         CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
-        stepHelper.runAsGroup(
-            "Upload Bdio",
-            OperationType.INTERNAL,
-            () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator, operationFactory.calculateDetectTimeout())
-        );
+
+        if (bdioResult.isNotEmpty()) {
+            stepHelper.runAsGroup(
+                "Upload Bdio",
+                OperationType.INTERNAL,
+                () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator, operationFactory.calculateDetectTimeout())
+            );
+        } else {
+            logger.debug("No BDIO results to upload. Skipping.");
+        }
 
         logger.debug("Completed Detect Code Location processing.");
 
@@ -111,6 +121,12 @@ public class IntelligentModeStepRunner {
             operationFactory::publishImpactSuccess,
             operationFactory::publishImpactFailure
         );
+
+        stepHelper.runToolIfIncluded(DetectTool.IAC_SCAN, "IaC Scanner", () -> {
+            IacScanStepRunner iacScanStepRunner = new IacScanStepRunner(operationFactory);
+            IacScanCodeLocationData iacScanCodeLocationData = iacScanStepRunner.runIacScanOnline(projectNameVersion, blackDuckRunData);
+            codeLocationAccumulator.addNonWaitableCodeLocation(iacScanCodeLocationData.getCodeLocationNames());
+        });
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
             CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);

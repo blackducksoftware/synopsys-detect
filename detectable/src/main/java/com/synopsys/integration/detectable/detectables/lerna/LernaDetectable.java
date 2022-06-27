@@ -17,6 +17,7 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwra
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 @DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: " + LernaDetectable.PACKAGE_JSON + ", and one of the following: "
     + LernaDetectable.PACKAGE_LOCK_JSON + ", " + LernaDetectable.SHRINKWRAP_JSON + ", "
@@ -64,13 +65,19 @@ public class LernaDetectable extends Detectable {
         requirements.explainNullableFile(shrinkwrapFile);
         requirements.explainNullableFile(yarnLockFile);
 
+        // TODO: Use SearchPattern (Maybe make an easier to construct one???)
+        //        requirements.anyFile(
+        //            "let me pass in a bunch of string patterns, and the requirements already has a directory, so default to that"
+        //            new SearchPattern(environment.getDirectory(), PACKAGE_LOCK_JSON, lockFile -> packageLockFile = lockFile)
+        //        );
+
         packageJson = requirements.file(PACKAGE_JSON);
         lernaExecutable = requirements.executable(lernaResolver::resolveLerna, "lerna");
         return requirements.result();
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException {
         return lernaExtractor.extract(environment.getDirectory(), packageJson, lernaExecutable);
     }
 }

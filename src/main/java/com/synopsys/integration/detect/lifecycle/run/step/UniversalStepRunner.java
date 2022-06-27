@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.bdio2.Bdio;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -25,7 +26,6 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationNamesResult;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
-import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class UniversalStepRunner {
@@ -82,8 +82,12 @@ public class UniversalStepRunner {
     public BdioResult generateBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws OperationException {
         ProjectDependencyGraph aggregateDependencyGraph = operationFactory.aggregateSubProject(projectNameVersion, universalToolsResult.getDetectCodeLocations());
 
-        AggregateCodeLocation aggregateCodeLocation = operationFactory.createAggregateCodeLocation(aggregateDependencyGraph, projectNameVersion);
-        operationFactory.createAggregateBdio2File(aggregateCodeLocation);
+        AggregateCodeLocation aggregateCodeLocation = operationFactory.createAggregateCodeLocation(
+            aggregateDependencyGraph,
+            projectNameVersion,
+            universalToolsResult.getDetectToolGitInfo()
+        );
+        operationFactory.createAggregateBdio2File(aggregateCodeLocation, Bdio.ScanType.PACKAGE_MANAGER);
 
         List<UploadTarget> uploadTargets = new ArrayList<>();
         Map<DetectCodeLocation, String> codeLocationNamesResult = new HashMap<>();
@@ -97,7 +101,7 @@ public class UniversalStepRunner {
         return new BdioResult(uploadTargets, new DetectCodeLocationNamesResult(codeLocationNamesResult));
     }
 
-    public NameVersion determineProjectInformation(UniversalToolsResult universalToolsResult) throws OperationException, IntegrationException {
+    public NameVersion determineProjectInformation(UniversalToolsResult universalToolsResult) throws OperationException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         logger.debug("Completed code location tools.");
 
@@ -110,4 +114,5 @@ public class UniversalStepRunner {
 
         return projectNameVersion;
     }
+
 }

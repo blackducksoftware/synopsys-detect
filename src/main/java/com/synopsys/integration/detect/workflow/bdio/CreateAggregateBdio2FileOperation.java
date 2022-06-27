@@ -34,20 +34,24 @@ public class CreateAggregateBdio2FileOperation {
         this.detectInfo = detectInfo;
     }
 
-    public void writeAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation) throws DetectUserFriendlyException {
+    public void writeAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation, Bdio.ScanType scanType) throws DetectUserFriendlyException {
         String detectVersion = detectInfo.getDetectVersion();
         SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
 
         ExternalId projectExternalId = aggregateCodeLocation.getAggregateDependencyGraph().getProjectDependency().getExternalId();
         String group = StringUtils.defaultIfBlank(projectExternalId.getGroup(), null);
-        ProjectInfo projectInfo = ProjectInfo.nameVersionGroup(aggregateCodeLocation.getProjectNameVersion(), group);
+        ProjectInfo projectInfo = ProjectInfo.nameVersionGroupGit(
+            aggregateCodeLocation.getProjectNameVersion(),
+            group,
+            aggregateCodeLocation.getGitInfo()
+        );
         BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(
             aggregateCodeLocation.getCodeLocationName(),
             projectInfo,
             ZonedDateTime.now(),
             new Product.Builder().name(detectCreator.getIdentifier()).build()
         );
-        bdioMetadata.scanType(Bdio.ScanType.PACKAGE_MANAGER);
+        bdioMetadata.scanType(scanType);
 
         Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, aggregateCodeLocation.getAggregateDependencyGraph());
         writeDocument(aggregateCodeLocation.getAggregateFile(), bdio2Document);

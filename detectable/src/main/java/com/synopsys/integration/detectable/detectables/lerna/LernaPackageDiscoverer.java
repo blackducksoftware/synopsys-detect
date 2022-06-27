@@ -17,6 +17,7 @@ import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
+// TODO: Split into separate parser and command runner
 public class LernaPackageDiscoverer {
     private final DetectableExecutableRunner executableRunner;
     private final Gson gson;

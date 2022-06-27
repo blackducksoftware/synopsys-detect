@@ -38,6 +38,14 @@ The format of "buildless" image names is: `blackducksoftware/detect:[detect_vers
 
 * If you want a buildless image with the latest supported release for a major version of [solution_name], such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-buildless`
 
+#### [solution_name] IaC Images
+
+If you wish to perform an IaC Scan via [solution_name] in a Docker container, there exist "iac" [solution_name] images.  The scanner that [solution_name] uses to perform IaC scans is not supported in other [solution_name] images.
+
+The format of "iac" image names is: `blackducksoftware/detect:[detect_version]-iac`
+
+* If you want an iac image with the latest supported release for a major version of [solution_name], such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-iac`
+
 ### Examples
 
 `docker run -it --rm -v [/path/to/source]:/source -v [/path/to/outputDir]:/output blackducksoftware/detect:[detect_image_tag] [detect_arguments]`
