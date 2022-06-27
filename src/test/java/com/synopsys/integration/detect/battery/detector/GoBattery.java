@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
 
 @Tag("battery")
 public class GoBattery {
@@ -34,6 +35,7 @@ public class GoBattery {
         test.executableFromResourceFiles(DetectProperties.DETECT_GO_PATH, "go-list.xout", "go-version.xout", "go-list-u-json.xout", "go-mod-graph.xout", "go-mod-why.xout");
         test.sourceDirectoryNamed("source");
         test.sourceFileFromResource("go.mod");
+        test.property(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED, GoModDependencyType.UNUSED.name());
         test.expectBdioResources();
         test.run();
     }
