@@ -110,7 +110,8 @@ public class GenerateDocsTask extends DefaultTask {
                         detectable.getDetectableName(),
                         detectable.getDetectableLanguage(),
                         detectable.getDetectableForge(),
-                        detectable.getDetectableRequirementsMarkdown()
+                        detectable.getDetectableRequirementsMarkdown(),
+                        detectable.getDetectableAccuracy()
                     ))
                     .collect(Collectors.toList());
                 DetectorEntryPoint entryPoint = new DetectorEntryPoint(detector.getDetectorType(), detectables);

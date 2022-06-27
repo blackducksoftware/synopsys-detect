@@ -28,11 +28,11 @@ if your accuracy requirements are not met.
 See [Detector cascade and accuracy](../downloadingandrunning/detectorcascade.md) for details.
 
 
-|Name|Language|Forge|Requirements
-|---|---|---|---|
+|Name|Language|Forge|Requirements|Accuracy|
+|---|---|---|---|---|
 <#list detectors as detector>
-|**${detector.detectorType}**||||
+|**${detector.detectorType}**|||||
 <#list detector.detectables as detectable>
-| ${detectable.name} |${detectable.language!""}|${detectable.forge!""} | <#if detectable.requirementsMarkdown?has_content ><#noautoesc>${detectable.requirementsMarkdown!""}</#noautoesc></#if>|
+| ${detectable.name} |${detectable.language!""}|${detectable.forge!""} | <#if detectable.requirementsMarkdown?has_content ><#noautoesc>${detectable.requirementsMarkdown!""}</#noautoesc></#if>|${detectable.accuracy!""}|
 </#list>
 </#list>

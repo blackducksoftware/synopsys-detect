@@ -77,6 +77,7 @@ public class HelpJsonManager {
         detectableData.setDetectableLanguage(detectableDefinition.getLanguage());
         detectableData.setDetectableRequirementsMarkdown(detectableDefinition.getRequirementsMarkdown());
         detectableData.setDetectableForge(detectableDefinition.getForge());
+        detectableData.setDetectableAccuracy(detectableDefinition.getAccuracyType().name());
         return detectableData;
     }
 

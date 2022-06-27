@@ -5,6 +5,7 @@ public class HelpJsonDetectable {
     private String detectableLanguage = "";
     private String detectableRequirementsMarkdown = "";
     private String detectableForge = "";
+    private String detectableAccuracy = "";
 
     public String getDetectableName() {
         return detectableName;
@@ -36,5 +37,14 @@ public class HelpJsonDetectable {
 
     public void setDetectableForge(String detectableForge) {
         this.detectableForge = detectableForge;
+    }
+
+
+    public String getDetectableAccuracy() {
+        return detectableAccuracy;
+    }
+
+    public void setDetectableAccuracy(final String detectableAccuracy) {
+        this.detectableAccuracy = detectableAccuracy;
     }
 }

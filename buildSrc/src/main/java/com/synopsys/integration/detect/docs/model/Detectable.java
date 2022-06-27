@@ -5,17 +5,20 @@ public class Detectable {
     private final String language;
     private final String forge;
     private final String requirementsMarkdown;
+    private final String accuracy;
 
     public Detectable(
         String name,
         String language,
         String forge,
-        String requirementsMarkdown
+        String requirementsMarkdown,
+        String accuracy
     ) {
         this.name = name;
         this.language = language;
         this.forge = forge;
         this.requirementsMarkdown = requirementsMarkdown;
+        this.accuracy = accuracy;
     }
 
     public String getName() {
@@ -32,5 +35,9 @@ public class Detectable {
 
     public String getRequirementsMarkdown() {
         return requirementsMarkdown;
+    }
+
+    public String getAccuracy() {
+        return accuracy;
     }
 }
