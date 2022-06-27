@@ -80,11 +80,16 @@ public class IntelligentModeStepRunner {
         logger.debug("Processing Detect Code Locations.");
 
         CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
-        stepHelper.runAsGroup(
-            "Upload Bdio",
-            OperationType.INTERNAL,
-            () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator, operationFactory.calculateDetectTimeout())
-        );
+
+        if (bdioResult.isNotEmpty()) {
+            stepHelper.runAsGroup(
+                "Upload Bdio",
+                OperationType.INTERNAL,
+                () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator, operationFactory.calculateDetectTimeout())
+            );
+        } else {
+            logger.debug("No BDIO results to upload. Skipping.");
+        }
 
         logger.debug("Completed Detect Code Location processing.");
 

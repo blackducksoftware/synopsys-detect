@@ -27,4 +27,8 @@ public class BdioResult {
     public DetectCodeLocationNamesResult getCodeLocationNamesResult() {
         return codeLocationNamesResult;
     }
+
+    public boolean isNotEmpty() {
+        return !uploadTargets.isEmpty();
+    }
 }
