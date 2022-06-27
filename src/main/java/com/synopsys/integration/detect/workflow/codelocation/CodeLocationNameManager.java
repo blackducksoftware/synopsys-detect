@@ -63,4 +63,15 @@ public class CodeLocationNameManager {
         }
         return scanCodeLocationName;
     }
+
+    public String createIacScanCodeLocationName(
+        File targetFile, String projectName, String projectVersionName, @Nullable String prefix,
+        @Nullable String suffix
+    ) {
+        if (codeLocationNameGenerator.useCodeLocationOverride()) {
+            return codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.IAC);
+        } else {
+            return codeLocationNameGenerator.createIacScanCodeLocationName(targetFile, projectName, projectVersionName, prefix, suffix);
+        }
+    }
 }

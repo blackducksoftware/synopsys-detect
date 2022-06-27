@@ -14,15 +14,15 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
-class SwiftPackageResolvedDetectableTest extends DetectableFunctionalTest {
-    protected SwiftPackageResolvedDetectableTest() throws IOException {
+class SwiftPackageResolvedV1DetectableTest extends DetectableFunctionalTest {
+    protected SwiftPackageResolvedV1DetectableTest() throws IOException {
         super("SwiftPackageResolved");
     }
 
     @Override
     public void setup() throws IOException {
         addFile(Paths.get("Package.swift"));
-        addFileFromResources(Paths.get("Package.resolved"), "/swift/Package.resolved");
+        addFileFromResources(Paths.get("Package.resolved"), "/swift/v1/Package.resolved");
     }
 
     @NotNull
@@ -40,7 +40,9 @@ class SwiftPackageResolvedDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasRootDependency("auth0/Auth0.swift", "1.35.0");
         graphAssert.hasRootDependency("mac-cain13/R.swift.Library", "5.4.0");
 
-        graphAssert.hasNoDependency("invalid/url", "1.2.3");
-        graphAssert.hasRootSize(3);
+        // The GitUrlParser can handle this
+        graphAssert.hasRootDependency("invalid/url", "1.2.3");
+
+        graphAssert.hasRootSize(4);
     }
 }
