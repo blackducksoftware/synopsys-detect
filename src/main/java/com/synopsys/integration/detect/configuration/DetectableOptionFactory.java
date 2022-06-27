@@ -119,7 +119,6 @@ public class DetectableOptionFactory {
     }
 
     public DockerDetectableOptions createDockerDetectableOptions() {
-        Boolean dockerPathRequired = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PATH_REQUIRED);
         String suppliedDockerImage = detectConfiguration.getNullableValue(DetectProperties.DETECT_DOCKER_IMAGE);
         String dockerImageId = detectConfiguration.getNullableValue(DetectProperties.DETECT_DOCKER_IMAGE_ID);
         String suppliedDockerTar = detectConfiguration.getNullableValue(DetectProperties.DETECT_DOCKER_TAR);
@@ -138,7 +137,6 @@ public class DetectableOptionFactory {
         Path dockerInspectorPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_DOCKER_INSPECTOR_PATH);
         String dockerPlatformTopLayerId = detectConfiguration.getNullableValue(DetectProperties.DETECT_DOCKER_PLATFORM_TOP_LAYER_ID);
         return new DockerDetectableOptions(
-            dockerPathRequired,
             suppliedDockerImage,
             dockerImageId,
             suppliedDockerTar,
