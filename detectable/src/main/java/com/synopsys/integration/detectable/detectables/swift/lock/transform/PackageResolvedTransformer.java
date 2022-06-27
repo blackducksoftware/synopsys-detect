@@ -1,7 +1,7 @@
 package com.synopsys.integration.detectable.detectables.swift.lock.transform;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -13,18 +13,22 @@ import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolved;
+import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageState;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedPackage;
 
 public class PackageResolvedTransformer {
-    private static final String[] REPO_SUFFIX_TO_STRIP = { ".git" };
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public DependencyGraph transform(PackageResolved packageResolved) {
+    private final GitUrlParser gitUrlParser;
+
+    public PackageResolvedTransformer(GitUrlParser gitUrlParser) {
+        this.gitUrlParser = gitUrlParser;
+    }
+
+    public DependencyGraph transform(List<ResolvedPackage> resolvedPackages) {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
-        packageResolved.getResolvedObject().getPackages().stream()
+        resolvedPackages.stream()
             .filter(Objects::nonNull)
             .map(this::convertToDependency)
             .filter(Optional::isPresent)
@@ -36,31 +40,23 @@ public class PackageResolvedTransformer {
 
     private Optional<Dependency> convertToDependency(ResolvedPackage resolvedPackage) {
         PackageState packageState = resolvedPackage.getPackageState();
-        String repositoryURL = resolvedPackage.getRepositoryURL();
+        String location = resolvedPackage.getLocation();
         try {
-            String name = extractPackageName(repositoryURL);
+            String name = gitUrlParser.getRepoName(location);
             String version = packageState.getVersion();
             return Optional.of(Dependency.FACTORY.createNameVersionDependency(Forge.GITHUB, name, version));
         } catch (MalformedURLException exception) {
-            logger.warn(String.format("Package '%s' has a malformed url. It cannot be added to the graph.", resolvedPackage.getPackageName()));
+            logger.warn(String.format("Package '%s' has a malformed url. It cannot be added to the graph. Please contact support.", resolvedPackage.getIdentity()));
             logger.debug(String.format(
-                "Package '%s', Version '%s', Branch '%s', Revision: '%s', MalformedURL '%s'",
-                resolvedPackage.getPackageName(),
+                "Package '%s', Version '%s', Branch '%s', Revision '%s', Location '%s'%s",
+                resolvedPackage.getIdentity(),
                 packageState.getVersion(),
                 StringUtils.defaultIfEmpty(packageState.getBranch(), "N/A"),
                 packageState.getRevision(),
-                repositoryURL
+                location,
+                resolvedPackage.getKind().map(kind -> String.format(", Kind '%s'", kind)).orElse("")
             ), exception);
             return Optional.empty();
         }
-    }
-
-    private String extractPackageName(String repositoryUrl) throws MalformedURLException {
-        String cleanPackageName = new URL(repositoryUrl).getPath();
-        cleanPackageName = StringUtils.strip(cleanPackageName, "/");
-        for (String suffix : REPO_SUFFIX_TO_STRIP) {
-            cleanPackageName = StringUtils.removeEnd(cleanPackageName, suffix);
-        }
-        return cleanPackageName;
     }
 }

@@ -1560,6 +1560,34 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
+    public static final PathListProperty DETECT_IAC_SCAN_PATHS =
+        PathListProperty.newBuilder("detect.iac.scan.paths", emptyList())
+            .setInfo("IaC Scan Target Paths", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "A comma-separated list of paths to perform IaC scans on.",
+                "If this property is set, an IaC scan will be performed on each of the paths provided. If this property is not set, but Iac Scanning is enabled via detect.tools, the IaC scan target path is the source path (see property detect.source.path)."
+            )
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
+            .setExample("/user/source/target1,/user/source/target2")
+            .build();
+
+    public static final NullableStringProperty DETECT_IAC_SCAN_ARGUMENTS =
+        NullableStringProperty.newBuilder("detect.iac.scan.arguments")
+            .setInfo("IaC Scan Arguments", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "A space-separated list of additional arguments to use when running the IaC Scanner.")
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
+            .setExample("--follow-symlinks")
+            .build();
+
+    public static final NullablePathProperty DETECT_IAC_SCANNER_LOCAL_PATH =
+        NullablePathProperty.newBuilder("detect.iac.scanner.local.path")
+            .setInfo("IaC Scanner Local Path", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "Use this property to specify the path to a local IaC Scanner.")
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
+            .build();
+
     public static final NullablePathProperty DETECT_SOURCE_PATH =
         NullablePathProperty.newBuilder("detect.source.path")
             .setInfo("Source Path", DetectPropertyFromVersion.VERSION_3_0_0)

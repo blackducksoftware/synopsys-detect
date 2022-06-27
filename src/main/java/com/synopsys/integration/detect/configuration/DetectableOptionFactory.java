@@ -100,12 +100,7 @@ public class DetectableOptionFactory {
             Set<PackagistDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
             packagistDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         } else {
-            boolean includedDevDependencies = Boolean.TRUE.equals(detectConfiguration.getValue(DetectProperties.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
-            if (includedDevDependencies) {
-                packagistDependencyTypeFilter = EnumListFilter.excludeNone();
-            } else {
-                packagistDependencyTypeFilter = EnumListFilter.fromExcluded(PackagistDependencyType.DEV);
-            }
+            packagistDependencyTypeFilter = EnumListFilter.fromExcluded(PackagistDependencyType.DEV);
         }
 
         return new ComposerLockDetectableOptions(packagistDependencyTypeFilter);
@@ -121,11 +116,6 @@ public class DetectableOptionFactory {
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED)) {
             Set<DartPubDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
             dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
-        } else {
-            boolean excludeDevDependencies = detectConfiguration.getValue(DetectProperties.DETECT_PUD_DEPS_EXCLUDE_DEV);
-            if (excludeDevDependencies) {
-                dependencyTypeFilter = EnumListFilter.fromExcluded(DartPubDependencyType.DEV);
-            }
         }
         return new DartPubDepsDetectableOptions(dependencyTypeFilter);
     }
@@ -169,18 +159,7 @@ public class DetectableOptionFactory {
     }
 
     public GoModCliDetectableOptions createGoModCliDetectableOptions() {
-        GoModDependencyType excludedDependencyType;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED)) {
-            excludedDependencyType = detectConfiguration.getValue(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED);
-        } else {
-            boolean dependencyVerificationEnabled = detectConfiguration.getValue(DetectProperties.DETECT_GO_ENABLE_VERIFICATION);
-            if (dependencyVerificationEnabled) {
-                excludedDependencyType = GoModDependencyType.UNUSED;
-            } else {
-                excludedDependencyType = GoModDependencyType.NONE;
-            }
-        }
-
+        GoModDependencyType excludedDependencyType = detectConfiguration.getValue(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED);
         return new GoModCliDetectableOptions(excludedDependencyType);
     }
 
@@ -199,12 +178,7 @@ public class DetectableOptionFactory {
                 .representedValueSet();
             dependencyTypeFilter = EnumListFilter.fromExcluded(excludedConfigurationTypes);
         } else {
-            boolean includeUnresolvedConfigurations = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS);
-            if (includeUnresolvedConfigurations) {
-                dependencyTypeFilter = EnumListFilter.excludeNone();
-            } else {
-                dependencyTypeFilter = EnumListFilter.fromExcluded(GradleConfigurationType.UNRESOLVED);
-            }
+            dependencyTypeFilter = EnumListFilter.fromExcluded(GradleConfigurationType.UNRESOLVED);
         }
 
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(
@@ -226,12 +200,7 @@ public class DetectableOptionFactory {
             Set<LernaPackageType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED).representedValueSet();
             lernaPackageTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         } else {
-            boolean includePrivate = Boolean.TRUE.equals(detectConfiguration.getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE));
-            if (includePrivate) {
-                lernaPackageTypeFilter = EnumListFilter.excludeNone();
-            } else {
-                lernaPackageTypeFilter = EnumListFilter.fromExcluded(LernaPackageType.PRIVATE);
-            }
+            lernaPackageTypeFilter = EnumListFilter.fromExcluded(LernaPackageType.PRIVATE);
         }
 
         List<String> excludedPackages = detectConfiguration.getValue(DetectProperties.DETECT_LERNA_EXCLUDED_PACKAGES);
@@ -282,36 +251,14 @@ public class DetectableOptionFactory {
     }
 
     private EnumListFilter<NpmDependencyType> createNpmDependencyTypeFilter() {
-        Set<NpmDependencyType> excludedDependencyTypes;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED)) {
-            excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
-        } else {
-            boolean excludeDevDependencies = Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES));
-            boolean excludePeerDependencies = Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_NPM_INCLUDE_PEER_DEPENDENCIES));
-            excludedDependencyTypes = new LinkedHashSet<>();
-            if (excludeDevDependencies) {
-                excludedDependencyTypes.add(NpmDependencyType.DEV);
-            }
-            if (excludePeerDependencies) {
-                excludedDependencyTypes.add(NpmDependencyType.PEER);
-            }
-        }
+        Set<NpmDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
         return EnumListFilter.fromExcluded(excludedDependencyTypes);
     }
 
     public PearCliDetectableOptions createPearCliDetectableOptions() {
         EnumListFilter<PearDependencyType> pearDependencyTypeFilter;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED)) {
-            Set<PearDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
-            pearDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
-        } else {
-            boolean onlyGatherRequired = Boolean.TRUE.equals(detectConfiguration.getValue(DetectProperties.DETECT_PEAR_ONLY_REQUIRED_DEPS));
-            if (onlyGatherRequired) {
-                pearDependencyTypeFilter = EnumListFilter.fromExcluded(PearDependencyType.OPTIONAL);
-            } else {
-                pearDependencyTypeFilter = EnumListFilter.excludeNone();
-            }
-        }
+        Set<PearDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
+        pearDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         return new PearCliDetectableOptions(pearDependencyTypeFilter);
     }
 
@@ -367,20 +314,7 @@ public class DetectableOptionFactory {
     }
 
     public GemspecParseDetectableOptions createGemspecParseDetectableOptions() {
-        Set<GemspecDependencyType> excludedDependencyTypes;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED)) {
-            excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
-        } else {
-            boolean excludeRuntimeDependencies = Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES));
-            boolean excludeDevDependencies = Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES));
-            excludedDependencyTypes = new LinkedHashSet<>();
-            if (excludeDevDependencies) {
-                excludedDependencyTypes.add(GemspecDependencyType.DEV);
-            }
-            if (excludeRuntimeDependencies) {
-                excludedDependencyTypes.add(GemspecDependencyType.RUNTIME);
-            }
-        }
+        Set<GemspecDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
         EnumListFilter<GemspecDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         return new GemspecParseDetectableOptions(dependencyTypeFilter);
     }
@@ -394,18 +328,9 @@ public class DetectableOptionFactory {
     }
 
     public YarnLockOptions createYarnLockOptions() {
-        EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED)) {
-            Set<YarnDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
-            yarnDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
-        } else {
-            boolean useProductionOnly = Boolean.TRUE.equals(detectConfiguration.getValue(DetectProperties.DETECT_YARN_PROD_ONLY));
-            if (useProductionOnly) {
-                yarnDependencyTypeFilter = EnumListFilter.fromExcluded(YarnDependencyType.NON_PRODUCTION);
-            } else {
-                yarnDependencyTypeFilter = EnumListFilter.excludeNone();
-            }
-        }
+        Set<YarnDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
+        EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
+
         List<String> excludedWorkspaces = detectConfiguration.getValue(DetectProperties.DETECT_YARN_EXCLUDED_WORKSPACES);
         List<String> includedWorkspaces = detectConfiguration.getValue(DetectProperties.DETECT_YARN_INCLUDED_WORKSPACES);
         return new YarnLockOptions(yarnDependencyTypeFilter, excludedWorkspaces, includedWorkspaces);

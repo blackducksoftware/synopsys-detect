@@ -10,8 +10,6 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -70,12 +68,7 @@ public class SwiftDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createSwiftCliDetectable(detectableEnvironment, new SwiftResolver() {
-            @Override
-            public ExecutableTarget resolveSwift() throws DetectableException {
-                return ExecutableTarget.forCommand("swift");
-            }
-        });
+        return detectableFactory.createSwiftCliDetectable(detectableEnvironment, () -> ExecutableTarget.forCommand("swift"));
     }
 
     @Override
