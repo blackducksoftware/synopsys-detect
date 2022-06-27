@@ -167,7 +167,7 @@ public class FormattedOutputManager {
         detectorOutput.detectorName = extracted.getDetectable().getName();
         detectorOutput.detectorType = detectorType.toString();
 
-        detectorOutput.extracted = false;
+        detectorOutput.extracted = true;
         detectorOutput.status = status;
         detectorOutput.statusCode = DetectorStatusCode.PASSED;
         detectorOutput.statusReason = "Passed.";
