@@ -25,8 +25,10 @@ import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.Proje
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
@@ -241,8 +243,8 @@ public class DetectConfigurationFactory {
         Boolean forceNestedSearch = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_CONTINUE);
 
         //Detector Filter
-        AllNoneEnumList<DetectorType> excluded = detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DETECTOR_TYPES);
-        AllNoneEnumList<DetectorType> included = detectConfiguration.getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES);
+        NoneEnumList<DetectorType> excluded = detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DETECTOR_TYPES);
+        AllEnumList<DetectorType> included = detectConfiguration.getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES);
         ExcludeIncludeEnumFilter<DetectorType> detectorFilter = new ExcludeIncludeEnumFilter<>(excluded, included);
 
         Set<DetectorType> includedTypes = Arrays.stream(DetectorType.values())

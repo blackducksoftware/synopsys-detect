@@ -21,8 +21,10 @@ import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.base.TypedProperty;
 import com.synopsys.integration.configuration.property.types.bool.BooleanProperty;
+import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllEnum;
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.NoneEnum;
+import com.synopsys.integration.configuration.property.types.enumallnone.property.AllEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enumallnone.property.AllNoneEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enumallnone.property.NoneEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
@@ -213,9 +215,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .build();
 
-    // TODO: Change to AllEnumListProperty. Perhaps change default to ALL. Add .deprecateNone(message)
-    public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_WORKSPACE_RULES =
-        AllNoneEnumListProperty.newBuilder("detect.bazel.workspace.rules", emptyList(), WorkspaceRule.class)
+    public static final AllEnumListProperty<WorkspaceRule> DETECT_BAZEL_WORKSPACE_RULES =
+        AllEnumListProperty.newBuilder("detect.bazel.workspace.rules", AllEnum.ALL, WorkspaceRule.class)
             .setInfo("Bazel workspace rules", DetectPropertyFromVersion.VERSION_7_12_0)
             .setHelp(
                 "By default Detect discovers Bazel dependencies using all of the supported Bazel workspace rules that it finds in the WORKSPACE file. Alternatively you can use this property to specify the list of Bazel workspace rules Detect should use."
@@ -693,12 +694,11 @@ public class DetectProperties {
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
             .build();
 
-    // TODO: Excluding ALL detector types doesn't make sense. Exclude the Detector tool instead. Change to NoneEnumListProperty, change default to NONE
-    public static final AllNoneEnumListProperty<DetectorType> DETECT_EXCLUDED_DETECTOR_TYPES =
-        AllNoneEnumListProperty.newBuilder("detect.excluded.detector.types", emptyList(), DetectorType.class)
+    public static final NoneEnumListProperty<DetectorType> DETECT_EXCLUDED_DETECTOR_TYPES =
+        NoneEnumListProperty.newBuilder("detect.excluded.detector.types", NoneEnum.NONE, DetectorType.class)
             .setInfo("Detector Types Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.",
+                "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. Exclusion rules always win.",
                 "If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them."
             )
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
@@ -856,7 +856,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.HEX, DetectGroup.GLOBAL)
             .build();
 
-    // TODO: Change to directories.excluded
     public static final StringListProperty DETECT_EXCLUDED_DIRECTORIES =
         StringListProperty.newBuilder("detect.excluded.directories", emptyList())
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -907,9 +906,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
-    // TODO: None doesn't make sense. Change default to ALL
-    public static final AllNoneEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
-        AllNoneEnumListProperty.newBuilder("detect.included.detector.types", emptyList(), DetectorType.class)
+    public static final AllEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
+        AllEnumListProperty.newBuilder("detect.included.detector.types", AllEnum.ALL, DetectorType.class)
             .setInfo("Detector Types Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.",
@@ -1270,18 +1268,8 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
-    //TODO- change default of this property to ALL in 8.0.0
     public static final AllNoneEnumListProperty<ProjectCloneCategoriesType> DETECT_PROJECT_CLONE_CATEGORIES =
-        AllNoneEnumListProperty.newBuilder(
-                "detect.project.clone.categories",
-                Arrays.asList(
-                    ProjectCloneCategoriesType.COMPONENT_DATA,
-                    ProjectCloneCategoriesType.VULN_DATA,
-                    ProjectCloneCategoriesType.VERSION_SETTINGS,
-                    ProjectCloneCategoriesType.CUSTOM_FIELD_DATA,
-                    ProjectCloneCategoriesType.LICENSE_TERM_FULFILLMENT
-                ), ProjectCloneCategoriesType.class
-            )
+        AllNoneEnumListProperty.newBuilder("detect.project.clone.categories", AllNoneEnum.ALL, ProjectCloneCategoriesType.class)
             .setInfo("Clone Project Categories", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
                 "The value of this property is used to set the 'Cloning' settings on created Black Duck projects. If property detect.project.version.update is set to true, the value of this property is used to set the 'Cloning' settings on updated Black Duck projects.")
@@ -1593,8 +1581,8 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
-    public static final AllNoneEnumListProperty<DetectTool> DETECT_TOOLS_EXCLUDED =
-        AllNoneEnumListProperty.newBuilder("detect.tools.excluded", emptyList(), DetectTool.class)
+    public static final NoneEnumListProperty<DetectTool> DETECT_TOOLS_EXCLUDED =
+        NoneEnumListProperty.newBuilder("detect.tools.excluded", emptyList(), DetectTool.class)
             .setInfo("Detect Tools Excluded", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
                 "The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.",
@@ -1604,8 +1592,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
-    public static final AllNoneEnumListProperty<DetectTool> DETECT_TOOLS =
-        AllNoneEnumListProperty.newBuilder("detect.tools", emptyList(), DetectTool.class)
+    public static final AllEnumListProperty<DetectTool> DETECT_TOOLS =
+        AllEnumListProperty.newBuilder("detect.tools", emptyList(), DetectTool.class)
             .setInfo("Detect Tools Included", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
                 "The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.",
@@ -1613,8 +1601,7 @@ public class DetectProperties {
                     "If neither detect.tools nor detect.tools.excluded are set, Detect will allow (run if applicable, based on the values of other properties) all Detect tools. If detect.tools is set, and detect.tools.excluded is not set, Detect will only allow to run those tools that are specified in the detect.tools list. If detect.tools.excluded is set, Detect will only allow those tools that are not specified in the detect.tools.excluded list."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
-            .build()
-            .deprecateNone("The value NONE is deprecated. Instead, you should set " + DETECT_TOOLS_EXCLUDED.getKey() + " to ALL.");
+            .build();
 
     public static final NoneEnumListProperty<YarnDependencyType> DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.yarn.dependency.types.excluded", NoneEnum.NONE, YarnDependencyType.class)
