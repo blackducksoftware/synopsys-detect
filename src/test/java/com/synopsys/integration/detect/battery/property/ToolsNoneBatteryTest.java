@@ -8,13 +8,13 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 
 public class ToolsNoneBatteryTest {
     @Test
-    void verifyNoneIsDeprecated() {
+    void verifyNoneIsNotAValidValue() {
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("tools-none");
         test.sourceDirectoryNamed("tools-none");
         test.property(DetectProperties.DETECT_TOOLS, "NONE");
         DetectOutput detectOutput = test.run();
 
-        detectOutput.assertContains("The value NONE is deprecated.");
+        detectOutput.assertContains("Overall Status: FAILURE_CONFIGURATION");
     }
 }
 
