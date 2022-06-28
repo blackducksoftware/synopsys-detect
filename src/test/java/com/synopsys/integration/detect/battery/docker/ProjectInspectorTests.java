@@ -51,25 +51,6 @@ public class ProjectInspectorTests {
     }
 
     @Test
-    void mavenProjectInspectorLegacyIsTheDefault() throws IOException, InterruptedException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-maven-project-inspector-legacy", "maven-simple:1.0.0")) {
-            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleMaven.dockerfile"));
-
-            DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
-            commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
-            commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
-            commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
-            commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.MAVEN.toString());
-            DockerAssertions dockerAssertions = test.run(commandBuilder);
-
-            dockerAssertions.successfulDetectorType("MAVEN");
-            dockerAssertions.atLeastOneBdioFile();
-            dockerAssertions.logDoesNotContain("Maven Project Inspector");
-            dockerAssertions.logContains("Maven Pom Parse");
-        }
-    }
-
-    @Test
     void mavenProjectInspector() throws IOException, InterruptedException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-maven-project-inspector", "maven-simple:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleMaven.dockerfile"));
