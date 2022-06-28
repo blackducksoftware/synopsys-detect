@@ -1,4 +1,4 @@
-// TODO Jordan deleted this test
+// TODO Jordan deleted this test. It would require a re-write
 /*
 package com.synopsys.integration.detect.workflow.report;
 
