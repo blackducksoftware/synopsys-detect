@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.synopsys.integration.configuration.property.PropertyBuilder;
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllEnum;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumListPropertyBase;
@@ -21,6 +22,30 @@ public class AllEnumListProperty<B extends Enum<B>> extends ExtendedEnumListProp
 
     public AllEnumListProperty(@NotNull String key, @NotNull B extendedValue, @NotNull Class<B> eClass) {
         super(key, Collections.singletonList(ExtendedEnumValue.ofBaseValue(extendedValue)), AllEnum.class, eClass);
+    }
+
+    public static <B extends Enum<B>> PropertyBuilder<AllEnumListProperty<B>> newBuilder(
+        @NotNull String key,
+        List<ExtendedEnumValue<AllEnum, B>> defaultValue,
+        @NotNull Class<B> eClass
+    ) {
+        return new PropertyBuilder<AllEnumListProperty<B>>().setCreator(() -> new AllEnumListProperty<>(key, defaultValue, eClass));
+    }
+
+    public static <B extends Enum<B>> PropertyBuilder<AllEnumListProperty<B>> newBuilder(@NotNull String key, @NotNull AllEnum allValue, @NotNull Class<B> eClass) {
+        return new PropertyBuilder<AllEnumListProperty<B>>().setCreator(() -> new AllEnumListProperty<>(
+            key,
+            Collections.singletonList(ExtendedEnumValue.ofExtendedValue(allValue)),
+            eClass
+        ));
+    }
+
+    public static <B extends Enum<B>> PropertyBuilder<AllEnumListProperty<B>> newBuilder(@NotNull String key, @NotNull B extendedValue, @NotNull Class<B> eClass) {
+        return new PropertyBuilder<AllEnumListProperty<B>>().setCreator(() -> new AllEnumListProperty<>(
+            key,
+            Collections.singletonList(ExtendedEnumValue.ofBaseValue(extendedValue)),
+            eClass
+        ));
     }
 
     public AllEnumList<B> toList(List<ExtendedEnumValue<AllEnum, B>> values) {
