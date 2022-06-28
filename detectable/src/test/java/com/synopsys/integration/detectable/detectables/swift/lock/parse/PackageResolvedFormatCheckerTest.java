@@ -10,28 +10,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolved;
+import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolvedFormat;
 
 class PackageResolvedFormatCheckerTest {
     @ParameterizedTest
     @MethodSource("knownFileFormats")
-    void compatibilityTest(String knownVersion) {
+    void compatibilityTest(PackageResolvedFormat knownVersion) {
         PackageResolvedFormatChecker formatChecker = new PackageResolvedFormatChecker();
-        PackageResolved packageResolved = new PackageResolved(null, knownVersion);
-
-        assertTrue(formatChecker.checkForVersionCompatibility(packageResolved));
+        assertTrue(formatChecker.checkForVersionCompatibility(knownVersion));
     }
 
     @Test
     void incompatibilityTest() {
         PackageResolvedFormatChecker formatChecker = new PackageResolvedFormatChecker();
-        String unknownVersion = "some unknown version";
-        PackageResolved packageResolved = new PackageResolved(null, unknownVersion);
-        
-        assertFalse(formatChecker.checkForVersionCompatibility(packageResolved));
+        assertFalse(formatChecker.checkForVersionCompatibility(PackageResolvedFormat.UNKNOWN("something-else")));
     }
 
-    public static Stream<String> knownFileFormats() {
-        return Arrays.stream(PackageResolvedFormatChecker.KNOWN_FILE_FORMAT_VERSIONS);
+    static Stream<PackageResolvedFormat> knownFileFormats() {
+        return Arrays.stream(PackageResolvedFormatChecker.getKnownFileFormatVersions());
     }
 }

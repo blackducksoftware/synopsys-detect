@@ -53,7 +53,7 @@ public class ProjectInspectorTests {
     }
 
     @Test
-    void mavenProjectInspectorLegacyIsTheDefault() throws IOException, InterruptedException {
+    void mavenProjectInspectorNotRunIfCliSucceeds() throws IOException, InterruptedException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-maven-project-inspector-legacy", "maven-simple:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleMaven.dockerfile"));
 
@@ -71,7 +71,7 @@ public class ProjectInspectorTests {
     }
 
     @Test
-    void mavenProjectInspector() throws IOException, InterruptedException {
+    void mavenProjectInspectorRunIfCliFails() throws IOException, InterruptedException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-maven-project-inspector", "maven-simple:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleMaven.dockerfile"));
 

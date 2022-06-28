@@ -41,6 +41,7 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
+import com.synopsys.integration.detect.tool.iac.IacScanOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
@@ -194,7 +195,9 @@ public class DetectConfigurationFactory {
         AllNoneEnumCollection<DetectTool> includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
         AllNoneEnumCollection<DetectTool> excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
         ExcludeIncludeEnumFilter<DetectTool> filter = new ExcludeIncludeEnumFilter<>(excludedTools, includedTools);
-        return new DetectToolFilter(filter, impactEnabled.orElse(false), runDecision, blackDuckDecision);
+
+        boolean iacEnabled = includedTools.containsValue(DetectTool.IAC_SCAN) || !detectConfiguration.getValue(DetectProperties.DETECT_IAC_SCAN_PATHS).isEmpty();
+        return new DetectToolFilter(filter, impactEnabled.orElse(false), iacEnabled, runDecision, blackDuckDecision);
     }
 
     public RapidScanOptions createRapidScanOptions() {
@@ -407,6 +410,15 @@ public class DetectConfigurationFactory {
         return new BinaryScanOptions(singleTarget, fileFilter, searchDepth, getFollowSymLinks());
     }
 
+    public IacScanOptions createIacScanOptions() {
+        List<Path> iacScanPaths = detectConfiguration.getPaths(DetectProperties.DETECT_IAC_SCAN_PATHS);
+        Path localIacScannerPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_IAC_SCANNER_LOCAL_PATH);
+        String additionalArguments = detectConfiguration.getNullableValue(DetectProperties.DETECT_IAC_SCAN_ARGUMENTS);
+        String codeLocationPrefix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
+        String codeLocationSuffix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
+        return new IacScanOptions(iacScanPaths, localIacScannerPath, additionalArguments, codeLocationPrefix, codeLocationSuffix);
+    }
+
     public DetectExecutableOptions createDetectExecutableOptions() {
         return new DetectExecutableOptions(
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_BASH_PATH),
@@ -427,7 +439,6 @@ public class DetectConfigurationFactory {
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_HEX_REBAR3_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_JAVA_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_DOCKER_PATH),
-            detectConfiguration.getPathOrNull(DetectProperties.DETECT_DOTNET_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_GIT_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_GO_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_SWIFT_PATH),

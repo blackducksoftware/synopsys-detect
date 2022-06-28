@@ -56,15 +56,6 @@ public class PnpmYamlTransformerTest {
     }
 
     @Test
-    public void testExcludeDependencies() throws IntegrationException {
-        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.APP);
-        DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
-        graphAssert.hasRootSize(2);
-    }
-
-    @Test
     public void testExcludeDevDependencies() throws IntegrationException {
         PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.DEV);
         PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();

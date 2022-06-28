@@ -15,19 +15,8 @@ public class DetectArgumentStateParser {
         boolean isDeprecatedHelp = parser.isArgumentPresent("-hd", "--helpDeprecated");
 
         boolean isDiagnosticProvided = parser.isArgumentPresent("-d", "--diagnostic");
-        boolean isDiagnosticExtendedProvided = parser.isArgumentPresent("-de", "--diagnosticExtended");
 
         boolean isGenerateAirGapZip = parser.isArgumentPresent("-z", "--zip");
-
-        boolean isDiagnostic = false;
-        boolean isDiagnosticExtended = false;
-
-        if (isDiagnosticProvided || isDiagnosticExtendedProvided) {
-            isDiagnostic = true;
-        }
-        if (isDiagnosticExtendedProvided) {
-            isDiagnosticExtended = true;
-        }
 
         String parsedValue = null;
         if (isHelp) {
@@ -43,8 +32,7 @@ public class DetectArgumentStateParser {
             isVerboseHelp,
             isDeprecatedHelp,
             parsedValue,
-            isDiagnostic,
-            isDiagnosticExtended,
+            isDiagnosticProvided,
             isGenerateAirGapZip
         );
     }

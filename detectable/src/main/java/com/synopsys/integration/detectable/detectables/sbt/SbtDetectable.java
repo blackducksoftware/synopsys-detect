@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.sbt;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +25,6 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.detectable.result.SbtMissingPluginDetectableResult;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotExtractor;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -36,8 +35,8 @@ public class SbtDetectable extends Detectable {
     public static final String BUILD_SBT_FILENAME = "build.sbt";
 
     private final FileFinder fileFinder;
-    private final SbtResolutionCacheExtractor sbtResolutionCacheExtractor;
-    private final SbtResolutionCacheOptions sbtResolutionCacheOptions;
+    @Nullable
+    private final String sbtCommandAdditionalArguments;
     private final SbtResolver sbtResolver;
     private final SbtDotExtractor sbtPluginExtractor;
     private final SbtPluginFinder sbtPluginFinder;
@@ -48,16 +47,14 @@ public class SbtDetectable extends Detectable {
     public SbtDetectable(
         DetectableEnvironment environment,
         FileFinder fileFinder,
-        SbtResolutionCacheExtractor sbtResolutionCacheExtractor,
-        SbtResolutionCacheOptions sbtResolutionCacheOptions,
+        String sbtCommandAdditionalArguments,
         SbtResolver sbtResolver,
         SbtDotExtractor sbtPluginExtractor,
         SbtPluginFinder sbtPluginFinder
     ) {
         super(environment);
         this.fileFinder = fileFinder;
-        this.sbtResolutionCacheExtractor = sbtResolutionCacheExtractor;
-        this.sbtResolutionCacheOptions = sbtResolutionCacheOptions;
+        this.sbtCommandAdditionalArguments = sbtCommandAdditionalArguments;
         this.sbtResolver = sbtResolver;
         this.sbtPluginExtractor = sbtPluginExtractor;
         this.sbtPluginFinder = sbtPluginFinder;
@@ -70,18 +67,9 @@ public class SbtDetectable extends Detectable {
         return requirements.result();
     }
 
+    //Check if SBT & a plugin can be found
     @Override
     public DetectableResult extractable() throws DetectableException {
-        DetectableResult pluginResult = sbtPluginExtractable();
-        if (pluginResult.getPassed()) {
-            return pluginResult;
-        } else {
-            return new PassedDetectableResult();
-        }
-    }
-
-    //Check if SBT & a plugin can be found
-    private DetectableResult sbtPluginExtractable() throws DetectableException {
         List<Explanation> explanations = new ArrayList<>();
         sbt = sbtResolver.resolveSbt();
         if (sbt == null) {
@@ -90,7 +78,7 @@ public class SbtDetectable extends Detectable {
             explanations.add(new FoundExecutable(sbt));
         }
 
-        foundPlugin = sbtPluginFinder.isPluginInstalled(environment.getDirectory(), sbt, sbtResolutionCacheOptions.getSbtCommandAdditionalArguments());
+        foundPlugin = sbtPluginFinder.isPluginInstalled(environment.getDirectory(), sbt, sbtCommandAdditionalArguments);
         if (!foundPlugin) {
             return new SbtMissingPluginDetectableResult(environment.getDirectory().toString());
         } else {
@@ -103,15 +91,10 @@ public class SbtDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         if (sbt != null && foundPlugin) {
-            if (sbtResolutionCacheOptions.getExcludedConfigurations().size() > 0 || sbtResolutionCacheOptions.getIncludedConfigurations().size() > 0) {
-                return new Extraction.Builder().failure(
-                        "Included and excluded SBT configurations can not be used when an sbt plugin is used for dependency resolution. They can still be used when not using a dependency plugin, either remove the plugin or do not provide the properties.")
-                    .build();
-            }
-            return sbtPluginExtractor.extract(environment.getDirectory(), sbt, sbtResolutionCacheOptions.getSbtCommandAdditionalArguments());
+            return sbtPluginExtractor.extract(environment.getDirectory(), sbt, sbtCommandAdditionalArguments);
         } else {
-            logger.warn("No SBT plugin was found, will attempt to parse report files. This approach is deprecated and a plugin should be installed. ");
-            return sbtResolutionCacheExtractor.extract(environment.getDirectory(), sbtResolutionCacheOptions);
+            return new Extraction.Builder().failure("No SBT plugin was found.  Please install necessary SBT plugin.")
+                .build();
         }
     }
 

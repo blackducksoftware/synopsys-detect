@@ -9,6 +9,7 @@
 
 ### Changed features
 
+* Removed support for parsing SBT report files, and removed properties detect.sbt.excluded.configurations, detect.sbt.included.configurations, and detect.sbt.report.search.depth.
 * Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.
 * Removed the ability to upload BDIO2 documents to legacy endpoints via the `blackduck.legacy.upload.enabled` property.
 * Removed the ability to choose the type of BDIO aggregation strategy via the now removed `detect.bom.aggregate.remediation.mode` property. 
@@ -27,6 +28,13 @@
 * (IDETECT-3275) Resolved an issue that caused impact analysis to fail with an "Unsupported class file major version" error when an analyzed .class file contained invaid version bytes (byte 7 and 8).
 * (IDETECT-3180) Resolved an issue that caused the Binary Search tool to throw an exception when the patterns provided via property detect.binary.scan.file.name.patterns matched one or more directories.
 * (IDETECT-3352) Resolved an issue that caused the Gradle Project Inspector detector to fail when the value of detect.output.path was a relative path.
+
+## Version 7.14.0
+
+### New features
+* Added support for Swift projects built with Swift 5.6 or later.
+
+* Added support for running IaC scans via [solution_name]. See [IaC Scan](downloadingandrunning/iacscan.md) for more details. Note: IaC capabilities require Black Duck 2022.7.0 or later.
 
 ## Version 7.13.2
 

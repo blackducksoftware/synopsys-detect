@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.bdio2.Bdio;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
@@ -71,8 +72,15 @@ import com.synopsys.integration.detect.tool.detector.DetectorIssuePublisher;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
+import com.synopsys.integration.detect.tool.iac.CalculateIacScanTargetsOperation;
+import com.synopsys.integration.detect.tool.iac.IacScanOperation;
+import com.synopsys.integration.detect.tool.iac.IacScanReport;
+import com.synopsys.integration.detect.tool.iac.IacScannerInstaller;
+import com.synopsys.integration.detect.tool.iac.PublishIacScanReportOperation;
+import com.synopsys.integration.detect.tool.iac.UploadIacScanResultsOperation;
 import com.synopsys.integration.detect.tool.impactanalysis.GenerateImpactAnalysisOperation;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisMapCodeLocationsOperation;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisNamingOperation;
@@ -195,6 +203,7 @@ public class OperationFactory { //TODO: OperationRunner
     private final ProductRunData productRunData;
     private final RapidScanResultAggregator rapidScanResultAggregator;
     private final ProjectEventPublisher projectEventPublisher;
+    private final DetectExecutableRunner executableRunner;
 
     private final OperationAuditLog auditLog;
 
@@ -224,6 +233,7 @@ public class OperationFactory { //TODO: OperationRunner
         fileFinder = bootSingletons.getFileFinder();
         detectInfo = bootSingletons.getDetectInfo();
         productRunData = bootSingletons.getProductRunData();
+        executableRunner = utilitySingletons.getExecutableRunner();
 
         operationSystem = utilitySingletons.getOperationSystem();
         codeLocationNameManager = utilitySingletons.getCodeLocationNameManager();
@@ -640,6 +650,65 @@ public class OperationFactory { //TODO: OperationRunner
         });
     }
 
+    public List<File> calculateIacScanScanTargets() throws OperationException {
+        return auditLog.namedInternal("Calculate IacScan Scan Targets", () -> {
+            return new CalculateIacScanTargetsOperation(detectConfigurationFactory.createIacScanOptions(), directoryManager).calculateIacScanTargets();
+        });
+    }
+
+    public Optional<File> calculateUserProvidedIacScanPath() throws OperationException {
+        return auditLog.namedInternal(
+            "Calculate Local IacScan Path",
+            () -> detectConfigurationFactory.createIacScanOptions().getLocalIacScannerPath().map(Path::toFile)
+        );
+    }
+
+    public File resolveIacScanOnline(BlackDuckRunData blackDuckRunData) throws OperationException {
+        return auditLog.namedInternal("Resolve IacScan Online", () -> {
+            return new IacScannerInstaller(
+                blackDuckRunData.getBlackDuckServerConfig().createBlackDuckHttpClient(new Slf4jIntLogger(logger)),
+                detectInfo,
+                blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl(),
+                directoryManager
+            )
+                .installOrUpdateScanner();
+        });
+    }
+
+    public String createIacScanCodeLocationName(File scanTarget, NameVersion pojectNameVersion) {
+        return codeLocationNameManager.createIacScanCodeLocationName(
+            scanTarget,
+            pojectNameVersion.getName(),
+            pojectNameVersion.getVersion(),
+            detectConfigurationFactory.createIacScanOptions().getCodeLocationPrefix().orElse(null),
+            detectConfigurationFactory.createIacScanOptions().getCodeLocationSuffix().orElse(null)
+        );
+    }
+
+    public File performIacScanScan(File scanTarget, File iacScanExe, int count) throws OperationException {
+        return auditLog.namedInternal("Perform IacScan Scan", "IacScan", () -> {
+            return new IacScanOperation(directoryManager, executableRunner).performIacScan(
+                scanTarget,
+                iacScanExe,
+                detectConfigurationFactory.createIacScanOptions().getAdditionalArguments().orElse(null),
+                count
+            );
+        });
+    }
+
+    public void uploadIacScanResults(BlackDuckRunData blackDuckRunData, File iacScanResultsFile, String scanId) throws OperationException {
+        auditLog.namedInternal("Upload IacScan Results", () -> {
+            new UploadIacScanResultsOperation(blackDuckRunData.getBlackDuckServicesFactory().createIacScanUploadService())
+                .uploadResults(iacScanResultsFile, scanId);
+        });
+    }
+
+    public void publishIacScanReport(List<IacScanReport> iacScanReports) throws OperationException {
+        auditLog.namedInternal("Publish IacScan Report", () -> {
+            new PublishIacScanReportOperation(exitCodePublisher, statusEventPublisher).publishReports(iacScanReports);
+        });
+    }
+
     public Optional<File> calculateNoticesDirectory() throws OperationException { //TODO Should be a decision in boot
         return auditLog.namedInternal("Decide Notices Report Path", () -> {
             BlackDuckPostOptions postOptions = detectConfigurationFactory.createBlackDuckPostOptions();
@@ -712,10 +781,10 @@ public class OperationFactory { //TODO: OperationRunner
         );
     }
 
-    public void createAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation) throws OperationException {
+    public void createAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation, Bdio.ScanType scanType) throws OperationException {
         auditLog.namedInternal(
             "Create Bdio Code Locations",
-            () -> new CreateAggregateBdio2FileOperation(new Bdio2Factory(), detectInfo).writeAggregateBdio2File(aggregateCodeLocation)
+            () -> new CreateAggregateBdio2FileOperation(new Bdio2Factory(), detectInfo).writeAggregateBdio2File(aggregateCodeLocation, scanType)
         );
     }
 

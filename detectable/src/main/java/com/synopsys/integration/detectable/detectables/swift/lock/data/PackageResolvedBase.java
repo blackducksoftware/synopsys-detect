@@ -2,20 +2,12 @@ package com.synopsys.integration.detectable.detectables.swift.lock.data;
 
 import com.google.gson.annotations.SerializedName;
 
-public class PackageResolved {
-    @SerializedName("object")
-    private final ResolvedObject resolvedObject;
-
+public class PackageResolvedBase {
     @SerializedName("version")
     private final String fileFormatVersion;
 
-    public PackageResolved(ResolvedObject resolvedObject, String fileFormatVersion) {
-        this.resolvedObject = resolvedObject;
+    protected PackageResolvedBase(String fileFormatVersion) {
         this.fileFormatVersion = fileFormatVersion;
-    }
-
-    public ResolvedObject getResolvedObject() {
-        return resolvedObject;
     }
 
     public String getFileFormatVersion() {

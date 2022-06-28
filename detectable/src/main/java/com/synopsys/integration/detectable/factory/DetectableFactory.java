@@ -247,6 +247,7 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecP
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
+import com.synopsys.integration.detectable.detectables.sbt.SbtDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtCommandArgumentGenerator;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotExtractor;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotGraphNodeParser;
@@ -254,15 +255,15 @@ import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParse
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtGraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheExtractor;
-import com.synopsys.integration.detectable.detectables.sbt.parse.SbtResolutionCacheOptions;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftExtractor;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftPackageTransformer;
 import com.synopsys.integration.detectable.detectables.swift.lock.PackageResolvedExtractor;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
+import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedDataChecker;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedFormatChecker;
+import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedFormatParser;
 import com.synopsys.integration.detectable.detectables.swift.lock.parse.PackageResolvedParser;
 import com.synopsys.integration.detectable.detectables.swift.lock.transform.PackageResolvedTransformer;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
@@ -612,8 +613,8 @@ public class DetectableFactory {
         return new RebarDetectable(environment, fileFinder, rebar3Resolver, rebarExtractor());
     }
 
-    public SbtDetectable createSbtDetectable(DetectableEnvironment environment, SbtResolver sbtResolver, SbtResolutionCacheOptions sbtResolutionCacheOptions) {
-        return new SbtDetectable(environment, fileFinder, sbtResolutionCacheExtractor(), sbtResolutionCacheOptions, sbtResolver, sbtDotExtractor(), sbtPluginFinder());
+    public SbtDetectable createSbtDetectable(DetectableEnvironment environment, SbtResolver sbtResolver, SbtDetectableOptions sbtDetectableOptions) {
+        return new SbtDetectable(environment, fileFinder, sbtDetectableOptions.getSbtCommandAdditionalArguments(), sbtResolver, sbtDotExtractor(), sbtPluginFinder());
     }
 
     public SwiftCliDetectable createSwiftCliDetectable(DetectableEnvironment environment, SwiftResolver swiftResolver) {
@@ -666,9 +667,12 @@ public class DetectableFactory {
     // Used by three Detectables
     private PackageResolvedExtractor createPackageResolvedExtractor() {
         PackageResolvedParser parser = new PackageResolvedParser(gson);
+        PackageResolvedFormatParser formatParser = new PackageResolvedFormatParser(gson);
         PackageResolvedFormatChecker formatChecker = new PackageResolvedFormatChecker();
-        PackageResolvedTransformer transformer = new PackageResolvedTransformer();
-        return new PackageResolvedExtractor(parser, formatChecker, transformer);
+        PackageResolvedDataChecker packageResolvedDataChecker = new PackageResolvedDataChecker();
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        PackageResolvedTransformer transformer = new PackageResolvedTransformer(gitUrlParser);
+        return new PackageResolvedExtractor(parser, formatParser, formatChecker, packageResolvedDataChecker, transformer);
     }
 
     //#endregion
@@ -945,10 +949,6 @@ public class DetectableFactory {
         return new GemlockExtractor(externalIdFactory);
     }
 
-    private SbtResolutionCacheExtractor sbtResolutionCacheExtractor() {
-        return new SbtResolutionCacheExtractor(fileFinder, externalIdFactory);
-    }
-
     public SbtPluginFinder sbtPluginFinder() {
         return new SbtPluginFinder(executableRunner, new SbtCommandArgumentGenerator());
     }
@@ -1060,7 +1060,8 @@ public class DetectableFactory {
     }
 
     private SwiftPackageTransformer swiftPackageTransformer() {
-        return new SwiftPackageTransformer(externalIdFactory);
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        return new SwiftPackageTransformer(gitUrlParser);
     }
 
     private SwiftExtractor swiftExtractor() {

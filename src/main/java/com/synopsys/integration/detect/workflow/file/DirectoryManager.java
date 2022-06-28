@@ -43,7 +43,8 @@ public class DirectoryManager {
         REPORT("reports"),
         SCAN("scan"),
         SHARED("shared"),
-        STATUS("status");
+        STATUS("status"),
+        IAC("iac");
 
         private final String directoryName;
 
@@ -183,6 +184,10 @@ public class DirectoryManager {
 
     public File getExecutableOutputDirectory() {
         return getRunDirectory(RunDirectory.EXECUTABLES);
+    }
+
+    public File getIacScanOutputDirectory() {
+        return getRunDirectory(RunDirectory.IAC);
     }
 
     public File getRunHomeDirectory() {

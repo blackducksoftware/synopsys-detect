@@ -54,6 +54,7 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.detector.rule.builder.DetectorRuleSetBuilder;
 
 public class DetectorRuleFactory {
+
     //TODO (8.0.0): Decide if things called lock should use the lock default or not.
     public DetectorRuleSet createRules(DetectDetectableFactory detectableFactory) {
         DetectorRuleSetBuilder rules = new DetectorRuleSetBuilder(detectableFactory);

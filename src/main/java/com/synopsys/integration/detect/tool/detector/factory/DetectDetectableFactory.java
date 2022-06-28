@@ -274,7 +274,7 @@ public class DetectDetectableFactory {
     }
 
     public SbtDetectable createSbtDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createSbtDetectable(environment, detectExecutableResolver, detectableOptionFactory.createSbtResolutionCacheDetectableOptions());
+        return detectableFactory.createSbtDetectable(environment, detectExecutableResolver, detectableOptionFactory.createSbtDetectableOptions());
     }
 
     public SwiftCliDetectable createSwiftCliDetectable(DetectableEnvironment environment) {

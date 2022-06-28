@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.bdio2.Bdio;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -86,7 +87,7 @@ public class UniversalStepRunner {
             projectNameVersion,
             universalToolsResult.getDetectToolGitInfo()
         );
-        operationFactory.createAggregateBdio2File(aggregateCodeLocation);
+        operationFactory.createAggregateBdio2File(aggregateCodeLocation, Bdio.ScanType.PACKAGE_MANAGER);
 
         List<UploadTarget> uploadTargets = new ArrayList<>();
         Map<DetectCodeLocation, String> codeLocationNamesResult = new HashMap<>();

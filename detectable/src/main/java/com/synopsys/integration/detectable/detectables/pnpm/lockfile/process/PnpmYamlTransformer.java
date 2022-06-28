@@ -88,7 +88,7 @@ public class PnpmYamlTransformer {
             }
 
             PnpmPackageInfo packageInfo = packageEntry.getValue();
-            if (dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType())) {
+            if (!packageInfo.getDependencyType().isPresent() || dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType().get())) {
                 for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
                     String dependencyPackageId = convertRawEntryToPackageId(packageDependency, linkedPackageResolver, reportingProjectPackagePath);
                     Optional<Dependency> child = buildDependencyFromPackageId(dependencyPackageId);
@@ -114,7 +114,9 @@ public class PnpmYamlTransformer {
         PnpmLinkedPackageResolver linkedPackageResolver
     ) {
         Map<String, String> rawPackageInfo = new HashMap<>();
-        dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.APP, pnpmProjectPackage.dependencies, rawPackageInfo::putAll);
+        if (pnpmProjectPackage.dependencies != null) {
+            rawPackageInfo.putAll(pnpmProjectPackage.dependencies);
+        }
         dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
         dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
 

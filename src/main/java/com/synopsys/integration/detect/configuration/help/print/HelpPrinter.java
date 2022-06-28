@@ -51,7 +51,7 @@ public class HelpPrinter {
                 } else {
                     printHelpFilteredBySearchTerm(writer, currentOptions, state.getParsedValue());
                 }
-            } else if (state.isDiagnostic() || state.isDiagnosticExtended()) {
+            } else if (state.isDiagnostic()) {
                 printStream.println(DIAGNOSTIC_HELP_TEXT);
             } else {
                 printHelpFilteredByPrintGroup(writer, allOptions, defaultGroup.getName());

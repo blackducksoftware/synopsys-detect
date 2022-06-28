@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile.model;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.collections4.MapUtils;
 import org.jetbrains.annotations.Nullable;
@@ -29,15 +30,14 @@ public class PnpmPackageInfo {
         return MapUtils.emptyIfNull(dependencies);
     }
 
-    // TODO: In 8.0.0 this should return an Optional<PnpmDependencyType> which does not have an APP value;
-    public PnpmDependencyType getDependencyType() {
+    public Optional<PnpmDependencyType> getDependencyType() {
         if (isDev()) {
-            return PnpmDependencyType.DEV;
+            return Optional.of(PnpmDependencyType.DEV);
         }
         if (isOptional()) {
-            return PnpmDependencyType.OPTIONAL;
+            return Optional.of(PnpmDependencyType.OPTIONAL);
         }
-        return PnpmDependencyType.APP;
+        return Optional.empty();
     }
 
 }
