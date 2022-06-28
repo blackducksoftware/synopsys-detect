@@ -222,7 +222,6 @@ public class OperationRunner {
 
         OperationSystem operationSystem = utilitySingletons.getOperationSystem();
         codeLocationNameManager = utilitySingletons.getCodeLocationNameManager();
-        connectionDetails = utilitySingletons.getConnectionDetails();
 
         //My Managed Dependencies
         this.htmlEscapeDisabledGson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
