@@ -26,6 +26,7 @@ public enum DetectGroup implements Group {
     REPORT("report"),
     SOURCE_SCAN("source scan"),
     SOURCE_PATH("source path"),
+    RAPID_SCAN("rapid scan"),
 
     //Tool Groups
     DETECTOR("detector"),

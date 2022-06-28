@@ -1365,7 +1365,7 @@ public class DetectProperties {
             .setInfo("Project Name", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "An override for the name to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING, DetectGroup.RAPID_SCAN)
             .build();
 
     public static final NullableStringProperty DETECT_PARENT_PROJECT_NAME =
@@ -1417,7 +1417,7 @@ public class DetectProperties {
             .setInfo("Version Name", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "An override for the version to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING, DetectGroup.RAPID_SCAN)
             .build();
 
     public static final NullableStringProperty DETECT_PROJECT_VERSION_NICKNAME =
@@ -1703,7 +1703,7 @@ public class DetectProperties {
                 "Set the Black Duck scanning mode of Detect",
                 "Set the scanning mode of Detect to control how Detect will send data to Black Duck. RAPID will not persist the results and disables select Detect functionality for faster results. INTELLIGENT persists the results and permits all features of Detect."
             )
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.RAPID_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
 
@@ -1714,7 +1714,7 @@ public class DetectProperties {
                 "Controls how rapid scan evaluates policy rules",
                 "Set the compare mode of rapid scan. ALL evaluates all RAPID or FULL policies. BOM_COMPARE_STRICT will only show policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of policy rule modes and behaves like ALL if the policy rule is only RAPID but like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for complete details."
             )
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
+            .setGroups(DetectGroup.RAPID_SCAN, DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .build();
 
