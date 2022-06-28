@@ -5,6 +5,7 @@ import java.io.File;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -12,7 +13,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Objective C", forge = "COCOAPODS and NPMJS", requirementsMarkdown = "Files: Podfile.lock")
+@DetectableInfo(name = "Pod Lock", language = "Objective C", forge = "COCOAPODS and NPMJS", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Files: Podfile.lock")
 public class PodlockDetectable extends Detectable {
     private static final String PODFILE_LOCK_FILENAME = "Podfile.lock";
 

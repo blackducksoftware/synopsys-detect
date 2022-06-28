@@ -5,6 +5,7 @@ import java.io.File;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -13,7 +14,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 // TODO: I'm confused by the interchangeability of 'composer' and 'packagist' in the names of classes here and tests. JM-01/2022
-@DetectableInfo(language = "PHP", forge = "Packagist.org", requirementsMarkdown = "Files: composer.lock, composer.json.")
+@DetectableInfo(name = "Composer Lock", language = "PHP", forge = "Packagist.org", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Files: composer.lock, composer.json.")
 public class ComposerLockDetectable extends Detectable {
     private static final String COMPOSER_LOCK = "composer.lock";
     private static final String COMPOSER_JSON = "composer.json";

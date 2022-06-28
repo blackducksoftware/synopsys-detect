@@ -24,7 +24,6 @@ import com.synopsys.integration.detect.workflow.report.SearchSummaryReporter;
 import com.synopsys.integration.detect.workflow.report.writer.FileReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DiagnosticReportHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -50,7 +49,7 @@ public class DiagnosticReportHandler {
             this.reportDescription = reportDescription;
         }
 
-        String getReportFileName() {
+        public String getReportFileName() {
             return reportFileName;
         }
 
@@ -85,38 +84,30 @@ public class DiagnosticReportHandler {
     public void completedBomToolEvaluations(DetectorToolResult detectorToolResult) {
         this.detectorToolResult = detectorToolResult;
 
-        DetectorEvaluationTree rootEvaluation;
-        if (detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
-            rootEvaluation = detectorToolResult.getRootDetectorEvaluationTree().get();
-        } else {
-            logger.warn("Detectors completed, but no evaluation was found, unable to write detector reports.");
-            return;
-        }
-
         try {
             SearchSummaryReporter searchReporter = new SearchSummaryReporter();
-            searchReporter.print(getReportWriter(ReportTypes.SEARCH), rootEvaluation);
+            searchReporter.print(getReportWriter(ReportTypes.SEARCH), detectorToolResult.getDetectorReports());
         } catch (Exception e) {
             logger.error("Failed to write search report.", e);
         }
 
         try {
             DetailedSearchSummaryReporter searchReporter = new DetailedSearchSummaryReporter();
-            searchReporter.print(getReportWriter(ReportTypes.SEARCH_DETAILED), rootEvaluation);
+            searchReporter.print(getReportWriter(ReportTypes.SEARCH_DETAILED), detectorToolResult.getDetectorReports());
         } catch (Exception e) {
             logger.error("Failed to write detailed search report.", e);
         }
 
         try {
             OverviewSummaryReporter overviewSummaryReporter = new OverviewSummaryReporter();
-            overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.DETECTOR), rootEvaluation);
+            overviewSummaryReporter.writeReport(getReportWriter(ReportTypes.DETECTOR), detectorToolResult.getDetectorReports());
         } catch (Exception e) {
             logger.error("Failed to write detector report.", e);
         }
     }
 
     public void completedCodeLocations(Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (detectorToolResult == null || !detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
+        if (detectorToolResult == null) {
             return;
         }
 
@@ -127,7 +118,7 @@ public class DiagnosticReportHandler {
             clReporter.writeCodeLocationReport(
                 clWriter,
                 dcWriter,
-                detectorToolResult.getRootDetectorEvaluationTree().get(),
+                detectorToolResult.getDetectorReports(),
                 detectorToolResult.getCodeLocationMap(),
                 codeLocationNameMap
             );

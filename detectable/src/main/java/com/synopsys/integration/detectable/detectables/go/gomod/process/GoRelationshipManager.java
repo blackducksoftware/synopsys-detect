@@ -19,14 +19,8 @@ public class GoRelationshipManager {
         relationshipMap = new HashMap<>();
         for (GoGraphRelationship goGraphRelationship : goGraphRelationships) {
             String parentName = goGraphRelationship.getParent().getName();
-
-            if (relationshipMap.containsKey(parentName)) {
-                relationshipMap.get(parentName).add(goGraphRelationship);
-            } else {
-                List<GoGraphRelationship> relationships = new LinkedList<>();
-                relationships.add(goGraphRelationship);
-                relationshipMap.put(parentName, relationships);
-            }
+            relationshipMap.putIfAbsent(parentName, new LinkedList<>());
+            relationshipMap.get(parentName).add(goGraphRelationship);
         }
     }
 

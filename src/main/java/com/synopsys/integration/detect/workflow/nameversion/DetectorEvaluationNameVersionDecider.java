@@ -1,14 +1,15 @@
 package com.synopsys.integration.detect.workflow.nameversion;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
@@ -21,16 +22,28 @@ public class DetectorEvaluationNameVersionDecider {
         this.detectorNameVersionDecider = detectorNameVersionDecider;
     }
 
-    public Optional<NameVersion> decideSuggestion(List<DetectorEvaluation> detectorEvaluations, String projectDetector) {
-        List<DetectorProjectInfo> detectorProjectInfoList = detectorEvaluations.stream()
-            .filter(DetectorEvaluation::wasExtractionSuccessful)
-            .filter(detectorEvaluation -> StringUtils.isNotBlank(detectorEvaluation.getExtraction().getProjectName()))
-            .map(this::toProjectInfo)
-            .collect(Collectors.toList());
+    public Optional<NameVersion> decideSuggestion(List<DetectorDirectoryReport> reports, String projectDetector) {
+        List<DetectorProjectInfo> detectorProjectInfoList = convertEvaluationToProjectInfo(reports);
 
-        DetectorType detectorType = preferredDetectorTypeFromString(projectDetector);
+        DetectorType detectorType = preferredDetectorTypeFromString(projectDetector); //TODO (detectors): this should not be done here, should be done in option factory
 
         return detectorNameVersionDecider.decideProjectNameVersion(detectorProjectInfoList, detectorType);
+    }
+
+    List<DetectorProjectInfo> convertEvaluationToProjectInfo(List<DetectorDirectoryReport> reports) {
+        List<DetectorProjectInfo> projectInfos = new ArrayList<>();
+
+        reports.forEach(report -> {
+            report.getExtractedDetectors().forEach(extracted -> {
+                Extraction extraction = extracted.getExtractedDetectable().getExtraction();
+                if (StringUtils.isNotBlank(extraction.getProjectName())) {
+                    NameVersion nameVersion = new NameVersion(extraction.getProjectName(), extraction.getProjectVersion());
+                    projectInfos.add(new DetectorProjectInfo(extracted.getRule().getDetectorType(), report.getDepth(), nameVersion));
+                }
+            });
+        });
+
+        return projectInfos;
     }
 
     private DetectorType preferredDetectorTypeFromString(String detectorType) {
@@ -46,10 +59,5 @@ public class DetectorEvaluationNameVersionDecider {
             logger.debug("A valid preferred detector type was not provided, deciding project name automatically.");
         }
         return castDetectorType;
-    }
-
-    private DetectorProjectInfo toProjectInfo(DetectorEvaluation detectorEvaluation) {
-        NameVersion nameVersion = new NameVersion(detectorEvaluation.getExtraction().getProjectName(), detectorEvaluation.getExtraction().getProjectVersion());
-        return new DetectorProjectInfo(detectorEvaluation.getDetectorRule().getDetectorType(), detectorEvaluation.getSearchEnvironment().getDepth(), nameVersion);
     }
 }

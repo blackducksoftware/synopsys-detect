@@ -1,6 +1,5 @@
 package com.synopsys.integration.detect.docs.copied;
 
-//Copied from detect-configuration
 public class HelpJsonExitCode {
     private String exitCodeKey = "";
     private String exitCodeDescription = "";

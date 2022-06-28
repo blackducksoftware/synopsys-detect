@@ -8,15 +8,15 @@ public class HelpJsonDetectorStatusCode {
         return statusCode;
     }
 
-    public void setStatusCode(String code) {
-        this.statusCode = code;
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
     }
 
     public String getStatusCodeDescription() {
         return statusCodeDescription;
     }
 
-    public void setStatusCodeDescription(String description) {
-        this.statusCodeDescription = description;
+    public void setStatusCodeDescription(String statusCodeDescription) {
+        this.statusCodeDescription = statusCodeDescription;
     }
 }

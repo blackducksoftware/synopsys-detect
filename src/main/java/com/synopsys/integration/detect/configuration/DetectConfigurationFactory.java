@@ -3,7 +3,6 @@ package com.synopsys.integration.detect.configuration;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,6 @@ import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnipp
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.util.finder.DetectDirectoryFileFilter;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
-import com.synopsys.integration.detect.workflow.DummyAccuracyEnum;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanOptions;
@@ -62,9 +60,9 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.Projec
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
+import com.synopsys.integration.detector.accuracy.search.SearchOptions;
 import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
-import com.synopsys.integration.detector.finder.DetectorFinderOptions;
+import com.synopsys.integration.detector.finder.DirectoryFinderOptions;
 import com.synopsys.integration.rest.credentials.Credentials;
 import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
@@ -229,15 +227,35 @@ public class DetectConfigurationFactory {
         return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath, impactOutputPath);
     }
 
-    public DetectorFinderOptions createDetectorFinderOptions() {
+    public List<String> collectSignatureScannerDirectoryExclusions() {
+        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
+
+        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
+            directoryExclusionPatterns.addAll(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
+        }
+
+        return directoryExclusionPatterns;
+    }
+
+    private List<String> collectDetectorSearchDirectoryExclusions() {
+        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
+
+        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
+            directoryExclusionPatterns.addAll(DefaultDetectorSearchExcludedDirectories.getDirectoryNames());
+        }
+
+        return directoryExclusionPatterns;
+    }
+
+    public DirectoryFinderOptions createDetectorFinderOptions() {
         //Normal settings
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
         DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(collectDirectoryExclusions(DefaultDetectorSearchExcludedDirectories.getDirectoryNames()));
 
-        return new DetectorFinderOptions(fileFilter, maxDepth, getFollowSymLinks());
+        return new DirectoryFinderOptions(fileFilter, maxDepth, getFollowSymLinks());
     }
 
-    public DetectorEvaluationOptions createDetectorEvaluationOptions() {
+    public SearchOptions createDetectorSearchOptions() {
         Boolean forceNestedSearch = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_CONTINUE);
 
         //Detector Filter
@@ -245,11 +263,7 @@ public class DetectConfigurationFactory {
         AllNoneEnumList<DetectorType> included = detectConfiguration.getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES);
         ExcludeIncludeEnumFilter<DetectorType> detectorFilter = new ExcludeIncludeEnumFilter<>(excluded, included);
 
-        Set<DetectorType> includedTypes = Arrays.stream(DetectorType.values())
-            .filter(detectorFilter::shouldInclude)
-            .collect(Collectors.toSet());
-
-        return new DetectorEvaluationOptions(forceNestedSearch, getFollowSymLinks(), (rule -> includedTypes.contains(rule.getDetectorType())));
+        return new SearchOptions(detectorFilter::shouldInclude, forceNestedSearch);
     }
 
     public BdioOptions createBdioOptions() {
@@ -444,17 +458,17 @@ public class DetectConfigurationFactory {
     public DetectorToolOptions createDetectorToolOptions() {
         String projectBomTool = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_DETECTOR);
         List<DetectorType> requiredDetectors = detectConfiguration.getValue(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES);
-        AllNoneEnumList<DummyAccuracyEnum> accuracyRequired = detectConfiguration.getValue(DetectProperties.DETECT_ACCURACY_REQUIRED);
-        return new DetectorToolOptions(projectBomTool, requiredDetectors, accuracyRequired.containsNone());
+        AllNoneEnumList<DetectorType> accuracyRequired = detectConfiguration.getValue(DetectProperties.DETECT_ACCURACY_REQUIRED);
+        ExcludeIncludeEnumFilter<DetectorType> accuracyFilter = new ExcludeIncludeEnumFilter<>(
+            new AllNoneEnumList<>(new ArrayList<>(), DetectorType.class),
+            accuracyRequired
+        );
+        return new DetectorToolOptions(projectBomTool, requiredDetectors, accuracyFilter);
     }
 
     public ProjectGroupOptions createProjectGroupOptions() {
         String projectGroupName = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_GROUP_NAME);
         return new ProjectGroupOptions(projectGroupName);
-    }
-
-    public List<String> collectSignatureScannerDirectoryExclusions() {
-        return collectDirectoryExclusions(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
     }
 
     private List<String> collectDirectoryExclusions() {

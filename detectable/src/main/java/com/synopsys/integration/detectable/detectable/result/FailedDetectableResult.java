@@ -18,7 +18,7 @@ public class FailedDetectableResult implements DetectableResult {
     }
 
     @Override
-    public List<Explanation> getExplanation() {
+    public List<Explanation> getExplanation() { //TODO: (detectors): Only passed have these, why present on both? Should be called getPassedExplanations maybe?
         return Collections.emptyList();
     }
 

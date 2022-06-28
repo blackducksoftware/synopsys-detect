@@ -1,40 +1,53 @@
 package com.synopsys.integration.detect.workflow.report;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.synopsys.integration.detect.workflow.report.util.ObjectPrinter;
+import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class OverviewSummaryReporter {
-    public void writeReport(ReportWriter writer, DetectorEvaluationTree rootEvaluationTree) {
-        writeSummaries(writer, rootEvaluationTree.asFlatList());
-    }
-
-    private void writeSummaries(ReportWriter writer, List<DetectorEvaluationTree> detectorEvaluationTrees) {
+    public void writeReport(ReportWriter writer, List<DetectorDirectoryReport> reports) {
         writer.writeSeparator();
-        for (DetectorEvaluationTree detectorEvaluationTree : detectorEvaluationTrees) {
-            for (DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
-                if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable()) {
-                    writer.writeLine("DIRECTORY: " + detectorEvaluationTree.getDirectory());
-                    writer.writeLine("DETECTOR: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
-                    writer.writeLine("\tEXTRACTABLE: " + detectorEvaluation.getExtractabilityMessage());
-                    writer.writeLine("\tEXTRACTED: " + detectorEvaluation.wasExtractionSuccessful());
-                    if (detectorEvaluation.getExtraction() != null && StringUtils.isNotBlank(detectorEvaluation.getExtraction().getDescription())) {
-                        writer.writeLine("\tEXTRACTION: " + detectorEvaluation.getExtraction().getDescription());
+        for (DetectorDirectoryReport report : reports) {
+            writer.writeLine("DIRECTORY: " + report.getDirectory());
+            //Extracted
+            report.getExtractedDetectors().forEach(extracted -> {
+                writer.writeLine("DETECTOR: " + extracted.getRule().getDetectorType());
+                writer.writeLine("EXTRACTED: " + extracted.getExtractedDetectable().getDetectable().getName());
+                writer.writeLine("\tEXTRACTION: " + extracted.getExtractedDetectable().getExtraction().getCodeLocations().size() + " Code Locations");
+                extracted.getExtractedDetectable().getExplanations().forEach(explanation -> {
+                    writer.writeLine("\t\t" + explanation.describeSelf());
+                });
 
-                    }
-                    Map<String, String> data = new HashMap<>();
-                    ObjectPrinter.populateObjectPrivate(null, detectorEvaluation.getDetectable(), data);
-                    data.forEach((key, value) -> writer.writeLine("\t" + key + ": " + value));
-                }
-            }
+                //Attempted
+                extracted.getAttemptedDetectables().forEach(attempted -> {
+                    writer.writeLine("ATTEMPTED: " + attempted.getDetectable().getName());
+                    writer.writeLine("\tREASON: " + attempted.getStatusReason());
+                    attempted.getExplanations().forEach(explanation -> {
+                        writer.writeLine("\t\t" + explanation.describeSelf());
+                    });
+                });
+            });
+
+            //Not Extracted
+            report.getNotExtractedDetectors().forEach(extracted -> {
+                writer.writeLine("DETECTOR: " + extracted.getRule().getDetectorType());
+                //Attempted
+                extracted.getAttemptedDetectables().forEach(attempted -> {
+                    writer.writeLine("ATTEMPTED: " + attempted.getDetectable().getName());
+                    writer.writeLine("\tREASON: " + attempted.getStatusReason());
+                    attempted.getExplanations().forEach(explanation -> {
+                        writer.writeLine("\t\t" + explanation.describeSelf());
+                    });
+                });
+            });
+
+            //TODO (detector): Should we still capture the detectable instance?
+            //                    Map<String, String> data = new HashMap<>();
+            //                    ObjectPrinter.populateObjectPrivate(null, detectableEvaluation.getDetectab.get(), data);
+            //                    data.forEach((key, value) -> writer.writeLine("\t" + key + ": " + value));
+
         }
         writer.writeLine(ReportConstants.HEADING);
         writer.writeLine("");

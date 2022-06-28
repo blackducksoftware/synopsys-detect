@@ -5,6 +5,7 @@ import java.io.File;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
@@ -16,7 +17,7 @@ import com.synopsys.integration.detectable.detectables.poetry.parser.ToolPoetryS
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Python", forge = "pypi", requirementsMarkdown = "Files: Poetry.lock, pyproject.toml")
+@DetectableInfo(name = "Poetry Lock", language = "Python", forge = "pypi", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Files: Poetry.lock, pyproject.toml")
 public class PoetryDetectable extends Detectable {
     private static final String PYPROJECT_TOML_FILE_NAME = "pyproject.toml";
     private static final String POETRY_LOCK = "poetry.lock";

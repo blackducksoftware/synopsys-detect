@@ -1,7 +1,5 @@
 package com.synopsys.integration.detect.tool.binaryscanner;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,8 +15,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -35,7 +35,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public class BinaryUploadOperationTest {
     @Test
     public void testShouldFailOnDirectory() throws OperationException {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."),null, 0, false);
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), null, 0, false);
         OperationFactory operationFactory = Mockito.mock(OperationFactory.class);
 
         Mockito.when(operationFactory.calculateBinaryScanOptions()).thenReturn(binaryScanOptions);
@@ -49,6 +49,8 @@ public class BinaryUploadOperationTest {
 
     @Test
     public void testMultipleTargetPaths() throws DetectUserFriendlyException, IOException, IntegrationException {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+        
         SimpleFileFinder fileFinder = new SimpleFileFinder();
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
 
@@ -76,6 +78,8 @@ public class BinaryUploadOperationTest {
 
     @Test
     public void testDirExclusion() throws DetectUserFriendlyException, IOException, IntegrationException {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
         SimpleFileFinder fileFinder = new SimpleFileFinder();
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
 

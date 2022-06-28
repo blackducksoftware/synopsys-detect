@@ -18,7 +18,6 @@ import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class CodeLocationConverter {
     public static final Forge DETECT_FORGE = new Forge("/", "Detect");
@@ -27,16 +26,6 @@ public class CodeLocationConverter {
 
     public CodeLocationConverter(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
-    }
-
-    public Map<CodeLocation, DetectCodeLocation> toDetectCodeLocation(File detectSourcePath, DetectorEvaluation evaluation) {
-        Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
-        if (evaluation.wasExtractionSuccessful()) {
-            Extraction extraction = evaluation.getExtraction();
-            String name = evaluation.getDetectorType().toString();
-            return toDetectCodeLocation(detectSourcePath, extraction, evaluation.getDetectableEnvironment().getDirectory(), name);
-        }
-        return detectCodeLocations;
     }
 
     public Map<CodeLocation, DetectCodeLocation> toDetectCodeLocation(File detectSourcePath, Extraction extraction, File overridePath, String overrideName) {

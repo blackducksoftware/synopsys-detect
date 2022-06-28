@@ -24,11 +24,12 @@ public class ProjectInspectorTests {
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.NUGET.toString());
+            commandBuilder.property(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL, "invalidurl"); // force nuget inspector failure
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulDetectorType("NUGET");
+            dockerAssertions.logContains("NuGet Project Inspector: SUCCESS");
+            dockerAssertions.logContains("NuGet Solution Native Inspector: ATTEMPTED");
             dockerAssertions.atLeastOneBdioFile();
-            dockerAssertions.logContains("NuGet Project Inspector");
         }
     }
 
@@ -42,17 +43,18 @@ public class ProjectInspectorTests {
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.GRADLE.toString());
+            commandBuilder.property(DetectProperties.DETECT_GRADLE_PATH, "/tmp"); // force cli failure
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulDetectorType("GRADLE");
+            dockerAssertions.logContains("Gradle Native Inspector: ATTEMPTED");
+            dockerAssertions.logContains("Gradle Project Inspector: SUCCESS");
             dockerAssertions.atLeastOneBdioFile();
-            dockerAssertions.logContains("Gradle Project Inspector");
         }
     }
 
     @Test
-    void mavenProjectInspector() throws IOException, InterruptedException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-maven-project-inspector", "maven-simple:1.0.0")) {
+    void mavenProjectInspectorNotRunIfCliSucceeds() throws IOException, InterruptedException {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-maven-project-inspector-legacy", "maven-simple:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleMaven.dockerfile"));
 
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
@@ -62,9 +64,29 @@ public class ProjectInspectorTests {
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.MAVEN.toString());
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulDetectorType("MAVEN");
+            dockerAssertions.logDoesNotContain("Maven Project Inspector:");
+            dockerAssertions.logContains("Maven CLI: SUCCESS");
             dockerAssertions.atLeastOneBdioFile();
-            dockerAssertions.logContains("Maven Project Inspector");
+        }
+    }
+
+    @Test
+    void mavenProjectInspectorRunIfCliFails() throws IOException, InterruptedException {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-maven-project-inspector", "maven-simple:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleMaven.dockerfile"));
+
+            DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
+            commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
+            commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
+            commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.MAVEN.toString());
+            commandBuilder.property(DetectProperties.DETECT_MAVEN_PATH, "/tmp"); // force cli failure
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
+
+            // TODO convenience methods on dockerAssertions for testing whether a detector was ATTEMPTED, SUCCESSFUL, ...
+            dockerAssertions.logContains("Maven CLI: ATTEMPTED");
+            dockerAssertions.logContains("Maven Project Inspector: SUCCESS");
+            dockerAssertions.atLeastOneBdioFile();
         }
     }
 }

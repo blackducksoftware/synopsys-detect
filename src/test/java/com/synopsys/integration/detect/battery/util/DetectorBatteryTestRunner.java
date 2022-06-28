@@ -55,4 +55,7 @@ public final class DetectorBatteryTestRunner extends BatteryTestRunner {
         return detectArguments;
     }
 
+    public void enableDiagnostics() {
+        property(DetectProperties.DETECT_DIAGNOSTIC, "true");
+    }
 }

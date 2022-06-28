@@ -1,21 +1,29 @@
+/*
+TODO come back to this
+
 package com.synopsys.integration.detect.workflow.git;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
+import com.synopsys.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.evaluation.SearchEnvironment;
+import com.synopsys.integration.detector.rule.DetectorRule;
 
 class DetectorGitProjectInfoDeciderTest {
     private final DetectorGitProjectInfoDecider gitProjectInfoDecider = new DetectorGitProjectInfoDecider();
@@ -43,8 +51,8 @@ class DetectorGitProjectInfoDeciderTest {
         Mockito.when(nestedEvaluation.getExtraction()).thenReturn(nestExtractionWithMetadata);
 
         Optional<GitInfo> decidedGitInfo = gitProjectInfoDecider.decideSuggestion(Arrays.asList(
-            rootEvaluation,
-            nestedEvaluation
+            rootDirectoryReport,
+            nestedDirectoryReport
         ));
 
         assertTrue(decidedGitInfo.isPresent());
@@ -99,6 +107,7 @@ class DetectorGitProjectInfoDeciderTest {
         return extraction;
     }
 
+
     private DetectorEvaluation createEvaluation(DetectorType detectorType, int depth) {
         // https://www.javadoc.io/doc/org.mockito/mockito-core/2.2.9/org/mockito/Mockito.html#RETURNS_DEEP_STUBS
         // The doc seems to be very against multi-layer mocking, so that's something to be considered when refactoring DetectorEvaluation/Extraction classes.
@@ -113,3 +122,4 @@ class DetectorGitProjectInfoDeciderTest {
         return evaluation;
     }
 }
+ */
