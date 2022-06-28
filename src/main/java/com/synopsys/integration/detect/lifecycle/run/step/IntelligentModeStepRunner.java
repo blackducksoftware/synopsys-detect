@@ -146,12 +146,11 @@ public class IntelligentModeStepRunner {
         uploadResult.getUploadOutput().ifPresent(codeLocationAccumulator::addWaitableCodeLocations);
     }
 
-    public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator)
-        throws OperationException { //this is waiting....
+    public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator) throws OperationException { //this is waiting....
         logger.info(ReportConstants.RUN_SEPARATOR);
 
         Set<String> allCodeLocationNames = new HashSet<>(codeLocationAccumulator.getNonWaitableCodeLocations());
-        CodeLocationWaitData waitData = operationFactory.calulcateCodeLocationWaitData(codeLocationAccumulator.getWaitableCodeLocations());
+        CodeLocationWaitData waitData = operationFactory.calculateCodeLocationWaitData(codeLocationAccumulator.getWaitableCodeLocations());
         allCodeLocationNames.addAll(waitData.getCodeLocationNames());
         operationFactory.publishCodeLocationNames(allCodeLocationNames);
         return new CodeLocationResults(allCodeLocationNames, waitData);
@@ -208,7 +207,7 @@ public class IntelligentModeStepRunner {
         codeLocationAccumulator.addNonWaitableCodeLocation(uploadData.getOutput().getSuccessfulCodeLocationNames());
     }
 
-    private Path generateImpactAnalysis(NameVersion projectNameVersion) throws OperationException, OperationException {
+    private Path generateImpactAnalysis(NameVersion projectNameVersion) throws OperationException {
         String impactAnalysisName = operationFactory.generateImpactAnalysisCodeLocationName(projectNameVersion);
         return operationFactory.generateImpactAnalysisFile(impactAnalysisName);
     }

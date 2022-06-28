@@ -40,7 +40,7 @@ public class DetectRun {
         throws DetectUserFriendlyException {
         DetectorFactory detectorFactory = new DetectorFactory(bootSingletons, utilitySingletons);
         DetectFontLoaderFactory detectFontLoaderFactory = new DetectFontLoaderFactory(bootSingletons, utilitySingletons);
-        return new OperationFactory(detectorFactory.detectDetectableFactory(), detectFontLoaderFactory, bootSingletons, utilitySingletons, eventSingletons, exitCodeManager);
+        return new OperationFactory(detectorFactory.detectDetectableFactory(), detectFontLoaderFactory, bootSingletons, utilitySingletons, eventSingletons);
     }
 
     public void run(BootSingletons bootSingletons) {
