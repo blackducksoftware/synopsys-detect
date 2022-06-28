@@ -48,7 +48,7 @@ import com.synopsys.integration.util.NameVersion;
 
 public class DetectableTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final DetectableCreatable<?> detectableCreatable;
+    private final DetectableCreatable detectableCreatable;
     private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
     private final CodeLocationConverter codeLocationConverter;
     private final String name;
@@ -61,7 +61,7 @@ public class DetectableTool {
     private File sourcePath;
 
     public DetectableTool(
-        DetectableCreatable<?> detectableCreatable,
+        DetectableCreatable detectableCreatable,
         ExtractionEnvironmentProvider extractionEnvironmentProvider,
         CodeLocationConverter codeLocationConverter,
         String name,

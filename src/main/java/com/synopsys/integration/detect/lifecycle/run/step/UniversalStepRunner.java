@@ -14,7 +14,7 @@ import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.OperationException;
-import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
+import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.tool.DetectableTool;
 import com.synopsys.integration.detect.tool.DetectableToolResult;
@@ -29,12 +29,12 @@ import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.util.NameVersion;
 
 public class UniversalStepRunner {
-    private final OperationFactory operationFactory;
+    private final OperationRunner operationRunner;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StepHelper stepHelper;
 
-    public UniversalStepRunner(OperationFactory operationFactory, StepHelper stepHelper) {
-        this.operationFactory = operationFactory;
+    public UniversalStepRunner(OperationRunner operationRunner, StepHelper stepHelper) {
+        this.operationRunner = operationRunner;
         this.stepHelper = stepHelper;
     }
 
@@ -54,40 +54,40 @@ public class UniversalStepRunner {
     }
 
     private DetectableToolResult runDocker() throws OperationException {
-        Optional<DetectableTool> potentialTool = operationFactory.checkForDocker();
+        Optional<DetectableTool> potentialTool = operationRunner.checkForDocker();
         if (potentialTool.isPresent()) {
-            return operationFactory.executeDocker(potentialTool.get());
+            return operationRunner.executeDocker(potentialTool.get());
         } else {
             return DetectableToolResult.skip();
         }
     }
 
     private DetectableToolResult runBazel() throws OperationException {
-        Optional<DetectableTool> potentialTool = operationFactory.checkForBazel();
+        Optional<DetectableTool> potentialTool = operationRunner.checkForBazel();
         if (potentialTool.isPresent()) {
-            return operationFactory.executeBazel(potentialTool.get());
+            return operationRunner.executeBazel(potentialTool.get());
         } else {
             return DetectableToolResult.skip();
         }
     }
 
     private DetectorToolResult runDetectors() throws OperationException {
-        DetectorToolResult result = operationFactory.executeDetectors();
+        DetectorToolResult result = operationRunner.executeDetectors();
         if (result.anyDetectorsFailed()) {
-            operationFactory.publishDetectorFailure();
+            operationRunner.publishDetectorFailure();
         }
         return result;
     }
 
     public BdioResult generateBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws OperationException {
-        ProjectDependencyGraph aggregateDependencyGraph = operationFactory.aggregateSubProject(projectNameVersion, universalToolsResult.getDetectCodeLocations());
+        ProjectDependencyGraph aggregateDependencyGraph = operationRunner.aggregateSubProject(projectNameVersion, universalToolsResult.getDetectCodeLocations());
 
-        AggregateCodeLocation aggregateCodeLocation = operationFactory.createAggregateCodeLocation(
+        AggregateCodeLocation aggregateCodeLocation = operationRunner.createAggregateCodeLocation(
             aggregateDependencyGraph,
             projectNameVersion,
             universalToolsResult.getDetectToolGitInfo()
         );
-        operationFactory.createAggregateBdio2File(aggregateCodeLocation, Bdio.ScanType.PACKAGE_MANAGER);
+        operationRunner.createAggregateBdio2File(aggregateCodeLocation, Bdio.ScanType.PACKAGE_MANAGER);
 
         List<UploadTarget> uploadTargets = new ArrayList<>();
         Map<DetectCodeLocation, String> codeLocationNamesResult = new HashMap<>();
@@ -107,7 +107,7 @@ public class UniversalStepRunner {
 
         logger.debug("Determining project info.");
 
-        NameVersion projectNameVersion = operationFactory.createProjectDecisionOperation(universalToolsResult.getDetectToolProjectInfo());
+        NameVersion projectNameVersion = operationRunner.createProjectDecisionOperation(universalToolsResult.getDetectToolProjectInfo());
 
         logger.info(String.format("Project name: %s", projectNameVersion.getName()));
         logger.info(String.format("Project version: %s", projectNameVersion.getVersion()));

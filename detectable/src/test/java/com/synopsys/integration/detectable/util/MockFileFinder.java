@@ -68,6 +68,7 @@ public class MockFileFinder implements FileFinder {
     }
 
     @Override
+    @NotNull
     public List<File> findFiles(File directoryToSearch, List<String> filenamePatterns, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {
         Predicate<File> filter = file -> {
             for (String pattern : filenamePatterns) {

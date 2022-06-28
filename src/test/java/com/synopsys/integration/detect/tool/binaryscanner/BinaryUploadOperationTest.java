@@ -1,7 +1,5 @@
 package com.synopsys.integration.detect.tool.binaryscanner;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,8 +15,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -26,7 +26,7 @@ import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
-import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
+import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.BinaryScanStepRunner;
 import com.synopsys.integration.detect.util.finder.DetectDirectoryFileFilter;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -35,20 +35,22 @@ import com.synopsys.integration.exception.IntegrationException;
 public class BinaryUploadOperationTest {
     @Test
     public void testShouldFailOnDirectory() throws OperationException {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."),null, 0, false);
-        OperationFactory operationFactory = Mockito.mock(OperationFactory.class);
+        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), null, 0, false);
+        OperationRunner operationRunner = Mockito.mock(OperationRunner.class);
 
-        Mockito.when(operationFactory.calculateBinaryScanOptions()).thenReturn(binaryScanOptions);
+        Mockito.when(operationRunner.calculateBinaryScanOptions()).thenReturn(binaryScanOptions);
 
-        BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationFactory);
+        BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
         Optional<File> result = binaryScanStepRunner.determineBinaryScanFileTarget(DockerTargetData.NO_DOCKER_TARGET);
 
-        Mockito.verify(operationFactory).publishBinaryFailure(Mockito.anyString());
+        Mockito.verify(operationRunner).publishBinaryFailure(Mockito.anyString());
         Assertions.assertFalse(result.isPresent());
     }
 
     @Test
     public void testMultipleTargetPaths() throws DetectUserFriendlyException, IOException, IntegrationException {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
         SimpleFileFinder fileFinder = new SimpleFileFinder();
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
 
@@ -76,6 +78,8 @@ public class BinaryUploadOperationTest {
 
     @Test
     public void testDirExclusion() throws DetectUserFriendlyException, IOException, IntegrationException {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
         SimpleFileFinder fileFinder = new SimpleFileFinder();
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
 
@@ -102,7 +106,7 @@ public class BinaryUploadOperationTest {
         FileUtils.deleteDirectory(rootDirectory);
     }
 
-    private File createDirWithFiles(final File parentDirectory, String dirName) throws IOException {
+    private File createDirWithFiles(File parentDirectory, String dirName) throws IOException {
         File newDir = new File(parentDirectory, dirName);
         File binaryFile_1 = new File(newDir, "binaryTestFile_1.txt");
         File binaryFile_2 = new File(newDir, "binaryTestFile_2.text");
@@ -113,7 +117,7 @@ public class BinaryUploadOperationTest {
     }
 
     @NotNull
-    private List<String> getZipEntries(final Optional<File> zip) throws IOException {
+    private List<String> getZipEntries(Optional<File> zip) throws IOException {
         List<String> entries = new ArrayList<>();
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zip.get()))) {
             ZipEntry zipEntry = zis.getNextEntry();

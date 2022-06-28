@@ -23,6 +23,9 @@ public enum ExitCodeType {
         14,
         "Detect was unable to perform IaC Scan against your source. Please check your configuration, and see logs and IaC Scanner documentation for more information."
     ),
+
+    FAILURE_ACCURACY_NOT_MET(15, "Detect was unable to meet the required accuracy."),
+
     FAILURE_GENERAL_ERROR(99, "Detect encountered a known error, details of the error are provided."),
     FAILURE_UNKNOWN_ERROR(100, "Detect encountered an unknown error.");
 

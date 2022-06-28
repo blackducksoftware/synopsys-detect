@@ -17,6 +17,12 @@ import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.deprecation.PropertyRemovalDeprecationInfo;
 import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonData;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDetectorRule;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDetectorStatusCode;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonExitCode;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonOption;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonOptionDeprecatedValue;
 import com.synopsys.integration.detector.base.DetectorStatusCode;
 
 public class HelpJsonWriter {
@@ -28,14 +34,17 @@ public class HelpJsonWriter {
         this.gson = gson;
     }
 
-    public void writeGsonDocument(String filename, List<Property> detectOptions, List<HelpJsonDetector> buildDetectors, List<HelpJsonDetector> buildlessDetectors) {
+    public void writeGsonDocument(
+        String filename,
+        List<Property> detectOptions,
+        List<HelpJsonDetectorRule> detectorRules
+    ) {
         HelpJsonData data = new HelpJsonData();
 
         data.getOptions().addAll(detectOptions.stream().map(this::convertOption).collect(Collectors.toList()));
         data.getExitCodes().addAll(Stream.of(ExitCodeType.values()).map(this::convertExitCode).collect(Collectors.toList()));
         data.getDetectorStatusCodes().addAll(Stream.of(DetectorStatusCode.values()).map(this::convertDetectorStatusCode).collect(Collectors.toList()));
-        data.setBuildlessDetectors(buildlessDetectors);
-        data.setBuildDetectors(buildDetectors);
+        data.setDetectors(detectorRules);
 
         try {
             File file1 = new File(filename);

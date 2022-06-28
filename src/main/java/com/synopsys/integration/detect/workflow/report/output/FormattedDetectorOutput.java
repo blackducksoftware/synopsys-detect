@@ -6,6 +6,8 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 import com.synopsys.integration.detector.base.DetectorStatusCode;
 
+//throw in the Success (only see the success) or All failures
+//throw in the Attempted (thats what is missing)
 public class FormattedDetectorOutput {
     @SerializedName("folder")
     public String folder = "";
@@ -15,9 +17,6 @@ public class FormattedDetectorOutput {
 
     @SerializedName("detectorName")
     public String detectorName = "";
-
-    @SerializedName("descriptiveName")
-    public String descriptiveName = "";
 
     @SerializedName("extracted")
     public boolean extracted = true;

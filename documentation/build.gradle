@@ -36,7 +36,11 @@ task ditasite() {
         }
         File indexHtmlFile = new File(project.getBuildDir(), "ditasite/index.html")
         println "To browse the webhelp: Open file://${indexHtmlFile.getAbsolutePath()} in a browser"
-        //Desktop.desktop.browse helpJsonFile("docs/ditasite/index.html").toURI()
+        try {
+            Desktop.desktop.browse indexHtmlFile.toURI()
+        } catch (Exception e) {
+            println "Could not automatically open the generated ditasite (Not an error) "
+        }
     }
 }
 

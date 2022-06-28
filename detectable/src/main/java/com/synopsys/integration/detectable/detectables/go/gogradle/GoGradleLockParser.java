@@ -42,7 +42,7 @@ public class GoGradleLockParser {
                 }
                 ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, dependencyName, commit.get());
                 Dependency dependency = new Dependency(externalId);
-                dependencyGraph.addChildToRoot(dependency);
+                dependencyGraph.addDirectDependency(dependency);
             }
         }
 

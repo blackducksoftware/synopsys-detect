@@ -6,6 +6,7 @@ import java.io.IOException;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -16,7 +17,7 @@ import com.synopsys.integration.detectable.detectable.result.PipfileLockNotFound
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Python", forge = "PyPi", requirementsMarkdown = "Files: Pipfile, Pipfile.lock")
+@DetectableInfo(name = "Pipfile Lock", language = "Python", forge = "PyPi", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Files: Pipfile, Pipfile.lock")
 public class PipfileLockDetectable extends Detectable {
     private static final String PIPFILE_FILENAME = "Pipfile";
     private static final String PIPFILE_LOCK_FILENAME = "Pipfile.lock";

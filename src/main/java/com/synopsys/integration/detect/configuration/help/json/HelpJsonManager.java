@@ -1,18 +1,20 @@
 package com.synopsys.integration.detect.configuration.help.json;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDetectable;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDetectorEntryPoint;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDetectorRule;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonSearchRule;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
-import com.synopsys.integration.detectable.Detectable;
-import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
+import com.synopsys.integration.detector.rule.DetectableDefinition;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
+import com.synopsys.integration.detector.rule.EntryPoint;
 
 public class HelpJsonManager {
     private final Gson gson;
@@ -22,49 +24,61 @@ public class HelpJsonManager {
     }
 
     public void createHelpJsonDocument(String fileName) throws IllegalAccessException {
-        List<HelpJsonDetector> buildDetectors = createHelpJsonDetectorList(false);
-        List<HelpJsonDetector> buildlessDetectors = createHelpJsonDetectorList(true);
+        List<HelpJsonDetectorRule> detectors = createHelpJsonDetectors();
 
         HelpJsonWriter helpJsonWriter = new HelpJsonWriter(gson);
-        helpJsonWriter.writeGsonDocument(fileName, DetectProperties.allProperties().getProperties(), buildDetectors, buildlessDetectors);
+        helpJsonWriter.writeGsonDocument(fileName, DetectProperties.allProperties().getProperties(), detectors);
     }
 
-    private List<HelpJsonDetector> createHelpJsonDetectorList(boolean buildless) {
+    private List<HelpJsonDetectorRule> createHelpJsonDetectors() {
         DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
-        // TODO: Is there a better way to build a fake set of rules?
         DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null, null);
-        DetectorRuleSet ruleSet = ruleFactory.createRules(mockFactory, buildless);
-        return ruleSet.getOrderedDetectorRules()
-            .stream()
-            .map(detectorRule -> convertDetectorRule(detectorRule, ruleSet))
+        DetectorRuleSet ruleSet = ruleFactory.createRules(mockFactory);
+
+        return ruleSet.getDetectorRules().stream()
+            .map(this::convertDetector)
             .collect(Collectors.toList());
     }
 
-    private HelpJsonDetector convertDetectorRule(DetectorRule rule, DetectorRuleSet ruleSet) {
-        HelpJsonDetector helpData = new HelpJsonDetector();
-        helpData.setDetectorName(rule.getName());
-        helpData.setDetectorDescriptiveName(rule.getDescriptiveName());
-        helpData.setDetectorType(rule.getDetectorType().toString());
-        helpData.setMaxDepth(rule.getMaxDepth());
-        helpData.setNestable(rule.isNestable());
-        helpData.setNestInvisible(rule.isNestInvisible());
-        helpData.setYieldsTo(ruleSet.getYieldsTo(rule).stream().map(DetectorRule::getDescriptiveName).collect(Collectors.toList()));
+    private HelpJsonDetectorRule convertDetector(DetectorRule detector) {
+        HelpJsonDetectorRule helpData = new HelpJsonDetectorRule();
+        helpData.setDetectorType(detector.getDetectorType().toString());
 
-        //Attempt to create the detectable.
-        //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.
-        Class<Detectable> detectableClass = rule.getDetectableClass();
-        Optional<DetectableInfo> infoSearch = Arrays.stream(detectableClass.getAnnotations())
-            .filter(annotation -> annotation instanceof DetectableInfo)
-            .map(annotation -> (DetectableInfo) annotation)
-            .findFirst();
-
-        if (infoSearch.isPresent()) {
-            DetectableInfo info = infoSearch.get();
-            helpData.setDetectableLanguage(info.language());
-            helpData.setDetectableRequirementsMarkdown(info.requirementsMarkdown());
-            helpData.setDetectableForge(info.forge());
-        }
+        List<HelpJsonDetectorEntryPoint> entryPoints = detector.getEntryPoints().stream()
+            .map(this::convertEntryPoint)
+            .collect(Collectors.toList());
+        helpData.setEntryPoints(entryPoints);
 
         return helpData;
     }
+
+    private HelpJsonDetectorEntryPoint convertEntryPoint(EntryPoint entryPoint) {
+        HelpJsonDetectorEntryPoint entryPointData = new HelpJsonDetectorEntryPoint();
+        entryPointData.setName(entryPoint.getPrimary().getName());
+
+        List<HelpJsonDetectable> detectables = entryPoint.allDetectables().stream()
+            .map(this::convertDetectable)
+            .collect(Collectors.toList());
+
+        entryPointData.setDetectables(detectables);
+
+        HelpJsonSearchRule searchRule = new HelpJsonSearchRule();
+        searchRule.setMaxDepth(entryPoint.getSearchRule().getMaxDepth());
+        searchRule.setNestable(entryPoint.getSearchRule().isNestable());
+        searchRule.setYieldsTo(entryPoint.getSearchRule().getYieldsTo().stream().map(Object::toString).collect(Collectors.toList()));
+        //TODO(detectors): Should we capture the more complex nesting rules?
+
+        return entryPointData;
+    }
+
+    private HelpJsonDetectable convertDetectable(DetectableDefinition detectableDefinition) {
+        HelpJsonDetectable detectableData = new HelpJsonDetectable();
+        detectableData.setDetectableName(detectableDefinition.getName());
+        detectableData.setDetectableLanguage(detectableDefinition.getLanguage());
+        detectableData.setDetectableRequirementsMarkdown(detectableDefinition.getRequirementsMarkdown());
+        detectableData.setDetectableForge(detectableDefinition.getForge());
+        detectableData.setDetectableAccuracy(detectableDefinition.getAccuracyType().name());
+        return detectableData;
+    }
+
 }

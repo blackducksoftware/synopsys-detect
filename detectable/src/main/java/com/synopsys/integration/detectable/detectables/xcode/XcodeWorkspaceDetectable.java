@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.SearchPattern;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
@@ -26,7 +27,7 @@ import com.synopsys.integration.detectable.detectables.xcode.model.XcodeWorkspac
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Swift", forge = "GITHUB", requirementsMarkdown = "Directory: *.xcworkspace")
+@DetectableInfo(name = "Xcode Workspace Lock", language = "Swift", forge = "GITHUB", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Directory: *.xcworkspace")
 public class XcodeWorkspaceDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final PackageResolvedExtractor packageResolvedExtractor;

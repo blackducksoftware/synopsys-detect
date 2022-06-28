@@ -48,7 +48,6 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
-import com.synopsys.integration.detect.workflow.DummyAccuracyEnum;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
@@ -164,13 +163,12 @@ public class DetectProperties {
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .build();
 
-    //TODO- in 8.0.0, enum type will change to DetectorType, default value will change
-    public static final AllNoneEnumListProperty<DummyAccuracyEnum> DETECT_ACCURACY_REQUIRED =
-        AllNoneEnumListProperty.newBuilder("detect.accuracy.required", AllNoneEnum.ALL, DummyAccuracyEnum.class)
+    public static final AllNoneEnumListProperty<DetectorType> DETECT_ACCURACY_REQUIRED =
+        AllNoneEnumListProperty.newBuilder("detect.accuracy.required", AllNoneEnum.ALL, DetectorType.class)
             .setInfo("Detector Accuracy Requirements", DetectPropertyFromVersion.VERSION_7_13_0)
             .setHelp(
-                "Required accuracy for a successful run of Detect.",
-                "Various detectors produce dependency graphs with varying levels of accuracy, either due to circumstances at runtime, the limitations of the detector, or even limitations of the package manager.  Use this property to specify what detector types Detect should enforce accuracy requirements on (ie. when set to NONE, Detect will not fail if only low-accuracy detectors succeed in producing results).  In 8.0.0, Detect will support supplying specific detector types. To run in the equivalent of Detect 7's \"buildless mode\", set this property to NONE"
+                "Detector types from which accurate results are required when a detector of that type applies.",
+                "The value of this property only affects detector types which apply to the source project. If a detector type applies, and is one of the accuracy-required detector types indicated by the value of this property, low accuracy results for that detector type are treated as a failure.  Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Detector cascade and accuracy</i> page for more details."
             )
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .setExample("ALL,NONE")
@@ -1708,6 +1706,8 @@ public class DetectProperties {
     //#endregion Active Properties
 
     //#region Deprecated Properties
+
+    // username/password ==> api token
 
     // Can't take in the DetectProperty<?> due to an illegal forward reference :(
     private static String createTypeFilterHelpText(String exclusionTypePlural) {

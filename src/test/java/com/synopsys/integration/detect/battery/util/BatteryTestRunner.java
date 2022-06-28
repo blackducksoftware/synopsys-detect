@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.detect.battery.util.assertions.BatteryBdioAssert;
+import com.synopsys.integration.detect.battery.util.executable.ResourceCopyingExecutableCreator;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 import freemarker.template.TemplateException;
@@ -15,6 +18,7 @@ import freemarker.template.TemplateException;
 public abstract class BatteryTestRunner {
     protected final BatteryContext batteryContext;
     private boolean shouldAssertBdio = false;
+    private boolean manualCleanup = false;
 
     public BatteryTestRunner(String name) {
         this.batteryContext = new BatteryContext(name);
@@ -32,7 +36,13 @@ public abstract class BatteryTestRunner {
             List<String> allArguments = new ArrayList<>();
             allArguments.addAll(batteryContext.initialize());
             allArguments.addAll(generateArguments());
-            detectOutput = new BatteryDetectRunner(batteryContext.getOutputDirectory(), batteryContext.getScriptDirectory(), "").runDetect(allArguments, false);
+            List<String> standardOut = new BatteryDetectRunner(batteryContext.getOutputDirectory(), batteryContext.getScriptDirectory(), "").runDetect(allArguments, false);
+            detectOutput = new DetectOutput(
+                standardOut,
+                batteryContext.getSourceDirectory(),
+                batteryContext.getStatusJson(),
+                batteryContext.getExtractedDiagnosticZip().orElse(null)
+            );
             if (shouldAssertBdio) {
                 new BatteryBdioAssert(batteryContext.getTestName(), batteryContext.getResourcePrefix()).assertBdio(
                     batteryContext.getBdioDirectory(),
@@ -43,7 +53,9 @@ public abstract class BatteryTestRunner {
         } catch (ExecutableRunnerException | JSONException | IOException | TemplateException e) {
             Assertions.assertNull(e, "An exception should not have been thrown!");
         } finally {
-            batteryContext.checkAndCleanupBatteryDirectory();
+            if (!manualCleanup) {
+                batteryContext.checkAndCleanupBatteryDirectory();
+            }
         }
 
         Assertions.assertNotNull(detectOutput, "");
@@ -93,6 +105,11 @@ public abstract class BatteryTestRunner {
         batteryContext.sourceFileNamed(filename);
     }
 
+    @NotNull
+    public void sourceFileNamed(String filename, @NotNull String... lines) {
+        batteryContext.sourceFileNamed(filename, lines);
+    }
+
     public void addDirectlyToSourceFolderFromExpandedResource(String filename) {
         batteryContext.addDirectlyToSourceFolderFromExpandedResource(filename);
     }
@@ -103,5 +120,17 @@ public abstract class BatteryTestRunner {
 
     public void sourceFileFromResource(String filename) {
         batteryContext.sourceFileFromResource(filename);
+    }
+
+    public void setManualCleanup(boolean value) {
+        manualCleanup = value;
+    }
+
+    public void cleanup() {
+        batteryContext.checkAndCleanupBatteryDirectory();
+    }
+
+    public void executableWithExitCode(Property pathProperty, String exitCode) {
+        batteryContext.executableWithExitCode(pathProperty, exitCode);
     }
 }

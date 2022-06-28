@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
 import com.synopsys.integration.detect.workflow.profiling.Timing;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.base.DetectorType;
 
 public class ProfilingReporter {
     private static final int PADDING_LENGTH = 30;
@@ -29,11 +29,11 @@ public class ProfilingReporter {
         writeReport(writer, detectorTimings.getExtractionTimings());
     }
 
-    private void writeAggregateReport(ReportWriter writer, List<Timing<DetectorEvaluation>> timings) {
+    private void writeAggregateReport(ReportWriter writer, List<Timing<DetectorType>> timings) {
         Map<String, Long> aggregated = new HashMap<>();
 
-        for (Timing<DetectorEvaluation> detectorTime : timings) {
-            String name = detectorTime.getKey().getDetectorRule().getDescriptiveName();
+        for (Timing<DetectorType> detectorTime : timings) {
+            String name = detectorTime.getKey().toString();
             if (!aggregated.containsKey(name)) {
                 aggregated.put(name, 0L);
             }
@@ -45,9 +45,9 @@ public class ProfilingReporter {
         }
     }
 
-    private void writeReport(ReportWriter writer, List<Timing<DetectorEvaluation>> timings) {
-        for (Timing<DetectorEvaluation> detectorTime : timings) {
-            writer.writeLine("\t" + padToLength(detectorTime.getKey().getDetectorRule().getDescriptiveName(), PADDING_LENGTH) + "\t" + detectorTime.getMs());
+    private void writeReport(ReportWriter writer, List<Timing<DetectorType>> timings) {
+        for (Timing<DetectorType> detectorTime : timings) {
+            writer.writeLine("\t" + padToLength(detectorTime.getKey().toString(), PADDING_LENGTH) + "\t" + detectorTime.getMs());
         }
     }
 

@@ -15,7 +15,7 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
-import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
+import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.tool.signaturescanner.ScanBatchRunnerUserResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
@@ -26,39 +26,39 @@ import com.synopsys.integration.util.NameVersion;
 public class SignatureScanStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final OperationFactory operationFactory;
+    private final OperationRunner operationRunner;
 
-    public SignatureScanStepRunner(OperationFactory operationFactory) {
-        this.operationFactory = operationFactory;
+    public SignatureScanStepRunner(OperationRunner operationRunner) {
+        this.operationRunner = operationRunner;
     }
 
     public SignatureScannerCodeLocationResult runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException, OperationException {
         ScanBatchRunner scanBatchRunner = resolveOnlineScanBatchRunner(blackDuckRunData);
 
-        List<SignatureScanPath> scanPaths = operationFactory.createScanPaths(projectNameVersion, dockerTargetData);
-        ScanBatch scanBatch = operationFactory.createScanBatchOnline(scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
+        List<SignatureScanPath> scanPaths = operationRunner.createScanPaths(projectNameVersion, dockerTargetData);
+        ScanBatch scanBatch = operationRunner.createScanBatchOnline(scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
 
-        NotificationTaskRange notificationTaskRange = operationFactory.createCodeLocationRange(blackDuckRunData);
+        NotificationTaskRange notificationTaskRange = operationRunner.createCodeLocationRange(blackDuckRunData);
         List<SignatureScannerReport> reports = executeScan(scanBatch, scanBatchRunner, scanPaths);
 
-        return operationFactory.calculateWaitableSignatureScannerCodeLocations(notificationTaskRange, reports);
+        return operationRunner.calculateWaitableSignatureScannerCodeLocations(notificationTaskRange, reports);
     }
 
     public void runSignatureScannerOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, OperationException {
         ScanBatchRunner scanBatchRunner = resolveOfflineScanBatchRunner();
 
-        List<SignatureScanPath> scanPaths = operationFactory.createScanPaths(projectNameVersion, dockerTargetData);
-        ScanBatch scanBatch = operationFactory.createScanBatchOffline(scanPaths, projectNameVersion, dockerTargetData);
+        List<SignatureScanPath> scanPaths = operationRunner.createScanPaths(projectNameVersion, dockerTargetData);
+        ScanBatch scanBatch = operationRunner.createScanBatchOffline(scanPaths, projectNameVersion, dockerTargetData);
 
         executeScan(scanBatch, scanBatchRunner, scanPaths);
     }
 
     private List<SignatureScannerReport> executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths) throws OperationException {
-        SignatureScanOuputResult scanOuputResult = operationFactory.signatureScan(scanBatch, scanBatchRunner);
+        SignatureScanOuputResult scanOuputResult = operationRunner.signatureScan(scanBatch, scanBatchRunner);
 
-        List<SignatureScannerReport> reports = operationFactory.createSignatureScanReport(scanPaths, scanOuputResult.getScanBatchOutput().getOutputs());
-        operationFactory.publishSignatureScanReport(reports);
+        List<SignatureScannerReport> reports = operationRunner.createSignatureScanReport(scanPaths, scanOuputResult.getScanBatchOutput().getOutputs());
+        operationRunner.publishSignatureScanReport(reports);
 
         return reports;
     }
@@ -72,7 +72,7 @@ public class SignatureScanStepRunner {
     }
 
     private ScanBatchRunner resolveScanBatchRunner(@Nullable BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException, OperationException {
-        Optional<File> localScannerPath = operationFactory.calculateOnlineLocalScannerInstallPath();
+        Optional<File> localScannerPath = operationRunner.calculateOnlineLocalScannerInstallPath();
         ScanBatchRunnerUserResult userProvided = findUserProvidedScanBatchRunner(localScannerPath);
         File installDirectory = determineScanInstallDirectory(userProvided);
 
@@ -81,9 +81,9 @@ public class SignatureScanStepRunner {
             scanBatchRunner = userProvided.getScanBatchRunner().get();
         } else {
             if (blackDuckRunData != null) {
-                scanBatchRunner = operationFactory.createScanBatchRunnerWithBlackDuck(blackDuckRunData, installDirectory);
+                scanBatchRunner = operationRunner.createScanBatchRunnerWithBlackDuck(blackDuckRunData, installDirectory);
             } else {
-                scanBatchRunner = operationFactory.createScanBatchRunnerFromLocalInstall(installDirectory);
+                scanBatchRunner = operationRunner.createScanBatchRunnerFromLocalInstall(installDirectory);
             }
         }
 
@@ -94,7 +94,7 @@ public class SignatureScanStepRunner {
         if (userProvided.getInstallDirectory().isPresent()) {
             return userProvided.getInstallDirectory().get();
         } else {
-            return operationFactory.calculateDetectControlledInstallDirectory();
+            return operationRunner.calculateDetectControlledInstallDirectory();
         }
     }
 
@@ -102,7 +102,7 @@ public class SignatureScanStepRunner {
         throws OperationException { //TODO: This should be handled by a decision somewhere.
         if (localScannerPath.isPresent()) {
             logger.debug("Signature scanner given an existing path for the scanner - we won't attempt to manage the install.");
-            return ScanBatchRunnerUserResult.fromLocalInstall(operationFactory.createScanBatchRunnerFromLocalInstall(localScannerPath.get()), localScannerPath.get());
+            return ScanBatchRunnerUserResult.fromLocalInstall(operationRunner.createScanBatchRunnerFromLocalInstall(localScannerPath.get()), localScannerPath.get());
         }
         return ScanBatchRunnerUserResult.none();
     }

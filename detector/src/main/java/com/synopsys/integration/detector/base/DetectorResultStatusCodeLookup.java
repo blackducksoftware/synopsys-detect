@@ -17,9 +17,6 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.GivenFileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.GoPkgLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.MaxDepthExceededDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.NotNestableDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.NotSelfNestableDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PackageResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
@@ -34,10 +31,9 @@ import com.synopsys.integration.detector.result.ExcludedDetectorResult;
 import com.synopsys.integration.detector.result.FailedDetectorResult;
 import com.synopsys.integration.detector.result.ForcedNestedPassedDetectorResult;
 import com.synopsys.integration.detector.result.MaxDepthExceededDetectorResult;
+import com.synopsys.integration.detector.result.NotNestableBeneathDetectableDetectorResult;
 import com.synopsys.integration.detector.result.NotNestableBeneathDetectorResult;
 import com.synopsys.integration.detector.result.NotNestableDetectorResult;
-import com.synopsys.integration.detector.result.NotSelfNestableDetectorResult;
-import com.synopsys.integration.detector.result.NotSelfTypeNestableDetectorResult;
 import com.synopsys.integration.detector.result.PassedDetectorResult;
 import com.synopsys.integration.detector.result.YieldedDetectorResult;
 
@@ -71,12 +67,9 @@ public class DetectorResultStatusCodeLookup {
         map.put(GoPkgLockfileNotFoundDetectableResult.class, DetectorStatusCode.GO_PKG_LOCKFILE_NOT_FOUND);
         map.put(InspectorNotFoundDetectableResult.class, DetectorStatusCode.INSPECTOR_NOT_FOUND);
         map.put(MaxDepthExceededDetectorResult.class, DetectorStatusCode.MAX_DEPTH_EXCEEDED);
-        map.put(MaxDepthExceededDetectableResult.class, DetectorStatusCode.MAX_DEPTH_EXCEEDED);
-        map.put(NotNestableBeneathDetectorResult.class, DetectorStatusCode.NOT_NESTABLE);
         map.put(NotNestableDetectorResult.class, DetectorStatusCode.NOT_NESTABLE);
-        map.put(NotNestableDetectableResult.class, DetectorStatusCode.NOT_NESTABLE);
-        map.put(NotSelfNestableDetectorResult.class, DetectorStatusCode.NOT_SELF_NESTABLE);
-        map.put(NotSelfNestableDetectableResult.class, DetectorStatusCode.NOT_SELF_NESTABLE);
+        map.put(NotNestableBeneathDetectorResult.class, DetectorStatusCode.NOT_NESTABLE_BENEATH);
+        map.put(NotNestableBeneathDetectableDetectorResult.class, DetectorStatusCode.NOT_NESTABLE_BENEATH);
         map.put(NpmNodeModulesNotFoundDetectableResult.class, DetectorStatusCode.NPM_NODE_MODULES_NOT_FOUND);
         map.put(PassedDetectorResult.class, DetectorStatusCode.PASSED);
         map.put(PassedDetectableResult.class, DetectorStatusCode.PASSED);
@@ -89,7 +82,6 @@ public class DetectorResultStatusCodeLookup {
         map.put(WrongOperatingSystemResult.class, DetectorStatusCode.WRONG_OPERATING_SYSTEM_RESULT);
         map.put(YieldedDetectorResult.class, DetectorStatusCode.YIELDED);
         map.put(PackageResolvedNotFoundDetectableResult.class, DetectorStatusCode.EXCLUDED);
-        map.put(NotSelfTypeNestableDetectorResult.class, DetectorStatusCode.NOT_NESTABLE);
 
         return map;
     }

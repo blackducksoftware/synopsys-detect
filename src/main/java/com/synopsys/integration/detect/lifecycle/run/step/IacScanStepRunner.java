@@ -16,7 +16,7 @@ import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
+import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.iac.IacScanCodeLocationData;
 import com.synopsys.integration.detect.tool.iac.IacScanReport;
@@ -29,27 +29,27 @@ import com.synopsys.integration.util.NameVersion;
 public class IacScanStepRunner {
     private static final String SCAN_CREATOR = "IaC";
 
-    private final OperationFactory operationFactory;
+    private final OperationRunner operationRunner;
     private final IntegrationEscapeUtil integrationEscapeUtil; //TODO- IntegrationEscapeUtil's methods should be static
 
     public IacScanStepRunner(
-        OperationFactory operationFactory
+        OperationRunner operationRunner
     ) {
-        this.operationFactory = operationFactory;
+        this.operationRunner = operationRunner;
         this.integrationEscapeUtil = new IntegrationEscapeUtil();
     }
 
     public IacScanCodeLocationData runIacScanOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException, IntegrationException {
-        List<File> iacScanTargets = operationFactory.calculateIacScanScanTargets();
+        List<File> iacScanTargets = operationRunner.calculateIacScanScanTargets();
 
         File iacScanExe;
-        Optional<File> localIacScan = operationFactory.calculateUserProvidedIacScanPath();
+        Optional<File> localIacScan = operationRunner.calculateUserProvidedIacScanPath();
         if (localIacScan.isPresent()) {
             iacScanExe = localIacScan.get();
             validateIacScan(iacScanExe);
         } else {
-            iacScanExe = operationFactory.resolveIacScanOnline(blackDuckRunData);
+            iacScanExe = operationRunner.resolveIacScanOnline(blackDuckRunData);
         }
 
         List<IacScanReport> iacScanReports = new LinkedList<>();
@@ -58,7 +58,7 @@ public class IacScanStepRunner {
             IacScanReport iacScanReport = performOnlineScan(projectNameVersion, blackDuckRunData, iacScanExe, scanTarget, count++);
             iacScanReports.add(iacScanReport);
         }
-        operationFactory.publishIacScanReport(iacScanReports);
+        operationRunner.publishIacScanReport(iacScanReports);
 
         Set<String> codeLocationNames = iacScanReports.stream()
             .map(IacScanReport::getCodeLocationName)
@@ -69,8 +69,8 @@ public class IacScanStepRunner {
     }
 
     public void runIacScanOffline() throws OperationException, IntegrationException {
-        List<File> iacScanTargets = operationFactory.calculateIacScanScanTargets();
-        File iacScanExe = operationFactory.calculateUserProvidedIacScanPath()
+        List<File> iacScanTargets = operationRunner.calculateIacScanScanTargets();
+        File iacScanExe = operationRunner.calculateUserProvidedIacScanPath()
             .orElseThrow(() -> new IntegrationException("Was not able to install or locate IacScan.  Must either connect to a Black Duck or provide a path to a local IacScan."));
         validateIacScan(iacScanExe);
         List<IacScanReport> iacScanReports = new LinkedList<>();
@@ -79,7 +79,7 @@ public class IacScanStepRunner {
             IacScanReport iacScanReport = performOfflineScan(scanTarget, iacScanExe, count++);
             iacScanReports.add(iacScanReport);
         }
-        operationFactory.publishIacScanReport(iacScanReports);
+        operationRunner.publishIacScanReport(iacScanReports);
     }
 
     private void validateIacScan(File iacScanExe) throws IntegrationException {
@@ -96,10 +96,10 @@ public class IacScanStepRunner {
         int count
     ) {
         try {
-            File resultsFile = operationFactory.performIacScanScan(scanTarget, iacScanExe, count);
-            String codeLocationName = operationFactory.createIacScanCodeLocationName(scanTarget, projectNameVersion);
+            File resultsFile = operationRunner.performIacScanScan(scanTarget, iacScanExe, count);
+            String codeLocationName = operationRunner.createIacScanCodeLocationName(scanTarget, projectNameVersion);
             String scanId = initiateScan(projectNameVersion, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService(), codeLocationName);
-            operationFactory.uploadIacScanResults(blackDuckRunData, resultsFile, scanId);
+            operationRunner.uploadIacScanResults(blackDuckRunData, resultsFile, scanId);
             return IacScanReport.SUCCESS_ONLINE(scanTarget, codeLocationName);
         } catch (Exception e) {
             return IacScanReport.FAILURE(scanTarget, e.getMessage());
@@ -108,7 +108,7 @@ public class IacScanStepRunner {
 
     public IacScanReport performOfflineScan(File scanTarget, File iacScanExe, int count) {
         try {
-            operationFactory.performIacScanScan(scanTarget, iacScanExe, count);
+            operationRunner.performIacScanScan(scanTarget, iacScanExe, count);
         } catch (OperationException e) {
             return IacScanReport.FAILURE(scanTarget, e.getMessage());
         }
@@ -124,11 +124,11 @@ public class IacScanStepRunner {
         ProjectDependency projectDependency = new ProjectDependency(externalId);
         AggregateCodeLocation codeLocation = overrideAggregateCodeLocationName(
             codeLocationNameOverride,
-            operationFactory.createAggregateCodeLocation(new ProjectDependencyGraph(projectDependency), projectNameVersion, GitInfo.none())
+            operationRunner.createAggregateCodeLocation(new ProjectDependencyGraph(projectDependency), projectNameVersion, GitInfo.none())
         );
-        operationFactory.createAggregateBdio2File(codeLocation, Bdio.ScanType.INFRASTRUCTURE_AS_CODE);
+        operationRunner.createAggregateBdio2File(codeLocation, Bdio.ScanType.INFRASTRUCTURE_AS_CODE);
         UploadTarget uploadTarget = UploadTarget.createDefault(codeLocation.getProjectNameVersion(), codeLocation.getCodeLocationName(), codeLocation.getAggregateFile());
-        return bdio2FileUploadService.uploadFile(uploadTarget, operationFactory.calculateDetectTimeout()).getScanId();
+        return bdio2FileUploadService.uploadFile(uploadTarget, operationRunner.calculateDetectTimeout()).getScanId();
     }
 
     private AggregateCodeLocation overrideAggregateCodeLocationName(String codeLocationNameOverride, AggregateCodeLocation original) {

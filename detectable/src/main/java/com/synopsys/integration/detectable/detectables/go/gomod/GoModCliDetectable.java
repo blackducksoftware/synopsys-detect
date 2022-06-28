@@ -5,6 +5,7 @@ import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -14,7 +15,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Golang", forge = "Go Modules", requirementsMarkdown = "File: go.mod. Executable: go.")
+@DetectableInfo(name = "GoMod CLI", language = "Golang", forge = "Go Modules", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "File: go.mod. Executable: go.")
 public class GoModCliDetectable extends Detectable {
     public static final String GOMOD_FILENAME_PATTERN = "go.mod";
 
