@@ -8,6 +8,8 @@
 
 ### Changed features
 
+* Dropped NONE as a supported value for the following properties: detect.bazel.workspace.rules, detect.included.detector.types, detect.tools.
+* Dropped ALL as a supported value for the following properties: detect.excluded.detector.types, detect.tools.excluded.
 * Removed support for parsing SBT report files, and removed properties detect.sbt.excluded.configurations, detect.sbt.included.configurations, and detect.sbt.report.search.depth.
 * Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.
 * Removed the ability to upload BDIO2 documents to legacy endpoints via the `blackduck.legacy.upload.enabled` property.
