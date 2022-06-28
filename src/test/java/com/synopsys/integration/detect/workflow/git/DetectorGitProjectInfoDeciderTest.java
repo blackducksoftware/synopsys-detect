@@ -1,6 +1,3 @@
-/*
-TODO come back to this
-
 package com.synopsys.integration.detect.workflow.git;
 
 
@@ -11,19 +8,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
+import com.synopsys.integration.detect.tool.detector.report.rule.EvaluatedDetectorRuleReport;
 import com.synopsys.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;
+import com.synopsys.integration.detect.tool.detector.report.rule.NotFoundDetectorRuleReport;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detector.base.DetectableCreatable;
 import com.synopsys.integration.detector.base.DetectorType;
+import com.synopsys.integration.detector.rule.DetectableDefinition;
 import com.synopsys.integration.detector.rule.DetectorRule;
+import com.synopsys.integration.detector.rule.EntryPoint;
+import com.synopsys.integration.detector.rule.SearchRule;
 
 class DetectorGitProjectInfoDeciderTest {
     private final DetectorGitProjectInfoDecider gitProjectInfoDecider = new DetectorGitProjectInfoDecider();
@@ -40,15 +46,35 @@ class DetectorGitProjectInfoDeciderTest {
         "master"
     );
 
+    // TODO
+    @Disabled
     @Test
     void testFindsMin() {
-        DetectorEvaluation rootEvaluation = createEvaluation(DetectorType.GIT, 0);
-        Extraction extractionWithMetadata = createExtractionWithMetadata(rootGitInfo);
-        Mockito.when(rootEvaluation.getExtraction()).thenReturn(extractionWithMetadata);
+        ExtractedDetectorRuleReport rootExtractedDetectorRuleReport = Mockito.mock(ExtractedDetectorRuleReport.class);
+        File rootDir = Mockito.mock(File.class);
 
-        DetectorEvaluation nestedEvaluation = createEvaluation(DetectorType.GIT, 1);
-        Extraction nestExtractionWithMetadata = createExtractionWithMetadata(nestedGitInfo);
-        Mockito.when(nestedEvaluation.getExtraction()).thenReturn(nestExtractionWithMetadata);
+//        File directory,
+//        int depth,
+//        List<NotFoundDetectorRuleReport> notFoundDetectors,
+//        List<ExtractedDetectorRuleReport> extractedDetectors,
+//        List<EvaluatedDetectorRuleReport> notExtractedDetectors
+
+        DetectorDirectoryReport rootDirectoryReport = new DetectorDirectoryReport(rootDir,
+            0, Collections.emptyList(), Arrays.asList(rootExtractedDetectorRuleReport), Collections.emptyList());
+
+        ExtractedDetectorRuleReport nestedExtractedDetectorRuleReport = Mockito.mock(ExtractedDetectorRuleReport.class);
+        File nestedDir = Mockito.mock(File.class);
+        DetectorDirectoryReport nestedDirectoryReport = new DetectorDirectoryReport(rootDir,
+            0, Collections.emptyList(), Arrays.asList(rootExtractedDetectorRuleReport), Collections.emptyList());
+
+//        List<DetectorDirectoryReport> detectorDirectoryReports;
+//        DetectorEvaluation rootEvaluation = createEvaluation(DetectorType.GIT, 0);
+//        Extraction extractionWithMetadata = createExtractionWithMetadata(rootGitInfo);
+//        Mockito.when(rootEvaluation.getExtraction()).thenReturn(extractionWithMetadata);
+//
+//        DetectorEvaluation nestedEvaluation = createEvaluation(DetectorType.GIT, 1);
+//        Extraction nestExtractionWithMetadata = createExtractionWithMetadata(nestedGitInfo);
+//        Mockito.when(nestedEvaluation.getExtraction()).thenReturn(nestExtractionWithMetadata);
 
         Optional<GitInfo> decidedGitInfo = gitProjectInfoDecider.decideSuggestion(Arrays.asList(
             rootDirectoryReport,
@@ -61,6 +87,7 @@ class DetectorGitProjectInfoDeciderTest {
         assertEquals(rootGitInfo.getSourceBranch(), decidedGitInfo.get().getSourceBranch());
     }
 
+    /* TODO
     @Test
     void findsNested() {
         // GIT isn't found at root
@@ -121,5 +148,5 @@ class DetectorGitProjectInfoDeciderTest {
 
         return evaluation;
     }
+     */
 }
- */
