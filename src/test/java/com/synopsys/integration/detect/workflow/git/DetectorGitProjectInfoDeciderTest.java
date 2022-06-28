@@ -1,6 +1,5 @@
 package com.synopsys.integration.detect.workflow.git;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,6 +23,8 @@ import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 class DetectorGitProjectInfoDeciderTest {
+    private static final int rootLevel = 0;
+    private static final int nestedLevel = 2;
     private final DetectorGitProjectInfoDecider gitProjectInfoDecider = new DetectorGitProjectInfoDecider();
 
     private final GitInfo rootGitInfo = new GitInfo(
@@ -38,25 +39,11 @@ class DetectorGitProjectInfoDeciderTest {
         "master"
     );
 
-    // TODO
     @Test
     void testFindsMin() {
-        ExtractedDetectorRuleReport rootExtractedDetectorRuleReport = Mockito.mock(ExtractedDetectorRuleReport.class);
-        DetectorRule gitRule = Mockito.mock(DetectorRule.class);
-        Mockito.when(gitRule.getDetectorType()).thenReturn(DetectorType.GIT);
-        ExtractedDetectableReport rootGitExtractedDetectableReport = Mockito.mock(ExtractedDetectableReport.class);
-        Extraction rootGitExtractionValue = Mockito.mock(Extraction.class);
-        Mockito.when(rootGitExtractionValue.hasMetadata(Mockito.any())).thenReturn(true);
-        Mockito.when(rootGitExtractionValue.getMetaData(GitCliExtractor.EXTRACTION_METADATA_KEY)).thenReturn(Optional.of(rootGitInfo));
-        Mockito.when(rootGitExtractedDetectableReport.getExtraction()).thenReturn(rootGitExtractionValue);
-        Mockito.when(rootExtractedDetectorRuleReport.getExtractedDetectable()).thenReturn(rootGitExtractedDetectableReport);
-        Mockito.when(rootExtractedDetectorRuleReport.getRule()).thenReturn(gitRule);
-        Mockito.when(rootExtractedDetectorRuleReport.getDepth()).thenReturn(0);
-        File rootDir = Mockito.mock(File.class);
-        DetectorDirectoryReport rootDirectoryReport = new DetectorDirectoryReport(rootDir,
-            0, Collections.emptyList(), Arrays.asList(rootExtractedDetectorRuleReport), Collections.emptyList());
-
-        DetectorDirectoryReport nestedDirectoryReport = mockNestedDetectorDirectoryReportForGitRule(gitRule);
+        DetectorRule gitRule = mockGitRule();
+        DetectorDirectoryReport rootDirectoryReport = mockDetectorDirectoryReportForGitRule(gitRule, rootGitInfo, rootLevel);
+        DetectorDirectoryReport nestedDirectoryReport = mockDetectorDirectoryReportForGitRule(gitRule, nestedGitInfo, nestedLevel);
 
         Optional<GitInfo> decidedGitInfo = gitProjectInfoDecider.decideSuggestion(Arrays.asList(
             rootDirectoryReport,
@@ -67,83 +54,75 @@ class DetectorGitProjectInfoDeciderTest {
         assertEquals(rootGitInfo, decidedGitInfo.get());
     }
 
-    @NotNull
-    private DetectorDirectoryReport mockNestedDetectorDirectoryReportForGitRule(final DetectorRule gitRule) {
-        ExtractedDetectableReport nestedGitExtractedDetectableReport = Mockito.mock(ExtractedDetectableReport.class);
-        Extraction nestedGitExtractionValue = Mockito.mock(Extraction.class);
-        Mockito.when(nestedGitExtractionValue.hasMetadata(Mockito.any())).thenReturn(true);
-        Mockito.when(nestedGitExtractionValue.getMetaData(GitCliExtractor.EXTRACTION_METADATA_KEY)).thenReturn(Optional.of(nestedGitInfo));
-        Mockito.when(nestedGitExtractedDetectableReport.getExtraction()).thenReturn(nestedGitExtractionValue);
-        ExtractedDetectorRuleReport nestedExtractedDetectorRuleReport = Mockito.mock(ExtractedDetectorRuleReport.class);
-        Mockito.when(nestedExtractedDetectorRuleReport.getExtractedDetectable()).thenReturn(nestedGitExtractedDetectableReport);
-        Mockito.when(nestedExtractedDetectorRuleReport.getRule()).thenReturn(gitRule);
-        Mockito.when(nestedExtractedDetectorRuleReport.getDepth()).thenReturn(2);
-        File nestedDir = Mockito.mock(File.class);
-        DetectorDirectoryReport nestedDirectoryReport = new DetectorDirectoryReport(nestedDir,
-            2, Collections.emptyList(), Arrays.asList(nestedExtractedDetectorRuleReport), Collections.emptyList());
-        return nestedDirectoryReport;
-    }
-
-    /* TODO
     @Test
-    void findsNested() {
-        // GIT isn't found at root
-        DetectorEvaluation rootEvaluation = createEvaluation(DetectorType.NPM, 0);
-        Extraction extractionWithMetadata = createExtractionWithMetadata(rootGitInfo);
-        Mockito.when(rootEvaluation.getExtraction()).thenReturn(extractionWithMetadata);
+    void testFindsNested() {
+        DetectorDirectoryReport rootDirectoryReport = mockDetectorDirectoryReportForNpm(rootLevel);
 
-        Extraction nestedExtractionWithMetadata = createExtractionWithMetadata(nestedGitInfo);
-        DetectorEvaluation nestedEvaluation = createEvaluation(DetectorType.GIT, 1);
-        Mockito.when(nestedEvaluation.getExtraction()).thenReturn(nestedExtractionWithMetadata);
+        DetectorRule gitRule = mockGitRule();
+        DetectorDirectoryReport nestedDirectoryReport = mockDetectorDirectoryReportForGitRule(gitRule, nestedGitInfo, nestedLevel);
 
         Optional<GitInfo> decidedGitInfo = gitProjectInfoDecider.decideSuggestion(Arrays.asList(
-            rootEvaluation,
-            nestedEvaluation
+            rootDirectoryReport,
+            nestedDirectoryReport
         ));
 
         assertTrue(decidedGitInfo.isPresent());
-        assertEquals(nestedGitInfo.getSourceRepository(), decidedGitInfo.get().getSourceRepository());
-        assertEquals(nestedGitInfo.getSourceRevision(), decidedGitInfo.get().getSourceRevision());
-        assertEquals(nestedGitInfo.getSourceBranch(), decidedGitInfo.get().getSourceBranch());
+        assertEquals(nestedGitInfo, decidedGitInfo.get());
     }
 
     @Test
-    void noGitInfo() {
-        // All evaluations are not GIT
-        DetectorEvaluation rootEvaluation = createEvaluation(DetectorType.NPM, 0);
-        rootEvaluation.setExtraction(createExtractionWithMetadata(rootGitInfo));
-
-        DetectorEvaluation nestedEvaluation = createEvaluation(DetectorType.NPM, 1);
-        nestedEvaluation.setExtraction(createExtractionWithMetadata(nestedGitInfo));
+    void testNoGitInfo() {
+        DetectorDirectoryReport rootDirectoryReport = mockDetectorDirectoryReportForNpm(rootLevel);
+        DetectorDirectoryReport nestedDirectoryReport = mockDetectorDirectoryReportForNpm(nestedLevel);
 
         Optional<GitInfo> decidedGitInfo = gitProjectInfoDecider.decideSuggestion(Arrays.asList(
-            rootEvaluation,
-            nestedEvaluation
+            rootDirectoryReport,
+            nestedDirectoryReport
         ));
 
         assertFalse(decidedGitInfo.isPresent());
     }
 
-    private Extraction createExtractionWithMetadata(GitInfo gitInfo) {
-        Extraction extraction = Mockito.mock(Extraction.class);
-        Mockito.when(extraction.hasMetadata(GitCliExtractor.EXTRACTION_METADATA_KEY)).thenReturn(true);
-        Mockito.when(extraction.getMetaData(GitCliExtractor.EXTRACTION_METADATA_KEY)).thenReturn(Optional.of(gitInfo));
-        return extraction;
+    @NotNull
+    private DetectorDirectoryReport mockDetectorDirectoryReportForNpm(int level) {
+        ExtractedDetectorRuleReport extractedDetectorRuleReport = Mockito.mock(ExtractedDetectorRuleReport.class);
+        DetectorRule npmRule = Mockito.mock(DetectorRule.class);
+        Mockito.when(npmRule.getDetectorType()).thenReturn(DetectorType.NPM);
+        ExtractedDetectableReport extractedDetectableReport = Mockito.mock(ExtractedDetectableReport.class);
+        Extraction extractionValue = Mockito.mock(Extraction.class);
+        Mockito.when(extractedDetectableReport.getExtraction()).thenReturn(extractionValue);
+        Mockito.when(extractedDetectorRuleReport.getExtractedDetectable()).thenReturn(extractedDetectableReport);
+        Mockito.when(extractedDetectorRuleReport.getRule()).thenReturn(npmRule);
+        Mockito.when(extractedDetectorRuleReport.getDepth()).thenReturn(level);
+        File dir = Mockito.mock(File.class);
+        DetectorDirectoryReport rootDirectoryReport = new DetectorDirectoryReport(dir,
+            level, Collections.emptyList(), Arrays.asList(extractedDetectorRuleReport), Collections.emptyList()
+        );
+        return rootDirectoryReport;
     }
 
-
-    private DetectorEvaluation createEvaluation(DetectorType detectorType, int depth) {
-        // https://www.javadoc.io/doc/org.mockito/mockito-core/2.2.9/org/mockito/Mockito.html#RETURNS_DEEP_STUBS
-        // The doc seems to be very against multi-layer mocking, so that's something to be considered when refactoring DetectorEvaluation/Extraction classes.
-        DetectorEvaluation evaluation = Mockito.mock(DetectorEvaluation.class, Mockito.RETURNS_DEEP_STUBS);
-        Mockito.when(evaluation.getDetectorType()).thenReturn(detectorType);
-        Mockito.when(evaluation.wasExtractionSuccessful()).thenReturn(true);
-
-        SearchEnvironment searchEnvironment = Mockito.mock(SearchEnvironment.class);
-        Mockito.when(searchEnvironment.getDepth()).thenReturn(depth);
-        evaluation.setSearchEnvironment(searchEnvironment);
-
-        return evaluation;
+    @NotNull
+    private DetectorRule mockGitRule() {
+        DetectorRule gitRule = Mockito.mock(DetectorRule.class);
+        Mockito.when(gitRule.getDetectorType()).thenReturn(DetectorType.GIT);
+        return gitRule;
     }
-     */
+
+    @NotNull
+    private DetectorDirectoryReport mockDetectorDirectoryReportForGitRule(DetectorRule gitRule, GitInfo gitInfo, int level) {
+        ExtractedDetectableReport gitExtractedDetectableReport = Mockito.mock(ExtractedDetectableReport.class);
+        Extraction gitExtractionValue = Mockito.mock(Extraction.class);
+        Mockito.when(gitExtractionValue.hasMetadata(Mockito.any())).thenReturn(true);
+        Mockito.when(gitExtractionValue.getMetaData(GitCliExtractor.EXTRACTION_METADATA_KEY)).thenReturn(Optional.of(gitInfo));
+        Mockito.when(gitExtractedDetectableReport.getExtraction()).thenReturn(gitExtractionValue);
+        ExtractedDetectorRuleReport extractedDetectorRuleReport = Mockito.mock(ExtractedDetectorRuleReport.class);
+        Mockito.when(extractedDetectorRuleReport.getExtractedDetectable()).thenReturn(gitExtractedDetectableReport);
+        Mockito.when(extractedDetectorRuleReport.getRule()).thenReturn(gitRule);
+        Mockito.when(extractedDetectorRuleReport.getDepth()).thenReturn(level);
+        File nestedDir = Mockito.mock(File.class);
+        DetectorDirectoryReport directoryReport = new DetectorDirectoryReport(nestedDir,
+            level, Collections.emptyList(), Arrays.asList(extractedDetectorRuleReport), Collections.emptyList()
+        );
+        return directoryReport;
+    }
 }
