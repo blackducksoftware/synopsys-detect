@@ -10,7 +10,7 @@ import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
+import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.workflow.blackduck.project.customfields.CustomFieldDocument;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.CloneFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.FindCloneOptions;
@@ -22,18 +22,18 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.Projec
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckProjectVersionStepRunner {
-    private final OperationFactory operationFactory;
+    private final OperationRunner operationRunner;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public BlackDuckProjectVersionStepRunner(OperationFactory operationFactory) {
-        this.operationFactory = operationFactory;
+    public BlackDuckProjectVersionStepRunner(OperationRunner operationRunner) {
+        this.operationRunner = operationRunner;
     }
 
     ProjectVersionWrapper runAll(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException, OperationException {
         CloneFindResult cloneFindResult = findClone(projectNameVersion.getName(), blackDuckRunData);
         ProjectGroupFindResult projectGroupFindResult = findProjectGroup(blackDuckRunData);
         ProjectVersionLicenseFindResult projectVersionLicensesFindResult = findLicense(blackDuckRunData);
-        ProjectVersionWrapper projectVersion = operationFactory.syncProjectVersion(
+        ProjectVersionWrapper projectVersion = operationRunner.syncProjectVersion(
             projectNameVersion,
             projectGroupFindResult,
             cloneFindResult,
@@ -41,42 +41,42 @@ public class BlackDuckProjectVersionStepRunner {
             blackDuckRunData
         );
 
-        ParentProjectMapOptions mapOptions = operationFactory.calculateParentProjectMapOptions();
+        ParentProjectMapOptions mapOptions = operationRunner.calculateParentProjectMapOptions();
         if (StringUtils.isNotBlank(mapOptions.getParentProjectName()) || StringUtils.isNotBlank(mapOptions.getParentProjectVersionName())) {
-            operationFactory.mapToParentProject(mapOptions.getParentProjectName(), mapOptions.getParentProjectVersionName(), projectVersion, blackDuckRunData);
+            operationRunner.mapToParentProject(mapOptions.getParentProjectName(), mapOptions.getParentProjectVersionName(), projectVersion, blackDuckRunData);
         }
 
-        String applicationId = operationFactory.calculateApplicationId();
+        String applicationId = operationRunner.calculateApplicationId();
         if (StringUtils.isBlank(applicationId)) {
             logger.debug("No 'Application ID' to set.");
         } else {
-            operationFactory.setApplicationId(applicationId, projectVersion, blackDuckRunData);
+            operationRunner.setApplicationId(applicationId, projectVersion, blackDuckRunData);
         }
 
-        CustomFieldDocument customFieldDocument = operationFactory.calculateCustomFields();
+        CustomFieldDocument customFieldDocument = operationRunner.calculateCustomFields();
         if (customFieldDocument == null || (customFieldDocument.getProject().size() == 0 && customFieldDocument.getVersion().size() == 0)) {
             logger.debug("No custom fields to set.");
         } else {
-            operationFactory.updateCustomFields(customFieldDocument, projectVersion, blackDuckRunData);
+            operationRunner.updateCustomFields(customFieldDocument, projectVersion, blackDuckRunData);
         }
 
-        List<String> userGroups = operationFactory.calculateUserGroups();
+        List<String> userGroups = operationRunner.calculateUserGroups();
         if (userGroups == null) {
             logger.debug("No user groups to set.");
         } else {
-            operationFactory.addUserGroups(userGroups, projectVersion, blackDuckRunData);
+            operationRunner.addUserGroups(userGroups, projectVersion, blackDuckRunData);
         }
 
-        List<String> tags = operationFactory.calculateTags();
+        List<String> tags = operationRunner.calculateTags();
         if (tags == null) {
             logger.debug("No tags to set.");
         } else {
-            operationFactory.addTags(tags, projectVersion, blackDuckRunData);
+            operationRunner.addTags(tags, projectVersion, blackDuckRunData);
         }
 
-        if (operationFactory.calculateShouldUnmap()) {
+        if (operationRunner.calculateShouldUnmap()) {
             logger.debug("Unmapping code locations.");
-            operationFactory.unmapCodeLocations(projectVersion, blackDuckRunData);
+            operationRunner.unmapCodeLocations(projectVersion, blackDuckRunData);
         } else {
             logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
         }
@@ -85,10 +85,10 @@ public class BlackDuckProjectVersionStepRunner {
     }
 
     private ProjectGroupFindResult findProjectGroup(BlackDuckRunData blackDuckRunData) throws OperationException {
-        ProjectGroupOptions projectGroupOptions = operationFactory.calculateProjectGroupOptions();
+        ProjectGroupOptions projectGroupOptions = operationRunner.calculateProjectGroupOptions();
         if (StringUtils.isNotBlank(projectGroupOptions.getProjectGroup())) {
             logger.info("Will look for project group named: " + projectGroupOptions.getProjectGroup());
-            return ProjectGroupFindResult.of(operationFactory.findProjectGroup(blackDuckRunData, projectGroupOptions.getProjectGroup()));
+            return ProjectGroupFindResult.of(operationRunner.findProjectGroup(blackDuckRunData, projectGroupOptions.getProjectGroup()));
         } else {
             logger.debug("No project group was supplied. Will not assign a project group.");
             return ProjectGroupFindResult.skip();
@@ -96,12 +96,12 @@ public class BlackDuckProjectVersionStepRunner {
     }
 
     private CloneFindResult findClone(String projectName, BlackDuckRunData blackDuckRunData) throws OperationException {
-        FindCloneOptions cloneOptions = operationFactory.calculateCloneOptions();
+        FindCloneOptions cloneOptions = operationRunner.calculateCloneOptions();
         if (cloneOptions.getCloneLatestProjectVersion()) {
             logger.debug("Cloning the most recent project version.");
-            return operationFactory.findLatestProjectVersionCloneUrl(blackDuckRunData, projectName);
+            return operationRunner.findLatestProjectVersionCloneUrl(blackDuckRunData, projectName);
         } else if (StringUtils.isNotBlank(cloneOptions.getCloneVersionName())) {
-            return operationFactory.findNamedCloneUrl(blackDuckRunData, projectName, cloneOptions.getCloneVersionName());
+            return operationRunner.findNamedCloneUrl(blackDuckRunData, projectName, cloneOptions.getCloneVersionName());
         } else {
             logger.debug("No clone project or version name supplied. Will not clone.");
             return CloneFindResult.empty();
@@ -109,9 +109,9 @@ public class BlackDuckProjectVersionStepRunner {
     }
 
     private ProjectVersionLicenseFindResult findLicense(BlackDuckRunData blackDuckRunData) throws OperationException {
-        ProjectVersionLicenseOptions projectVersionLicenseOptions = operationFactory.calculateProjectVersionLicenses();
+        ProjectVersionLicenseOptions projectVersionLicenseOptions = operationRunner.calculateProjectVersionLicenses();
         if (StringUtils.isNotBlank(projectVersionLicenseOptions.getLicenseName())) {
-            return ProjectVersionLicenseFindResult.of(operationFactory.findLicenseUrl(blackDuckRunData, projectVersionLicenseOptions.getLicenseName()));
+            return ProjectVersionLicenseFindResult.of(operationRunner.findLicenseUrl(blackDuckRunData, projectVersionLicenseOptions.getLicenseName()));
         } else {
             logger.debug("No project version licenses were supplied.  Will not update licenses.");
             return ProjectVersionLicenseFindResult.empty();

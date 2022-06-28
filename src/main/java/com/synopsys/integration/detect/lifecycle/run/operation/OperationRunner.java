@@ -168,7 +168,7 @@ import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
 
-public class OperationFactory { //TODO: OperationRunner
+public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectDetectableFactory detectDetectableFactory;
     private final DetectFontLoaderFactory detectFontLoaderFactory;
@@ -197,7 +197,7 @@ public class OperationFactory { //TODO: OperationRunner
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
-    public OperationFactory(
+    public OperationRunner(
         DetectDetectableFactory detectDetectableFactory,
         DetectFontLoaderFactory detectFontLoaderFactory,
         BootSingletons bootSingletons,
