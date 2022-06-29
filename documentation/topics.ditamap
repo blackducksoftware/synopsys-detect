@@ -52,6 +52,7 @@
       <topicref href="downloadingandrunning/basics/runningjar.md" format="markdown"/>
       <topicref href="downloadingandrunning/basics/choosingtargettype.md" format="markdown"/>
       <topicref href="downloadingandrunning/basics/runningwithblackduck.md" format="markdown"/>
+      <topicref href="downloadingandrunning/basics/upgradingdetect.md" format="markdown"/>
     </topicref>
 
     <topicref href="downloadingandrunning/downloadlocations.md" format="markdown"/>
