@@ -17,6 +17,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableFaile
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.util.NameVersion;
 
 public class MavenCliExtractor {
     private final DetectableExecutableRunner executableRunner;
@@ -39,6 +40,7 @@ public class MavenCliExtractor {
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
         toolVersionLogger.log(directory, mavenExe);
+        //TODO- look at extracting command parsing and command running into a (tested) 'MavenCommandRunner' that takes in a CommandParser and ExecutableRunner
         List<String> commandArguments = commandParser.parseCommandString(mavenCliExtractorOptions.getMavenBuildCommand().orElse("")).stream()
             .filter(arg -> !arg.equals("dependency:tree"))
             .collect(Collectors.toList());
@@ -49,6 +51,7 @@ public class MavenCliExtractor {
         ExecutableOutput mvnExecutableResult = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, mavenExe, commandArguments));
 
         List<String> mavenOutput = mvnExecutableResult.getStandardOutputAsList();
+        //TODO- these options should be passed into constructor of MavenCodeLocationPackager
         List<String> excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes();
         List<String> includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes();
         List<String> excludedModules = mavenCliExtractorOptions.getMavenExcludedModules();
@@ -66,15 +69,14 @@ public class MavenCliExtractor {
             .map(MavenParseResult::getCodeLocation)
             .toList();
 
-        Optional<MavenParseResult> firstWithName = Bds.of(mavenResults)
-            .firstFiltered(it -> StringUtils.isNotBlank(it.getProjectName()));
+        Optional<NameVersion> projectNameVersion = Bds.of(mavenResults)
+            .firstFiltered(it -> StringUtils.isNotBlank(it.getProjectName()))
+            .map(result -> new NameVersion(result.getProjectName(), result.getProjectVersion()));
 
-        Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
-        if (firstWithName.isPresent()) {
-            builder.projectName(firstWithName.get().getProjectName());
-            builder.projectVersion(firstWithName.get().getProjectVersion());
-        }
-        return builder.build();
+        return new Extraction.Builder()
+            .nameVersionIfPresent(projectNameVersion)
+            .success(codeLocations)
+            .build();
     }
 
 }

@@ -16,6 +16,7 @@ import com.synopsys.integration.detectable.detectables.maven.cli.ScopedDependenc
 
 @UnitTest
 public class MavenCodeLocationPackagerTest {
+    //TODO- instead of assertNotNull(dependency), assert on the dependency data in the produced Dependency
     @Test
     public void testParseProject() {
         MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());

@@ -20,6 +20,9 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
 // TODO: Re-write. Some fields could be local variables. Includes many code smells. A component none:Additional_Components:none appears in the graph.
+// Classes to potentially take advantage of:
+//      LazyExternalIdDependencyGraphBuilder
+//      DependencyHistory
 public class MavenCodeLocationPackager {
     private static final List<String> indentationStrings = Arrays.asList("+- ", "|  ", "\\- ", "   ");
     private static final List<String> KNOWN_SCOPES = Arrays.asList("compile", "provided", "runtime", "test", "system", "import");
@@ -47,6 +50,7 @@ public class MavenCodeLocationPackager {
     }
 
     // mavenOutput should be the full output of mvn dependency:tree (no scope applied); scope filtering is now done by this method
+    //TODO- Should produce ProjectDependencyGraphs with subprojects
     public List<MavenParseResult> extractCodeLocations(
         String sourcePath,
         List<String> mavenOutput,
@@ -282,6 +286,7 @@ public class MavenCodeLocationPackager {
         return new ScopedDependency(artifact, version, externalId, scope);
     }
 
+    //TODO- should be in own class if the only reason it's public is so it can be tested
     public Dependency textToProject(String componentText) {
         if (!isGav(componentText)) {
             return null;
@@ -304,6 +309,7 @@ public class MavenCodeLocationPackager {
         return new Dependency(artifact, version, externalId);
     }
 
+    //TODO- should be in own class if the only reason it's public is so it can be tested
     public boolean isLineRelevant(String line) {
         String editableLine = line;
         if (!doesLineContainSegmentsInOrder(line, "[", "INFO", "]")) {
@@ -318,6 +324,7 @@ public class MavenCodeLocationPackager {
             "Downloading");
     }
 
+    //TODO- should be in own class if the only reason it's public is so it can be tested
     public String trimLogLevel(String line) {
         String editableLine = line;
 
@@ -339,6 +346,7 @@ public class MavenCodeLocationPackager {
         return line.contains("checking for updates");
     }
 
+    //TODO- should be in own class if the only reason it's public is so it can be tested
     public boolean isGav(String componentText) {
         String debugMessage = String.format("%s does not look like a GAV we recognize", componentText);
         String[] gavParts = componentText.split(":");
@@ -355,6 +363,7 @@ public class MavenCodeLocationPackager {
         return false;
     }
 
+    //TODO- should be in own class if the only reason it's public is so it can be tested
     public boolean doesLineContainSegmentsInOrder(String line, String... segments) {
         boolean lineContainsSegments = true;
 
@@ -366,6 +375,7 @@ public class MavenCodeLocationPackager {
         return lineContainsSegments;
     }
 
+    //TODO- should be in own class if the only reason it's public is so it can be tested
     public int indexOfEndOfSegments(String line, String... segments) {
         int endOfSegments = -1;
         if (segments.length > 0) {
