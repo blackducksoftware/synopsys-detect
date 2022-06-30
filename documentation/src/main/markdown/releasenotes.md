@@ -25,6 +25,7 @@
 
 ### Resolved issues
 
+* (IDETECT-3375) Resolved an issue where [solution_name] would unnecessarily upload empty BDIO entry file when initiating an IaC scan.
 * (IDETECT-3224) Resolved an issue where Cargo projects with Cyclical dependencies could cause a failure of [solution_name].
 * (IDETECT-3246) Resolved an issue where [solution_name] would fail when scanning flutter projects after a new version of flutter was released.
 * (IDETECT-3275) Resolved an issue that caused impact analysis to fail with an "Unsupported class file major version" error when an analyzed .class file contained invaid version bytes (byte 7 and 8).
