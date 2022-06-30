@@ -132,7 +132,7 @@ public class IacScanStepRunner {
         );
         operationRunner.createAggregateBdio2File(codeLocation, Bdio.ScanType.INFRASTRUCTURE_AS_CODE);
         UploadTarget uploadTarget = UploadTarget.createDefault(codeLocation.getProjectNameVersion(), codeLocation.getCodeLocationName(), codeLocation.getAggregateFile());
-        return bdio2FileUploadService.uploadFile(uploadTarget, operationRunner.calculateDetectTimeout()).getScanId();
+        return bdio2FileUploadService.uploadFile(uploadTarget, operationRunner.calculateDetectTimeout(), false, false).getScanId();
     }
 
     private AggregateCodeLocation overrideAggregateCodeLocationName(String codeLocationNameOverride, AggregateCodeLocation original) {
@@ -144,29 +144,4 @@ public class IacScanStepRunner {
             original.getAggregateDependencyGraph()
         );
     }
-
-    //    private DetectCodeLocation createSimpleCodeLocation(NameVersion projectNameVersion, File sourcePath) {
-    //        return DetectCodeLocation.forCreator(
-    //            new BasicDependencyGraph(),
-    //            sourcePath,
-    //            ExternalIdCreator.nameVersion(CodeLocationConverter.DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion()),
-    //            SCAN_CREATOR
-    //        );
-    //    }
-    //
-    //    private BdioCodeLocationResult overrideBdioCodeLocationResult(String codeLocationNameOverride, BdioCodeLocationResult original) {
-    //        List<BdioCodeLocation> bdioCodeLocations = original.getBdioCodeLocations().stream()
-    //            .map(bdioCodeLocation -> new BdioCodeLocation(bdioCodeLocation.getDetectCodeLocation(), codeLocationNameOverride, createBdioName(codeLocationNameOverride)))
-    //            .collect(Collectors.toList());
-    //        Map<DetectCodeLocation, String> codeLocationNameMap = new HashMap<>();
-    //        Map.Entry<DetectCodeLocation, String> entry = original.getCodeLocationNames().entrySet().iterator().next();
-    //        codeLocationNameMap.put(entry.getKey(), codeLocationNameOverride);
-    //
-    //        return new BdioCodeLocationResult(bdioCodeLocations, codeLocationNameMap);
-    //    }
-    //
-    //    private String createBdioName(String codeLocationName) {
-    //        String filenameRaw = StringUtils.replaceEach(codeLocationName, new String[] { "/", "\\", " " }, new String[] { "_", "_", "_" });
-    //        return integrationEscapeUtil.replaceWithUnderscore(filenameRaw);
-    //    }
 }
