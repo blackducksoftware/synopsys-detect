@@ -128,7 +128,7 @@ public class IacScanStepRunner {
         );
         operationFactory.createAggregateBdio2File(codeLocation, Bdio.ScanType.INFRASTRUCTURE_AS_CODE);
         UploadTarget uploadTarget = UploadTarget.createDefault(codeLocation.getProjectNameVersion(), codeLocation.getCodeLocationName(), codeLocation.getAggregateFile());
-        return bdio2FileUploadService.uploadFile(uploadTarget, operationFactory.calculateDetectTimeout(), true).getScanId();
+        return bdio2FileUploadService.uploadFile(uploadTarget, operationFactory.calculateDetectTimeout(), false, false).getScanId();
     }
 
     private AggregateCodeLocation overrideAggregateCodeLocationName(String codeLocationNameOverride, AggregateCodeLocation original) {
