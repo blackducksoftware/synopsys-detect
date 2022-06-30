@@ -40,7 +40,7 @@ public class IacScanStepRunner {
     }
 
     public IacScanCodeLocationData runIacScanOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
-        throws OperationException, IntegrationException {
+        throws OperationException, IntegrationException, InterruptedException {
         List<File> iacScanTargets = operationRunner.calculateIacScanScanTargets();
 
         File iacScanExe;
@@ -94,7 +94,7 @@ public class IacScanStepRunner {
         File iacScanExe,
         File scanTarget,
         int count
-    ) {
+    ) throws InterruptedException {
         try {
             File resultsFile = operationRunner.performIacScanScan(scanTarget, iacScanExe, count);
             String codeLocationName = operationRunner.createIacScanCodeLocationName(scanTarget, projectNameVersion);
@@ -102,7 +102,11 @@ public class IacScanStepRunner {
             operationRunner.uploadIacScanResults(blackDuckRunData, resultsFile, scanId);
             return IacScanReport.SUCCESS_ONLINE(scanTarget, codeLocationName);
         } catch (Exception e) {
-            return IacScanReport.FAILURE(scanTarget, e.getMessage());
+            if (e instanceof InterruptedException) {
+                throw (InterruptedException) e;
+            } else {
+                return IacScanReport.FAILURE(scanTarget, e.getMessage());
+            }
         }
     }
 
