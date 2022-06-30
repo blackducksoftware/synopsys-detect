@@ -16,12 +16,12 @@
 * Removed the ability to upload BDIO2 documents to legacy endpoints via the `blackduck.legacy.upload.enabled` property.
 * Removed the ability to choose the type of BDIO aggregation strategy via the now removed `detect.bom.aggregate.remediation.mode` property. 
   * All BDIO will be aggregated similarly to if detect.bom.aggregate.remediation.mode=SUBPROJECT was set in [solution_name] version 7.X.
+* [solution_name] now only produces a single Scan in Black Duck for Detectors named "<projectName>/<projectVersion> Black Duck I/O Export. 
 * detect8.sh has improvements (relative to detect7.sh and detect.sh) related to argument handling that simplify its argument quoting/escaping requirements.
 * [solution_name] requires and runs [docker_inspector_name] version 10.
 * Incorporated [docker_inspector_name] documentation into [solution_name] documentation.
 * The search for files for binary scanning (when property detect.binary.scan.file.name.patterns is set) now excludes directories specified by property detect.excluded.directories.
 * There is no longer a distinction between extended and non-extended diagnostic zip files. All diagnostic zip files now include all relevant files.
-
 
 ### Resolved issues
 
