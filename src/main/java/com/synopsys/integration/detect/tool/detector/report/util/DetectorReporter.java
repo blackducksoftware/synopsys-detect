@@ -21,6 +21,7 @@ import com.synopsys.integration.detector.base.DetectorEvaluationUtil;
 import com.synopsys.integration.detector.rule.DetectableDefinition;
 
 public class DetectorReporter {
+    private static final String DETECTOR_ERROR_MESSAGE = "Something has gone wrong in the detector system, please contact support.";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public List<DetectorDirectoryReport> generateReport(DirectoryEvaluation rootDirectoryEvaluation) {
@@ -36,9 +37,15 @@ public class DetectorReporter {
                 if (!detectorRuleEvaluation.wasFound()) {
                     notFoundDetectors.add(generateNotFoundReport(detectorRuleEvaluation));
                 } else if (detectorRuleEvaluation.getFoundEntryPoint().isPresent()) { //just to check :)
-                    addFoundReport(directoryEvaluation.getDepth(), detectorRuleEvaluation, detectorRuleEvaluation.getFoundEntryPoint().get(), extractedDetectors, notExtractedDetectors);
+                    addFoundReport(
+                        directoryEvaluation.getDepth(),
+                        detectorRuleEvaluation,
+                        detectorRuleEvaluation.getFoundEntryPoint().get(),
+                        extractedDetectors,
+                        notExtractedDetectors
+                    );
                 } else {
-                    logger.error("Something has gone wrong in the detector system, please contact support.");
+                    logger.error(DETECTOR_ERROR_MESSAGE);
                 }
             });
             reports.add(new DetectorDirectoryReport(
@@ -70,7 +77,7 @@ public class DetectorReporter {
                 //applicable failure
                 notFoundEntryPoints.add(AttemptedDetectableReport.notApplicable(notFoundEntry.getEntryPoint().getPrimary(), notFoundEntry.getApplicableResult().get()));
             } else {
-                logger.error("Something has gone wrong in the detector system, please contact support.");
+                logger.error(DETECTOR_ERROR_MESSAGE);
             }
         });
 
@@ -124,7 +131,7 @@ public class DetectorReporter {
                 evaluated.getExtraction()
             ));
         } else {
-            logger.error("Something has gone wrong in the detector system, please contact support.");
+            logger.error(DETECTOR_ERROR_MESSAGE);
         }
         return Optional.empty();
     }

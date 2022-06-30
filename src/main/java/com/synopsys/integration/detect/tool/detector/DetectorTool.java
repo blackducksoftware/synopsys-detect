@@ -25,7 +25,6 @@ import com.synopsys.integration.detect.tool.detector.report.rule.EvaluatedDetect
 import com.synopsys.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;
 import com.synopsys.integration.detect.tool.detector.report.util.DetectorReporter;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.git.DetectorGitProjectInfoDecider;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorEvaluationNameVersionDecider;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionDecider;
@@ -50,7 +49,11 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorTool {
+    private static final String THREE_TABS = "\t\t\t";
+    private static final String TWO_TABS = "\t\t";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     private final DirectoryFinder directoryFinder;
     private final CodeLocationConverter codeLocationConverter;
     private final DetectorIssuePublisher detectorIssuePublisher;
@@ -161,24 +164,24 @@ public class DetectorTool {
                 anyFound = true;
                 logger.info("\t" + report.getDirectory() + " (depth " + report.getDepth() + ")");
                 report.getExtractedDetectors().forEach(extracted -> {
-                    logger.info("\t\t" + extracted.getExtractedDetectable().getDetectable().getName() + ": SUCCESS");
+                    logger.info(TWO_TABS + extracted.getExtractedDetectable().getDetectable().getName() + ": SUCCESS");
                     extracted.getExtractedDetectable().getExplanations().forEach(explanation -> {
-                        logger.info("\t\t\t" + explanation.describeSelf());
+                        logger.info(THREE_TABS + explanation.describeSelf());
                     });
 
                     extracted.getAttemptedDetectables().forEach(attempted -> {
-                        logger.info("\t\t" + attempted.getDetectable().getName() + ": ATTEMPTED");
-                        logger.info("\t\t\t" + attempted.getStatusReason());
+                        logger.info(TWO_TABS + attempted.getDetectable().getName() + ": ATTEMPTED");
+                        logger.info(THREE_TABS + attempted.getStatusReason());
                         attempted.getExplanations().forEach(explanation -> {
-                            logger.info("\t\t\t" + explanation.describeSelf());
+                            logger.info(THREE_TABS + explanation.describeSelf());
                         });
                     });
                 });
                 report.getNotExtractedDetectors().forEach(notExtracted -> {
                     notExtracted.getAttemptedDetectables().forEach(attempted -> {
-                        logger.info("\t\t" + attempted.getDetectable().getName() + ": FAILED");
+                        logger.info(TWO_TABS + attempted.getDetectable().getName() + ": FAILED");
                         attempted.getExplanations().forEach(explanation -> {
-                            logger.info("\t\t\t" + explanation.describeSelf());
+                            logger.info(THREE_TABS + explanation.describeSelf());
                         });
                     });
                 });
@@ -264,7 +267,8 @@ public class DetectorTool {
                         List<String> messages = new ArrayList<>();
 
                         messages.add("Accuracy Not Met: " + extracted.getRule().getDetectorType());
-                        messages.add("\tExtraction for " + extractedDetectable.getName() + " has accuracy of " + extractedDetectable.getAccuracyType() + " but HIGH is required by the current detect.accuracy.required configuration.");
+                        messages.add("\tExtraction for " + extractedDetectable.getName() + " has accuracy of " + extractedDetectable.getAccuracyType()
+                            + " but HIGH is required by the current detect.accuracy.required configuration.");
                         statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.DETECTOR, "Detector Issue", messages));
                     }
                 }
