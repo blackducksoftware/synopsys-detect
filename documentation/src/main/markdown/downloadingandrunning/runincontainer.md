@@ -32,7 +32,7 @@ The format of "simple" image names is: `blackducksoftware/detect:[detect_version
 
 #### [solution_name] Buildless Images
 
-If you wish to run [solution_name] without package managers or build tools available in the Docker container, there exist "buildless" [solution_name] images.  These images contain no package manager files or executables, and automatically pass the argument --detect.detector.buildless=true when running to prevent build detectors (those that depend on the presence of build tools) from running.
+There also exist "buildless" [solution_name] images.  These images automatically pass the argument --detect.accuracy.required=NONE when running to make [solution_name] as resilient as possible (it will evaluate all applicable detectors, regardless of their accuracy, in order to get results).
 
 The format of "buildless" image names is: `blackducksoftware/detect:[detect_version]-buildless`
 
@@ -50,9 +50,9 @@ The format of "iac" image names is: `blackducksoftware/detect:[detect_version]-i
 
 `docker run -it --rm -v [/path/to/source]:/source -v [/path/to/outputDir]:/output blackducksoftware/detect:[detect_image_tag] [detect_arguments]`
 
-`docker run -it --rm -v /Home/my/gradle/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:7.0.0-gradle-6.8.2 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
+`docker run -it --rm -v /Home/my/gradle/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:7.0.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 
-`docker run -it --rm -v /Home/my/maven/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:7-gradle --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
+`docker run -it --rm -v /Home/my/maven/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:7 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 
 `docker run -it --rm -v /Home/my/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:7.0.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.detector.buildless=true`
 
