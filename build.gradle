@@ -20,7 +20,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '8.0.0-SIGQA8-SNAPSHOT'
+version = '8.1.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -246,7 +246,7 @@ task verifyJar() {
 
 task helpJson(type: JavaExec) {
     dependsOn build
-    
+
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
