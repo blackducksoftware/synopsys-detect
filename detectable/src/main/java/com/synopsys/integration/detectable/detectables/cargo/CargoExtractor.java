@@ -54,7 +54,7 @@ public class CargoExtractor {
             projectNameVersion = cargoTomlParser.parseNameVersionFromCargoToml(cargoTomlContents);
         }
 
-        CodeLocation codeLocation = new CodeLocation(graph); //TODO: Consider for 8.0.0 providing an external ID.
+        CodeLocation codeLocation = new CodeLocation(graph); //TODO: Consider for producing a ProjectDependencyGraph
 
         return new Extraction.Builder()
             .success(codeLocation)

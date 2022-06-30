@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
@@ -62,7 +61,7 @@ public class DetectableOptionFactory {
     private final DiagnosticSystem diagnosticSystem;
     private final ProxyInfo proxyInfo;
 
-    public DetectableOptionFactory(DetectPropertyConfiguration detectConfiguration, @Nullable DiagnosticSystem diagnosticSystem, PathResolver pathResolver, ProxyInfo proxyInfo) {
+    public DetectableOptionFactory(DetectPropertyConfiguration detectConfiguration, @Nullable DiagnosticSystem diagnosticSystem, ProxyInfo proxyInfo) {
         this.detectConfiguration = detectConfiguration;
         this.diagnosticSystem = diagnosticSystem;
         this.proxyInfo = proxyInfo;
@@ -102,11 +101,8 @@ public class DetectableOptionFactory {
     }
 
     public DartPubDepsDetectableOptions createDartPubDepsDetectableOptions() {
-        EnumListFilter<DartPubDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED)) {
-            Set<DartPubDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
-            dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
-        }
+        Set<DartPubDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
+        EnumListFilter<DartPubDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         return new DartPubDepsDetectableOptions(dependencyTypeFilter);
     }
 
@@ -154,14 +150,8 @@ public class DetectableOptionFactory {
         List<String> includedConfigurationNames = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
 
-        EnumListFilter<GradleConfigurationType> dependencyTypeFilter;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED)) {
-            Set<GradleConfigurationType> excludedConfigurationTypes = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED)
-                .representedValueSet();
-            dependencyTypeFilter = EnumListFilter.fromExcluded(excludedConfigurationTypes);
-        } else {
-            dependencyTypeFilter = EnumListFilter.fromExcluded(GradleConfigurationType.UNRESOLVED);
-        }
+        Set<GradleConfigurationType> excludedConfigurationTypes = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED).representedValueSet();
+        EnumListFilter<GradleConfigurationType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedConfigurationTypes);
 
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(
             excludedProjectNames,
@@ -177,13 +167,8 @@ public class DetectableOptionFactory {
     }
 
     public LernaOptions createLernaOptions() {
-        EnumListFilter<LernaPackageType> lernaPackageTypeFilter;
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED)) {
-            Set<LernaPackageType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED).representedValueSet();
-            lernaPackageTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
-        } else {
-            lernaPackageTypeFilter = EnumListFilter.fromExcluded(LernaPackageType.PRIVATE);
-        }
+        Set<LernaPackageType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_LERNA_PACKAGE_TYPES_EXCLUDED).representedValueSet();
+        EnumListFilter<LernaPackageType> lernaPackageTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
 
         List<String> excludedPackages = detectConfiguration.getValue(DetectProperties.DETECT_LERNA_EXCLUDED_PACKAGES);
         List<String> includedPackages = detectConfiguration.getValue(DetectProperties.DETECT_LERNA_INCLUDED_PACKAGES);

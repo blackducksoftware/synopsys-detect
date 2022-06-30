@@ -265,12 +265,10 @@ public class DetectProperties {
                 "If package revisions are available (a Conan lock file is found or provided, and Conan's revisions feature is enabled), require that each dependency's package revision match the package revision of the component in the KB.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
-
-    // TODO: Revise 'help' wording since we should be only producing 1 BDIO document per run in 8.0.0
     public static final NullablePathProperty DETECT_BDIO_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.bdio.output.path")
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The path to the output directory for all BDIO files.", "If not set, the BDIO files are placed in a 'BDIO' subdirectory of the output directory.")
+            .setHelp("The path to the output directory for the generated BDIO file.", "If not set, the BDIO file will be placed in a 'BDIO' subdirectory of the output directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
@@ -278,7 +276,7 @@ public class DetectProperties {
         NullableStringProperty.newBuilder("detect.bdio.file.name")
             .setInfo("BDIO File Name", DetectPropertyFromVersion.VERSION_7_9_0)
             .setHelp(
-                "The desired file name of the single bdio file Detect produces in the BDIO Output Directory.",
+                "The desired file name of BDIO file Detect produces in the BDIO Output Directory.",
                 "If not set, the file name is generated from your project, version and code location names."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
@@ -310,7 +308,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_SCAN)
             .build();
 
-    // TODO: Consider removing environment sourcing code in 8.0.0. IDETECT-3167
+    // TODO: Consider removing environment sourcing code in 9.0.0. IDETECT-3167
     public static final StringProperty DETECT_BITBAKE_BUILD_ENV_NAME =
         StringProperty.newBuilder("detect.bitbake.build.env.name", "oe-init-build-env")
             .setInfo("BitBake Init Script Name", DetectPropertyFromVersion.VERSION_4_4_0)
@@ -326,7 +324,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
             .build();
 
-    // TODO: Consider removing environment sourcing code in 8.0.0. IDETECT-3167
+    // TODO: Consider removing environment sourcing code in 9.0.0. IDETECT-3167
     public static final StringListProperty DETECT_BITBAKE_SOURCE_ARGUMENTS =
         StringListProperty.newBuilder("detect.bitbake.source.arguments", emptyList())
             .setInfo("BitBake Source Arguments", DetectPropertyFromVersion.VERSION_6_0_0)
@@ -545,7 +543,6 @@ public class DetectProperties {
         NoneEnumListProperty.newBuilder("detect.pub.dependency.types.excluded", NoneEnum.NONE, DartPubDependencyType.class)
             .setInfo("Dart Pub Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
-                // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
                 createTypeFilterHelpText("Dart pub dependency types"),
                 "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
             )
@@ -712,9 +709,8 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
-    // TODO: Change default to false in 8.0.0
     public static final BooleanProperty DETECT_FORCE_SUCCESS_ON_SKIP =
-        BooleanProperty.newBuilder("detect.force.success.on.skip", true)
+        BooleanProperty.newBuilder("detect.force.success.on.skip", false)
             .setInfo("Force Success On Skip", DetectPropertyFromVersion.VERSION_7_12_1)
             .setHelp(
                 "If true, Detect will always exit with code 0 when a scan of any type is skipped. Typically this happens when the Black Duck minimum scan interval timer has not been met.")
@@ -810,7 +806,6 @@ public class DetectProperties {
         NoneEnumListProperty.newBuilder("detect.gradle.configuration.types.excluded", NoneEnum.NONE, GradleConfigurationType.class)
             .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
-                // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
                 createTypeFilterHelpText("Gradle configuration types"),
                 "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
             )
@@ -916,7 +911,6 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
-    // TODO: Continue
     public static final NullablePathProperty DETECT_JAVA_PATH =
         NullablePathProperty.newBuilder("detect.java.path")
             .setInfo("Java Executable", DetectPropertyFromVersion.VERSION_5_0_0)
@@ -956,7 +950,6 @@ public class DetectProperties {
     public static final NoneEnumListProperty<LernaPackageType> DETECT_LERNA_PACKAGE_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.lerna.package.types.excluded", NoneEnum.NONE, LernaPackageType.class)
             .setInfo("Lerna Package Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
             .setHelp(createTypeFilterHelpText("Lerna package types"))
             .setExample(LernaPackageType.PRIVATE.name())
             .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
@@ -1047,7 +1040,6 @@ public class DetectProperties {
     public static final NoneEnumListProperty<NpmDependencyType> DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.npm.dependency.types.excluded", NoneEnum.NONE, NpmDependencyType.class)
             .setInfo("Npm Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            // TODO: 8.0.0 check if Options are built correctly, then remove replacements text
             .setHelp(createTypeFilterHelpText("Npm dependency types"))
             .setExample(String.format("%s,%s", NpmDependencyType.DEV.name(), NpmDependencyType.PEER.name()))
             .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)

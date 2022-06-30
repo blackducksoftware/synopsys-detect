@@ -28,8 +28,8 @@ public class DetectableLookup {
     @NotNull
     private static DetectableInfo findDetectableInfo(Class<?> detectableClass) {
         return Arrays.stream(detectableClass.getAnnotations())
-            .filter(annotation -> annotation instanceof DetectableInfo)
-            .map(annotation -> (DetectableInfo) annotation)
+            .filter(DetectableInfo.class::isInstance)
+            .map(DetectableInfo.class::cast)
             .findFirst()
             .orElseThrow(RuntimeException::new);
     }
