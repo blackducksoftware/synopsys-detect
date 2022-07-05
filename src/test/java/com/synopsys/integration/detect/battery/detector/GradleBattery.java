@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 
 @Tag("battery")
 public class GradleBattery {
@@ -44,6 +45,7 @@ public class GradleBattery {
             .onLinux(3, "-DGRADLEEXTRACTIONDIR=");
         test.sourceDirectoryNamed("synopsys-detect");
         test.sourceFileNamed("build.gradle");
+        test.property(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED, GradleConfigurationType.UNRESOLVED.name());
         test.git("https://github.com/blackducksoftware/synopsys-detect", "master");
         test.expectBdioResources();
         test.run();
