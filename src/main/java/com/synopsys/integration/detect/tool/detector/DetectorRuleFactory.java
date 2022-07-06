@@ -190,9 +190,9 @@ public class DetectorRuleFactory {
         }).yieldsTo(DetectorType.LERNA);
 
         rules.addDetector(DetectorType.NPM, detector -> {
-                detector.entryPoint(NpmPackageLockDetectable.class)
-                    .search().defaultLock();
                 detector.entryPoint(NpmShrinkwrapDetectable.class)
+                    .search().defaultLock();
+                detector.entryPoint(NpmPackageLockDetectable.class)
                     .search().defaultLock();
                 detector.entryPoint(NpmCliDetectable.class)
                     .search().defaults();
