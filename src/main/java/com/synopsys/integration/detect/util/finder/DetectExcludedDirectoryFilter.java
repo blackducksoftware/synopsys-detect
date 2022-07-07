@@ -18,6 +18,6 @@ public class DetectExcludedDirectoryFilter implements Predicate<File> {
     }
 
     public boolean isExcluded(File file) {
-        return directoryMatcher.nameMatchesExludedDirectory(directoryExclusionPatterns, file) || directoryMatcher.pathMatchesExcludedDirectory(directoryExclusionPatterns, file);
+        return directoryMatcher.nameMatchesExcludedDirectory(directoryExclusionPatterns, file) || directoryMatcher.pathMatchesExcludedDirectory(directoryExclusionPatterns, file);
     }
 }
