@@ -108,17 +108,25 @@ public class Requirements {
     }
 
     public Optional<File> optionalFile(String filename) {
-        return Optional.ofNullable(optionalFile(environment.getDirectory(), filename, () -> {}));
+        return Optional.ofNullable(optionalFile(environment.getDirectory(), filename));
     }
 
+    @Nullable
+    public File optionalFile(File directory, String filename) {
+        return optionalFile(directory, filename, () -> {});
+    }
+
+    @Nullable
     public File optionalFile(String filename, RequirementNotMetAction ifNotMet) {
         return optionalFile(environment.getDirectory(), filename, ifNotMet);
     }
 
+    @Nullable
     public File optionalFile(File directory, String filename, RequirementNotMetAction ifNotMet) {
         return optionalFile(directory, filename, ifNotMet, true);
     }
 
+    @Nullable
     public File optionalFile(File directory, String filename, RequirementNotMetAction ifNotMet, boolean isRelevant) {
         if (isAlreadyFailed())
             return null;

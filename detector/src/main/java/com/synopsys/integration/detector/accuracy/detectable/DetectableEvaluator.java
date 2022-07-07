@@ -2,6 +2,9 @@ package com.synopsys.integration.detector.accuracy.detectable;
 
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -11,6 +14,8 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.rule.DetectableDefinition;
 
 public class DetectableEvaluator {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     public DetectableEvaluationResult evaluate(
         DetectableDefinition detectableDefinition,
         DetectableEnvironment detectableEnvironment,
@@ -23,6 +28,7 @@ public class DetectableEvaluator {
             return DetectableEvaluationResult.notApplicable(detectableDefinition, applicable);
         }
 
+        logger.debug("Attempting {}", detectable.getClass().getSimpleName());
         DetectableResult extractable;
         try {
             extractable = detectable.extractable();
