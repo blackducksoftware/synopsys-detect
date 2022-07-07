@@ -27,6 +27,8 @@ public class DirectoryMatcher {
     public boolean pathMatchesExcludedDirectory(List<String> directoryExclusionPatterns, File file) {
         for (String excludedDirectory : directoryExclusionPatterns) {
             // On Windows, patterns starting with a * raise InvalidPathException, so perform pattern check first
+            // TODO: Coverity says we need to close the FileSystems.getDefault() resource, but according to: https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html
+            //  "File systems created by the default provider cannot be closed."
             PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(String.format(PATH_MATCHER_SYNTAX, excludedDirectory));
             if (pathMatcher.matches(file.toPath())) {
                 return true;
