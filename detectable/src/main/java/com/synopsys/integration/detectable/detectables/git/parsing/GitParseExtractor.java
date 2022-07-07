@@ -6,20 +6,20 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfig;
-import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigNode;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigResult;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
@@ -36,19 +36,25 @@ public class GitParseExtractor {
         this.gitConfigNodeTransformer = gitConfigNodeTransformer;
     }
 
-    public final Extraction extract(File gitConfigFile, File gitHeadFile, File gitOriginHeadFile) {
+    public final Extraction extract(@Nullable File gitConfigFile, @Nullable File gitHeadFile, @Nullable File gitOriginHeadFile) {
         try {
-            String headFileContent = FileUtils.readFileToString(gitHeadFile, StandardCharsets.UTF_8);
-            String gitHead = gitFileParser.parseGitHead(headFileContent);
+            @Nullable
+            String gitHead = Optional.ofNullable(gitHeadFile)
+                .map(this::readFileToStringSafetly)
+                .map(gitFileParser::parseGitHead)
+                .orElse(null);
 
-            List<String> configFileContent = FileUtils.readLines(gitConfigFile, StandardCharsets.UTF_8);
-            List<GitConfigNode> gitConfigNodes = gitFileParser.parseGitConfig(configFileContent);
-            GitConfig gitConfig = gitConfigNodeTransformer.createGitConfig(gitConfigNodes);
+            @Nullable
+            GitConfig gitConfig = Optional.ofNullable(gitConfigFile)
+                .map(this::readFileToLinesSafetly)
+                .map(gitFileParser::parseGitConfig)
+                .map(gitConfigNodeTransformer::createGitConfig)
+                .orElse(null);
 
             GitConfigResult gitConfigResult = gitConfigExtractor.transformToProjectInfo(gitConfig, gitHead);
 
-            String headCommitHash = FileUtils.readFileToString(gitOriginHeadFile, StandardCharsets.UTF_8);
-            headCommitHash = StringUtils.trimToNull(headCommitHash);
+            @Nullable
+            String headCommitHash = StringUtils.trimToNull(readFileToStringSafetly(gitOriginHeadFile));
 
             GitInfo gitInfo = new GitInfo(
                 gitConfigResult.getRemoteUrl(),
@@ -61,11 +67,31 @@ public class GitParseExtractor {
                 .nameVersion(gitConfigResult.getNameVersion())
                 .metaData(EXTRACTION_METADATA_KEY, gitInfo)
                 .build();
-        } catch (IOException | IntegrationException e) {
+        } catch (Exception e) {
             logger.debug("Failed to extract project info from the git config.", e);
             return new Extraction.Builder()
                 .success()
                 .build();
+        }
+    }
+
+    @Nullable
+    private List<String> readFileToLinesSafetly(File file) {
+        try {
+            return FileUtils.readLines(file, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            logger.debug(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    @Nullable
+    private String readFileToStringSafetly(File file) {
+        try {
+            return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            logger.debug(e.getMessage(), e);
+            return null;
         }
     }
 }

@@ -2,6 +2,8 @@ package com.synopsys.integration.detectable.detectables.git;
 
 import java.io.File;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -24,8 +26,11 @@ public class GitParseDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final GitParseExtractor gitParseExtractor;
 
+    @Nullable
     private File gitConfigFile;
+    @Nullable
     private File gitHeadFile;
+    @Nullable
     private File gitOriginHeadFile;
 
     public GitParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, GitParseExtractor gitParseExtractor) {
@@ -39,9 +44,9 @@ public class GitParseDetectable extends Detectable {
         Requirements requires = new Requirements(fileFinder, environment);
         File gitDirectory = requires.directory(GIT_DIRECTORY_NAME);
         requires.ifCurrentlyMet(() -> {
-            gitConfigFile = requires.file(gitDirectory, GIT_CONFIG_FILENAME);
-            gitHeadFile = requires.file(gitDirectory, GIT_HEAD_FILENAME);
-            gitOriginHeadFile = requires.file(gitDirectory, GIT_ORIGIN_HEAD_FILENAME);
+            gitConfigFile = requires.optionalFile(gitDirectory, GIT_CONFIG_FILENAME);
+            gitHeadFile = requires.optionalFile(gitDirectory, GIT_HEAD_FILENAME);
+            gitOriginHeadFile = requires.optionalFile(gitDirectory, GIT_ORIGIN_HEAD_FILENAME);
         });
         return requires.result();
     }
