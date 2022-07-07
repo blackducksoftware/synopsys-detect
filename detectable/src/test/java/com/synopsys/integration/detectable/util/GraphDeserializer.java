@@ -40,7 +40,7 @@ public class GraphDeserializer {
             currentLine = lines.get(currentLineIndex);
 
             if (!currentLine.startsWith("Relationships")) {
-                graph.addChildToRoot(make(currentLine));
+                graph.addDirectDependency(make(currentLine));
             }
 
         }

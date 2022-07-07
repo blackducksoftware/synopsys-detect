@@ -298,7 +298,6 @@ public class DetectDetectableFactory {
     public NugetProjectInspectorDetectable createNugetParseDetectable(DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createNugetParseDetectable(
             detectableEnvironment,
-            detectableOptionFactory.createNugetInspectorOptions(),
             projectInspectorResolver,
             detectableOptionFactory.createProjectInspectorOptions()
         );

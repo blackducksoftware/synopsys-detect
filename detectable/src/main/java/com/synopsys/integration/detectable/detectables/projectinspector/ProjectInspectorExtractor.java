@@ -26,10 +26,16 @@ public class ProjectInspectorExtractor {
         this.projectInspectorParser = projectInspectorParser;
     }
 
-    public Extraction extract(ProjectInspectorOptions projectInspectorOptions, List<String> extra, File targetDirectory, File outputDirectory, ExecutableTarget inspector)
-        throws ExecutableFailedException {
+    public Extraction extract(
+        ProjectInspectorOptions projectInspectorOptions, // TODO: Take in needed values through constructor
+        List<String> extra,
+        File targetDirectory,
+        File outputDirectory,
+        ExecutableTarget inspector
+    ) throws ExecutableFailedException, IOException {
         File outputFile = new File(outputDirectory, "inspection.json");
 
+        // TODO: Could use a command runner
         List<String> arguments = new LinkedList<>();
         arguments.add("inspect");
         arguments.add("--dir");
@@ -44,12 +50,8 @@ public class ProjectInspectorExtractor {
 
         executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(targetDirectory, inspector, arguments));
 
-        try {
-            String outputContents = FileUtils.readFileToString(outputFile, StandardCharsets.UTF_8);
-            List<CodeLocation> codeLocations = projectInspectorParser.parse(outputContents);
-            return new Extraction.Builder().success(codeLocations).build();
-        } catch (IOException e) {
-            return new Extraction.Builder().exception(e).build();
-        }
+        String outputContents = FileUtils.readFileToString(outputFile, StandardCharsets.UTF_8);
+        List<CodeLocation> codeLocations = projectInspectorParser.parse(outputContents);
+        return new Extraction.Builder().success(codeLocations).build();
     }
 }

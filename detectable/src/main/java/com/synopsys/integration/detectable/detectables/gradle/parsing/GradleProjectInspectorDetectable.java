@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.gradle.parsing;
 
+import java.io.IOException;
 import java.util.Collections;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
@@ -58,7 +59,7 @@ public class GradleProjectInspectorDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
         return projectInspectorExtractor.extract(
             projectInspectorOptions,
             Collections.emptyList(),

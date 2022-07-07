@@ -21,6 +21,7 @@ import com.synopsys.integration.detectable.detectables.projectinspector.model.Pr
 import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorModule;
 import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorOutput;
 
+// TODO: Should be split into a Parser/Transformer
 public class ProjectInspectorParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Gson gson;
@@ -33,7 +34,8 @@ public class ProjectInspectorParser {
 
     public List<CodeLocation> parse(String inspectionOutput) {
         ProjectInspectorOutput projectInspectorOutput = gson.fromJson(inspectionOutput, ProjectInspectorOutput.class);
-
+        // TODO: Could maybe use some null-safety around the presence of the 'modules' field
+        //  There should be more safety (at least @Nullable) in all the ProjectInspector model objects
         return projectInspectorOutput.modules.values().stream()
             .map(this::codeLocationFromModule)
             .collect(Collectors.toList());
@@ -43,7 +45,7 @@ public class ProjectInspectorParser {
         Map<String, Dependency> lookup = new HashMap<>();
 
         //build the map of all external ids
-        module.dependencies.forEach(dependency -> lookup.computeIfAbsent(dependency.id, (missingId) -> convertProjectInspectorDependency(dependency)));
+        module.dependencies.forEach(dependency -> lookup.computeIfAbsent(dependency.id, missingId -> convertProjectInspectorDependency(dependency)));
 
         //and add them to the graph
         DependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
@@ -51,7 +53,7 @@ public class ProjectInspectorParser {
             Dependency dependency = lookup.get(moduleDependency.id);
             moduleDependency.includedBy.forEach(parent -> {
                 if ("DIRECT".equals(parent)) {
-                    mutableDependencyGraph.addChildToRoot(dependency);
+                    mutableDependencyGraph.addDirectDependency(dependency);
                 } else if (lookup.containsKey(parent)) {
                     mutableDependencyGraph.addChildWithParent(dependency, lookup.get(parent));
                 } else { //Theoretically should not happen according to PI devs. -jp

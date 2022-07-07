@@ -37,7 +37,7 @@ public class FinalStepTransformJsonProtoHaskellCabalLibrariesToHackageTest {
         List<Dependency> dependencies = step.finish(input);
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
         for (Dependency dependency : dependencies) {
-            dependencyGraph.addChildToRoot(dependency);
+            dependencyGraph.addDirectDependency(dependency);
         }
         Forge hackageForge = new Forge("/", "hackage");
         GraphAssert graphAssert = new GraphAssert(hackageForge, dependencyGraph);

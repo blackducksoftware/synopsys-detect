@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.maven.parsing;
 
+import java.io.IOException;
 import java.util.Collections;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
@@ -25,7 +26,7 @@ public class MavenProjectInspectorDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final ProjectInspectorResolver projectInspectorResolver;
     private final ProjectInspectorExtractor projectInspectorExtractor;
-    private final ProjectInspectorOptions projectInspectorOptions;
+    private final ProjectInspectorOptions projectInspectorOptions; // TODO: Options don't belong here
 
     private ExecutableTarget inspector;
 
@@ -58,7 +59,7 @@ public class MavenProjectInspectorDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
         return projectInspectorExtractor.extract(
             projectInspectorOptions,
             Collections.emptyList(),

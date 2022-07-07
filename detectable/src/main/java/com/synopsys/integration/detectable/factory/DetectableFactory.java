@@ -540,10 +540,11 @@ public class DetectableFactory {
     }
 
     public NugetProjectInspectorDetectable createNugetParseDetectable(
-        DetectableEnvironment environment, NugetInspectorOptions nugetInspectorOptions, ProjectInspectorResolver projectInspectorResolver,
+        DetectableEnvironment environment,
+        ProjectInspectorResolver projectInspectorResolver,
         ProjectInspectorOptions projectInspectorOptions
     ) {
-        return new NugetProjectInspectorDetectable(environment, fileFinder, nugetInspectorOptions, projectInspectorResolver, projectInspectorExtractor(), projectInspectorOptions);
+        return new NugetProjectInspectorDetectable(environment, fileFinder, projectInspectorResolver, projectInspectorExtractor(), projectInspectorOptions);
     }
 
     public PackratLockDetectable createPackratLockDetectable(DetectableEnvironment environment) {

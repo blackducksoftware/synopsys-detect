@@ -34,37 +34,37 @@ public class MavenProjectInspectorTest extends DetectableFunctionalTest {
         String inspector = new File("inspector").getCanonicalPath();
         addExecutableOutput(createStandardOutput(""), inspector, "inspect", "--dir", source, "--output-file", jsonFile.getPath());
 
-        addOutputFile(jsonFile.toPath(), "{\n",
-            "   \"Dir\": \"/opt/project/src\",\n",
-            "   \"Modules\": {\n",
-            "      \"/opt/project/src/pom.xml\": {\n",
-            "         \"ModuleFile\": \"/opt/project/src/pom.xml\",\n",
-            "         \"ModuleDir\": \"/opt/project/src\",\n",
-            "         \"Dependencies\": [\n",
-            "            {\n",
-            "               \"Id\": \"91390d46-4824-1909-fc05-0d949a4466c8\",\n",
-            "               \"IncludedBy\": [\n",
-            "                  \"DIRECT\"\n",
-            "               ],\n",
-            "               \"MavenCoordinates\": {\n",
-            "                  \"GroupId\": \"COORDINATE_GROUP\",\n",
-            "                  \"ArtifactId\": \"COORDINATE_ARTIFACT\",\n",
-            "                  \"Version\": \"COORDINATE_VERSION\"\n",
-            "               },\n",
-            "               \"DependencyType\": \"MAVEN\",\n",
-            "               \"DependencySource\": \"EXTERNAL\",\n",
-            "               \"Name\": \"NON_COORDINATE_NAME\",\n",
-            "               \"Version\": \"NON_COORDINATE_VERSION\",\n",
-            "               \"Artifacts\": [\n",
-            "                  \"/root/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar\"\n",
-            "               ],\n",
-            "               \"Scope\": \"compile\"\n",
-            "            }\n",
-            "         ],\n",
-            "         \"Strategy\": \"MAVEN\"\n",
-            "      }\n",
-            "   }\n",
-            "}\n"
+        addOutputFile(jsonFile.toPath(), "{",
+            "   \"Dir\": \"/opt/project/src\",",
+            "   \"Modules\": {",
+            "      \"/opt/project/src/pom.xml\": {",
+            "         \"ModuleFile\": \"/opt/project/src/pom.xml\",",
+            "         \"ModuleDir\": \"/opt/project/src\",",
+            "         \"Dependencies\": [",
+            "            {",
+            "               \"Id\": \"91390d46-4824-1909-fc05-0d949a4466c8\",",
+            "               \"IncludedBy\": [",
+            "                  \"DIRECT\"",
+            "               ],",
+            "               \"MavenCoordinates\": {",
+            "                  \"GroupId\": \"COORDINATE_GROUP\",",
+            "                  \"ArtifactId\": \"COORDINATE_ARTIFACT\",",
+            "                  \"Version\": \"COORDINATE_VERSION\"",
+            "               },",
+            "               \"DependencyType\": \"MAVEN\",",
+            "               \"DependencySource\": \"EXTERNAL\",",
+            "               \"Name\": \"NON_COORDINATE_NAME\",",
+            "               \"Version\": \"NON_COORDINATE_VERSION\",",
+            "               \"Artifacts\": [",
+            "                  \"/root/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar\"",
+            "               ],",
+            "               \"Scope\": \"compile\"",
+            "            }",
+            "         ],",
+            "         \"Strategy\": \"MAVEN\"",
+            "      }",
+            "   }",
+            "}"
         );
     }
 
@@ -80,6 +80,7 @@ public class MavenProjectInspectorTest extends DetectableFunctionalTest {
 
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
+        // TODO: Assert on all model fields or add unit tests to cover missing fields
         List<CodeLocation> codeLocations = extraction.getCodeLocations();
 
         Assertions.assertEquals(1, codeLocations.size());

@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.nuget;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +35,6 @@ public class NugetProjectInspectorDetectable extends Detectable {
     public NugetProjectInspectorDetectable(
         DetectableEnvironment detectableEnvironment,
         FileFinder fileFinder,
-        NugetInspectorOptions nugetInspectorOptions,
         ProjectInspectorResolver projectInspectorResolver,
         ProjectInspectorExtractor projectInspectorExtractor,
         ProjectInspectorOptions projectInspectorOptions
@@ -61,7 +61,7 @@ public class NugetProjectInspectorDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
         return projectInspectorExtractor.extract(
             projectInspectorOptions,
             Collections.emptyList(),

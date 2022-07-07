@@ -3,7 +3,6 @@ package com.synopsys.integration.detectable.detectables.nuget.functional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +13,6 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -42,8 +40,8 @@ public class NugetProjectInspectorTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createNugetParseDetectable(detectableEnvironment,
-            new NugetInspectorOptions(false, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null),
+        return detectableFactory.createNugetParseDetectable(
+            detectableEnvironment,
             () -> ExecutableTarget.forFile(new File("inspector")),
             new ProjectInspectorOptions(null)
         );
