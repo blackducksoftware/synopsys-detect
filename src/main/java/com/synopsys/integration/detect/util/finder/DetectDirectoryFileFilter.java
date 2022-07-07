@@ -3,10 +3,9 @@ package com.synopsys.integration.detect.util.finder;
 import java.io.File;
 import java.util.List;
 import java.util.function.Predicate;
-
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
-public class DetectDirectoryFileFilter implements Predicate<File> {
+public class DetectDirectoryFileFilter implements Predicate<File>  {
     private final List<String> directoryExclusionPatterns;
     private final DirectoryMatcher directoryMatcher = new DirectoryMatcher();
     private final WildcardFileFilter wildcardFilter;
@@ -19,10 +18,7 @@ public class DetectDirectoryFileFilter implements Predicate<File> {
     @Override
     public boolean test(File file) {
         if (file.isDirectory()) {
-            return directoryMatcher.nameMatchesExcludedDirectory(directoryExclusionPatterns, file) || directoryMatcher.pathMatchesExcludedDirectory(
-                directoryExclusionPatterns,
-                file
-            );
+            return directoryMatcher.nameMatchesExludedDirectory(directoryExclusionPatterns, file) || directoryMatcher.pathMatchesExcludedDirectory(directoryExclusionPatterns, file);
         }
         if (file.isFile()) {
             return wildcardFilter.accept(file);
