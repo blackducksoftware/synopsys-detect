@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,10 +80,11 @@ public class GitConfigNameVersionTransformer {
         }
 
         if (remoteUrl != null) {
-            projectName = gitUrlParser.getRepoName(remoteUrl);
+            projectName = StringUtils.trimToNull(gitUrlParser.getRepoName(remoteUrl));
         } else {
             logger.debug("No remote urls were found in config. No project name could be inferred.");
         }
+        projectVersionName = StringUtils.trimToNull(projectVersionName);
 
         NameVersion nameVersion = new NameVersion(projectName, projectVersionName);
 

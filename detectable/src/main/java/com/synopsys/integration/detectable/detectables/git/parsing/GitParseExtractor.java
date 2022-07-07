@@ -20,6 +20,7 @@ import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConf
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.function.ThrowingFunction;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
@@ -76,20 +77,24 @@ public class GitParseExtractor {
     }
 
     @Nullable
-    private List<String> readFileToLinesSafetly(File file) {
-        try {
-            return FileUtils.readLines(file, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            logger.debug(e.getMessage(), e);
-            return null;
-        }
+    private List<String> readFileToLinesSafetly(@Nullable File file) {
+        return readFileSafetly(file, f -> FileUtils.readLines(f, StandardCharsets.UTF_8));
     }
 
     @Nullable
-    private String readFileToStringSafetly(File file) {
+    private String readFileToStringSafetly(@Nullable File file) {
+        return readFileSafetly(file, f -> FileUtils.readFileToString(f, StandardCharsets.UTF_8));
+    }
+
+    @Nullable
+    private <T> T readFileSafetly(@Nullable File file, ThrowingFunction<File, T, IOException> readingFunction) {
         try {
-            return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-        } catch (IOException e) {
+            if (file == null) {
+                // Avoid exception
+                return null;
+            }
+            return readingFunction.apply(file);
+        } catch (Exception e) {
             logger.debug(e.getMessage(), e);
             return null;
         }
