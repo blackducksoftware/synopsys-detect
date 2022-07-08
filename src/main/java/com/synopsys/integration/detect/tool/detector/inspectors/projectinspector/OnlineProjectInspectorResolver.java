@@ -25,7 +25,7 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
     private final InstalledToolLocator installedToolLocator;
     @Nullable private final Path localProjectInspectorPath;
 
-    File projectInspectorExeFile = null;
+    private File projectInspectorExeFile = null;
     private boolean hasResolvedProjectInspectorExe = false;
 
     public OnlineProjectInspectorResolver(
@@ -76,7 +76,7 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
     }
 
     private File findFile(Path localProjectInspectorPath) throws DetectableException {
-        logger.debug("Using user-provided project inspector zip path: {}", localProjectInspectorPath.toString());
+        logger.debug("Using user-provided project inspector zip path: {}", localProjectInspectorPath);
         File providedZipCandidate = localProjectInspectorPath.toFile();
         if (providedZipCandidate.isFile()) {
             logger.debug("Found user-specified project inspector zip: {}", providedZipCandidate.getAbsolutePath());
