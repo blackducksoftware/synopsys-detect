@@ -1,7 +1,10 @@
 package com.synopsys.integration.detect.tool.detector.factory;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Optional;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -26,6 +29,7 @@ import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspe
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.OnlineNugetInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.AirgapProjectInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ArtifactoryProjectInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.LocalProjectInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.OnlineProjectInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ProjectInspectorExecutableLocator;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
@@ -37,6 +41,7 @@ import com.synopsys.integration.detectable.detectable.inspector.ProjectInspector
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
 
 import freemarker.template.Configuration;
@@ -88,7 +93,7 @@ public class DetectorFactory {
             gradleInspectorResolver(),
             nugetInspectorResolver(detectInfo),
             pipInspectorResolver(),
-            projectInspectorResolver(detectInfo)
+            projectInspectorResolver(detectInfo, detectableOptionFactory.createProjectInspectorOptions())
         );
     }
 
@@ -132,7 +137,8 @@ public class DetectorFactory {
         return resolver;
     }
 
-    private ProjectInspectorResolver projectInspectorResolver(DetectInfo detectInfo) {
+    private ProjectInspectorResolver projectInspectorResolver(DetectInfo detectInfo, ProjectInspectorOptions projectInspectorOptions) {
+        @Nullable Path localProjectInspectorPath = projectInspectorOptions.getProjectInspectorZipPath().orElse(null);
         ProjectInspectorExecutableLocator projectInspectorExecutableLocator = new ProjectInspectorExecutableLocator(detectInfo);
 
         Optional<File> projectInspectorAirgapPath = airGapInspectorPaths.getProjectInspectorAirGapFile();
@@ -144,7 +150,9 @@ public class DetectorFactory {
                 artifactoryZipInstaller,
                 projectInspectorExecutableLocator
             );
-            return new OnlineProjectInspectorResolver(artifactoryProjectInspectorInstaller, directoryManager, installedToolManager, installedToolLocator);
+            LocalProjectInspectorInstaller localProjectInspectorInstaller = new LocalProjectInspectorInstaller(projectInspectorExecutableLocator);
+            return new OnlineProjectInspectorResolver(artifactoryProjectInspectorInstaller, localProjectInspectorInstaller, directoryManager, installedToolManager, installedToolLocator,
+                localProjectInspectorPath);
         }
     }
 
