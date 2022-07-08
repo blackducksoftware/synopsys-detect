@@ -1294,7 +1294,7 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_PROJECT_DESCRIPTION =
         NullableStringProperty.newBuilder("detect.project.description")
             .setInfo("Project Description", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("If project description is specified, your project will be created with this description.")
+            .setHelp("If project description is specified, your project will be created with this description. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
@@ -1331,7 +1331,7 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.project.level.adjustments", true)
             .setInfo("Allow Project Level Adjustments", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "Sets the component adjustments setting on the Black Duck project.",
+                "If set, created projects will be created with the value of this property. For updates, see detect.project.version.update.",
                 "Corresponds to the 'Always maintain component adjustments to all versions of this project' checkbox under 'Component Adjustments' on the Black Duck Project settings page."
             )
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING, DetectGroup.GLOBAL)
@@ -1367,7 +1367,7 @@ public class DetectProperties {
     public static final NullableIntegerProperty DETECT_PROJECT_TIER =
         NullableIntegerProperty.newBuilder("detect.project.tier")
             .setInfo("Project Tier", DetectPropertyFromVersion.VERSION_3_1_0)
-            .setHelp("If a Black Duck project tier is specified, your project will be created with this tier.")
+            .setHelp("If a Black Duck project tier is specified, your project will be created with this tier. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
@@ -1385,7 +1385,7 @@ public class DetectProperties {
     public static final EnumProperty<ProjectVersionDistributionType> DETECT_PROJECT_VERSION_DISTRIBUTION =
         EnumProperty.newBuilder("detect.project.version.distribution", ProjectVersionDistributionType.EXTERNAL, ProjectVersionDistributionType.class)
             .setInfo("Version Distribution", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("An override for the Project Version distribution")
+            .setHelp("If project version distribution is specified, your project version will be created with this distribution. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -1401,21 +1401,21 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_PROJECT_VERSION_NICKNAME =
         NullableStringProperty.newBuilder("detect.project.version.nickname")
             .setInfo("Version Nickname", DetectPropertyFromVersion.VERSION_5_2_0)
-            .setHelp("If a project version nickname is specified, your project version will be created with this nickname.")
+            .setHelp("If a project version nickname is specified, your project version will be created with this nickname. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
     public static final NullableStringProperty DETECT_PROJECT_VERSION_NOTES =
         NullableStringProperty.newBuilder("detect.project.version.notes")
             .setInfo("Version Notes", DetectPropertyFromVersion.VERSION_3_1_0)
-            .setHelp("If project version notes are specified, your project version will be created with these notes.")
+            .setHelp("If project version notes are specified, your project version will be created with these notes. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
     public static final EnumProperty<ProjectVersionPhaseType> DETECT_PROJECT_VERSION_PHASE =
         EnumProperty.newBuilder("detect.project.version.phase", ProjectVersionPhaseType.DEVELOPMENT, ProjectVersionPhaseType.class)
             .setInfo("Version Phase", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("An override for the Project Version phase.")
+            .setHelp("If project version phase is specified, your project version will be created with this phase. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
@@ -1423,9 +1423,9 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.project.version.update", false)
             .setInfo("Update Project Version", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp(
-                "If set to true, will update the Project Version with the configured properties. See detailed help for more information.",
-                "When set to true, the following properties will be updated on the Project. Project tier (detect.project.tier) and Project Level Adjustments (detect.project.level.adjustments). "
-                    + "The following properties will also be updated on the Version.Version notes (detect.project.version.notes), phase(detect.project.version.phase), distribution(detect.project.version.distribution)."
+                "If set to true, Detect will update the Black Duck project and project version according to configured project and project version properties. (By default, these properties are only set on created projects / project versions.)",
+                "When set to true, the following properties will be updated on the Project: description (detect.project.description), tier (detect.project.tier), and project level adjustments (detect.project.level.adjustments). "
+                    + "The following properties will also be updated on the project version: notes (detect.project.version.notes), phase (detect.project.version.phase), distribution (detect.project.version.distribution), nickname (detect.project.version.nickname)."
             )
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
@@ -1433,7 +1433,7 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_PROJECT_VERSION_LICENSE =
         NullableStringProperty.newBuilder("detect.project.version.license")
             .setInfo("Project Version License", DetectPropertyFromVersion.VERSION_7_11_0)
-            .setHelp("An override for a Project Version's license.")
+            .setHelp("An override of the license on created project versions.")
             .setExample("Apache License 2.0")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
