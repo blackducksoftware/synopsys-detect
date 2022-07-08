@@ -1,5 +1,15 @@
 # Release notes
 
+## Version 8.1.0
+
+### New features
+
+### Changed features
+
+* Added property detect.project.inspector.path to enable pointing [solution_name] to a local Project Inspector zip file.
+
+### Resolved issues
+
 ## Version 8.0.0
 
 ### New features
