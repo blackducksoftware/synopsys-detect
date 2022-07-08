@@ -365,9 +365,9 @@ public class DetectProperties {
 
     public static final NullablePathProperty DETECT_PROJECT_INSPECTOR_PATH =
         NullablePathProperty.newBuilder("detect.project.inspector.path")
-            .setInfo("Project Inspector zip file path", DetectPropertyFromVersion.VERSION_8_1_0)
+            .setInfo("Project Inspector Path", DetectPropertyFromVersion.VERSION_8_1_0)
             .setHelp(
-                "This is used to override using the hosted Project Inspector executable by binary repository url. You can use a compatible (the same major version that Detect downloads by default) local Project Inspector zip file at this path."
+                "Use this property to point Detect to a local Project Inspector zip file, instead of the default Project Inspector zip file that Detect downloads from the binary repository. You need to ensure the version is compatible (the same major version that Detect downloads by default)."
             )
             .setGroups(DetectGroup.PROJECT_INSPECTOR, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
@@ -650,9 +650,9 @@ public class DetectProperties {
 
     public static final NullablePathProperty DETECT_DOCKER_INSPECTOR_PATH =
         NullablePathProperty.newBuilder("detect.docker.inspector.path")
-            .setInfo("Docker Inspector .jar File Path", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Docker Inspector Path", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a compatible (the same major version that Detect downloads by default) local Docker Inspector .jar file at this path."
+                "Use this property to point Detect to a local Docker Inspector jar file, instead of the default Docker Inspector jar file that Detect downloads from the binary repository. You need to ensure the version is compatible (the same major version that Detect downloads by default)."
             )
             .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
