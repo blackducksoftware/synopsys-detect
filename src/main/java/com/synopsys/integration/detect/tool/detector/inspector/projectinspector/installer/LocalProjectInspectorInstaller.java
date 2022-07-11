@@ -40,6 +40,11 @@ public class LocalProjectInspectorInstaller implements ProjectInspectorInstaller
         return projectInspectorExecutableLocator.findExecutable(destDirectory);
     }
 
+    @Override
+    public boolean shouldFallbackToPreviousInstall() {
+        return false;
+    }
+
     private File findFile(Path localProjectInspectorPath) throws DetectableException {
         logger.debug("Using user-provided project inspector zip path: {}", localProjectInspectorPath);
         File providedZipCandidate = localProjectInspectorPath.toFile();

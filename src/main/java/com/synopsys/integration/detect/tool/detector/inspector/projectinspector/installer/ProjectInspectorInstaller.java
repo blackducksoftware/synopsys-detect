@@ -8,4 +8,6 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 
 public interface ProjectInspectorInstaller {
     @Nullable File install(File destDirectory) throws DetectableException;
+
+    boolean shouldFallbackToPreviousInstall();
 }

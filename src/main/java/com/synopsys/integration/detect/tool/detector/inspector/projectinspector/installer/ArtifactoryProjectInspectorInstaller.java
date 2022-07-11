@@ -40,6 +40,12 @@ public class ArtifactoryProjectInspectorInstaller implements ProjectInspectorIns
         }
     }
 
+    @Override
+    public boolean shouldFallbackToPreviousInstall() {
+        return true;
+    }
+
+    // TODO is this used?? should it be included in interface??
     @Nullable
     public File install(File installDirectory, String property) throws DetectableException {
         File extractedZip = downloadZip(property, installDirectory);

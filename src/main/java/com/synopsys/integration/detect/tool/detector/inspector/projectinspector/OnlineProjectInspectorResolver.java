@@ -45,10 +45,10 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
             try {
                 projectInspectorExeFile = projectInspectorInstaller.install(installDirectory);
             } catch (DetectableException e) {
-                logger.debug("Unable to install the project inspector from Artifactory.");
+                logger.debug("Unable to install the project inspector.");
             }
-            if (projectInspectorExeFile == null) {
-                // Remote installation has failed
+            if ((projectInspectorExeFile == null) && (projectInspectorInstaller.shouldFallbackToPreviousInstall())) {
+                // Installation has failed, and we should fall back to previous installation
                 logger.debug("Attempting to locate previous install of project inspector.");
                 return installedToolLocator.locateTool(INSTALLED_TOOL_JSON_KEY)
                     .map(ExecutableTarget::forFile)
