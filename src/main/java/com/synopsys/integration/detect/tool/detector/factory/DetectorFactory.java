@@ -1,10 +1,7 @@
 package com.synopsys.integration.detect.tool.detector.factory;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Optional;
-
-import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -32,6 +29,7 @@ import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.LocalProjectInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.OnlineProjectInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ProjectInspectorExecutableLocator;
+import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ProjectInspectorInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -138,21 +136,31 @@ public class DetectorFactory {
     }
 
     private ProjectInspectorResolver projectInspectorResolver(DetectInfo detectInfo, ProjectInspectorOptions projectInspectorOptions) {
-        @Nullable Path localProjectInspectorPath = projectInspectorOptions.getProjectInspectorZipPath().orElse(null);
         ProjectInspectorExecutableLocator projectInspectorExecutableLocator = new ProjectInspectorExecutableLocator(detectInfo);
 
         Optional<File> projectInspectorAirgapPath = airGapInspectorPaths.getProjectInspectorAirGapFile();
         if (projectInspectorAirgapPath.isPresent()) {
             return new AirgapProjectInspectorResolver(airGapInspectorPaths, projectInspectorExecutableLocator, detectInfo);
         } else {
-            ArtifactoryProjectInspectorInstaller artifactoryProjectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(
-                detectInfo,
-                artifactoryZipInstaller,
-                projectInspectorExecutableLocator
+            ProjectInspectorInstaller projectInspectorInstaller;
+            if (projectInspectorOptions.getProjectInspectorZipPath().isPresent()) {
+                projectInspectorInstaller = new LocalProjectInspectorInstaller(
+                    projectInspectorExecutableLocator,
+                    projectInspectorOptions.getProjectInspectorZipPath().get()
+                );
+            } else {
+                projectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(
+                    detectInfo,
+                    artifactoryZipInstaller,
+                    projectInspectorExecutableLocator
+                );
+            }
+            return new OnlineProjectInspectorResolver(
+                projectInspectorInstaller,
+                directoryManager,
+                installedToolManager,
+                installedToolLocator
             );
-            LocalProjectInspectorInstaller localProjectInspectorInstaller = new LocalProjectInspectorInstaller(projectInspectorExecutableLocator);
-            return new OnlineProjectInspectorResolver(artifactoryProjectInspectorInstaller, localProjectInspectorInstaller, directoryManager, installedToolManager, installedToolLocator,
-                localProjectInspectorPath);
         }
     }
 

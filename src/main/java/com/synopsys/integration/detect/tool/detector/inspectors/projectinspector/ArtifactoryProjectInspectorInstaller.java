@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.OperatingSystemType;
 
-public class ArtifactoryProjectInspectorInstaller {
+public class ArtifactoryProjectInspectorInstaller implements ProjectInspectorInstaller {
     private final DetectInfo detectInfo;
     private final ArtifactoryZipInstaller artifactoryZipInstaller;
     private final ProjectInspectorExecutableLocator projectInspectorExecutableLocator;
@@ -27,6 +27,7 @@ public class ArtifactoryProjectInspectorInstaller {
         this.projectInspectorExecutableLocator = projectInspectorExecutableLocator;
     }
 
+    @Override
     @Nullable
     public File install(File directory) throws DetectableException {
         if (detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS) {
