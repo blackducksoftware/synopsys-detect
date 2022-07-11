@@ -45,13 +45,6 @@ public class ArtifactoryProjectInspectorInstaller implements ProjectInspectorIns
         return true;
     }
 
-    // TODO is this used?? should it be included in interface??
-    @Nullable
-    public File install(File installDirectory, String property) throws DetectableException {
-        File extractedZip = downloadZip(property, installDirectory);
-        return projectInspectorExecutableLocator.findExecutable(extractedZip);
-    }
-
     @NotNull //Returns location of extracted zip or throws
     public File downloadZip(String property, File installDirectory) throws DetectableException {
         try {
@@ -67,4 +60,9 @@ public class ArtifactoryProjectInspectorInstaller implements ProjectInspectorIns
         }
     }
 
+    @Nullable
+    private File install(File installDirectory, String property) throws DetectableException {
+        File extractedZip = downloadZip(property, installDirectory);
+        return projectInspectorExecutableLocator.findExecutable(extractedZip);
+    }
 }
