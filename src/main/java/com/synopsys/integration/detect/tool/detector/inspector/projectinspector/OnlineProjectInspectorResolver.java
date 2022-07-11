@@ -47,14 +47,18 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
             } catch (DetectableException e) {
                 logger.debug("Unable to install the project inspector.");
             }
-            if ((projectInspectorExeFile == null) && (projectInspectorInstaller.shouldFallbackToPreviousInstall())) {
-                // Installation has failed, and we should fall back to previous installation
-                logger.debug("Attempting to locate previous install of project inspector.");
-                return installedToolLocator.locateTool(INSTALLED_TOOL_JSON_KEY)
-                    .map(ExecutableTarget::forFile)
-                    .orElseThrow(() ->
-                        new DetectableException("Unable to locate previous install of the project inspector.")
-                    );
+            if ((projectInspectorExeFile == null)) {
+                if (projectInspectorInstaller.shouldFallbackToPreviousInstall()) {
+                    // Installation has failed, and we should fall back to previous installation
+                    logger.debug("Attempting to locate previous install of project inspector.");
+                    return installedToolLocator.locateTool(INSTALLED_TOOL_JSON_KEY)
+                        .map(ExecutableTarget::forFile)
+                        .orElseThrow(() ->
+                            new DetectableException("Unable to locate previous install of the project inspector.")
+                        );
+                } else {
+                    throw new DetectableException("Unable to locate given project inspector zip file.");
+                }
             } else {
                 installedToolManager.saveInstalledToolLocation(INSTALLED_TOOL_JSON_KEY, projectInspectorExeFile.getAbsolutePath());
             }
