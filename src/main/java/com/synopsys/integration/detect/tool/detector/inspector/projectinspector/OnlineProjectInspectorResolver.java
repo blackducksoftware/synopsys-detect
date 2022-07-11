@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors.projectinspector;
+package com.synopsys.integration.detect.tool.detector.inspector.projectinspector;
 
 import java.io.File;
 
@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
+import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.installer.ProjectInspectorInstaller;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;

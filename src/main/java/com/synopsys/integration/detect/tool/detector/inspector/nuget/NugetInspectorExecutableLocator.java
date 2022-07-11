@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
+package com.synopsys.integration.detect.tool.detector.inspector.nuget;
 
 import java.io.File;
 

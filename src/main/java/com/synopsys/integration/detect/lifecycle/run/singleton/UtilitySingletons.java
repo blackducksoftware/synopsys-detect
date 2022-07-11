@@ -5,7 +5,7 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionDetail
 import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationWrapper;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
+import com.synopsys.integration.detect.tool.detector.inspector.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;

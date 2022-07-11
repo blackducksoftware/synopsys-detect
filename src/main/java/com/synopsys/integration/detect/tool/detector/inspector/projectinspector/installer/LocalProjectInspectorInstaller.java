@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors.projectinspector;
+package com.synopsys.integration.detect.tool.detector.inspector.projectinspector.installer;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.ProjectInspectorExecutableLocator;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
@@ -17,8 +18,10 @@ public class LocalProjectInspectorInstaller implements ProjectInspectorInstaller
     private final ProjectInspectorExecutableLocator projectInspectorExecutableLocator;
     private final Path projectInspectorZipPath;
 
-    public LocalProjectInspectorInstaller(final ProjectInspectorExecutableLocator projectInspectorExecutableLocator,
-        Path projectInspectorZipPath) {
+    public LocalProjectInspectorInstaller(
+        ProjectInspectorExecutableLocator projectInspectorExecutableLocator,
+        Path projectInspectorZipPath
+    ) {
         this.projectInspectorExecutableLocator = projectInspectorExecutableLocator;
         this.projectInspectorZipPath = projectInspectorZipPath;
     }

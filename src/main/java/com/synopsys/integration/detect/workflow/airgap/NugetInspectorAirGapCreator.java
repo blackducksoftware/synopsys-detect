@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.ArtifactoryNugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspector.nuget.AirgapNugetInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspector.nuget.ArtifactoryNugetInspectorInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
