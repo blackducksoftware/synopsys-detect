@@ -47,7 +47,7 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
             } catch (DetectableException e) {
                 logger.debug("Unable to install the project inspector.");
             }
-            if ((projectInspectorExeFile == null)) {
+            if (projectInspectorExeFile == null) {
                 if (projectInspectorInstaller.shouldFallbackToPreviousInstall()) {
                     return findExistingInstallation();
                 } else {
