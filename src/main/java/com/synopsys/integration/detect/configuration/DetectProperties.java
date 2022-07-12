@@ -362,14 +362,13 @@ public class DetectProperties {
             .setExample("--exclude-from ./excludes.txt")
             .build();
 
-
     public static final NullablePathProperty DETECT_PROJECT_INSPECTOR_PATH =
         NullablePathProperty.newBuilder("detect.project.inspector.path")
             .setInfo("Project Inspector Path", DetectPropertyFromVersion.VERSION_8_1_0)
             .setHelp(
                 "Use this property to point Detect to a local Project Inspector zip file, instead of the default Project Inspector zip file that Detect downloads from the binary repository. You need to ensure the version is compatible (the same major version that Detect downloads by default)."
             )
-            .setGroups(DetectGroup.PROJECT_INSPECTOR, DetectGroup.GLOBAL)
+            .setGroups(DetectGroup.PROJECT_INSPECTOR, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
             .build();
 
@@ -381,7 +380,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT_INSPECTOR, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
             .build();
-
 
     // TODO: Consider detect.blackduck.signature.scanner.search=COPYRIGHT,LICENSE,ALL,NONE
     public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH =
