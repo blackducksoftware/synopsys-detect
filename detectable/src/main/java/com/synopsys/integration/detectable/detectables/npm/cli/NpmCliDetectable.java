@@ -34,7 +34,7 @@ public class NpmCliDetectable extends Detectable {
         FileFinder fileFinder,
         NpmResolver npmResolver,
         NpmCliExtractor npmCliExtractor,
-        NpmCliExtractorOptions npmCliExtractorOptions
+        NpmCliExtractorOptions npmCliExtractorOptions //TODO- should not take in options
     ) {
         super(environment);
         this.fileFinder = fileFinder;
@@ -69,7 +69,7 @@ public class NpmCliDetectable extends Detectable {
         return npmCliExtractor.extract(
             environment.getDirectory(),
             npmExe,
-            npmCliExtractorOptions.getNpmArguments().orElse(null),
+            npmCliExtractorOptions.getNpmArguments().orElse(null), //TODO- should be passed into extractor constructor
             packageJson
         );
     }

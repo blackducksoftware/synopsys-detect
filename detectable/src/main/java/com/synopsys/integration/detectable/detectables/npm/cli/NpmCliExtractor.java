@@ -34,6 +34,7 @@ public class NpmCliExtractor {
     private final NpmCliParser npmCliParser;
     private final Gson gson;
     private final ToolVersionLogger toolVersionLogger;
+    //TODO- should take in npm additional arguments
 
     public NpmCliExtractor(DetectableExecutableRunner executableRunner, NpmCliParser npmCliParser, Gson gson, ToolVersionLogger toolVersionLogger) {
         this.executableRunner = executableRunner;
@@ -51,6 +52,7 @@ public class NpmCliExtractor {
             return new Extraction.Builder().exception(e).build();
         }
 
+        //TODO- should move to a command runner
         List<String> exeArgs = new ArrayList<>();
         exeArgs.add("ls");
         exeArgs.add("-json");
@@ -65,6 +67,8 @@ public class NpmCliExtractor {
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
+        //TODO- end region: command runner
+
         String standardOutput = npmLsOutput.getStandardOutput();
         String errorOutput = npmLsOutput.getErrorOutput();
         if (StringUtils.isNotBlank(errorOutput)) {
@@ -84,6 +88,7 @@ public class NpmCliExtractor {
         }
     }
 
+    //TODO- potentially move to a parser class
     private PackageJson parsePackageJson(File packageJson) throws IOException {
         String packageJsonText = FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8);
         return gson.fromJson(packageJsonText, PackageJson.class);

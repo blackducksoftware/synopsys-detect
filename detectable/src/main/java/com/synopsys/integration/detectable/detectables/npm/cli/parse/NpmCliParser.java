@@ -35,6 +35,7 @@ public class NpmCliParser {
     private final ExternalIdFactory externalIdFactory;
     private final EnumListFilter<NpmDependencyType> npmDependencyTypeFilter;
 
+    //TODO- make this class a transformer, extract out parsing into a parser class
     public NpmCliParser(ExternalIdFactory externalIdFactory, EnumListFilter<NpmDependencyType> npmDependencyTypeFilter) {
         this.externalIdFactory = externalIdFactory;
         this.npmDependencyTypeFilter = npmDependencyTypeFilter;
@@ -51,7 +52,9 @@ public class NpmCliParser {
     }
 
     public NpmPackagerResult convertNpmJsonFileToCodeLocation(String npmLsOutput, PackageJson packageJson) {
-        JsonObject npmJson = JsonParser.parseString(npmLsOutput).getAsJsonObject();
+        JsonObject npmJson = JsonParser.parseString(npmLsOutput).getAsJsonObject(); //TODO- maybe move this to a parser?
+
+        // start region: transformer work (JsonObject -> DependencyGraph)
         DependencyGraph graph = new BasicDependencyGraph();
 
         JsonElement projectNameElement = npmJson.getAsJsonPrimitive(JSON_NAME);
