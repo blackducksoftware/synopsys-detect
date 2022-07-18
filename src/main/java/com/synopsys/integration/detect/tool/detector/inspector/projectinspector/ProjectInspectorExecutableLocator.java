@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors.projectinspector;
+package com.synopsys.integration.detect.tool.detector.inspector.projectinspector;
 
 import java.io.File;
 

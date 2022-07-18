@@ -8,7 +8,7 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspector.DockerInspectorInstaller;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DockerAirGapCreator {

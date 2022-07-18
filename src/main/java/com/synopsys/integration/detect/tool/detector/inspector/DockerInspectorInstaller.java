@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors;
+package com.synopsys.integration.detect.tool.detector.inspector;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,8 @@ public class DockerInspectorInstaller {
 
     public File installJar(File dockerDirectory, Optional<String> dockerVersion) throws IntegrationException, IOException, DetectUserFriendlyException {
         logger.info("Determining the location of the Docker inspector.");
-        String location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL,
+        String location = artifactResolver.resolveArtifactLocation(
+            ArtifactoryConstants.ARTIFACTORY_URL,
             ArtifactoryConstants.DOCKER_INSPECTOR_REPO,
             ArtifactoryConstants.DOCKER_INSPECTOR_PROPERTY,
             dockerVersion.orElse(""),

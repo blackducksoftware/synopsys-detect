@@ -15,19 +15,21 @@ import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.ArtifactoryNugetInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorExecutableLocator;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.OnlineNugetInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.AirgapProjectInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ArtifactoryProjectInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.OnlineProjectInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ProjectInspectorExecutableLocator;
+import com.synopsys.integration.detect.tool.detector.inspector.ArtifactoryDockerInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspector.ArtifactoryGradleInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspector.ArtifactoryZipInstaller;
+import com.synopsys.integration.detect.tool.detector.inspector.DockerInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspector.LocalPipInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspector.nuget.AirgapNugetInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspector.nuget.ArtifactoryNugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspector.nuget.NugetInspectorExecutableLocator;
+import com.synopsys.integration.detect.tool.detector.inspector.nuget.OnlineNugetInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.AirgapProjectInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.OnlineProjectInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.ProjectInspectorExecutableLocator;
+import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.installer.ArtifactoryProjectInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.installer.LocalProjectInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.installer.ProjectInspectorInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -37,6 +39,7 @@ import com.synopsys.integration.detectable.detectable.inspector.ProjectInspector
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
+import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
 
 import freemarker.template.Configuration;
@@ -88,7 +91,7 @@ public class DetectorFactory {
             gradleInspectorResolver(),
             nugetInspectorResolver(detectInfo),
             pipInspectorResolver(),
-            projectInspectorResolver(detectInfo)
+            projectInspectorResolver(detectInfo, detectableOptionFactory.createProjectInspectorOptions())
         );
     }
 
@@ -132,19 +135,31 @@ public class DetectorFactory {
         return resolver;
     }
 
-    private ProjectInspectorResolver projectInspectorResolver(DetectInfo detectInfo) {
+    private ProjectInspectorResolver projectInspectorResolver(DetectInfo detectInfo, ProjectInspectorOptions projectInspectorOptions) {
         ProjectInspectorExecutableLocator projectInspectorExecutableLocator = new ProjectInspectorExecutableLocator(detectInfo);
-
         Optional<File> projectInspectorAirgapPath = airGapInspectorPaths.getProjectInspectorAirGapFile();
         if (projectInspectorAirgapPath.isPresent()) {
             return new AirgapProjectInspectorResolver(airGapInspectorPaths, projectInspectorExecutableLocator, detectInfo);
         } else {
-            ArtifactoryProjectInspectorInstaller artifactoryProjectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(
-                detectInfo,
-                artifactoryZipInstaller,
-                projectInspectorExecutableLocator
+            ProjectInspectorInstaller projectInspectorInstaller;
+            if (projectInspectorOptions.getProjectInspectorZipPath().isPresent()) {
+                projectInspectorInstaller = new LocalProjectInspectorInstaller(
+                    projectInspectorExecutableLocator,
+                    projectInspectorOptions.getProjectInspectorZipPath().get()
+                );
+            } else {
+                projectInspectorInstaller = new ArtifactoryProjectInspectorInstaller(
+                    detectInfo,
+                    artifactoryZipInstaller,
+                    projectInspectorExecutableLocator
+                );
+            }
+            return new OnlineProjectInspectorResolver(
+                projectInspectorInstaller,
+                directoryManager,
+                installedToolManager,
+                installedToolLocator
             );
-            return new OnlineProjectInspectorResolver(artifactoryProjectInspectorInstaller, directoryManager, installedToolManager, installedToolLocator);
         }
     }
 

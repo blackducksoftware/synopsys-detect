@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors;
+package com.synopsys.integration.detect.tool.detector.inspector;
 
 import java.io.File;
 import java.util.Optional;
