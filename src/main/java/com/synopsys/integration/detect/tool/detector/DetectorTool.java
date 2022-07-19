@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public class DetectorTool {
     private static final String TWO_TABS = "\t\t";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     private final DirectoryFinder directoryFinder;
     private final CodeLocationConverter codeLocationConverter;
     private final DetectorIssuePublisher detectorIssuePublisher;
@@ -128,12 +129,12 @@ public class DetectorTool {
         publishFileEvents(reports);
 
         detectorIssuePublisher.publishIssues(statusEventPublisher, reports);
-        checkForAccuracy(reports, requiredAccuracyTypes);
+        boolean accuracyMet = checkAccuracyMet(reports, requiredAccuracyTypes);
 
         Set<DetectorType> allFoundTypes = statusMap.keySet();
         publishMissingDetectorEvents(requiredDetectors, allFoundTypes);
 
-        Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(reports, directory);
+        Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(reports, directory, accuracyMet);
 
         DetectorEvaluationNameVersionDecider detectorEvaluationNameVersionDecider = new DetectorEvaluationNameVersionDecider(new DetectorNameVersionDecider());
         Optional<NameVersion> bomToolProjectNameVersion = detectorEvaluationNameVersionDecider.decideSuggestion(reports, projectDetector);
@@ -214,8 +215,12 @@ public class DetectorTool {
         return statusMap;
     }
 
-    private Map<CodeLocation, DetectCodeLocation> createCodeLocationMap(List<DetectorDirectoryReport> reports, File sourcePath) {
+    private Map<CodeLocation, DetectCodeLocation> createCodeLocationMap(List<DetectorDirectoryReport> reports, File sourcePath, boolean accuracyMet) {
         Map<CodeLocation, DetectCodeLocation> codeLocations = new HashMap<>();
+        if (!accuracyMet) {
+            logger.debug("Accuracy requirements were not met, so DetectorTool is suppressing any generated codelocations.");
+            return codeLocations;
+        }
         reports.forEach(report -> report.getExtractedDetectors().stream()
             .map(extracted -> codeLocationConverter.toDetectCodeLocation(
                 sourcePath,
@@ -255,14 +260,15 @@ public class DetectorTool {
 
     }
 
-    private void checkForAccuracy(List<DetectorDirectoryReport> reports, ExcludeIncludeEnumFilter<DetectorType> requiredAccuracyTypes) {
+    private boolean checkAccuracyMet(List<DetectorDirectoryReport> reports, ExcludeIncludeEnumFilter<DetectorType> requiredAccuracyTypes) {
         //TODO (detectors): Should this check not-extracted too? Here is the potential for remediation, was there an attempted one that met accuracy?
+        AtomicBoolean accuracyMet = new AtomicBoolean(true);
         for (DetectorDirectoryReport report : reports) {
             report.getExtractedDetectors().forEach(extracted -> {
                 if (requiredAccuracyTypes.shouldInclude(extracted.getRule().getDetectorType())) {
                     DetectableDefinition extractedDetectable = extracted.getExtractedDetectable().getDetectable();
                     if (extractedDetectable.getAccuracyType() != DetectableAccuracyType.HIGH) {
-                        //Accuracy not met!
+                        accuracyMet.set(false);
                         exitCodePublisher.publishExitCode(new ExitCodeRequest(ExitCodeType.FAILURE_ACCURACY_NOT_MET));
                         List<String> messages = new ArrayList<>();
 
@@ -274,6 +280,7 @@ public class DetectorTool {
                 }
             });
         }
+        return accuracyMet.get();
     }
 
     private void publishMissingDetectorEvents(List<DetectorType> requiredDetectors, Set<DetectorType> applicable) {
