@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
+package com.synopsys.integration.detect.tool.detector.inspector.projectinspector;
 
 import java.io.File;
 
@@ -9,30 +9,30 @@ import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
+import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
 import com.synopsys.integration.util.OperatingSystemType;
 
-public class AirgapNugetInspectorResolver implements NugetInspectorResolver {
-    public static final String LINUX_DIR = "linux";
-    public static final String WINDOWS_DIR = "windows";
+public class AirgapProjectInspectorResolver implements ProjectInspectorResolver {
+    public static final String LINUX_DIR = "linux64";
+    public static final String WINDOWS_DIR = "win64";
     public static final String MAC_DIR = "macosx";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final AirGapInspectorPaths airGapInspectorPaths;
-    private final NugetInspectorExecutableLocator nugetInspectorExecutableLocator;
+    private final ProjectInspectorExecutableLocator projectInspectorExecutableLocator;
     private final DetectInfo detectInfo;
 
     private boolean hasResolvedInspector;
     private ExecutableTarget inspector = null;
 
-    public AirgapNugetInspectorResolver(AirGapInspectorPaths airGapInspectorPaths, NugetInspectorExecutableLocator nugetInspectorExecutableLocator, DetectInfo detectInfo) {
+    public AirgapProjectInspectorResolver(AirGapInspectorPaths airGapInspectorPaths, ProjectInspectorExecutableLocator projectInspectorExecutableLocator, DetectInfo detectInfo) {
         this.airGapInspectorPaths = airGapInspectorPaths;
-        this.nugetInspectorExecutableLocator = nugetInspectorExecutableLocator;
+        this.projectInspectorExecutableLocator = projectInspectorExecutableLocator;
         this.detectInfo = detectInfo;
     }
 
     @Override
-    public ExecutableTarget resolveNugetInspector() throws DetectableException {
+    public ExecutableTarget resolveProjectInspector() throws DetectableException {
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
             inspector = resolve();
@@ -41,10 +41,10 @@ public class AirgapNugetInspectorResolver implements NugetInspectorResolver {
     }
 
     private ExecutableTarget resolve() throws DetectableException {
-        if (airGapInspectorPaths.getNugetInspectorAirGapFile().isPresent()) {
-            File airgapPath = airGapInspectorPaths.getNugetInspectorAirGapFile().get();
+        if (airGapInspectorPaths.getProjectInspectorAirGapFile().isPresent()) {
+            File airgapPath = airGapInspectorPaths.getProjectInspectorAirGapFile().get();
             File platformPath = new File(airgapPath, determinePlatformDirectory());
-            return ExecutableTarget.forFile(nugetInspectorExecutableLocator.findExecutable(platformPath));
+            return ExecutableTarget.forFile(projectInspectorExecutableLocator.findExecutable(platformPath));
         } else {
             logger.debug("Could not locate project inspector executable in Air Gap zip.");
             return null;

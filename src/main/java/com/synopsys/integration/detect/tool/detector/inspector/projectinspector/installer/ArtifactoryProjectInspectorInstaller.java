@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors.projectinspector;
+package com.synopsys.integration.detect.tool.detector.inspector.projectinspector.installer;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,13 +7,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detect.configuration.DetectInfo;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
+import com.synopsys.integration.detect.tool.detector.inspector.ArtifactoryZipInstaller;
+import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.ProjectInspectorExecutableLocator;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.OperatingSystemType;
 
-public class ArtifactoryProjectInspectorInstaller {
+public class ArtifactoryProjectInspectorInstaller implements ProjectInspectorInstaller {
     private final DetectInfo detectInfo;
     private final ArtifactoryZipInstaller artifactoryZipInstaller;
     private final ProjectInspectorExecutableLocator projectInspectorExecutableLocator;
@@ -27,6 +28,7 @@ public class ArtifactoryProjectInspectorInstaller {
         this.projectInspectorExecutableLocator = projectInspectorExecutableLocator;
     }
 
+    @Override
     @Nullable
     public File install(File directory) throws DetectableException {
         if (detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS) {
@@ -38,10 +40,9 @@ public class ArtifactoryProjectInspectorInstaller {
         }
     }
 
-    @Nullable
-    public File install(File installDirectory, String property) throws DetectableException {
-        File extractedZip = downloadZip(property, installDirectory);
-        return projectInspectorExecutableLocator.findExecutable(extractedZip);
+    @Override
+    public boolean shouldFallbackToPreviousInstall() {
+        return true;
     }
 
     @NotNull //Returns location of extracted zip or throws
@@ -59,4 +60,9 @@ public class ArtifactoryProjectInspectorInstaller {
         }
     }
 
+    @Nullable
+    private File install(File installDirectory, String property) throws DetectableException {
+        File extractedZip = downloadZip(property, installDirectory);
+        return projectInspectorExecutableLocator.findExecutable(extractedZip);
+    }
 }

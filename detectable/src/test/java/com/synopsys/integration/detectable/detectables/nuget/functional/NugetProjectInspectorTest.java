@@ -43,7 +43,7 @@ public class NugetProjectInspectorTest extends DetectableFunctionalTest {
         return detectableFactory.createNugetParseDetectable(
             detectableEnvironment,
             () -> ExecutableTarget.forFile(new File("inspector")),
-            new ProjectInspectorOptions(null)
+            new ProjectInspectorOptions(null, null)
         );
     }
 

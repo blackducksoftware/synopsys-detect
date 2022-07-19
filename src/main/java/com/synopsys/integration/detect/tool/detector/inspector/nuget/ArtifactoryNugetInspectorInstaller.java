@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
+package com.synopsys.integration.detect.tool.detector.inspector.nuget;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detect.configuration.DetectInfo;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
+import com.synopsys.integration.detect.tool.detector.inspector.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.exception.IntegrationException;
