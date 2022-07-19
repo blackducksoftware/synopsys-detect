@@ -6,23 +6,22 @@
 
 ## Overview
 
-[solution_name] has two detectors for Maven:
+[solution_name] has three detectors for Maven:
 
-* Maven Pom detector
-* Maven Parse detector
+* Maven CLI
+* Maven Wrapper CLI
+* Maven Project Inspector
 
-## Maven Pom detector
+## Maven CLI
 
-The Maven Pom detector discovers dependencies of Maven projects.
+The Maven CLI detector discovers dependencies of Maven projects by executing mvn commands.
 
-The Maven Pom detector attempts to run on your project if it finds a pom.xml file in the source directory (top level).
-
-The Maven Pom detector also requires either mvnw or mvn:
+The Maven CLI detector attempts to run on your project if it finds a pom.xml file in the source directory (top level). It requires either mvnw or mvn:
 
 1. [solution_name] looks for mvnw in the source directory (top level). You can override this by setting the Maven path property. If not overridden and not found:
 1. [solution_name] looks for mvn on $PATH.
 
-The Maven Pom detector runs `mvn dependency:tree` to get a list of the project's dependencies and then parses the output.
+The Maven CLI detector runs `mvn dependency:tree` to get a list of the project's dependencies and then parses the output.
 [solution_name] assumes the output of this command will be in Maven's default logging format. Customizations of Maven's logging format can break [solution_name]'s parsing.
 
 Scope inclusion/exclusion is performed during the parsing of the output of the `mvn dependency:tree` command.
@@ -59,6 +58,10 @@ From that output we can tell that C is part of the compile scope, but there is n
 graph C belongs. Its position in the test scope is irrelevant since test scope is being excluded. Rather than excluding C in this case,
 [solution_name] puts it under the placeholder "component" named *Additional_Components*.
 
-## Maven Parse detector
+## Maven Wrapper CLI
 
-The Maven parse detector uses Project Inspector, which currently does not support plugins.
+The Maven Wrapper CLI detector attempts to run on your project if it finds a pom.groovy file in the source directory (top level), and then operates exactly as the Maven CLI detector does.
+
+## Maven Project Inspector
+
+The Maven Project Inspector detector uses Project Inspector, which currently does not support plugins.
