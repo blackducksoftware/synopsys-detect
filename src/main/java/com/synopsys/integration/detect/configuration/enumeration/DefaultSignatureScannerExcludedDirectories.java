@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public enum DefaultSignatureScannerExcludedDirectories {
     DOT_GRADLE(".gradle"),
+    MACOSX("__MACOSX"),
     NODE_MODULES("node_modules"),
     GIT(".git"),
     SYNOPSYS(".synopsys");
