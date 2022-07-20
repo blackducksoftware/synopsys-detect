@@ -239,7 +239,7 @@ public class DetectConfigurationFactory {
         return directoryExclusionPatterns;
     }
 
-    private List<String> collectDetectorSearchDirectoryExclusions() {
+    public List<String> collectDetectorSearchDirectoryExclusions() {
         List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 
         if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {

@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.configuration;
 import static com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.factoryOf;
 import static com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.spyFactoryOf;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.common.util.Bdo;
+import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorSearchExcludedDirectories;
 import com.synopsys.integration.rest.credentials.Credentials;
 
 public class DetectConfigurationFactoryTests {
@@ -51,4 +53,14 @@ public class DetectConfigurationFactoryTests {
 
     //#endregion Parallel Processors
 
+    @Test
+    public void testDefaultSignatureScannerExcludedDirectories() {
+        DetectConfigurationFactory factory = factoryOf();
+
+        List<String> actualExcludedDirectories = factory.collectDetectorSearchDirectoryExclusions();
+
+        List<String> defaultExcludedDirectories = DefaultDetectorSearchExcludedDirectories.getDirectoryNames();
+
+        Assertions.assertEquals(defaultExcludedDirectories, actualExcludedDirectories);
+    }
 }
