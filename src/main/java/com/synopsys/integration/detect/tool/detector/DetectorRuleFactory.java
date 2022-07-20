@@ -12,6 +12,7 @@ import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
@@ -126,7 +127,9 @@ public class DetectorRuleFactory {
         rules.addDetector(DetectorType.DART, detector -> {
             detector.entryPoint(DartPubDepDetectable.class)
                 .search().defaults();
-        });
+            detector.entryPoint(DartPubSpecLockDetectable.class)
+                .search().defaults();
+        }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.GO_MOD, detector -> {
             detector.entryPoint(GoModCliDetectable.class)
