@@ -87,7 +87,8 @@ public class DetectorRuleFactory {
                 .search()
                 .noMaxDepth()
                 .nestable()
-                .notNestableBeneath(XcodeWorkspaceDetectable.class);
+                .notNestableBeneath(XcodeWorkspaceDetectable.class)
+                .notNestableBeneath(XcodeProjectDetectable.class);
         }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.SWIFT, detector -> {
