@@ -227,13 +227,15 @@ public class DetectorRuleFactory {
         });
 
         rules.addDetector(DetectorType.PIP, detector -> {
-            detector.entryPoint(PipenvDetectable.class)
-                .search().defaults();
-            detector.entryPoint(PipInspectorDetectable.class)
-                .search().defaults();
-            detector.entryPoint(PipfileLockDetectable.class)
-                .search().defaults();
-        }).yieldsTo(DetectorType.POETRY);
+                detector.entryPoint(PipenvDetectable.class)
+                    .search().defaults();
+                detector.entryPoint(PipInspectorDetectable.class)
+                    .search().defaults();
+                detector.entryPoint(PipfileLockDetectable.class)
+                    .search().defaults();
+            })
+            .allEntryPointsFallbackToNext()
+            .yieldsTo(DetectorType.POETRY);
 
         rules.addDetector(DetectorType.RUBYGEMS, detector -> {
             detector.entryPoint(GemlockDetectable.class)
