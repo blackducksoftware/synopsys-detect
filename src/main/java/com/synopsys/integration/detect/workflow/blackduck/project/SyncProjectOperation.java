@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
@@ -44,17 +43,7 @@ public class SyncProjectOperation {
             projectSyncOptions
         );
         boolean forceUpdate = projectSyncOptions.isForceProjectVersionUpdate();
-
-        //TODO- remove try-catch once there is a mechanism for validating property values against BD versions
-        try {
-            return projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
-        } catch (BlackDuckApiException e) {
-            if (projectSyncOptions.getCloneCategories().contains(ProjectCloneCategoriesType.DEEP_LICENSE)) {
-                String message = "Attempt to create or update project failed.  If you are using a Black Duck earlier than 2022.2.0, this may be because you passed DEEP_LICENSE as a project clone category, either explicitly or by passing ALL.";
-                throw new IntegrationException(message, e);
-            }
-            throw e;
-        }
+        return projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
     }
 
     public ProjectSyncModel createProjectSyncModel(
