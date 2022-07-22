@@ -1425,7 +1425,7 @@ public class DetectProperties {
             .setHelp(
                 "If set to true, Detect will update the Black Duck project and project version according to configured project and project version properties. (By default, these properties are only set on created projects / project versions.)",
                 "When set to true, the following properties will be updated on the Project: description (detect.project.description), tier (detect.project.tier), and project level adjustments (detect.project.level.adjustments). "
-                    + "The following properties will also be updated on the project version: notes (detect.project.version.notes), phase (detect.project.version.phase), distribution (detect.project.version.distribution), nickname (detect.project.version.nickname)."
+                    + "The following properties will also be updated on the project version: notes (detect.project.version.notes), phase (detect.project.version.phase), distribution (detect.project.version.distribution), nickname (detect.project.version.nickname), license (detect.project.version.license)."
             )
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
@@ -1433,7 +1433,7 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_PROJECT_VERSION_LICENSE =
         NullableStringProperty.newBuilder("detect.project.version.license")
             .setInfo("Project Version License", DetectPropertyFromVersion.VERSION_7_11_0)
-            .setHelp("An override of the license on created project versions.")
+            .setHelp("If project version license is specified, your project version will be created with this license. For updates, see detect.project.version.update.")
             .setExample("Apache License 2.0")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
