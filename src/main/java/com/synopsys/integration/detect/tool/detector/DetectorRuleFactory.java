@@ -12,6 +12,7 @@ import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
+import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
@@ -86,7 +87,8 @@ public class DetectorRuleFactory {
                 .search()
                 .noMaxDepth()
                 .nestable()
-                .notNestableBeneath(XcodeWorkspaceDetectable.class);
+                .notNestableBeneath(XcodeWorkspaceDetectable.class)
+                .notNestableBeneath(XcodeProjectDetectable.class);
         }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.SWIFT, detector -> {
@@ -126,7 +128,9 @@ public class DetectorRuleFactory {
         rules.addDetector(DetectorType.DART, detector -> {
             detector.entryPoint(DartPubDepDetectable.class)
                 .search().defaults();
-        });
+            detector.entryPoint(DartPubSpecLockDetectable.class)
+                .search().defaults();
+        }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.GO_MOD, detector -> {
             detector.entryPoint(GoModCliDetectable.class)
@@ -223,13 +227,15 @@ public class DetectorRuleFactory {
         });
 
         rules.addDetector(DetectorType.PIP, detector -> {
-            detector.entryPoint(PipenvDetectable.class)
-                .search().defaults();
-            detector.entryPoint(PipInspectorDetectable.class)
-                .search().defaults();
-            detector.entryPoint(PipfileLockDetectable.class)
-                .search().defaults();
-        }).yieldsTo(DetectorType.POETRY);
+                detector.entryPoint(PipenvDetectable.class)
+                    .search().defaults();
+                detector.entryPoint(PipInspectorDetectable.class)
+                    .search().defaults();
+                detector.entryPoint(PipfileLockDetectable.class)
+                    .search().defaults();
+            })
+            .allEntryPointsFallbackToNext()
+            .yieldsTo(DetectorType.POETRY);
 
         rules.addDetector(DetectorType.RUBYGEMS, detector -> {
             detector.entryPoint(GemlockDetectable.class)
