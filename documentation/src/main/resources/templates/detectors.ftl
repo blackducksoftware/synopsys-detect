@@ -28,14 +28,14 @@ if your accuracy requirements are not met.
 See [Detector cascade and accuracy](../downloadingandrunning/detectorcascade.md) for details.
 
 
-|Detector Type|Entry Point, Detector|Language|Forge|Requirements|Accuracy|
-|---|---|---|---|---|---|
+|Detector Type|Entry Point|Detector|Language|Forge|Requirements|Accuracy|
+|---|---|---|---|---|---|---|
 <#list entryPoints as entryPoint>
-|||||||
-|**Detector Type: ${entryPoint.detectorType}**||||||
-||Entry Point: ${entryPoint.name}|||||
+||||||||
+|**Detector Type: ${entryPoint.detectorType}**|||||||
+||Entry Point: ${entryPoint.name}||||||
 <#list entryPoint.detectables as detectable>
-|| ${detectable.index}. Detector: ${detectable.name} |${detectable.language!""}|${detectable.forge!""} | <#if detectable.requirementsMarkdown?has_content ><#noautoesc>${detectable.requirementsMarkdown!""}</#noautoesc></#if>|${detectable.accuracy!""}|
+||| ${detectable.index}. Detector: ${detectable.name} |${detectable.language!""}|${detectable.forge!""} | <#if detectable.requirementsMarkdown?has_content ><#noautoesc>${detectable.requirementsMarkdown!""}</#noautoesc></#if>|${detectable.accuracy!""}|
 </#list>
 </#list>
 
