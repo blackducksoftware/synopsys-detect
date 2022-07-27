@@ -10,6 +10,8 @@
 
 ### Resolved issues
 
+* (IDETECT-3419) Resolved an issue where the NuGet inspector cannot be found when a solution file cannot be found but multiple C# projects are found by Detect.
+
 ## Version 8.0.0
 
 ### New features
