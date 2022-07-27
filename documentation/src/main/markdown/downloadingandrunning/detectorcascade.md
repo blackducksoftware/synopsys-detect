@@ -48,10 +48,3 @@ To specify that you require accurate results from some (but not all) detector ty
 
 Detect evaluates whether or not the detector results it was able to generate meet the user's accuracy requirements after
 executing detectors and actual result accuracy is known. If not, it fails with the FAILURE_ACCURACY_NOT_MET exit code.
-
-
-
-
-
-
-
