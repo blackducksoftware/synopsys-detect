@@ -30,11 +30,13 @@ See [Detector cascade and accuracy](../downloadingandrunning/detectorcascade.md)
 
 |Detector Type|Entry Point|Detector|Language|Forge|Requirements|Accuracy|
 |---|---|---|---|---|---|---|
-<#list entryPoints as entryPoint>
-|**Detector Type: ${entryPoint.detectorType}**|||||||
+<#list detectorTypes as detectorType>
+|**Detector Type: ${detectorType.name}**|||||||
+<#list detectorType.entryPoints as entryPoint>
 ||Entry Point: ${entryPoint.name}||||||
 <#list entryPoint.detectables as detectable>
 ||| ${detectable.index}. Detector: ${detectable.name} |${detectable.language!""}|${detectable.forge!""} | <#if detectable.requirementsMarkdown?has_content ><#noautoesc>${detectable.requirementsMarkdown!""}</#noautoesc></#if>|${detectable.accuracy!""}|
+</#list>
 </#list>
 </#list>
 

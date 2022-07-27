@@ -3,12 +3,12 @@ package com.synopsys.integration.detect.docs.pages;
 import java.util.List;
 
 public class DetectorCascadePage {
-    private final List<DetectorEntryPoint> entryPoints;
+    private final List<DetectorType> detectorTypes;
 
-    public DetectorCascadePage(List<DetectorEntryPoint> entryPoints) {this.entryPoints = entryPoints;}
+    public DetectorCascadePage(List<DetectorType> detectorTypes) {this.detectorTypes = detectorTypes;}
 
-    public List<DetectorEntryPoint> getEntryPoints() {
-        return entryPoints;
+    public List<DetectorType> getDetectorTypes() {
+        return detectorTypes;
     }
 
 }

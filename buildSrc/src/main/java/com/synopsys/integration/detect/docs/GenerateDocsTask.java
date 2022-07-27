@@ -32,6 +32,7 @@ import com.synopsys.integration.detect.docs.pages.AdvancedPropertyTablePage;
 import com.synopsys.integration.detect.docs.pages.DeprecatedPropertyTablePage;
 import com.synopsys.integration.detect.docs.pages.DetectorCascadePage;
 import com.synopsys.integration.detect.docs.pages.DetectorEntryPoint;
+import com.synopsys.integration.detect.docs.pages.DetectorType;
 import com.synopsys.integration.detect.docs.pages.ExitCodePage;
 import com.synopsys.integration.detect.docs.pages.SimplePropertyTablePage;
 import com.synopsys.integration.exception.IntegrationException;
@@ -102,10 +103,10 @@ public class GenerateDocsTask extends DefaultTask {
 
     private void handleDetectors(TemplateProvider templateProvider, File baseOutputDir, HelpJsonData helpJson) throws IOException, TemplateException {
         File outputDir = new File(baseOutputDir, "components");
-
-        List<DetectorEntryPoint> entryPoints = new ArrayList<>();
-        helpJson.getDetectors().forEach(detector -> {
-            detector.getEntryPoints().forEach(entry -> {
+        List<DetectorType> detectorTypes = new ArrayList<>();
+        helpJson.getDetectors().forEach(detectorRule -> {
+            List<DetectorEntryPoint> entryPointsForRule = new ArrayList<>();
+            detectorRule.getEntryPoints().forEach(entry -> {
                 AtomicInteger detectableIndex = new AtomicInteger(1);
                 List<Detectable> detectables = entry.getDetectables().stream()
                     .map(detectable -> new Detectable(
@@ -117,12 +118,14 @@ public class GenerateDocsTask extends DefaultTask {
                         detectable.getDetectableAccuracy()
                     ))
                     .collect(Collectors.toList());
-                DetectorEntryPoint entryPoint = new DetectorEntryPoint(entry.getName(), detector.getDetectorType(), detectables);
-                entryPoints.add(entryPoint);
+                DetectorEntryPoint entryPoint = new DetectorEntryPoint(entry.getName(), detectables);
+                entryPointsForRule.add(entryPoint);
             });
+            DetectorType detectorType = new DetectorType(detectorRule.getDetectorType(), entryPointsForRule);
+            detectorTypes.add(detectorType);
         });
 
-        createMarkdownFromFreemarker(templateProvider, outputDir, "detectors", new DetectorCascadePage(entryPoints));
+        createMarkdownFromFreemarker(templateProvider, outputDir, "detectors", new DetectorCascadePage(detectorTypes));
     }
 
     private String encodePropertyLocation(String propertyName) {

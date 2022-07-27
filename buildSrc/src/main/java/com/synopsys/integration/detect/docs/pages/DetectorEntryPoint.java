@@ -6,12 +6,10 @@ import com.synopsys.integration.detect.docs.model.Detectable;
 
 public class DetectorEntryPoint {
     private final String name;
-    private final String detectorType;
     private final List<Detectable> detectables;
 
-    public DetectorEntryPoint(String name, String detectorType, List<Detectable> detectables) {
+    public DetectorEntryPoint(String name, List<Detectable> detectables) {
         this.name = name;
-        this.detectorType = detectorType;
         this.detectables = detectables;
     }
 
@@ -21,9 +19,5 @@ public class DetectorEntryPoint {
 
     public List<Detectable> getDetectables() {
         return detectables;
-    }
-
-    public String getDetectorType() {
-        return detectorType;
     }
 }
