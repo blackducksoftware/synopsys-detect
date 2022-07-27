@@ -53,8 +53,7 @@ public class OnlineNugetInspectorResolver implements NugetInspectorResolver {
             if (inspectorFile == null) {
                 // Remote installation has failed
                 logger.debug("Attempting to locate previous install of detect nuget inspector.");
-                return installedToolLocator.locateTool(INSPECTOR_NAME)
-                    .map(ExecutableTarget::forFile)
+                inspectorFile = installedToolLocator.locateTool(INSPECTOR_NAME)
                     .orElseThrow(() ->
                         new DetectableException("Unable to locate previous install of the detect nuget inspector.")
                     );
