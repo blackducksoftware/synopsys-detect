@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public class DirectoryEvaluator {
         Set<DetectorType> appliedInParent,
         Set<DetectableDefinition> extractedInParentDetectables
     ) {
-        logger.trace("Determining applicable detectors on the directory: {}", findResult.getDirectory());
+        logger.debug("Determining applicable detectors on the directory: {}", findResult.getDirectory());
 
         File directory = findResult.getDirectory();
         Set<DetectorType> appliedSoFar = new HashSet<>();
@@ -66,6 +67,7 @@ public class DirectoryEvaluator {
                 appliedSoFar.add(rule.getDetectorType());
 
                 EntryPointFoundResult foundEntryPoint = detectorRuleEvaluation.getFoundEntryPoint().get();
+                logCascadeResults(rule, foundEntryPoint);
                 foundEntryPoint.getEntryPointEvaluation().getEvaluatedDetectables().stream()
                     .filter(DetectableEvaluationResult::wasExtractionSuccessful)
                     .map(DetectableEvaluationResult::getDetectableDefinition)
@@ -93,6 +95,18 @@ public class DirectoryEvaluator {
         }
 
         return new DirectoryEvaluation(directory, findResult.getDepthFromRoot(), evaluations, children);
+    }
+
+    private void logCascadeResults(DetectorRule rule, EntryPointFoundResult foundEntryPoint) {
+        logger.debug(
+            "Detector Type {} Entry Point {} applied and was attempted",
+            rule.getDetectorType().toString(),
+            foundEntryPoint.getEntryPoint().getPrimary().getName()
+        );
+        List<String> detectableResultMsgs = foundEntryPoint.getEntryPointEvaluation().getEvaluatedDetectables().stream()
+            .map(r -> r.getDetectableDefinition().getName() + ": " + r.wasExtractionSuccessful())
+            .collect(Collectors.toList());
+        logger.debug("Detector results (\"true\" = succeeded): {}", detectableResultMsgs);
     }
 }
 

@@ -18,7 +18,7 @@ public class DirectoryFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Optional<DirectoryFindResult> findDirectories(File initialDirectory, DirectoryFinderOptions options, FileFinder fileFinder) {
-        logger.info("Searching for detectors. This may take awhile.");
+        logger.info("Searching for detectors.");
         return findDirectories(initialDirectory, 0, options, fileFinder);
     }
 
