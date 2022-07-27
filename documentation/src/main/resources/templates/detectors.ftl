@@ -31,8 +31,8 @@ See [Detector cascade and accuracy](../downloadingandrunning/detectorcascade.md)
 |Name|Language|Forge|Requirements|Accuracy|
 |---|---|---|---|---|
 <#list detectors as detector>
-|**${detector.detectorType}**|||||
+|**Detector Type: ${detector.detectorType}**|||||
 <#list detector.detectables as detectable>
-| ${detectable.name} |${detectable.language!""}|${detectable.forge!""} | <#if detectable.requirementsMarkdown?has_content ><#noautoesc>${detectable.requirementsMarkdown!""}</#noautoesc></#if>|${detectable.accuracy!""}|
+| Detector: ${detectable.name} |${detectable.language!""}|${detectable.forge!""} | <#if detectable.requirementsMarkdown?has_content ><#noautoesc>${detectable.requirementsMarkdown!""}</#noautoesc></#if>|${detectable.accuracy!""}|
 </#list>
 </#list>
