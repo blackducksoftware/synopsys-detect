@@ -105,8 +105,10 @@ public class GenerateDocsTask extends DefaultTask {
         List<DetectorEntryPoint> entryPoints = new ArrayList<>();
         helpJson.getDetectors().forEach(detector -> {
             detector.getEntryPoints().forEach(entry -> {
+                int detectableIndex = 1;
                 List<Detectable> detectables = entry.getDetectables().stream()
                     .map(detectable -> new Detectable(
+                        detectableIndex,
                         detectable.getDetectableName(),
                         detectable.getDetectableLanguage(),
                         detectable.getDetectableForge(),
