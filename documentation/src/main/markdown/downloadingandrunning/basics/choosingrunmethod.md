@@ -2,9 +2,9 @@
 
 There are three ways to run [solution_name]:
 
-1. Download and run a [solution_name] script.
-1. Download and run a [solution_name] .jar file.
-1. Run [solution_name] from within a Docker container.
+1. Download and run a [solution_name] [script](runningscript.md).
+1. Download and run a [solution_name] [.jar file](runningjar.md).
+1. Run [solution_name] from [within a Docker container](../runincontainer.md).
 
 The primary reason to run one of the [solution_name] scripts is that the scripts have an auto-update feature.
 By default, they always
