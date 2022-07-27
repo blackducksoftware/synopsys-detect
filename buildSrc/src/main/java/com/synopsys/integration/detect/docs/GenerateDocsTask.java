@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.gradle.api.tasks.TaskAction;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.docs.copied.HelpJsonData;
+import com.synopsys.integration.detect.docs.copied.HelpJsonDetectorRule;
 import com.synopsys.integration.detect.docs.copied.HelpJsonOption;
 import com.synopsys.integration.detect.docs.model.DeprecatedPropertyTableGroup;
 import com.synopsys.integration.detect.docs.model.Detectable;
@@ -103,24 +105,26 @@ public class GenerateDocsTask extends DefaultTask {
     private void handleDetectors(TemplateProvider templateProvider, File baseOutputDir, HelpJsonData helpJson) throws IOException, TemplateException {
         File outputDir = new File(baseOutputDir, "components");
         List<DetectorType> detectorTypes = new ArrayList<>();
-        helpJson.getDetectors().forEach(detectorRule -> {
-            List<DetectorEntryPoint> entryPointsForRule = new ArrayList<>();
-            detectorRule.getEntryPoints().forEach(entry -> {
-                List<Detectable> detectables = entry.getDetectables().stream()
-                    .map(detectable -> new Detectable(
-                        detectable.getDetectableName(),
-                        detectable.getDetectableLanguage(),
-                        detectable.getDetectableForge(),
-                        detectable.getDetectableRequirementsMarkdown(),
-                        detectable.getDetectableAccuracy()
-                    ))
-                    .collect(Collectors.toList());
-                DetectorEntryPoint entryPoint = new DetectorEntryPoint(entry.getName(), detectables);
-                entryPointsForRule.add(entryPoint);
+        helpJson.getDetectors().stream()
+            .sorted(Comparator.comparing(HelpJsonDetectorRule::getDetectorType))
+            .forEach(detectorRule -> {
+                List<DetectorEntryPoint> entryPointsForRule = new ArrayList<>();
+                detectorRule.getEntryPoints().forEach(entry -> {
+                    List<Detectable> detectables = entry.getDetectables().stream()
+                        .map(detectable -> new Detectable(
+                            detectable.getDetectableName(),
+                            detectable.getDetectableLanguage(),
+                            detectable.getDetectableForge(),
+                            detectable.getDetectableRequirementsMarkdown(),
+                            detectable.getDetectableAccuracy()
+                        ))
+                        .collect(Collectors.toList());
+                    DetectorEntryPoint entryPoint = new DetectorEntryPoint(entry.getName(), detectables);
+                    entryPointsForRule.add(entryPoint);
+                });
+                DetectorType detectorType = new DetectorType(detectorRule.getDetectorType(), entryPointsForRule);
+                detectorTypes.add(detectorType);
             });
-            DetectorType detectorType = new DetectorType(detectorRule.getDetectorType(), entryPointsForRule);
-            detectorTypes.add(detectorType);
-        });
 
         createMarkdownFromFreemarker(templateProvider, outputDir, "detectors", new DetectorCascadePage(detectorTypes));
     }

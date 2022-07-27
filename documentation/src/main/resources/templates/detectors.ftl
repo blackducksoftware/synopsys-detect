@@ -25,6 +25,8 @@ Finally, detectors perform their extraction to find your dependencies. This may 
 and provide a better way to get the best results possible, while ensuring that you are alterted (via a [solution_name] failure)
 if your accuracy requirements are not met.
 
+Each Detector Type has one or more Entry Points, but usually just one. When multipe Entry Points exist, they handle ............... TBD
+
 See [Detector cascade and accuracy](../downloadingandrunning/detectorcascade.md) for details.
 
 
