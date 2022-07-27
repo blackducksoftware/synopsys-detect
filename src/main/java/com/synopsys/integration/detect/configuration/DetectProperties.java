@@ -167,7 +167,7 @@ public class DetectProperties {
         AllNoneEnumListProperty.newBuilder("detect.accuracy.required", AllNoneEnum.ALL, DetectorType.class)
             .setInfo("Detector Accuracy Requirements", DetectPropertyFromVersion.VERSION_7_13_0)
             .setHelp(
-                "Detector types from which accurate results are required when a detector of that type applies.",
+                "Detector types from which HIGH accuracy results are required when a detector of that type applies.",
                 "The value of this property only affects detector types which apply to the source project. If a detector type applies, and is one of the accuracy-required detector types indicated by the value of this property, low accuracy results for that detector type are treated as a failure.  Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Detector cascade and accuracy</i> page for more details."
             )
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
