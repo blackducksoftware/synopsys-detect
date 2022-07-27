@@ -31,7 +31,6 @@ See [Detector cascade and accuracy](../downloadingandrunning/detectorcascade.md)
 |Detector Type|Entry Point|Detector|Language|Forge|Requirements|Accuracy|
 |---|---|---|---|---|---|---|
 <#list entryPoints as entryPoint>
-||||||||
 |**Detector Type: ${entryPoint.detectorType}**|||||||
 ||Entry Point: ${entryPoint.name}||||||
 <#list entryPoint.detectables as detectable>

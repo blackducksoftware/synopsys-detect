@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -105,10 +106,10 @@ public class GenerateDocsTask extends DefaultTask {
         List<DetectorEntryPoint> entryPoints = new ArrayList<>();
         helpJson.getDetectors().forEach(detector -> {
             detector.getEntryPoints().forEach(entry -> {
-                int detectableIndex = 1;
+                AtomicInteger detectableIndex = new AtomicInteger(1);
                 List<Detectable> detectables = entry.getDetectables().stream()
                     .map(detectable -> new Detectable(
-                        detectableIndex,
+                        detectableIndex.getAndIncrement(),
                         detectable.getDetectableName(),
                         detectable.getDetectableLanguage(),
                         detectable.getDetectableForge(),
