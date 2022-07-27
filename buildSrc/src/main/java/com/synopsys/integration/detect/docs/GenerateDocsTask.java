@@ -114,7 +114,7 @@ public class GenerateDocsTask extends DefaultTask {
                         detectable.getDetectableAccuracy()
                     ))
                     .collect(Collectors.toList());
-                DetectorEntryPoint entryPoint = new DetectorEntryPoint(detector.getDetectorType(), detectables);
+                DetectorEntryPoint entryPoint = new DetectorEntryPoint(entry.getName(), detector.getDetectorType(), detectables);
                 entryPoints.add(entryPoint);
             });
         });
