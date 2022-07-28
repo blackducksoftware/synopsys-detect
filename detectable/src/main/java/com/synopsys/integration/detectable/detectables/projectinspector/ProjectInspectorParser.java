@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.projectinspector;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,13 @@ public class ProjectInspectorParser {
 
     public List<CodeLocation> parse(String inspectionOutput) {
         ProjectInspectorOutput projectInspectorOutput = gson.fromJson(inspectionOutput, ProjectInspectorOutput.class);
-        // TODO: Could maybe use some null-safety around the presence of the 'modules' field
-        //  There should be more safety (at least @Nullable) in all the ProjectInspector model objects
+
+        // If modules is not present in the output then project inspector has not found any open source dependencies.
+        // Return an empty list so callers do not fail when examining the results.
+        if (projectInspectorOutput.modules == null) {
+            return Collections.emptyList();
+        }
+
         return projectInspectorOutput.modules.values().stream()
             .map(this::codeLocationFromModule)
             .collect(Collectors.toList());

@@ -33,4 +33,12 @@ public class NugetProjectInspectorParseTest {
 
         consoleApp3.hasParentChildRelationship("Newtonsoft.Json.Bson", "1.0.2", "Newtonsoft.Json", "12.0.1");
     }
+
+    @Test
+    void checkParsingWithNoResults() {
+        String inspectorOutput = FunctionalTestFiles.asString("/nuget/project_inspector/ProjectInspectorNoResults.json");
+        List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(inspectorOutput);
+
+        Assertions.assertEquals(0, codeLocations.size());
+    }
 }
