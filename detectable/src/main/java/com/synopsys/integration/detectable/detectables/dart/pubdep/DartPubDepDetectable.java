@@ -78,7 +78,7 @@ public class DartPubDepDetectable extends Detectable {
         if (!pubspecLock.isPresent() && pubspecYaml.isPresent()) {
             return new PubSpecLockNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         } else if (pubspecLock.isPresent() && !pubspecYaml.isPresent()) {
-            return new FileNotFoundDetectableResult(PUBSPEC_LOCK_FILENAME);
+            return new FileNotFoundDetectableResult(PUBSPEC_YAML_FILENAME);
         }
 
         dartExe = dartResolver.resolveDart();
