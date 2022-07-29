@@ -10,6 +10,7 @@
 ### Changed features
 
 * The default value of detect.project.clone.categories now includes DEEP_LICENSE (added to Black Duck in 2022.2.0), raising the minimum version of Black Duck for [solution_name] 8.0.0 to 2022.2.0.
+* The default value of detect.force.success.on.skip has changed to false, so by default [solution_name] will exit with return code FAILURE_MINIMUM_INTERVAL_NOT_MET (13) when a scan is skipped because the Black Duck minimum scan interval has not been met.
 * Dropped NONE as a supported value for the following properties: detect.bazel.workspace.rules, detect.included.detector.types, detect.tools.
 * Dropped ALL as a supported value for the following properties: detect.excluded.detector.types, detect.tools.excluded.
 * Removed support for parsing SBT report files, and removed properties detect.sbt.excluded.configurations, detect.sbt.included.configurations, and detect.sbt.report.search.depth.
