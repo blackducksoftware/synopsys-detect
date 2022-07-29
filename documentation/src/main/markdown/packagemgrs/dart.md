@@ -8,7 +8,7 @@
 
 [solution_name] has two detectors for Dart:
 
-* Dart PubDep Lock detector
+* Dart CLI detector
 * Dart PubSpec Lock detector
 
 Both detectors will run if they find the following files:
@@ -20,9 +20,9 @@ If [solution_name] cannot find a pubspec.lock file, but it finds a pubspec.yaml 
 
 Both detectors parse the pubspec.yaml file to determine project name and version information.
 
-The Dart PubSpec Lock detector parses the pubspec.lock file for dependency information.  Because the file does not indicate relationships between components, results from this detector will be less accurate than those from the Dart PubDep detector.
+The Dart PubSpec Lock detector parses the pubspec.lock file for dependency information.  Because the file does not indicate relationships between components, results from this detector will be less accurate than those from the Dart CLI detector.
 
-The Dart PubDep detector runs the command 'pub deps' (which requires a pubspec.lock file to be present), and then parses the command's output for dependency information.  The detector will first try to run the command using a dart executable (if found), but if it is unsuccessful because the target project requires the Flutter SDK then it will try using a flutter executable (if found).
+The Dart CLI detector runs the command 'pub deps' (which requires a pubspec.lock file to be present), and then parses the command's output for dependency information.  The detector will first try to run the command using a dart executable (if found), but if it is unsuccessful because the target project requires the Flutter SDK then it will try using a flutter executable (if found).
 
 You may specify the location of dart and flutter executables using the [detect.dart.path](../properties/detectors/dart.md#dart-executable) and [detect.flutter.path](../properties/detectors/dart.md#flutter-executable) properties, respectively.
 
