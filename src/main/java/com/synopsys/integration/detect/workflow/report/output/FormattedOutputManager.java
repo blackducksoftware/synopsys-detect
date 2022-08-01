@@ -170,7 +170,7 @@ public class FormattedOutputManager {
         detectorOutput.extracted = true;
         detectorOutput.status = status;
         detectorOutput.statusCode = DetectorStatusCode.PASSED;
-        detectorOutput.statusReason = "Passed.";
+        detectorOutput.statusReason = "Passed";
         detectorOutput.explanations = Bds.of(extracted.getExplanations()).map(Explanation::describeSelf).toList();
 
         Extraction extraction = extracted.getExtraction();

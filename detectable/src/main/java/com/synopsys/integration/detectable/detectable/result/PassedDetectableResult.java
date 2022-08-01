@@ -37,7 +37,7 @@ public class PassedDetectableResult implements DetectableResult {
 
     @Override
     public String toDescription() {
-        return "Passed.";
+        return "Passed";
     }
 
     @Override
