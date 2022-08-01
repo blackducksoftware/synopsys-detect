@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
+import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationNameGenerator {
     private static final int MAXIMUM_CODE_LOCATION_NAME_LENGTH = 250;
@@ -126,6 +127,16 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
     }
 
+    public String createAggregateStandardCodeLocationName(NameVersion projectNameVersion) {
+        // Add the user supplied prefix and suffix, if they exist, to the project name and project version name.
+        // Add Black Duck I/O Export at the end of the code location name, even after the user suffix. This
+        // indicates a package manager scan.
+        List<String> codeLocationNamePieces = Arrays.asList(projectNameVersion.getName(), projectNameVersion.getVersion());
+        List<String> codeLocationEndPieces = Collections.singletonList("Black Duck I/O Export");
+
+        return createCodeLocationName(prefix, codeLocationNamePieces, suffix, codeLocationEndPieces);
+    }
+
     private String createCodeLocationName(@Nullable String prefix, List<String> codeLocationNamePieces, @Nullable String suffix, List<String> codeLocationEndPieces) {
         String codeLocationName = createCommonName(prefix, codeLocationNamePieces, suffix, codeLocationEndPieces);
 
@@ -220,5 +231,4 @@ public class CodeLocationNameGenerator {
         nameCounters.put(baseName, nameIndex);
         return nameIndex;
     }
-
 }

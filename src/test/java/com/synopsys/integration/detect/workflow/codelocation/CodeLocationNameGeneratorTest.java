@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationNameGeneratorTest {
     @Test
@@ -150,5 +151,15 @@ public class CodeLocationNameGeneratorTest {
         assertEquals("myscanname scan 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN));
         assertEquals("myscanname bom", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
         assertEquals("myscanname bom 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
+    }
+
+    @Test
+    public void testCreateAggregateStandardCodeLocationName() {
+        NameVersion nameAndVersion = new NameVersion("project", "version");
+        CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.withPrefixSuffix("prefix", "suffix");
+
+        String codeLocationName = codeLocationNameGenerator.createAggregateStandardCodeLocationName(nameAndVersion);
+
+        assertEquals("prefix/project/version/suffix Black Duck I/O Export", codeLocationName);
     }
 }
