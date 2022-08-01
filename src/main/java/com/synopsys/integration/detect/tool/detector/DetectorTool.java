@@ -251,8 +251,9 @@ public class DetectorTool {
                     .forEach(detectorEventPublisher::publishCustomerFileOfInterest); //TODO (detectors): Is it weird i have to seperately publish extraction?
 
                 List<File> paths = extracted.getExtractedDetectable().getExtraction().getUnrecognizedPaths();
-                detectorEventPublisher.publishUnrecognizedPaths(new UnrecognizedPaths(extracted.getRule().getDetectorType().toString(), paths));
-
+                if ((paths != null) && (!paths.isEmpty())) {
+                    detectorEventPublisher.publishUnrecognizedPaths(new UnrecognizedPaths(extracted.getRule().getDetectorType().toString(), paths));
+                }
                 extracted.getAttemptedDetectables().forEach(attempted -> {
                     attempted.getRelevantFiles().forEach(detectorEventPublisher::publishCustomerFileOfInterest);
                 });
