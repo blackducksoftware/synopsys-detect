@@ -24,7 +24,7 @@ import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFound
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(name = "Dart PubDep Lock", language = "Dart", forge = "Dart", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Files: pubspec.yaml, pubspec.lock. Executable: dart, flutter")
+@DetectableInfo(name = "Dart CLI", language = "Dart", forge = "Dart", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Files: pubspec.yaml, pubspec.lock. Executable: dart, flutter")
 public class DartPubDepDetectable extends Detectable {
     public static final String PUBSPEC_YAML_FILENAME = "pubspec.yaml";
     public static final String PUBSPEC_LOCK_FILENAME = "pubspec.lock";
@@ -78,7 +78,7 @@ public class DartPubDepDetectable extends Detectable {
         if (!pubspecLock.isPresent() && pubspecYaml.isPresent()) {
             return new PubSpecLockNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         } else if (pubspecLock.isPresent() && !pubspecYaml.isPresent()) {
-            return new FileNotFoundDetectableResult(PUBSPEC_LOCK_FILENAME);
+            return new FileNotFoundDetectableResult(PUBSPEC_YAML_FILENAME);
         }
 
         dartExe = dartResolver.resolveDart();

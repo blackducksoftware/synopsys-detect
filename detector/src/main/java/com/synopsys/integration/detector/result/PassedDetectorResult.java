@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PassedDetectorResult extends DetectorResult {
     public PassedDetectorResult() {
-        this("Passed.");
+        this("Passed");
     }
 
     public PassedDetectorResult(@NotNull String description) {

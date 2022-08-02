@@ -22,17 +22,34 @@ Finally, detectors perform their extraction to find your dependencies. This may 
 ## [detector_cascade] and accuracy
 
 [detector_cascade] and accuracy capabilities together replace the previous (pre-[solution_name] 8) distinction between "build mode" and "buildless mode",
-and provide a better way to get the best results possible, while ensuring that you are alterted (via a [solution_name] failure)
+and aim to provide a more user-friendly way to get the best results possible, while ensuring that you are alterted (via a [solution_name] failure)
 if your accuracy requirements are not met.
 
-See [Detector cascade and accuracy](../downloadingandrunning/detectorcascade.md) for details.
+In the table below, most Detector Types have a single Entry Point. For those Detector Types, the Entry Point column can be ignored.
 
+There are a few Detector Types for which multiple Entry Points are defined.
+When multipe Entry Points are defined for a Detector Type,
+they exist to support the relatively rare need to define different nesting rules
+within the same Detector Type for different scenarios.
+(Nesting rules can usually be, and usually are, applied at the Detector Type level.)
+For example: Detect should ignore XCODE project files that are nested inside an XCODE project that it has already processed.
+Entry Points provide the mechanism by which more nuanced nesting rules such as this are applied.
 
-|Name|Language|Forge|Requirements|Accuracy|
-|---|---|---|---|---|
-<#list detectors as detector>
-|**${detector.detectorType}**|||||
-<#list detector.detectables as detectable>
-| ${detectable.name} |${detectable.language!""}|${detectable.forge!""} | <#if detectable.requirementsMarkdown?has_content ><#noautoesc>${detectable.requirementsMarkdown!""}</#noautoesc></#if>|${detectable.accuracy!""}|
+Each Entry Point has one or more Detectors. Detectors are attempted in the order listed until one applies and succeeds.
+If none succeed, [solution_name] proceeds to the next Entry Point (if there is one) for the Detector Type.
+
+See [Detector cascade and accuracy](../downloadingandrunning/detectorcascade.md) for additional information on [detector_cascade]..
+
+|Detector Type|Entry Point|Detector|Language|Forge|Requirements|Accuracy|
+|---|---|---|---|---|---|---|
+<#list detectorTypes as detectorType>
+|**${detectorType.name}**|||||||
+<#list detectorType.entryPoints as entryPoint>
+||${entryPoint.name}||||||
+<#list entryPoint.detectables as detectable>
+||| ${detectable.name} |${detectable.language!""}|${detectable.forge!""} | <#if detectable.requirementsMarkdown?has_content ><#noautoesc>${detectable.requirementsMarkdown!""}</#noautoesc></#if>|${detectable.accuracy!""}|
 </#list>
 </#list>
+</#list>
+
+

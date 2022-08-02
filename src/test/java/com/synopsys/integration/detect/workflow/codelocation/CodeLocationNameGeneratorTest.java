@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationNameGeneratorTest {
     @Test
@@ -50,7 +51,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testBomCodeLocationName() {
-        final String expected = "projectName/projectVersion/child/group/name/version npm/bom";
+        final String expected = "projectName/projectVersion/child/group/name/version npm/Black Duck I/O Export";
         // = path/externalId tool/type
 
         ExternalIdFactory factory = new ExternalIdFactory();
@@ -96,7 +97,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testLongCodeLocationNames() {
-        final String expected = "projectName/projectVersion/common-rest-common-...n-rest-common-rest/group/name/version npm/bom";
+        final String expected = "projectName/projectVersion/common-rest-common-...n-rest-common-rest/group/name/version npm/Black Duck I/O Export";
         ExternalIdFactory factory = new ExternalIdFactory();
         ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
         CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.noChanges();
@@ -133,7 +134,7 @@ public class CodeLocationNameGeneratorTest {
             "projectVersion",
             detectCodeLocation
         );
-        assertEquals("testPrefix/projectName/projectVersion/bbb/externalIdPath/testSuffix detect/bom", actual);
+        assertEquals("testPrefix/projectName/projectVersion/bbb/externalIdPath/testSuffix detect/Black Duck I/O Export", actual);
     }
 
     @Test
@@ -148,7 +149,17 @@ public class CodeLocationNameGeneratorTest {
 
         assertEquals("myscanname scan", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN));
         assertEquals("myscanname scan 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN));
-        assertEquals("myscanname bom", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
-        assertEquals("myscanname bom 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
+        assertEquals("myscanname Black Duck I/O Export", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
+        assertEquals("myscanname Black Duck I/O Export 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
+    }
+
+    @Test
+    public void testCreateAggregateStandardCodeLocationName() {
+        NameVersion nameAndVersion = new NameVersion("project", "version");
+        CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.withPrefixSuffix("prefix", "suffix");
+
+        String codeLocationName = codeLocationNameGenerator.createAggregateStandardCodeLocationName(nameAndVersion);
+
+        assertEquals("prefix/project/version/suffix " + CodeLocationNameType.BOM.getName(), codeLocationName);
     }
 }
