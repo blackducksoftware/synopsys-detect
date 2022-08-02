@@ -160,6 +160,6 @@ public class CodeLocationNameGeneratorTest {
 
         String codeLocationName = codeLocationNameGenerator.createAggregateStandardCodeLocationName(nameAndVersion);
 
-        assertEquals("prefix/project/version/suffix Black Duck I/O Export", codeLocationName);
+        assertEquals("prefix/project/version/suffix " + CodeLocationNameType.BOM.getName(), codeLocationName);
     }
 }

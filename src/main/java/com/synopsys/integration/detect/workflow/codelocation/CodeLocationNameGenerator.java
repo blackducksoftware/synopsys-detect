@@ -59,7 +59,7 @@ public class CodeLocationNameGenerator {
         String externalIdPiece = StringUtils.join(detectCodeLocation.getExternalId().getExternalIdPieces(), "/");
 
         // misc pieces
-        String codeLocationTypeString = CodeLocationNameType.BOM.toString().toLowerCase();
+        String codeLocationTypeString = CodeLocationNameType.BOM.getName();
         String bomToolTypeString = deriveCreator(detectCodeLocation).toLowerCase();
 
         List<String> bomCodeLocationNamePieces = new ArrayList<>();
@@ -75,7 +75,7 @@ public class CodeLocationNameGenerator {
     }
 
     public String createDockerScanCodeLocationName(File dockerTar, String projectName, String projectVersionName) {
-        String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
+        String codeLocationTypeString = CodeLocationNameType.SCAN.getName();
 
         String dockerTarFileName = DetectFileUtils.tryGetCanonicalName(dockerTar);
         List<String> fileCodeLocationNamePieces = Arrays.asList(dockerTarFileName, projectName, projectVersionName);
@@ -86,7 +86,7 @@ public class CodeLocationNameGenerator {
 
     public String createScanCodeLocationName(File sourcePath, File scanTargetPath, String projectName, String projectVersionName) {
         String pathPiece = cleanScanTargetPath(scanTargetPath, sourcePath);
-        String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
+        String codeLocationTypeString = CodeLocationNameType.SCAN.getName();
 
         List<String> fileCodeLocationNamePieces = Arrays.asList(pathPiece, projectName, projectVersionName);
         List<String> fileCodeLocationEndPieces = Collections.singletonList(codeLocationTypeString);
@@ -95,7 +95,7 @@ public class CodeLocationNameGenerator {
     }
 
     public String createBinaryScanCodeLocationName(File targetFile, String projectName, String projectVersionName) {
-        String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
+        String codeLocationTypeString = CodeLocationNameType.SCAN.getName();
 
         String canonicalFileName = DetectFileUtils.tryGetCanonicalName(targetFile);
         List<String> fileCodeLocationNamePieces = Arrays.asList(canonicalFileName, projectName, projectVersionName);
@@ -105,7 +105,7 @@ public class CodeLocationNameGenerator {
     }
 
     public String createImpactAnalysisCodeLocationName(File sourceDirectory, String projectName, String projectVersionName) {
-        String codeLocationTypeString = CodeLocationNameType.IMPACT_ANALYSIS.toString().toLowerCase();
+        String codeLocationTypeString = CodeLocationNameType.IMPACT_ANALYSIS.getName();
 
         String canonicalFileName = DetectFileUtils.tryGetCanonicalName(sourceDirectory);
         List<String> fileCodeLocationNamePieces = Arrays.asList(canonicalFileName, projectName, projectVersionName);
@@ -118,7 +118,7 @@ public class CodeLocationNameGenerator {
         File targetFile, String projectName, String projectVersionName, @Nullable String prefix,
         @Nullable String suffix
     ) {
-        String codeLocationTypeString = CodeLocationNameType.IAC.toString().toLowerCase();
+        String codeLocationTypeString = CodeLocationNameType.IAC.getName();
 
         String canonicalFileName = DetectFileUtils.tryGetCanonicalName(targetFile);
         List<String> fileCodeLocationNamePieces = Arrays.asList(canonicalFileName, projectName, projectVersionName);
@@ -132,7 +132,7 @@ public class CodeLocationNameGenerator {
         // Add Black Duck I/O Export at the end of the code location name, even after the user suffix. This
         // indicates a package manager scan.
         List<String> codeLocationNamePieces = Arrays.asList(projectNameVersion.getName(), projectNameVersion.getVersion());
-        List<String> codeLocationEndPieces = Collections.singletonList("Black Duck I/O Export");
+        List<String> codeLocationEndPieces = Collections.singletonList(CodeLocationNameType.BOM.getName());
 
         return createCodeLocationName(prefix, codeLocationNamePieces, suffix, codeLocationEndPieces);
     }
@@ -201,7 +201,7 @@ public class CodeLocationNameGenerator {
     }
 
     public String getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType codeLocationNameType) {
-        String baseName = codeLocationNameOverride + " " + codeLocationNameType.toString().toLowerCase();
+        String baseName = codeLocationNameOverride + " " + codeLocationNameType.getName();
         int nameIndex = deriveNameNumber(baseName);
         return deriveUniqueCodeLocationName(baseName, nameIndex);
     }
