@@ -4,7 +4,7 @@
 
 ### New features
 
-* [solution_name] will now retry (until timeout) BDIO2 uploads that fail with a non-fatal exit code.
+* [solution_name] will now retry (until timeout; see property detect.timeout) BDIO2 uploads that fail with a non-fatal exit code.
 * Added Detector cascade. Refer to [Detector cascade and accuracy](downloadingandrunning/detectorcascade.md) for more information.
 
 ### Changed features
