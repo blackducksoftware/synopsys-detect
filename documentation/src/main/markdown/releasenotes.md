@@ -29,7 +29,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * The search for files for binary scanning (when property `detect.binary.scan.file.name.patterns` is set) now excludes directories specified by property `detect.excluded.directories`.
 * The status.json field `detectors[n].descriptiveName` (which was simply a hyphen-separated concatenation of the `detectorType` and `detectorName` fields) has been removed.
 * There is no longer a distinction between extended and non-extended diagnostic zip files. All diagnostic zip files now include all relevant files.
-* The following properties (that were deprecated in [solution_name] 7.x) have been removed: blackduck.legacy.upload.enabled, `detect.bazel.dependency.type`,
+* The following properties (that were deprecated in [solution_name] 7.x) have been removed: `blackduck.legacy.upload.enabled`, `detect.bazel.dependency.type`,
 `detect.bdio2.enabled`, `detect.bom.aggregate.name`, `detect.bom.aggregate.remediation.mode`, `detect.conan.include.build.dependencies`, `detect.detector.buildless`,
 `detect.docker.path.required`, `detect.dotnet.path`, `detect.go.mod.enable.verification`, `detect.gradle.include.unresolved.configurations`, `detect.gradle.inspector.version`,
 `detect.lerna.include.private`, `detect.maven.buildless.legacy.mode`, `detect.maven.include.plugins`, `detect.npm.include.dev.dependencies`, `detect.npm.include.peer.dependencies`,
