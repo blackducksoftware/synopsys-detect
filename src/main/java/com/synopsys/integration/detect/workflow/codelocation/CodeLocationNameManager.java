@@ -19,7 +19,7 @@ public class CodeLocationNameManager {
             // The aggregate is exclusively used for the bdio and not the scans
             aggregateCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM);
         } else {
-            aggregateCodeLocationName = String.format("%s/%s Black Duck I/O Export", projectNameVersion.getName(), projectNameVersion.getVersion());
+            aggregateCodeLocationName = codeLocationNameGenerator.createAggregateStandardCodeLocationName(projectNameVersion);
         }
         return aggregateCodeLocationName;
     }
