@@ -11,6 +11,8 @@
 ### Resolved issues
 
 * (IDETECT-3419) Resolved an issue where the NuGet inspector cannot be found when a solution file cannot be found but multiple C# projects are found by Detect.
+* (IDETECT-3306) Resolved an issue where a NullPointerException would occur when project detector discovered no modules for a project.
+* (IDETECT-3308) The __MACOSX directory will now be ignored by default when determining which detectors are applicable for a project.
 
 ## Version 8.0.0
 
