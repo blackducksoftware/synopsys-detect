@@ -10,6 +10,7 @@
 ### Changed features
 
 * The default value of `detect.project.clone.categories` now includes DEEP_LICENSE (added to Black Duck in 2022.2.0), raising the minimum version of Black Duck for [solution_name] 8.0.0 to 2022.2.0.
+* The codelocation naming scheme has changed. You can use property `detect.project.codelocation.unmap` to unmap old codelocations from existing projects.
 * The default value of `detect.force.success.on.skip` has changed to false, so by default [solution_name] will exit with return code FAILURE_MINIMUM_INTERVAL_NOT_MET (13) when a scan is skipped because the Black Duck minimum scan interval has not been met.
 * By default, all detectors now include in their dependency graph all discovered
 dependencies, packages, and configurations, because the default for
