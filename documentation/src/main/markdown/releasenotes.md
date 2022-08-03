@@ -574,7 +574,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * [solution_name] stops if the Docker Inspector tool applies and [solution_name] is running on Windows.
 * [solution_name] configures Docker Inspector's working directories inside [solution_name]'s run directory.
 * [solution_name] requires and runs Docker Inspector version 9.
-* Moved the location to which [bash_script_name] downloads the [solution_name] .jar from /tmp to ~/synopsys-detect/download.
+* Moved the location to which detect.sh downloads the [solution_name] .jar from /tmp to ~/synopsys-detect/download.
 
 ### Resolved issues
 
