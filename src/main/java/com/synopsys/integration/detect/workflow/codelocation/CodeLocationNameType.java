@@ -1,10 +1,11 @@
 package com.synopsys.integration.detect.workflow.codelocation;
 
 public enum CodeLocationNameType {
-    BOM("Black Duck I/O Export"),
+    BOM("bom"),
     DOCKER("docker"),
-    IMPACT_ANALYSIS("impact_analysis"),
-    SCAN("scan"),
+    IMPACT_ANALYSIS("impact"),
+    SIGNATURE("signature"),
+    BINARY("binary"),
     IAC("iac");
 
     private final String name;
