@@ -34,7 +34,6 @@ For example, for a project with a remote URL of "https://github.com/blackducksof
 [solution_name] attempts to derive project and version information by running the Git executable. If that is not successful, it attempts to derive
 project and version information by parsing Git files.
 
-
 In [solution_name] versions 5.5.0 and higher, there is a new [solution_name] property for providing the
 path to the Git executable: detect.git.path.
 
