@@ -51,7 +51,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testBomCodeLocationName() {
-        final String expected = "projectName/projectVersion/child/group/name/version npm/bom";
+        final String expected = "projectName/projectVersion/child/group/name/version npm/bdio";
         // = path/externalId tool/type
 
         ExternalIdFactory factory = new ExternalIdFactory();
@@ -76,7 +76,7 @@ public class CodeLocationNameGeneratorTest {
         final String projectName =
             projectNameStart
                 + "really really really really really really really really really really really really really really really really really really really really really really really really really really long projectName";
-        final String expected = projectName + "/projectVersion/child/group/name/version npm/bom";
+        final String expected = projectName + "/projectVersion/child/group/name/version npm/bdio";
         // = path/externalId tool/type
 
         ExternalIdFactory factory = new ExternalIdFactory();
@@ -97,7 +97,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testLongCodeLocationNames() {
-        final String expected = "projectName/projectVersion/common-rest-common-...n-rest-common-rest/group/name/version npm/bom";
+        final String expected = "projectName/projectVersion/common-rest-common-...n-rest-common-rest/group/name/version npm/bdio";
         ExternalIdFactory factory = new ExternalIdFactory();
         ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
         CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.noChanges();
@@ -134,7 +134,7 @@ public class CodeLocationNameGeneratorTest {
             "projectVersion",
             detectCodeLocation
         );
-        assertEquals("testPrefix/projectName/projectVersion/bbb/externalIdPath/testSuffix detect/bom", actual);
+        assertEquals("testPrefix/projectName/projectVersion/bbb/externalIdPath/testSuffix detect/bdio", actual);
     }
 
     @Test
@@ -151,8 +151,8 @@ public class CodeLocationNameGeneratorTest {
         assertEquals("myscanname signature 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SIGNATURE));
         assertEquals("myscanname binary", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BINARY));
         assertEquals("myscanname binary 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BINARY));
-        assertEquals("myscanname bom", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
-        assertEquals("myscanname bom 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
+        assertEquals("myscanname bdio", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
+        assertEquals("myscanname bdio 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
     }
 
     @Test
