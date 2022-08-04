@@ -2,7 +2,6 @@ package com.synopsys.integration.detect.workflow.codelocation;
 
 public enum CodeLocationNameType {
     BOM("bdio"),
-    DOCKER("docker"),
     IMPACT_ANALYSIS("impact"),
     SIGNATURE("signature"),
     BINARY("binary"),
