@@ -75,7 +75,7 @@ public class CodeLocationNameGenerator {
     }
 
     public String createDockerScanCodeLocationName(File dockerTar, String projectName, String projectVersionName) {
-        String codeLocationTypeString = CodeLocationNameType.SCAN.getName();
+        String codeLocationTypeString = CodeLocationNameType.SIGNATURE.getName();
 
         String dockerTarFileName = DetectFileUtils.tryGetCanonicalName(dockerTar);
         List<String> fileCodeLocationNamePieces = Arrays.asList(dockerTarFileName, projectName, projectVersionName);
@@ -86,7 +86,7 @@ public class CodeLocationNameGenerator {
 
     public String createScanCodeLocationName(File sourcePath, File scanTargetPath, String projectName, String projectVersionName) {
         String pathPiece = cleanScanTargetPath(scanTargetPath, sourcePath);
-        String codeLocationTypeString = CodeLocationNameType.SCAN.getName();
+        String codeLocationTypeString = CodeLocationNameType.SIGNATURE.getName();
 
         List<String> fileCodeLocationNamePieces = Arrays.asList(pathPiece, projectName, projectVersionName);
         List<String> fileCodeLocationEndPieces = Collections.singletonList(codeLocationTypeString);
@@ -95,7 +95,7 @@ public class CodeLocationNameGenerator {
     }
 
     public String createBinaryScanCodeLocationName(File targetFile, String projectName, String projectVersionName) {
-        String codeLocationTypeString = CodeLocationNameType.SCAN.getName();
+        String codeLocationTypeString = CodeLocationNameType.BINARY.getName();
 
         String canonicalFileName = DetectFileUtils.tryGetCanonicalName(targetFile);
         List<String> fileCodeLocationNamePieces = Arrays.asList(canonicalFileName, projectName, projectVersionName);

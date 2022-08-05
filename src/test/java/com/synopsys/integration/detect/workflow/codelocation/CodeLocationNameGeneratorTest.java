@@ -18,7 +18,7 @@ import com.synopsys.integration.util.NameVersion;
 public class CodeLocationNameGeneratorTest {
     @Test
     public void testScanCodeLocationName() throws IOException {
-        final String expected = "common-rest/target/common-rest/2.5.1-SNAPSHOT scan";
+        final String expected = "common-rest/target/common-rest/2.5.1-SNAPSHOT signature";
         CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.noChanges();
 
         File sourcePath = mockCanonical("/Users/ekerwin/Documents/source/functional/common-rest");
@@ -38,7 +38,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testDockerScanCodeLocationName() {
-        final String expected = "dockerTar.tar.gz/common-rest/2.5.1-SNAPSHOT scan";
+        final String expected = "dockerTar.tar.gz/common-rest/2.5.1-SNAPSHOT signature";
         CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.noChanges();
 
         File dockerTar = new File("dockerTar.tar.gz");
@@ -51,7 +51,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testBomCodeLocationName() {
-        final String expected = "projectName/projectVersion/child/group/name/version npm/Black Duck I/O Export";
+        final String expected = "projectName/projectVersion/child/group/name/version npm/bdio";
         // = path/externalId tool/type
 
         ExternalIdFactory factory = new ExternalIdFactory();
@@ -76,7 +76,7 @@ public class CodeLocationNameGeneratorTest {
         final String projectName =
             projectNameStart
                 + "really really really really really really really really really really really really really really really really really really really really really really really really really really long projectName";
-        final String expected = projectName + "/projectVersion/child/group/name/version npm/bom";
+        final String expected = projectName + "/projectVersion/child/group/name/version npm/bdio";
         // = path/externalId tool/type
 
         ExternalIdFactory factory = new ExternalIdFactory();
@@ -97,7 +97,7 @@ public class CodeLocationNameGeneratorTest {
 
     @Test
     public void testLongCodeLocationNames() {
-        final String expected = "projectName/projectVersion/common-rest-common-...n-rest-common-rest/group/name/version npm/Black Duck I/O Export";
+        final String expected = "projectName/projectVersion/common-rest-common-...n-rest-common-rest/group/name/version npm/bdio";
         ExternalIdFactory factory = new ExternalIdFactory();
         ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
         CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.noChanges();
@@ -134,7 +134,7 @@ public class CodeLocationNameGeneratorTest {
             "projectVersion",
             detectCodeLocation
         );
-        assertEquals("testPrefix/projectName/projectVersion/bbb/externalIdPath/testSuffix detect/Black Duck I/O Export", actual);
+        assertEquals("testPrefix/projectName/projectVersion/bbb/externalIdPath/testSuffix detect/bdio", actual);
     }
 
     @Test
@@ -147,10 +147,12 @@ public class CodeLocationNameGeneratorTest {
         Mockito.when(detectCodeLocation.getCreatorName()).thenReturn(Optional.of("testCreator"));
         assertEquals("testCreator", codeLocationNameGenerator.deriveCreator(detectCodeLocation));
 
-        assertEquals("myscanname scan", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN));
-        assertEquals("myscanname scan 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN));
-        assertEquals("myscanname Black Duck I/O Export", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
-        assertEquals("myscanname Black Duck I/O Export 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
+        assertEquals("myscanname signature", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SIGNATURE));
+        assertEquals("myscanname signature 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SIGNATURE));
+        assertEquals("myscanname binary", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BINARY));
+        assertEquals("myscanname binary 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BINARY));
+        assertEquals("myscanname bdio", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
+        assertEquals("myscanname bdio 2", codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM));
     }
 
     @Test
