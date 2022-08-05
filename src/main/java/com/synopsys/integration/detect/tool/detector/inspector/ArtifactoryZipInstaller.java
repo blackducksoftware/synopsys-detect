@@ -56,13 +56,18 @@ public class ArtifactoryZipInstaller {
             try {
                 artifactResolver.downloadArtifact(zipFile, source);
             } catch (IOException e) {
+                logger.warn("Failed to download artifact: " + source);
                 throw new IntegrationException("Failed to download artifact: " + source, e);
             }
             logger.debug("Extracting inspector.");
             try {
                 DetectZipUtil.unzip(zipFile, inspectorFolder, Charset.defaultCharset());
             } catch (IOException e) {
-                logger.trace("Exception extracting:", e);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Exception extracting:", e);
+                } else {
+                    logger.warn("Failed to unzip artifact: " + zipFile);
+                }
                 throw new IntegrationException("Failed to unzip artifact: " + zipFile, e);
             }
             logger.debug("Unzipped, deleting downloaded zip.");

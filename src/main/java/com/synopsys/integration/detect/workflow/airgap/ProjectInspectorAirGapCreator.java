@@ -41,6 +41,7 @@ public class ProjectInspectorAirGapCreator {
             FileUtils.copyDirectory(downloaded, destination); //move 'destination/zipName' to 'destination'
             FileUtils.deleteDirectory(downloaded); //delete 'destination/zipName'
         } catch (DetectableException | IOException e) {
+            logger.warn("An error occurred installing project-inspector to the " + targetDirectory + " folder.");
             throw new DetectUserFriendlyException("An error occurred installing project-inspector to the " + targetDirectory + " folder.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
