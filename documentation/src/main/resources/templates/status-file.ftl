@@ -29,7 +29,6 @@ The file includes status codes, issues encountered and results produced. As addi
 "folder": The folder the detector applied to.
 "detectorType": The normalized detector type such as "GIT".
 "detectorName": A shorthand name of the detector such as "Git Cli".
-"descriptiveName": The long form name of the detector such as "GIT - Git Cli".
 "discoverable":  A boolean indicating whether or not the detector was able to discover project information.
 "extracted": A boolean indicating whether or not the detector was able to extract dependencies.
 "status": An enum indicating whether the detector was successful, failed, or deferred to another detector.
