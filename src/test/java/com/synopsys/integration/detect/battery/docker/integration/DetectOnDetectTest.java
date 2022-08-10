@@ -49,7 +49,7 @@ public class DetectOnDetectTest {
             dockerAssertions.bdioFiles(1); //7 code locations, 6 bdio, 1 signature scanner
 
             blackduckAssertions.hasCodeLocations(
-                "src/detect-on-detect-docker/happy-path scan"
+                "src/detect-on-detect-docker/happy-path signature"
             );
 
             blackduckAssertions.hasComponents("jackson-core");
