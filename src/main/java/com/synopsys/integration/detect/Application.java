@@ -208,6 +208,11 @@ public class Application implements ApplicationRunner {
             Gson formattedGson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
             String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo));
             FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
+            
+            File statusCopyFile = new File(directoryManager.getJsonStatusOutputDirectory(), "status.json");
+            logger.info("Creating copy of status file: {}", statusCopyFile);
+            FileUtils.writeStringToFile(statusCopyFile, json, Charset.defaultCharset());
+            
         } catch (Exception e) {
             logger.warn("There was a problem writing the status output file. The detect run was not affected.");
             logger.debug("The problem creating the status file was: ", e);

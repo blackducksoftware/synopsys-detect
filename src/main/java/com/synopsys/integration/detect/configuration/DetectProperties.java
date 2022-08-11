@@ -1706,6 +1706,16 @@ public class DetectProperties {
             .setGroups(DetectGroup.RAPID_SCAN, DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .build();
+    
+    public static final NullablePathProperty DETECT_STATUS_JSON_OUTPUT_PATH =
+            NullablePathProperty.newBuilder("detect.status.json.output.path")
+                .setInfo("Status.json Output Path", DetectPropertyFromVersion.VERSION_8_1_0)
+                .setHelp(
+                    "The directory to place a copy of the status.json file.",
+                    "If set, Detect will use the given directory to store a copy of the status.json file."
+                )
+                .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+                .build();
 
     //#endregion Active Properties
 
