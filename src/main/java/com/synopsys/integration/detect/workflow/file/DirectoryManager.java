@@ -192,7 +192,11 @@ public class DirectoryManager {
     }
     
     public File getJsonStatusOutputDirectory() {
-        return getRunDirectory(RunDirectory.STATUS_COPY);
+        File actualDirectory = runDirectories.get(RunDirectory.STATUS_COPY);
+        if (actualDirectory != null && !actualDirectory.exists()) {
+            actualDirectory.mkdirs();
+        }
+        return actualDirectory;
     }
 
     public File getExecutableOutputDirectory() {
