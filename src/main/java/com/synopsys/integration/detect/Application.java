@@ -209,7 +209,6 @@ public class Application implements ApplicationRunner {
             String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo));
             FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
             
-
             if (directoryManager.getJsonStatusOutputDirectory() != null) {
                 File statusCopyFile = new File(directoryManager.getJsonStatusOutputDirectory(), "status.json");
                 logger.info("Creating copy of status file: {}", statusCopyFile);
