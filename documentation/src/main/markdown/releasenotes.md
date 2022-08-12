@@ -14,6 +14,7 @@
 * (IDETECT-3306) Resolved an issue where a NullPointerException would occur when project inspector discovered no modules for a project.
 * (IDETECT-3308) The __MACOSX directory will now be ignored by default when determining which detectors are applicable for a project.
 * (IDETECT-3307) Warn when project inspector cannot be downloaded, installed, or found.
+* (IDETECT-3229) Added the detect.status.json.output.path to place a copy of the status.json in a specified directory location.
 
 ## Version 8.0.0
 

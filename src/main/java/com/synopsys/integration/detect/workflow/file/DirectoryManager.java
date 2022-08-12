@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ public class DirectoryManager {
         SCAN("scan"),
         SHARED("shared"),
         STATUS("status"),
+        STATUS_COPY("status-copy"),
         IAC("iac");
 
         private final String directoryName;
@@ -105,7 +107,10 @@ public class DirectoryManager {
 
         logger.info("Run directory: " + runDirectory.getAbsolutePath());
 
-        EnumSet.allOf(RunDirectory.class)
+        EnumSet.allOf(RunDirectory.class).stream()
+            // Do not initialize the directory to copy the status.json file into, we'll set 
+            // it later if the user specified the detect.status.json.output.path property.
+            .filter(it -> !it.equals(RunDirectory.STATUS_COPY))
             .forEach(it -> runDirectories.put(it, new File(runDirectory, it.getDirectoryName())));
 
         //overrides
@@ -120,6 +125,10 @@ public class DirectoryManager {
         directoryOptions.getImpactOutputPathOverride()
             .map(Path::toFile)
             .ifPresent(scanOutputPath -> runDirectories.put(RunDirectory.IMPACT_ANALYSIS, scanOutputPath));
+        
+        directoryOptions.getStatusJsonOutputPathOverride()
+            .map(Path::toFile)
+            .ifPresent(scanOutputPath -> runDirectories.put(RunDirectory.STATUS_COPY, scanOutputPath));
     }
 
     public File getUserHome() {
@@ -180,6 +189,14 @@ public class DirectoryManager {
 
     public File getStatusOutputDirectory() {
         return getRunDirectory(RunDirectory.STATUS);
+    }
+    
+    public File getJsonStatusOutputDirectory() {
+        File actualDirectory = runDirectories.get(RunDirectory.STATUS_COPY);
+        if (actualDirectory != null && !actualDirectory.exists()) {
+            actualDirectory.mkdirs();
+        }
+        return actualDirectory;
     }
 
     public File getExecutableOutputDirectory() {

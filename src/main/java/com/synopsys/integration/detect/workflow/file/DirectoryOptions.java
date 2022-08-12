@@ -13,14 +13,16 @@ public class DirectoryOptions {
     private final Path scanOutputPath;
     private final Path toolsOutputPath;
     private final Path impactOutputPath;
+    private final Path statusJsonOutputPath;
 
-    public DirectoryOptions(Path sourcePath, Path outputPath, Path bdioOutputPath, Path scanOutputPath, Path toolsOutputPath, Path impactOutputPath) throws IOException {
+    public DirectoryOptions(Path sourcePath, Path outputPath, Path bdioOutputPath, Path scanOutputPath, Path toolsOutputPath, Path impactOutputPath, Path statusJsonPath) throws IOException {
         this.sourcePath = toRealPath(sourcePath);
         this.outputPath = toRealPath(outputPath);
         this.bdioOutputPath = toRealPath(bdioOutputPath);
         this.scanOutputPath = toRealPath(scanOutputPath);
         this.toolsOutputPath = toRealPath(toolsOutputPath);
         this.impactOutputPath = toRealPath(impactOutputPath);
+        this.statusJsonOutputPath = toRealPath(statusJsonPath);
     }
 
     public Optional<Path> getSourcePathOverride() {
@@ -41,6 +43,10 @@ public class DirectoryOptions {
 
     public Optional<Path> getImpactOutputPathOverride() {
         return Optional.ofNullable(impactOutputPath);
+    }
+
+    public Optional<Path> getStatusJsonOutputPathOverride() {
+        return Optional.ofNullable(statusJsonOutputPath);
     }
 
     public Optional<Path> getToolsOutputPath() {

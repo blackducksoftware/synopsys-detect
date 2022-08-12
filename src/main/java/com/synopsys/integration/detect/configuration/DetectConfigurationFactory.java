@@ -226,7 +226,8 @@ public class DetectConfigurationFactory {
         Path scanPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_SCAN_OUTPUT_PATH);
         Path toolsOutputPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_TOOLS_OUTPUT_PATH);
         Path impactOutputPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH);
-        return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath, impactOutputPath);
+        Path statusJsonPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_STATUS_JSON_OUTPUT_PATH);
+        return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath, impactOutputPath, statusJsonPath);
     }
 
     public List<String> collectSignatureScannerDirectoryExclusions() {
