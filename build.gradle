@@ -58,15 +58,10 @@ subprojects {
 allprojects {
     dependencies {
         implementation "com.google.guava:guava:31.1-jre"
-        implementation "org.slf4j:slf4j-api:1.7.30"
-        implementation "org.apache.commons:commons-lang3:3.10" /* this could be managed by blackduck common */
-        implementation 'org.jetbrains:annotations:20.1.0'
-        implementation 'net.minidev:json-smart:2.4.7'
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
 
         implementation 'org.freemarker:freemarker:2.3.31'
         implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.13'
-        implementation 'com.google.code.gson:gson:2.8.9'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
