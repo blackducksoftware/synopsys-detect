@@ -1709,7 +1709,7 @@ public class DetectProperties {
     
     public static final NullablePathProperty DETECT_STATUS_JSON_OUTPUT_PATH =
             NullablePathProperty.newBuilder("detect.status.json.output.path")
-                .setInfo("Status.json Output Path", DetectPropertyFromVersion.VERSION_8_1_0)
+                .setInfo("Status JSON Output Path", DetectPropertyFromVersion.VERSION_8_1_0)
                 .setHelp(
                     "The directory to place a copy of the status.json file.",
                     "If set, Detect will use the given directory to store a copy of the status.json file."
