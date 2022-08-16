@@ -20,7 +20,7 @@ public class DetectToolFilter {
     private final boolean iacEnabled;
     private final RunDecision runDecision;
     private final BlackDuckDecision blackDuckDecision;
-    private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.DOCKER);
+    private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.DOCKER, DetectTool.SIGNATURE_SCAN);
 
     public DetectToolFilter(
         ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter,

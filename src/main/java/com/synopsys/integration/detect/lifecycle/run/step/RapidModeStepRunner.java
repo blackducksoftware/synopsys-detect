@@ -8,9 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
+import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
+import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.rest.HttpUrl;
@@ -19,19 +23,39 @@ import com.synopsys.integration.util.NameVersion;
 public class RapidModeStepRunner {
     private final OperationRunner operationRunner;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final StepHelper stepHelper;
 
-    public RapidModeStepRunner(OperationRunner operationRunner) {
+    public RapidModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper) {
         this.operationRunner = operationRunner;
+        this.stepHelper = stepHelper;
     }
 
-    public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult) throws OperationException {
+    public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult, DockerTargetData dockerTargetData) throws OperationException {
         operationRunner.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationRunner.findRapidScanConfig();
         rapidScanConfig.ifPresent(config -> logger.info("Found rapid scan config file: {}", config));
-        List<HttpUrl> rapidScanUrls = operationRunner.performRapidUpload(blackDuckRunData, bdioResult, rapidScanConfig.orElse(null));
-        List<DeveloperScanComponentResultView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, rapidScanUrls);
-        File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
-        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults);
-        operationRunner.publishRapidResults(jsonFile, summary);
+        
+        if (bdioResult.isNotEmpty()) {
+            List<HttpUrl> rapidScanUrls = operationRunner.performRapidUpload(blackDuckRunData, bdioResult, rapidScanConfig.orElse(null));
+            List<DeveloperScanComponentResultView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, rapidScanUrls);
+            
+            File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
+            RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults);
+            operationRunner.publishRapidResults(jsonFile, summary);
+        } else {
+            logger.debug("No BDIO results to upload. Skipping.");
+        }
+        
+        stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
+            logger.debug("Rapid scan signature scan detected.");
+            
+            SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationRunner);
+            SignatureScannerCodeLocationResult signatureScannerCodeLocationResult = signatureScanStepRunner.runSignatureScannerOnline(
+                    blackDuckRunData,
+                    projectVersion,
+                    dockerTargetData
+                );
+            String breakpoint = "";
+        });
     }
 }
