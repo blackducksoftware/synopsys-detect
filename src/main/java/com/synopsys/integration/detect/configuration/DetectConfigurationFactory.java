@@ -362,6 +362,7 @@ public class DetectConfigurationFactory {
         Path localScannerInstallPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH);
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH);
         Boolean treatSkippedScansAsSuccess = detectConfiguration.getValue(DetectProperties.DETECT_FORCE_SUCCESS_ON_SKIP);
+        Boolean isRapid = BlackduckScanMode.RAPID.equals(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE));
 
         return new BlackDuckSignatureScannerOptions(
             signatureScannerPaths,
@@ -378,7 +379,8 @@ public class DetectConfigurationFactory {
             licenseSearch,
             copyrightSearch,
             followSymLinks,
-            treatSkippedScansAsSuccess
+            treatSkippedScansAsSuccess,
+            isRapid
         );
     }
 
