@@ -69,14 +69,12 @@ public class Pipelines {
 
         Pipeline httpArchiveGithubUrlPipeline = (new PipelineBuilder(externalIdFactory, bazelCommandExecutor, bazelVariableSubstitutor, haskellCabalLibraryJsonProtoParser))
             .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(cc_.*library, deps(${detect.bazel.target}))"), false)
-            // The trailing parens may contain a hex number, or "null"; the pattern below handles either
-            .parseReplaceInEachLine(" \\([0-9a-z]+\\)", "")
-            .parseSplitEachLine("\\s+")
+            .parseSplitEachLine("\r?\n")
             .parseReplaceInEachLine("^@", "")
             .parseReplaceInEachLine("//.*", "")
             .parseReplaceInEachLine("^", "//external:")
             .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(maven_jar, ${input.item})", OUTPUT_FLAG, "xml"), true)
-            .parseValuesFromXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value")
+            .parseValuesFromXml("/query/rule[@class='http_archive']/list[@name='urls'][1]/string[@value]", "value")
             .transformToMavenDependencies()
             .build();
         availablePipelines.put(WorkspaceRule.HTTP_ARCHIVE, httpArchiveGithubUrlPipeline);
