@@ -8,6 +8,7 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Bazel
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepTransformColonSeparatedGavsToMaven;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepTransformGithubUrl;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
@@ -82,5 +83,9 @@ public class PipelineBuilder {
 
     public PipelineBuilder transformToHackageDependencies() {
         return setFinalStep(new FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage(haskellCabalLibraryJsonProtoParser, externalIdFactory));
+    }
+
+    public PipelineBuilder transformGithubUrl() {
+        return setFinalStep(new FinalStepTransformGithubUrl(externalIdFactory));
     }
 }

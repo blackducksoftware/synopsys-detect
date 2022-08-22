@@ -74,8 +74,8 @@ public class Pipelines {
             .parseReplaceInEachLine("//.*", "")
             .parseReplaceInEachLine("^", "//external:")
             .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(maven_jar, ${input.item})", OUTPUT_FLAG, "xml"), true)
-            .parseValuesFromXml("/query/rule[@class='http_archive']/list[@name='urls'][1]/string[@value]", "value")
-            .transformToMavenDependencies()
+            .parseValuesFromXml("/query/rule[@class='http_archive']/list[@name='urls'][1]/string", "value")
+            .transformGithubUrl()
             .build();
         availablePipelines.put(WorkspaceRule.HTTP_ARCHIVE, httpArchiveGithubUrlPipeline);
     }
