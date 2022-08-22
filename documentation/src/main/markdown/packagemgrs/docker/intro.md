@@ -113,7 +113,7 @@ include of all of [solution_name]'s requirements plus:
 * The environment must be configured so that files created by [docker_inspector_name] are readable by all. On Linux, this means an appropriate umask value (for example, 002 or 022 would work). On Windows, this means the
 Detect "output" directory (controlled by the [solution_name] property *detect.output.path*)
 must be readable by all.
-* In host mode: access to a Docker Engine versions 17.09 or higher.
+* In host mode: access to a Docker Engine versions 17.09 or higher running as root.
 * In container mode: you must start the [docker_inspector_name] container that meets the preceding requirements, and three container-based
 "image inspector" services. All four of these containers must share a mounted volume and be able to reach each other through HTTP GET operations using base URLs
 that you provide. For more information, refer to [Deploying](deployment.md).
