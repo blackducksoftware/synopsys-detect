@@ -1,8 +1,9 @@
 package com.synopsys.integration.detect.workflow.status;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -23,8 +24,10 @@ public class OperationSystem {
 
     private void publishOperationIssues(Operation operation) {
         operation.getException().ifPresent(exception -> {
-            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, operation.getName(), Arrays.asList(ExceptionUtility.summarizeException(exception))));
-        });
+            List<String> messages = new ArrayList<>();
+            messages.add(ExceptionUtility.summarizeException(exception));
+            operation.getTroubleshootingDetails().ifPresent(details -> messages.add(details));
+            statusEventPublisher.publishIssue(new DetectIssue(DetectIssueType.EXCEPTION, operation.getName(), messages));        });
     }
 
     public Operation startOperation(String operationName, OperationType type) {
