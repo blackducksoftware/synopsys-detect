@@ -1,10 +1,8 @@
 package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,15 +30,4 @@ public class FinalStepTransformGithubUrl implements FinalStep {
     }
     //        Dependency.FACTORY.createNameVersionDependency(Forge.GITHUB, declaration.getName(), declaration.getVersion());
 
-    public String getRepoName(String remoteUrlString) throws MalformedURLException {
-        String[] pieces = remoteUrlString.split("[/:]");
-        if (pieces.length >= 2) {
-            String organization = pieces[pieces.length - 2];
-            String repo = pieces[pieces.length - 1];
-            String name = String.format("%s/%s", organization, repo);
-            return StringUtils.removeEnd(StringUtils.removeStart(name, "/"), ".git");
-        } else {
-            throw new MalformedURLException("Failed to extract repository name from url. Not logging url for security.");
-        }
-    }
 }

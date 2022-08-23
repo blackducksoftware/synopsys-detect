@@ -16,6 +16,12 @@ public class GithubUrlParserTest {
     }
 
     @Test
+    void testOrganizationGflagsHttp() throws MalformedURLException {
+        GithubUrlParser parser = new GithubUrlParser("http://github.com/gflags/gflags/archive/v2.2.2.tar.gz");
+        Assertions.assertEquals("gflags", parser.getOrganization());
+    }
+
+    @Test
     void testRepoGflags() throws MalformedURLException {
         GithubUrlParser parser = new GithubUrlParser("https://github.com/gflags/gflags/archive/v2.2.2.tar.gz");
         Assertions.assertEquals("gflags", parser.getRepo());
@@ -55,5 +61,68 @@ public class GithubUrlParserTest {
     void testVersionGZip() throws MalformedURLException {
         GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/archive/v0.4.0.gz");
         Assertions.assertEquals("v0.4.0", parser.getVersion());
+    }
+
+    @Test
+    void testMissingArchive() {
+        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog");
+        try {
+            parser.getVersion();
+            Assertions.fail("Expected MalformedURLException");
+        } catch (MalformedURLException e) {
+            // expected
+        }
+    }
+
+    @Test
+    void testUnexpectedArchive() {
+        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/files/v0.4.0.tar.gz");
+        try {
+            parser.getVersion();
+            Assertions.fail("Expected MalformedURLException");
+        } catch (MalformedURLException e) {
+            // expected
+        }
+    }
+
+    @Test
+    void testMissingFilename() {
+        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/archive/");
+        try {
+            parser.getVersion();
+            Assertions.fail("Expected MalformedURLException");
+        } catch (MalformedURLException e) {
+            // expected
+        }
+    }
+
+    @Test
+    void testMissingExtension() throws MalformedURLException {
+        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/archive/v0.4.0");
+        try {
+            parser.getVersion();
+            Assertions.fail("Expected MalformedURLException");
+        } catch (MalformedURLException e) {
+            // expected
+        }
+    }
+
+    // "https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz"
+    @Test
+    void testOrganizationSkylib() throws MalformedURLException {
+        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz");
+        Assertions.assertEquals("bazelbuild", parser.getOrganization());
+    }
+
+    @Test
+    void testRepoSkylib() throws MalformedURLException {
+        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz");
+        Assertions.assertEquals("bazel-skylib", parser.getRepo());
+    }
+
+    @Test
+    void testVersionSkylib() throws MalformedURLException {
+        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz");
+        Assertions.assertEquals("2169ae1c374aab4a09aa90e65efe1a3aad4e279b", parser.getVersion());
     }
 }

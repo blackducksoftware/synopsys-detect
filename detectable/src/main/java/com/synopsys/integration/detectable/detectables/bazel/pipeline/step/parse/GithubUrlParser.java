@@ -33,8 +33,15 @@ public class GithubUrlParser {
     }
 
     public String getVersion() throws MalformedURLException {
-        int indexArchive = url.indexOf("/archive/") + 1;
-        int indexFilename = indexArchive + "archive/".length();
+        int indexSlashArchive = url.indexOf("/archive/");
+        if (indexSlashArchive < 0) {
+            throw new MalformedURLException("Missing archive between repo and filename");
+        }
+        int indexFilename = indexSlashArchive + "/archive/".length();
+        int totalLength = url.length();
+        if (indexFilename > totalLength) {
+            throw new MalformedURLException("Missing filename");
+        }
         String filename = url.substring(indexFilename);
         int indexExtension = getIndexExtension(filename);
         return filename.substring(0, indexExtension);
