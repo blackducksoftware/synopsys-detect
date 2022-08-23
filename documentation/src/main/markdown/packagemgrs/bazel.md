@@ -6,9 +6,10 @@
 
 ## Overview
 
-[solution_name] provides very limited support for Bazel projects.
+[solution_name] provides limited support for Bazel projects.
 
-[solution_name] supports dependencies specified in *maven_jar*, *maven_install*, and *haskell_cabal_library* workspace rules only.
+[solution_name] discovers dependencies specified in *maven_jar*, *maven_install*, *haskell_cabal_library* workspace rules.
+It also discovers library dependencies that have a github released artifact location (URL) specified in an *http_archive* workspace rule (see below for details).
 
 The [solution_name] Bazel tool attempts to run on your project if you provide a Bazel build target using the Bazel target property.
 
@@ -43,7 +44,7 @@ Then, it parses the group/artifact/version details from the values of the maven_
 
 The Bazel tool runs a bazel query on the given target to get a list of jar dependencies. On each jar dependency, the Bazel tool runs another bazel query to get its artifact details: group, artifact, and version.
 
-The following is an example using the equivalent commands that [solution_name] runs, but from the command line of how [solution_name]'s Bazel detector currently identifies components.
+The following is an example using the equivalent commands that [solution_name] runs, but from the command line, showing how [solution_name]'s Bazel detector currently identifies components.
 First, it gets a list of dependencies:
 ```
 $ bazel cquery 'filter("@.*:jar", deps(//:ProjectRunner))'
@@ -104,6 +105,49 @@ $ bazel cquery --noimplicit_deps 'kind(haskell_cabal_library, deps(//cat_hs/lib/
 
 It then uses Gson to parse the JSON output into a parse tree,
 and extracts the name and version from the corresponding rule attributes.
+
+
+## Processing for the *http_archive* workspace rule
+
+[solution_name] discovers library dependencies that have a github released artifact location (URL) specified in an *http_archive* workspace rule.
+
+One of the URLs provided in the *http_archve* rule must match one of the following two forms:
+
+* https://github.com/{organization}/{repo}/archive/{version}.{extension}
+* https://github.com/{organization}/{repo}/releases/download/{version}/{filename}.{extension}
+
+Supported extensions: .tar.gz, .zip, .gz
+
+The Bazel tool runs a bazel query on the given target to get a list of library dependencies. On each http_archive dependency in the output, the Bazel tool runs another bazel query to get its artifact details; specifically the github released artifact location (URL).
+
+The following is an example using the equivalent commands that [solution_name] runs, but from the command line, showing how [solution_name]'s Bazel detector currently identifies components.
+First, it gets a list of dependencies:
+```
+# bazel query 'kind(.*library, deps(//:bd_bazel))'
+Starting local Bazel server and connecting to it...
+@bazel_tools//third_party/def_parser:def_parser_lib
+@bazel_tools//tools/cpp:malloc
+@com_github_gflags_gflags//:gflags
+@glog//:glog
+Loading: 11 packages loaded
+```
+Then, it gets details for each http_archive dependency. It prepends //external: to the dependency name and runs a command similar to this:
+```
+# bazel query 'kind(.*, //external:com_github_gflags_gflags)' --output xml
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<query version="2">
+    <rule class="http_archive" location="/home/steve/src/bd_bazel/WORKSPACE:4:13" name="//external:com_github_gflags_gflags">
+        <string name="name" value="com_github_gflags_gflags"/>
+        <list name="urls">
+            <string value="https://github.com/gflags/gflags/archive/v2.2.2.tar.gz"/>
+        </list>
+        <string name="sha256" value="34af2f15cf7367513b352bdcd2493ab14ce43692d2dcd9dfc499492966c64dcf"/>
+        <string name="strip_prefix" value="gflags-2.2.2"/>
+    </rule>
+</query>
+Loading: 0 packages loaded
+```
+Finally, it parses the github dependency name (organization/repo) and version from each github released artifact location in the urls list.
 
 ## Examples
 
