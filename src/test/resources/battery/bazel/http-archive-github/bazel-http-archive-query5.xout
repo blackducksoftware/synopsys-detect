@@ -3,6 +3,7 @@
     <rule class="http_archive" location="/home/steve/src/bd_bazel/WORKSPACE:4:13" name="//external:com_github_gflags_gflags">
         <string name="name" value="com_github_gflags_gflags"/>
         <list name="urls">
+            <string value="https://somewhereelse.com/gflags/gflags/archive/v2.2.2.tar.gz"/>
             <string value="https://github.com/gflags/gflags/archive/v2.2.2.tar.gz"/>
         </list>
         <string name="sha256" value="34af2f15cf7367513b352bdcd2493ab14ce43692d2dcd9dfc499492966c64dcf"/>
