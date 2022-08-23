@@ -56,6 +56,7 @@ public class OperationWrapper {
             } else {
                 operation.error(e);
             }
+            throw new OperationException(e);
         } catch (Exception e) {
             // in some cases, the problem is buried in a nested exception 
             // (i.e. a "caused by" exception.  This will drill into that 
