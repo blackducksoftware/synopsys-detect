@@ -13,6 +13,10 @@ public class GithubUrlParser {
 
     public static final String ARCHIVE_SEGMENT = "/archive/";
     public static final String RELEASES_DOWNLOAD_SEGMENT = "/releases/download/";
+    public static final String TAR_GZ_EXTENSION = ".tar.gz";
+    public static final String ZIP_EXTENSION = ".zip";
+    public static final String GZ_EXTENSION = ".gz";
+    public static final String COLON_GITHUB_COM = "://github.com/";
 
     public String parseOrganization(String url) throws MalformedURLException {
         int indexOrganization = calculateIndexOrganization(url);
@@ -30,7 +34,7 @@ public class GithubUrlParser {
         int indexSlashArchive = url.indexOf(ARCHIVE_SEGMENT);
         int indexSlashReleasesDownload = url.indexOf(RELEASES_DOWNLOAD_SEGMENT);
         if ((indexSlashArchive < 0) && (indexSlashReleasesDownload < 0)) {
-            throw new MalformedURLException("Missing archive between repo and filename");
+            throw new MalformedURLException("Unable to find /archive/ or /releases/download/ in URL");
         }
         if (indexSlashArchive >= 0) {
             return parseVersionForArchive(url, indexSlashArchive);
@@ -75,11 +79,11 @@ public class GithubUrlParser {
     }
 
     private int calculateIndexOrganization(String url) throws MalformedURLException {
-        int indexPostSchemeColon = url.indexOf("://github.com/");
+        int indexPostSchemeColon = url.indexOf(COLON_GITHUB_COM);
         if (indexPostSchemeColon < 1) {
             throw new MalformedURLException("Missing scheme://github.com/ prefix");
         }
-        return indexPostSchemeColon + "://github.com/".length();
+        return indexPostSchemeColon + COLON_GITHUB_COM.length();
     }
 
     private int calculateIndexRepo(int indexOrganization, String organization) throws MalformedURLException {
@@ -87,14 +91,14 @@ public class GithubUrlParser {
     }
 
     private int calculateIndexExtension(String filename) throws MalformedURLException {
-        if (filename.endsWith(".tar.gz")) {
-            return filename.length() - ".tar.gz".length();
+        if (filename.endsWith(TAR_GZ_EXTENSION)) {
+            return filename.length() - TAR_GZ_EXTENSION.length();
         }
-        if (filename.endsWith(".zip")) {
-            return filename.length() - ".zip".length();
+        if (filename.endsWith(ZIP_EXTENSION)) {
+            return filename.length() - ZIP_EXTENSION.length();
         }
-        if (filename.endsWith(".gz")) {
-            return filename.length() - ".gz".length();
+        if (filename.endsWith(GZ_EXTENSION)) {
+            return filename.length() - GZ_EXTENSION.length();
         }
         throw new MalformedURLException("Unrecognized file extension");
     }
