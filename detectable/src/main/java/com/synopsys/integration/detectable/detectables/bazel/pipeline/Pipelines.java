@@ -73,7 +73,7 @@ public class Pipelines {
             .parseReplaceInEachLine("^@", "")
             .parseReplaceInEachLine("//.*", "")
             .parseReplaceInEachLine("^", "//external:")
-            .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(maven_jar, ${input.item})", OUTPUT_FLAG, "xml"), true)
+            .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(.*, ${input.item})", OUTPUT_FLAG, "xml"), true)
             // Puts all URLs from the urls list into the stream for the next step
             .parseValuesFromXml("/query/rule[@class='http_archive']/list[@name='urls']/string", "value")
             .transformGithubUrl()
