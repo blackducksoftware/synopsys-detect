@@ -56,6 +56,7 @@ public class OperationWrapper {
             } else {
                 operation.error(e);
             }
+            errorConsumer.accept(e);
             throw new OperationException(e);
         } catch (Exception e) {
             // in some cases, the problem is buried in a nested exception 
