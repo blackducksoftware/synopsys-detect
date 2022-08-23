@@ -125,4 +125,36 @@ public class GithubUrlParserTest {
         GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz");
         Assertions.assertEquals("2169ae1c374aab4a09aa90e65efe1a3aad4e279b", parser.getVersion());
     }
+
+    @Test
+    void testNonGithub() throws MalformedURLException {
+        GithubUrlParser parser = new GithubUrlParser("https://www.libsdl.org/release/SDL2-2.0.8.zip");
+        try {
+            parser.getOrganization();
+            Assertions.fail("Expected MalformedURLException");
+        } catch (MalformedURLException e) {
+            // expected
+        }
+        try {
+            parser.getRepo();
+            Assertions.fail("Expected MalformedURLException");
+        } catch (MalformedURLException e) {
+            // expected
+        }
+        try {
+            parser.getVersion();
+            Assertions.fail("Expected MalformedURLException");
+        } catch (MalformedURLException e) {
+            // expected
+        }
+    }
+
+    // "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz"
+    @Test
+    void testReleasesDownload() throws MalformedURLException {
+        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz");
+        Assertions.assertEquals("bazelbuild", parser.getOrganization());
+        Assertions.assertEquals("bazel-skylib", parser.getRepo());
+        Assertions.assertEquals("1.0.2", parser.getVersion());
+    }
 }
