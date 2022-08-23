@@ -58,6 +58,8 @@ public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
     private static boolean SHOULD_EXIT = true;
+    
+    private static String STATUS_JSON_FILE_NAME = "status.json";
 
     private final ConfigurableEnvironment environment;
 
@@ -202,12 +204,18 @@ public class Application implements ApplicationRunner {
     private void createStatusOutputFile(FormattedOutputManager formattedOutputManager, DetectInfo detectInfo, DirectoryManager directoryManager) {
         logger.info("");
         try {
-            File statusFile = new File(directoryManager.getStatusOutputDirectory(), "status.json");
+            File statusFile = new File(directoryManager.getStatusOutputDirectory(), STATUS_JSON_FILE_NAME);
             logger.info("Creating status file: {}", statusFile);
 
             Gson formattedGson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
             String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo));
             FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
+            
+            if (directoryManager.getJsonStatusOutputDirectory() != null) {
+                File statusCopyFile = new File(directoryManager.getJsonStatusOutputDirectory(), STATUS_JSON_FILE_NAME);
+                logger.info("Creating copy of status file: {}", statusCopyFile);
+                FileUtils.writeStringToFile(statusCopyFile, json, Charset.defaultCharset());  
+            }
         } catch (Exception e) {
             logger.warn("There was a problem writing the status output file. The detect run was not affected.");
             logger.debug("The problem creating the status file was: ", e);

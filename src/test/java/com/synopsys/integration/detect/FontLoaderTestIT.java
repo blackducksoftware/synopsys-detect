@@ -50,7 +50,7 @@ public class FontLoaderTestIT {
         InstalledToolManager installedToolManager = new InstalledToolManager();
         InstalledToolLocator installedToolLocator = new InstalledToolLocator(Paths.get(""), new Gson());
         DetectFontInstaller installer = new DetectFontInstaller(artifactResolver, installedToolManager, installedToolLocator);
-        DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, fontDirectory.toPath(), null);
+        DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, fontDirectory.toPath(), null, null);
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, DetectRunId.createDefault());
         detectFontLocator = new OnlineDetectFontLocator(installer, directoryManager);
     }
