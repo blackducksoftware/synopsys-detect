@@ -46,6 +46,16 @@ public class OperationWrapper {
             operation.error(e);
             errorConsumer.accept(e);
             throw e;
+        } catch (BlackDuckApiException e) {
+            String contentDetails = "Black Duck response body: " + e.getOriginalIntegrationRestException().getHttpResponseContent();
+            if (StringUtils.isNotBlank(contentDetails)) {
+                if (contentDetails.length() > MESSAGE_LENGTH_LIMIT) {
+                    contentDetails = contentDetails.substring(0, MESSAGE_LENGTH_LIMIT) + "...";
+                }
+                operation.error(e, contentDetails);
+            } else {
+                operation.error(e);
+            }
         } catch (Exception e) {
             // in some cases, the problem is buried in a nested exception 
             // (i.e. a "caused by" exception.  This will drill into that 
