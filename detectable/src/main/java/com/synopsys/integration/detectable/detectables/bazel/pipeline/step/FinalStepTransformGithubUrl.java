@@ -29,9 +29,9 @@ public class FinalStepTransformGithubUrl implements FinalStep {
         for (String githubUrl : input) {
             logger.debug("bazel githubUrl: {}", githubUrl);
             try {
-                String organization = githubUrlParser.getOrganization(githubUrl);
-                String repo = githubUrlParser.getRepo(githubUrl);
-                String version = githubUrlParser.getVersion(githubUrl);
+                String organization = githubUrlParser.parseOrganization(githubUrl);
+                String repo = githubUrlParser.parseRepo(githubUrl);
+                String version = githubUrlParser.parseVersion(githubUrl);
                 Dependency dep = Dependency.FACTORY.createNameVersionDependency(Forge.GITHUB, organization + "/" + repo, version);
                 dependencies.add(dep);
             } catch (MalformedURLException e) {

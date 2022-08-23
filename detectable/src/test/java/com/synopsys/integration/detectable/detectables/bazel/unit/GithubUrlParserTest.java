@@ -109,7 +109,7 @@ class GithubUrlParserTest {
     @Test
     void testMissingArchive() {
         try {
-            parser.getVersion("https://github.com/google/glog");
+            parser.parseVersion("https://github.com/google/glog");
             Assertions.fail("Expected MalformedURLException");
         } catch (MalformedURLException e) {
             // expected
@@ -119,7 +119,7 @@ class GithubUrlParserTest {
     @Test
     void testUnexpectedArchive() {
         try {
-            parser.getVersion("https://github.com/google/glog/files/v0.4.0.tar.gz");
+            parser.parseVersion("https://github.com/google/glog/files/v0.4.0.tar.gz");
             Assertions.fail("Expected MalformedURLException");
         } catch (MalformedURLException e) {
             // expected
@@ -129,7 +129,7 @@ class GithubUrlParserTest {
     @Test
     void testMissingFilename() {
         try {
-            parser.getVersion("https://github.com/google/glog/archive/");
+            parser.parseVersion("https://github.com/google/glog/archive/");
             Assertions.fail("Expected MalformedURLException");
         } catch (MalformedURLException e) {
             // expected
@@ -139,7 +139,7 @@ class GithubUrlParserTest {
     @Test
     void testMissingExtension() {
         try {
-            parser.getVersion("https://github.com/google/glog/archive/v0.4.0");
+            parser.parseVersion("https://github.com/google/glog/archive/v0.4.0");
             Assertions.fail("Expected MalformedURLException");
         } catch (MalformedURLException e) {
             // expected
@@ -150,19 +150,19 @@ class GithubUrlParserTest {
     void testNonGithub() {
         String url = "https://www.libsdl.org/release/SDL2-2.0.8.zip";
         try {
-            parser.getOrganization(url);
+            parser.parseOrganization(url);
             Assertions.fail("Expected MalformedURLException");
         } catch (MalformedURLException e) {
             // expected
         }
         try {
-            parser.getRepo(url);
+            parser.parseRepo(url);
             Assertions.fail("Expected MalformedURLException");
         } catch (MalformedURLException e) {
             // expected
         }
         try {
-            parser.getVersion(url);
+            parser.parseVersion(url);
             Assertions.fail("Expected MalformedURLException");
         } catch (MalformedURLException e) {
             // expected
@@ -170,8 +170,8 @@ class GithubUrlParserTest {
     }
 
     private void testValidUrl(String url, String organization, String repo, String version) throws MalformedURLException {
-        Assertions.assertEquals(organization, parser.getOrganization(url));
-        Assertions.assertEquals(repo, parser.getRepo(url));
-        Assertions.assertEquals(version, parser.getVersion(url));
+        Assertions.assertEquals(organization, parser.parseOrganization(url));
+        Assertions.assertEquals(repo, parser.parseRepo(url));
+        Assertions.assertEquals(version, parser.parseVersion(url));
     }
 }
