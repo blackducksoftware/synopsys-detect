@@ -17,6 +17,7 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Inter
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseReplaceInEachLine;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseSplitEach;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseValuesFromXml;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.parse.GithubUrlParser;
 
 public class PipelineBuilder {
     private final ExternalIdFactory externalIdFactory;
@@ -86,6 +87,6 @@ public class PipelineBuilder {
     }
 
     public PipelineBuilder transformGithubUrl() {
-        return setFinalStep(new FinalStepTransformGithubUrl(externalIdFactory));
+        return setFinalStep(new FinalStepTransformGithubUrl(externalIdFactory, new GithubUrlParser()));
     }
 }
