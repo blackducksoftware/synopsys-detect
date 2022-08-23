@@ -149,12 +149,29 @@ public class GithubUrlParserTest {
         }
     }
 
-    // "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz"
     @Test
     void testReleasesDownload() throws MalformedURLException {
         GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz");
         Assertions.assertEquals("bazelbuild", parser.getOrganization());
         Assertions.assertEquals("bazel-skylib", parser.getRepo());
         Assertions.assertEquals("1.0.2", parser.getVersion());
+    }
+
+    @Test
+    void testReleasesDownloadNodeJs() throws MalformedURLException {
+        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/rules_nodejs/releases/download/0.37.0/rules_nodejs-0.37.0.tar.gz");
+        Assertions.assertEquals("bazelbuild", parser.getOrganization());
+        Assertions.assertEquals("rules_nodejs", parser.getRepo());
+        Assertions.assertEquals("0.37.0", parser.getVersion());
+    }
+
+    // https://github.com/bazelbuild/bazel-toolchains/archive/92dd8a7.zip
+    @Test
+    void testShortShaVersion() throws MalformedURLException {
+        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-toolchains/archive/92dd8a7.zip");
+
+        Assertions.assertEquals("bazelbuild", parser.getOrganization());
+        Assertions.assertEquals("bazel-toolchains", parser.getRepo());
+        Assertions.assertEquals("92dd8a7", parser.getVersion());
     }
 }

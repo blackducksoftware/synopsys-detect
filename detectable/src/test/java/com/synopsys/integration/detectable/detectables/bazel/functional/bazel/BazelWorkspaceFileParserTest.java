@@ -22,7 +22,7 @@ class BazelWorkspaceFileParserTest {
         File workspaceFile = new File("src/test/resources/detectables/functional/bazel/WORKSPACE");
         List<String> workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
         BazelWorkspaceFileParser bazelWorkspaceFileParser = new BazelWorkspaceFileParser();
-        assertEquals(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL), bazelWorkspaceFileParser.parseWorkspaceRuleTypes(workspaceFileLines));
+        assertEquals(Sets.newHashSet(WorkspaceRule.HTTP_ARCHIVE, WorkspaceRule.MAVEN_INSTALL), bazelWorkspaceFileParser.parseWorkspaceRuleTypes(workspaceFileLines));
     }
 
     @Test
@@ -32,6 +32,6 @@ class BazelWorkspaceFileParserTest {
         BazelWorkspaceFileParser bazelWorkspaceFileParser = new BazelWorkspaceFileParser();
 
         Set<WorkspaceRule> rulesFound = bazelWorkspaceFileParser.parseWorkspaceRuleTypes(workspaceFileLines);
-        assertEquals(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL, WorkspaceRule.HASKELL_CABAL_LIBRARY), rulesFound);
+        assertEquals(Sets.newHashSet(WorkspaceRule.HTTP_ARCHIVE, WorkspaceRule.MAVEN_INSTALL, WorkspaceRule.HASKELL_CABAL_LIBRARY), rulesFound);
     }
 }
