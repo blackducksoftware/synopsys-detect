@@ -7,7 +7,7 @@
 ### Changed features
 
 * Added property detect.project.inspector.path to enable pointing [solution_name] to a local Project Inspector zip file.
-* Enhancements to error reporting to ensure that any exception will have the root cause reported in the error message for certain exception types. Also included in the reporting is the Black Duck response content of the transaction for api exceptions.
+* Enhancements to error reporting to ensure that any exception will have the root cause reported in the error message for certain exception types.
 
 ### Resolved issues
 
