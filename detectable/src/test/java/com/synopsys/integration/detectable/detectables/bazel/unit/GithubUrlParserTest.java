@@ -3,71 +3,113 @@ package com.synopsys.integration.detectable.detectables.bazel.unit;
 import java.net.MalformedURLException;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.parse.GithubUrlParser;
 
-public class GithubUrlParserTest {
+class GithubUrlParserTest {
+    private static GithubUrlParser parser;
 
-    @Test
-    void testOrganizationGflags() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/gflags/gflags/archive/v2.2.2.tar.gz");
-        Assertions.assertEquals("gflags", parser.getOrganization());
+    @BeforeAll
+    static void setup() {
+        parser = new GithubUrlParser();
     }
 
     @Test
-    void testOrganizationGflagsHttp() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("http://github.com/gflags/gflags/archive/v2.2.2.tar.gz");
-        Assertions.assertEquals("gflags", parser.getOrganization());
+    void testGflags() throws MalformedURLException {
+        testValidUrl(
+            "https://github.com/gflags/gflags/archive/v2.2.2.tar.gz",
+            "gflags",
+            "gflags",
+            "v2.2.2"
+        );
     }
 
     @Test
-    void testRepoGflags() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/gflags/gflags/archive/v2.2.2.tar.gz");
-        Assertions.assertEquals("gflags", parser.getRepo());
+    void testGlog() throws MalformedURLException {
+        testValidUrl(
+            "https://github.com/google/glog/archive/v0.4.0.tar.gz",
+            "google",
+            "glog",
+            "v0.4.0"
+        );
     }
 
     @Test
-    void testVersionGflags() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/gflags/gflags/archive/v2.2.2.tar.gz");
-        Assertions.assertEquals("v2.2.2", parser.getVersion());
+    void testHttp() throws MalformedURLException {
+        testValidUrl(
+            "http://github.com/gflags/gflags/archive/v2.2.2.tar.gz",
+            "gflags",
+            "gflags",
+            "v2.2.2"
+        );
     }
 
     @Test
-    void testOrganizationGlog() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/archive/v0.4.0.tar.gz");
-        Assertions.assertEquals("google", parser.getOrganization());
+    void testZip() throws MalformedURLException {
+        testValidUrl(
+            "https://github.com/google/glog/archive/v0.4.0.zip",
+            "google",
+            "glog",
+            "v0.4.0"
+        );
     }
 
     @Test
-    void testRepoGlog() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/archive/v0.4.0.tar.gz");
-        Assertions.assertEquals("glog", parser.getRepo());
+    void testGZip() throws MalformedURLException {
+        testValidUrl(
+            "https://github.com/google/glog/archive/v0.4.0.gz",
+            "google",
+            "glog",
+            "v0.4.0"
+        );
     }
 
     @Test
-    void testVersionGlog() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/archive/v0.4.0.tar.gz");
-        Assertions.assertEquals("v0.4.0", parser.getVersion());
+    void testSkylib() throws MalformedURLException {
+        testValidUrl(
+            "https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz",
+            "bazelbuild",
+            "bazel-skylib",
+            "2169ae1c374aab4a09aa90e65efe1a3aad4e279b"
+        );
     }
 
     @Test
-    void testVersionZip() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/archive/v0.4.0.zip");
-        Assertions.assertEquals("v0.4.0", parser.getVersion());
+    void testReleasesDownload() throws MalformedURLException {
+        testValidUrl(
+            "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz",
+            "bazelbuild",
+            "bazel-skylib",
+            "1.0.2"
+        );
     }
 
     @Test
-    void testVersionGZip() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/archive/v0.4.0.gz");
-        Assertions.assertEquals("v0.4.0", parser.getVersion());
+    void testReleasesDownloadNodeJs() throws MalformedURLException {
+        testValidUrl(
+            "https://github.com/bazelbuild/rules_nodejs/releases/download/0.37.0/rules_nodejs-0.37.0.tar.gz",
+            "bazelbuild",
+            "rules_nodejs",
+            "0.37.0"
+        );
+    }
+
+    @Test
+    void testShortShaVersion() throws MalformedURLException {
+        testValidUrl(
+            "https://github.com/bazelbuild/bazel-toolchains/archive/92dd8a7.zip",
+            "bazelbuild",
+            "bazel-toolchains",
+            "92dd8a7"
+        );
     }
 
     @Test
     void testMissingArchive() {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog");
         try {
-            parser.getVersion();
+            parser.getVersion("https://github.com/google/glog");
             Assertions.fail("Expected MalformedURLException");
         } catch (MalformedURLException e) {
             // expected
@@ -76,9 +118,8 @@ public class GithubUrlParserTest {
 
     @Test
     void testUnexpectedArchive() {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/files/v0.4.0.tar.gz");
         try {
-            parser.getVersion();
+            parser.getVersion("https://github.com/google/glog/files/v0.4.0.tar.gz");
             Assertions.fail("Expected MalformedURLException");
         } catch (MalformedURLException e) {
             // expected
@@ -87,9 +128,8 @@ public class GithubUrlParserTest {
 
     @Test
     void testMissingFilename() {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/archive/");
         try {
-            parser.getVersion();
+            parser.getVersion("https://github.com/google/glog/archive/");
             Assertions.fail("Expected MalformedURLException");
         } catch (MalformedURLException e) {
             // expected
@@ -97,52 +137,9 @@ public class GithubUrlParserTest {
     }
 
     @Test
-    void testMissingExtension() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/google/glog/archive/v0.4.0");
+    void testMissingExtension() {
         try {
-            parser.getVersion();
-            Assertions.fail("Expected MalformedURLException");
-        } catch (MalformedURLException e) {
-            // expected
-        }
-    }
-
-    // "https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz"
-    @Test
-    void testOrganizationSkylib() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz");
-        Assertions.assertEquals("bazelbuild", parser.getOrganization());
-    }
-
-    @Test
-    void testRepoSkylib() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz");
-        Assertions.assertEquals("bazel-skylib", parser.getRepo());
-    }
-
-    @Test
-    void testVersionSkylib() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-skylib/archive/2169ae1c374aab4a09aa90e65efe1a3aad4e279b.tar.gz");
-        Assertions.assertEquals("2169ae1c374aab4a09aa90e65efe1a3aad4e279b", parser.getVersion());
-    }
-
-    @Test
-    void testNonGithub() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://www.libsdl.org/release/SDL2-2.0.8.zip");
-        try {
-            parser.getOrganization();
-            Assertions.fail("Expected MalformedURLException");
-        } catch (MalformedURLException e) {
-            // expected
-        }
-        try {
-            parser.getRepo();
-            Assertions.fail("Expected MalformedURLException");
-        } catch (MalformedURLException e) {
-            // expected
-        }
-        try {
-            parser.getVersion();
+            parser.getVersion("https://github.com/google/glog/archive/v0.4.0");
             Assertions.fail("Expected MalformedURLException");
         } catch (MalformedURLException e) {
             // expected
@@ -150,28 +147,31 @@ public class GithubUrlParserTest {
     }
 
     @Test
-    void testReleasesDownload() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz");
-        Assertions.assertEquals("bazelbuild", parser.getOrganization());
-        Assertions.assertEquals("bazel-skylib", parser.getRepo());
-        Assertions.assertEquals("1.0.2", parser.getVersion());
+    void testNonGithub() {
+        String url = "https://www.libsdl.org/release/SDL2-2.0.8.zip";
+        try {
+            parser.getOrganization(url);
+            Assertions.fail("Expected MalformedURLException");
+        } catch (MalformedURLException e) {
+            // expected
+        }
+        try {
+            parser.getRepo(url);
+            Assertions.fail("Expected MalformedURLException");
+        } catch (MalformedURLException e) {
+            // expected
+        }
+        try {
+            parser.getVersion(url);
+            Assertions.fail("Expected MalformedURLException");
+        } catch (MalformedURLException e) {
+            // expected
+        }
     }
 
-    @Test
-    void testReleasesDownloadNodeJs() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/rules_nodejs/releases/download/0.37.0/rules_nodejs-0.37.0.tar.gz");
-        Assertions.assertEquals("bazelbuild", parser.getOrganization());
-        Assertions.assertEquals("rules_nodejs", parser.getRepo());
-        Assertions.assertEquals("0.37.0", parser.getVersion());
-    }
-
-    // https://github.com/bazelbuild/bazel-toolchains/archive/92dd8a7.zip
-    @Test
-    void testShortShaVersion() throws MalformedURLException {
-        GithubUrlParser parser = new GithubUrlParser("https://github.com/bazelbuild/bazel-toolchains/archive/92dd8a7.zip");
-
-        Assertions.assertEquals("bazelbuild", parser.getOrganization());
-        Assertions.assertEquals("bazel-toolchains", parser.getRepo());
-        Assertions.assertEquals("92dd8a7", parser.getVersion());
+    private void testValidUrl(String url, String organization, String repo, String version) throws MalformedURLException {
+        Assertions.assertEquals(organization, parser.getOrganization(url));
+        Assertions.assertEquals(repo, parser.getRepo(url));
+        Assertions.assertEquals(version, parser.getVersion(url));
     }
 }

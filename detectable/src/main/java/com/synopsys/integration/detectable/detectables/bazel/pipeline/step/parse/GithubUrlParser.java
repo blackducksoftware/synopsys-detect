@@ -5,35 +5,20 @@ import java.net.MalformedURLException;
 import org.jetbrains.annotations.NotNull;
 
 public class GithubUrlParser {
-    private final String url;
-
-    // "https://github.com/gflags/gflags/archive/v2.2.2.tar.gz"
-    // "https://github.com/google/glog/archive/v0.4.0.tar.gz"
-    public GithubUrlParser(String url) {
-        this.url = url;
+    public String getOrganization(String url) throws MalformedURLException {
+        int indexOrganization = getIndexOrganization(url);
+        return getOrganization(url, indexOrganization);
     }
 
-    public String getOrganization() throws MalformedURLException {
-        int indexOrganization = getIndexOrganization();
-        return getOrganization(indexOrganization);
-    }
-
-    @NotNull
-    private String getOrganization(int indexOrganization) {
-        String organizationRepoPath = url.substring(indexOrganization);
-        int indexSlashAfterOrganization = organizationRepoPath.indexOf('/');
-        return organizationRepoPath.substring(0, indexSlashAfterOrganization);
-    }
-
-    public String getRepo() throws MalformedURLException {
-        int indexRepo = getIndexRepo();
+    public String getRepo(String url) throws MalformedURLException {
+        int indexRepo = getIndexRepo(url);
         String repoEtc = url.substring(indexRepo);
         int slashAfterRepo = repoEtc.indexOf('/');
         return repoEtc.substring(0, slashAfterRepo);
     }
 
     // "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz"
-    public String getVersion() throws MalformedURLException {
+    public String getVersion(String url) throws MalformedURLException {
         int indexSlashArchive = url.indexOf("/archive/");
         int indexSlashReleasesDownload = url.indexOf("/releases/download/");
         if ((indexSlashArchive < 0) && (indexSlashReleasesDownload < 0)) {
@@ -59,13 +44,20 @@ public class GithubUrlParser {
         }
     }
 
-    private int getIndexRepo() throws MalformedURLException {
-        int indexOrganization = getIndexOrganization();
-        String organization = getOrganization(indexOrganization);
+    @NotNull
+    private String getOrganization(String url, int indexOrganization) {
+        String organizationRepoPath = url.substring(indexOrganization);
+        int indexSlashAfterOrganization = organizationRepoPath.indexOf('/');
+        return organizationRepoPath.substring(0, indexSlashAfterOrganization);
+    }
+
+    private int getIndexRepo(String url) throws MalformedURLException {
+        int indexOrganization = getIndexOrganization(url);
+        String organization = getOrganization(url, indexOrganization);
         return getIndexRepo(indexOrganization, organization);
     }
 
-    private int getIndexOrganization() throws MalformedURLException {
+    private int getIndexOrganization(String url) throws MalformedURLException {
         int indexPostSchemeColon = url.indexOf("://github.com/");
         if (indexPostSchemeColon < 1) {
             throw new MalformedURLException("Missing scheme://github.com/ prefix");
