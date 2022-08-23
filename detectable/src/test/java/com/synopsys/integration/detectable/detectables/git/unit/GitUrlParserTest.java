@@ -52,4 +52,14 @@ class GitUrlParserTest {
 
         Assertions.assertEquals("blackducksoftware/synopsys-detect", repoName);
     }
+
+    @Test
+    void versionedArchive() throws MalformedURLException {
+        GitUrlParser gitUrlParser = new GitUrlParser();
+        final String remoteUrl = "https://github.com/gflags/gflags/archive/v2.2.2.tar.gz";
+        String repoName = gitUrlParser.getRepoName(remoteUrl);
+
+        Assertions.assertEquals("gflags/gflags", repoName);
+    }
+
 }
