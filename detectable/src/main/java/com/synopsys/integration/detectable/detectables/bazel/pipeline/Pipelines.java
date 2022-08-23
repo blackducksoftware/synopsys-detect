@@ -74,7 +74,7 @@ public class Pipelines {
             .parseReplaceInEachLine("//.*", "")
             .parseReplaceInEachLine("^", "//external:")
             .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(maven_jar, ${input.item})", OUTPUT_FLAG, "xml"), true)
-            // TODO this only works if the github url is not first in list (not a guarantee; mirror might be first)
+            // Puts all URLs from the urls list into the stream for the next step
             .parseValuesFromXml("/query/rule[@class='http_archive']/list[@name='urls']/string", "value")
             .transformGithubUrl()
             .build();
