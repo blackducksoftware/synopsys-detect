@@ -7,6 +7,7 @@
 ### Changed features
 
 * Added property detect.project.inspector.path to enable pointing [solution_name] to a local Project Inspector zip file.
+* Enhancements to error reporting to ensure that any exception will have the root cause reported in the error message for certain exception types.
 
 ### Resolved issues
 
@@ -15,6 +16,7 @@
 * (IDETECT-3308) The __MACOSX directory will now be ignored by default when determining which detectors are applicable for a project.
 * (IDETECT-3307) Warn when project inspector cannot be downloaded, installed, or found.
 * (IDETECT-3229) Added the detect.status.json.output.path to place a copy of the status.json in a specified directory location.
+* (IDETECT-3187) Report Black Duck provided error message (from response body) whenever a Black Duck api call returns an error code
 
 ## Version 8.0.0
 

@@ -3,12 +3,18 @@ package com.synopsys.integration.detect.lifecycle.run.step.utility;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class OperationWrapper {
+
+    private static final int MESSAGE_LENGTH_LIMIT = 600;
+
     public void wrapped(Operation operation, OperationFunction supplier) throws OperationException {
         wrapped(operation, () -> { //To reduce duplication, calling the supplier with a return type but throwing away the returned result.
             supplier.execute();
@@ -40,13 +46,46 @@ public class OperationWrapper {
             operation.error(e);
             errorConsumer.accept(e);
             throw e;
+        } catch (BlackDuckApiException e) {
+            String contentDetails = "Black Duck response body: " + e.getOriginalIntegrationRestException().getHttpResponseContent();
+            if (StringUtils.isNotBlank(contentDetails)) {
+                if (contentDetails.length() > MESSAGE_LENGTH_LIMIT) {
+                    contentDetails = contentDetails.substring(0, MESSAGE_LENGTH_LIMIT) + "...";
+                }
+                operation.error(e, contentDetails);
+            } else {
+                operation.error(e);
+            }
+            errorConsumer.accept(e);
+            throw new OperationException(e);
         } catch (Exception e) {
-            operation.error(e);
+            // in some cases, the problem is buried in a nested exception 
+            // (i.e. a "caused by" exception.  This will drill into that 
+            // hierarchy and get the real error message.
+            if (null != e.getCause()) {
+                String rootMessage = rootCauseMessage(e);
+                operation.error(e, rootMessage);
+            } else {
+                operation.error(e);
+            }
             errorConsumer.accept(e);
             throw new OperationException(e);
         } finally {
             operation.finish();
         }
+    }
+    
+    private String rootCauseMessage(Exception e) {
+        String msg = "";
+        Throwable t = e.getCause();
+        if (null == t) {
+            return e.getMessage();
+        } else if (t instanceof Exception) {
+            msg = this.rootCauseMessage((Exception)t);
+        } else {
+            msg = e.getMessage();
+        }
+        return msg;
     }
 
     @FunctionalInterface
