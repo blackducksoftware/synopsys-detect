@@ -818,7 +818,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * Resolved an issue wherein the deprecation warning displayed when the deprecated property was provided by the user.
 * Resolved an issue with aggregate BOM filename generation that could cause the message Unable to relativize path, full source path will be used to display in the log.
 * Resolved an issue that could cause components to be omitted from the BOM for Conda projects.
-* Resolved an issue that could cause errors during parsing of Maven projects with long sub-project names.
+* Resolved an issue that could cause errors during parsing of Maven projects with long subproject names.
 
 ### Changed features
 
