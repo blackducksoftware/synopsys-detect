@@ -13,8 +13,8 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSe
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionComponentPolicyStatusType;
 import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionPolicyRulesView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.api.manual.temporary.response.PolicySummaryView;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
@@ -37,14 +37,14 @@ public class PolicyChecker {
     }
 
     public void checkPolicyByName(List<String> policyNamesToFailPolicyCheck, ProjectVersionView projectVersionView) throws IntegrationException {
-        Optional<List<PolicySummaryView>> activePolicyRulesOptional = projectBomService.getActivePoliciesForVersion(projectVersionView);
+        Optional<List<ProjectVersionPolicyRulesView>> activePolicyRulesOptional = projectBomService.getActivePoliciesForVersion(projectVersionView);
 
         if (activePolicyRulesOptional.isPresent()) {
-            List<PolicySummaryView> activePolicyRules = activePolicyRulesOptional.get();
+            List<ProjectVersionPolicyRulesView> activePolicyRules = activePolicyRulesOptional.get();
 
             List<String> violatedPolicyNames = activePolicyRules.stream()
                 .filter(rule -> ProjectVersionComponentPolicyStatusType.IN_VIOLATION.equals(rule.getStatus()))
-                .map(PolicySummaryView::getName)
+                .map(ProjectVersionPolicyRulesView::getName)
                 .filter(policyNamesToFailPolicyCheck::contains)
                 .collect(Collectors.toList());
 
@@ -56,7 +56,10 @@ public class PolicyChecker {
 
         } else {
             String availableLinks = StringUtils.join(projectVersionView.getAvailableLinks(), ", ");
-            logger.warn(String.format("It is not possible to check the active policy rules for this project/version. The active-policy-rules link must be present. The available links are: %s", availableLinks));
+            logger.warn(String.format(
+                "It is not possible to check the active policy rules for this project/version. The active-policy-rules link must be present. The available links are: %s",
+                availableLinks
+            ));
         }
     }
 
