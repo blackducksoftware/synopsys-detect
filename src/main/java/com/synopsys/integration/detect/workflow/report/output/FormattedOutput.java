@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
+import com.synopsys.integration.detect.workflow.status.Status;
 
 public class FormattedOutput {
     @SerializedName("formatVersion")
@@ -28,6 +29,9 @@ public class FormattedOutput {
 
     @SerializedName("issues")
     public List<FormattedIssueOutput> issues = new ArrayList<>();
+
+    @SerializedName("overallStatus")
+    public List<FormattedStatusOutput> overallStatus = new ArrayList<>();
 
     @SerializedName("results")
     public List<FormattedResultOutput> results = new ArrayList<>();

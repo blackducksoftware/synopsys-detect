@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detect.configuration.DetectInfo;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.report.detectable.AttemptedDetectableReport;
 import com.synopsys.integration.detect.tool.detector.report.detectable.ExtractedDetectableReport;
@@ -38,6 +39,7 @@ public class FormattedOutputManager {
     private final List<Status> statusSummaries = new ArrayList<>();
     private final List<DetectResult> detectResults = new ArrayList<>();
     private final List<DetectIssue> detectIssues = new ArrayList<>();
+    private final List<ExitCodeType> overallStatus = new ArrayList<>();
     private final Map<String, List<File>> unrecognizedPaths = new HashMap<>();
     private final List<Operation> detectOperations = new LinkedList<>();
     private DetectorToolResult detectorToolResult = null;
@@ -56,7 +58,7 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.DetectOperationsComplete, detectOperations::addAll);
     }
 
-    public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {
+    public FormattedOutput createFormattedOutput(DetectInfo detectInfo, ExitCodeType ect) {
         FormattedOutput formattedOutput = new FormattedOutput();
         formattedOutput.formatVersion = "0.5.0";
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
@@ -73,6 +75,14 @@ public class FormattedOutputManager {
             .map(issue -> new FormattedIssueOutput(issue.getType().name(), issue.getTitle(), issue.getMessages()))
             .toList();
         formattedOutput.operations = visibleOperations();
+
+        // The exit status is known prior to this method being called and is passed in...
+        // we will construct a reasonable facsimile to the other status, issues etc. for outputting the 
+        // detect exit status.
+        overallStatus.add(ect);
+        formattedOutput.overallStatus = Bds.of(overallStatus)
+                .map(overallStatus -> new FormattedStatusOutput(overallStatus.toString(), overallStatus.getDescription()))
+                .toList();
 
         if (detectorToolResult != null) { //TODO (Detector): Add formatted output results...
             formattedOutput.detectors = convertDetectors();
