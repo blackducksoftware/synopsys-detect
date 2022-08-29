@@ -138,10 +138,10 @@ public class Application implements ApplicationRunner {
             // system must now know or be able to compute the winning exit
             // code.  We'll pass this to FormattedOPutput.createFormattedOutput 
             // via Application.createStatusOutputFile.
-            ExitCodeType ect = exitCodeManager.getWinningExitCode();
+            ExitCodeType exitCodeType = exitCodeManager.getWinningExitCode();
             logger.info("");
             detectBootResult.getDirectoryManager()
-                .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager, ect));
+                .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager, exitCodeType));
 
             //Create installed tool data file.
             detectBootResult.getDirectoryManager().ifPresent(directoryManager -> createOrUpdateInstalledToolsFile(installedToolManager, directoryManager.getPermanentDirectory()));
