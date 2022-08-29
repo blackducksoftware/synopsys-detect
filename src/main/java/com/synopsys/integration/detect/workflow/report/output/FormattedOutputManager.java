@@ -58,7 +58,7 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.DetectOperationsComplete, detectOperations::addAll);
     }
 
-    public FormattedOutput createFormattedOutput(DetectInfo detectInfo, ExitCodeType ect) {
+    public FormattedOutput createFormattedOutput(DetectInfo detectInfo, ExitCodeType exitCodeType) {
         FormattedOutput formattedOutput = new FormattedOutput();
         formattedOutput.formatVersion = "0.5.0";
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
@@ -79,7 +79,7 @@ public class FormattedOutputManager {
         // The exit status is known prior to this method being called and is passed in...
         // we will construct a reasonable facsimile to the other status, issues etc. for outputting the 
         // detect exit status.
-        overallStatus.add(ect);
+        overallStatus.add(exitCodeType);
         formattedOutput.overallStatus = Bds.of(overallStatus)
                 .map(overallStatus -> new FormattedStatusOutput(overallStatus.toString(), overallStatus.getDescription()))
                 .toList();
