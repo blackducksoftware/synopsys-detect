@@ -1,4 +1,15 @@
-# [detector_cascade] and accuracy
+# Detector search, cascade, and accuracy
+
+## Detector search
+
+Detector search is the process of finding, for each project, it's root directory, and determining which detector(s) should run on that project root directory.
+Detector search is performed by the detector tool, and is described [here](../components/detectors.md).
+
+[detector_cascade] is the current (starting in [solution_name] 8.0.0) implementation of detector search.
+The next section describes how [detector_cascade] makes decisions about which detectors to run on each
+searched directory.
+
+## [detector_cascade] 
 
 [detector_cascade] and accuracy capabilities together replace the previous (pre-[solution_name] 8) distinction between "build mode" and "buildless mode",
 and provide a better way to get the best results possible, while ensuring that you are alterted (via a [solution_name] failure)
