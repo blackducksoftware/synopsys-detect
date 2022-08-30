@@ -17,6 +17,7 @@
 * (IDETECT-3307) Warn when project inspector cannot be downloaded, installed, or found.
 * (IDETECT-3229) Added the detect.status.json.output.path to place a copy of the status.json in a specified directory location.
 * (IDETECT-3187) Report Black Duck provided error message (from response body) whenever a Black Duck api call returns an error code
+* (IDETECT-3449) Resolved an issue that caused overridden violations to be reported as violations when the BOM also contained legitimate violations.
 
 ## Version 8.0.0
 
