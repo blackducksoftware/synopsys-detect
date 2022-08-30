@@ -23,11 +23,13 @@ The Detector tool always performs detector search on the source path (*detect.so
 If *detect.detector.search.depth* is greater than zero, it will search subdirectories as well
 to a depth indicated by the value of that property.
 
-It is usually not appropriate to set property detect.detector.search.continue to true,
-since the default detector search rules handle typical project structures correctly.
+For each directory to be searched by detector search, the Detector tool 
+first considers "yielding rules", which may specify that a detector
+should not run on a directory if another superceding detector already has.
 
-For each directory to be searched by detector search, the Detector tool determines which detector(s) should run on that directory
-by calling each detector's applicable method. The detector's applicable method decides whether the detector
+After considering yielding rules, the Detector tool determines which detector(s) should run on that directory
+by calling each detector's applicable method
+The detector's applicable method decides whether the detector
 applies by looking for hints such as files that exist in your project directory
 or properties you have set.
 
@@ -38,6 +40,14 @@ For example, Gradle uses an inspector as a plugin that executes a custom task. M
 
 Finally, detectors perform extraction to discover project dependencies. This may require operations such as running package manager executables,
 parsing package manager files, communicating with web services, etc.
+
+`detect.detector.search.continue` disables yielding rules.
+It is usually best to leave property `detect.detector.search.continue` set to false (the default), but there are exceptions.
+For example, if two detectors could apply to a directory, but only one runs (as a result of yielding rules), setting 
+`detect.detector.search.continue` to true may solve the problem by allowing both detectors to run.
+However, if `detector.search.depth` is greater than zero, setting `detect.detector.search.continue` to
+true can have the undesirable side effect of running a detector on a directory which is 
+not a project root directory, but a subproject directory.
 
 ## [detector_cascade] and accuracy
 
