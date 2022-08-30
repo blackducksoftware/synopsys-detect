@@ -97,7 +97,7 @@ public class PolicyChecker {
 
         List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionView);
         for (ProjectVersionComponentVersionView projectVersionComponentView : bomComponents) {
-            if (projectVersionComponentView.getPolicyStatus().equals(ProjectVersionComponentPolicyStatusType.NOT_IN_VIOLATION)) {
+            if (!projectVersionComponentView.getPolicyStatus().equals(ProjectVersionComponentPolicyStatusType.IN_VIOLATION)) {
                 continue;
             }
 
