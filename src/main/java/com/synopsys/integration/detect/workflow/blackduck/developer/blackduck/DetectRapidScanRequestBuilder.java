@@ -13,7 +13,9 @@ public class DetectRapidScanRequestBuilder {
     public DetectRapidScanRequestBuilder() {
         this.blackDuckRequestBuilder = new BlackDuckRequestBuilder()
             .commonGet()
-            .acceptMimeType(DeveloperScanComponentResultView.CURRENT_MEDIA_TYPE);
+            .acceptMimeType("application/vnd.blackducksoftware.scan-5+json");
+        // TODO can either make this a parameter to pass in or can convert everything to the 5 standard
+            //.acceptMimeType(DeveloperScanComponentResultView.CURRENT_MEDIA_TYPE);
     }
 
     public BlackDuckResponseRequest createResponseRequest(HttpUrl httpUrl) {

@@ -79,14 +79,14 @@ public class RapidScanResultAggregatorTest {
                 return "component_1:component_version_1";
             }
 
-            @Override
-            public Set<String> getViolatingPolicyNames() {
-                Set<String> policyNames = new HashSet<>();
-                policyNames.add("component_policy");
-                policyNames.add("vulnerability_policy");
-                policyNames.add("license_policy");
-                return policyNames;
-            }
+//            @Override
+//            public Set<String> getViolatingPolicyNames() {
+//                Set<String> policyNames = new HashSet<>();
+//                policyNames.add("component_policy");
+//                policyNames.add("vulnerability_policy");
+//                policyNames.add("license_policy");
+//                return policyNames;
+//            }
 
             @Override
             public Set<PolicyViolationVulnerabilityView> getPolicyViolationVulnerabilities() {
@@ -102,10 +102,10 @@ public class RapidScanResultAggregatorTest {
                         return "Violation Description";
                     }
 
-                    @Override
-                    public Set<String> getViolatingPolicyNames() {
-                        return Collections.singleton("vulnerability_policy");
-                    }
+//                    @Override
+//                    public Set<String> getViolatingPolicyNames() {
+//                        return Collections.singleton("vulnerability_policy");
+//                    }
 
                     @Override
                     public String getErrorMessage() {
@@ -130,10 +130,10 @@ public class RapidScanResultAggregatorTest {
                         return "License name";
                     }
 
-                    @Override
-                    public Set<String> getViolatingPolicyNames() {
-                        return Collections.singleton("license_policy");
-                    }
+//                    @Override
+//                    public Set<String> getViolatingPolicyNames() {
+//                        return Collections.singleton("license_policy");
+//                    }
 
                     @Override
                     public String getErrorMessage() {

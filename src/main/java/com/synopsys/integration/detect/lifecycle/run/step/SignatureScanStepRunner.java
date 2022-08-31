@@ -44,6 +44,16 @@ public class SignatureScanStepRunner {
 
         return operationRunner.calculateWaitableSignatureScannerCodeLocations(notificationTaskRange, reports);
     }
+    
+    public SignatureScanOuputResult runRapidSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
+            throws DetectUserFriendlyException, OperationException {
+            ScanBatchRunner scanBatchRunner = resolveOnlineScanBatchRunner(blackDuckRunData);
+
+            List<SignatureScanPath> scanPaths = operationRunner.createScanPaths(projectNameVersion, dockerTargetData);
+            ScanBatch scanBatch = operationRunner.createScanBatchOnline(scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
+
+            return operationRunner.signatureScan(scanBatch, scanBatchRunner);
+        }
 
     public void runSignatureScannerOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, OperationException {
         ScanBatchRunner scanBatchRunner = resolveOfflineScanBatchRunner();
