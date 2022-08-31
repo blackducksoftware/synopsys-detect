@@ -7,7 +7,7 @@
 When [blackduck_product_name] connection details are provided, [solution_name] executes
 the following by default:
 
-* The [detector tool](../../components/detectors.md), which runs the appropriate package manager-specific detector; the Maven detector
+* The [detector tool](../../components/detectorsintro.md), which runs the appropriate package manager-specific detector; the Maven detector
 for Maven projects, the Gradle detector for Gradle projects, and so forth.
 * The [Black Duck Signature Scanner](../../properties/configuration/signature-scanner.md), which performs a [blackduck_signature_scan_act] on the
 project directory.

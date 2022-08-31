@@ -3,7 +3,7 @@
 ## Detector search
 
 Detector search is the process of finding, for each project, it's root directory, and determining which detector(s) should run on that project root directory.
-Detector search is performed by the detector tool, and is described [here](../components/detectors.md).
+Detector search is performed by the detector tool, and is described [here](../components/detectorsintro.md).
 
 [detector_cascade] is the current (starting in [solution_name] 8.0.0) implementation of detector search.
 The next section describes how [detector_cascade] makes decisions about which detectors to run on each
