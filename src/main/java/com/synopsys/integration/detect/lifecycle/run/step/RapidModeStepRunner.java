@@ -74,12 +74,9 @@ public class RapidModeStepRunner {
                     dockerTargetData
                 );
             
-            HttpUrl scanUrl = parseScanUrl(signatureScanOutputResult, blackDuckUrl);
+            List<HttpUrl> parsedUrls = parseScanUrls(signatureScanOutputResult, blackDuckUrl);
             
-            List<HttpUrl> rapidScanUrls = new ArrayList<>();
-            rapidScanUrls.add(scanUrl);
-            
-            List<DeveloperScanComponentResultView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, rapidScanUrls);
+            List<DeveloperScanComponentResultView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, parsedUrls);
             
             File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
             RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults);
@@ -88,17 +85,20 @@ public class RapidModeStepRunner {
         });
     }
 
-    private HttpUrl parseScanUrl(SignatureScanOuputResult signatureScanOutputResult, String blackDuckUrl) throws IOException, IntegrationException {
+    private List<HttpUrl> parseScanUrls(SignatureScanOuputResult signatureScanOutputResult, String blackDuckUrl) throws IOException, IntegrationException {
         List<ScanCommandOutput> outputs = signatureScanOutputResult.getScanBatchOutput().getOutputs();
+        List<HttpUrl> parsedUrls = new ArrayList<>(outputs.size());
         
-        // TODO this needs rework. Can we get more than 1 result? If so maybe eliminate some of this
-        // batch stuff, otherwise handle. Also need null checking.
-        File specificRunOutputDirectory = outputs.get(0).getSpecificRunOutputDirectory();
-        String scanOutputLocation = specificRunOutputDirectory.toString() + "/output/scanOutput.json";
-        Reader reader = Files.newBufferedReader(Paths.get(scanOutputLocation));
+        for (ScanCommandOutput output : outputs) {
+            File specificRunOutputDirectory = output.getSpecificRunOutputDirectory();
+            String scanOutputLocation = specificRunOutputDirectory.toString() + "/output/scanOutput.json";
+            Reader reader = Files.newBufferedReader(Paths.get(scanOutputLocation));
+
+            SignatureScanRapidResult result = gson.fromJson(reader, SignatureScanRapidResult.class);
+
+            parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + result.scanId));
+        }
         
-        SignatureScanRapidResult result = gson.fromJson(reader, SignatureScanRapidResult.class);
-        
-        return new HttpUrl(blackDuckUrl + "/api/developer-scans/" + result.scanId);
+        return parsedUrls;
     }
 }
