@@ -39,6 +39,23 @@ and (depending on the user's preference) low accuracy might be better than nothi
 [solution_name] will always try the more accurate detectors first, falling back to less accurate detectors only if the more accurate
 detectors fail (or can't be run). 
 
+## Nesting rules
+
+When detect.detector.search.depth is greater than 0,
+nesting rules may prevent a detector from applying on a subdirectory of the source directory (say, src/a/b/c/d)
+based on which detectors applied on any of its parent directories (src/a/b/c, src/a/b, src/a, or src).
+
+Here are two examples of nesting rules:
+1. If any GRADLE detector applied on any parent directory, no GRADLE detector will apply on the current directory.
+1. If any XCODE detector applied on any parent directory, neither SWIFT detector will apply on the current directory.
+
+Nesting rules can be disabled by setting property `detect.detector.search.continue` to true.
+
+## Troubleshooting detector search
+
+For more insight into the decisions [solution_name] made during detector search, generate
+a diagnostic zip file (run with `-d`) and read the reports/search_detailed_report.txt file.
+
 ## Specifying accuracy requirements
 
 You choose the the list of detector types from which you require accurate results using the `detect.accuracy.required` property.
