@@ -579,7 +579,7 @@ public class DetectProperties {
             .setInfo("Detector Search Continue", DetectPropertyFromVersion.VERSION_3_2_0)
             .setHelp(
                 "By default, nesting rules limit which detectors can run on a subdirectory based on which detectors applied on any parent directory. Setting this property to true disables nesting rules.",
-                "Refer to the 'Downloading and Running Synopsys Detect' > 'Detector search, cascade, and accuracy' page for more information on nesting rules."
+                "Refer to the 'Downloading and Running Synopsys Detect' > 'Detector search and accuracy' page for more information on nesting rules."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
