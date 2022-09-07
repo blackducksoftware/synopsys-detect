@@ -61,7 +61,7 @@ task publishDitaSource() {
         def ditaSourceZipLocation = "${buildDir}/libs/${ditaSourceZipName}"
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
-                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${ditaSourceZipName}", '-T', "${ditaSourceZipLocation}", '-f'
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${rootProject.name}/${version}/${ditaSourceZipName}", '-T', "${ditaSourceZipLocation}", '-f'
         }
     }
 }
