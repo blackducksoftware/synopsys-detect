@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -54,7 +55,7 @@ public class RapidModeStepRunner {
         stepHelper.runToolIfIncluded(DetectTool.DETECTOR, "detector", () -> {
             if (bdioResult.isNotEmpty()) {
                 List<HttpUrl> rapidScanUrls = operationRunner.performRapidUpload(blackDuckRunData, bdioResult, rapidScanConfig.orElse(null));
-                List<DeveloperScanComponentResultView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, rapidScanUrls);
+                List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, rapidScanUrls);
             
                 File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
                 RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults);
@@ -76,7 +77,7 @@ public class RapidModeStepRunner {
             
             List<HttpUrl> parsedUrls = parseScanUrls(signatureScanOutputResult, blackDuckUrl);
             
-            List<DeveloperScanComponentResultView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, parsedUrls);
+            List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, parsedUrls);
             
             File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
             RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults);

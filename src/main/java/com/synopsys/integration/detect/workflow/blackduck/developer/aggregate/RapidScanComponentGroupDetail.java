@@ -64,9 +64,7 @@ public class RapidScanComponentGroupDetail {
         this.policyNames.addAll(policyNames);
     }
 
-    public void addMessages(Supplier<String> errorSupplier, Supplier<String> warningSupplier) {
-        String errorMessage = errorSupplier.get();
-        String warningMessage = warningSupplier.get();
+    public void addMessages(String errorMessage, String warningMessage) {
         if (StringUtils.isNotBlank(errorMessage)) {
             addError(errorMessage);
         }

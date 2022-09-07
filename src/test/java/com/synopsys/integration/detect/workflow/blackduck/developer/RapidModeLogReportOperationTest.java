@@ -10,7 +10,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
+import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
@@ -26,8 +26,8 @@ public class RapidModeLogReportOperationTest {
         RapidScanResultAggregator rapidScanResultAggregator = Mockito.mock(RapidScanResultAggregator.class);
         RapidModeLogReportOperation op = new RapidModeLogReportOperation(exitCodePublisher, rapidScanResultAggregator);
 
-        List<DeveloperScanComponentResultView> results = new LinkedList<>();
-        DeveloperScanComponentResultView resultView = Mockito.mock(DeveloperScanComponentResultView.class);
+        List<DeveloperScansScanView> results = new LinkedList<>();
+        DeveloperScansScanView resultView = Mockito.mock(DeveloperScansScanView.class);
         results.add(resultView);
         RapidScanAggregateResult aggregateResult = Mockito.mock(RapidScanAggregateResult.class);
         Mockito.when(rapidScanResultAggregator.aggregateData(results)).thenReturn(aggregateResult);

@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.http.HttpStatus;
 
-import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
+import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.request.BlackDuckMultipleRequest;
@@ -18,7 +18,7 @@ import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.wait.ResilientJob;
 
-public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScanComponentResultView>> {
+public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScansScanView>> {
     private final BlackDuckApiClient blackDuckApiClient;
     private final List<HttpUrl> remainingUrls;
     private final List<HttpUrl> completedUrls;
@@ -73,21 +73,21 @@ public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScanCo
     }
 
     @Override
-    public List<DeveloperScanComponentResultView> onTimeout() throws IntegrationTimeoutException {
+    public List<DeveloperScansScanView> onTimeout() throws IntegrationTimeoutException {
         throw new IntegrationTimeoutException("Error getting developer scan result. Timeout may have occurred.");
     }
 
     @Override
-    public List<DeveloperScanComponentResultView> onCompletion() throws IntegrationException {
-        List<DeveloperScanComponentResultView> allComponents = new ArrayList<>();
+    public List<DeveloperScansScanView> onCompletion() throws IntegrationException {
+        List<DeveloperScansScanView> allComponents = new ArrayList<>();
         for (HttpUrl url : completedUrls) {
             allComponents.addAll(getScanResultsForUrl(url));
         }
         return allComponents;
     }
 
-    private List<DeveloperScanComponentResultView> getScanResultsForUrl(HttpUrl url) throws IntegrationException {
-        BlackDuckMultipleRequest<DeveloperScanComponentResultView> request =
+    private List<DeveloperScansScanView> getScanResultsForUrl(HttpUrl url) throws IntegrationException {
+        BlackDuckMultipleRequest<DeveloperScansScanView> request =
             new DetectRapidScanRequestBuilder()
                 .createRequest(url);
         return blackDuckApiClient.getAllResponses(request);

@@ -6,6 +6,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -25,7 +26,7 @@ public class RapidModeLogReportOperation {
         this.rapidScanResultAggregator = rapidScanResultAggregator;
     }
 
-    public RapidScanResultSummary perform(List<DeveloperScanComponentResultView> results) throws DetectUserFriendlyException {
+    public RapidScanResultSummary perform(List<DeveloperScansScanView> results) throws DetectUserFriendlyException {
         RapidScanAggregateResult aggregateResult = rapidScanResultAggregator.aggregateData(results);
         logger.info(String.format("%s:", RapidScanDetectResult.RAPID_SCAN_RESULT_DETAILS_HEADING));
         aggregateResult.logResult(new Slf4jIntLogger(logger));

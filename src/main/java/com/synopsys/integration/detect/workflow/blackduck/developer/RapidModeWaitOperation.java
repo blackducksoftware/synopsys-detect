@@ -5,7 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
+import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.detect.workflow.blackduck.developer.blackduck.DetectRapidScanWaitJob;
 import com.synopsys.integration.exception.IntegrationException;
@@ -24,7 +24,7 @@ public class RapidModeWaitOperation {
         this.blackDuckApiClient = blackDuckApiClient;
     }
 
-    public List<DeveloperScanComponentResultView> waitForScans(List<HttpUrl> uploadedScans, long timeoutInSeconds, int waitIntervalInSeconds)
+    public List<DeveloperScansScanView> waitForScans(List<HttpUrl> uploadedScans, long timeoutInSeconds, int waitIntervalInSeconds)
         throws IntegrationException, InterruptedException {
         ResilientJobConfig waitJobConfig = new ResilientJobConfig(new Slf4jIntLogger(logger), timeoutInSeconds, System.currentTimeMillis(), waitIntervalInSeconds);
         DetectRapidScanWaitJob waitJob = new DetectRapidScanWaitJob(blackDuckApiClient, uploadedScans);

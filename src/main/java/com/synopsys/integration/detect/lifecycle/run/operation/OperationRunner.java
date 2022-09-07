@@ -19,6 +19,7 @@ import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
+import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
@@ -320,7 +321,7 @@ public class OperationRunner {
         });
     }
 
-    public List<DeveloperScanComponentResultView> waitForRapidResults(BlackDuckRunData blackDuckRunData, List<HttpUrl> rapidScans) throws OperationException {
+    public List<DeveloperScansScanView> waitForRapidResults(BlackDuckRunData blackDuckRunData, List<HttpUrl> rapidScans) throws OperationException {
         return auditLog.namedInternal("Rapid Wait", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             return new RapidModeWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForScans(
@@ -331,11 +332,11 @@ public class OperationRunner {
         });
     }
 
-    public final RapidScanResultSummary logRapidReport(List<DeveloperScanComponentResultView> scanResults) throws OperationException {
+    public final RapidScanResultSummary logRapidReport(List<DeveloperScansScanView> scanResults) throws OperationException {
         return auditLog.namedInternal("Print Rapid Mode Results", () -> new RapidModeLogReportOperation(exitCodePublisher, rapidScanResultAggregator).perform(scanResults));
     }
 
-    public final File generateRapidJsonFile(NameVersion projectNameVersion, List<DeveloperScanComponentResultView> scanResults) throws OperationException {
+    public final File generateRapidJsonFile(NameVersion projectNameVersion, List<DeveloperScansScanView> scanResults) throws OperationException {
         return auditLog.namedPublic(
             "Generate Rapid Json File",
             "RapidScan",

@@ -10,15 +10,24 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsViolatingPoliciesView;
+import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.api.manual.temporary.view.PolicyViolationView;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationLicenseView;
 import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationVulnerabilityView;
 
 public class RapidScanResultAggregator {
-    public RapidScanAggregateResult aggregateData(List<DeveloperScanComponentResultView> results) {
+    public RapidScanAggregateResult aggregateData(List<DeveloperScansScanView> results) {
         Collection<RapidScanComponentDetail> componentDetails = aggregateComponentData(results);
         // TODO this always comes back null for some reason
 //        List<RapidScanComponentDetail> sortedByComponent = componentDetails.stream()
@@ -60,82 +69,51 @@ public class RapidScanResultAggregator {
                 aggregatedDetails.get(RapidScanDetailGroup.LICENSE));
     }
 
-    private List<RapidScanComponentDetail> aggregateComponentData(List<DeveloperScanComponentResultView> results) {
+    private List<RapidScanComponentDetail> aggregateComponentData(List<DeveloperScansScanView> results) {
         // the key is the component identifier
         List<RapidScanComponentDetail> componentDetails = new LinkedList<>();
-        for (DeveloperScanComponentResultView resultView : results) {
+        for (DeveloperScansScanView resultView : results) {
             String componentName = resultView.getComponentName();
             RapidScanComponentDetail componentDetail = createDetail(resultView);
             componentDetails.add(componentDetail);
             RapidScanComponentGroupDetail componentGroupDetail = componentDetail.getComponentDetails();
             RapidScanComponentGroupDetail securityGroupDetail = componentDetail.getSecurityDetails();
             RapidScanComponentGroupDetail licenseGroupDetail = componentDetail.getLicenseDetails();
-
-            // TODO this is coming in as null as the v5 endpoint changed
-            // start by getting just the names from a more complex object, we can get the 
-            // severity too if we wanted.
-//            if (PolicyViolationView violation : resultView.getViolatingPolicies()) {
             
-            
-                // violating policy names is a super set of policy names so we have to remove
-                // the vulnerability and license.
-            
-            Set<PolicyViolationView> violatingPolicies = resultView.getViolatingPolicies();
+            // violating policy names is a super set of policy names so we have to remove
+            // the vulnerability and license.
+            List<DeveloperScansScanItemsViolatingPoliciesView> violatingPolicies = resultView.getViolatingPolicies();
             Set<String> policyNames = violatingPolicies.stream()
-                    .map(PolicyViolationView::getPolicyName)
+                    .map(DeveloperScansScanItemsViolatingPoliciesView::getPolicyName).collect(Collectors.toSet());
+
+            List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilityViolations = resultView
+                    .getPolicyViolationVulnerabilities();
+            List<DeveloperScansScanItemsPolicyViolationLicensesView> licenseViolations = resultView
+                    .getPolicyViolationLicenses();
+
+            Set<String> vulnerabilityPolicyNames = vulnerabilityViolations.stream()
+                    .map(DeveloperScansScanItemsPolicyViolationVulnerabilitiesView::getName)
                     .collect(Collectors.toSet());
-            
-                //Set<String> policyNames = new LinkedHashSet<>(resultView.getViolatingPolicyNames());
-                
-                Set<PolicyViolationVulnerabilityView> vulnerabilityViolations = resultView
-                        .getPolicyViolationVulnerabilities();
-                Set<PolicyViolationLicenseView> licenseViolations = resultView.getPolicyViolationLicenses();
-                
-                Set<String> vulnerabilityPolicyNames = new HashSet<>();
-                for (PolicyViolationVulnerabilityView vulnerabilityViolation: vulnerabilityViolations) {
-                    Set<String> partialPolicyNames = vulnerabilityViolation.getViolatingPolicies().stream()
-                    .map(PolicyViolationView::getPolicyName)
-                    .collect(Collectors.toSet());
-                    vulnerabilityPolicyNames.addAll(partialPolicyNames);
-                }
-                
-//                Set<String> vulnerabilityPolicyNames = vulnerabilityViolations.stream()
-//                        .map(PolicyViolationVulnerabilityView::getViolatingPolicyNames).flatMap(Collection::stream)
-//                        .collect(Collectors.toSet());
 
-//                Set<String> licensePolicyNames = licenseViolations.stream()
-//                        .map(PolicyViolationLicenseView::getViolatingPolicyNames).flatMap(Collection::stream)
-//                        .collect(Collectors.toSet());
-//                Set<String> licensePolicyNames = licenseViolations.stream()
-//                        .map(PolicyViolationLicenseView::getViolatingPolicies).stream()
-//                        .map(PolicyViolationView::getPolicyName)
-//                        .collect(Collectors.toSet());
-                
-                Set<String> licensePolicyNames = new HashSet<>();
-                for (PolicyViolationLicenseView licenseViolation: licenseViolations) {
-                    Set<String> partialPolicyNames = licenseViolation.getViolatingPolicies().stream()
-                    .map(PolicyViolationView::getPolicyName)
-                    .collect(Collectors.toSet());
-                    licensePolicyNames.addAll(partialPolicyNames);
-                }
-                
-                policyNames.removeAll(vulnerabilityPolicyNames);
-                policyNames.removeAll(licensePolicyNames);
+            Set<String> licensePolicyNames = licenseViolations.stream()
+                    .map(DeveloperScansScanItemsPolicyViolationLicensesView::getName).collect(Collectors.toSet());
 
-                componentGroupDetail.addPolicies(policyNames);
-                securityGroupDetail.addPolicies(vulnerabilityPolicyNames);
-                licenseGroupDetail.addPolicies(licensePolicyNames);
+            policyNames.removeAll(vulnerabilityPolicyNames);
+            policyNames.removeAll(licensePolicyNames);
 
-                addVulnerabilityData(vulnerabilityViolations, securityGroupDetail);
-                addLicenseData(licenseViolations, licenseGroupDetail);
-//            }
+            componentGroupDetail.addPolicies(policyNames);
+            securityGroupDetail.addPolicies(vulnerabilityPolicyNames);
+            licenseGroupDetail.addPolicies(licensePolicyNames);
 
-            componentGroupDetail.addMessages(resultView::getErrorMessage, resultView::getWarningMessage);
+            addVulnerabilityData(resultView, vulnerabilityViolations, securityGroupDetail);
+            addLicenseData(resultView, licenseViolations, licenseGroupDetail);
+
+            componentGroupDetail.addMessages(constructOverviewErrorMessage(resultView), null);
         }
         return componentDetails;
     }
 
-    private RapidScanComponentDetail createDetail(DeveloperScanComponentResultView view) {
+    private RapidScanComponentDetail createDetail(DeveloperScansScanView view) {
         String componentName = view.getComponentName();
         String componentVersion = view.getVersionName();
         String componentIdentifier = view.getComponentIdentifier();
@@ -150,18 +128,103 @@ public class RapidScanResultAggregator {
                 securityGroupDetail, licenseGroupDetail);
     }
 
-    private void addVulnerabilityData(Set<PolicyViolationVulnerabilityView> vulnerabilities,
+    private void addVulnerabilityData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilities,
             RapidScanComponentGroupDetail securityDetail) {
-        for (PolicyViolationVulnerabilityView vulnerabilityPolicyViolation : vulnerabilities) {
-            securityDetail.addMessages(vulnerabilityPolicyViolation::getErrorMessage,
-                    vulnerabilityPolicyViolation::getWarningMessage);
+        for (DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerabilityPolicyViolation : vulnerabilities) {
+            securityDetail.addMessages(constructVulnerabilityErrorMessage(resultView, vulnerabilityPolicyViolation),
+                    null);
         }
     }
 
-    private void addLicenseData(Set<PolicyViolationLicenseView> licenses, RapidScanComponentGroupDetail licenseDetail) {
-        for (PolicyViolationLicenseView licensePolicyViolation : licenses) {
-            licenseDetail.addMessages(licensePolicyViolation::getErrorMessage,
-                    licensePolicyViolation::getWarningMessage);
+    private void addLicenseData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsPolicyViolationLicensesView> licenses, RapidScanComponentGroupDetail licenseDetail) {
+        for (DeveloperScansScanItemsPolicyViolationLicensesView licensePolicyViolation : licenses) {
+            licenseDetail.addMessages(constructLicenseErrorMessage(resultView, licensePolicyViolation),
+                    null);
         }
+    }
+    
+    /**
+     * In v5 there are no error messages supplied by hub as there were in v4 of the
+     * developer-scans endpoint. We can construct a rough error message from the other
+     * fields.
+     * 
+     * @param resultView
+     * @return
+     */
+    private String constructOverviewErrorMessage(DeveloperScansScanView resultView) {
+        String errorMessage = "Component " + resultView.getComponentName() +
+        " version " + resultView.getVersionName();  
+        if (StringUtils.isNotBlank(resultView.getExternalId())) {
+            errorMessage += " with ID " + resultView.getExternalId();
+        }
+        errorMessage += " violates policy ";
+        
+        List<DeveloperScansScanItemsViolatingPoliciesView> violatingPolicies = resultView.getViolatingPolicies();
+        
+        for (int i = 0; i < violatingPolicies.size(); i++) {
+            DeveloperScansScanItemsViolatingPoliciesView violation = violatingPolicies.get(i);
+                    
+            errorMessage += violation.getPolicyName();
+            
+            if (i != violatingPolicies.size() -1) {
+                errorMessage += ", ";
+            }
+        }
+        
+        return errorMessage;
+    }
+    
+    private String constructLicenseErrorMessage(DeveloperScansScanView resultView, DeveloperScansScanItemsPolicyViolationLicensesView licensePolicyViolation) {
+        String errorMessage = "Component " + resultView.getComponentName() +
+        " version " + resultView.getVersionName();
+        if (StringUtils.isNotBlank(resultView.getExternalId())) {
+            errorMessage += " with ID " + resultView.getExternalId();
+        }
+        errorMessage += " violates policy ";
+        
+        List<DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView> violatingPolicies = licensePolicyViolation.getViolatingPolicies();
+        
+        for (int i = 0; i < violatingPolicies.size(); i++) {
+            DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView violation = violatingPolicies.get(i);
+                    
+            errorMessage += violation.getPolicyName();
+            
+            if (i != violatingPolicies.size() -1) {
+                errorMessage += ", ";
+            } else {
+                errorMessage += ": license " + licensePolicyViolation.getName();
+            }
+        }
+        
+        return errorMessage;
+    }
+    
+    private String constructVulnerabilityErrorMessage(DeveloperScansScanView resultView,
+            DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerability) {
+        String errorMessage = "Component " + resultView.getComponentName() +
+        " version " + resultView.getVersionName();
+        if (StringUtils.isNotBlank(resultView.getExternalId())) {
+            errorMessage += " with ID " + resultView.getExternalId();
+        }
+        errorMessage += " violates policy ";
+        
+        List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> violatingPolicies = vulnerability.getViolatingPolicies();
+        
+        for (int i = 0; i < violatingPolicies.size(); i++) {
+            DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation = violatingPolicies.get(i);
+            
+            errorMessage += violation.getPolicyName();
+            
+            if (i != violatingPolicies.size() -1) {
+                errorMessage += ", ";
+            } else {
+                errorMessage += ": found vulnerability " + vulnerability.getName();
+            }
+        }
+        
+        errorMessage += " with severity " + vulnerability.getVulnSeverity();
+        errorMessage += " and CVSS score " + vulnerability.getOverallScore();
+        
+        return errorMessage;
     }
 }
