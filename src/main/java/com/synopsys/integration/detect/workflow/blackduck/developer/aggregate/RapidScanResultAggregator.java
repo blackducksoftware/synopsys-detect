@@ -1,16 +1,11 @@
 package com.synopsys.integration.detect.workflow.blackduck.developer.aggregate;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,10 +16,6 @@ import com.synopsys.integration.blackduck.api.generated.component.DeveloperScans
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
-import com.synopsys.integration.blackduck.api.manual.temporary.view.PolicyViolationView;
-import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
-import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationLicenseView;
-import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationVulnerabilityView;
 
 public class RapidScanResultAggregator {
     public RapidScanAggregateResult aggregateData(List<DeveloperScansScanView> results) {
@@ -92,11 +83,16 @@ public class RapidScanResultAggregator {
                     .getPolicyViolationLicenses();
 
             Set<String> vulnerabilityPolicyNames = vulnerabilityViolations.stream()
-                    .map(DeveloperScansScanItemsPolicyViolationVulnerabilitiesView::getName)
+                    .map(DeveloperScansScanItemsPolicyViolationVulnerabilitiesView::getViolatingPolicies)
+                    .flatMap(Collection::stream)
+                    .map(DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView::getPolicyName)
                     .collect(Collectors.toSet());
 
             Set<String> licensePolicyNames = licenseViolations.stream()
-                    .map(DeveloperScansScanItemsPolicyViolationLicensesView::getName).collect(Collectors.toSet());
+                    .map(DeveloperScansScanItemsPolicyViolationLicensesView::getViolatingPolicies)
+                    .flatMap(Collection::stream)
+                    .map(DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView::getPolicyName)
+                    .collect(Collectors.toSet());
 
             policyNames.removeAll(vulnerabilityPolicyNames);
             policyNames.removeAll(licensePolicyNames);
