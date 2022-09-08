@@ -116,7 +116,13 @@ public class RapidScanResultAggregator {
     private RapidScanComponentDetail createDetail(DeveloperScansScanView view) {
         String componentName = view.getComponentName();
         String componentVersion = view.getVersionName();
-        String componentIdentifier = view.getComponentIdentifier();
+        
+        String componentIdentifier = "";
+        if (StringUtils.isNotBlank(view.getComponentIdentifier())) {
+            componentIdentifier = view.getComponentIdentifier();
+        } else if (StringUtils.isNotBlank(view.getExternalId())) {
+            componentIdentifier = view.getExternalId();
+        }
         RapidScanComponentGroupDetail componentGroupDetail = new RapidScanComponentGroupDetail(
                 RapidScanDetailGroup.POLICY);
         RapidScanComponentGroupDetail securityGroupDetail = new RapidScanComponentGroupDetail(
