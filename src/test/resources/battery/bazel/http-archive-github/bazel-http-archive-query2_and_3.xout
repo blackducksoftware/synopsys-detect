@@ -1,0 +1,7 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<query version="2">
+    <rule class="local_repository" location="/DEFAULT.WORKSPACE:1:17" name="//external:bazel_tools">
+        <string name="name" value="bazel_tools"/>
+        <string name="path" value="/root/.cache/bazel/_bazel_root/install/41b71f1bb3ce13f20cfeeb31a9357113/embedded_tools"/>
+    </rule>
+</query>

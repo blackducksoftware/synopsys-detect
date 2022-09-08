@@ -4,6 +4,8 @@
 
 ### New features
 
+* Added support for Bazel project dependencies specified via a github released artifact location (URL) in an *http_archive* workspace rule.
+
 ### Changed features
 
 * Added property detect.project.inspector.path to enable pointing [solution_name] to a local Project Inspector zip file.
