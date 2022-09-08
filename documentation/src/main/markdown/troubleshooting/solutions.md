@@ -30,17 +30,17 @@ DETECT_SOURCE was not set or computed correctly, please check your configuration
 
 If the curl command described above does not successfully return a value for property DETECT_LATEST, you must determine why, and make the changes necessary so that curl command works.
 
-## [solution_name] succeeds, but the results are incomplete because package managers or sub-projects were overlooked
+## [solution_name] succeeds, but the results are incomplete because package managers or subprojects were overlooked
 
 ### Symptom
 
 In this scenario, everything succeeds, but many or all components are missed. Examining the log shows that
-package managers were not recognized and/or sub-projects were overlooked.
+package managers were not recognized and/or subprojects were overlooked.
 
 ### Possible cause
 
 The detector search depth needs to be increased. The default value (0) limits the search for package manager files to the project directory. If project manager files
-are located in subdirectories and/or there are sub-projects, this depth should be increased to enable [solution_name] to find the relevant files, so it
+are located in subdirectories and/or there are subprojects, this depth should be increased to enable [solution_name] to find the relevant files, so it
 will run the appropriate detector(s).
 
 See [detector search depth](../properties/configuration/paths.md#detector-search-depth) for more details.

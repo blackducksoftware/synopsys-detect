@@ -9,6 +9,8 @@
 ### Changed features
 
 * Added property detect.project.inspector.path to enable pointing [solution_name] to a local Project Inspector zip file.
+* Enhancements to error reporting to ensure that any exception will have the root cause reported in the error message for certain exception types.
+* Overall Detect exit status is now being reported along with individual detector status/issues in the Status.json file.
 
 ### Resolved issues
 
@@ -17,6 +19,9 @@
 * (IDETECT-3308) The __MACOSX directory will now be ignored by default when determining which detectors are applicable for a project.
 * (IDETECT-3307) Warn when project inspector cannot be downloaded, installed, or found.
 * (IDETECT-3229) Added the detect.status.json.output.path to place a copy of the status.json in a specified directory location.
+* (IDETECT-3187) Report Black Duck provided error message (from response body) whenever a Black Duck api call returns an error code
+* (IDETECT-3311) Include Detect's "Overall Status" in the status.json / diagnostic zip
+* (IDETECT-3449) Resolved an issue that caused overridden violations to be reported as active violations when the BOM contained additional active violations.
 
 ## Version 8.0.0
 
@@ -818,7 +823,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * Resolved an issue wherein the deprecation warning displayed when the deprecated property was provided by the user.
 * Resolved an issue with aggregate BOM filename generation that could cause the message Unable to relativize path, full source path will be used to display in the log.
 * Resolved an issue that could cause components to be omitted from the BOM for Conda projects.
-* Resolved an issue that could cause errors during parsing of Maven projects with long sub-project names.
+* Resolved an issue that could cause errors during parsing of Maven projects with long subproject names.
 
 ### Changed features
 
