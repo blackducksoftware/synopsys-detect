@@ -43,7 +43,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * Dropped NONE as a supported value for the following properties: `detect.included.detector.types`, `detect.tools`.
 * Dropped ALL as a supported value for the following properties: `detect.excluded.detector.types`, `detect.tools.excluded`.
 * Removed support for parsing SBT report files.
-* Cargo project dependency graphs are no longer post-processed to reduce Direct dependencies in the BOM.
+* Cargo project dependency graphs are no longer post-processed to reduce direct dependencies in the BOM.
 * Removed the ability to upload BDIO2 documents to legacy endpoints via the `blackduck.legacy.upload.enabled` property.
 * Removed the ability to choose the type of BDIO aggregation strategy via the now removed `detect.bom.aggregate.remediation.mode` property.  All BDIO will be aggregated in a manner similar to [solution_name] 7's SUBPROJECT remediation mode.
 * [solution_name] now only produces a single Scan in Black Duck for Detectors, named (by default) "\<projectName\>/\<projectVersion\> Black Duck I/O Export". 
@@ -66,10 +66,10 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * (IDETECT-3375) Resolved an issue where [solution_name] would unnecessarily upload empty BDIO entry file when initiating an IaC scan.
 * (IDETECT-3224) Resolved an issue where Cargo projects with Cyclical dependencies could cause a failure of [solution_name].
 * (IDETECT-3246) Resolved an issue where [solution_name] would fail when scanning flutter projects after a new version of flutter was released.
-* (IDETECT-3275) Resolved an issue that caused impact analysis to fail with an "Unsupported class file major version" error when an analyzed .class file contained invaid version bytes (byte 7 and 8).
+* (IDETECT-3275) Resolved an issue that caused impact analysis to fail with an "Unsupported class file major version" error when an analyzed .class file contained invalid version bytes (byte 7 and 8).
 * (IDETECT-3180) Resolved an issue that caused the Binary Search tool to throw an exception when the patterns provided via property detect.binary.scan.file.name.patterns matched one or more directories.
 * (IDETECT-3352) Resolved an issue that caused the Gradle Project Inspector detector to fail when the value of detect.output.path was a relative path.
-* (IDETECT-3371) Resolved an issue that could cause some transitive dependencies to be omitted from aggregated BDIO in cases where the transient dependencies provided by the package manager for a component differed across subprojects.
+* (IDETECT-3371) Resolved an issue that could cause some transitive dependencies to be omitted from aggregated BDIO in cases where the transitive dependencies provided by the package manager for a component differed across subprojects.
 
 ## Version 7.14.0
 
@@ -127,8 +127,8 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 ### Changed features
 
 * Changed default value of detect.project.clone.categories from ALL to COMPONENT_DATA, CUSTOM_FIELD_DATA, LICENSE_TERM_FULFILLMENT, VERSION_SETTINGS, VULN_DATA.  This avoids the automatic setting of the clone category DEEP_LICENSE introduced in Black Duck 2022.2.0. Users of [solution_name] 7.12.0 that wish to pass DEEP_LICENSE or ALL as a value to detect.project.clone.categories must be using Black Duck 2022.2.0 or later.
-* Added new property detect.bazel.workspace.rules to replace the now-deprecated detect.bazel.dependency.type property.
-* For Go Mod projects, successfully executing `go version` is now required. Unsuccessful attempts now results in a run failure.
+* Added new property detect.bazel.workspace.rules to replace the now deprecated detect.bazel.dependency.type property.
+* For Go Mod projects, successfully executing `go version` is now required. Unsuccessful attempts now result in a run failure.
 * The property *detect.go.mod.dependency.types.excluded* now only accepts a single value rather than a list of values.
 
 ### Resolved issues
@@ -150,7 +150,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 
 * Added a feature that allows users to set a license for a project version using the
   property [detect.project.version.license](properties/configuration/project.md#project-version-license).
-* Added support for identifying dependency relationships between linux package manager components in images.
+* Added support for identifying dependency relationships between Linux package manager components in images.
 
 ### Changed features
 
@@ -216,7 +216,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 ### New features
 
 * Added support for the Xcode Swift Package Manager for Xcode projects using the built-in [Swift Packages](https://developer.apple.com/documentation/swift_packages) feature.
-* Added detect.bdio.file.name to specify the name of the output bdio file.
+* Added detect.bdio.file.name to specify the name of the output BDIO file.
 * Added system architecture DEBUG level logs to assist with support.
 
 ### Changed features
@@ -225,7 +225,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 
 ### Resolved issues
 
-* (IDETECT-2499) Fixed an issue in the Gradle Inspector that caused it to exclude all identically-named subprojects except one.
+* (IDETECT-2499) Fixed an issue in the Gradle Inspector that caused it to exclude all identically named subprojects except one.
 * (IDETECT-2953) Fixed the project and project version links in risk report.
 * (IDETECT-2989) Fixed an issue with Go Mod projects where [solution_name] included unused transitive dependencies, despite detect.go.mod.enable.verification being set to 'true'.
 * (IDETECT-2935) Verified that [solution_name] is compatible with Gradle version 7.X.
@@ -236,7 +236,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 
 * Added support for the pnpm package manager.
 * Added property detect.project.group.name for setting the Project Group.
-* [solution_name] now falls back to using a previously-downloaded Docker Inspector, Project Inspector, and/or NuGet Inspector when https://sig-repo.synopsys.com is unreachable.
+* [solution_name] now falls back to using a previously downloaded Docker Inspector, Project Inspector, and/or NuGet Inspector when https://sig-repo.synopsys.com is unreachable.
 
 ## Version 7.7.0
 
@@ -270,8 +270,8 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
   aggregation mode to report the dependency graph with greater accuracy.
 * Maven defaults to the legacy buildless parser, Project Inspector must be enabled with detect.maven.buildless.legacy.mode. In version 8, it will default to Project Inspector.
 * Deprecated detect.maven.include.plugins as Project Inspector does not support plugins. In version 8, we will only support the Project Inspector Maven implementation which will
-  have it's own configuration mechanism.
-* The Air Gap Zip generation options no longer support individual package managers. Instead either a FULL air gap can be created, or a NO_DOCKER air gap can be created. This is to
+  have its own configuration mechanism.
+* The Air Gap Zip generation options no longer support individual package managers. Instead, either a FULL air gap can be created, or a NO_DOCKER air gap can be created. This is to
   help support project inspector which spans multiple package managers.
 
 ### Resolved issues
@@ -294,7 +294,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * The Docker Inspector can now be included (using the detect.tools property) when using
   the [rapid scan mode](properties/configuration/blackduck-server.md#detect-scan-mode-advanced).
 * Instead of "lite" Docker images that automatically disable all detectors, [solution_name] now supports "buildless" Docker images that automatically disable detectors that depend
-  on the presence of build tools, but leave buildless detectors enabled.
+  on the presence of build tools but leave buildless detectors enabled.
 
 ### Resolved issues
 
@@ -315,7 +315,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 
 ### Changed features
 
-* The Poetry detector is no longer categorized as a PIP detector, and is now categorized under detector type POETRY.
+* The Poetry detector is no longer categorized as a PIP detector and is now categorized under detector type POETRY.
 * Simplified the property deprecation lifecycle to the following: Use of deprecated properties will result in logged warnings until the next major version release, at which time
   those properties will be removed from Detect (and ignored if used). Properties that were deprecated in Detect 6.x have been removed in this release. Properties deprecated in
   Detect 7.x will be removed in Detect 8.0.0.
@@ -360,7 +360,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * (IDETECT-2629) Resolved an issue that caused go mod projects without source having an empty BOM with the introduction of the detect.go.mod.enable.verification property.
 * (IDETECT-2659) Resolved an issue that caused [solution_name] to falsely report a missing detector when that detector matched only at a depths > 0 and was included in the value of
   property detect.required.detector.types.
-* (IDETECT-2696) Resolved an issue that could cause [solution_name] to fail with "IllegalStateException: Duplicate key {codelocation name}" when creationg >100 codelocations in one
+* (IDETECT-2696) Resolved an issue that could cause [solution_name] to fail with "IllegalStateException: Duplicate key {codelocation name}" when creating >100 codelocations in one
   run.
 * (IDETECT-2659) Resolved an issue that caused Detect to falsely report "One or more required detector types were not found" when the required detector ran based on files found in
   a subdirectory.
@@ -383,9 +383,9 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * Added properties [detect.lerna.excluded.packages](properties/detectors/lerna.md#lerna-packages-excluded-advanced)
   and [detect.lerna.included.packages](properties/detectors/lerna.md#lerna-packages-included-advanced) to exclude and include specific Lerna packages.
 * Added critical security risks to the Black Duck Risk Report pdf.
-* Added detect.target.type to enhance the docker user experience. When set to IMAGE, some tools are automatically disabled and detect optimizes for an image based scan.
+* Added detect.target.type to enhance the docker user experience. When set to IMAGE, some tools are automatically disabled and detect optimizes for an image-based scan.
 * Added binary scanning of the container filesystem to the default Docker image scanning workflow. If you are scanning Docker images and your Black Duck server does not have the
-  binary scanning feature enabled, use --detect.tools.exluded=BINARY_SCAN to disable the binary scan step.
+  binary scanning feature enabled; use --detect.tools.exluded=BINARY_SCAN to disable the binary scan step.
 
 ### Changed features
 
@@ -412,7 +412,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 
 ### Resolved issues
 
-* (IDETECT-2555) Resolved an issue that could cause Detect, when run against Black Duck 2020.10.0, to fail with a message similar to: "Cannot cast... to...
+* (IDETECT-2555) Resolved an issue that could cause Detect, when run against Black Duck 2020.10.0, to fail with a message like: "Cannot cast... to...
   VersionBomCodeLocationBomComputedNotificationUserView".
 
 ## Version 6.9.0
@@ -422,7 +422,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * Added ability for detectors to explain why they applied. It will appear in the logs at info level and in the status.json.
 * Added the property detect.binary.scan.search.depth to define the directory search depth for the binary scanner.
 * The status.json file now features a list of the provided Detect property values.
-* When Detect is not configured to connect to blackduck or run offline, a link to the Detect help is included in an error message.
+* When Detect is not configured to connect to Black Duck or run offline, a link to the Detect help is included in an error message.
 
 ### Changed features
 
@@ -472,7 +472,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * (IDETECT-2227) Resolved an issue where Nuget Inspectors would parse source files for assembly version.
 * (IDETECT-2281) Resolved an issue that included golang dependencies that were not linked in the compiled go
   application. [241](https://github.com/blackducksoftware/synopsys-detect/issues/241)
-* (IDETECT-2294) Resolved an issue where Git credentials could be logged when reading the remote url.
+* (IDETECT-2294) Resolved an issue where Git credentials could be logged when reading the remote URL.
 * (IDETECT-2296) Resolved an issue wherein the Pip Inspector would cease parsing a requirements file if it encountered a dependency which it could not resolve.
 * (IDETECT-2276) Resolved an issue that caused the CLANG detector to omit components for which multiple architectures are installed.
 
@@ -487,7 +487,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
   files using non-canonical paths.
 * (IDETECT-2216) Resolved an issue that caused non-ASCII characters in binary scan metadata (filename, code location name, project name, and version name) to be converted to '?'
   characters when submitted to Black Duck.
-* (IDETECT-2291) Reverted replacement data support. Detect will report exactly what gradle reports. This reverts IDETECT-2038, IDETECT-2203.
+* (IDETECT-2291) Reverted replacement data support. Detect will report exactly what Gradle reports. This reverts IDETECT-2038, IDETECT-2203.
 * (IDETECT-2241) Resolved an issue where platform dependent cocoapods will throw an exception when they are not installed.
 * (IDETECT-2289) Resolved an issue that could cause Black Duck API token-based authorization to fail with "411 Length Required" HTTP status when communicating with Black Duck
   through a proxy.
@@ -497,14 +497,14 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 ### Changed features
 
 * The Docker Inspector now works on Windows 10 Enterprise.
-* Upon connecting to Black Duck, the users roles and groups, which are only used in DEBUG-level logging, are no longer fetched unless logging level is DEBUG or higher.
+* Upon connecting to Black Duck, the users' roles and groups, which are only used in DEBUG-level logging, are no longer fetched unless logging level is DEBUG or higher.
 * The error messages produced for binary scan file upload failures have been improved.
 * The "detectors" field in the status.json file now features status data with more-expressive error codes derived from the runtime class of a detectable result.
 * Detect will follow 308 redirects when communicating with Black Duck.
 
 ### Resolved issues
 
-* (IDETECT-2038, IDETECT-2203) Resolved an issue where the Gradle Inspector would produce false positives in Gradle as a result of dependency replacement from the root project.
+* (IDETECT-2038, IDETECT-2203) Resolved an issue where the Gradle Inspector would produce false positives in Gradle because of dependency replacement from the root project.
 * (IDETECT-2180) Resolved and issue where the Pip Inspector would fail against requirements.txt files generated by the pip-compile tool.
 * (IDETECT-2108) Resolved an issue where Lerna packages where being reported as missing dependencies.
 * (IDETECT-2138, IDETECT-2161, IDETECT-2172) Resolved issue where Gradle parse detector would fail due to an inability to resolve classes, referenced in the project's build
@@ -514,7 +514,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 
 ### Known issues
 
-* When running the Docker Inspector on Windows, [solution_name] may fail to clean up all of its working directories (and log the message "Error trying cleanup") due to the
+* When running the Docker Inspector on Windows, [solution_name] may fail to clean up all its working directories (and log the message "Error trying cleanup") due to the
   following Docker issue:
   https://github.com/docker/for-win/issues/394.
 * False positives from Gradle are still possible if the replacement dependency is defined within a subproject that has subprojects. Work is being continued to fix this with
@@ -559,10 +559,10 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 
 * Eliminated any need for the [blackduck_product_name] Global Code Scanner overall role.
 * The CLANG detector collects any dependency files not recognized by the Linux package manager that reside outside the source directory (the directory containing the
-  compile_commands.json file), and writes them to the status.json file.
+  compile_commands.json file) and writes them to the status.json file.
 * Added the property [detect.blackduck.signature.scanner.copyright.search](properties/configuration/signature-scanner.md#signature-scanner-copyright-search-advanced).
 * Removed PipEnv from the list of buildless detectors as it was never buildless.
-* Improved output for signature scanner status, and included descriptions for exit codes when reporting overall status.
+* Improved output for signature scanner status and included descriptions for exit codes when reporting overall status.
 * Status.json file now collects code location data generated by all tools, not just detectors.
 * Status.json file now collects issue data generated by all tools.
 
@@ -622,7 +622,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 
 * The [solution_name] .jar file is now signed, enabling [code verification](downloadingandrunning/verification.md) by users.
 * [Simple proxy information](packagemgrs/gradle.md#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
-* Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](downloadingandrunning/status-file.md)
+* Detect now creates a status file describing the results of the run which includes things like [issues, results, and status codes.](downloadingandrunning/status-file.md)
 * The property configuration table in the log now includes the origin of the property's value.
 * Added the property [detect.blackduck.signature.scanner.license.search](properties/configuration/signature-scanner.md#signature-scanner-license-search-advanced).
 * Added the property [detect.blackduck.signature.scanner.individual.file.matching](properties/configuration/signature-scanner.md#individual-file-matching-advanced).
@@ -701,7 +701,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
   requirements file displays as a new code location in Black Duck.
 * Detect now logs username, roles, and groups for the current user.
 * Detect now includes the project name/version in every code location name.
-* Detect now takes in a go path, but does not take in go.dep.path; nor does Detect trigger on *.go.
+* Detect now takes in a go path but does not take in go.dep.path; nor does Detect trigger on *.go.
 * The property detect.parallel.processors is added. This property controls the number of parallel threads, and replaces the properties
   detect.blackduck.signature.scanner.parallel.processors and detect.hub.signature.scanner.parallel.processors.
 * Added the property detect.maven.included.scopes. This is a comma-separated list of Maven scopes. Output is limited to dependencies within these scopes, and is overridden by
@@ -717,7 +717,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * The BitBake detector no longer uses the property detect.bitbake.reference.impl because architecture is no longer required to match with artifacts in the KnowledgeBase. The
   Bitbake detector now attempts to determine the layer in which a component originated instead of the architecture.
 * Improved the Detect on-screen logging to be more concise.
-* The PiP inspector is no longer deprecated, and is currently supported.
+* The PiP inspector is no longer deprecated and is currently supported.
 * When creating an air gap zip of Detect using the switch -z or --zip, the created zip file is now published to your output directory.
 * Scripts no longer fail if the Artifactory server is unavailable.
 * Enhanced placement and formatting of deprecation logs.
@@ -740,7 +740,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * Resolved an issue wherein Detect was not handling SSH URLs, which caused Detect to fail in extracting project information from the Git executable. GitCliDetectable now properly
   handles SSH URLs.
 * Resolved an issue wherein the Detect JAR was downloading for each scan when the script could not communicate with Artifactory. Now, if the script cannot communicate with
-  Artifactory, and there is an existing downloaded Detect, then the previously-downloaded version of Detect runs. However, if you provided a DETECT_LATEST_RELEASE_VERSION and
+  Artifactory, and there is an existing downloaded Detect, then the previously downloaded version of Detect runs. However, if you provided a DETECT_LATEST_RELEASE_VERSION and
   Detect cannot communicate with Artifactory, Detect will not run.
 * Resolved an issue wherein Detect was not properly parsing GIT URLs such as git://git.yoctoproject.org/poky.git.
 
@@ -772,7 +772,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * Updated the help menu and provided more detailed help options.
 * Diagnostics now includes signature scanner log files.
 * Re-enabled empty aggregate file generation.
-* Polaris no longer runs the the -w switch enabled by default. To retrieve the issue/policy count, you can use the -w switch.
+* Polaris no longer runs the -w switch enabled by default. To retrieve the issue/policy count, you can use the -w switch.
 * Match accuracy for Docker images is improved by running the signature scanner on a squashed version of the Docker image instead of the container file system. This results in a
   different name for the code location because the name of the file being scanned is different. For existing projects, the old code location named by default as &lt;repo&gt;_
   &lt;tag&gt;_containerfilesystem.tar.gz/&lt;repo&gt;/&lt;tag&gt; scan must be removed to ensure it does not contribute stale data to the BOM. Due to the new method of scanning,
@@ -799,7 +799,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 ### New features
 
 * Added support for snippet modes.
-* The property detect.wait.for.results is been added to wait for Black Duck. The default value is false. If this property is set to true, Detect won't complete until the normal
+* The property detect.wait.for.results has been added to wait for Black Duck. The default value is false. If this property is set to true, Detect won't complete until the normal
   timeout is reached or the underlying systems with which Detect is communicating are once again idle and ready to receive more data. The timeout value is controlled by
   blackduck.timeout.
 * The shell script and PowerShell script now accept DETECT_JAVA_PATH and DETECT_JAVA_HOME as environment variables for pointing to your Java installation.
@@ -831,7 +831,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * The ALL logging level is replaced with the TRACE logging level.
 * The results URL for the Black Duck project BOM is now moved to the Detect Results panel.
 * Renamed Detect Results to Detect Status.
-* Previously, a temp file remained which could contain plain-text user name or password information. This temp file is now removed.
+* Previously, a temp file remained which could contain plain text user name or password information. This temp file is now removed.
 * Bazel is added as an acceptable value to the detect.tools properties.
 * Detect now uses the current version of Docker Inspector. This means that no matter what version of Docker Inspector is currently released, Detect now uses that version.
 
@@ -970,7 +970,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 * Added functionality to run in Docker mode.
 * Added support for NuGet in MacOS.
 * Added ability to include and exclude all tools.
-* Added a new properties for SWIP in Detect scans.
+* Added new properties for SWIP in Detect scans.
 
 ### Resolved issues
 
