@@ -12,7 +12,7 @@ searched directory.
 ## [detector_cascade] 
 
 [detector_cascade] and accuracy capabilities together replace the previous (pre-[solution_name] 8) distinction between "build mode" and "buildless mode",
-and provide a better way to get the best results possible, while ensuring that you are alterted (via a [solution_name] failure)
+and provide a better way to get the best results possible, while ensuring that you are alerted (via a [solution_name] failure)
 if your accuracy requirements are not met.
 
 [solution_name] often has a choice of multiple detectors available for a given project type.
