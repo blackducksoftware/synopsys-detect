@@ -22,7 +22,7 @@ public class IntermediateStepParseReplaceInEachLine implements IntermediateStep 
         logger.trace("Replace target pattern: {}; replacement string: {}}", targetPattern, replacementString);
         for (String inputItem : input) {
             String modifiedInputItem = inputItem.replaceAll(targetPattern, replacementString);
-            logger.trace("Edit changed {}} to {}", inputItem, modifiedInputItem);
+            logger.trace("Edit changed {} to {}", inputItem, modifiedInputItem);
             results.add(modifiedInputItem);
         }
         return results;
