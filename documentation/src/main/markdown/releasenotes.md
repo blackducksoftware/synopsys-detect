@@ -8,6 +8,7 @@
 
 an unauthorized change
 another unauthorized change
+yet another unauthorized change
 
 ### Changed features
 
