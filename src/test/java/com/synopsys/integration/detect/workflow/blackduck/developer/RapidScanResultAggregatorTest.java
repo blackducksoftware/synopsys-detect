@@ -48,15 +48,15 @@ public class RapidScanResultAggregatorTest {
         aggregateResult.logResult(logger);
         RapidScanResultSummary summary = aggregateResult.getSummary();
         assertEquals(1, summary.getPolicyErrorCount());
-        // TODO this is based on the number of warning messages, still not sure what consitutes 
+        // TODO this is based on the number of warning messages, still not sure what constitutes 
         // a warning over an error.
         //assertEquals(1, summary.getPolicyWarningCount());
         assertEquals(1, summary.getSecurityErrorCount());
-        // TODO this is based on the number of warning messages, still not sure what consitutes 
+        // TODO this is based on the number of warning messages, still not sure what constitutes 
         // a warning over an error.
         //assertEquals(1, summary.getSecurityWarningCount());
         assertEquals(1, summary.getLicenseErrorCount());
-        // TODO this is based on the number of warning messages, still not sure what consitutes 
+        // TODO this is based on the number of warning messages, still not sure what constitutes 
         // a warning over an error.
         //assertEquals(1, summary.getLicenseWarningCount());
         assertFalse(logger.getOutputList(LogLevel.INFO).isEmpty());

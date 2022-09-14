@@ -198,8 +198,11 @@ public class DetectConfigurationFactory {
         AllNoneEnumCollection<DetectTool> excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
         ExcludeIncludeEnumFilter<DetectTool> filter = new ExcludeIncludeEnumFilter<>(excludedTools, includedTools);
 
+        boolean rapidSignatureScanEnabled = includedTools.containsValue(DetectTool.SIGNATURE_SCAN) && 
+                blackDuckDecision.scanMode() == BlackduckScanMode.RAPID;
         boolean iacEnabled = includedTools.containsValue(DetectTool.IAC_SCAN) || !detectConfiguration.getValue(DetectProperties.DETECT_IAC_SCAN_PATHS).isEmpty();
-        return new DetectToolFilter(filter, impactEnabled.orElse(false), iacEnabled, runDecision, blackDuckDecision);
+        
+        return new DetectToolFilter(filter, impactEnabled.orElse(false), iacEnabled, rapidSignatureScanEnabled, runDecision, blackDuckDecision);
     }
 
     public RapidScanOptions createRapidScanOptions() {
