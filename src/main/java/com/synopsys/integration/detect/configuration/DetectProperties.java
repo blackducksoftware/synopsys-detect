@@ -578,9 +578,8 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.detector.search.continue", false)
             .setInfo("Detector Search Continue", DetectPropertyFromVersion.VERSION_3_2_0)
             .setHelp(
-                "If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.",
-                "If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc. "
-                    + "If false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project."
+                "By default, nesting rules limit which detectors can run on a subdirectory based on which detectors applied on any parent directory. Setting this property to true disables nesting rules.",
+                "Refer to the 'Downloading and Running Synopsys Detect' > 'Detector search and accuracy' page for more information on nesting rules."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
