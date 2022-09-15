@@ -126,20 +126,30 @@ public class RapidScanComponentGroupDetail {
                 if (errorMessage.equals("")) {
                     errorMessage = baseMessage;
                 } else {
-                    errorMessage += ", ";
+                    errorMessage += "/";
                 }
                 
-                errorMessage += violation.getPolicyName() + ": license " + licensePolicyViolation.getName();
+                errorMessage += violation.getPolicyName();
             } else {
                 if (warningMessage.equals("")) {
                     warningMessage = baseMessage;
                 } else {
-                    warningMessage += ", ";
+                    warningMessage += "/";
                 }
                 
-                warningMessage += violation.getPolicyName() + ": license " + licensePolicyViolation.getName();
+                warningMessage += violation.getPolicyName();
             }
         }
+        
+        String summaryMessage = ": license " + licensePolicyViolation.getName();
+        
+        if (StringUtils.isNotBlank(errorMessage)) {
+            errorMessage += summaryMessage;
+        }
+        if (StringUtils.isNotBlank(warningMessage)) {
+            warningMessage += summaryMessage;
+        }
+        
         addMessages(errorMessage, warningMessage);
     }
     
@@ -158,26 +168,31 @@ public class RapidScanComponentGroupDetail {
                 if (errorMessage.equals("")) {
                     errorMessage = baseMessage;
                 } else {
-                    errorMessage += ", ";
+                    errorMessage += "/";
                 }
                 
                 errorMessage += violation.getPolicyName();
-                errorMessage += ": found vulnerability " + vulnerability.getName();
-                errorMessage += " with severity " + vulnerability.getVulnSeverity();
-                errorMessage += " and CVSS score " + vulnerability.getOverallScore();
             } else {
                 if (warningMessage.equals("")) {
                     warningMessage = baseMessage;
                 } else {
-                    warningMessage += ", ";
+                    warningMessage += "/";
                 }
                 
                 warningMessage += violation.getPolicyName();
-                warningMessage += ": found vulnerability " + vulnerability.getName();
-                warningMessage += " with severity " + vulnerability.getVulnSeverity();
-                warningMessage += " and CVSS score " + vulnerability.getOverallScore();
             }
         }
+        
+        String summaryMessage = ": found vulnerability " + vulnerability.getName() + " with severity "
+                + vulnerability.getVulnSeverity() + " and CVSS score " + vulnerability.getOverallScore();
+        
+        if (StringUtils.isNotBlank(errorMessage)) {
+            errorMessage += summaryMessage;
+        }
+        if (StringUtils.isNotBlank(warningMessage)) {
+            warningMessage += summaryMessage;
+        }
+        
         addMessages(errorMessage, warningMessage);
     }
     
