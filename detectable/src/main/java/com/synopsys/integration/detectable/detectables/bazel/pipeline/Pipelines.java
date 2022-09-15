@@ -70,7 +70,7 @@ public class Pipelines {
         Pipeline httpArchiveGithubUrlPipeline = (new PipelineBuilder(externalIdFactory, bazelCommandExecutor, bazelVariableSubstitutor, haskellCabalLibraryJsonProtoParser))
             .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(.*library, deps(${detect.bazel.target}))"), false)
             .parseSplitEachLine("\r?\n")
-            .parseFilterLines("^@")
+            .parseFilterLines("^@.*//.*$")
             .parseReplaceInEachLine("^@", "")
             .parseReplaceInEachLine("//.*", "")
             .parseReplaceInEachLine("^", "//external:")
