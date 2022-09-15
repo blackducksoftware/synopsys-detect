@@ -103,8 +103,8 @@ public class RapidScanResultAggregator {
 
             addVulnerabilityData(resultView, vulnerabilityViolations, securityGroupDetail);
             addLicenseData(resultView, licenseViolations, licenseGroupDetail);
-
-            componentGroupDetail.addMessages(constructOverviewErrorMessage(resultView), null);
+            
+            componentGroupDetail.addComponentMessages(resultView);
         }
         return componentDetails;
     }
@@ -133,100 +133,13 @@ public class RapidScanResultAggregator {
     private void addVulnerabilityData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilities,
             RapidScanComponentGroupDetail securityDetail) {
         for (DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerabilityPolicyViolation : vulnerabilities) {
-            securityDetail.addMessages(constructVulnerabilityErrorMessage(resultView, vulnerabilityPolicyViolation),
-                    null);
+            securityDetail.addVulnerabilityMessages(resultView, vulnerabilityPolicyViolation);
         }
     }
 
     private void addLicenseData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsPolicyViolationLicensesView> licenses, RapidScanComponentGroupDetail licenseDetail) {
         for (DeveloperScansScanItemsPolicyViolationLicensesView licensePolicyViolation : licenses) {
-            licenseDetail.addMessages(constructLicenseErrorMessage(resultView, licensePolicyViolation),
-                    null);
+            licenseDetail.addLicenseMessages(resultView, licensePolicyViolation);
         }
-    }
-    
-    /**
-     * In v5 there are no error messages supplied by hub as there were in v4 of the
-     * developer-scans endpoint. We can construct a rough error message from the other
-     * fields.
-     * 
-     * @param resultView
-     * @return
-     */
-    private String constructOverviewErrorMessage(DeveloperScansScanView resultView) {
-        String errorMessage = "Component " + resultView.getComponentName() +
-        " version " + resultView.getVersionName();  
-        if (StringUtils.isNotBlank(resultView.getExternalId())) {
-            errorMessage += " with ID " + resultView.getExternalId();
-        }
-        errorMessage += " violates policy ";
-        
-        List<DeveloperScansScanItemsViolatingPoliciesView> violatingPolicies = resultView.getViolatingPolicies();
-        
-        for (int i = 0; i < violatingPolicies.size(); i++) {
-            DeveloperScansScanItemsViolatingPoliciesView violation = violatingPolicies.get(i);
-                    
-            errorMessage += violation.getPolicyName();
-            
-            if (i != violatingPolicies.size() -1) {
-                errorMessage += ", ";
-            }
-        }
-        
-        return errorMessage;
-    }
-    
-    private String constructLicenseErrorMessage(DeveloperScansScanView resultView, DeveloperScansScanItemsPolicyViolationLicensesView licensePolicyViolation) {
-        String errorMessage = "Component " + resultView.getComponentName() +
-        " version " + resultView.getVersionName();
-        if (StringUtils.isNotBlank(resultView.getExternalId())) {
-            errorMessage += " with ID " + resultView.getExternalId();
-        }
-        errorMessage += " violates policy ";
-        
-        List<DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView> violatingPolicies = licensePolicyViolation.getViolatingPolicies();
-        
-        for (int i = 0; i < violatingPolicies.size(); i++) {
-            DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView violation = violatingPolicies.get(i);
-                    
-            errorMessage += violation.getPolicyName();
-            
-            if (i != violatingPolicies.size() -1) {
-                errorMessage += ", ";
-            } else {
-                errorMessage += ": license " + licensePolicyViolation.getName();
-            }
-        }
-        
-        return errorMessage;
-    }
-    
-    private String constructVulnerabilityErrorMessage(DeveloperScansScanView resultView,
-            DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerability) {
-        String errorMessage = "Component " + resultView.getComponentName() +
-        " version " + resultView.getVersionName();
-        if (StringUtils.isNotBlank(resultView.getExternalId())) {
-            errorMessage += " with ID " + resultView.getExternalId();
-        }
-        errorMessage += " violates policy ";
-        
-        List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> violatingPolicies = vulnerability.getViolatingPolicies();
-        
-        for (int i = 0; i < violatingPolicies.size(); i++) {
-            DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation = violatingPolicies.get(i);
-            
-            errorMessage += violation.getPolicyName();
-            
-            if (i != violatingPolicies.size() -1) {
-                errorMessage += ", ";
-            } else {
-                errorMessage += ": found vulnerability " + vulnerability.getName();
-            }
-        }
-        
-        errorMessage += " with severity " + vulnerability.getVulnSeverity();
-        errorMessage += " and CVSS score " + vulnerability.getOverallScore();
-        
-        return errorMessage;
     }
 }
