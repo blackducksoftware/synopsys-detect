@@ -1,22 +1,118 @@
-# Detector search, cascade, and accuracy
+# Detector search and accuracy
 
 ## Detector search
 
-Detector search is the process of finding, for each project, it's root directory, and determining which detector(s) should run on that project root directory.
-Detector search is performed by the detector tool, and is described [here](../components/detectors.md).
+Detector search is performed by the Detector tool on the source directory (`detect.source.path`).
+If `detect.detector.search.depth` is greater than zero, detector search is expanded to include subdirectories
+to the depth indicated (0 means top level only).
 
-[detector_cascade] is the current (starting in [solution_name] 8.0.0) implementation of detector search.
-The next section describes how [detector_cascade] makes decisions about which detectors to run on each
-searched directory.
+Detector search:
 
-## [detector_cascade] 
+1. Finds project root directories, and
+2. Determines which detector(s) should run on each project root directory that it found.
 
-[detector_cascade] and accuracy capabilities together replace the previous (pre-[solution_name] 8) distinction between "build mode" and "buildless mode",
-and provide a better way to get the best results possible, while ensuring that you are alerted (via a [solution_name] failure)
-if your accuracy requirements are not met.
+A project's root directory is the project's top-level directory viewed from the perspective of the project's package manager.
+There may be more than one project in your source directory.
 
-[solution_name] often has a choice of multiple detectors available for a given project type.
-[detector_cascade], which considers detector accuracy, is the mechinism [solution_name] uses to decide which of multiple detectors to run.
+In contrast, graph building is performed by the individual detector(s) that run on a root project. This involves building a graph that
+starts with the root project found by detector search. The graph includes subprojects, direct dependencies, and transitive dependencies.
+The graph is eventually included in [solution_name]'s output: the BDIO.
+Exclusion of subsets of the graph (subprojects, configurations, etc.) is optionally done as 
+part of graph building (controlled by properties such as `detect.{pkgmgr}.excluded.*` and `detect.{pkgmgr}.included.*`).
+It is important to recognize that detector search and graph building are completely separate processes
+controlled by different properties.
+
+For example, directory /src/myproject might be the root directory of a gradle project. There might also be gradle subprojects
+in subdirectories underneath it (e.g. /src/myproject/subproject1), but subprojects will be discovered during graph building.
+/src/myproject is the *only* directory that detector search must find.
+
+Properties that affect detector search:
+
+* detect.detector.search.depth
+* detect.detector.search.continue
+
+Detector search considers all of the following when choosing which detector(s) to run:
+
+1. Detector type filtering.
+1. Yielding rules.
+1. Nesting rules.
+1. [detector_cascade].
+
+## Detector type filtering
+
+Detector type filtering honors your requests to exclude certain detector types (via properties `detect.excluded.detector.types` and `detect.included.detector.types`).
+
+## Yielding rules
+
+Yielding rules cause some detectors to have precedence over others for a given directory. For example, if both the
+YARN and NPM detector types apply to a directory, only the YARN detector will apply
+because NPM yields to YARN.
+
+Yielding rules cannot be disabled.
+
+## Nesting rules
+
+While yielding rules consider which other detectors apply to the *current* directory,
+nesting rules consider which other detectors applied to *ancestor* directories
+(one or more levels up the directory path).
+
+When detect.detector.search.depth is greater than 0,
+nesting rules may prevent a detector from applying on a subdirectory of the source directory (say, src/a/b/c/d)
+based on which detectors applied on any of its ancestor directories (src/a/b/c, src/a/b, src/a, or src).
+
+Here are two examples of nesting rules:
+1. If any GRADLE detector applied on any ancestor directory, no GRADLE detector will apply on the current directory.
+1. If any XCODE detector applied on any ancestor directory, neither SWIFT detector will apply on the current directory.
+
+Nesting rules can be disabled by setting
+property `detect.detector.search.continue` to true.
+
+## [detector_cascade]
+
+[detector_cascade] is a strategy designed to produce the most accurate results possible.
+For a given project root directory, [detector_cascade] first tries the detector that would produce the most accurate results.
+If the first detector is unable to run (if, for example, the package manager executable it needs is not on the PATH),
+[detector_cascade] will try the next-best detector. This process continues until one of the applicable detector's extraction method succeeds
+or [solution_name] runs out of detectors that apply.
+
+[solution_name] will always try the more accurate detectors first, falling back to less accurate detectors only if the more accurate
+detectors fail (or can't be run). 
+
+Cascade sequences are not configurable.
+
+[detector_cascade] in combination with detector accuracy (described below) replace the previous (pre-[solution_name] 8) distinction between "build mode" and "buildless mode",
+
+## Entry points
+
+In the
+[Detector Types, Entry Points, and Detectors](detectors.html)
+table, most Detector Types have a single Entry Point. For those Detector Types, the Entry Point column can be ignored.
+
+There are a few Detector Types for which multiple Entry Points are defined.
+When multipe Entry Points are defined for a Detector Type,
+they exist to support the relatively rare need to define different nesting rules
+within the same Detector Type for different scenarios.
+(Nesting rules can usually be, and usually are, applied at the Detector Type level.)
+For example: Detect should ignore XCODE project files that are nested inside an XCODE project that it has already processed.
+Entry Points provide the mechanism by which more nuanced nesting rules such as this are applied.
+
+Each Entry Point has one or more Detectors. Detectors are attempted in the order listed until one applies and succeeds.
+If none succeed, [solution_name] proceeds to the next Entry Point (if there is one) for the Detector Type.
+
+## Troubleshooting detector search
+
+For more insight into the decisions [solution_name] made during detector search, generate
+a diagnostic zip file (run with `-d`) and read the reports/search_detailed_report.txt file.
+
+## Detector execution phases
+
+A detector has three methods:
+
+1. The applicable method determines whether the detector applies to the current directory, based on files that it finds in the directory. For example, if a Gradle detector would look for a build.gradle file.
+1. The extractable method determines whether other prerequisites are met. For example, a detector that runs a package manager executable would check to see if that execuable is available.
+1. The extract method discovers dependencies and returns a graph. In a few cases extraction is performed with the help of a separate [solution_name] component called an inspector.
+
+## Detector accuracy
 
 Accuracy is an assessment of how complete and reliable a detector's results are. Each detector has one of two possible accuracy values: HIGH, or LOW.
 A detector's accuracy value is not configurable.
@@ -35,9 +131,6 @@ Gradle Project Inspector detector (which discovers dependencies by parsing Gradl
 If the Gradle Native Inspector succeeds, it would produce higher accuracy results than the Gradle Project Inspector detector.
 However, the Gradle Native Inspector may not succeed (since, for example, it must be able to find and execute a Gradle executable),
 and (depending on the user's preference) low accuracy might be better than nothing.
-
-[solution_name] will always try the more accurate detectors first, falling back to less accurate detectors only if the more accurate
-detectors fail (or can't be run). 
 
 ## Specifying accuracy requirements
 
@@ -58,4 +151,5 @@ To specify that you require accurate results from some (but not all) detector ty
 ## Evaluation of accuracy
 
 Detect evaluates whether or not the detector results it was able to generate meet the user's accuracy requirements after
-executing detectors and actual result accuracy is known. If not, it fails with the FAILURE_ACCURACY_NOT_MET exit code.
+executing detectors and actual result accuracy is known. If the user's accuracy requirements were not met, [solution_name]
+fails with the FAILURE_ACCURACY_NOT_MET exit code.

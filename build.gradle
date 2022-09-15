@@ -20,7 +20,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '8.1.0-SNAPSHOT'
+version = '8.1.0-SIGQA2-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -103,7 +103,7 @@ dependencies {
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation "org.springframework.boot:spring-boot"
-    implementation 'org.yaml:snakeyaml:1.27'
+    implementation 'org.yaml:snakeyaml:1.31'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.apache.pdfbox:pdfbox:2.0.25'
 
@@ -160,8 +160,18 @@ String findGradle() {
     return System.getProperty("os.name").toLowerCase().contains("windows") ? '--detect.gradle.path=gradlew.bat' : '--detect.gradle.path=gradlew';
 }
 
-task createAirGapZip(type: JavaExec) {
+task signJar() {
     dependsOn build
+    finalizedBy 'verifyJar'
+    doLast {
+        exec {
+            commandLine 'jarsigner', '-tsa', 'http://rfc3161timestamp.globalsign.com/advanced', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
+        }
+    }
+}
+
+task createAirGapZip(type: JavaExec) {
+    dependsOn signJar
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
@@ -187,7 +197,7 @@ task publishAirGapZip() {
 }
 
 task createAirGapZipWithoutDocker(type: JavaExec) {
-    dependsOn build
+    dependsOn signJar
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
@@ -214,16 +224,6 @@ task publishAirGapZipWithoutDocker() {
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
                     "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipNameLegacy}", '-T', "${airGapZipLocation}", '-f'
-        }
-    }
-}
-
-task signJar() {
-    dependsOn build
-    finalizedBy 'verifyJar'
-    doLast {
-        exec {
-            commandLine 'jarsigner', '-tsa', 'http://rfc3161timestamp.globalsign.com/advanced', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
         }
     }
 }
