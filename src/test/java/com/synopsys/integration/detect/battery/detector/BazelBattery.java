@@ -77,7 +77,13 @@ class BazelBattery {
         test.withToolsValue("BAZEL");
         test.property("detect.bazel.target", "//cat_hs/lib/args:args");
         test.property("detect.bazel.workspace.rules", "ALL");
-        test.executableFromResourceFiles(DetectProperties.DETECT_BAZEL_PATH, EMPTY_OUTPUT_RESOURCE, EMPTY_OUTPUT_RESOURCE, BAZEL_HASKELL_CABAL_LIBRARY_OUTPUT_RESOURCE);
+        test.executableFromResourceFiles(
+            DetectProperties.DETECT_BAZEL_PATH,
+            EMPTY_OUTPUT_RESOURCE,
+            EMPTY_OUTPUT_RESOURCE,
+            BAZEL_HASKELL_CABAL_LIBRARY_OUTPUT_RESOURCE,
+            EMPTY_OUTPUT_RESOURCE
+        );
         test.sourceDirectoryNamed("bazel-haskell-cabal-library-all");
         test.sourceFileNamed("WORKSPACE");
         test.expectBdioResources();
