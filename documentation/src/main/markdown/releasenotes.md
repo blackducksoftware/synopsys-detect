@@ -5,20 +5,20 @@
 ### New features
 
 * Added support for Bazel project dependencies specified via a github released artifact location (URL) in an *http_archive* workspace rule.
+* Added property detect.project.inspector.path to enable pointing [solution_name] to a local Project Inspector zip file.
+* Added property detect.status.json.output.path to place a copy of the status.json file in a specified directory.
 
 ### Changed features
 
-* Added property detect.project.inspector.path to enable pointing [solution_name] to a local Project Inspector zip file.
 * Enhancements to error reporting to ensure that any exception will have the root cause reported in the error message for certain exception types.
 * Overall Detect exit status is now being reported along with individual detector status/issues in the Status.json file.
+* The __MACOSX directory will now be ignored by default when determining which detectors are applicable to a project.
 
 ### Resolved issues
 
 * (IDETECT-3419) Resolved an issue where the NuGet inspector cannot be found when a solution file cannot be found but multiple C# projects are found by Detect.
 * (IDETECT-3306) Resolved an issue where a NullPointerException would occur when project inspector discovered no modules for a project.
-* (IDETECT-3308) The __MACOSX directory will now be ignored by default when determining which detectors are applicable for a project.
 * (IDETECT-3307) Warn when project inspector cannot be downloaded, installed, or found.
-* (IDETECT-3229) Added the detect.status.json.output.path to place a copy of the status.json in a specified directory location.
 * (IDETECT-3187) Report Black Duck provided error message (from response body) whenever a Black Duck api call returns an error code
 * (IDETECT-3311) Include Detect's "Overall Status" in the status.json / diagnostic zip
 * (IDETECT-3449) Resolved an issue that caused overridden violations to be reported as active violations when the BOM contained additional active violations.
