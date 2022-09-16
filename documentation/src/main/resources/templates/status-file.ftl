@@ -16,10 +16,12 @@ The file includes status codes, issues encountered and results produced. As addi
 "detectors": [ List of Detectors, see details below. ]
 "status": [ List of Status, see details below. ]
 "issues": [ List of Issues, see details below. ]
+"overallStatus: [ The overall exit status and detailed message on exit of detect. ]
 "results": [ List of Results, see details below. ]
 "unrecognizedPaths": [ List of Unrecognized Paths, see details below. ]
 "codeLocations": [ List of code locations produced, see details below. ]
 "propertyValues": { An object representing all provided properties, see details below. }
+"operations": [ List of performed operations, see details below. ]
 }
 ```
 
@@ -79,23 +81,6 @@ A result is a URL, file path to output, or messages produced by the [solution_na
 }
 ```
 
-## Property Values
-
-A map of every property key to it's string value that detect found. These are only properties to which detect has a known key,
-so pass-through properties like docker and dynamic properties like custom fields are not included. Passwords and other sensitive fields are masked.
-
-```
-  "propertyValues": {
-    "key": "value",
-    "boolean-key": "true"
-  }
-```
-
-## Operations
-A list of information regarding internal execution of detect to describe when portions of detect run and what their status is.
-This information is intended to be used when detect fails and the reason for the failure needs to be determined.
-
-```
 "startTimestamp": A formatted UTC timestamp when the execution started.
 "endTimestamp": A formatted UTC timestamp when the execution ended.
 "descriptionKey": A string that describes what is being executed.
@@ -118,3 +103,20 @@ For those detectors that support it (currently, only CLANG), a list of file path
 "codeLocationName": The name of a code location produced by this run of [solution_name].
 }
 ````
+## Property Values
+
+A map of every property key to it's string value that detect found. These are only properties to which detect has a known key,
+so pass-through properties like docker and dynamic properties like custom fields are not included. Passwords and other sensitive fields are masked.
+
+```
+  "propertyValues": {
+    "key": "value",
+    "boolean-key": "true"
+  }
+```
+
+## Operations
+A list of information regarding internal execution of detect to describe when portions of detect run and what their status is.
+This information is intended to be used when detect fails and the reason for the failure needs to be determined.
+
+```
