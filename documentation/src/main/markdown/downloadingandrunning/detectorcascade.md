@@ -134,11 +134,11 @@ and (depending on the user's preference) low accuracy might be better than nothi
 
 ## Specifying accuracy requirements
 
-You choose the the list of detector types from which you require accurate results using the `detect.accuracy.required` property.
+You choose the list of detector types from which you require the most accurate results using the `detect.accuracy.required` property.
 This property accepts a list of detector types (MAVEN, GRADLE, ...).
-This property defaults ALL, which means you want [solution_name] to fail if any detector type applies, but
-only low accuracy results could be generated for that detector type.
-When [solution_name] fails due to accuracy requirements it returns the FAILURE_ACCURACY_NOT_MET exit code.
+This property defaults to ALL, which means you want [solution_name] to exit if any detector type applies, but
+only low accuracy results could be generated.
+When [solution_name] exits due to accuracy requirements not being met, it returns the FAILURE_ACCURACY_NOT_MET exit code.
 This default produces behavior roughly similar to the default mode (detect.detector.buildless=false) prior to [solution_name] 8.
 
 To get the best results available regardless of accuracy, set this property to NONE.
@@ -146,7 +146,7 @@ This value produces behavior roughly similar to buildless mode (detect.detector.
 except that high accuracy results will be produced where possible (buildless mode used to prevent that).
 
 To specify that you require accurate results from some (but not all) detector types, set property
-`detect.accuracy.required` to the list of detector types from which you require accurate results.
+`detect.accuracy.required` to the list of detector types from which you require the most accurate results.
 
 ## Evaluation of accuracy
 
