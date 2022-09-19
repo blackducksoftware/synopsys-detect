@@ -22,6 +22,7 @@
 * (IDETECT-3187) Report Black Duck provided error message (from response body) whenever a Black Duck api call returns an error code
 * (IDETECT-3311) Include Detect's "Overall Status" in the status.json / diagnostic zip
 * (IDETECT-3449) Resolved an issue that caused overridden violations to be reported as active violations when the BOM contained additional active violations.
+* (IDETECT-3476) Resolved an issue that caused an "Input request parsing error" on IaC scans on certain projects when running on Windows.
 
 ## Version 8.0.0
 
