@@ -119,9 +119,9 @@ A detector's accuracy value is not configurable.
 You can find the accuracy for each detector in the [detector table](../components/detectors.md).
 
 Detectors that run the project's package manager and
-discover dependencies from its output are generally assigned high accuracy because the package manager is generally a reliable source of truth
+discover dependencies from its output are generally assigned high accuracy because the package manager is typically a reliable source of truth
 about dependencies.
-Detectors that parse package manager-generated lockfiles also tend to be high accuracy.
+Detectors that parse package manager-generated lockfiles also tend to be highly accurate.
 Detectors that parse human-editable files are generally assigned low accuracy due to challenges and limitations that are inherent in that approach.
 
 Consider, for example, a Gradle project.
