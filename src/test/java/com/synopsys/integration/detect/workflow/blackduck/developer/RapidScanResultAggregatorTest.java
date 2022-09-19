@@ -48,17 +48,11 @@ public class RapidScanResultAggregatorTest {
         aggregateResult.logResult(logger);
         RapidScanResultSummary summary = aggregateResult.getSummary();
         assertEquals(1, summary.getPolicyErrorCount());
-        // TODO this is based on the number of warning messages, still not sure what constitutes 
-        // a warning over an error.
-        //assertEquals(1, summary.getPolicyWarningCount());
+        assertEquals(1, summary.getPolicyWarningCount());
         assertEquals(1, summary.getSecurityErrorCount());
-        // TODO this is based on the number of warning messages, still not sure what constitutes 
-        // a warning over an error.
-        //assertEquals(1, summary.getSecurityWarningCount());
+        assertEquals(1, summary.getSecurityWarningCount());
         assertEquals(1, summary.getLicenseErrorCount());
-        // TODO this is based on the number of warning messages, still not sure what constitutes 
-        // a warning over an error.
-        //assertEquals(1, summary.getLicenseWarningCount());
+        assertEquals(1, summary.getLicenseWarningCount());
         assertFalse(logger.getOutputList(LogLevel.INFO).isEmpty());
     }
 
@@ -92,10 +86,17 @@ public class RapidScanResultAggregatorTest {
 
                 DeveloperScansScanItemsViolatingPoliciesView view = new DeveloperScansScanItemsViolatingPoliciesView();
                 view.setPolicyName("component_policy");
-                view.setPolicyName("vulnerability_policy");
-                view.setPolicyName("license_policy");
+                view.setPolicySeverity("CRITICAL");
+                DeveloperScansScanItemsViolatingPoliciesView view2 = new DeveloperScansScanItemsViolatingPoliciesView();
+                view2.setPolicyName("vulnerability_policy");
+                view2.setPolicySeverity("CRITICAL");
+                DeveloperScansScanItemsViolatingPoliciesView view3 = new DeveloperScansScanItemsViolatingPoliciesView();
+                view3.setPolicyName("license_policy");
+                view3.setPolicySeverity("MINOR");
 
                 violatingPolicies.add(view);
+                violatingPolicies.add(view2);
+                violatingPolicies.add(view3);
                 return violatingPolicies;
             }
 
@@ -119,8 +120,14 @@ public class RapidScanResultAggregatorTest {
                         
                         DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView view = new DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView();
                         view.setPolicyName("vulnerability_policy");
+                        view.setPolicySeverity("CRITICAL");
+                        
+                        DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView view2 = new DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView();
+                        view2.setPolicyName("vulnerability_policy_warning");
+                        view2.setPolicySeverity("MINOR");
                  
                         violatingPolicies.add(view);
+                        violatingPolicies.add(view2);
                         return violatingPolicies;
                     }
                 };
@@ -144,8 +151,14 @@ public class RapidScanResultAggregatorTest {
                         
                         DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView view = new DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView(); 
                         view.setPolicyName("license_policy");
+                        view.setPolicySeverity("CRITICAL");
+                        
+                        DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView view2 = new DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView(); 
+                        view2.setPolicyName("license_policy_warning");
+                        view2.setPolicySeverity("MINOR");
                         
                         violatingPolicies.add(view);
+                        violatingPolicies.add(view2);
                         return violatingPolicies;
                     }
                 };
