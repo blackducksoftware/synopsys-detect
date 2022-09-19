@@ -16,7 +16,7 @@ The file includes status codes, issues encountered and results produced. As addi
 "detectors": [ List of Detectors, see details below. ]
 "status": [ List of Status, see details below. ]
 "issues": [ List of Issues, see details below. ]
-"overallStatus: [ The overall exit status and detailed message on exit of detect. ]
+"overallStatus: [ List the overall exit status and detailed message on exit of detect. ]
 "results": [ List of Results, see details below. ]
 "unrecognizedPaths": [ List of Unrecognized Paths, see details below. ]
 "codeLocations": [ List of code locations produced, see details below. ]
@@ -117,6 +117,6 @@ so pass-through properties like docker and dynamic properties like custom fields
 
 ## Operations
 A list of information regarding internal execution of detect to describe when portions of detect run and what their status is.
-This information is intended to be used when detect fails and the reason for the failure needs to be determined.
+This information is intended to be used when detect fails and the reason(s) for a Detect failure.
 
 ```
