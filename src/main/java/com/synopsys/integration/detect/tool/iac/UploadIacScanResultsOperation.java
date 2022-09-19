@@ -22,6 +22,7 @@ public class UploadIacScanResultsOperation {
     public void uploadResults(File resultsFile, String scanId) throws IntegrationException {
         String resultsFileContent;
         try {
+            logger.trace("Reading {} using character encoding {}", resultsFile.getAbsolutePath(), StandardCharsets.UTF_8);
             resultsFileContent = FileUtils.readFileToString(resultsFile, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new IntegrationException("Unable to parse Iac Scan results file: " + resultsFile.getAbsolutePath(), e);
