@@ -81,12 +81,6 @@ A result is a URL, file path to output, or messages produced by the [solution_na
 }
 ```
 
-"startTimestamp": A formatted UTC timestamp when the execution started.
-"endTimestamp": A formatted UTC timestamp when the execution ended.
-"descriptionKey": A string that describes what is being executed.
-"status": "SUCCESS" or "FAILURE"
-```
-
 ## Unrecognized Paths
 
 For those detectors that support it (currently, only CLANG), a list of file paths to dependencies that
@@ -108,15 +102,21 @@ For those detectors that support it (currently, only CLANG), a list of file path
 A map of every property key to it's string value that Detect found. These are only properties to which Detect has a known key,
 so pass-through properties like Docker and dynamic properties like custom fields are not included. Passwords and other sensitive fields are masked.
 
-```
+````
   "propertyValues": {
     "key": "value",
     "boolean-key": "true"
   }
-```
+````
 
 ## Operations
 A list of information regarding internal execution of Detect to describe when portions of Detect run and what their status is.
 This information is intended to be used when Detect fails and the reason(s) for a Detect failure.
-
-```
+````
+  "operations": {
+    "startTimestamp": A formatted UTC timestamp when the execution started.
+    "endTimestamp": A formatted UTC timestamp when the execution ended.
+    "descriptionKey": A string that describes what is being executed.
+    "status": "SUCCESS" or "FAILURE"
+  }
+````
