@@ -578,9 +578,8 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.detector.search.continue", false)
             .setInfo("Detector Search Continue", DetectPropertyFromVersion.VERSION_3_2_0)
             .setHelp(
-                "If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.",
-                "If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc. "
-                    + "If false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project."
+                "By default, nesting rules limit which detectors can run on a subdirectory based on which detectors applied on any parent directory. Setting this property to true disables nesting rules.",
+                "Refer to the 'Downloading and Running Synopsys Detect' > 'Detector search and accuracy' page for more information on nesting rules."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -785,8 +784,8 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.excluded.projects")
             .setInfo("Gradle Exclude Projects", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "A comma-separated list of Gradle sub-projects to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "A comma-separated list of Gradle subprojects to exclude.",
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subprojects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -794,10 +793,10 @@ public class DetectProperties {
 
     public static final CaseSensitiveStringListProperty DETECT_GRADLE_EXCLUDED_PROJECT_PATHS =
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.excluded.project.paths")
-            .setInfo("Gradle Exclude Project Paths", DetectPropertyFromVersion.VERSION_7_12_0)
+            .setInfo("Gradle Exclude Subproject Paths", DetectPropertyFromVersion.VERSION_7_12_0)
             .setHelp(
-                "A comma-separated list of Gradle sub-project paths to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-project whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "A comma-separated list of Gradle subproject paths to exclude.",
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subproject whose path matches one of the values passed via this property. Run 'gradle projects' to see the paths to your subprojects. Subproject paths have the form ':subproject:subsubproject' and are unique. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -829,8 +828,8 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.included.projects")
             .setInfo("Gradle Include Projects", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "A comma-separated list of Gradle sub-projects to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "A comma-separated list of Gradle subprojects to include.",
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -840,8 +839,8 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.included.project.paths")
             .setInfo("Gradle Include Project Paths", DetectPropertyFromVersion.VERSION_7_12_0)
             .setHelp(
-                "A comma-separated list of Gradle sub-project paths to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "A comma-separated list of Gradle subproject paths to include.",
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -879,7 +878,7 @@ public class DetectProperties {
             .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "If false, Detect will exclude the default directory names. See the detailed help for more information.",
-                "If false, the following directories will be excluded by Detect when searching for detectors: bin, build, .git, .gradle, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, node_modules, .synopsys."
+                "If false, the following directories will be excluded by Detect when searching for detectors: __MACOX, bin, build, .git, .gradle, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, node_modules, .synopsys."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -981,7 +980,7 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.maven.excluded.modules")
             .setInfo("Maven Modules Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "A comma-separated list of Maven modules (sub-projects) to exclude.",
+                "A comma-separated list of Maven modules (subprojects) to exclude.",
                 "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
@@ -992,7 +991,7 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.maven.included.modules")
             .setInfo("Maven Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "A comma-separated list of Maven modules (sub-projects) to include.",
+                "A comma-separated list of Maven modules (subprojects) to include.",
                 "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
@@ -1706,16 +1705,16 @@ public class DetectProperties {
             .setGroups(DetectGroup.RAPID_SCAN, DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .build();
-    
+
     public static final NullablePathProperty DETECT_STATUS_JSON_OUTPUT_PATH =
-            NullablePathProperty.newBuilder("detect.status.json.output.path")
-                .setInfo("Status JSON Output Path", DetectPropertyFromVersion.VERSION_8_1_0)
-                .setHelp(
-                    "The directory to place a copy of the status.json file.",
-                    "If set, Detect will use the given directory to store a copy of the status.json file."
-                )
-                .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
-                .build();
+        NullablePathProperty.newBuilder("detect.status.json.output.path")
+            .setInfo("Status JSON Output Path", DetectPropertyFromVersion.VERSION_8_1_0)
+            .setHelp(
+                "The directory to place a copy of the status.json file.",
+                "If set, Detect will use the given directory to store a copy of the status.json file."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .build();
 
     //#endregion Active Properties
 

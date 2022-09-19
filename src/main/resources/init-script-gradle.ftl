@@ -81,6 +81,8 @@ gradle.allprojects {
                     } else {
                         println "Could not find method 'setOutputFile'"
                     }
+                } else {
+                    println "Excluding from results subproject: " + project.path
                 }
             }
 

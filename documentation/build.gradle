@@ -30,9 +30,9 @@ task ditasite() {
             if (outputLine.matches(".*File.*helpJsonFile:.*not found.*")) throw new Exception("dita error: invalid link: " + outputLine)
         }
         for (String outputLine : stdOut.toString().split('\n')) {
-            if (outputLine.matches(".*\\[DOT.*\\].*\\[ERROR\\].*")) throw new Exception("dita error. To run dita by hand: cd docs/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
+            if (outputLine.matches(".*\\[DOT.*\\].*\\[ERROR\\].*")) throw new Exception("dita error. To run dita by hand: cd documentation/build/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
 
-            if (outputLine.matches(".*\\[keyref\\].*\\[DOTJ047I\\].*")) throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes. To run dita by hand: cd docs/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
+            if (outputLine.matches(".*\\[keyref\\].*\\[DOTJ047I\\].*")) throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes. To run dita by hand: cd documentation/build/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
         }
         File indexHtmlFile = new File(project.getBuildDir(), "ditasite/index.html")
         println "To browse the webhelp: Open file://${indexHtmlFile.getAbsolutePath()} in a browser"
@@ -48,7 +48,7 @@ task ditasourcezip(type: Zip) {
     // depending on ditasite does some validation of the files going into the dita source zip
     dependsOn ditasite
 
-    archiveName "${project.name}-${version}-ditasource.zip"
+    archiveName "${rootProject.name}-${version}-ditasource.zip"
     from generatedDir
     destinationDir(file("${buildDir}/libs/"))
 }
@@ -57,11 +57,11 @@ task publishDitaSource() {
     dependsOn ditasourcezip
 
     doLast {
-        def ditaSourceZipName = "${project.name}-${version}-ditasource.zip"
+        def ditaSourceZipName = "${rootProject.name}-${version}-ditasource.zip"
         def ditaSourceZipLocation = "${buildDir}/libs/${ditaSourceZipName}"
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
-                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${ditaSourceZipName}", '-T', "${ditaSourceZipLocation}", '-f'
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${rootProject.name}/${version}/${ditaSourceZipName}", '-T', "${ditaSourceZipLocation}", '-f'
         }
     }
 }

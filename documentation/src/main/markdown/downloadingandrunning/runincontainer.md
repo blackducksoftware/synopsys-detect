@@ -18,6 +18,8 @@ To run a container built from a [solution_name] image, use the Docker CLI's `doc
 
 Find available images [here](https://hub.docker.com/repository/docker/blackducksoftware/detect).
 
+Find the source for them (Dockerfiles) [here](https://github.com/blackducksoftware/synopsys-detect-docker).
+
 The format of image names is: `blackducksoftware/detect:[detect_version]-[package_manager]-[package_manager_version]`
 
 * If you want an image with the latest supported release for a major version of [solution_name], and the latest supported version of a package manager, such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-[package_manager]`
