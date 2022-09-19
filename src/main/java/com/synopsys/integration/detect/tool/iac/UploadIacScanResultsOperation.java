@@ -2,7 +2,7 @@ package com.synopsys.integration.detect.tool.iac;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class UploadIacScanResultsOperation {
     public void uploadResults(File resultsFile, String scanId) throws IntegrationException {
         String resultsFileContent;
         try {
-            resultsFileContent = FileUtils.readFileToString(resultsFile, Charset.defaultCharset());
+            resultsFileContent = FileUtils.readFileToString(resultsFile, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new IntegrationException("Unable to parse Iac Scan results file: " + resultsFile.getAbsolutePath(), e);
         }
