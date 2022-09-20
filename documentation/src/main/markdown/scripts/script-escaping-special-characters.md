@@ -2,9 +2,9 @@
 
 ## Running the Bash script ([bash_script_name]) on Linux or Mac
 
-The recommended environment ("parent shell") for running [bash_script_name] on Linux is Bash. On Mac it is Bash or Zsh.
+The recommended environment ("parent shell") for running [bash_script_name] on Linux is Bash, and Bash or Zsh on Mac.
 
-When an argument contains a space or other non-doublequote special character, you can wrap the argument in single quotes, double quotes, or escape the special character with a backslash (\\). The quotes can surround either the value or the entire argument. 
+When an argument contains a space or other non double quote special character, you can wrap the argument in single quotes, double quotes, or escape the special character with a backslash (\\). The quotes can surround either the value or the entire argument. 
 
 For example:
 ```
@@ -21,7 +21,7 @@ bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --detect.project.name=
 bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --detect.project.name=Project\!Test
 ```
 
-You can include a doublequote by singlequoting the string, and escaping the doublequotes with backslashes:
+You can include a double quote by single quoting the string, and escaping the double quotes with backslashes:
 ```
 # license: BSD 3-clause "New" or "Revised" License
 bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --detect.project.version.license='BSD 3-clause \"New\" or \"Revised\" License' 
@@ -35,7 +35,7 @@ This section describes running
 [powershell_script_name] in a [Windows Command Prompt](https://en.wikipedia.org/wiki/Cmd.exe)
 session.
 
-When an argument contains a space, comma or other non-quote special character, you can wrap the argument in single quotes, or escape the special character with a backtick (`). The quotes can surround either the value or the entire argument. 
+When an argument contains a space, comma or other non quote special character, you can wrap the argument in single quotes, or escape the special character with a backtick (`). The quotes can surround either the value or the entire argument. 
 
 For example:
 ```
@@ -52,13 +52,13 @@ powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://d
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect" --detect.project.name=Project`,Test
 ```
 
-You can include a singlequote by doubling it:
+You can include a single quote by doubling it:
 ```
 # name: singlequote'
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect" --detect.project.name='singlequote'''
 ```
 
-You can include a doublequote using this sequence: doublequote, 2 backslashes, 2 doublequotes:
+You can include a double quote using this sequence: double quote, 2 backslashes, 2 double quotes:
 ```
 # license: BSD 3-clause "New" or "Revised" License
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect" --detect.project.version.license='BSD 3-clause "\\""New"\\"" or "\\""Revised"\\"" License'
@@ -92,7 +92,7 @@ For example:
 [Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect --detect.project.name=Project`,Test
 ```
 
-You can include a doublequote using this sequence: backslash, backtick, doublequote:
+You can include a double quote using this sequence: backslash, backtick, double quote:
 ```
 # license: BSD 3-clause "New" or "Revised" License
 [Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect --detect.project.version.license="BSD 3-clause \`"New\`" or \`"Revised\`" License"

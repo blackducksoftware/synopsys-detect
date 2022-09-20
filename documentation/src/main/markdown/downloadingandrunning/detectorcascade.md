@@ -9,7 +9,7 @@ to the depth indicated (0 means top level only).
 Detector search:
 
 1. Finds project root directories, and
-1. Determines which detector(s) should run on each project root directory that it found.
+2. Determines which detector(s) should run on each project root directory that it found.
 
 A project's root directory is the project's top-level directory viewed from the perspective of the project's package manager.
 There may be more than one project in your source directory.
