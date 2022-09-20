@@ -41,10 +41,12 @@ public class IntelligentModeStepRunner {
     private final OperationRunner operationRunner;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StepHelper stepHelper;
+    private final String detectRunUuid;
 
-    public IntelligentModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper) {
+    public IntelligentModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, String detectRunUuid) {
         this.operationRunner = operationRunner;
         this.stepHelper = stepHelper;
+        this.detectRunUuid = detectRunUuid;
     }
 
     public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws OperationException {
@@ -124,7 +126,7 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.IAC_SCAN, "IaC Scanner", () -> {
             IacScanStepRunner iacScanStepRunner = new IacScanStepRunner(operationRunner);
-            IacScanCodeLocationData iacScanCodeLocationData = iacScanStepRunner.runIacScanOnline(projectNameVersion, blackDuckRunData);
+            IacScanCodeLocationData iacScanCodeLocationData = iacScanStepRunner.runIacScanOnline(detectRunUuid, projectNameVersion, blackDuckRunData);
             codeLocationAccumulator.addNonWaitableCodeLocation(iacScanCodeLocationData.getCodeLocationNames());
         });
 

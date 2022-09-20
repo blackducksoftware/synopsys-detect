@@ -34,7 +34,7 @@ public class CreateAggregateBdio2FileOperation {
         this.detectInfo = detectInfo;
     }
 
-    public void writeAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation, Bdio.ScanType scanType) throws DetectUserFriendlyException {
+    public void writeAggregateBdio2File(String detectRunUuid, AggregateCodeLocation aggregateCodeLocation, Bdio.ScanType scanType) throws DetectUserFriendlyException {
         String detectVersion = detectInfo.getDetectVersion();
         SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
 
@@ -51,6 +51,8 @@ public class CreateAggregateBdio2FileOperation {
             ZonedDateTime.now(),
             new Product.Builder().name(detectCreator.getIdentifier()).build()
         );
+        // TODO the right way to do this will be to add support in bdio2Factory, but overriding what it generates will work for now
+        bdioMetadata.id(detectRunUuid);
         bdioMetadata.scanType(scanType);
 
         Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, aggregateCodeLocation.getAggregateDependencyGraph());
