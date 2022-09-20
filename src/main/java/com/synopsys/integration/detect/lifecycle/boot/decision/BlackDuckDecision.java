@@ -6,6 +6,7 @@ public class BlackDuckDecision {
     private final boolean shouldRun;
     private final boolean isOffline;
     private final BlackduckScanMode scanMode;
+    private boolean hasSignatureScanner;
 
     public BlackDuckDecision(boolean shouldRun, boolean isOffline, BlackduckScanMode scanMode) {
         this.shouldRun = shouldRun;
@@ -35,5 +36,13 @@ public class BlackDuckDecision {
 
     public BlackduckScanMode scanMode() {
         return scanMode;
+    }
+
+    public void setHasSignatureScanner(boolean containsValue) {
+        this.hasSignatureScanner = containsValue;
+    }
+
+    public boolean hasSignatureScan() {
+        return this.hasSignatureScanner;
     }
 }

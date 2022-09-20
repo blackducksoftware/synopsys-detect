@@ -92,13 +92,26 @@ public class ProductBoot {
         if (blackDuckConnectivityResult.isSuccessfullyConnected()) {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
 
+            BlackDuckRunData bdRunData= null;
             if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getBlackDuckApiClient())) {
                 PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
-                return BlackDuckRunData.online(blackDuckDecision.scanMode(), blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
+                bdRunData = BlackDuckRunData.online(blackDuckDecision.scanMode(), blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
             } else {
                 logger.debug("Skipping phone home due to Black Duck global settings.");
-                return BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
+                bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
             }
+            if (bdRunData.isRapid() && blackDuckDecision.hasSignatureScan()) {
+                String minBlackDuckVersionForRapidSignatureScan = "2022.10.0";
+                String bdVersion = blackDuckConnectivityResult.getContactedServerVersion();
+                if (minBlackDuckVersionForRapidSignatureScan.compareTo(bdVersion) > 0) {
+                    // abort!
+                    throw new DetectUserFriendlyException(
+                            "Cannot use RAPID SIGNATURE SCAN with Black Duck Versions prior to 2022.10.0!  The Black Duck Version attempted was: " + bdVersion,
+                            ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY
+                        );
+                }
+            }
+            return bdRunData;
         } else {
             if (productBootOptions.isIgnoreConnectionFailures()) {
                 logger.info(String.format("Failed to connect to Black Duck: %s", blackDuckConnectivityResult.getFailureReason()));

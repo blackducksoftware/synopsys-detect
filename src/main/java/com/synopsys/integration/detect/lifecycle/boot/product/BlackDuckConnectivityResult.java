@@ -5,6 +5,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 
 public class BlackDuckConnectivityResult {
     private final boolean successfullyConnected;
+    private String contactedServerVersion = "no connected server version";
 
     //if failure, the following is populated
     private final String failureReason;
@@ -47,5 +48,16 @@ public class BlackDuckConnectivityResult {
 
     public BlackDuckServerConfig getBlackDuckServerConfig() {
         return blackDuckServerConfig;
+    }
+
+    public void setContactedServerVersion(String version) {
+        if (null == version && version.equals("")) {
+            return;
+        }
+        this.contactedServerVersion = version;
+    }
+
+    public String getContactedServerVersion() {
+        return this.contactedServerVersion;
     }
 }

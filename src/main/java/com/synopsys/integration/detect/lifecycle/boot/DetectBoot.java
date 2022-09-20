@@ -182,6 +182,8 @@ public class DetectBoot {
                 detectConfigurationFactory.createBlackDuckConnectionDetails(),
                 detectConfigurationFactory.createScanMode()
             );
+
+            blackDuckDecision.setHasSignatureScanner(detectConfiguration.getValue(DetectProperties.DETECT_TOOLS).containsValue(DetectTool.SIGNATURE_SCAN));
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
             oneRequiresTheOther(
