@@ -1,6 +1,5 @@
 package com.synopsys.integration.detect.lifecycle.boot.decision;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -8,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 
 public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
