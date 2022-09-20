@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.util.Collections;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -31,11 +30,7 @@ public class DetectFontInstallerTestIT {
     @BeforeEach
     public void createTempDirectory() throws Exception {
         targetDirectory = Files.createTempDirectory("junit_font_installer_test").toFile();
-    }
-
-    @AfterEach
-    public void cleanTempDirectory() {
-        FileUtils.deleteQuietly(targetDirectory);
+        FileUtils.forceDeleteOnExit(targetDirectory);
     }
 
     @Test

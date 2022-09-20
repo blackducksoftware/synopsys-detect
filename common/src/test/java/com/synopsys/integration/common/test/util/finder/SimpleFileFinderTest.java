@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -29,15 +27,7 @@ public class SimpleFileFinderTest {
     @BeforeEach
     public void setup() throws IOException {
         initialDirectoryPath = Files.createTempDirectory("SimpleFileFinderTest");
-    }
-
-    @AfterEach
-    public void cleanup() throws IOException {
-        try {
-            Files.delete(initialDirectoryPath);
-        } catch (DirectoryNotEmptyException e) {
-            FileUtils.deleteDirectory(initialDirectoryPath.toFile());
-        }
+        FileUtils.forceDeleteOnExit(initialDirectoryPath.toFile());
     }
 
     @Test

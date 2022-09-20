@@ -151,6 +151,7 @@ public class BatteryContext {
         } else {
             try {
                 batteryDirectory = Files.createTempDirectory("detect_battery").toFile();
+                FileUtils.forceDeleteOnExit(batteryDirectory);
             } catch (IOException ex) {
                 logger.error("Error initializing battery directory.", ex);
             }

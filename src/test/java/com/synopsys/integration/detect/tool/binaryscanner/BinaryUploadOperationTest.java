@@ -55,6 +55,7 @@ public class BinaryUploadOperationTest {
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
 
         File rootDirectory = Files.createTempDirectory("BinaryScannerTest").toFile();
+        FileUtils.forceDeleteOnExit(rootDirectory);
         createDirWithFiles(rootDirectory, "BinaryScannerSubDirectory");
 
         ArrayList<String> targetPaths = new ArrayList<>();
@@ -72,8 +73,6 @@ public class BinaryUploadOperationTest {
         List<String> entries = getZipEntries(zip);
         Assertions.assertTrue(entries.contains("BinaryScannerSubDirectory/binaryTestFile_1.txt"));
         Assertions.assertTrue(entries.contains("BinaryScannerSubDirectory/binaryTestFile_2.text"));
-
-        FileUtils.deleteDirectory(rootDirectory);
     }
 
     @Test
@@ -84,6 +83,7 @@ public class BinaryUploadOperationTest {
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
 
         File rootDirectory = Files.createTempDirectory("BinaryScannerTest").toFile();
+        FileUtils.forceDeleteOnExit(rootDirectory);
         createDirWithFiles(rootDirectory, "includedDir");
         createDirWithFiles(rootDirectory, "excludedDir");
         ArrayList<String> targetPaths = new ArrayList<>();
@@ -102,8 +102,6 @@ public class BinaryUploadOperationTest {
         Assertions.assertFalse(entries.contains("includedDir/binaryTestFile_2.text"));
         Assertions.assertFalse(entries.contains("excludedDir/binaryTestFile_1.txt"));
         Assertions.assertFalse(entries.contains("excludedDir/binaryTestFile_2.text"));
-
-        FileUtils.deleteDirectory(rootDirectory);
     }
 
     private File createDirWithFiles(File parentDirectory, String dirName) throws IOException {

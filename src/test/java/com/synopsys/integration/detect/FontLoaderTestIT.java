@@ -8,7 +8,6 @@ import java.util.Collections;
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -33,12 +32,12 @@ import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 
 @Tag("integration")
 public class FontLoaderTestIT {
-    private File fontDirectory;
     private DetectFontLocator detectFontLocator;
 
     @BeforeEach
     public void createTempDirectory() throws Exception {
-        fontDirectory = Files.createTempDirectory("junit_test_font_loader").toFile();
+        File fontDirectory = Files.createTempDirectory("junit_test_font_loader").toFile();
+        FileUtils.forceDeleteOnExit(fontDirectory);
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList());
         Gson gson = new Gson();
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(
@@ -53,11 +52,6 @@ public class FontLoaderTestIT {
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, fontDirectory.toPath(), null, null);
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, DetectRunId.createDefault());
         detectFontLocator = new OnlineDetectFontLocator(installer, directoryManager);
-    }
-
-    @AfterEach
-    public void cleanTempDirectory() {
-        FileUtils.deleteQuietly(fontDirectory);
     }
 
     @Test

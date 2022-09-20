@@ -33,6 +33,7 @@ public class DockerTestDirectories {
         } else {
             dockerTestDirectory = Files.createTempDirectory("docker").toFile();
         }
+        FileUtils.forceDeleteOnExit(dockerTestDirectory);
         testDirectory = new File(dockerTestDirectory, testId);
         testResultDirectory = new File(testDirectory, "result");
         Assertions.assertTrue(testResultDirectory.mkdirs());
