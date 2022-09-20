@@ -22,7 +22,7 @@ sharing of that directory.
 
 Docker on Windows has restrictions that impact [docker_inspector_name]:
 
-1. Docker can be configured to pull either LinUx images, or Windows images.
+1. Docker can be configured to pull either Linux images, or Windows images.
 You can see how your Docker installation is configured by looking
 at the *OSType* value in the output of the *docker info* command.
 If Docker is configured for Linux images, it cannot pull Windows images,
