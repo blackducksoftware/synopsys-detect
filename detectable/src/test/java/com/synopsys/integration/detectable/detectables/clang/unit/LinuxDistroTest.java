@@ -11,28 +11,37 @@ import java.nio.file.Files;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.clang.linux.LinuxDistro;
 
 public class LinuxDistroTest {
+    private File testDirectory;
+
+    @BeforeEach
+    public void init() throws IOException {
+        testDirectory = Files.createTempDirectory("linuxDistroTest").toFile();
+        FileUtils.forceDeleteOnExit(testDirectory);
+    }
 
     @Test
-    void testNotFound() throws IOException {
-        File emptyDir = Files.createTempDirectory("linuxDistroTest").toFile();
+    void testNotFound() {
         LinuxDistro linuxDistro = new LinuxDistro();
-        Optional<String> extractedLinuxDistroName = linuxDistro.extractLinuxDistroNameFromEtcDir(emptyDir);
+        Optional<String> extractedLinuxDistroName = linuxDistro.extractLinuxDistroNameFromEtcDir(testDirectory);
 
         assertFalse(extractedLinuxDistroName.isPresent());
     }
 
     @Test
     void testUbuntu() throws IOException {
-        File etcDir = Files.createTempDirectory("linuxDistroTest").toFile();
-        File osReleaseFile = new File(etcDir, "os-release");
+        File osReleaseFile = new File(testDirectory, "os-release");
+
+        osReleaseFile.deleteOnExit();
+
         FileUtils.write(osReleaseFile, "ID=ubuntu", StandardCharsets.UTF_8);
         LinuxDistro linuxDistro = new LinuxDistro();
-        Optional<String> extractedLinuxDistroName = linuxDistro.extractLinuxDistroNameFromEtcDir(etcDir);
+        Optional<String> extractedLinuxDistroName = linuxDistro.extractLinuxDistroNameFromEtcDir(testDirectory);
 
         assertTrue(extractedLinuxDistroName.isPresent());
         assertEquals("ubuntu", extractedLinuxDistroName.get());
@@ -40,11 +49,13 @@ public class LinuxDistroTest {
 
     @Test
     void testFedora() throws IOException {
-        File etcDir = Files.createTempDirectory("linuxDistroTest").toFile();
-        File osReleaseFile = new File(etcDir, "redhat-release");
+        File osReleaseFile = new File(testDirectory, "redhat-release");
+
+        osReleaseFile.deleteOnExit();
+
         FileUtils.write(osReleaseFile, "Fedora-something", StandardCharsets.UTF_8);
         LinuxDistro linuxDistro = new LinuxDistro();
-        Optional<String> extractedLinuxDistroName = linuxDistro.extractLinuxDistroNameFromEtcDir(etcDir);
+        Optional<String> extractedLinuxDistroName = linuxDistro.extractLinuxDistroNameFromEtcDir(testDirectory);
 
         assertTrue(extractedLinuxDistroName.isPresent());
         assertEquals("fedora", extractedLinuxDistroName.get());
