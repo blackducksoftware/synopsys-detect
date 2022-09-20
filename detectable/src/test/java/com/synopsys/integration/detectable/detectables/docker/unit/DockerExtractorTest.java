@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,12 +48,11 @@ public class DockerExtractorTest {
         fakeSquashedImageFile = Files.createTempFile("DockerExtractorTest", "_squashedimage.tar.gz").toFile();
         fakeDockerTarFile = Files.createTempFile("DockerExtractorTest", "_testDockerTarfile.tar").toFile();
         fakeResultsFile = Files.createTempFile("DockerExtractorTest", "_results.json").toFile();
-    }
 
-    @AfterAll
-    public static void tearDown() {
-        fakeContainerFileSystemFile.delete();
-        fakeDockerTarFile.delete();
+        FileUtils.forceDeleteOnExit(fakeContainerFileSystemFile);
+        FileUtils.forceDeleteOnExit(fakeSquashedImageFile);
+        FileUtils.forceDeleteOnExit(fakeDockerTarFile);
+        FileUtils.forceDeleteOnExit(fakeResultsFile);
     }
 
     @Test
