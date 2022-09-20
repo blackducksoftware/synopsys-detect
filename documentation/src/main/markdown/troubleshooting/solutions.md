@@ -191,5 +191,3 @@ The problem may be intermittent.
 There is no harm in leaving the directories behind in the short term but we recommend periodically removing them if the problem occurs frequently.
 Restarting Docker will force Docker to release the locks, and enable you to remove the directories.
 
-(https://docs.spring.io/spring-boot/docs/2.6.6/reference/html/howto.html#howto.properties-and-configuration.external-properties-location).
-
