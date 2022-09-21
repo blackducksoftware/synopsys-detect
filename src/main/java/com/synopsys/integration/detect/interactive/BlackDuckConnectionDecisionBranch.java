@@ -40,7 +40,7 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
     @Override
     public void traverse(InteractivePropertySourceBuilder propertySourceBuilder, InteractiveWriter writer) {
         boolean shouldReconfigureServer = true;
-        BlackDuckConnectivityResult blackDuckConnectivityResult = BlackDuckConnectivityResult.failure("Connection has yet to be attempted.", "");
+        BlackDuckConnectivityResult blackDuckConnectivityResult = BlackDuckConnectivityResult.failure("Connection has yet to be attempted.");
         BlackDuckServerDecisionBranch blackDuckServerDecisionBranch = new BlackDuckServerDecisionBranch();
 
         while (!blackDuckConnectivityResult.isSuccessfullyConnected() && shouldReconfigureServer) {
@@ -61,7 +61,7 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
 
                     blackDuckConnectivityResult = blackDuckConnectivityChecker.determineConnectivity(blackDuckServerConfig);
                 } catch (Exception e) {
-                    blackDuckConnectivityResult = BlackDuckConnectivityResult.failure("Failed to test connection. " + System.lineSeparator() + e, "");
+                    blackDuckConnectivityResult = BlackDuckConnectivityResult.failure("Failed to test connection. " + System.lineSeparator() + e);
                 }
 
                 if (!blackDuckConnectivityResult.isSuccessfullyConnected()) {
