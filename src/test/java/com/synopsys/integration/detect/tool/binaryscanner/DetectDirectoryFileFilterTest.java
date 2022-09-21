@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,6 @@ public class DetectDirectoryFileFilterTest {
     @BeforeAll
     static void setup() throws IOException {
         tempDir = Files.createTempDirectory("junit_test_filtertest").toFile();
-        FileUtils.forceDeleteOnExit(tempDir);
 
         includedFile = new File(tempDir, "includeme.txt");
         includedFile.createNewFile();
@@ -38,12 +38,15 @@ public class DetectDirectoryFileFilterTest {
         nonMatchingFile.createNewFile();
         excludedDir = new File(includedDir, "excludeme");
         excludedDir.mkdir();
+    }
 
+    @AfterAll
+    static void cleanUp() throws IOException {
+        FileUtils.forceDelete(tempDir);
     }
 
     @Test
     void testFileInclusion() {
-
         List<String> excludedDirs = Arrays.asList("excludeme");
         List<String> includedFiles = Arrays.asList("*.txt");
         DetectDirectoryFileFilter filter = new DetectDirectoryFileFilter(excludedDirs, includedFiles);

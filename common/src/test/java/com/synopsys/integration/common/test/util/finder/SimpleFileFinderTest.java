@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -21,12 +22,15 @@ import org.junit.jupiter.api.condition.DisabledOnOs;
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
 
 public class SimpleFileFinderTest {
-
     private static Path initialDirectoryPath;
 
     @BeforeEach
     public void setup() throws IOException {
         initialDirectoryPath = Files.createTempDirectory("SimpleFileFinderTest");
+    }
+
+    @AfterEach
+    public void cleanUp() throws IOException {
         FileUtils.forceDeleteOnExit(initialDirectoryPath.toFile());
     }
 

@@ -48,11 +48,14 @@ public class DockerExtractorTest {
         fakeSquashedImageFile = Files.createTempFile("DockerExtractorTest", "_squashedimage.tar.gz").toFile();
         fakeDockerTarFile = Files.createTempFile("DockerExtractorTest", "_testDockerTarfile.tar").toFile();
         fakeResultsFile = Files.createTempFile("DockerExtractorTest", "_results.json").toFile();
+    }
 
-        FileUtils.forceDeleteOnExit(fakeContainerFileSystemFile);
-        FileUtils.forceDeleteOnExit(fakeSquashedImageFile);
-        FileUtils.forceDeleteOnExit(fakeDockerTarFile);
-        FileUtils.forceDeleteOnExit(fakeResultsFile);
+    @AfterAll
+    public static void cleanUp() throws IOException {
+        FileUtils.forceDelete(fakeContainerFileSystemFile);
+        FileUtils.forceDelete(fakeSquashedImageFile);
+        FileUtils.forceDelete(fakeDockerTarFile);
+        FileUtils.forceDelete(fakeResultsFile);
     }
 
     @Test

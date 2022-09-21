@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,11 @@ public class DirectoryFinderTest {
     @BeforeAll
     public static void setup() throws IOException {
         initialDirectoryPath = Files.createTempDirectory("DetectorFinderTest");
-        FileUtils.forceDeleteOnExit(initialDirectoryPath.toFile());
+    }
+
+    @AfterAll
+    public static void cleanup() throws IOException {
+        FileUtils.deleteDirectory(initialDirectoryPath.toFile());
     }
 
     @Test

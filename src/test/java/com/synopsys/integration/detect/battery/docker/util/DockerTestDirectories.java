@@ -33,7 +33,6 @@ public class DockerTestDirectories {
         } else {
             dockerTestDirectory = Files.createTempDirectory("docker").toFile();
         }
-        FileUtils.forceDeleteOnExit(dockerTestDirectory);
         testDirectory = new File(dockerTestDirectory, testId);
         testResultDirectory = new File(testDirectory, "result");
         Assertions.assertTrue(testResultDirectory.mkdirs());
@@ -73,8 +72,8 @@ public class DockerTestDirectories {
     }
 
     public void cleanup() throws IOException {
-        //File rootTestDir = testDirectory.getParentFile();
-        //FileUtils.deleteDirectory(rootTestDir);
+        File rootTestDir = testDirectory.getParentFile();
+        FileUtils.forceDelete(rootTestDir);
     }
 
     public Bind[] getBindings() {

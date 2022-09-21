@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -28,9 +30,13 @@ public class DetectFontInstallerTestIT {
     private File targetDirectory;
 
     @BeforeEach
-    public void createTempDirectory() throws Exception {
+    public void createTempDirectory() throws IOException {
         targetDirectory = Files.createTempDirectory("junit_font_installer_test").toFile();
-        FileUtils.forceDeleteOnExit(targetDirectory);
+    }
+
+    @AfterEach
+    public void cleanUp() throws IOException {
+        FileUtils.forceDelete(targetDirectory);
     }
 
     @Test

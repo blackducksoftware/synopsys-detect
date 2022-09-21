@@ -17,8 +17,10 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -30,9 +32,20 @@ import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.BinaryScanStepRunner;
 import com.synopsys.integration.detect.util.finder.DetectDirectoryFileFilter;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class BinaryUploadOperationTest {
+    private static File rootDirectory;
+
+    @BeforeEach
+    public void setup() throws IOException {
+        rootDirectory = Files.createTempDirectory("BinaryScannerTest").toFile();
+    }
+
+    @AfterEach
+    public void cleanUp() throws IOException {
+        FileUtils.forceDelete(rootDirectory);
+    }
+
     @Test
     public void testShouldFailOnDirectory() throws OperationException {
         BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), null, 0, false);
@@ -48,14 +61,12 @@ public class BinaryUploadOperationTest {
     }
 
     @Test
-    public void testMultipleTargetPaths() throws DetectUserFriendlyException, IOException, IntegrationException {
+    public void testMultipleTargetPaths() throws DetectUserFriendlyException, IOException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         SimpleFileFinder fileFinder = new SimpleFileFinder();
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
 
-        File rootDirectory = Files.createTempDirectory("BinaryScannerTest").toFile();
-        FileUtils.forceDeleteOnExit(rootDirectory);
         createDirWithFiles(rootDirectory, "BinaryScannerSubDirectory");
 
         ArrayList<String> targetPaths = new ArrayList<>();
@@ -76,14 +87,12 @@ public class BinaryUploadOperationTest {
     }
 
     @Test
-    public void testDirExclusion() throws DetectUserFriendlyException, IOException, IntegrationException {
+    public void testDirExclusion() throws DetectUserFriendlyException, IOException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         SimpleFileFinder fileFinder = new SimpleFileFinder();
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
 
-        File rootDirectory = Files.createTempDirectory("BinaryScannerTest").toFile();
-        FileUtils.forceDeleteOnExit(rootDirectory);
         createDirWithFiles(rootDirectory, "includedDir");
         createDirWithFiles(rootDirectory, "excludedDir");
         ArrayList<String> targetPaths = new ArrayList<>();

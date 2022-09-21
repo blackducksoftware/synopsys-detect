@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,11 @@ public class LinuxDistroTest {
     @BeforeEach
     public void init() throws IOException {
         testDirectory = Files.createTempDirectory("linuxDistroTest").toFile();
-        FileUtils.forceDeleteOnExit(testDirectory);
+    }
+
+    @AfterEach
+    public void cleanUp() throws IOException {
+        FileUtils.forceDelete(testDirectory);
     }
 
     @Test
