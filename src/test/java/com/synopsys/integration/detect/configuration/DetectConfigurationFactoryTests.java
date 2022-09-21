@@ -12,7 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.common.util.Bdo;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorSearchExcludedDirectories;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.rest.credentials.Credentials;
 
 public class DetectConfigurationFactoryTests {
@@ -62,5 +65,16 @@ public class DetectConfigurationFactoryTests {
         List<String> defaultExcludedDirectories = DefaultDetectorSearchExcludedDirectories.getDirectoryNames();
 
         Assertions.assertEquals(defaultExcludedDirectories, actualExcludedDirectories);
+    }
+    
+    @Test
+    public void testIsRapidIsEnabled() {
+        DetectConfigurationFactory factory = factoryOf(
+                Pair.of(DetectProperties.DETECT_TOOLS, DetectTool.SIGNATURE_SCAN.toString()),
+                Pair.of(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, BlackduckScanMode.RAPID.toString()));
+        
+        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = factory.createBlackDuckSignatureScannerOptions();
+
+        Assertions.assertTrue(blackDuckSignatureScannerOptions.getIsRapid());
     }
 }

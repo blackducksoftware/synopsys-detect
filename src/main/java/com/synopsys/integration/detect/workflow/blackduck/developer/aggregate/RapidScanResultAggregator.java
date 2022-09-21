@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.workflow.blackduck.developer.aggregate;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,10 +21,9 @@ import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanV
 public class RapidScanResultAggregator {
     public RapidScanAggregateResult aggregateData(List<DeveloperScansScanView> results) {
         Collection<RapidScanComponentDetail> componentDetails = aggregateComponentData(results);
-        // TODO this always comes back null for some reason
-//        List<RapidScanComponentDetail> sortedByComponent = componentDetails.stream()
-//                .sorted(Comparator.comparing(RapidScanComponentDetail::getComponentIdentifier))
-//                .collect(Collectors.toList());
+        List<RapidScanComponentDetail> sortedByComponent = componentDetails.stream()
+                .sorted(Comparator.comparing(RapidScanComponentDetail::getComponentIdentifier))
+                .collect(Collectors.toList());
         Map<RapidScanDetailGroup, RapidScanComponentGroupDetail> aggregatedDetails = new HashMap<>();
         aggregatedDetails.put(RapidScanDetailGroup.POLICY,
                 new RapidScanComponentGroupDetail(RapidScanDetailGroup.POLICY));
@@ -33,12 +33,9 @@ public class RapidScanResultAggregator {
                 new RapidScanComponentGroupDetail(RapidScanDetailGroup.LICENSE));
 
         RapidScanResultSummary.Builder summaryBuilder = new RapidScanResultSummary.Builder();
-        // TODO use unsorted list for now
-        for (RapidScanComponentDetail detail : componentDetails) {
+
+        for (RapidScanComponentDetail detail : sortedByComponent) {
             summaryBuilder.addDetailData(detail);
-            RapidScanDetailGroup securityGroupName = detail.getSecurityDetails().getGroup();
-            RapidScanDetailGroup licenseGroupName = detail.getLicenseDetails().getGroup();
-            RapidScanDetailGroup componentGroupName = detail.getComponentDetails().getGroup();
 
             RapidScanComponentGroupDetail aggregatedSecurityDetail = aggregatedDetails
                     .get(detail.getSecurityDetails().getGroup());
