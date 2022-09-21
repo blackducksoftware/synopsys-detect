@@ -65,12 +65,8 @@ public class DetectDockerTestRunner implements Closeable {
     }
 
     public DockerAssertions run(DetectCommandBuilder commandBuilder) {
-        try {
-            DockerDetectResult result = runContainer(commandBuilder);
-            return new DockerAssertions(this.dockerTestDirectories, result);
-        } finally {
-            close();
-        }
+        DockerDetectResult result = runContainer(commandBuilder);
+        return new DockerAssertions(this.dockerTestDirectories, result);
     }
 
     public DockerTestDirectories directories() {
@@ -78,11 +74,7 @@ public class DetectDockerTestRunner implements Closeable {
     }
 
     @Override
-    public void close() {
-        try {
-            this.dockerTestDirectories.cleanup();
-        } catch (IOException e) {
-            //ignoring
-        }
+    public void close() throws IOException {
+        this.dockerTestDirectories.cleanup();
     }
 }

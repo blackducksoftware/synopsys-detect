@@ -58,7 +58,7 @@ public class FontLoaderTestIT {
 
     @AfterEach
     public void cleanUp() throws IOException {
-        FileUtils.forceDeleteOnExit(fontDirectory);
+        FileUtils.forceDelete(fontDirectory);
     }
 
     @Test

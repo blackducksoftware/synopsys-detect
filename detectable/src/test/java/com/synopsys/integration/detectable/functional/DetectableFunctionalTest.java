@@ -65,7 +65,6 @@ public abstract class DetectableFunctionalTest {
         this.name = name;
 
         this.tempDirectory = Files.createTempDirectory(name);
-        FileUtils.forceDeleteOnExit(this.tempDirectory.toFile());
         this.sourceDirectory = tempDirectory.resolve("source");
         this.outputDirectory = tempDirectory.resolve("output");
 

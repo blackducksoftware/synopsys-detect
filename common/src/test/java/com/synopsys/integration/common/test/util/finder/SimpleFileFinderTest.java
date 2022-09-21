@@ -31,7 +31,7 @@ public class SimpleFileFinderTest {
 
     @AfterEach
     public void cleanUp() throws IOException {
-        FileUtils.forceDeleteOnExit(initialDirectoryPath.toFile());
+        FileUtils.forceDelete(initialDirectoryPath.toFile());
     }
 
     @Test
