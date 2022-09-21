@@ -516,19 +516,25 @@ public class OperationRunner {
         );
     }
 
-    public ScanBatch createScanBatchOnline(List<SignatureScanPath> scanPaths, NameVersion projectNameVersion, DockerTargetData dockerTargetData, BlackDuckRunData blackDuckRunData)
+    public ScanBatch createScanBatchOnline(
+        String detectRunUuid,
+        List<SignatureScanPath> scanPaths,
+        NameVersion projectNameVersion,
+        DockerTargetData dockerTargetData,
+        BlackDuckRunData blackDuckRunData
+    )
         throws OperationException {
         return auditLog.namedPublic("Create Online Signature Scan Batch", "OnlineSigScan",
             () -> new CreateScanBatchOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, codeLocationNameManager)
-                .createScanBatchWithBlackDuck(projectNameVersion, scanPaths, blackDuckRunData.getBlackDuckServerConfig(), dockerTargetData)
+                .createScanBatchWithBlackDuck(detectRunUuid, projectNameVersion, scanPaths, blackDuckRunData.getBlackDuckServerConfig(), dockerTargetData)
         );
     }
 
-    public ScanBatch createScanBatchOffline(List<SignatureScanPath> scanPaths, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
+    public ScanBatch createScanBatchOffline(String detectRunUuid, List<SignatureScanPath> scanPaths, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
         throws OperationException {
         return auditLog.namedPublic("Create Offline Signature Scan Batch", "OfflineSigScan",
             () -> new CreateScanBatchOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, codeLocationNameManager)
-                .createScanBatchWithoutBlackDuck(projectNameVersion, scanPaths, dockerTargetData)
+                .createScanBatchWithoutBlackDuck(detectRunUuid, projectNameVersion, scanPaths, dockerTargetData)
         );
     }
 

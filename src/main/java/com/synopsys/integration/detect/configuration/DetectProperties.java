@@ -1695,6 +1695,17 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO check/adjust from version once we know
+    public static final BooleanProperty DETECT_INTEGRATED_MATCHING_ENABLED =
+        BooleanProperty.newBuilder("detect.integrated.matching.enabled", false)
+            .setInfo("Integrated Matching Enabled", DetectPropertyFromVersion.VERSION_8_2_0)
+            .setHelp(
+                "When enabled, Synopsys Detect activates the Black Duck integrated matching capability to enhance match accuracy.",
+                "The integrated matching capability must be present and enabled in your Black Duck server before you enable the integrated matching feature in Synopsys Detect."
+            )
+            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
+            .build();
+
     public static final EnumProperty<RapidCompareMode> DETECT_BLACKDUCK_RAPID_COMPARE_MODE =
         EnumProperty.newBuilder("detect.blackduck.rapid.compare.mode", RapidCompareMode.ALL, RapidCompareMode.class)
             .setInfo("Rapid Compare Mode", DetectPropertyFromVersion.VERSION_7_12_0)

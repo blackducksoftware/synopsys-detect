@@ -3,9 +3,8 @@ package com.synopsys.integration.detect.workflow;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
-import com.blackducksoftware.common.base.ExtraUUIDs;
+import com.blackducksoftware.bdio2.BdioObject;
 
 public class DetectRunId {
     private final String id;
@@ -19,7 +18,7 @@ public class DetectRunId {
     }
 
     public static String generateUuid() {
-        return ExtraUUIDs.toUriString(UUID.randomUUID());
+        return BdioObject.randomId();
     }
 
     public DetectRunId(String id, String uuid) {

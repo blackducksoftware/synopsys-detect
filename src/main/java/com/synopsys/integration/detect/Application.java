@@ -59,7 +59,7 @@ public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
     private static boolean SHOULD_EXIT = true;
-    
+
     private static String STATUS_JSON_FILE_NAME = "status.json";
 
     private final ConfigurableEnvironment environment;
@@ -123,6 +123,7 @@ public class Application implements ApplicationRunner {
         );
 
         if (detectBootResultOptional.isPresent()) {
+            logger.debug("Integrated matching correlation id: {}", detectRunId.getUuid());
             DetectBootResult detectBootResult = detectBootResultOptional.get();
             shouldForceSuccess = detectBootResult.shouldForceSuccess();
 
@@ -215,11 +216,11 @@ public class Application implements ApplicationRunner {
             Gson formattedGson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
             String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo, exitCodeType));
             FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
-            
+
             if (directoryManager.getJsonStatusOutputDirectory() != null) {
                 File statusCopyFile = new File(directoryManager.getJsonStatusOutputDirectory(), STATUS_JSON_FILE_NAME);
                 logger.info("Creating copy of status file: {}", statusCopyFile);
-                FileUtils.writeStringToFile(statusCopyFile, json, Charset.defaultCharset());  
+                FileUtils.writeStringToFile(statusCopyFile, json, Charset.defaultCharset());
             }
         } catch (Exception e) {
             logger.warn("There was a problem writing the status output file. The detect run was not affected.");

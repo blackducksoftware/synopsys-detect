@@ -32,12 +32,17 @@ public class SignatureScanStepRunner {
         this.operationRunner = operationRunner;
     }
 
-    public SignatureScannerCodeLocationResult runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
+    public SignatureScannerCodeLocationResult runSignatureScannerOnline(
+        String detectRunUuid,
+        BlackDuckRunData blackDuckRunData,
+        NameVersion projectNameVersion,
+        DockerTargetData dockerTargetData
+    )
         throws DetectUserFriendlyException, OperationException {
         ScanBatchRunner scanBatchRunner = resolveOnlineScanBatchRunner(blackDuckRunData);
 
         List<SignatureScanPath> scanPaths = operationRunner.createScanPaths(projectNameVersion, dockerTargetData);
-        ScanBatch scanBatch = operationRunner.createScanBatchOnline(scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
+        ScanBatch scanBatch = operationRunner.createScanBatchOnline(detectRunUuid, scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
 
         NotificationTaskRange notificationTaskRange = operationRunner.createCodeLocationRange(blackDuckRunData);
         List<SignatureScannerReport> reports = executeScan(scanBatch, scanBatchRunner, scanPaths);
@@ -45,11 +50,12 @@ public class SignatureScanStepRunner {
         return operationRunner.calculateWaitableSignatureScannerCodeLocations(notificationTaskRange, reports);
     }
 
-    public void runSignatureScannerOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, OperationException {
+    public void runSignatureScannerOffline(String detectRunUuid, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
+        throws DetectUserFriendlyException, OperationException {
         ScanBatchRunner scanBatchRunner = resolveOfflineScanBatchRunner();
 
         List<SignatureScanPath> scanPaths = operationRunner.createScanPaths(projectNameVersion, dockerTargetData);
-        ScanBatch scanBatch = operationRunner.createScanBatchOffline(scanPaths, projectNameVersion, dockerTargetData);
+        ScanBatch scanBatch = operationRunner.createScanBatchOffline(detectRunUuid, scanPaths, projectNameVersion, dockerTargetData);
 
         executeScan(scanBatch, scanBatchRunner, scanPaths);
     }
