@@ -42,7 +42,7 @@ public class BlackDuckConnectivityChecker {
         if (connectionResult.isFailure()) {
             blackDuckServerConfig.attemptConnection(new Slf4jIntLogger(logger)); //TODO: For the logs, when connection result returns the client, can drop this.
             logger.error("Failed to connect to the Black Duck server");
-            return BlackDuckConnectivityResult.failure(connectionResult.getFailureMessage().orElse("Could not reach the Black Duck server or the credentials were invalid."));
+            return BlackDuckConnectivityResult.failure(connectionResult.getFailureMessage().orElse("Could not reach the Black Duck server or the credentials were invalid."), "");
         }
 
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new Slf4jIntLogger(logger));
@@ -74,9 +74,6 @@ public class BlackDuckConnectivityChecker {
                 ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY
             );
         }
-
-        BlackDuckConnectivityResult result =  BlackDuckConnectivityResult.success(blackDuckServicesFactory, blackDuckServerConfig);
-        result.setContactedServerVersion(version);
-        return result;
+        return  BlackDuckConnectivityResult.success(blackDuckServicesFactory, blackDuckServerConfig, version);
     }
 }

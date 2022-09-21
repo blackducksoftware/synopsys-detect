@@ -101,9 +101,8 @@ public class ProductBoot {
                 bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
             }
             if (bdRunData.isRapid() && blackDuckDecision.hasSignatureScan()) {
-                String minBlackDuckVersionForRapidSignatureScan = "2022.10.0";
                 String bdVersion = blackDuckConnectivityResult.getContactedServerVersion();
-                if (minBlackDuckVersionForRapidSignatureScan.compareTo(bdVersion) > 0) {
+                if (!isServerVersionSufficient(bdVersion)) {
                     // abort!
                     throw new DetectUserFriendlyException(
                             "Cannot use RAPID SIGNATURE SCAN with Black Duck Versions prior to 2022.10.0!  The Black Duck Version attempted was: " + bdVersion,
@@ -137,5 +136,26 @@ public class ProductBoot {
             logger.trace("Failed to check analytics setting on Black Duck. Likely this Black Duck instance does not support it.", e);
             return true; // Skip phone home will be applied at the library level.
         }
+    }
+
+    private boolean isServerVersionSufficient(String version) {
+        // relies on version string being YYYY.MM.N etc. Since minimum version
+        // is 2022.10.0 we should only need to check major and middle.
+        int major = 2022;
+        int middle = 10;
+
+        String[] parts = version.split("\\.");
+
+        // we only need to check the first two parts since minimal minor version is ZERO 
+        int maj = Integer.parseInt(parts[0]);
+        int mid = Integer.parseInt(parts[1]);
+
+        if (maj > major) {
+            return true; 
+        } else if (maj == major && mid >= middle) {
+            return true;
+        }
+        
+        return false;
     }
 }

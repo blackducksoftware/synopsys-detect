@@ -13,12 +13,17 @@ import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 class ProductDeciderTest {
     private final String VALID_URL = "https://example.com";
 
+    // dummy booleans to arbitrarily assign whether sig scan has been asked for.
+    private final boolean hasSigScanF = false;
+    private final boolean hasSigScanT = true;
+
     @Test
     public void shouldRunIntelligentOffline() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT
+            BlackduckScanMode.INTELLIGENT,
+            hasSigScanF
         );
 
         assertOfflineDecision(productDecision);
@@ -29,7 +34,8 @@ class ProductDeciderTest {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, VALID_URL);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT
+            BlackduckScanMode.INTELLIGENT,
+            hasSigScanF
         );
 
         assertOfflineDecision(productDecision);
@@ -40,7 +46,8 @@ class ProductDeciderTest {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT
+            BlackduckScanMode.INTELLIGENT,
+            hasSigScanT
         );
 
         assertOnlineDecision(productDecision);
@@ -51,7 +58,8 @@ class ProductDeciderTest {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, null);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.INTELLIGENT
+            BlackduckScanMode.INTELLIGENT,
+            hasSigScanF
         );
 
         assertSkipDecision(productDecision);
@@ -62,7 +70,8 @@ class ProductDeciderTest {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, VALID_URL);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.RAPID
+            BlackduckScanMode.RAPID,
+            hasSigScanF
         );
 
         assertSkipDecision(productDecision);
@@ -73,7 +82,8 @@ class ProductDeciderTest {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.RAPID
+            BlackduckScanMode.RAPID,
+            hasSigScanT
         );
 
         assertOnlineDecision(productDecision);
@@ -84,7 +94,8 @@ class ProductDeciderTest {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, null);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.RAPID
+            BlackduckScanMode.RAPID,
+            hasSigScanF
         );
 
         assertSkipDecision(productDecision);
@@ -95,7 +106,8 @@ class ProductDeciderTest {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            BlackduckScanMode.RAPID
+            BlackduckScanMode.RAPID,
+            hasSigScanF
         );
 
         assertSkipDecision(productDecision);

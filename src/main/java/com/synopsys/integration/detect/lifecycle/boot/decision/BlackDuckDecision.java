@@ -6,24 +6,26 @@ public class BlackDuckDecision {
     private final boolean shouldRun;
     private final boolean isOffline;
     private final BlackduckScanMode scanMode;
-    private boolean hasSignatureScanner;
+    private final boolean hasSignatureScanner;
 
-    public BlackDuckDecision(boolean shouldRun, boolean isOffline, BlackduckScanMode scanMode) {
+    public BlackDuckDecision(boolean shouldRun, boolean isOffline, BlackduckScanMode scanMode, boolean hasSigScan) {
         this.shouldRun = shouldRun;
         this.isOffline = isOffline;
         this.scanMode = scanMode;
+        this.hasSignatureScanner = (hasSigScan) ? true : false;
     }
 
     public static BlackDuckDecision skip() {
-        return new BlackDuckDecision(false, true, null);
+        return new BlackDuckDecision(false, true, null, false);
     }
 
     public static BlackDuckDecision runOffline() {
-        return new BlackDuckDecision(true, true, null);
+        // cannot run signature scan OFF line rapid or not... hasSigScan not really needed.
+        return new BlackDuckDecision(true, true, null, false);
     }
 
-    public static BlackDuckDecision runOnline(BlackduckScanMode scanMode) {
-        return new BlackDuckDecision(true, false, scanMode);
+    public static BlackDuckDecision runOnline(BlackduckScanMode scanMode, boolean hasSigScan) {
+        return new BlackDuckDecision(true, false, scanMode, hasSigScan);
     }
 
     public boolean shouldRun() {
@@ -36,10 +38,6 @@ public class BlackDuckDecision {
 
     public BlackduckScanMode scanMode() {
         return scanMode;
-    }
-
-    public void setHasSignatureScanner(boolean containsValue) {
-        this.hasSignatureScanner = containsValue;
     }
 
     public boolean hasSignatureScan() {
