@@ -79,7 +79,6 @@ public class Pipelines {
             // TODO dedup here
             .parseReplaceInEachLine("^", "//external:")
             .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(.*, ${input.item})", OUTPUT_FLAG, "xml"), true)
-            // Puts all URLs from the urls list into the stream for the next step
             .parseValuesFromXml(HTTP_ARCHIVE_XPATH_EVERY_URL, "value")
             .transformGithubUrl()
             .build();
