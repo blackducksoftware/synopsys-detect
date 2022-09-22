@@ -22,7 +22,7 @@ public class DetectToolFilter {
     private final RunDecision runDecision;
     private final BlackDuckDecision blackDuckDecision;
     
-    // Default to running only 
+    // If a rapid scan is specified, default to running only package manager scans
     private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR);
 
     public DetectToolFilter(

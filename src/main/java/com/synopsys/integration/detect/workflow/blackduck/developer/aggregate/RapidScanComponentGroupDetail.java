@@ -3,7 +3,6 @@ package com.synopsys.integration.detect.workflow.blackduck.developer.aggregate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -81,6 +80,11 @@ public class RapidScanComponentGroupDetail {
         }
     }
 
+    // TODO rapid scans are now using the v5 developer-scans endpoint which no longer constructs 
+    // warning and error messages. Until BlackDuck adds that back we have to construct our own messages.
+    // While it may be possible to reduce the overall message generation code in this class by pushing 
+    // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
+    // as this may be temporary code.
     public void addComponentMessages(DeveloperScansScanView resultView) {
         String baseMessage = getBaseMessage(resultView);
 
@@ -112,6 +116,11 @@ public class RapidScanComponentGroupDetail {
         addMessages(errorMessage, warningMessage);
     }
 
+    // TODO rapid scans are now using the v5 developer-scans endpoint which no longer constructs 
+    // warning and error messages. Until BlackDuck adds that back we have to construct our own messages.
+    // While it may be possible to reduce the overall message generation code in this class by pushing 
+    // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
+    // as this may be temporary code.
     public void addLicenseMessages(DeveloperScansScanView resultView, DeveloperScansScanItemsPolicyViolationLicensesView licensePolicyViolation) {
         String baseMessage = getBaseMessage(resultView);
         
@@ -153,6 +162,11 @@ public class RapidScanComponentGroupDetail {
         addMessages(errorMessage, warningMessage);
     }
     
+    // TODO rapid scans are now using the v5 developer-scans endpoint which no longer constructs 
+    // warning and error messages. Until BlackDuck adds that back we have to construct our own messages.
+    // While it may be possible to reduce the overall message generation code in this class by pushing 
+    // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
+    // as this may be temporary code.
     public void addVulnerabilityMessages(DeveloperScansScanView resultView,
             DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerability) {
         String baseMessage = getBaseMessage(resultView);
