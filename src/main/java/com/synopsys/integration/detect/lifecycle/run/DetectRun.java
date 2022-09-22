@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
@@ -67,7 +68,8 @@ public class DetectRun {
             } else {
                 bdio = BdioResult.none();
             }
-            if (productRunData.shouldUseBlackDuckProduct()) {
+            if (productRunData.shouldUseBlackDuckProduct() && 
+                    imageScanCanScanFurther(universalToolsResult, bootSingletons)) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
                 if (blackDuckRunData.isRapid() && blackDuckRunData.isOnline()) {
                     RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner);
@@ -93,6 +95,26 @@ public class DetectRun {
         } finally {
             operationSystem.ifPresent(OperationSystem::publishOperations);
         }
+    }
+
+    /**
+     * Image scan check to see if any docker information is there. If image isn't found, lists will
+     * be empty and dockerTargetData will be null... 
+     * @param result
+     * @param bootSingletons
+     * @return
+     */
+    private boolean imageScanCanScanFurther(UniversalToolsResult result, BootSingletons bootSingletons) {
+        boolean isImageScan = bootSingletons.getDetectConfigurationFactory().createDetectTarget().equals(DetectTargetType.IMAGE);
+        boolean hasDockerTargetData = result.getDockerTargetData() != null;
+        
+        boolean canScanFurther = (!result.didAnyFail() && 
+                                    isImageScan &&
+                                    !result.getDetectToolProjectInfo().isEmpty() &&
+                                    !result.getDetectCodeLocations().isEmpty() &&
+                                    hasDockerTargetData
+                );
+        return canScanFurther;
     }
 
     private void checkForInterruptedException(Exception e) {
