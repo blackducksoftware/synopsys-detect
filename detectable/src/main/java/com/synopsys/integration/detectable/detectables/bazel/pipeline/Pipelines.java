@@ -76,7 +76,7 @@ public class Pipelines {
             .parseFilterLines("^@.*//.*$")
             .parseReplaceInEachLine("^@", "")
             .parseReplaceInEachLine("//.*", "")
-            // TODO dedup here
+            .deDupLines()
             .parseReplaceInEachLine("^", "//external:")
             .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(.*, ${input.item})", OUTPUT_FLAG, "xml"), true)
             .parseValuesFromXml(HTTP_ARCHIVE_XPATH_EVERY_URL, "value")
