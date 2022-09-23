@@ -60,7 +60,9 @@ public class DetectRun {
             UniversalStepRunner stepRunner = new UniversalStepRunner(operationRunner, stepHelper); //Product independent tools
             UniversalToolsResult universalToolsResult = stepRunner.runUniversalTools();
 
-            // test for some image scan results and throw exception if not found.
+            // test to ensure image scan results are available (i.e. image scan success) throws an
+            // exception if results components are empty and/or not found.  This will never throw an
+            // exception for any other scan type
             imageScanCanScanFurther(universalToolsResult, bootSingletons);
 
             // combine: processProjectInformation() -> ProjectResult (nameversion, bdio)
