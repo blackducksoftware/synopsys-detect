@@ -30,7 +30,7 @@ public class RapidModeGenerateJsonOperationTest {
         File tempDir = tempPath.toFile();
         File scanDir = new File(tempDir, "scan");
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, scanDir.toPath(), null, null, null);
-        DetectRunId detectRunId = new DetectRunId("testId", DetectRunId.generateUuid());
+        DetectRunId detectRunId = new DetectRunId("testId", DetectRunId.generateIntegratedMatchingCorrelationId());
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, detectRunId);
         RapidModeGenerateJsonOperation op = new RapidModeGenerateJsonOperation(gson, directoryManager);
         NameVersion projectNameVersion = new NameVersion("testName", "testVersion");

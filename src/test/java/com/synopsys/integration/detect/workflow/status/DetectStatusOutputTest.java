@@ -19,7 +19,7 @@ public class DetectStatusOutputTest {
         File tempDir = tempPath.toFile();
         File scanDir = new File(tempDir, "scan");
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, scanDir.toPath(), null, null, tempPath);
-        DetectRunId detectRunId = new DetectRunId("testId", DetectRunId.generateUuid());
+        DetectRunId detectRunId = new DetectRunId("testId", DetectRunId.generateIntegratedMatchingCorrelationId());
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, detectRunId);
 
         assertEquals(tempPath.toFile(), directoryManager.getJsonStatusOutputDirectory());

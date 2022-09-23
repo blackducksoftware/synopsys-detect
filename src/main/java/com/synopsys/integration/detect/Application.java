@@ -123,7 +123,7 @@ public class Application implements ApplicationRunner {
         );
 
         if (detectBootResultOptional.isPresent()) {
-            logger.debug("Integrated matching correlation id: {}", detectRunId.getUuid());
+            logger.debug("Integrated matching correlation id: {}", detectRunId.getIntegratedMatchingCorrelationId());
             DetectBootResult detectBootResult = detectBootResultOptional.get();
             shouldForceSuccess = detectBootResult.shouldForceSuccess();
 

@@ -751,10 +751,10 @@ public class OperationRunner {
         );
     }
 
-    public void createAggregateBdio2File(String detectRunUuid, AggregateCodeLocation aggregateCodeLocation, Bdio.ScanType scanType) throws OperationException {
+    public void createAggregateBdio2File(String integratedMatchingCorrelationid, AggregateCodeLocation aggregateCodeLocation, Bdio.ScanType scanType) throws OperationException {
         auditLog.namedInternal(
             "Create Bdio Code Locations",
-            () -> new CreateAggregateBdio2FileOperation(new Bdio2Factory(), detectInfo).writeAggregateBdio2File(detectRunUuid, aggregateCodeLocation, scanType)
+            () -> new CreateAggregateBdio2FileOperation(new Bdio2Factory(), detectInfo).writeAggregateBdio2File(integratedMatchingCorrelationid, aggregateCodeLocation, scanType)
         );
     }
 
