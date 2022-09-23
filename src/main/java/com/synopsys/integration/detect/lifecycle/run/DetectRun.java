@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
@@ -59,6 +60,9 @@ public class DetectRun {
             UniversalStepRunner stepRunner = new UniversalStepRunner(operationRunner, stepHelper); //Product independent tools
             UniversalToolsResult universalToolsResult = stepRunner.runUniversalTools();
 
+            // test for some image scan results and throw exception if not found.
+            imageScanCanScanFurther(universalToolsResult, bootSingletons);
+
             // combine: processProjectInformation() -> ProjectResult (nameversion, bdio)
             NameVersion nameVersion = stepRunner.determineProjectInformation(universalToolsResult);
             operationRunner.publishProjectNameVersionChosen(nameVersion);
@@ -68,8 +72,7 @@ public class DetectRun {
             } else {
                 bdio = BdioResult.none();
             }
-            if (productRunData.shouldUseBlackDuckProduct() && 
-                    imageScanCanScanFurther(universalToolsResult, bootSingletons)) {
+            if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
                 if (blackDuckRunData.isRapid() && blackDuckRunData.isOnline()) {
                     RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner);
@@ -98,23 +101,29 @@ public class DetectRun {
     }
 
     /**
-     * Image scan check to see if any docker information is there. If image isn't found, lists will
-     * be empty and dockerTargetData will be null... 
+     * Image scan check to see if any docker information is there. If image isn't found for image scan, lists will
+     * be empty and dockerTargetData will be null...  If not an image scan just return true
      * @param result
      * @param bootSingletons
      * @return
      */
-    private boolean imageScanCanScanFurther(UniversalToolsResult result, BootSingletons bootSingletons) {
+    private void imageScanCanScanFurther(UniversalToolsResult result, BootSingletons bootSingletons) throws Exception {
+        boolean canScanFurther = true;
         boolean isImageScan = bootSingletons.getDetectConfigurationFactory().createDetectTarget().equals(DetectTargetType.IMAGE);
         boolean hasDockerTargetData = result.getDockerTargetData() != null;
         
-        boolean canScanFurther = (!result.didAnyFail() && 
-                                    isImageScan &&
+        if (isImageScan) {
+            canScanFurther = (!result.didAnyFail() && 
                                     !result.getDetectToolProjectInfo().isEmpty() &&
                                     !result.getDetectCodeLocations().isEmpty() &&
                                     hasDockerTargetData
                 );
-        return canScanFurther;
+        }        
+
+        if (!canScanFurther) {
+            throw new DetectUserFriendlyException("Cannot scan Docker image." , ExitCodeType.FAILURE_IMAGE_NOT_AVAILABLE);
+        }
+
     }
 
     private void checkForInterruptedException(Exception e) {
