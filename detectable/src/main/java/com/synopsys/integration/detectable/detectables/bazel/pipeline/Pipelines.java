@@ -9,6 +9,7 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.xpathquery.HttpArchiveXpath;
 
 public class Pipelines {
     private static final String CQUERY_OPTIONS_PLACEHOLDER = "${detect.bazel.cquery.options}";
@@ -16,9 +17,6 @@ public class Pipelines {
     private static final String CQUERY_COMMAND = "cquery";
     private static final String OUTPUT_FLAG = "--output";
     private final EnumMap<WorkspaceRule, Pipeline> availablePipelines = new EnumMap<>(WorkspaceRule.class);
-    private static final String HTTP_ARCHIVE_XPATH_TO_URL_LIST = "/query/rule[@class='http_archive']/list[@name='urls']/string";
-    private static final String HTTP_ARCHIVE_XPATH_TO_SINGLE_URL = "/query/rule[@class='http_archive']/string[@name='url']";
-    private static final String HTTP_ARCHIVE_XPATH_EVERY_URL = HTTP_ARCHIVE_XPATH_TO_URL_LIST + "|" + HTTP_ARCHIVE_XPATH_TO_SINGLE_URL;
 
     public Pipelines(
         BazelCommandExecutor bazelCommandExecutor,
@@ -79,7 +77,7 @@ public class Pipelines {
             .deDupLines()
             .parseReplaceInEachLine("^", "//external:")
             .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(.*, ${input.item})", OUTPUT_FLAG, "xml"), true)
-            .parseValuesFromXml(HTTP_ARCHIVE_XPATH_EVERY_URL, "value")
+            .parseValuesFromXml(HttpArchiveXpath.QUERY, "value")
             .transformGithubUrl()
             .build();
         availablePipelines.put(WorkspaceRule.HTTP_ARCHIVE, httpArchiveGithubUrlPipeline);
