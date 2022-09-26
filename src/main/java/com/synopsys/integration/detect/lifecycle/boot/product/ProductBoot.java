@@ -1,6 +1,8 @@
 package com.synopsys.integration.detect.lifecycle.boot.product;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -28,6 +30,10 @@ public class ProductBoot {
     private final AnalyticsConfigurationService analyticsConfigurationService;
     private final ProductBootFactory productBootFactory;
     private final ProductBootOptions productBootOptions;
+
+    private final java.util.regex.Pattern versionPattern = Pattern.compile("^([0-9]{4})\\.(\\d+)\\..*?");
+    private static final int MAJOR_VERSION = 2022;
+    private static final int MINOR_VERSION = 10;
 
     public ProductBoot(
         BlackDuckConnectivityChecker blackDuckConnectivityChecker,
@@ -140,22 +146,30 @@ public class ProductBoot {
 
     private boolean isServerVersionSufficient(String version) {
         // relies on version string being YYYY.MM.N etc. Since minimum version
-        // is 2022.10.0 we should only need to check major and middle.
-        int major = 2022;
-        int middle = 10;
+        // is 2022.10.0 we should only need to check major and middle.  A pattern
+        // match will be done to ensure that the form is suitable for a match.  If
+        // the pattern changes in the future, we're almost, but not quite, guaranteed that the 
+        // blackduck version will be sufficient!  If the pattern doesn't match in the
+        // past, we'll pass it along and let it fail outright.
 
-        String[] parts = version.split("\\.");
-
-        // we only need to check the first two parts since minimal minor version is ZERO 
-        int maj = Integer.parseInt(parts[0]);
-        int mid = Integer.parseInt(parts[1]);
-
-        if (maj > major) {
-            return true; 
-        } else if (maj == major && mid >= middle) {
+        Matcher m = versionPattern.matcher(version);
+        if (!m.matches()) {
             return true;
         }
-        
+
+        String[] parts = {m.group(1),m.group(2)};//version.split("\\.");
+
+        // we only need to check the first two parts since minimal minor version is ZERO
+        // we are guaranteed that parts will be integers from the pattern match at this point.
+        int major_version_from_bd = Integer.parseInt(parts[0]);
+        int minor_version_from_bd = Integer.parseInt(parts[1]);
+
+        if (major_version_from_bd > MAJOR_VERSION) {
+            return true; 
+        } else if (major_version_from_bd == MAJOR_VERSION && minor_version_from_bd >= MINOR_VERSION) {
+            return true;
+        }
+
         return false;
     }
 }
