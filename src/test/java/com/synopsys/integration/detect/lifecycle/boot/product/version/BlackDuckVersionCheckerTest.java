@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.lifecycle.boot.product;
+package com.synopsys.integration.detect.lifecycle.boot.product.version;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

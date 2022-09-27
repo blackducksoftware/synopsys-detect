@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.lifecycle.boot.product;
+package com.synopsys.integration.detect.lifecycle.boot.product.version;
 
 import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;
 
@@ -10,7 +10,7 @@ public class BlackDuckVersionChecker {
     }
 
     public boolean check(DetectPropertyConfiguration config, BlackDuckVersion actualBlackDuckVersion) {
-        for (BlackDuckMinimumVersionCheck blackDuckMinimumVersionCheck : blackDuckMinimumVersionChecks.create()) {
+        for (BlackDuckMinimumVersionCheck blackDuckMinimumVersionCheck : blackDuckMinimumVersionChecks.get()) {
             if (blackDuckMinimumVersionCheck.getTest().test(config) && !actualBlackDuckVersion.isAtLeast(blackDuckMinimumVersionCheck.getMinimumBlackDuckVersion())) {
                 return false;
             }

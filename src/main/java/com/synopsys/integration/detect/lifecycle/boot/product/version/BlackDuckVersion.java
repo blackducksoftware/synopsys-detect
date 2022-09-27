@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.lifecycle.boot.product;
+package com.synopsys.integration.detect.lifecycle.boot.product.version;
 
 public class BlackDuckVersion {
     private final int major;

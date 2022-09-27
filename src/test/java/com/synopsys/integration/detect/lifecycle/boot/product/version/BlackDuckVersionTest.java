@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.lifecycle.boot.product;
+package com.synopsys.integration.detect.lifecycle.boot.product.version;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,7 +20,7 @@ public class BlackDuckVersionTest {
         // Different patch
         assertTrue((new BlackDuckVersion(2022, 2, 1)).isAtLeast((new BlackDuckVersion(2022, 2, 0))));
         assertFalse((new BlackDuckVersion(2022, 2, 1)).isAtLeast((new BlackDuckVersion(2022, 2, 2))));
-        
+
         // Same
         assertTrue((new BlackDuckVersion(2022, 2, 1)).isAtLeast((new BlackDuckVersion(2022, 2, 1))));
     }
