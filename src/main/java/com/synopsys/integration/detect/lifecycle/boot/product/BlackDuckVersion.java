@@ -22,4 +22,26 @@ public class BlackDuckVersion {
     public int getPatch() {
         return patch;
     }
+
+    public boolean isAtLeast(BlackDuckVersion other) {
+        if (major > other.getMajor()) {
+            return true;
+        }
+        if (major < other.getMajor()) {
+            return false;
+        }
+        if (minor > other.getMinor()) {
+            return true;
+        }
+        if (minor < other.getMinor()) {
+            return false;
+        }
+        if (patch > other.getPatch()) {
+            return true;
+        }
+        if (patch < other.getPatch()) {
+            return false;
+        }
+        return true;
+    }
 }

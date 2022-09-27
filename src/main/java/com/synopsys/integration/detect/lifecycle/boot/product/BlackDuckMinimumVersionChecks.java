@@ -20,7 +20,7 @@ public class BlackDuckMinimumVersionChecks {
         // Rapid Sig Scan: 2022.10.0
         table.add(new ImmutablePair<>(
             c -> c.getValue(DetectProperties.DETECT_TOOLS).containsValue(DetectTool.SIGNATURE_SCAN)
-                || c.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE) == BlackduckScanMode.RAPID,
+                && c.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE) == BlackduckScanMode.RAPID,
             new BlackDuckVersion(2022, 10, 0)
         ));
 
