@@ -23,21 +23,24 @@ public class BlackDuckVersionChecker {
         this.detectPropertyConfiguration = detectPropertyConfiguration;
     }
 
-    public boolean check(String actualBlackDuckVersionString) {
+    public BlackDuckVersionCheckerResult check(String actualBlackDuckVersionString) {
         Optional<BlackDuckVersion> actualBlackDuckVersion = parser.parse(actualBlackDuckVersionString);
         if (!actualBlackDuckVersion.isPresent()) {
-            return true;
+            logger.debug("Unable to parse Black Duck version string {}, so unable to perform version compatibility check", actualBlackDuckVersion);
+            return BlackDuckVersionCheckerResult.passed();
         }
         for (BlackDuckMinimumVersionCheck blackDuckMinimumVersionCheck : blackDuckMinimumVersionChecks.get()) {
             if (blackDuckMinimumVersionCheck.getTest().test(detectPropertyConfiguration) && !actualBlackDuckVersion.get()
                 .isAtLeast(blackDuckMinimumVersionCheck.getMinimumBlackDuckVersion())) {
-                logger.warn("{} requires at least Black Duck version {}; the connected server is only {}",
+                String msg = String.format("%s requires at least Black Duck version %s; the connected server is only %s",
                     blackDuckMinimumVersionCheck.getDescription(), blackDuckMinimumVersionCheck.getMinimumBlackDuckVersion(),
                     actualBlackDuckVersion.get()
                 );
-                return false;
+                logger.debug(msg);
+                return BlackDuckVersionCheckerResult.failed(msg);
             }
         }
-        return true;
+        logger.trace("Version compatibility check passed");
+        return BlackDuckVersionCheckerResult.passed();
     }
 }

@@ -17,6 +17,7 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionChecker;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionCheckerResult;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsSetting;
@@ -93,6 +94,7 @@ public class ProductBootTest {
         Mockito.when(productBootFactory.createPhoneHomeManager(Mockito.any())).thenReturn(null);
 
         BlackDuckVersionChecker blackDuckVersionChecker = Mockito.mock(BlackDuckVersionChecker.class);
+        Mockito.when(blackDuckVersionChecker.check(Mockito.anyString())).thenReturn(BlackDuckVersionCheckerResult.passed());
         BlackDuckConnectivityChecker blackDuckConnectivityChecker = Mockito.mock(BlackDuckConnectivityChecker.class);
         Mockito.when(blackDuckConnectivityChecker.determineConnectivity(Mockito.any())).thenReturn(blackDuckconnectivityResult);
 

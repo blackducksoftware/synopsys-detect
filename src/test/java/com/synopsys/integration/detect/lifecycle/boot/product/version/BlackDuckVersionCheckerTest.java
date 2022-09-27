@@ -26,13 +26,13 @@ public class BlackDuckVersionCheckerTest {
         BlackDuckMinimumVersionChecks blackDuckMinimumVersionChecks = new BlackDuckMinimumVersionChecks();
         BlackDuckVersionChecker blackDuckVersionChecker = new BlackDuckVersionChecker(new BlackDuckVersionParser(), blackDuckMinimumVersionChecks, config);
 
-        assertTrue(blackDuckVersionChecker.check("2022.10.0"));
+        assertTrue(blackDuckVersionChecker.check("2022.10.0").isPassed());
 
-        assertTrue(blackDuckVersionChecker.check("2022.10.1"));
-        assertFalse(blackDuckVersionChecker.check("2022.9.3"));
+        assertTrue(blackDuckVersionChecker.check("2022.10.1").isPassed());
+        assertFalse(blackDuckVersionChecker.check("2022.9.3").isPassed());
 
-        assertTrue(blackDuckVersionChecker.check("2022.10.1-QA"));
-        assertFalse(blackDuckVersionChecker.check("2022.9.3-SNAPSHOT"));
+        assertTrue(blackDuckVersionChecker.check("2022.10.1-QA").isPassed());
+        assertFalse(blackDuckVersionChecker.check("2022.9.3-SNAPSHOT").isPassed());
     }
 
     @Test
@@ -47,9 +47,9 @@ public class BlackDuckVersionCheckerTest {
         BlackDuckMinimumVersionChecks blackDuckMinimumVersionChecks = new BlackDuckMinimumVersionChecks();
         BlackDuckVersionChecker blackDuckVersionChecker = new BlackDuckVersionChecker(new BlackDuckVersionParser(), blackDuckMinimumVersionChecks, config);
 
-        assertTrue(blackDuckVersionChecker.check("2021.6.0"));
-        assertTrue(blackDuckVersionChecker.check("2021.6.1"));
-        assertFalse(blackDuckVersionChecker.check("2021.5.3"));
+        assertTrue(blackDuckVersionChecker.check("2021.6.0").isPassed());
+        assertTrue(blackDuckVersionChecker.check("2021.6.1").isPassed());
+        assertFalse(blackDuckVersionChecker.check("2021.5.3").isPassed());
     }
 
     @Test
@@ -63,7 +63,7 @@ public class BlackDuckVersionCheckerTest {
         BlackDuckMinimumVersionChecks blackDuckMinimumVersionChecks = new BlackDuckMinimumVersionChecks();
         BlackDuckVersionChecker blackDuckVersionChecker = new BlackDuckVersionChecker(new BlackDuckVersionParser(), blackDuckMinimumVersionChecks, config);
 
-        assertTrue(blackDuckVersionChecker.check("2021.6.0"));
-        assertFalse(blackDuckVersionChecker.check("2021.5.3"));
+        assertTrue(blackDuckVersionChecker.check("2021.6.0").isPassed());
+        assertFalse(blackDuckVersionChecker.check("2021.5.3").isPassed());
     }
 }

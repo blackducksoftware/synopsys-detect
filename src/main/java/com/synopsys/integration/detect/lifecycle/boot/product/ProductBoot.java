@@ -15,6 +15,7 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionChecker;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionCheckerResult;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -94,8 +95,14 @@ public class ProductBoot {
         BlackDuckConnectivityResult blackDuckConnectivityResult = blackDuckConnectivityChecker.determineConnectivity(blackDuckServerConfig);
 
         if (blackDuckConnectivityResult.isSuccessfullyConnected()) {
+            BlackDuckVersionCheckerResult blackDuckVersionCheckerResult = blackDuckVersionChecker.check(blackDuckConnectivityResult.getContactedServerVersion());
+            if (!blackDuckVersionCheckerResult.isPassed()) {
+                throw new DetectUserFriendlyException(
+                    blackDuckVersionCheckerResult.getMessage(),
+                    ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED
+                );
+            }
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
-
             BlackDuckRunData bdRunData = null;
             if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getBlackDuckApiClient())) {
                 PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
@@ -108,16 +115,6 @@ public class ProductBoot {
             } else {
                 logger.debug("Skipping phone home due to Black Duck global settings.");
                 bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
-            }
-            if (bdRunData.isRapid() && blackDuckDecision.hasSignatureScan()) {
-                String bdVersion = blackDuckConnectivityResult.getContactedServerVersion();
-                if (!isServerVersionSufficient(bdVersion)) {
-                    // abort!
-                    throw new DetectUserFriendlyException(
-                        "Cannot use RAPID SIGNATURE SCAN with Black Duck Versions prior to 2022.10.0!  The Black Duck Version attempted was: " + bdVersion,
-                        ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY
-                    );
-                }
             }
             return bdRunData;
         } else {
@@ -145,9 +142,5 @@ public class ProductBoot {
             logger.trace("Failed to check analytics setting on Black Duck. Likely this Black Duck instance does not support it.", e);
             return true; // Skip phone home will be applied at the library level.
         }
-    }
-
-    private boolean isServerVersionSufficient(String version) {
-        return blackDuckVersionChecker.check(version);
     }
 }
