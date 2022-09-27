@@ -32,6 +32,9 @@ import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectiv
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckMinimumVersionChecks;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionChecker;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionParser;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
@@ -208,8 +211,18 @@ public class DetectBootFactory {
     }
 
     public ProductBoot createProductBoot(DetectConfigurationFactory detectConfigurationFactory) {
+        BlackDuckVersionChecker blackDuckVersionChecker = new BlackDuckVersionChecker(new BlackDuckVersionParser(),
+            new BlackDuckMinimumVersionChecks(), detectConfigurationFactory.getDetectConfiguration()
+        );
+
         ProductBootOptions productBootOptions = detectConfigurationFactory.createProductBootOptions();
-        return new ProductBoot(blackDuckConnectivityChecker, createAnalyticsConfigurationService(), createProductBootFactory(detectConfigurationFactory), productBootOptions);
+        return new ProductBoot(
+            blackDuckConnectivityChecker,
+            createAnalyticsConfigurationService(),
+            createProductBootFactory(detectConfigurationFactory),
+            productBootOptions,
+            blackDuckVersionChecker
+        );
     }
 
     public AnalyticsConfigurationService createAnalyticsConfigurationService() {
