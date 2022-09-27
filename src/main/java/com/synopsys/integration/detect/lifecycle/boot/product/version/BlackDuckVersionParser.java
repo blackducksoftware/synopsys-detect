@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class BlackDuckVersionParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Pattern versionPattern = Pattern.compile("^([0-9]{4})\\.(\\d+)\\.(\\d+)-.*?");
+    private final Pattern versionPattern = Pattern.compile("^([0-9]{4})\\.(\\d+)\\.(\\d+).*?");
 
     public Optional<BlackDuckVersion> parse(String blackDuckVersionString) {
         try {

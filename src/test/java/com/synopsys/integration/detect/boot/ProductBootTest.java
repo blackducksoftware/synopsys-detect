@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
@@ -91,13 +92,15 @@ public class ProductBootTest {
         ProductBootFactory productBootFactory = Mockito.mock(ProductBootFactory.class);
         Mockito.when(productBootFactory.createPhoneHomeManager(Mockito.any())).thenReturn(null);
 
+        DetectPropertyConfiguration detectConfiguration = Mockito.mock(DetectPropertyConfiguration.class);
+
         BlackDuckConnectivityChecker blackDuckConnectivityChecker = Mockito.mock(BlackDuckConnectivityChecker.class);
         Mockito.when(blackDuckConnectivityChecker.determineConnectivity(Mockito.any())).thenReturn(blackDuckconnectivityResult);
 
         AnalyticsConfigurationService analyticsConfigurationService = Mockito.mock(AnalyticsConfigurationService.class);
         Mockito.when(analyticsConfigurationService.fetchAnalyticsSetting(Mockito.any(), Mockito.any())).thenReturn(new AnalyticsSetting("analytics", true));
 
-        ProductBoot productBoot = new ProductBoot(blackDuckConnectivityChecker, analyticsConfigurationService, productBootFactory, productBootOptions);
+        ProductBoot productBoot = new ProductBoot(blackDuckConnectivityChecker, analyticsConfigurationService, productBootFactory, productBootOptions, detectConfiguration);
 
         return productBoot.boot(blackDuckDecision, null);
     }
