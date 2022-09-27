@@ -22,7 +22,7 @@ public class BlackDuckVersionParser {
             int major_version_from_bd = Integer.parseInt(parts[0]);
             int minor_version_from_bd = Integer.parseInt(parts[1]);
             int patch_version_from_bd = Integer.parseInt(parts[2]);
-            logger.debug("Black Duck version parsed from version string {}: major: {}, minor: {}, patch: {}",
+            logger.trace("Black Duck version parsed from version string {}: major: {}, minor: {}, patch: {}",
                 blackDuckVersionString, major_version_from_bd, minor_version_from_bd, patch_version_from_bd
             );
             return Optional.of(new BlackDuckVersion(major_version_from_bd, minor_version_from_bd, patch_version_from_bd));

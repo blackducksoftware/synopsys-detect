@@ -1,6 +1,8 @@
 package com.synopsys.integration.detect.lifecycle.boot.product.version;
 
-public class BlackDuckVersion {
+import com.synopsys.integration.util.Stringable;
+
+public class BlackDuckVersion extends Stringable {
     private final int major;
     private final int minor;
     private final int patch;
