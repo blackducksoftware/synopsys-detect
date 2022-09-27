@@ -13,6 +13,8 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.wait.ResilientJobConfig;
 import com.synopsys.integration.wait.ResilientJobExecutor;
+import com.synopsys.integration.wait.tracker.WaitIntervalTracker;
+import com.synopsys.integration.wait.tracker.WaitIntervalTrackerFactory;
 
 public class RapidModeWaitOperation {
     public static final int DEFAULT_WAIT_INTERVAL_IN_SECONDS = 1;
@@ -26,7 +28,8 @@ public class RapidModeWaitOperation {
 
     public List<DeveloperScansScanView> waitForScans(List<HttpUrl> uploadedScans, long timeoutInSeconds, int waitIntervalInSeconds)
         throws IntegrationException, InterruptedException {
-        ResilientJobConfig waitJobConfig = new ResilientJobConfig(new Slf4jIntLogger(logger), timeoutInSeconds, System.currentTimeMillis(), waitIntervalInSeconds);
+        WaitIntervalTracker waitIntervalTracker = WaitIntervalTrackerFactory.createProgressive(timeoutInSeconds, 60);
+        ResilientJobConfig waitJobConfig = new ResilientJobConfig(new Slf4jIntLogger(logger), System.currentTimeMillis(), waitIntervalTracker);
         DetectRapidScanWaitJob waitJob = new DetectRapidScanWaitJob(blackDuckApiClient, uploadedScans);
         ResilientJobExecutor jobExecutor = new ResilientJobExecutor(waitJobConfig);
         return jobExecutor.executeJob(waitJob);
