@@ -1,6 +1,5 @@
 package com.synopsys.integration.detect.workflow.blackduck.developer;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import org.slf4j.Logger;
