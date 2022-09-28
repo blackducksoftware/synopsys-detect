@@ -180,8 +180,10 @@ public class DetectBoot {
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
                 detectConfigurationFactory.createBlackDuckConnectionDetails(),
-                detectConfigurationFactory.createScanMode()
+                detectConfigurationFactory.createScanMode(),
+                detectConfigurationFactory.createHasSignatureScan()
             );
+
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
             oneRequiresTheOther(

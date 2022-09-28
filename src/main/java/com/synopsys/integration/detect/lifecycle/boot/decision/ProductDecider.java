@@ -11,7 +11,7 @@ import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMo
 public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public BlackDuckDecision decideBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackduckScanMode scanMode) {
+    public BlackDuckDecision decideBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackduckScanMode scanMode, boolean hasSigScan) {
         boolean offline = blackDuckConnectionDetails.getOffline();
         Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
         if (offline && BlackduckScanMode.RAPID.equals(scanMode)) {
@@ -22,7 +22,7 @@ public class ProductDecider {
             return BlackDuckDecision.runOffline();
         } else if (blackDuckUrl.isPresent()) {
             logger.debug("Black Duck will run ONLINE: A Black Duck url was found.");
-            return BlackDuckDecision.runOnline(scanMode);
+            return BlackDuckDecision.runOnline(scanMode, hasSigScan);
         } else {
             logger.debug("Black Duck will NOT run: The Black Duck url must be provided or offline mode must be set to true.");
             return BlackDuckDecision.skip();
