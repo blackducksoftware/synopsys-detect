@@ -3,4 +3,4 @@
 [solution_name] is configured by assigning values to properties.
 
 [solution_name]'s configuration mechanisms are provided by Spring Boot. Additional details on configuring
-Spring Boot applications like [solution_name] can be found in the [Spring Boot documentation](https://docs.spring.io/spring-boot/docs/2.4.5/reference/html/howto.html#howto-externalize-configuration).
+Spring Boot applications like [solution_name] can be found in the <a href="https://docs.spring.io/spring-boot/docs/2.6.6/reference/html/howto.html#howto-externalize-configuration" target="_blank">Spring Boot documentation.</a>
