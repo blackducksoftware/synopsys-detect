@@ -16,7 +16,6 @@ import com.synopsys.integration.blackduck.api.generated.component.DeveloperScans
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 
 public class RapidScanResultAggregator {
@@ -68,12 +67,7 @@ public class RapidScanResultAggregator {
             RapidScanComponentGroupDetail componentGroupDetail = componentDetail.getComponentDetails();
             RapidScanComponentGroupDetail securityGroupDetail = componentDetail.getSecurityDetails();
             RapidScanComponentGroupDetail licenseGroupDetail = componentDetail.getLicenseDetails();
-            
-            // Get the overall list of policy violations
-            List<DeveloperScansScanItemsViolatingPoliciesView> violatingPolicies = resultView.getViolatingPolicies();
-            Set<String> policyNames = violatingPolicies.stream()
-                    .map(DeveloperScansScanItemsViolatingPoliciesView::getPolicyName).collect(Collectors.toSet());
-            
+                  
             List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolations = 
                     resultView.getComponentViolatingPolicies();
             List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilityViolations = resultView
