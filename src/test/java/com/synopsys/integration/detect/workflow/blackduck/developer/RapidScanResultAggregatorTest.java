@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsComponentViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
@@ -78,6 +79,23 @@ public class RapidScanResultAggregatorTest {
             @Override
             public String getComponentIdentifier() {
                 return "component_1:component_version_1";
+            }
+            
+            @Override
+            public List<DeveloperScansScanItemsComponentViolatingPoliciesView> getComponentViolatingPolicies() {
+                List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolatingPolicies = new ArrayList<>();
+                
+                DeveloperScansScanItemsComponentViolatingPoliciesView componentViolatingPolicy = new DeveloperScansScanItemsComponentViolatingPoliciesView();
+                componentViolatingPolicy.setPolicyName("component_policy");
+                componentViolatingPolicy.setPolicySeverity("CRITICAL");
+                
+                DeveloperScansScanItemsComponentViolatingPoliciesView componentViolatingPolicy2 = new DeveloperScansScanItemsComponentViolatingPoliciesView();
+                componentViolatingPolicy2.setPolicyName("component_policy_warning");
+                componentViolatingPolicy2.setPolicySeverity("MINOR");
+                
+                componentViolatingPolicies.add(componentViolatingPolicy);
+                componentViolatingPolicies.add(componentViolatingPolicy2);
+                return componentViolatingPolicies;
             }
 
             @Override
