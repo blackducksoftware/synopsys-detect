@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsComponentViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
@@ -68,12 +69,13 @@ public class RapidScanResultAggregator {
             RapidScanComponentGroupDetail securityGroupDetail = componentDetail.getSecurityDetails();
             RapidScanComponentGroupDetail licenseGroupDetail = componentDetail.getLicenseDetails();
             
-            // violating policy names is a super set of policy names so we have to remove
-            // the vulnerability and license.
+            // Get the overall list of policy violations
             List<DeveloperScansScanItemsViolatingPoliciesView> violatingPolicies = resultView.getViolatingPolicies();
             Set<String> policyNames = violatingPolicies.stream()
                     .map(DeveloperScansScanItemsViolatingPoliciesView::getPolicyName).collect(Collectors.toSet());
-
+            
+            List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolations = 
+                    resultView.getComponentViolatingPolicies();
             List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilityViolations = resultView
                     .getPolicyViolationVulnerabilities();
             List<DeveloperScansScanItemsPolicyViolationLicensesView> licenseViolations = resultView
@@ -90,18 +92,23 @@ public class RapidScanResultAggregator {
                     .flatMap(Collection::stream)
                     .map(DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView::getPolicyName)
                     .collect(Collectors.toSet());
+            
+            Set<String> componentPolicyNames = componentViolations.stream()
+                    .map(DeveloperScansScanItemsComponentViolatingPoliciesView::getPolicyName)
+                    .collect(Collectors.toSet());
 
-            policyNames.removeAll(vulnerabilityPolicyNames);
-            policyNames.removeAll(licensePolicyNames);
+            // TODO theory that we don't need to remove these as they are presented at a high 
+            // summary looking level in the JSON.
+//            policyNames.removeAll(vulnerabilityPolicyNames);
+//            policyNames.removeAll(licensePolicyNames);
 
-            componentGroupDetail.addPolicies(policyNames);
+            componentGroupDetail.addPolicies(componentPolicyNames);
             securityGroupDetail.addPolicies(vulnerabilityPolicyNames);
             licenseGroupDetail.addPolicies(licensePolicyNames);
 
+            addComponentData(resultView, componentViolations, componentGroupDetail);
             addVulnerabilityData(resultView, vulnerabilityViolations, securityGroupDetail);
             addLicenseData(resultView, licenseViolations, licenseGroupDetail);
-            
-            componentGroupDetail.addComponentMessages(resultView);
         }
         return componentDetails;
     }
@@ -138,5 +145,12 @@ public class RapidScanResultAggregator {
         for (DeveloperScansScanItemsPolicyViolationLicensesView licensePolicyViolation : licenses) {
             licenseDetail.addLicenseMessages(resultView, licensePolicyViolation);
         }
+    }
+    
+    private void addComponentData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolations, RapidScanComponentGroupDetail componentGroupDetail) {
+        for (DeveloperScansScanItemsComponentViolatingPoliciesView componentPolicyViolation: componentViolations) {
+            componentGroupDetail.addComponentMessages(resultView, componentPolicyViolation);
+        }
+        
     }
 }
