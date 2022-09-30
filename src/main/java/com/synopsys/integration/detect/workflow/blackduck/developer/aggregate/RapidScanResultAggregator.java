@@ -97,11 +97,6 @@ public class RapidScanResultAggregator {
                     .map(DeveloperScansScanItemsComponentViolatingPoliciesView::getPolicyName)
                     .collect(Collectors.toSet());
 
-            // TODO theory that we don't need to remove these as they are presented at a high 
-            // summary looking level in the JSON.
-//            policyNames.removeAll(vulnerabilityPolicyNames);
-//            policyNames.removeAll(licensePolicyNames);
-
             componentGroupDetail.addPolicies(componentPolicyNames);
             securityGroupDetail.addPolicies(vulnerabilityPolicyNames);
             licenseGroupDetail.addPolicies(licensePolicyNames);
