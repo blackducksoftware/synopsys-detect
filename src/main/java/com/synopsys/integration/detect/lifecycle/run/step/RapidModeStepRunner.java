@@ -47,20 +47,15 @@ public class RapidModeStepRunner {
         rapidScanConfig.ifPresent(config -> logger.info("Found rapid scan config file: {}", config));
         
         String blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString();
-        
-        stepHelper.runToolIfIncluded(DetectTool.DETECTOR, "detector", () -> {
-            if (bdioResult.isNotEmpty()) {
-                List<HttpUrl> rapidScanUrls = operationRunner.performRapidUpload(blackDuckRunData, bdioResult, rapidScanConfig.orElse(null));
-                List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, rapidScanUrls);
-            
-                File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
-                RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults);
-                operationRunner.publishRapidResults(jsonFile, summary);
-            } else {
-                logger.debug("No BDIO results to upload. Skipping.");
-            }
+
+        stepHelper.runToolIfIncluded(DetectTool.DETECTOR, "Detectors", () -> {
+            runScanForResults(bdioResult, rapidScanConfig, blackDuckRunData, projectVersion);
         });
-        
+
+        stepHelper.runToolIfIncluded(DetectTool.DOCKER, "Docker", () -> {
+            runScanForResults(bdioResult, rapidScanConfig, blackDuckRunData, projectVersion);
+        });
+
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             logger.debug("Rapid scan signature scan detected.");
             
@@ -81,6 +76,21 @@ public class RapidModeStepRunner {
             
         });
     }
+
+   private void runScanForResults(BdioResult bdioResult, Optional<File> rapidScanConfig, BlackDuckRunData blackDuckRunData, NameVersion projectVersion ) throws OperationException {
+       if (bdioResult.isNotEmpty()) {
+           List<HttpUrl> rapidScanUrls = operationRunner.performRapidUpload(blackDuckRunData, bdioResult,
+                   rapidScanConfig.orElse(null));
+           List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData,
+                   rapidScanUrls);
+
+           File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
+           RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults);
+           operationRunner.publishRapidResults(jsonFile, summary);
+       } else {
+           logger.debug("No BDIO results to upload. Skipping.");
+       }
+   }
 
     /**
      * The signature scanner only returns a high level success or failure to us. Details are in the

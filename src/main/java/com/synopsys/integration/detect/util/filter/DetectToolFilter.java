@@ -23,7 +23,7 @@ public class DetectToolFilter {
     private final BlackDuckDecision blackDuckDecision;
     
     // If a rapid scan is specified, default to running only package manager scans
-    private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR);
+    private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.DOCKER);
 
     public DetectToolFilter(
         ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter,
