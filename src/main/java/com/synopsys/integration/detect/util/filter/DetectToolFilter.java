@@ -23,7 +23,7 @@ public class DetectToolFilter {
     private final BlackDuckDecision blackDuckDecision;
     
     // If a rapid scan is specified, default to running only package manager scans
-    private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR);
+    private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.DOCKER);
 
     public DetectToolFilter(
         ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter,
@@ -57,8 +57,6 @@ public class DetectToolFilter {
             // Only run rapid signature scans if the user specifically asked for them
             if (detectTool == DetectTool.SIGNATURE_SCAN) {
                 return rapidSignatureScanEnabled;
-            } else if (detectTool == DetectTool.DOCKER) {
-                return true;
             } else if (!rapidTools.contains(detectTool)) {
                 return false;
             }
