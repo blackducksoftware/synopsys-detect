@@ -57,6 +57,8 @@ public class DetectToolFilter {
             // Only run rapid signature scans if the user specifically asked for them
             if (detectTool == DetectTool.SIGNATURE_SCAN) {
                 return rapidSignatureScanEnabled;
+            } else if (detectTool == DetectTool.DOCKER) {
+                return true;
             } else if (!rapidTools.contains(detectTool)) {
                 return false;
             }
