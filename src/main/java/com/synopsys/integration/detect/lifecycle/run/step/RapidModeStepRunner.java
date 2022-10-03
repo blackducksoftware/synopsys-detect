@@ -68,7 +68,7 @@ public class RapidModeStepRunner {
             parsedUrls.addAll(parseScanUrls(signatureScanOutputResult, blackDuckUrl));
         });
 
-        // TODO check if any scans done
+        //check if any scans were done and report results
         if (!parsedUrls.isEmpty()) {
             List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData,
                     parsedUrls);
