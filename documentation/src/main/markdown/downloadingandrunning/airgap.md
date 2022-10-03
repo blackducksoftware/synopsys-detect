@@ -13,7 +13,7 @@ As an alternative, you can create an air gap archive by running [solution_name] 
 Optionally you can follow --zip with a space and an argument (for example: --zip FULL) to customize the air gap zip. Possible values: FULL (produce a full air gap zip; the default), NO_DOCKER (do not include the Docker Inspector).
 The archive created contains the [solution_name] .jar and the inspectors.
 
-Gradle must be on the PATH to generate an Air Gap zip.
+Your PATH environment variable must include the *bin* directory of the Gradle distribution to generate an Air Gap zip.
 
 ## Running in air gap mode
 
