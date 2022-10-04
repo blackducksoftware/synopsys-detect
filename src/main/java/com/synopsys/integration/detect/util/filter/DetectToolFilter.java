@@ -18,7 +18,7 @@ public class DetectToolFilter {
     private final ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter;
     private final boolean impactEnabled;
     private final boolean iacEnabled;
-    private final boolean rapidSignatureScanEnabled;
+    private final boolean nonPersistentSignatureScanEnabled;
     private final RunDecision runDecision;
     private final BlackDuckDecision blackDuckDecision;
     
@@ -29,14 +29,14 @@ public class DetectToolFilter {
         ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter,
         boolean impactEnabled,
         boolean iacEnabled,
-        boolean rapidSignatureScanEnabled, 
+        boolean nonPersistentSignatureScanEnabled, 
         RunDecision runDecision,
         BlackDuckDecision blackDuckDecision
     ) {
 
         this.excludedIncludedFilter = excludedIncludedFilter;
         this.impactEnabled = impactEnabled;
-        this.rapidSignatureScanEnabled = rapidSignatureScanEnabled;
+        this.nonPersistentSignatureScanEnabled = nonPersistentSignatureScanEnabled;
         this.iacEnabled = iacEnabled;
         this.runDecision = runDecision;
         this.blackDuckDecision = blackDuckDecision;
@@ -53,10 +53,11 @@ public class DetectToolFilter {
         if (detectTool == DetectTool.DETECTOR && runDecision.isDockerMode()) {
             return false;
         }
-        if (blackDuckDecision.scanMode() == BlackduckScanMode.RAPID) {
+        if (blackDuckDecision.scanMode() == BlackduckScanMode.EPHEMERAL ||
+                blackDuckDecision.scanMode() == BlackduckScanMode.RAPID) {
             // Only run rapid signature scans if the user specifically asked for them
             if (detectTool == DetectTool.SIGNATURE_SCAN) {
-                return rapidSignatureScanEnabled;
+                return nonPersistentSignatureScanEnabled;
             } else if (!rapidTools.contains(detectTool)) {
                 return false;
             }

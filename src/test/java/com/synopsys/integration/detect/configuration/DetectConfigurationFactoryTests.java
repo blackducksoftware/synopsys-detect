@@ -68,13 +68,13 @@ public class DetectConfigurationFactoryTests {
     }
     
     @Test
-    public void testIsRapidIsEnabled() {
+    public void testIsEphemeralIsEnabled() {
         DetectConfigurationFactory factory = factoryOf(
                 Pair.of(DetectProperties.DETECT_TOOLS, DetectTool.SIGNATURE_SCAN.toString()),
                 Pair.of(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, BlackduckScanMode.RAPID.toString()));
         
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = factory.createBlackDuckSignatureScannerOptions();
 
-        Assertions.assertTrue(blackDuckSignatureScannerOptions.getIsRapid());
+        Assertions.assertTrue(blackDuckSignatureScannerOptions.getIsEphemeral());
     }
 }
