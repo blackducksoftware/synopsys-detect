@@ -40,4 +40,8 @@ public class ExcludeIncludeEnumFilter<T extends Enum<T>> {
             return willInclude(value);
         }
     }
+    
+    public boolean includeSpecified() {
+        return !included.isEmpty() && !included.containsAll() && !included.containsNone();
+    }
 }

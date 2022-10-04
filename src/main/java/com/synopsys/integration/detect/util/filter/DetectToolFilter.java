@@ -25,9 +25,11 @@ public class DetectToolFilter {
     // detect.tools you can run a subset of this list but scans not mentioned here are not possible.
     private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.DOCKER);
     
-    // If an ephemeral scan is specified, default to running package manager and signature scans. Using
-    // detect.tools you can run a subset of this list but scans not mentioned here are not possible.
-    private final List<DetectTool> ephemeralTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN);
+    // If an ephemeral scan is specified, default to running package manager and signature scans.
+    private final List<DetectTool> defaultEphemeralTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN);
+    
+    // A list of all possible ephemeral scan types.
+    private final List<DetectTool> allowedEphemeralTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN, DetectTool.DOCKER);    
 
     public DetectToolFilter(
         ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter,
@@ -51,15 +53,23 @@ public class DetectToolFilter {
         if (detectTool == DetectTool.IAC_SCAN) {
             return iacEnabled;
         }
-
         if (detectTool == DetectTool.DETECTOR && runDecision.isDockerMode()) {
-            return false;
-        }
-        if (blackDuckDecision.scanMode() == BlackduckScanMode.EPHEMERAL && !ephemeralTools.contains(detectTool)) {
             return false;
         }
         if (blackDuckDecision.scanMode() == BlackduckScanMode.RAPID && !rapidTools.contains(detectTool)) {
             return false;
+        }
+        if (blackDuckDecision.scanMode() == BlackduckScanMode.EPHEMERAL) {
+            // If the user specifically asked for something, check that it is an allowed
+            // tool.
+            if (excludedIncludedFilter.includeSpecified()) {
+                if (!allowedEphemeralTools.contains(detectTool)) {
+                    return false;
+                }
+            // Otherwise only allow default tools.
+            } else if (!defaultEphemeralTools.contains(detectTool)) {
+                return false;
+            }
         }
         return excludedIncludedFilter.shouldInclude(detectTool);
     }
