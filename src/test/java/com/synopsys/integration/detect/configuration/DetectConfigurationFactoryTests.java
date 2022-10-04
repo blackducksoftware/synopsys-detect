@@ -71,7 +71,7 @@ public class DetectConfigurationFactoryTests {
     public void testIsEphemeralIsEnabled() {
         DetectConfigurationFactory factory = factoryOf(
                 Pair.of(DetectProperties.DETECT_TOOLS, DetectTool.SIGNATURE_SCAN.toString()),
-                Pair.of(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, BlackduckScanMode.RAPID.toString()));
+                Pair.of(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, BlackduckScanMode.EPHEMERAL.toString()));
         
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = factory.createBlackDuckSignatureScannerOptions();
 
