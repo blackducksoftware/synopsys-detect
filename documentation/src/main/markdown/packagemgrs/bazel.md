@@ -118,7 +118,7 @@ One of the URLs provided in the *http_archve* rule must match one of the followi
 
 Supported extensions: .tar.gz, .zip, .gz
 
-The Bazel tool runs a bazel query on the given target to get a list of library dependencies. On each http_archive dependency in the output, the Bazel tool runs another bazel query to get its artifact details; specifically the github released artifact location (URL).
+The Bazel tool runs a bazel query on the given target to get a list of library dependencies. On each dependency in the output, the Bazel tool runs another bazel query to get its artifact details; specifically the github released artifact locations (URLs) within http_archive, go_repository, and git_repository rules.
 
 The following is an example using the equivalent commands that [solution_name] runs, but from the command line, showing how [solution_name]'s Bazel detector currently identifies components.
 First, it gets a list of dependencies:
@@ -147,7 +147,7 @@ Then, it gets details for each http_archive dependency. It prepends //external: 
 </query>
 Loading: 0 packages loaded
 ```
-Finally, it parses the github dependency name (organization/repo) and version from each github released artifact location in the urls list.
+Finally, for each http_archive, go_repository, and git_repository rule in the output, [solution_name] parses the github dependency name (organization/repo) and version from each github released artifact location (in the url field or urls list, whichever is present).
 
 ## Examples
 

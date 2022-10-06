@@ -4,7 +4,7 @@ The [solution_name] Detector tool runs one or more detectors to find and extract
 
 Each package manager ecosystem is assigned a detector type. Each detector type may have multiple methods (detectors) used to extract dependencies.
 
-Which detector(s) will run on your project is determined by the [detector search](../downloadingandrunning/detectorcascade.md) process.
+Which detector(s) will run against your project is determined by the [detector search](../downloadingandrunning/detectorcascade.md) process.
 
 ## Detector Types, Entry Points, and Detectors
 

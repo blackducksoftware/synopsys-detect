@@ -6,11 +6,11 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsComponentViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 
 public class RapidScanComponentGroupDetail {
@@ -85,24 +85,19 @@ public class RapidScanComponentGroupDetail {
     // While it may be possible to reduce the overall message generation code in this class by pushing 
     // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
     // as this may be temporary code.
-    public void addComponentMessages(DeveloperScansScanView resultView) {
+    public void addComponentMessages(DeveloperScansScanView resultView, DeveloperScansScanItemsComponentViolatingPoliciesView componentPolicyViolation) {
         String baseMessage = getBaseMessage(resultView);
-
-        List<DeveloperScansScanItemsViolatingPoliciesView> violatingPolicies = resultView.getViolatingPolicies();
 
         String errorMessage = "", warningMessage = "";
 
-        for (int i = 0; i < violatingPolicies.size(); i++) {
-            DeveloperScansScanItemsViolatingPoliciesView violation = violatingPolicies.get(i);
-
-            if (violation.getPolicySeverity().equals("CRITICAL") || violation.getPolicySeverity().equals("BLOCKER")) {
+            if (componentPolicyViolation.getPolicySeverity().equals("CRITICAL") || componentPolicyViolation.getPolicySeverity().equals("BLOCKER")) {
                 if (errorMessage.equals("")) {
                     errorMessage = baseMessage;
                 } else {
                     errorMessage += ", ";
                 }
                 
-                errorMessage += violation.getPolicyName();
+                errorMessage += componentPolicyViolation.getPolicyName();
             } else {
                 if (warningMessage.equals("")) {
                     warningMessage = baseMessage;
@@ -110,9 +105,9 @@ public class RapidScanComponentGroupDetail {
                     warningMessage += ", ";
                 }
                 
-                warningMessage += violation.getPolicyName();
+                warningMessage += componentPolicyViolation.getPolicyName();
             }
-        }
+            
         addMessages(errorMessage, warningMessage);
     }
 

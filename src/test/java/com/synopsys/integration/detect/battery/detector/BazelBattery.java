@@ -14,9 +14,9 @@ class BazelBattery {
     private static final String BAZEL_MAVEN_JAR_OUTPUT2_RESOURCE = "bazel-maven-jar-query2.xout";
     private static final String BAZEL_MAVEN_JAR_OUTPUT3_RESOURCE = "bazel-maven-jar-query3.xout";
     private static final String BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT1_RESOURCE = "bazel-http-archive-query1.xout";
-    private static final String BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT2_AND_3_RESOURCE = "bazel-http-archive-query2_and_3.xout";
-    private static final String BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT4_RESOURCE = "bazel-http-archive-query4.xout";
-    private static final String BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT5_RESOURCE = "bazel-http-archive-query5.xout";
+    private static final String BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT2_RESOURCE = "bazel-http-archive-query2_and_3.xout";
+    private static final String BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT3_RESOURCE = "bazel-http-archive-query4.xout";
+    private static final String BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT4_RESOURCE = "bazel-http-archive-query5.xout";
     private static final String EMPTY_OUTPUT_RESOURCE = "empty.xout";
 
     @Test
@@ -99,10 +99,9 @@ class BazelBattery {
         test.executableFromResourceFiles(
             DetectProperties.DETECT_BAZEL_PATH,
             BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT1_RESOURCE,
-            BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT2_AND_3_RESOURCE,
-            BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT2_AND_3_RESOURCE,
-            BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT4_RESOURCE,
-            BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT5_RESOURCE
+            BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT2_RESOURCE,
+            BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT3_RESOURCE,
+            BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT4_RESOURCE
         );
         test.sourceDirectoryNamed("bazel-http-archive-github");
         test.sourceFileNamed("WORKSPACE");

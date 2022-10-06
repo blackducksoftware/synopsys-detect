@@ -32,7 +32,7 @@ public class BlackDuckSignatureScannerOptions {
     private final Boolean copyrightSearch;
     private final Boolean followSymLinks;
     private final Boolean treatSkippedScansAsSuccess;
-    private final Boolean isRapid;
+    private final Boolean isEphemeral;
 
     public BlackDuckSignatureScannerOptions(
         List<Path> signatureScannerPaths,
@@ -50,7 +50,7 @@ public class BlackDuckSignatureScannerOptions {
         Boolean copyrightSearch,
         Boolean followSymLinks,
         Boolean treatSkippedScansAsSuccess,
-        Boolean isRapid
+        Boolean isEphemeral
     ) {
 
         this.signatureScannerPaths = signatureScannerPaths;
@@ -68,7 +68,7 @@ public class BlackDuckSignatureScannerOptions {
         this.copyrightSearch = copyrightSearch;
         this.followSymLinks = followSymLinks;
         this.treatSkippedScansAsSuccess = treatSkippedScansAsSuccess;
-        this.isRapid = isRapid;
+        this.isEphemeral = isEphemeral;
     }
 
     public List<Path> getSignatureScannerPaths() {
@@ -131,7 +131,7 @@ public class BlackDuckSignatureScannerOptions {
         return treatSkippedScansAsSuccess;
     }
 
-    public Boolean getIsRapid() {
-        return isRapid;
+    public Boolean getIsEphemeral() {
+        return isEphemeral;
     }
 }

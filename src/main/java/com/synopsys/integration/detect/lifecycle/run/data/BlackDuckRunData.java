@@ -58,8 +58,8 @@ public class BlackDuckRunData {
         return new BlackDuckRunData(null, blackDuckServerConfig, blackDuckServicesFactory, scanMode);
     }
 
-    public Boolean isRapid() {
-        return scanMode == BlackduckScanMode.RAPID;
+    public Boolean isNonPersistent() {
+        return (scanMode == BlackduckScanMode.EPHEMERAL || scanMode == BlackduckScanMode.RAPID);
     }
 
     public BlackduckScanMode getScanMode() {

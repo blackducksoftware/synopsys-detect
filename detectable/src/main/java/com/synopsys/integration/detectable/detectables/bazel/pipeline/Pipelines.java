@@ -9,6 +9,7 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.xpathquery.HttpArchiveXpath;
 
 public class Pipelines {
     private static final String CQUERY_OPTIONS_PLACEHOLDER = "${detect.bazel.cquery.options}";
@@ -73,10 +74,10 @@ public class Pipelines {
             .parseFilterLines("^@.*//.*$")
             .parseReplaceInEachLine("^@", "")
             .parseReplaceInEachLine("//.*", "")
+            .deDupLines()
             .parseReplaceInEachLine("^", "//external:")
             .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(.*, ${input.item})", OUTPUT_FLAG, "xml"), true)
-            // Puts all URLs from the urls list into the stream for the next step
-            .parseValuesFromXml("/query/rule[@class='http_archive']/list[@name='urls']/string", "value")
+            .parseValuesFromXml(HttpArchiveXpath.QUERY, "value")
             .transformGithubUrl()
             .build();
         availablePipelines.put(WorkspaceRule.HTTP_ARCHIVE, httpArchiveGithubUrlPipeline);
