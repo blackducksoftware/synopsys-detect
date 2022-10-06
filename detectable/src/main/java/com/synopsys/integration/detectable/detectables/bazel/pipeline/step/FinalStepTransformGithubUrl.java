@@ -26,16 +26,16 @@ public class FinalStepTransformGithubUrl implements FinalStep {
     @Override
     public List<Dependency> finish(List<String> input) throws DetectableException {
         List<Dependency> dependencies = new LinkedList<>();
-        for (String githubUrl : input) {
-            logger.debug("bazel githubUrl: {}", githubUrl);
+        for (String potentialGithubUrl : input) {
+            logger.debug("bazel URL (potentially a github URL): {}", potentialGithubUrl);
             try {
-                String organization = githubUrlParser.parseOrganization(githubUrl);
-                String repo = githubUrlParser.parseRepo(githubUrl);
-                String version = githubUrlParser.parseVersion(githubUrl);
+                String organization = githubUrlParser.parseOrganization(potentialGithubUrl);
+                String repo = githubUrlParser.parseRepo(potentialGithubUrl);
+                String version = githubUrlParser.parseVersion(potentialGithubUrl);
                 Dependency dep = Dependency.FACTORY.createNameVersionDependency(Forge.GITHUB, organization + "/" + repo, version);
                 dependencies.add(dep);
             } catch (MalformedURLException e) {
-                logger.debug("URL '{}' does not appear to be a github released artifact location", githubUrl);
+                logger.debug("URL '{}' does not appear to be a github released artifact location", potentialGithubUrl);
             }
         }
         return dependencies;

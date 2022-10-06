@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 8.1.1
+
+### Resolved issues
+
+* (IDETECT-3509) Corrected the version of the NuGet Inspector built into the air gap zip files (from 1.0.1 to 1.0.2).
+
 ## Version 8.1.0
 
 ### New features
