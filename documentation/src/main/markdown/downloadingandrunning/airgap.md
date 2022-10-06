@@ -1,9 +1,6 @@
 # Air Gap Mode
 
-To run [solution_name] on an air-gapped computer or network, you must first download and install
-[solution_name] and files ([solution_name] dependencies) that [solution_name] normally downloads as it runs.
-These include inspectors for Docker and NuGet, libraries that the Gradle inspector requires, etc. These files are packaged together
-in an air gap archive (zip file).
+To run [solution_name] on an air-gapped computer or network, you must first download and install [solution_name] and dependencies that [solution_name] normally downloads as it runs. These include inspectors for Docker and NuGet, libraries that Gradle inspector requires, and other files. These files are packaged together in an air-gap archive that will be extracted on the target system.
 
 ## Downloading or creating an air gap archive
 
