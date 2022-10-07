@@ -50,13 +50,9 @@ public class RapidModeStepRunner {
         String blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString();
         List<HttpUrl> parsedUrls = new ArrayList<>();
 
-        stepHelper.runToolIfIncluded(DetectTool.DETECTOR, "Detectors", () -> {
-            parsedUrls.addAll(runScanForResults(bdioResult, rapidScanConfig, blackDuckRunData, projectVersion));
-        });
+        // Upload bdio results... 
+        parsedUrls.addAll(runScanForResults(bdioResult, rapidScanConfig, blackDuckRunData, projectVersion));
 
-        stepHelper.runToolIfIncluded(DetectTool.DOCKER, "Docker", () -> {
-            parsedUrls.addAll(runScanForResults(bdioResult, rapidScanConfig, blackDuckRunData, projectVersion));
-        });
 
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             logger.debug("Rapid scan signature scan detected.");
