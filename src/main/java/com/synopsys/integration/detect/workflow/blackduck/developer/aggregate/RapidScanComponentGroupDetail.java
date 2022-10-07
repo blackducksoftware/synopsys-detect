@@ -202,6 +202,15 @@ public class RapidScanComponentGroupDetail {
             warningMessage += summaryMessage;
         }
         
+        String upgradeGuidance = "\n best long term move to: " + resultView.getLongTermUpgradeGuidance().getVersionName() + " or short term move to: " + resultView.getShortTermUpgradeGuidance().getVersionName();
+        
+        if (StringUtils.isNotBlank(errorMessage)) {
+            errorMessage += upgradeGuidance;
+        }
+        if (StringUtils.isNotBlank(warningMessage)) {
+            warningMessage += upgradeGuidance;
+        }
+        
         addMessages(errorMessage, warningMessage);
     }
     
