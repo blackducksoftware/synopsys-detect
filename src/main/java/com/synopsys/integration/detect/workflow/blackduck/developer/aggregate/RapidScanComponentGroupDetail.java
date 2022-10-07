@@ -193,7 +193,7 @@ public class RapidScanComponentGroupDetail {
         }
         
         String summaryMessage = ": found vulnerability " + vulnerability.getName() + " with severity "
-                + vulnerability.getVulnSeverity() + " and CVSS score " + vulnerability.getOverallScore();
+                + vulnerability.getVulnSeverity() + " and CVSS score " + vulnerability.getOverallScore() + ".";
         
         if (StringUtils.isNotBlank(errorMessage)) {
             errorMessage += summaryMessage;
@@ -202,13 +202,17 @@ public class RapidScanComponentGroupDetail {
             warningMessage += summaryMessage;
         }
         
-        String upgradeGuidance = "\n best long term move to: " + resultView.getLongTermUpgradeGuidance().getVersionName() + " or short term move to: " + resultView.getShortTermUpgradeGuidance().getVersionName();
-        
-        if (StringUtils.isNotBlank(errorMessage)) {
-            errorMessage += upgradeGuidance;
-        }
-        if (StringUtils.isNotBlank(warningMessage)) {
-            warningMessage += upgradeGuidance;
+        if (resultView.getLongTermUpgradeGuidance() != null && resultView.getShortTermUpgradeGuidance() != null) {
+            String upgradeGuidance = " Long term upgrade guidanace: "
+                    + resultView.getLongTermUpgradeGuidance().getVersionName() + " short term upgrade guidance "
+                    + resultView.getShortTermUpgradeGuidance().getVersionName();
+
+            if (StringUtils.isNotBlank(errorMessage)) {
+                errorMessage += upgradeGuidance;
+            }
+            if (StringUtils.isNotBlank(warningMessage)) {
+                warningMessage += upgradeGuidance;
+            }
         }
         
         addMessages(errorMessage, warningMessage);
