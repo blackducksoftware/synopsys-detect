@@ -66,8 +66,8 @@ public class DetectToolFilter {
                 if (!allowedEphemeralTools.contains(detectTool)) {
                     return false;
                 }
-            // Otherwise only allow default tools.
-            } else if (!defaultEphemeralTools.contains(detectTool)) {
+            // Otherwise only allow default tools unless we are in docker mode.
+            } else if (!defaultEphemeralTools.contains(detectTool) && !runDecision.isDockerMode()) {
                 return false;
             }
         }
