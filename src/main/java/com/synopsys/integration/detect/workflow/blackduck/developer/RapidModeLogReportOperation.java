@@ -27,7 +27,7 @@ public class RapidModeLogReportOperation {
 
     public RapidScanResultSummary perform(List<DeveloperScansScanView> results) throws DetectUserFriendlyException {
         RapidScanAggregateResult aggregateResult = rapidScanResultAggregator.aggregateData(results);
-        logger.info(String.format("%s:", RapidScanDetectResult.RAPID_SCAN_RESULT_DETAILS_HEADING));
+        logger.info(String.format("%s:", RapidScanDetectResult.NONPERSISTENT_SCAN_RESULT_DETAILS_HEADING));
         aggregateResult.logResult(new Slf4jIntLogger(logger));
         RapidScanResultSummary summary = aggregateResult.getSummary();
         if (summary.hasErrors()) {

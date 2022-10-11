@@ -8,8 +8,8 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.Ra
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 
 public class RapidScanDetectResult implements DetectResult {
-    public static final String RAPID_SCAN_RESULT_HEADING = System.getProperty("com.synopsys.nonpersistent.scan.mode.string") + " Scan Result";
-    public static final String RAPID_SCAN_RESULT_DETAILS_HEADING = System.getProperty("com.synopsys.nonpersistent.scan.mode.string") + " Scan Result Details";
+    public static final String NONPERSISTENT_SCAN_RESULT_HEADING = System.getProperty("com.synopsys.nonpersistent.scan.mode.string") + " Scan Result";
+    public static final String NONPERSISTENT_SCAN_RESULT_DETAILS_HEADING = System.getProperty("com.synopsys.nonpersistent.scan.mode.string") + " Scan Result Details";
     private final String jsonFilePath;
     private final List<String> subMessages;
 
@@ -25,7 +25,7 @@ public class RapidScanDetectResult implements DetectResult {
 
     @Override
     public String getResultMessage() {
-        return String.format("%s: (for more detail look in the log for %s)", RAPID_SCAN_RESULT_HEADING, RAPID_SCAN_RESULT_DETAILS_HEADING);
+        return String.format("%s: (for more detail look in the log for %s)", NONPERSISTENT_SCAN_RESULT_HEADING, NONPERSISTENT_SCAN_RESULT_DETAILS_HEADING);
     }
 
     @Override
