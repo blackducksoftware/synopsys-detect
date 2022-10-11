@@ -23,7 +23,7 @@ public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScansS
     private final List<HttpUrl> remainingUrls;
     private final List<HttpUrl> completedUrls;
 
-    private static final String JOB_NAME = "Waiting for Rapid Scans";
+    private static final String JOB_NAME = "Waiting for " + System.getProperty("com.synopsys.nonpersistent.scan.mode.string") + " Scans";
 
     private boolean complete;
 

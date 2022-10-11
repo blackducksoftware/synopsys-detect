@@ -54,7 +54,8 @@ public class DetectRapidScanService {
 
         for (UploadTarget uploadTarget : uploadBatch.getUploadTargets()) {
             HttpUrl url = bdio2FileUploadService.uploadFile(directoryManager.getRapidOutputDirectory(), uploadTarget, rapidScanOptions, rapidScanConfig);
-            logger.info("Uploaded Rapid Scan: {}", url);
+            String scanModeString = System.getProperty("com.synopsys.nonpersistent.scan.mode.string");
+            logger.info("Uploaded " + scanModeString + " Scan: {}", url);
             allScanUrls.add(url);
         }
 

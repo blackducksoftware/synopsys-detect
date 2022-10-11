@@ -8,8 +8,8 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.Ra
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 
 public class RapidScanDetectResult implements DetectResult {
-    public static final String RAPID_SCAN_RESULT_HEADING = "Rapid Scan Result";
-    public static final String RAPID_SCAN_RESULT_DETAILS_HEADING = "Rapid Scan Result Details";
+    public static final String RAPID_SCAN_RESULT_HEADING = System.getProperty("com.synopsys.nonpersistent.scan.mode.string") + " Scan Result";
+    public static final String RAPID_SCAN_RESULT_DETAILS_HEADING = System.getProperty("com.synopsys.nonpersistent.scan.mode.string") + " Scan Result Details";
     private final String jsonFilePath;
     private final List<String> subMessages;
 

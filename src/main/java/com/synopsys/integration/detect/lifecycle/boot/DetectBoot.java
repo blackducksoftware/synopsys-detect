@@ -25,6 +25,7 @@ import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration
 import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -182,6 +183,14 @@ public class DetectBoot {
                 detectConfigurationFactory.createBlackDuckConnectionDetails(),
                 detectConfigurationFactory.createScanMode()
             );
+            
+            String rapidTypeOfScanModeProperty = "Rapid";
+            if (blackDuckDecision.scanMode().equals(BlackduckScanMode.EPHEMERAL)) {
+                rapidTypeOfScanModeProperty = "Ephemeral";
+            }
+            // this will be used in the non persistent reporting classes, where scan mode type results are printed out...
+            System.setProperty("com.synopsys.nonpersistent.scan.mode.string", rapidTypeOfScanModeProperty);
+
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
             oneRequiresTheOther(
