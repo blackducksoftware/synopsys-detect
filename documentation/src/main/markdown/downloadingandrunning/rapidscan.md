@@ -82,7 +82,7 @@ The results are also printed in the logs:
 
 ## Rapid Scan Compare Mode
 
-You can configure Rapid scan to return only the difference in policy violations between previous rapid scans. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
+You can configure Rapid scan to return only the difference in policy violations between the rapid scan and previous intelligent scans using the same configuration. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
 
 ALL evaluates all RAPID or FULL policies. BOM_COMPARE_STRICT only shows policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of
 policy rule modes and behaves like ALL if the policy rule is only RAPID but like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for

@@ -51,7 +51,9 @@ Ephemeral scan policy overrides are the same as for Rapid Scans and can be provi
 
 The file is a YAML file intended to be checked-in to SCM alongside other build config files.
 
-NOTE that this file format is dependent on Black Duck and in the future, different versions of Black Duck may require a different file format.
+NOTE: 
+ * This file format is dependent on Black Duck and in the future, different versions of Black Duck may require a different file format.
+ * This will have no effect on Signature Scans run in Ephemeral Mode.
 
 ```
 version: 1.0
@@ -105,7 +107,7 @@ The results are also printed in the logs:
 
 ## Ephemeral Scan Compare Mode
 
-You can configure Ephemeral scan to return only the difference in policy violations between previous rapid scans. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
+You can configure Ephemeral scan to return only the difference in policy violations between the Ephemeral scan and previous intelligent scans using the same configuration. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
 
 ALL evaluates all RAPID/EPHEMERAL or FULL policies. BOM_COMPARE_STRICT only shows policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of
 policy rule modes and behaves like ALL if the policy rule is only RAPID but like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for
