@@ -1,6 +1,6 @@
 # Rapid Scan
 
-Rapid Scan or Rapid Scan Mode is a new way of running [solution_name] with Black Duck. This mode is designed to be as fast as possible and does not persist any data on Black Duck. Rapid Scan Mode has a unique set of restrictions, mode of configuration and set of results.  
+Rapid Scan or Rapid Scan Mode is a way of running [solution_name] with Black Duck that is designed to be as fast as possible and does not persist any data on Black Duck. Rapid Scan Mode has a unique set of restrictions, mode of configuration and set of results.  
 
 Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of detect.
 
