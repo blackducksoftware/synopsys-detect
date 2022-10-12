@@ -53,7 +53,7 @@ The file is a YAML file intended to be checked-in to SCM alongside other build c
 
 NOTE: 
  * This file format is dependent on Black Duck and in the future, different versions of Black Duck may require a different file format.
- * This will have no effect on Signature Scans run in Ephemeral Mode.
+ * This file will have no effect on Signature Scans run in Ephemeral Mode.
 
 ```
 version: 1.0
