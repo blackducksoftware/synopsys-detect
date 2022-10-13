@@ -1,7 +1,7 @@
 # Basic Properties
 
 This page lists [solution_name]'s basic properties.
-For advanced and deprecated properties, refer to [all properties](all-properties.md).
+For advanced and deprecated properties, refer to [All Properties](all-properties.md).
 
 <#list groups as group>
 
