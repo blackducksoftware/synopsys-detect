@@ -103,7 +103,6 @@
 
   <topicref href="properties/all-properties.md" format="markdown">
     <topicref href="properties/basic-properties.md" format="markdown"/>
-    <topicref href="properties/deprecated-properties.md" format="markdown"/>
 
     <topicref href="properties/configuration/overview.md" format="markdown">
       <topicref href="properties/configuration/binary-scanner.md" format="markdown"/>
@@ -145,6 +144,7 @@
       <topicref href="properties/detectors/sbt.md" format="markdown"/>
       <topicref href="properties/detectors/yarn.md" format="markdown"/>
     </topicref>
+	  <topicref href="properties/deprecated-properties.md" format="markdown"/>
   </topicref>
 
   <topicref href="results/overview.md" format="markdown">
