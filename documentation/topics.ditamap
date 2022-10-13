@@ -101,8 +101,9 @@
     <topicref href="naming/aggregation.md" format="markdown"/>
   </topicref>
 
-  <topicref href="properties/all-properties.md" format="markdown">
+  <topicref href="properties/configuration/properties.md" format="markdown">
     <topicref href="properties/basic-properties.md" format="markdown"/>
+	<topicref href="properties/all-properties.md" format="markdown"/>
 
     <topicref href="properties/configuration/overview.md" format="markdown">
       <topicref href="properties/configuration/binary-scanner.md" format="markdown"/>
