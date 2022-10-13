@@ -247,5 +247,44 @@ task helpJson(type: JavaExec) {
     args = ['--helpjson']
 }
 
+task buildPlatform1 (type: Exec, dependsOn: [build]) {
+    doFirst {
+        copy {
+            from ("${projectDir}/platform-1/") {
+                include "*"
+            }
+            into "${buildDir}/platform-1"
+        }
+    }
+
+    workingDir "${buildDir}/platform-1"
+
+    executable 'bash'
+    environment("RELEASE_VERSION", "${version}")
+    args = ["./build.sh"]
+}
+
+task submitToPlatform1 (type: Exec, dependsOn: [buildPlatform1]){
+    doFirst {
+        copy {
+            from ("${projectDir}/platform-1/") {
+                include "*"
+            }
+            into "${buildDir}/platform-1"
+        }
+    }
+
+    workingDir "${buildDir}/platform-1"
+
+    executable 'bash'
+    environment("RELEASE_VERSION", "${version}")
+    environment("BRANCH", "${repo1GitBranch}")
+    environment("REPO1_URL", "${repo1AccessURL}")
+    environment("ARTIFACTORY_USERNAME", "${artifactoryUsername}")
+    environment("ARTIFACTORY_PASSWORD", "${artifactoryPassword}")
+    environment("ARTIFACTORY_HOST", "${artifactoryHost}")
+    args = ["./submit.sh"]
+}
+
 artifactoryPublish.dependsOn ':documentation:publishDitaSource'
 artifactoryPublish.dependsOn signJar
