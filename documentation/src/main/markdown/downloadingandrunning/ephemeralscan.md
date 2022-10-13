@@ -2,13 +2,13 @@
 
 Ephemeral Scan or Ephemeral Scan Mode is a new way of running [solution_name] with Black Duck. This mode is designed to be as fast as possible and does not persist any data on Black Duck. Ephemeral Scan Mode has a unique set of restrictions, mode of configuration and set of results.  It is similar to Rapid Scan Mode however it differs in that it supports usage of the SIGNATURE_SCAN tool.  Ephemeral Scan allows non-persistent signature scans to be performed.
 
-Enable this feature by adding [--detect.blackduck.scan.mode=EPHEMERAL](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of detect.
+Enable this feature by adding [--detect.blackduck.scan.mode=EPHEMERAL](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of Detect.
 
 ## Requirements and Limitations
 
  * A limited subset of Tools can be run. 
     * The currently supported tools are: DETECTOR, BAZEL, SIGNATURE_SCAN and DOCKER.
-    * The EPHEMERAL Signature Scan will not persist on black duck. 
+    * The EPHEMERAL Signature Scan will not persist on Black Duck. 
     * All other tools are disabled when running in Ephemeral Scan mode.
  * Ephemeral Scan and non-persistent SIGNATURE_SCAN
     * To perform a non-persistent Signature Scan in Ephemeral mode, SIGNATURE_SCAN must be included within --detect.tools.
@@ -22,7 +22,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=EPHEMERAL](../proper
  * Ephemeral Scan does not support ```detect.policy.check.fail.on.names```
  * Ephemeral Scan cannot create a Risk or Notices report.
  * Ephemeral Scan will not create a Project or Version on Black Duck.
- * Ephemeral Scan should be run with aggregation so server-side metrics can be accurately collected.
+ * Ephemeral Scan should be run with [aggregation](../naming/aggregation.md) so server-side metrics can be accurately collected.
  * Ephemeral Scan when running SIGNATURE_SCAN requires communication with Black Duck.
  
 ## Invocation
@@ -109,6 +109,4 @@ The results are also printed in the logs:
 
 You can configure Ephemeral scan to return only the difference in policy violations between the Ephemeral scan and previous intelligent scans using the same configuration. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
 
-ALL evaluates all RAPID/EPHEMERAL or FULL policies. BOM_COMPARE_STRICT only shows policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of
-policy rule modes and behaves like ALL if the policy rule is only RAPID but like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for
-complete details.
+Setting the compare mode to ALL evaluates all RAPID/EPHEMERAL or FULL policies. BOM_COMPARE_STRICT only shows policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of policy rule modes selected and behaves like ALL if the policy rule is only RAPID and like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for complete details.
