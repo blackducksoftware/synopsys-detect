@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
@@ -20,8 +21,11 @@ public class BlackDuckVersionCheckerTest {
         DetectPropertyConfiguration config = Mockito.mock(DetectPropertyConfiguration.class);
         AllEnumList<DetectTool> detectToolsListContainingSigScan = Mockito.mock(AllEnumList.class);
         Mockito.when(detectToolsListContainingSigScan.containsValue(DetectTool.SIGNATURE_SCAN)).thenReturn(true);
+        NoneEnumList<DetectTool> detectToolsListExcludingSigScan = Mockito.mock(NoneEnumList.class);
+        Mockito.when(detectToolsListExcludingSigScan.containsValue(DetectTool.SIGNATURE_SCAN)).thenReturn(false);
         Mockito.when(config.getValue(DetectProperties.DETECT_TOOLS)).thenReturn(detectToolsListContainingSigScan);
-        Mockito.when(config.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE)).thenReturn(BlackduckScanMode.RAPID);
+        Mockito.when(config.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED)).thenReturn(detectToolsListExcludingSigScan);
+        Mockito.when(config.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE)).thenReturn(BlackduckScanMode.EPHEMERAL);
 
         BlackDuckMinimumVersionChecks blackDuckMinimumVersionChecks = new BlackDuckMinimumVersionChecks();
         BlackDuckVersionChecker blackDuckVersionChecker = new BlackDuckVersionChecker(new BlackDuckVersionParser(), blackDuckMinimumVersionChecks, config);
@@ -33,6 +37,33 @@ public class BlackDuckVersionCheckerTest {
 
         assertTrue(blackDuckVersionChecker.check("2022.10.1-QA").isPassed());
         assertFalse(blackDuckVersionChecker.check("2022.9.3-SNAPSHOT").isPassed());
+
+        assertTrue(blackDuckVersionChecker.check("nonsense").isPassed());
+        assertTrue(blackDuckVersionChecker.check("").isPassed());
+        assertTrue(blackDuckVersionChecker.check(null).isPassed());
+    }
+
+    @Test
+    void testRapidSigScanIncludedAndExcluded() {
+
+        DetectPropertyConfiguration config = Mockito.mock(DetectPropertyConfiguration.class);
+        AllEnumList<DetectTool> detectToolsListContainingSigScan = Mockito.mock(AllEnumList.class);
+        Mockito.when(detectToolsListContainingSigScan.containsValue(DetectTool.SIGNATURE_SCAN)).thenReturn(true);
+        NoneEnumList<DetectTool> detectExcludedToolsListIncludingSigScan = Mockito.mock(NoneEnumList.class);
+        Mockito.when(detectExcludedToolsListIncludingSigScan.containsValue(DetectTool.SIGNATURE_SCAN)).thenReturn(true);
+        Mockito.when(config.getValue(DetectProperties.DETECT_TOOLS)).thenReturn(detectToolsListContainingSigScan);
+        Mockito.when(config.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED)).thenReturn(detectExcludedToolsListIncludingSigScan);
+        Mockito.when(config.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE)).thenReturn(BlackduckScanMode.EPHEMERAL);
+
+        BlackDuckMinimumVersionChecks blackDuckMinimumVersionChecks = new BlackDuckMinimumVersionChecks();
+        BlackDuckVersionChecker blackDuckVersionChecker = new BlackDuckVersionChecker(new BlackDuckVersionParser(), blackDuckMinimumVersionChecks, config);
+
+        assertTrue(blackDuckVersionChecker.check("2022.10.0").isPassed());
+        assertTrue(blackDuckVersionChecker.check("2022.6.0").isPassed());
+        assertFalse(blackDuckVersionChecker.check("2021.5.3").isPassed());
+
+        assertTrue(blackDuckVersionChecker.check("2022.10.1-QA").isPassed());
+        assertTrue(blackDuckVersionChecker.check("2022.9.3-SNAPSHOT").isPassed());
     }
 
     @Test
