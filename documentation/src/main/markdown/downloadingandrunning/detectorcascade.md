@@ -9,7 +9,7 @@ to the depth indicated (0 means top level only).
 Detector search:
 
 1. Finds project root directories, and
-1. Determines which detector(s) should run on each project root directory that it found.
+2. Determines which detector(s) should run on each project root directory that it found.
 
 A project's root directory is the project's top-level directory viewed from the perspective of the project's package manager.
 There may be more than one project in your source directory.
@@ -22,7 +22,7 @@ part of graph building (controlled by properties such as `detect.{pkgmgr}.exclud
 It is important to recognize that detector search and graph building are completely separate processes
 controlled by different properties.
 
-For example, directory /src/myproject might be the root directory of a gradle project. There might also be gradle subprojects
+For example, directory /src/myproject might be the root directory of a Gradle project. There might also be Gradle subprojects
 in subdirectories underneath it (e.g. /src/myproject/subproject1), but subprojects will be discovered during graph building.
 /src/myproject is the *only* directory that detector search must find.
 
@@ -31,7 +31,7 @@ Properties that affect detector search:
 * detect.detector.search.depth
 * detect.detector.search.continue
 
-Detector search considers all of the following when choosing which detector(s) to run:
+Detector search considers all the following when choosing which detector(s) to run:
 
 1. Detector type filtering.
 1. Yielding rules.
@@ -89,7 +89,7 @@ In the
 table, most Detector Types have a single Entry Point. For those Detector Types, the Entry Point column can be ignored.
 
 There are a few Detector Types for which multiple Entry Points are defined.
-When multipe Entry Points are defined for a Detector Type,
+When multiple Entry Points are defined for a Detector Type,
 they exist to support the relatively rare need to define different nesting rules
 within the same Detector Type for different scenarios.
 (Nesting rules can usually be, and usually are, applied at the Detector Type level.)
@@ -109,7 +109,7 @@ a diagnostic zip file (run with `-d`) and read the reports/search_detailed_repor
 A detector has three methods:
 
 1. The applicable method determines whether the detector applies to the current directory, based on files that it finds in the directory. For example, if a Gradle detector would look for a build.gradle file.
-1. The extractable method determines whether other prerequisites are met. For example, a detector that runs a package manager executable would check to see if that execuable is available.
+1. The extractable method determines whether other prerequisites are met. For example, a detector that runs a package manager executable would check to see if that executable is available.
 1. The extract method discovers dependencies and returns a graph. In a few cases extraction is performed with the help of a separate [solution_name] component called an inspector.
 
 ## Detector accuracy
@@ -119,9 +119,9 @@ A detector's accuracy value is not configurable.
 You can find the accuracy for each detector in the [detector table](../components/detectors.md).
 
 Detectors that run the project's package manager and
-discover dependencies from its output are generally assigned high accuracy because the package manager is generally a reliable source of truth
+discover dependencies from its output are generally assigned high accuracy because the package manager is typically a reliable source of truth
 about dependencies.
-Detectors that parse package manager-generated lockfiles also tend to be high accuracy.
+Detectors that parse package manager-generated lockfiles also tend to be highly accurate.
 Detectors that parse human-editable files are generally assigned low accuracy due to challenges and limitations that are inherent in that approach.
 
 Consider, for example, a Gradle project.
@@ -134,11 +134,11 @@ and (depending on the user's preference) low accuracy might be better than nothi
 
 ## Specifying accuracy requirements
 
-You choose the the list of detector types from which you require accurate results using the `detect.accuracy.required` property.
+You choose the list of detector types from which you require the most accurate results using the `detect.accuracy.required` property.
 This property accepts a list of detector types (MAVEN, GRADLE, ...).
-This property defaults ALL, which means you want [solution_name] to fail if any detector type applies, but
-only low accuracy results could be generated for that detector type.
-When [solution_name] fails due to accuracy requirements it returns the FAILURE_ACCURACY_NOT_MET exit code.
+This property defaults to ALL, which means you want [solution_name] to exit if any detector type applies, but
+only low accuracy results could be generated.
+When [solution_name] exits due to accuracy requirements not being met, it returns the FAILURE_ACCURACY_NOT_MET exit code.
 This default produces behavior roughly similar to the default mode (detect.detector.buildless=false) prior to [solution_name] 8.
 
 To get the best results available regardless of accuracy, set this property to NONE.
@@ -146,10 +146,10 @@ This value produces behavior roughly similar to buildless mode (detect.detector.
 except that high accuracy results will be produced where possible (buildless mode used to prevent that).
 
 To specify that you require accurate results from some (but not all) detector types, set property
-`detect.accuracy.required` to the list of detector types from which you require accurate results.
+`detect.accuracy.required` to the list of detector types from which you require the most accurate results.
 
 ## Evaluation of accuracy
 
-Detect evaluates whether or not the detector results it was able to generate meet the user's accuracy requirements after
-executing detectors and actual result accuracy is known. If the user's accuracy requirements were not met, [solution_name]
+After executing detectors, an actual result accuracy is known, at which point Detect evaluates whether the detector results it was able to generate meet the user's accuracy requirements.
+If the user's accuracy requirements were not met, [solution_name]
 fails with the FAILURE_ACCURACY_NOT_MET exit code.

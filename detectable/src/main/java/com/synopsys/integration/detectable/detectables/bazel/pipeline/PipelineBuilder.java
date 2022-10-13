@@ -12,6 +12,7 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Final
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepTransformJsonProtoHaskellCabalLibrariesToHackage;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepDeDupLines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepExecuteBazelOnEachLine;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseFilterLines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseReplaceInEachLine;
@@ -59,6 +60,10 @@ public class PipelineBuilder {
     // Step creation methods
     public PipelineBuilder parseReplaceInEachLine(String from, String to) {
         return addIntermediateStep(new IntermediateStepParseReplaceInEachLine(from, to));
+    }
+
+    public PipelineBuilder deDupLines() {
+        return addIntermediateStep(new IntermediateStepDeDupLines());
     }
 
     public PipelineBuilder parseSplitEachLine(String splitOn) {

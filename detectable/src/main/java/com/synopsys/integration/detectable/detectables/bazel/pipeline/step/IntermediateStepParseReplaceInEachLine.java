@@ -19,7 +19,7 @@ public class IntermediateStepParseReplaceInEachLine implements IntermediateStep 
     @Override
     public List<String> process(List<String> input) {
         List<String> results = new ArrayList<>();
-        logger.trace("Replace target pattern: {}; replacement string: {}}", targetPattern, replacementString);
+        logger.trace("Replace target pattern: {}; replacement string: {}", targetPattern, replacementString);
         for (String inputItem : input) {
             String modifiedInputItem = inputItem.replaceAll(targetPattern, replacementString);
             logger.trace("Edit changed {} to {}", inputItem, modifiedInputItem);

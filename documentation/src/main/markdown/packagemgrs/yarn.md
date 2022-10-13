@@ -44,7 +44,7 @@ For example, if your project package.json contains:
 ],
 ````
 [solution_name] will expect you to refer to these workspaces as "packages/workspace-a" and "packages/workspace-b".
-This naming convention remains the same even at deeper workspace nesting levels. Suppose your project
+This naming convention remains the same even at deeper workspace nesting levels. As an example, if your project
 has a workspace packages/workspace-a, and packages/workspace-a's package.json contains:
 ````
 "workspaces": [
@@ -56,12 +56,12 @@ has a workspace packages/workspace-a, and packages/workspace-a's package.json co
 
 ### Excluding workspaces
 
-By default, [solution_name] includes all workspaces in the results, regardless of whether or not
-they are declared as dependencies of the project. You can specify a subset of workspaces
-to include or exclude using the workspace exclude/include properties
+By default, [solution_name] includes all workspaces in the results regardless of whether they
+are declared as dependencies of the project.
+You can specify a subset of workspaces to include or exclude using the workspace exclude/include properties
 *detect.yarn.excluded.workspaces* and *detect.yarn.included.workspaces*.
 
 When using the workspace exclude and include properties, use the workspace
 referencing guidelines described above. You can also use
-filename globbing-style wildcards, and can specify multiple values separated
+filename globbing-style wildcards and specify multiple values separated
 by commas.

@@ -14,7 +14,7 @@ public class ProductDecider {
     public BlackDuckDecision decideBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackduckScanMode scanMode, boolean hasSigScan) {
         boolean offline = blackDuckConnectionDetails.getOffline();
         Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
-        if (offline && BlackduckScanMode.RAPID.equals(scanMode)) {
+        if (offline && (BlackduckScanMode.RAPID.equals(scanMode) || BlackduckScanMode.EPHEMERAL.equals(scanMode))) {
             logger.debug("Black Duck will NOT run: Rapid mode cannot be run offline.");
             return BlackDuckDecision.skip();
         } else if (offline) {

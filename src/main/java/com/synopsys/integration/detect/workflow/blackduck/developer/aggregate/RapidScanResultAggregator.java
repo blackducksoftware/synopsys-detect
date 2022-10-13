@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsComponentViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 
 public class RapidScanResultAggregator {
@@ -67,13 +67,9 @@ public class RapidScanResultAggregator {
             RapidScanComponentGroupDetail componentGroupDetail = componentDetail.getComponentDetails();
             RapidScanComponentGroupDetail securityGroupDetail = componentDetail.getSecurityDetails();
             RapidScanComponentGroupDetail licenseGroupDetail = componentDetail.getLicenseDetails();
-            
-            // violating policy names is a super set of policy names so we have to remove
-            // the vulnerability and license.
-            List<DeveloperScansScanItemsViolatingPoliciesView> violatingPolicies = resultView.getViolatingPolicies();
-            Set<String> policyNames = violatingPolicies.stream()
-                    .map(DeveloperScansScanItemsViolatingPoliciesView::getPolicyName).collect(Collectors.toSet());
-
+                  
+            List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolations = 
+                    resultView.getComponentViolatingPolicies();
             List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilityViolations = resultView
                     .getPolicyViolationVulnerabilities();
             List<DeveloperScansScanItemsPolicyViolationLicensesView> licenseViolations = resultView
@@ -90,18 +86,18 @@ public class RapidScanResultAggregator {
                     .flatMap(Collection::stream)
                     .map(DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView::getPolicyName)
                     .collect(Collectors.toSet());
+            
+            Set<String> componentPolicyNames = componentViolations.stream()
+                    .map(DeveloperScansScanItemsComponentViolatingPoliciesView::getPolicyName)
+                    .collect(Collectors.toSet());
 
-            policyNames.removeAll(vulnerabilityPolicyNames);
-            policyNames.removeAll(licensePolicyNames);
-
-            componentGroupDetail.addPolicies(policyNames);
+            componentGroupDetail.addPolicies(componentPolicyNames);
             securityGroupDetail.addPolicies(vulnerabilityPolicyNames);
             licenseGroupDetail.addPolicies(licensePolicyNames);
 
+            addComponentData(resultView, componentViolations, componentGroupDetail);
             addVulnerabilityData(resultView, vulnerabilityViolations, securityGroupDetail);
             addLicenseData(resultView, licenseViolations, licenseGroupDetail);
-            
-            componentGroupDetail.addComponentMessages(resultView);
         }
         return componentDetails;
     }
@@ -138,5 +134,12 @@ public class RapidScanResultAggregator {
         for (DeveloperScansScanItemsPolicyViolationLicensesView licensePolicyViolation : licenses) {
             licenseDetail.addLicenseMessages(resultView, licensePolicyViolation);
         }
+    }
+    
+    private void addComponentData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolations, RapidScanComponentGroupDetail componentGroupDetail) {
+        for (DeveloperScansScanItemsComponentViolatingPoliciesView componentPolicyViolation: componentViolations) {
+            componentGroupDetail.addComponentMessages(resultView, componentPolicyViolation);
+        }
+        
     }
 }
