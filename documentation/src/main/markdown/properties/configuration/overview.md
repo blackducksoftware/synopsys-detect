@@ -1,3 +1,3 @@
-# Workflow Configuration Properties
+# Configuration Property Details
 
-This section contains details about properties that configure the [solution_name] workflow.
+This section contains additional details about properties that configure [solution_name] execution.
