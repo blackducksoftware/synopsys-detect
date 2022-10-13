@@ -29,4 +29,3 @@ docker-test/
 *.hprof
 *.bak
 *.gradle
-LICENSE
