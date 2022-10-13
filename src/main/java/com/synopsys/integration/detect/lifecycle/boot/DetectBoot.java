@@ -183,13 +183,11 @@ public class DetectBoot {
                 detectConfigurationFactory.createBlackDuckConnectionDetails(),
                 detectConfigurationFactory.createScanMode()
             );
-            
-            String nonpersistentScanModeProperty = "Rapid";
-            if (blackDuckDecision.scanMode().equals(BlackduckScanMode.EPHEMERAL)) {
-                nonpersistentScanModeProperty = "Ephemeral";
-            }
+
+            String scanPropertyDisplayName = blackDuckDecision.scanMode().displayName();
             // this will be used in the non persistent reporting classes, where scan mode type results are printed out...
-            System.setProperty("com.synopsys.nonpersistent.scan.mode.string", nonpersistentScanModeProperty);
+            // if it's an intelligent scan, the code that uses this string does not get called.
+            System.setProperty("com.synopsys.nonpersistent.scan.mode.string", scanPropertyDisplayName);
 
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
