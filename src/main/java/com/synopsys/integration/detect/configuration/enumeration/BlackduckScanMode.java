@@ -5,12 +5,12 @@ public enum BlackduckScanMode {
     EPHEMERAL ("Ephemeral"),
     INTELLIGENT ("Intelligent");
 
-    private final String lcName;
+    private final String displayName;
     BlackduckScanMode(String name) {
-        this.lcName = name;
+        this.displayName = name;
     }
     
     public String displayName() {
-        return this.lcName;
+        return this.displayName;
     }
 }
