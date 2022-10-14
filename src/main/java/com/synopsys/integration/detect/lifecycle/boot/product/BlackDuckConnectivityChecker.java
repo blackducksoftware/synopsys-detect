@@ -16,7 +16,11 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.dataservice.BlackDuckRegistrationService;
 import com.synopsys.integration.blackduck.service.dataservice.UserGroupService;
 import com.synopsys.integration.blackduck.service.dataservice.UserService;
+import com.synopsys.integration.configuration.property.Properties;
+import com.synopsys.integration.configuration.property.types.enums.EnumProperty;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentIntLogger;
@@ -45,8 +49,9 @@ public class BlackDuckConnectivityChecker {
         BlackDuckRegistrationService blackDuckRegistrationService = blackDuckServicesFactory.createBlackDuckRegistrationService();
         UserService userService = blackDuckServicesFactory.createUserService();
 
+        String version = "";
         try {
-            String version = blackDuckRegistrationService.getBlackDuckServerData().getVersion();
+            version = blackDuckRegistrationService.getBlackDuckServerData().getVersion();
             logger.info(String.format("Successfully connected to Black Duck (version %s)!", version));
 
             if (logger.isDebugEnabled()) {
@@ -69,7 +74,6 @@ public class BlackDuckConnectivityChecker {
                 ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY
             );
         }
-
-        return BlackDuckConnectivityResult.success(blackDuckServicesFactory, blackDuckServerConfig);
+        return  BlackDuckConnectivityResult.success(blackDuckServicesFactory, blackDuckServerConfig, version);
     }
 }

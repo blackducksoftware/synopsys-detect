@@ -12,7 +12,7 @@ public enum ExitCodeType {
     FAILURE_DETECTOR_REQUIRED(9, "Detect did not run all of the required detectors. Fix detector issues or disable required detectors."),
     FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED(
         10,
-        "Detect attempted an operation that was not supported by your version of Black Duck. Ensure that your Black Duck version is compatible with this version of Detect."
+        "Detect's configuration requires a Black Duck capability that is not supported by your version of Black Duck. Ensure that your Black Duck version is compatible with this version of Detect."
     ),
     FAILURE_BLACKDUCK_FEATURE_ERROR(
         11,
