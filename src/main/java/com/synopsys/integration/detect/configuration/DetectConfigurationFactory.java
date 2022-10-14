@@ -78,11 +78,7 @@ public class DetectConfigurationFactory {
         this.detectConfiguration = detectConfiguration;
         this.gson = gson;
     }
-
-    public DetectPropertyConfiguration getDetectConfiguration() {
-        return detectConfiguration;
-    }
-
+    
     //#region Prefer These Over Any Property
     public Long findTimeoutInSeconds() {
         return detectConfiguration.getValue(DetectProperties.DETECT_TIMEOUT);
