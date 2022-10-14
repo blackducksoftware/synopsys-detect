@@ -43,7 +43,7 @@ public class RapidModeStepRunner {
     }
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult,
-            DockerTargetData dockerTargetData, BlackduckScanMode mode) throws OperationException {
+            DockerTargetData dockerTargetData) throws OperationException {
         operationRunner.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationRunner.findRapidScanConfig();
         rapidScanConfig.ifPresent(config -> logger.info("Found rapid scan config file: {}", config));
@@ -68,6 +68,7 @@ public class RapidModeStepRunner {
         });
 
         // Get info about any scans that were done
+        BlackduckScanMode mode = blackDuckRunData.getScanMode();
         List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, parsedUrls, mode);
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
