@@ -25,6 +25,7 @@ import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration
 import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -176,11 +177,11 @@ public class DetectBoot {
 
         ProductRunData productRunData;
         try {
-
+            BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode();
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
                 detectConfigurationFactory.createBlackDuckConnectionDetails(),
-                detectConfigurationFactory.createScanMode(),
+                blackduckScanMode,
                 detectConfigurationFactory.createHasSignatureScan()
             );
 
@@ -194,7 +195,7 @@ public class DetectBoot {
 
             logger.debug("Decided what products will be run. Starting product boot.");
 
-            ProductBoot productBoot = detectBootFactory.createProductBoot(detectConfigurationFactory);
+            ProductBoot productBoot = detectBootFactory.createProductBoot(detectConfigurationFactory, detectToolFilter, blackduckScanMode);
             productRunData = productBoot.boot(blackDuckDecision, detectToolFilter);
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));

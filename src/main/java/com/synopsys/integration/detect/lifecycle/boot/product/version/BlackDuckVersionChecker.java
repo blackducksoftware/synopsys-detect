@@ -11,16 +11,16 @@ public class BlackDuckVersionChecker {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BlackDuckVersionParser parser;
     private final BlackDuckMinimumVersionChecks blackDuckMinimumVersionChecks;
-    private final DetectPropertyConfiguration detectPropertyConfiguration;
+    private final BlackDuckVersionSensitiveOptions blackDuckVersionSensitiveOptions;
 
     public BlackDuckVersionChecker(
         BlackDuckVersionParser parser,
         BlackDuckMinimumVersionChecks blackDuckMinimumVersionChecks,
-        DetectPropertyConfiguration detectPropertyConfiguration
+        BlackDuckVersionSensitiveOptions blackDuckVersionSensitiveOptions
     ) {
         this.parser = parser;
         this.blackDuckMinimumVersionChecks = blackDuckMinimumVersionChecks;
-        this.detectPropertyConfiguration = detectPropertyConfiguration;
+        this.blackDuckVersionSensitiveOptions = blackDuckVersionSensitiveOptions;
     }
 
     public BlackDuckVersionCheckerResult check(String actualBlackDuckVersionString) {
@@ -30,7 +30,7 @@ public class BlackDuckVersionChecker {
             return BlackDuckVersionCheckerResult.passed();
         }
         for (BlackDuckMinimumVersionCheck blackDuckMinimumVersionCheck : blackDuckMinimumVersionChecks.get()) {
-            if (blackDuckMinimumVersionCheck.getTest().test(detectPropertyConfiguration) && !actualBlackDuckVersion.get()
+            if (blackDuckMinimumVersionCheck.getTest().test(blackDuckVersionSensitiveOptions) && !actualBlackDuckVersion.get()
                 .isAtLeast(blackDuckMinimumVersionCheck.getMinimumBlackDuckVersion())) {
                 String msg = String.format("%s requires at least Black Duck version %s; the connected server is only %s",
                     blackDuckMinimumVersionCheck.getDescription(), blackDuckMinimumVersionCheck.getMinimumBlackDuckVersion(),

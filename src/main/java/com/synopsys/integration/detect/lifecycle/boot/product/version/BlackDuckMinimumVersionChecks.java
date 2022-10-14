@@ -15,28 +15,25 @@ public class BlackDuckMinimumVersionChecks {
 
         checks.add(new BlackDuckMinimumVersionCheck(
             "Rapid mode",
-            c -> c.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE) == BlackduckScanMode.RAPID,
+            o -> o.getBlackDuckScanMode() == BlackduckScanMode.RAPID,
             new BlackDuckVersion(2021, 6, 0)
         ));
 
         checks.add(new BlackDuckMinimumVersionCheck(
             "Ephemeral mode",
-            c -> c.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE) == BlackduckScanMode.EPHEMERAL,
+            o -> o.getBlackDuckScanMode() == BlackduckScanMode.EPHEMERAL,
             new BlackDuckVersion(2021, 6, 0)
         ));
 
         checks.add(new BlackDuckMinimumVersionCheck(
             "IaC scan",
-            c -> (c.getValue(DetectProperties.DETECT_TOOLS).containsValue(DetectTool.IAC_SCAN) && !c.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED)
-                .containsValue(DetectTool.IAC_SCAN)),
+            o -> o.getDetectToolFilter().shouldInclude(DetectTool.IAC_SCAN),
             new BlackDuckVersion(2021, 6, 0)
         ));
 
         checks.add(new BlackDuckMinimumVersionCheck(
             "Ephemeral signature scan",
-            c -> (c.getValue(DetectProperties.DETECT_TOOLS).containsValue(DetectTool.SIGNATURE_SCAN) && !c.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED)
-                .containsValue(DetectTool.SIGNATURE_SCAN))
-                && c.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE) == BlackduckScanMode.EPHEMERAL,
+            o -> o.getDetectToolFilter().shouldInclude(DetectTool.SIGNATURE_SCAN) && o.getBlackDuckScanMode() == BlackduckScanMode.EPHEMERAL,
             new BlackDuckVersion(2022, 10, 0)
         ));
     }
