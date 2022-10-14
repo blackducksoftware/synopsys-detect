@@ -25,7 +25,7 @@ public class RapidModeUploadOperation {
 
     public List<HttpUrl> run(BdioResult bdioResult, RapidScanOptions rapidScanOptions, @Nullable File rapidScanConfig)
         throws IntegrationException, IOException {
-        String scanModeString = System.getProperty("com.synopsys.nonpersistent.scan.mode.string");
+        String scanModeString = rapidScanOptions.getScanMode().displayName();
         logger.info("Begin " + scanModeString + " Mode Scan");
         UploadBatch uploadBatch = new UploadBatch();
         for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {

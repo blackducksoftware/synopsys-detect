@@ -3,19 +3,22 @@ package com.synopsys.integration.detect.workflow.blackduck.developer;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanDetailGroup;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 
 public class RapidScanDetectResult implements DetectResult {
-    public static final String NONPERSISTENT_SCAN_RESULT_HEADING = System.getProperty("com.synopsys.nonpersistent.scan.mode.string") + " Scan Result";
-    public static final String NONPERSISTENT_SCAN_RESULT_DETAILS_HEADING = System.getProperty("com.synopsys.nonpersistent.scan.mode.string") + " Scan Result Details";
+    public static final String NONPERSISTENT_SCAN_RESULT_HEADING = " Scan Result";
+    public static final String NONPERSISTENT_SCAN_RESULT_DETAILS_HEADING = " Scan Result Details";
     private final String jsonFilePath;
     private final List<String> subMessages;
+    public static String scanMode;
 
-    public RapidScanDetectResult(String jsonFilePath, RapidScanResultSummary resultSummary) {
+    public RapidScanDetectResult(String jsonFilePath, RapidScanResultSummary resultSummary, BlackduckScanMode mode) {
         this.jsonFilePath = jsonFilePath;
         this.subMessages = createResultMessages(resultSummary);
+        scanMode = mode.displayName();
     }
 
     @Override
@@ -25,7 +28,7 @@ public class RapidScanDetectResult implements DetectResult {
 
     @Override
     public String getResultMessage() {
-        return String.format("%s: (for more detail look in the log for %s)", NONPERSISTENT_SCAN_RESULT_HEADING, NONPERSISTENT_SCAN_RESULT_DETAILS_HEADING);
+        return String.format("%s: (for more detail look in the log for %s)", scanMode + NONPERSISTENT_SCAN_RESULT_HEADING, scanMode + NONPERSISTENT_SCAN_RESULT_DETAILS_HEADING);
     }
 
     @Override

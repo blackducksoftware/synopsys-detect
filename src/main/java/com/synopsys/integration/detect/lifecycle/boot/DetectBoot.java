@@ -184,11 +184,6 @@ public class DetectBoot {
                 detectConfigurationFactory.createScanMode()
             );
 
-            String scanPropertyDisplayName = blackDuckDecision.scanMode().displayName();
-            // this will be used in the non persistent reporting classes, where scan mode type results are printed out...
-            // if it's an intelligent scan, the code that uses this string does not get called.
-            System.setProperty("com.synopsys.nonpersistent.scan.mode.string", scanPropertyDisplayName);
-
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
             oneRequiresTheOther(
