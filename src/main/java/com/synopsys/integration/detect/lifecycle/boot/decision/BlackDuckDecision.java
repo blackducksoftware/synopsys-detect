@@ -12,7 +12,7 @@ public class BlackDuckDecision {
         this.shouldRun = shouldRun;
         this.isOffline = isOffline;
         this.scanMode = scanMode;
-        this.hasSignatureScanner = (hasSigScan) ? true : false;
+        this.hasSignatureScanner = hasSigScan;
     }
 
     public static BlackDuckDecision skip() {
