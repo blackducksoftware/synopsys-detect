@@ -11,6 +11,7 @@ import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationExceptio
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.request.BlackDuckMultipleRequest;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.exception.IntegrationTimeoutException;
 import com.synopsys.integration.rest.HttpUrl;
@@ -23,15 +24,17 @@ public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScansS
     private final List<HttpUrl> remainingUrls;
     private final List<HttpUrl> completedUrls;
 
-    private static final String JOB_NAME = "Waiting for Rapid Scans";
+    //This can't be static because the job name could contain the word "Rapid" OR "Ephemeral" etc.
+    private final String JOB_NAME;
 
     private boolean complete;
 
-    public DetectRapidScanWaitJob(BlackDuckApiClient blackDuckApiClient, List<HttpUrl> resultUrl) {
+    public DetectRapidScanWaitJob(BlackDuckApiClient blackDuckApiClient, List<HttpUrl> resultUrl, BlackduckScanMode mode) {
         this.blackDuckApiClient = blackDuckApiClient;
         this.remainingUrls = new ArrayList<>();
         remainingUrls.addAll(resultUrl);
         this.completedUrls = new ArrayList<>(remainingUrls.size());
+        JOB_NAME = "Waiting for " + mode.displayName() + " Scans";
     }
 
     @Override

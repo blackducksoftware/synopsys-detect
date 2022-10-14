@@ -182,6 +182,7 @@ public class DetectBoot {
                 detectConfigurationFactory.createBlackDuckConnectionDetails(),
                 detectConfigurationFactory.createScanMode()
             );
+
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
             oneRequiresTheOther(

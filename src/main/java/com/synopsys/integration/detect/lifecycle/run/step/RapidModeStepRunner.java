@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -67,12 +68,13 @@ public class RapidModeStepRunner {
         });
 
         // Get info about any scans that were done
-        List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, parsedUrls);
+        BlackduckScanMode mode = blackDuckRunData.getScanMode();
+        List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, parsedUrls, mode);
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
         File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
-        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults);
-        operationRunner.publishRapidResults(jsonFile, summary);
+        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults, mode);
+        operationRunner.publishRapidResults(jsonFile, summary, mode);
     }
 
     /**
