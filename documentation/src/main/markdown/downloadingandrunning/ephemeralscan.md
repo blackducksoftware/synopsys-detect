@@ -22,7 +22,6 @@ Enable this feature by adding [--detect.blackduck.scan.mode=EPHEMERAL](../proper
  * Ephemeral Scan does not support ```detect.policy.check.fail.on.names```
  * Ephemeral Scan cannot create a Risk or Notices report.
  * Ephemeral Scan will not create a Project or Version on Black Duck.
- * Ephemeral Scan should be run with [aggregation](../naming/aggregation.md) so server-side metrics can be accurately collected.
  * Ephemeral Scan when running SIGNATURE_SCAN requires communication with Black Duck.
  
 ## Invocation
