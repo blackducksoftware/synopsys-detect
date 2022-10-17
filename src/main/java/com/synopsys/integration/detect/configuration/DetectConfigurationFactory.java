@@ -78,7 +78,7 @@ public class DetectConfigurationFactory {
         this.detectConfiguration = detectConfiguration;
         this.gson = gson;
     }
-
+    
     //#region Prefer These Over Any Property
     public Long findTimeoutInSeconds() {
         return detectConfiguration.getValue(DetectProperties.DETECT_TIMEOUT);
@@ -191,6 +191,12 @@ public class DetectConfigurationFactory {
         return new PhoneHomeOptions(phoneHomePassthrough);
     }
 
+    public boolean createHasSignatureScan() {
+        boolean hss = false;
+        hss = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS).containsValue(DetectTool.SIGNATURE_SCAN);
+        return hss;
+    }
+
     public DetectToolFilter createToolFilter(RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
         Optional<Boolean> impactEnabled = Optional.of(detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED));
 
@@ -199,12 +205,14 @@ public class DetectConfigurationFactory {
         ExcludeIncludeEnumFilter<DetectTool> filter = new ExcludeIncludeEnumFilter<>(excludedTools, includedTools);
 
         boolean iacEnabled = includedTools.containsValue(DetectTool.IAC_SCAN) || !detectConfiguration.getValue(DetectProperties.DETECT_IAC_SCAN_PATHS).isEmpty();
+
         return new DetectToolFilter(filter, impactEnabled.orElse(false), iacEnabled, runDecision, blackDuckDecision);
     }
 
     public RapidScanOptions createRapidScanOptions() {
         RapidCompareMode rapidCompareMode = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE);
-        return new RapidScanOptions(rapidCompareMode);
+        BlackduckScanMode scanMode= detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
+        return new RapidScanOptions(rapidCompareMode, scanMode);
     }
 
     public BlackduckScanMode createScanMode() {
@@ -362,6 +370,7 @@ public class DetectConfigurationFactory {
         Path localScannerInstallPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH);
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH);
         Boolean treatSkippedScansAsSuccess = detectConfiguration.getValue(DetectProperties.DETECT_FORCE_SUCCESS_ON_SKIP);
+        Boolean isEphemeral = BlackduckScanMode.EPHEMERAL.equals(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE));
 
         return new BlackDuckSignatureScannerOptions(
             signatureScannerPaths,
@@ -378,7 +387,8 @@ public class DetectConfigurationFactory {
             licenseSearch,
             copyrightSearch,
             followSymLinks,
-            treatSkippedScansAsSuccess
+            treatSkippedScansAsSuccess,
+            isEphemeral
         );
     }
 
