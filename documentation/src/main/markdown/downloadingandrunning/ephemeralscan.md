@@ -50,7 +50,7 @@ Ephemeral scan policy overrides are the same as for Rapid Scans and can be provi
 
 The file is a YAML file intended to be checked-in to SCM alongside other build config files.
 
-NOTE: 
+**NOTE:**
  * This file format is dependent on Black Duck and in the future, different versions of Black Duck may require a different file format.
  * This file will have no effect on Signature Scans run in Ephemeral Mode.
 
@@ -76,6 +76,9 @@ Each policy override must apply to a list of specific components, on a specific 
 Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast, although the SIGNATURE_SCAN can take some time as communication with Black Duck is a requirement.
 
 The results are saved to a json file named 'name_version_BlackDuck_DeveloperMode_Result.json' in the Scan Output directory, where name and version are the project's name and version.
+
+**NOTE:**
+ * The format of this results file is dependent on Black Duck and in the future, different versions of Black Duck may produce a different file format.
 
 The results are also printed in the logs:
 ```
