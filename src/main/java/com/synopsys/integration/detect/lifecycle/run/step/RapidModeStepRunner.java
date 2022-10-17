@@ -46,7 +46,8 @@ public class RapidModeStepRunner {
             DockerTargetData dockerTargetData) throws OperationException {
         operationRunner.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationRunner.findRapidScanConfig();
-        rapidScanConfig.ifPresent(config -> logger.info("Found rapid scan config file: {}", config));
+        String scanMode = blackDuckRunData.getScanMode().displayName();
+        rapidScanConfig.ifPresent(config -> logger.info("Found " + scanMode.toLowerCase() + " scan config file: {}", config));
 
         String blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString();
         List<HttpUrl> parsedUrls = new ArrayList<>();
@@ -64,7 +65,7 @@ public class RapidModeStepRunner {
             SignatureScanOuputResult signatureScanOutputResult = signatureScanStepRunner
                     .runRapidSignatureScannerOnline(blackDuckRunData, projectVersion, dockerTargetData);
 
-            parsedUrls.addAll(parseScanUrls(signatureScanOutputResult, blackDuckUrl));
+            parsedUrls.addAll(parseScanUrls(scanMode, signatureScanOutputResult, blackDuckUrl));
         });
 
         // Get info about any scans that were done
@@ -84,7 +85,7 @@ public class RapidModeStepRunner {
      * 
      * @return a list of URLs that BlackDuck should poll for rapid signature scan results.
      */
-    private List<HttpUrl> parseScanUrls(SignatureScanOuputResult signatureScanOutputResult, String blackDuckUrl) throws IOException, IntegrationException {
+    private List<HttpUrl> parseScanUrls(String scanMode, SignatureScanOuputResult signatureScanOutputResult, String blackDuckUrl) throws IOException, IntegrationException {
         List<ScanCommandOutput> outputs = signatureScanOutputResult.getScanBatchOutput().getOutputs();
         List<HttpUrl> parsedUrls = new ArrayList<>(outputs.size());
         
@@ -96,7 +97,10 @@ public class RapidModeStepRunner {
 
                 SignatureScanRapidResult result = gson.fromJson(reader, SignatureScanRapidResult.class);
 
-                parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + result.scanId));
+                HttpUrl url = new HttpUrl(blackDuckUrl + "/api/developer-scans/" + result.scanId);
+
+                logger.info(scanMode + " mode signature scan URL: {}", url);
+                parsedUrls.add(url);
             } catch (Exception e) {
                 throw new IntegrationException("Unable to parse rapid signature scan results.");
             }
