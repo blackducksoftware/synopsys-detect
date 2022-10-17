@@ -186,7 +186,7 @@ public class DetectBoot {
             hasImageOrTar = detectableOptionFactory.createDockerDetectableOptions().hasDockerImageOrTar();
             oneRequiresTheOther(
                 detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
-                hasImageOrTar /*detectableOptionFactory.createDockerDetectableOptions().hasDockerImageOrTar()*/,
+                hasImageOrTar,
                 "Detect target type is set to IMAGE, but no docker image was specified."
             );
         } catch (DetectUserFriendlyException e) {
