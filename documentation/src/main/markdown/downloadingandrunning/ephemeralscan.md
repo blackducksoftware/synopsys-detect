@@ -6,7 +6,10 @@ Enable this feature by adding [--detect.blackduck.scan.mode=EPHEMERAL](../proper
 
 ## Requirements and Limitations
 
- * A limited subset of Tools can be run. 
+ * Ephemeral scanning is available under “Limited Customer Availability (LCA)”.
+ * Must be running [blackduck_product_name] 2022.10.0 or greater using the hosted KB.
+ * Have Match as a Service (Maas) enabled which will be available with the [blackduck_product_name] 2022.10.0 release.
+ * A limited subset of Tools can be run.
     * The currently supported tools are: DETECTOR, BAZEL, SIGNATURE_SCAN and DOCKER.
     * The EPHEMERAL Signature Scan will not persist on Black Duck. 
     * All other tools are disabled when running in Ephemeral Scan mode.
