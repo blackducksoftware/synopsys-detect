@@ -63,6 +63,9 @@ allprojects {
         implementation 'org.freemarker:freemarker:2.3.31'
         implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.13'
 
+	// TODO remove once integration-common is upgraded to eliminate this
+	implementation 'org.apache.commons:commons-text:1.10.0'
+
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
     }
