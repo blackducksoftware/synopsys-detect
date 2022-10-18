@@ -1,6 +1,6 @@
-# Getting Help
+# Command line help options
 
-[solution_name] provides the following modes to assist with learning, troubleshooting, and setup.
+[solution_name] provides the following execution options to assist with configuration, execution and support.
 
 | Mode | Command line option | Alt. option | Description |
 | ---- | ------------------- | ----------- | ----------- |

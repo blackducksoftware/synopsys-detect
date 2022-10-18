@@ -1,8 +1,9 @@
 # Introduction to Detect
 
-[solution_name] is [blackduck_product_name]'s intelligent scan client that scans code bases in your projects and folders to perform compositional analysis. [solution_name] sends scan results to [blackduck_product_name], which generates risk analysis when identifying open source components, licenses, and security vulnerabilities.
+[solution_name] is [blackduck_product_name]'s intelligent scan client that scans code bases in your projects and folders to perform compositional analysis. [solution_name] sends scan results to [blackduck_product_name], which generates risk analysis when identifying open source components, licenses, and security vulnerabilities. 
+[solution_name] can be used in both connected and air gap modes.
 
-[solution_name] also has the following characteristics:
+[solution_name] has the following characteristics:
 
 * [solution_name] integrates with development tools used throughout the SDLC (software development life cycle) and automatically detects resources to optimize its scan methodology.
 * [solution_name] provides scanning capabilities to [blackduck_product_name] to help identify open source components, licenses, and security vulnerabilities. This is achieved through a variety of detection methods such as package manager inspection, file-system based signature scanning of source directories and files, Docker image inspection, and binary analysis. 
@@ -12,20 +13,23 @@
 
 [solution_name] consolidates the functionality of the [blackduck_product_name], package managers, and continuous integration plugin tools to perform the following tasks:
 
-* Discover open source components in your code
-* Map components to known security vulnerabilities
-* Identify license compliance and component quality risks
-* Set and enforce open source use and security policies
-* Integrate open source management into your DevOps environment
-* Monitor and alert when new security threats are reported
-* Calculate security vulnerability risk in your code
-* Produce reports of the open source analysis findings
+* Discover open source components in your code.
+* Map components to known security vulnerabilities.
+* Identify license compliance and component quality risks.
+* Set and enforce open source use and security policies.
+* Integrate open source management into your DevOps environment.
+* Monitor and alert users when new security threats are reported.
+* Calculate security vulnerability risk in your code.
+* Produce reports of the open source analysis findings.
 
-## [solution_name] at work
+## How [solution_name] functions
 
-By default, [solution_name] examines the source directory to be scanned, discovers the package managers in your code, and uses the project package managers to derive the hierarchy of dependencies known to those package managers.
+When looking at vulnerabilities in open source and third party software, [solution_name] performs the following basic steps.
 
-* [solution_name] extracts package manager dependencies in your project by using selected [solution_name] detectors to extract the dependencies.
-* The [blackduck_product_name] signature scanner runs and extracts more dependencies that might not be known to a package manager if there is a connection to [blackduck_product_name].
-* All dependencies are uploaded to [blackduck_product_name] for analysis; a project is created, and a Bill of Materials (BOM) is generated.
-* You can view the output and analysis in [blackduck_product_name].
+* Uses the project's package manager to derive the hierarchy of dependencies known to that package manager. For example, on a Maven project, Synopsys Detect executes an mvn dependency:tree command, and derives dependency information from the output.
+
+* Runs the [blackduck_product_name] signature scanner on the project. This might identify additional dependencies not known to the package manager (for example, a .jar file copied into the project directory).
+
+* Uploads both sets of results (dependency details) to Black Duck creating the project/version if it does not already exist. Black Duck uses the uploaded dependency information to build the Bill Of Materials (BOM) for the project/version.
+
+* You can view the output and analysis results in [blackduck_product_name].
