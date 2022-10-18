@@ -15,9 +15,9 @@ import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanV
 
 public class RapidScanComponentGroupDetail {
 
+    private static final String POLICY_SEPARATOR = "/";
     private static final String POLICY_SERVERITY_BLOCKER = "BLOCKER";
     private static final String POLICY_SERVERITY_CRITICAL = "CRITICAL";
-    private static final String POLICY_SEPARATOR = "/";
     private static final String VULNERABILITY_OUTPUT_INDENTATION = "\t\t\t\t\t\t\t\t";
         
     private final RapidScanDetailGroup group;
