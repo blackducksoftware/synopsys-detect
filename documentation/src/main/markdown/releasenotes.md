@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 8.2.0
+
+### New features
+
+* Ephemeral scans are a new way of running scans with Black Duck. This mode is designed to be as fast as possible and does not persist any data on Black Duck. See the [Ephemeral Scans page](downloadingandrunning/ephemeralscan.md) for further details.
+
 ## Version 8.1.1
 
 ### Resolved issues
