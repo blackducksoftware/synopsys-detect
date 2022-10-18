@@ -9,7 +9,7 @@
 
 ### Changed features
 
-* The output for the security errors and warnings sections of Rapid and Ephemeral Scan Modes now includes the name of the vulnerable component, followed by a list of vulnerabilities, then by upgrade guidance. 
+* The output for the security errors and warnings sections of Rapid Scan Mode now includes the name of the vulnerable component, followed by a list of vulnerabilities, then by upgrade guidance. 
 
 ## Version 8.1.1
 
