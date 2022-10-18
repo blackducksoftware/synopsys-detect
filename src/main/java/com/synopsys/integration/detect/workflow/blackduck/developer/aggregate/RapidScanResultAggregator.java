@@ -125,9 +125,7 @@ public class RapidScanResultAggregator {
 
     private void addVulnerabilityData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilities,
             RapidScanComponentGroupDetail securityDetail) {
-        for (DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerabilityPolicyViolation : vulnerabilities) {
-            securityDetail.addVulnerabilityMessages(resultView, vulnerabilityPolicyViolation);
-        }
+            securityDetail.addVulnerabilityMessages(resultView, vulnerabilities);
     }
 
     private void addLicenseData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsPolicyViolationLicensesView> licenses, RapidScanComponentGroupDetail licenseDetail) {

@@ -14,6 +14,10 @@ import com.synopsys.integration.blackduck.api.generated.component.DeveloperScans
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 
 public class RapidScanComponentGroupDetail {
+    
+    private static final String POLICY_SEPARATOR = "/";
+    private static final String VULNERABILITY_OUTPUT_INDENTATION = "\t\t\t\t\t\t\t\t";
+        
     private final RapidScanDetailGroup group;
     private final Set<String> errorMessages = new LinkedHashSet<>();
     private final Set<String> warningMessages = new LinkedHashSet<>();
@@ -130,7 +134,7 @@ public class RapidScanComponentGroupDetail {
                 if (errorMessage.equals("")) {
                     errorMessage = baseMessage;
                 } else {
-                    errorMessage += "/";
+                    errorMessage += POLICY_SEPARATOR;
                 }
                 
                 errorMessage += violation.getPolicyName();
@@ -138,7 +142,7 @@ public class RapidScanComponentGroupDetail {
                 if (warningMessage.equals("")) {
                     warningMessage = baseMessage;
                 } else {
-                    warningMessage += "/";
+                    warningMessage += POLICY_SEPARATOR;
                 }
                 
                 warningMessage += violation.getPolicyName();
@@ -157,55 +161,83 @@ public class RapidScanComponentGroupDetail {
         addMessages(errorMessage, warningMessage);
     }
     
-    // TODO rapid scans are now using the v5 developer-scans endpoint which no longer constructs 
-    // warning and error messages. Until BlackDuck adds that back we have to construct our own messages.
-    // While it may be possible to reduce the overall message generation code in this class by pushing 
-    // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
+    // TODO rapid scans are now using the v5 developer-scans endpoint which no
+    // longer constructs
+    // warning and error messages. Until BlackDuck adds that back we have to
+    // construct our own messages.
+    // While it may be possible to reduce the overall message generation code in
+    // this class by pushing
+    // some common pieces into a parent class or interface, it is likely not worth
+    // altering the libraries
     // as this may be temporary code.
     public void addVulnerabilityMessages(DeveloperScansScanView resultView,
-            DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerability) {
+            List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilities) {
         String baseMessage = getBaseMessage(resultView);
-        
-        List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> violatingPolicies = vulnerability.getViolatingPolicies();
-        
+
         String errorMessage = "", warningMessage = "";
-        
-        for (int i = 0; i < violatingPolicies.size(); i++) {
-            DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation = violatingPolicies.get(i);
+
+        // Loop over each vulnerability for a given component. Only print information about a component once
+        // and not for each vulnerability.
+        boolean errorComponentPrinted = false, warningComponentPrinted = false;
+        for (DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerability : vulnerabilities) {
+
+            List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> violatingPolicies = vulnerability
+                    .getViolatingPolicies();
             
-            if (violation.getPolicySeverity().equals("CRITICAL") || violation.getPolicySeverity().equals("BLOCKER")) {
-                if (errorMessage.equals("")) {
-                    errorMessage = baseMessage;
+            // Each component can violate more than one policy, loop over them. Only print a single line for
+            // each vulnerability and not one for each policy.
+            boolean errorPolicyPrinted = false, warningPolicyPrinted = false;
+            for (int i = 0; i < violatingPolicies.size(); i++) {
+                DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation = violatingPolicies
+                        .get(i);
+
+                if (violation.getPolicySeverity().equals("CRITICAL")
+                        || violation.getPolicySeverity().equals("BLOCKER")) {
+                    // Only print info about the component once, each violation appears on its own line.
+                    if (!errorComponentPrinted) {
+                        errorMessage = baseMessage + "\n";
+                        errorComponentPrinted = true;
+                    }  
+                    if (errorPolicyPrinted) {
+                        errorMessage += "/";
+                    } else {
+                        errorMessage += VULNERABILITY_OUTPUT_INDENTATION;
+                    }
+
+                    errorMessage += violation.getPolicyName();
+                    errorPolicyPrinted = true;
                 } else {
-                    errorMessage += "/";
+                    // Only print info about the component once, each violation appears on its own line.
+                    if (!warningComponentPrinted) {
+                        warningMessage = baseMessage + "\n";
+                        warningComponentPrinted = true;
+                    } 
+                    if (warningPolicyPrinted){
+                        warningMessage += "/";
+                    } else {
+                        warningMessage += VULNERABILITY_OUTPUT_INDENTATION;
+                    }
+
+                    warningMessage += violation.getPolicyName();
+                    warningPolicyPrinted = true;
                 }
-                
-                errorMessage += violation.getPolicyName();
-            } else {
-                if (warningMessage.equals("")) {
-                    warningMessage = baseMessage;
-                } else {
-                    warningMessage += "/";
-                }
-                
-                warningMessage += violation.getPolicyName();
+            }
+
+            String summaryMessage = ": found vulnerability " + vulnerability.getName() + " with severity "
+                    + vulnerability.getVulnSeverity() + " and CVSS score " + vulnerability.getOverallScore() + ".\n";
+
+            if (StringUtils.isNotBlank(errorMessage)) {
+                errorMessage += summaryMessage;
+            }
+            if (StringUtils.isNotBlank(warningMessage)) {
+                warningMessage += summaryMessage;
             }
         }
         
-        String summaryMessage = ": found vulnerability " + vulnerability.getName() + " with severity "
-                + vulnerability.getVulnSeverity() + " and CVSS score " + vulnerability.getOverallScore() + ".";
-        
-        if (StringUtils.isNotBlank(errorMessage)) {
-            errorMessage += summaryMessage;
-        }
-        if (StringUtils.isNotBlank(warningMessage)) {
-            warningMessage += summaryMessage;
-        }
-        
         if (resultView.getLongTermUpgradeGuidance() != null && resultView.getShortTermUpgradeGuidance() != null) {
-            String upgradeGuidance = " Long term upgrade guidanace: "
-                    + resultView.getLongTermUpgradeGuidance().getVersionName() + " short term upgrade guidance "
-                    + resultView.getShortTermUpgradeGuidance().getVersionName();
+            String upgradeGuidance = VULNERABILITY_OUTPUT_INDENTATION + "Long term upgrade guidance: "
+                    + resultView.getLongTermUpgradeGuidance().getVersionName() + ", short term upgrade guidance: "
+                    + resultView.getShortTermUpgradeGuidance().getVersionName() + ".";
 
             if (StringUtils.isNotBlank(errorMessage)) {
                 errorMessage += upgradeGuidance;
@@ -214,7 +246,7 @@ public class RapidScanComponentGroupDetail {
                 warningMessage += upgradeGuidance;
             }
         }
-        
+
         addMessages(errorMessage, warningMessage);
     }
     
