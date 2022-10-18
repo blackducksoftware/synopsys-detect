@@ -25,7 +25,7 @@ public class BlackDuckConnectivityResult {
         this.failureReason = failureReason;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.blackDuckServerConfig = blackDuckServerConfig;
-        this.contactedServerVersion = serverVersion == "" || serverVersion == null ? "0.0.0" : serverVersion;
+        this.contactedServerVersion = serverVersion.equals("") || serverVersion == null ? "0.0.0" : serverVersion;
     }
 
     public static BlackDuckConnectivityResult success(BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig, String serverVersion) {

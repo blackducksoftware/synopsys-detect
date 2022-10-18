@@ -14,7 +14,9 @@ import com.synopsys.integration.blackduck.api.generated.component.DeveloperScans
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 
 public class RapidScanComponentGroupDetail {
-    
+
+    private static final String POLICY_SERVERITY_BLOCKER = "BLOCKER";
+    private static final String POLICY_SERVERITY_CRITICAL = "CRITICAL";
     private static final String POLICY_SEPARATOR = "/";
     private static final String VULNERABILITY_OUTPUT_INDENTATION = "\t\t\t\t\t\t\t\t";
         
@@ -94,7 +96,7 @@ public class RapidScanComponentGroupDetail {
 
         String errorMessage = "", warningMessage = "";
 
-            if (componentPolicyViolation.getPolicySeverity().equals("CRITICAL") || componentPolicyViolation.getPolicySeverity().equals("BLOCKER")) {
+            if (componentPolicyViolation.getPolicySeverity().equals(POLICY_SERVERITY_CRITICAL) || componentPolicyViolation.getPolicySeverity().equals(POLICY_SERVERITY_BLOCKER)) {
                 if (errorMessage.equals("")) {
                     errorMessage = baseMessage;
                 } else {
@@ -130,7 +132,7 @@ public class RapidScanComponentGroupDetail {
         for (int i = 0; i < violatingPolicies.size(); i++) {
             DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView violation = violatingPolicies.get(i);
                     
-            if (violation.getPolicySeverity().equals("CRITICAL") || violation.getPolicySeverity().equals("BLOCKER")) {
+            if (violation.getPolicySeverity().equals(POLICY_SERVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SERVERITY_BLOCKER)) {
                 if (errorMessage.equals("")) {
                     errorMessage = baseMessage;
                 } else {
@@ -191,8 +193,8 @@ public class RapidScanComponentGroupDetail {
                 DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation = violatingPolicies
                         .get(i);
 
-                if (violation.getPolicySeverity().equals("CRITICAL")
-                        || violation.getPolicySeverity().equals("BLOCKER")) {
+                if (violation.getPolicySeverity().equals(POLICY_SERVERITY_CRITICAL)
+                        || violation.getPolicySeverity().equals(POLICY_SERVERITY_BLOCKER)) {
                     // Only print info about the component once, each violation appears on its own line.
                     if (!errorComponentPrinted) {
                         errorMessage = baseMessage + "\n";
