@@ -5,6 +5,11 @@
 ### New features
 
 * Ephemeral Scan, or Ephemeral Scan Mode, is a new way of running [solution_name] with [blackduck_product_name]. This mode is designed to be as fast as possible and does not persist any data on [blackduck_product_name]. See the [Ephemeral Scans page](downloadingandrunning/ephemeralscan.md) for further details.
+* The output for Rapid and the new Ephemeral Scan Modes will now include upgrade guidance for security errors and warnings. 
+
+### Changed features
+
+* The output for the security errors and warnings sections of Rapid Scan Mode now includes the name of the vulnerable component, followed by a list of vulnerabilities, then by upgrade guidance. 
 
 ## Version 8.1.1
 
