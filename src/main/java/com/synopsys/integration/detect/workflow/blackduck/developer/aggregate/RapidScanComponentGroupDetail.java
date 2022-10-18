@@ -235,7 +235,7 @@ public class RapidScanComponentGroupDetail {
         }
         
         if (resultView.getLongTermUpgradeGuidance() != null && resultView.getShortTermUpgradeGuidance() != null) {
-            String upgradeGuidance = VULNERABILITY_OUTPUT_INDENTATION + "Long term upgrade guidanace: "
+            String upgradeGuidance = VULNERABILITY_OUTPUT_INDENTATION + "Long term upgrade guidance: "
                     + resultView.getLongTermUpgradeGuidance().getVersionName() + ", short term upgrade guidance: "
                     + resultView.getShortTermUpgradeGuidance().getVersionName() + ".";
 
