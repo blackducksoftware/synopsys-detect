@@ -6,7 +6,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=EPHEMERAL](../proper
 
 ## Requirements and Limitations
 
- * Ephemeral scanning is available under “Limited Customer Availability (LCA)”.
+ * Ephemeral scanning is available under [blackduck_product_name] “Limited Customer Availability (LCA)”.
  * Must be running [blackduck_product_name] 2022.10.0 or greater using the hosted KB.
  * Have Match as a Service (MaaS) enabled within [blackduck_product_name], a feature which will be available with the [blackduck_product_name] 2022.10.0 release.
  * A limited subset of Tools can be run.
