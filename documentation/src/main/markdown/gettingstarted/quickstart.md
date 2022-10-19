@@ -57,8 +57,6 @@ Point your browser to the Black Duck Project BOM URL to see the Bill Of Material
 
 ## Next steps
 
-Because [solution_name] can be used on a variety of project types in a variety of ways,
-its behavior is highly configurable. More detailed information on how to configure [solution_name]
-for your needs is provided in the following sections.
-
+[solution_name] can be used on a variety of project types, and in a variety of ways, requiring its behavior to be highly configurable.
+For more detailed information on how to configure [solution_name] for your needs, see [Configuring Synopsys Detect](../configuring/overview.md).
 

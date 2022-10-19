@@ -25,6 +25,7 @@ import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration
 import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -175,14 +176,34 @@ public class DetectBoot {
         logger.info("");
 
         ProductRunData productRunData;
-        try {
 
+        // store the result of hasImageOrTar... we will need this in more than one place.
+        boolean hasImageOrTar = false;
+        DetectableOptionFactory detectableOptionFactory;
+        try {
+            ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
+            detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, detectableProxyInfo);
+            hasImageOrTar = detectableOptionFactory.createDockerDetectableOptions().hasDockerImageOrTar();
+            oneRequiresTheOther(
+                detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
+                hasImageOrTar,
+                "Detect target type is set to IMAGE, but no docker image was specified."
+            );
+        } catch (DetectUserFriendlyException e) {
+            return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
+        }
+
+        try {
+            BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode();
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
                 detectConfigurationFactory.createBlackDuckConnectionDetails(),
-                detectConfigurationFactory.createScanMode()
+                blackduckScanMode,
+                detectConfigurationFactory.createHasSignatureScan()
             );
-            RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
+
+            // in order to know if docker is needed we have to have either detect.target.type=IMAGE or detect.docker.image
+            RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE || hasImageOrTar); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
             oneRequiresTheOther(
                 detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
@@ -192,7 +213,7 @@ public class DetectBoot {
 
             logger.debug("Decided what products will be run. Starting product boot.");
 
-            ProductBoot productBoot = detectBootFactory.createProductBoot(detectConfigurationFactory);
+            ProductBoot productBoot = detectBootFactory.createProductBoot(detectConfigurationFactory, detectToolFilter, blackduckScanMode);
             productRunData = productBoot.boot(blackDuckDecision, detectToolFilter);
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
@@ -201,19 +222,6 @@ public class DetectBoot {
         if (productRunData == null) {
             logger.info("No products to run, Detect is complete.");
             return Optional.of(DetectBootResult.exit(propertyConfiguration, directoryManager, diagnosticSystem));
-        }
-
-        DetectableOptionFactory detectableOptionFactory;
-        try {
-            ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
-            detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, detectableProxyInfo);
-            oneRequiresTheOther(
-                detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
-                detectableOptionFactory.createDockerDetectableOptions().hasDockerImageOrTar(),
-                "Detect target type is set to IMAGE, but no docker image was specified."
-            );
-        } catch (DetectUserFriendlyException e) {
-            return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
 
         BootSingletons bootSingletons = detectBootFactory

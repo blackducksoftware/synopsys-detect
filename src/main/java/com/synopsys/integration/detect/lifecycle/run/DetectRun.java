@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
@@ -58,6 +60,11 @@ public class DetectRun {
             UniversalStepRunner stepRunner = new UniversalStepRunner(operationRunner, stepHelper); //Product independent tools
             UniversalToolsResult universalToolsResult = stepRunner.runUniversalTools();
 
+            // test to ensure image scan results are available (i.e. image scan success) throws an
+            // exception if results components are empty and/or not found.  This will never throw an
+            // exception for any other scan type
+            imageScanCanScanFurther(universalToolsResult, bootSingletons);
+
             // combine: processProjectInformation() -> ProjectResult (nameversion, bdio)
             NameVersion nameVersion = stepRunner.determineProjectInformation(universalToolsResult);
             operationRunner.publishProjectNameVersionChosen(nameVersion);
@@ -69,10 +76,11 @@ public class DetectRun {
             }
             if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
-                if (blackDuckRunData.isRapid() && blackDuckRunData.isOnline()) {
-                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner);
-                    rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio);
-                } else if (blackDuckRunData.isRapid()) {
+                if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) {
+                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper,
+                        bootSingletons.getGson(), bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId());
+                    rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData());
+                } else if (blackDuckRunData.isNonPersistent()) {
                     logger.info("Rapid Scan is offline, nothing to do.");
                 } else if (blackDuckRunData.isOnline()) {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(
@@ -101,6 +109,32 @@ public class DetectRun {
         } finally {
             operationSystem.ifPresent(OperationSystem::publishOperations);
         }
+    }
+
+    /**
+     * Image scan check to see if any docker information is there. If image isn't found for image scan, lists will
+     * be empty and dockerTargetData will be null...  If not an image scan just return true
+     * @param result
+     * @param bootSingletons
+     * @return
+     */
+    private void imageScanCanScanFurther(UniversalToolsResult result, BootSingletons bootSingletons) throws Exception {
+        boolean canScanFurther = true;
+        boolean isImageScan = bootSingletons.getDetectConfigurationFactory().createDetectTarget().equals(DetectTargetType.IMAGE);
+        boolean hasDockerTargetData = result.getDockerTargetData() != null;
+        
+        if (isImageScan) {
+            canScanFurther = (!result.didAnyFail() && 
+                                    !result.getDetectToolProjectInfo().isEmpty() &&
+                                    !result.getDetectCodeLocations().isEmpty() &&
+                                    hasDockerTargetData
+                );
+        }        
+
+        if (!canScanFurther) {
+            throw new DetectUserFriendlyException("Cannot scan Docker image." , ExitCodeType.FAILURE_IMAGE_NOT_AVAILABLE);
+        }
+
     }
 
     private void checkForInterruptedException(Exception e) {

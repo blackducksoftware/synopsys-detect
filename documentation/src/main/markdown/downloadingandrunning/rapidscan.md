@@ -1,8 +1,8 @@
 # Rapid Scan
 
-Rapid Scan or Rapid Scan Mode is a new way of running [solution_name] with Black Duck. This mode is designed to be as fast as possible and does not persist any data on Black Duck. Rapid Scan Mode has a unique set of restrictions, mode of configuration and set of results.  
+Rapid Scan or Rapid Scan Mode is a way of running [solution_name] with Black Duck that is designed to be as fast as possible and does not persist any data on Black Duck. Rapid Scan Mode has a unique set of restrictions, mode of configuration and set of results.  
 
-Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of detect.
+Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of Detect.
 
 ## Requirements and Limitations
 
@@ -18,7 +18,6 @@ Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties
  * Rapid Scan does not support ```detect.policy.check.fail.on.names```
  * Rapid Scan cannot create a Risk or Notices report.
  * Rapid Scan will not create a Project or Version on Black Duck.
- * Rapid Scan should be run with aggregation so server-side metrics can be accurately collected.
 
 ## Configuration
 
@@ -28,7 +27,7 @@ Rapid scan policy overrides can be provided in a file named '.bd-rapid-scan.yaml
 
 The file is a YAML file intended to be checked-in to SCM alongside other build config files.
 
-NOTE that this file format is dependent on Black Duck and in the future, different versions of Black Duck may require a different file format.
+**NOTE:** this file format is dependent on Black Duck and in the future, different versions of Black Duck may require a different file format.
 
 ```
 version: 1.0
@@ -52,6 +51,9 @@ Each policy override must apply to a list of specific components, on a specific 
 Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast.
 
 The results are saved to a json file named 'name_version_BlackDuck_DeveloperMode_Result.json' in the Scan Output directory, where name and version are the project's name and version.
+
+**NOTE:**
+ * The format of this results file is dependent on Black Duck and in the future, different versions of Black Duck may produce a different file format.
 
 The results are also printed in the logs:
 ```
@@ -82,8 +84,6 @@ The results are also printed in the logs:
 
 ## Rapid Scan Compare Mode
 
-You can configure Rapid scan to return only the difference in policy violations between previous rapid scans. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
+You can configure Rapid Scan to return only the difference in policy violations between the current scan and previous Rapid Scans using the same configuration. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
 
-ALL evaluates all RAPID or FULL policies. BOM_COMPARE_STRICT only shows policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of
-policy rule modes and behaves like ALL if the policy rule is only RAPID but like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for
-complete details.
+Setting the compare mode to ALL evaluates all RAPID or FULL policies. BOM_COMPARE_STRICT only shows policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of policy rule modes and behaves like ALL if the policy rule is only RAPID and like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for complete details.

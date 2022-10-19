@@ -22,6 +22,7 @@ import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
 import com.synopsys.integration.detect.configuration.validation.DetectConfigurationBootManager;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
@@ -32,6 +33,10 @@ import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectiv
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckMinimumVersionChecks;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionChecker;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionParser;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionSensitiveOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
@@ -47,6 +52,7 @@ import com.synopsys.integration.detect.tool.detector.inspector.nuget.Artifactory
 import com.synopsys.integration.detect.tool.detector.inspector.nuget.NugetInspectorExecutableLocator;
 import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.ProjectInspectorExecutableLocator;
 import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.installer.ArtifactoryProjectInspectorInstaller;
+import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
@@ -207,9 +213,19 @@ public class DetectBootFactory {
         return new ProductBootFactory(detectInfo, eventSystem, detectConfigurationFactory);
     }
 
-    public ProductBoot createProductBoot(DetectConfigurationFactory detectConfigurationFactory) {
+    public ProductBoot createProductBoot(DetectConfigurationFactory detectConfigurationFactory, DetectToolFilter detectToolFilter, BlackduckScanMode blackduckScanMode) {
+        BlackDuckVersionChecker blackDuckVersionChecker = new BlackDuckVersionChecker(new BlackDuckVersionParser(),
+            new BlackDuckMinimumVersionChecks(), new BlackDuckVersionSensitiveOptions(detectToolFilter, blackduckScanMode)
+        );
+
         ProductBootOptions productBootOptions = detectConfigurationFactory.createProductBootOptions();
-        return new ProductBoot(blackDuckConnectivityChecker, createAnalyticsConfigurationService(), createProductBootFactory(detectConfigurationFactory), productBootOptions);
+        return new ProductBoot(
+            blackDuckConnectivityChecker,
+            createAnalyticsConfigurationService(),
+            createProductBootFactory(detectConfigurationFactory),
+            productBootOptions,
+            blackDuckVersionChecker
+        );
     }
 
     public AnalyticsConfigurationService createAnalyticsConfigurationService() {

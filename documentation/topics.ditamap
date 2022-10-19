@@ -3,7 +3,7 @@
 <map id="detect-user-guide" xml:lang="en-US">
   <title>Synopsys Detect</title>
   <topicmeta>
-    <shortdesc>Synopsys Detect 8.1.0</shortdesc>
+    <shortdesc>Synopsys Detect 8.2.0</shortdesc>
     <!-- zoomin bundle name -->
     <othermeta name="bundle" content="integrations-detect"/>
   </topicmeta>
@@ -32,12 +32,18 @@
 
     <topicref href="gettingstarted/howitworks.md" format="markdown"/>
     <topicref href="gettingstarted/workflow.md" format="markdown"/>
-    <topicref href="gettingstarted/configuring.md" format="markdown"/>
     <topicref href="gettingstarted/phases.md" format="markdown"/>
+	<topicref href="gettingstarted/configuring.md" format="markdown"/>
     <topicref href="gettingstarted/requirements.md" format="markdown"/>
     <topicref href="gettingstarted/usersandroles.md" format="markdown"/>
     <topicref href="gettingstarted/quickstart.md" format="markdown"/>
     <topicref href="gettingstarted/gettinghelp.md" format="markdown"/>
+  </topicref>
+  
+  <topicref href="components/overview.md" format="markdown">
+    <topicref href="components/tools.md" format="markdown"/>
+    <topicref href="components/detectors.md" format="markdown"/>
+    <topicref href="components/inspectors.md" format="markdown"/>
   </topicref>
 
   <topicref href="downloadingandrunning/intro.md" format="markdown">
@@ -56,8 +62,8 @@
     </topicref>
 
     <topicref href="downloadingandrunning/downloadlocations.md" format="markdown"/>
+	<topicref href="downloadingandrunning/verification.md" format="markdown"/>
     <topicref href="downloadingandrunning/airgap.md" format="markdown"/>
-    <topicref href="downloadingandrunning/verification.md" format="markdown"/>
 
     <topicref href="downloadingandrunning/includingexcluding/intro.md" format="markdown">
       <topicref href="downloadingandrunning/includingexcluding/tools.md" format="markdown"/>
@@ -67,19 +73,13 @@
     </topicref>
 
     <topicref href="downloadingandrunning/detectorcascade.md" format="markdown"/>
-
+	<topicref href="downloadingandrunning/ephemeralscan.md" format="markdown"/>
     <topicref href="downloadingandrunning/rapidscan.md" format="markdown"/>
     <topicref href="downloadingandrunning/iacscan.md" format="markdown"/>
     <topicref href="downloadingandrunning/status-file.md" format="markdown"/>
     <topicref href="downloadingandrunning/proxies.md" format="markdown"/>
     <topicref href="downloadingandrunning/concurrent.md" format="markdown"/>
     <topicref href="downloadingandrunning/runincontainer.md" format="markdown"/>
-  </topicref>
-
-  <topicref href="components/overview.md" format="markdown">
-    <topicref href="components/tools.md" format="markdown"/>
-    <topicref href="components/detectors.md" format="markdown"/>
-    <topicref href="components/inspectors.md" format="markdown"/>
   </topicref>
 
   <topicref href="configuring/overview.md" format="markdown">
@@ -101,9 +101,9 @@
     <topicref href="naming/aggregation.md" format="markdown"/>
   </topicref>
 
-  <topicref href="properties/all-properties.md" format="markdown">
+  <topicref href="properties/configuration/properties.md" format="markdown">
     <topicref href="properties/basic-properties.md" format="markdown"/>
-    <topicref href="properties/deprecated-properties.md" format="markdown"/>
+	<topicref href="properties/all-properties.md" format="markdown"/>
 
     <topicref href="properties/configuration/overview.md" format="markdown">
       <topicref href="properties/configuration/binary-scanner.md" format="markdown"/>
@@ -145,19 +145,11 @@
       <topicref href="properties/detectors/sbt.md" format="markdown"/>
       <topicref href="properties/detectors/yarn.md" format="markdown"/>
     </topicref>
+	  <topicref href="properties/deprecated-properties.md" format="markdown"/>
   </topicref>
 
   <topicref href="results/overview.md" format="markdown">
     <topicref href="results/reports.md" format="markdown"/>
-  </topicref>
-
-  <topicref href="troubleshooting/intro.md" format="markdown">
-    <topicref href="troubleshooting/gettinginfo.md" format="markdown"/>
-    <topicref href="troubleshooting/commonproblems.md" format="markdown"/>
-    <topicref href="troubleshooting/diagnosticmode.md" format="markdown"/>
-    <topicref href="troubleshooting/exit-codes.md" format="markdown"/>
-    <topicref href="troubleshooting/solutions.md" format="markdown"/>
-    <topicref href="troubleshooting/usage-metrics.md" format="markdown"/>
   </topicref>
 
   <topicref href="packagemgrs/overview.md" format="markdown">
@@ -201,6 +193,15 @@
     <topicref href="packagemgrs/sbt.md" format="markdown"/>
     <topicref href="packagemgrs/swift.md" format="markdown"/>
     <topicref href="packagemgrs/yarn.md" format="markdown"/>
+  </topicref>
+  
+   <topicref href="troubleshooting/intro.md" format="markdown">
+    <topicref href="troubleshooting/gettinginfo.md" format="markdown"/>
+    <topicref href="troubleshooting/commonproblems.md" format="markdown"/>
+    <topicref href="troubleshooting/diagnosticmode.md" format="markdown"/>
+    <topicref href="troubleshooting/exit-codes.md" format="markdown"/>
+    <topicref href="troubleshooting/solutions.md" format="markdown"/>
+    <topicref href="troubleshooting/usage-metrics.md" format="markdown"/>
   </topicref>
 
 </map>
