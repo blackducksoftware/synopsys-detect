@@ -4,8 +4,7 @@
 source config.env
 
 # extract
-
-cp ../libs/synopsys-detect-$RELEASE_VERSION-air-gap.zip .
+cp $AIR_GAP_ZIP_LOCATION .
 
 # build
 
