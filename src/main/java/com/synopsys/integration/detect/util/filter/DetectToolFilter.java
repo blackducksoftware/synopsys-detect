@@ -53,21 +53,19 @@ public class DetectToolFilter {
         if (detectTool == DetectTool.IAC_SCAN) {
             return iacEnabled;
         }
-        if (detectTool == DetectTool.DETECTOR && runDecision.isDockerMode()) {
-            return false;
-        }
+
         if (blackDuckDecision.scanMode() == BlackduckScanMode.RAPID && !rapidTools.contains(detectTool)) {
             return false;
         }
         if (blackDuckDecision.scanMode() == BlackduckScanMode.EPHEMERAL) {
             // If the user specifically asked for something, check that it is an allowed
-            // tool.
-            if (excludedIncludedFilter.includeSpecified()) {
+            // tool or we are in docker mode..
+            if (excludedIncludedFilter.includeSpecified() || runDecision.isDockerMode()) {
                 if (!allowedEphemeralTools.contains(detectTool)) {
                     return false;
                 }
-            // Otherwise only allow default tools unless we are in docker mode.
-            } else if (!defaultEphemeralTools.contains(detectTool) && !runDecision.isDockerMode()) {
+            // Otherwise only allow default tools.
+            } else if (!defaultEphemeralTools.contains(detectTool) ) {
                 return false;
             }
         }
