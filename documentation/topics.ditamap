@@ -203,6 +203,20 @@
     <topicref href="troubleshooting/solutions.md" format="markdown"/>
     <topicref href="troubleshooting/usage-metrics.md" format="markdown"/>
   </topicref>
+  
+	<topicref href="integrations/jenkinsplugin/jenkins.md" format="markdown">
+	<topicref href="integrations/jenkinsplugin/jenkinsrequirements.md" format="markdown"/>
+	<topicref href="integrations/jenkinsplugin/downloadingandinstalling.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/configuringtheplugin.md" format="markdown"/>
+	<topicref href="integrations/jenkinsplugin/usersandroles.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/runninginjenkins.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/jenkinspipelinejob.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/jenkinsfreestylejob.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/autoescapingparameters.md" format="markdown"/>
+	<topicref href="integrations/jenkinsplugin/airgapfordetect.md" format="markdown"/>
+	<topicref href="integrations/jenkinsplugin/dockercontainers.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/pluginreleasenotes.md" format="markdown"/>
+   </topicref>
 
 </map>
 
