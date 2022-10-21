@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
@@ -53,7 +54,9 @@ public class DetectToolFilter {
         if (detectTool == DetectTool.IAC_SCAN) {
             return iacEnabled;
         }
-
+        if (detectTool == DetectTool.DETECTOR && runDecision.getDockerMode() == DetectTargetType.IMAGE) {
+            return false;
+        }
         if (blackDuckDecision.scanMode() == BlackduckScanMode.RAPID && !rapidTools.contains(detectTool)) {
             return false;
         }
@@ -69,6 +72,7 @@ public class DetectToolFilter {
                 return false;
             }
         }
+        
         return excludedIncludedFilter.shouldInclude(detectTool);
     }
 }
