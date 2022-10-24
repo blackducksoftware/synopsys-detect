@@ -30,7 +30,7 @@ public class DetectToolFilter {
     private final List<DetectTool> defaultEphemeralTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN);
     
     // A list of all possible ephemeral scan types.
-    private final List<DetectTool> allowedEphemeralTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN, DetectTool.DOCKER);    
+    private final List<DetectTool> allowedEphemeralTools = Arrays.asList(DetectTool.BAZEL, DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN, DetectTool.DOCKER);    
 
     public DetectToolFilter(
         ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter,
