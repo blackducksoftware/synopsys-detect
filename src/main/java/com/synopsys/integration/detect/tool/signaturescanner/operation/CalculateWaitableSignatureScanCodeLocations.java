@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.common.util.Bds;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerReport;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.WaitableCodeLocationData;
@@ -37,7 +38,7 @@ public class CalculateWaitableSignatureScanCodeLocations {
             .map(Optional::get)
             .collect(Collectors.toSet());
 
-        return new WaitableCodeLocationData(totalExpected, allNames, notificationTaskRange);
+        return new WaitableCodeLocationData(DetectTool.SIGNATURE_SCAN, totalExpected, allNames, notificationTaskRange);
     }
 
     private Set<String> calculateNonWaitable(List<SignatureScannerReport> reports) {

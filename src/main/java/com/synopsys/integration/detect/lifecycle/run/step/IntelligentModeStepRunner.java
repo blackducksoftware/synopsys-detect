@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -114,7 +116,11 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
-            binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData).ifPresent(codeLocationAccumulator::addWaitableCodeLocations);
+            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationCreationData = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
+            codeLocationCreationData.ifPresent(binaryScanBatchOutputCodeLocationCreationData -> codeLocationAccumulator.addWaitableCodeLocations(
+                DetectTool.BINARY_SCAN,
+                binaryScanBatchOutputCodeLocationCreationData
+            ));
         });
 
         stepHelper.runToolIfIncludedWithCallbacks(
@@ -146,7 +152,11 @@ public class IntelligentModeStepRunner {
 
     public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
         BdioUploadResult uploadResult = operationRunner.uploadBdioIntelligentPersistent(blackDuckRunData, bdioResult, timeout);
-        uploadResult.getUploadOutput().ifPresent(codeLocationAccumulator::addWaitableCodeLocations);
+        Optional<CodeLocationCreationData<UploadBatchOutput>> codeLocationCreationData = uploadResult.getUploadOutput();
+        codeLocationCreationData.ifPresent(uploadBatchOutputCodeLocationCreationData -> codeLocationAccumulator.addWaitableCodeLocations(
+            DetectTool.DETECTOR,
+            uploadBatchOutputCodeLocationCreationData
+        ));
     }
 
     public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator) throws OperationException { //this is waiting....
