@@ -218,6 +218,15 @@
     <topicref href="integrations/jenkinsplugin/pluginreleasenotes.md" format="markdown"/>
    </topicref>
 
+	<topicref href="integrations/azureplugin/azure.md" format="markdown">
+	<topicref href="integrations/azureplugin/azurepluginrequirements.md" format="markdown"/>
+	<topicref href="integrations/azureplugin/installingtheplugin.md" format="markdown"/>
+    <topicref href="integrations/azureplugin/configuringandrunning.md" format="markdown"/>
+	<topicref href="integrations/azureplugin/configuringbuildagent.md" format="markdown"/>
+    <topicref href="integrations/azureplugin/runningthetask.md" format="markdown"/>
+    <topicref href="integrations/azureplugin/azurepluginreleasenotes.md" format="markdown"/>
+   </topicref>
+   
 </map>
 
 
