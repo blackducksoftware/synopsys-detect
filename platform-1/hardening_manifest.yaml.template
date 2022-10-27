@@ -40,7 +40,7 @@ resources:
   url: https://sig-repo.synopsys.com/artifactory/blackduck-repo1.dso.mil-generic/blackduck-client/synopsys-detect-RELEASE_VERSION-air-gap.zip
   validation:
     type: sha256
-    value: DETECT_SHA256_VALUE
+    value: ZIP_SHA256_VALUE
   auth:
     type: "basic"
     id: "synopsys"
