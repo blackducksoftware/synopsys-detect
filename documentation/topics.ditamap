@@ -204,6 +204,8 @@
     <topicref href="troubleshooting/usage-metrics.md" format="markdown"/>
   </topicref>
   
+   <topicref href="integrations/integrations.md" format="markdown">
+   
 	<topicref href="integrations/jenkinsplugin/jenkins.md" format="markdown">
 	<topicref href="integrations/jenkinsplugin/jenkinsrequirements.md" format="markdown"/>
 	<topicref href="integrations/jenkinsplugin/downloadingandinstalling.md" format="markdown"/>
@@ -227,6 +229,10 @@
     <topicref href="integrations/azureplugin/azurepluginreleasenotes.md" format="markdown"/>
    </topicref>
    
+   <topicref href="integrations/gitlab/gitlabintegration.md" format="markdown">
+   </topicref>
+   
+   </topicref>
 </map>
 
 

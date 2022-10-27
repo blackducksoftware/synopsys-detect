@@ -1,4 +1,4 @@
-# [solution_name] for Jenkins
+# Jenkins Plugin
 
 The [solution_name] for Jenkins plugin enables you to install and run [solution_name] in your Jenkins instance. 
 
