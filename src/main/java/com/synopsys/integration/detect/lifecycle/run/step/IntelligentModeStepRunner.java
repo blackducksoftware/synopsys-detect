@@ -142,7 +142,7 @@ public class IntelligentModeStepRunner {
 
         if (operationRunner.createBlackDuckPostOptions().isIntegratedMatchingEnabled()) {
             stepHelper.runAsGroup("Publish Correlated Scan Counts", OperationType.INTERNAL, () -> {
-                publishCorrelatedScanCounts(codeLocationAccumulator);
+                uploadCorrelatedScanCounts(codeLocationAccumulator, detectRunUuid);
             });
         }
 
@@ -168,8 +168,8 @@ public class IntelligentModeStepRunner {
         ));
     }
 
-    public void publishCorrelatedScanCounts(CodeLocationAccumulator codeLocationAccumulator) {
-        logger.info("Posting correlated scan counts (eventually to Black Duck)");
+    public void uploadCorrelatedScanCounts(CodeLocationAccumulator codeLocationAccumulator, String detectRunUuid) {
+        logger.info("Uploading correlated scan counts to Black Duck (correlation ID: {})", detectRunUuid);
         Map<DetectTool, Integer> countsByTool = new HashMap<>();
         for (WaitableCodeLocationData waitableCodeLocationData : codeLocationAccumulator.getWaitableCodeLocations()) {
             int oldCount = countsByTool.getOrDefault(waitableCodeLocationData.getDetectTool(), 0);
@@ -177,7 +177,7 @@ public class IntelligentModeStepRunner {
             countsByTool.put(waitableCodeLocationData.getDetectTool(), newCount);
         }
         for (Map.Entry<DetectTool, Integer> countEntry : countsByTool.entrySet()) {
-            logger.info("Publishing: {}: {}", countEntry.getKey(), countEntry.getValue());
+            logger.info("\t{}: {}", countEntry.getKey(), countEntry.getValue());
         }
     }
 
