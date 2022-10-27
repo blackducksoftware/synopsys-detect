@@ -10,7 +10,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.api.generated.discovery.BlackDuckMediaTypeDiscovery;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
@@ -34,6 +36,7 @@ import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
 import com.synopsys.integration.detect.workflow.status.OperationType;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
 
@@ -129,8 +132,18 @@ public class IntelligentModeStepRunner {
         });
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
-            CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
-            waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion, blackDuckRunData);
+            if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults()) {
+                // TODO do version check here
+                boolean toggle = true;
+                if (toggle) {
+                    // construct URL to check if BOM is ready
+                    pollForBomCompletion(blackDuckRunData, projectVersion);
+                } else {
+                    CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
+                    waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion,
+                            blackDuckRunData);
+                }
+            }
         });
 
         stepHelper.runAsGroup("Black Duck Post Actions", OperationType.INTERNAL, () -> {
@@ -139,6 +152,35 @@ public class IntelligentModeStepRunner {
             noticesReport(blackDuckRunData, projectVersion);
             publishPostResults(bdioResult, projectVersion, detectToolFilter);
         });
+    }
+
+    /**
+     * Polls for the BOM associated with a given version to see if it is completed. Returns nothing
+     * as later code will print out the location.
+     * 
+     * @param blackDuckRunData
+     * @param projectVersion
+     * @throws IntegrationException
+     * @throws OperationException 
+     */
+    private void pollForBomCompletion(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws OperationException, IntegrationException {
+        
+        //String blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString();
+        
+        // TODO feels like we should be using a path from blackduck-common-api for this
+        //String bomToSearchFor = BlackDuckMediaTypeDiscovery.API_PROJECTS_VERSIONS_BOM_STATUS;
+        
+        // TODO in addition to path from api library we likely also need a bom link on this projectVersionView
+        HttpUrl bomToSearchFor = projectVersion.getProjectVersionView().getFirstLink(ProjectVersionView.COMPONENTS_LINK);
+        HttpUrl updatedUrl = new HttpUrl(bomToSearchFor.toString().replace("components", "bom-status"));
+        
+        // TODO how to get scanId? Won't it differ for each scan type? Signature scanner doesn't even give us this does it?
+        // do we even need scan ID? I can get bom status by just hitting the version
+        //HttpUrl url = new HttpUrl(blackDuckUrl + "/api/projects/{projectId}/versions/{versionId}/bom-status/{scanId}");
+        
+        // Poll to see if Bom is ready
+        operationRunner.waitForBomCompletion(blackDuckRunData, updatedUrl);
+        
     }
 
     public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
@@ -183,7 +225,7 @@ public class IntelligentModeStepRunner {
     public void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException {
         logger.info("Checking to see if Detect should wait for bom tool calculations to finish.");
-        if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults() && codeLocationWaitData.getExpectedNotificationCount() > 0) {
+        if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
             operationRunner.waitForCodeLocations(blackDuckRunData, codeLocationWaitData, projectNameVersion);
         }
     }
