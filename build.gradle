@@ -273,7 +273,7 @@ task buildPlatform1 () {
 }
 
 task submitToPlatform1 (type: Exec, dependsOn: [buildPlatform1]){
-    doFirst {
+  doFirst {
         copy {
             from ("${projectDir}/platform-1/") {
                 include "*"
@@ -281,16 +281,20 @@ task submitToPlatform1 (type: Exec, dependsOn: [buildPlatform1]){
             into "${buildDir}/platform-1"
         }
     }
+    def branch = System.getenv('BRANCH') ?: ''
 
     workingDir "${buildDir}/platform-1"
+    if (branch.startsWith('origin/')){
+      branch=branch.replaceFirst('origin/', '')
+    }
 
     executable 'bash'
     environment("RELEASE_VERSION", "${version}")
-    environment("BRANCH", "${repo1GitBranch}")
-    environment("REPO1_URL", "${repo1AccessURL}")
-    environment("ARTIFACTORY_USERNAME", "${artifactoryUsername}")
-    environment("ARTIFACTORY_PASSWORD", "${artifactoryPassword}")
-    environment("ARTIFACTORY_HOST", "${artifactoryHost}")
+    environment("BRANCH", branch)
+    environment("REPO1_URL", System.getenv('REPO1_ACCESS_URL'))
+    environment("ARTIFACTORY_USERNAME", System.getenv('ARTIFACTORY_DEPLOYER_USER'))
+    environment("ARTIFACTORY_PASSWORD", System.getenv('ARTIFACTORY_DEPLOYER_PASSWORD'))
+    environment("ARTIFACTORY_HOST", System.getenv('ARTIFACTORY_HOST'))
     args = ["./submit.sh"]
 }
 
