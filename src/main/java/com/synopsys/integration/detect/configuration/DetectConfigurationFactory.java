@@ -402,6 +402,7 @@ public class DetectConfigurationFactory {
         Path noticesReportPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_NOTICES_REPORT_PATH);
         List<PolicyRuleSeverityType> severitiesToFailPolicyCheck = detectConfiguration.getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES).representedValues();
         List<String> policyNamesToFailPolicyCheck = detectConfiguration.getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_NAMES);
+        Boolean integratedMatchingEnabled = detectConfiguration.getValue(DetectProperties.DETECT_INTEGRATED_MATCHING_ENABLED);
 
         return new BlackDuckPostOptions(
             waitForResults,
@@ -410,7 +411,8 @@ public class DetectConfigurationFactory {
             riskReportPdfPath,
             noticesReportPath,
             severitiesToFailPolicyCheck,
-            policyNamesToFailPolicyCheck
+            policyNamesToFailPolicyCheck,
+            integratedMatchingEnabled
         );
     }
 

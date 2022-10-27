@@ -3,7 +3,9 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,6 +33,7 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
+import com.synopsys.integration.detect.workflow.blackduck.codelocation.WaitableCodeLocationData;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
@@ -137,6 +140,12 @@ public class IntelligentModeStepRunner {
             codeLocationAccumulator.addNonWaitableCodeLocation(iacScanCodeLocationData.getCodeLocationNames());
         });
 
+        if (operationRunner.createBlackDuckPostOptions().isIntegratedMatchingEnabled()) {
+            stepHelper.runAsGroup("Publish Correlated Scan Counts", OperationType.INTERNAL, () -> {
+                publishCorrelatedScanCounts(codeLocationAccumulator);
+            });
+        }
+
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
             CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
             waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion, blackDuckRunData);
@@ -157,6 +166,19 @@ public class IntelligentModeStepRunner {
             DetectTool.DETECTOR,
             uploadBatchOutputCodeLocationCreationData
         ));
+    }
+
+    public void publishCorrelatedScanCounts(CodeLocationAccumulator codeLocationAccumulator) {
+        logger.info("Posting correlated scan counts (eventually to Black Duck)");
+        Map<DetectTool, Integer> countsByTool = new HashMap<>();
+        for (WaitableCodeLocationData waitableCodeLocationData : codeLocationAccumulator.getWaitableCodeLocations()) {
+            int oldCount = countsByTool.getOrDefault(waitableCodeLocationData.getDetectTool(), 0);
+            int newCount = oldCount + waitableCodeLocationData.getSuccessfulCodeLocationNames().size();
+            countsByTool.put(waitableCodeLocationData.getDetectTool(), newCount);
+        }
+        for (Map.Entry<DetectTool, Integer> countEntry : countsByTool.entrySet()) {
+            logger.info("Publishing: {}: {}", countEntry.getKey(), countEntry.getValue());
+        }
     }
 
     public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator) throws OperationException { //this is waiting....

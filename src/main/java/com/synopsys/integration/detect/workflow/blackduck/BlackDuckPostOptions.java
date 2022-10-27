@@ -18,6 +18,7 @@ public class BlackDuckPostOptions {
     private final @Nullable Path noticesReportPath;
     private final List<PolicyRuleSeverityType> severitiesToFailPolicyCheck;
     private final List<String> policyNamesToFailPolicyCheck;
+    private final boolean integratedMatchingEnabled;
 
     public BlackDuckPostOptions(
         boolean waitForResults,
@@ -26,7 +27,8 @@ public class BlackDuckPostOptions {
         @Nullable Path riskReportPdfPath,
         @Nullable Path noticesReportPath,
         List<PolicyRuleSeverityType> severitiesToFailPolicyCheck,
-        List<String> policyNamesToFailPolicyCheck
+        List<String> policyNamesToFailPolicyCheck,
+        boolean integratedMatchingEnabled
     ) {
         this.waitForResults = waitForResults;
         this.generateRiskReport = generateRiskReport;
@@ -35,6 +37,7 @@ public class BlackDuckPostOptions {
         this.noticesReportPath = noticesReportPath;
         this.severitiesToFailPolicyCheck = severitiesToFailPolicyCheck;
         this.policyNamesToFailPolicyCheck = policyNamesToFailPolicyCheck;
+        this.integratedMatchingEnabled = integratedMatchingEnabled;
     }
 
     public boolean shouldWaitForResults() {
@@ -79,5 +82,9 @@ public class BlackDuckPostOptions {
 
     public List<String> getPolicyNamesToFailPolicyCheck() {
         return policyNamesToFailPolicyCheck;
+    }
+
+    public boolean isIntegratedMatchingEnabled() {
+        return integratedMatchingEnabled;
     }
 }
