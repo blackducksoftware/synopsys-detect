@@ -2,7 +2,7 @@
 
 Ephemeral Scan, or Ephemeral Scan Mode, is a new way of running [solution_name] with [blackduck_product_name]. This mode is designed to be as fast as possible and does not persist any data on [blackduck_product_name]. Ephemeral Scan Mode has a unique set of restrictions, mode of configuration and set of results.  It is similar to Rapid Scan Mode however it differs in that it supports usage of the SIGNATURE_SCAN tool.  Ephemeral Scan allows non-persistent signature scans to be performed.
 
-Enable this feature by adding [--detect.blackduck.scan.mode=EPHEMERAL](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of Detect.
+Enable this feature by adding [--detect.blackduck.scan.mode=EPHEMERAL](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of [solution_name].
 
 ## Requirements and Limitations
 
