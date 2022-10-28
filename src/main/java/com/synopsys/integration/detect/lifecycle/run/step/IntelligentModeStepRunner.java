@@ -141,7 +141,7 @@ public class IntelligentModeStepRunner {
         });
 
         if (operationRunner.createBlackDuckPostOptions().isIntegratedMatchingEnabled()) {
-            stepHelper.runAsGroup("Publish Correlated Scan Counts", OperationType.INTERNAL, () -> {
+            stepHelper.runAsGroup("Upload Correlated Scan Counts", OperationType.INTERNAL, () -> {
                 uploadCorrelatedScanCounts(blackDuckRunData, codeLocationAccumulator, detectRunUuid);
             });
         }

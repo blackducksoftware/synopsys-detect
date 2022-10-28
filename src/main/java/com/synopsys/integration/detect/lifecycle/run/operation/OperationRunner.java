@@ -475,6 +475,8 @@ public class OperationRunner {
     }
 
     public void uploadCorrelatedScanCounts(BlackDuckRunData blackDuckRunData, String correlationId) throws OperationException {
+        // TODO this is a nested operation; possible to avoid the nesting??
+        // TODO need to pass counts in here, and pass them on to the upload service below
         auditLog.namedPublic("Upload Correlated Scan Counts", "UploadCorrelatedScanCounts", () -> {
 
             CorrelatedScanCountUploadService correlatedScanCountUploadService = createCorrelatedScanCountUploadService(blackDuckRunData);
