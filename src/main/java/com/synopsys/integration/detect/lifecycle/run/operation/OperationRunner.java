@@ -116,6 +116,7 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanOpt
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.detect.workflow.blackduck.developer.blackduck.DetectRapidScanService;
+import com.synopsys.integration.detect.workflow.blackduck.integratedmatching.CorrelatedScanCountUploadService;
 import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
 import com.synopsys.integration.detect.workflow.blackduck.project.AddTagsToProjectOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.AddUserGroupsToProjectOperation;
@@ -473,6 +474,14 @@ public class OperationRunner {
         });
     }
 
+    public void uploadCorrelatedScanCounts(BlackDuckRunData blackDuckRunData, String correlationId) throws OperationException {
+        auditLog.namedPublic("Upload Correlated Scan Counts", "UploadCorrelatedScanCounts", () -> {
+
+            CorrelatedScanCountUploadService correlatedScanCountUploadService = createCorrelatedScanCountUploadService(blackDuckRunData);
+            correlatedScanCountUploadService.uploadCorrelatedScanCounts(correlationId);
+        });
+    }
+
     public File createNoticesReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion, File noticesDirectory) throws OperationException {
         return auditLog.namedPublic("Create Notices Report File", "NoticesReport", () -> {
             ReportService reportService = creatReportService(blackDuckRunData);
@@ -492,6 +501,20 @@ public class OperationRunner {
             long reportServiceTimeout = detectConfigurationFactory.findTimeoutInSeconds() * 1000;
             return new ReportService(gson, blackDuckUrl, blackDuckApiClient,
                 apiDiscovery, reportServiceLogger, integrationEscapeUtil, reportServiceTimeout
+            );
+        });
+    }
+
+    private CorrelatedScanCountUploadService createCorrelatedScanCountUploadService(BlackDuckRunData blackDuckRunData) throws OperationException {
+        return auditLog.namedInternal("Create Correlated Scan Count Upload Service", () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            Gson gson = blackDuckServicesFactory.getGson();
+            HttpUrl blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+            ApiDiscovery apiDiscovery = blackDuckServicesFactory.getApiDiscovery();
+            IntLogger countUploadServiceLogger = blackDuckServicesFactory.getLogger();
+            return new CorrelatedScanCountUploadService(gson, blackDuckUrl, blackDuckApiClient,
+                apiDiscovery, countUploadServiceLogger
             );
         });
     }

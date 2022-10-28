@@ -142,7 +142,7 @@ public class IntelligentModeStepRunner {
 
         if (operationRunner.createBlackDuckPostOptions().isIntegratedMatchingEnabled()) {
             stepHelper.runAsGroup("Publish Correlated Scan Counts", OperationType.INTERNAL, () -> {
-                uploadCorrelatedScanCounts(codeLocationAccumulator, detectRunUuid);
+                uploadCorrelatedScanCounts(blackDuckRunData, codeLocationAccumulator, detectRunUuid);
             });
         }
 
@@ -168,7 +168,7 @@ public class IntelligentModeStepRunner {
         ));
     }
 
-    public void uploadCorrelatedScanCounts(CodeLocationAccumulator codeLocationAccumulator, String detectRunUuid) {
+    public void uploadCorrelatedScanCounts(BlackDuckRunData blackDuckRunData, CodeLocationAccumulator codeLocationAccumulator, String detectRunUuid) throws OperationException {
         logger.info("Uploading correlated scan counts to Black Duck (correlation ID: {})", detectRunUuid);
         Map<DetectTool, Integer> countsByTool = new HashMap<>();
         for (WaitableCodeLocationData waitableCodeLocationData : codeLocationAccumulator.getWaitableCodeLocations()) {
@@ -179,6 +179,7 @@ public class IntelligentModeStepRunner {
         for (Map.Entry<DetectTool, Integer> countEntry : countsByTool.entrySet()) {
             logger.info("\t{}: {}", countEntry.getKey(), countEntry.getValue());
         }
+        operationRunner.uploadCorrelatedScanCounts(blackDuckRunData, detectRunUuid);
     }
 
     public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator) throws OperationException { //this is waiting....
