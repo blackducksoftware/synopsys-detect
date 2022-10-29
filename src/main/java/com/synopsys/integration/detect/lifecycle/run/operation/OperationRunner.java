@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.lifecycle.run.operation;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -474,13 +475,12 @@ public class OperationRunner {
         });
     }
 
-    public void uploadCorrelatedScanCounts(BlackDuckRunData blackDuckRunData, String correlationId) throws OperationException {
+    public void uploadCorrelatedScanCounts(BlackDuckRunData blackDuckRunData, String correlationId, Map<DetectTool, Integer> countsByTool) throws OperationException {
         // TODO this is a nested operation; possible to avoid the nesting??
-        // TODO need to pass counts in here, and pass them on to the upload service below
         auditLog.namedPublic("Upload Correlated Scan Counts", "UploadCorrelatedScanCounts", () -> {
 
             CorrelatedScanCountUploadService correlatedScanCountUploadService = createCorrelatedScanCountUploadService(blackDuckRunData);
-            correlatedScanCountUploadService.uploadCorrelatedScanCounts(correlationId);
+            correlatedScanCountUploadService.uploadCorrelatedScanCounts(correlationId, countsByTool);
         });
     }
 

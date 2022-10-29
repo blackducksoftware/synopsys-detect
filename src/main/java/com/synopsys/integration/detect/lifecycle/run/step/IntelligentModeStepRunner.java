@@ -179,7 +179,7 @@ public class IntelligentModeStepRunner {
         for (Map.Entry<DetectTool, Integer> countEntry : countsByTool.entrySet()) {
             logger.info("\t{}: {}", countEntry.getKey(), countEntry.getValue());
         }
-        operationRunner.uploadCorrelatedScanCounts(blackDuckRunData, detectRunUuid);
+        operationRunner.uploadCorrelatedScanCounts(blackDuckRunData, detectRunUuid, countsByTool);
     }
 
     public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator) throws OperationException { //this is waiting....
