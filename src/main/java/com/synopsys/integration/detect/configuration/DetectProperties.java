@@ -15,6 +15,7 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectClone
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.configuration.property.Properties;
 import com.synopsys.integration.configuration.property.Property;
@@ -48,6 +49,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTargetTyp
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
+import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedReducedPersistanceMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
@@ -455,6 +457,19 @@ public class DetectProperties {
                 "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
+    
+    public static final ExtendedEnumProperty<ExtendedReducedPersistanceMode, ReducedPersistence> DETECT_BLACKDUCK_SIGNATURE_SCANNER_REDUCED_PERSISTENCE =
+            ExtendedEnumProperty.newBuilder(
+                    "detect.blackduck.signature.scanner.reduced.persistence",
+                    ExtendedEnumValue.ofExtendedValue(ExtendedReducedPersistanceMode.NONE),
+                    ExtendedReducedPersistanceMode.class,
+                    ReducedPersistence.class
+                )
+                .setInfo("Reduced Persistence", DetectPropertyFromVersion.VERSION_8_3_0)
+                .setHelp(
+                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to the 'REPLACE ME' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --retain-unmatched-files, --discard-unmatched-files.")
+                .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+                .build();
 
     public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE =
         BooleanProperty.newBuilder("detect.blackduck.signature.scanner.upload.source.mode", false)
