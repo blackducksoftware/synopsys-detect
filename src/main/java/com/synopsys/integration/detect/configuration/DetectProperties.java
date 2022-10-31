@@ -461,7 +461,7 @@ public class DetectProperties {
     public static final ExtendedEnumProperty<ExtendedReducedPersistanceMode, ReducedPersistence> DETECT_BLACKDUCK_SIGNATURE_SCANNER_REDUCED_PERSISTENCE =
             ExtendedEnumProperty.newBuilder(
                     "detect.blackduck.signature.scanner.reduced.persistence",
-                    ExtendedEnumValue.ofExtendedValue(ExtendedReducedPersistanceMode.NONE),
+                    ExtendedEnumValue.ofExtendedValue(ExtendedReducedPersistanceMode.DEFAULT),
                     ExtendedReducedPersistanceMode.class,
                     ReducedPersistence.class
                 )
