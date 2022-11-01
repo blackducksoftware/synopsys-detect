@@ -2,13 +2,19 @@ package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
+import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class GoModCommandRunner {
     private static final String VERSION_COMMAND = "version";
@@ -21,6 +27,10 @@ public class GoModCommandRunner {
     private static final String VENDOR_OUTPUT_FLAG = "-vendor";
     private static final String LIST_READONLY_FLAG = "-mod=readonly";
     private static final String MODULE_NAME = "all";
+    private static final String FORMAT_FLAG = "-f";
+    
+    private static final String FORMAT_DIRECTS = "{{if not (or .Indirect .Main)}}{{.Path}}@{{.Version}}{{end}}";
+    private static final String FORMAT_FOR_MAIN = "{{if (.Main)}}{{.Path}}{{end}}";
 
     private final DetectableExecutableRunner executableRunner;
 
@@ -68,6 +78,46 @@ public class GoModCommandRunner {
         commands.add(MODULE_NAME);
         return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
             .getStandardOutputAsList();
+    }
+
+    public HashMap<String, List<String>> runGoModWhyOnModule(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+        // executing this command helps produce more accurate results. Parse the output to create a module exclusion list.
+        List<String> commands = new LinkedList<>(Arrays.asList(MOD_COMMAND, MOD_WHY_SUBCOMMAND, MODULE_OUTPUT_FLAG, MODULE_NAME));
+        Executable exe = ExecutableUtils.createFromTarget(directory, goExe, commands);
+        String key = "";
+        List<String> shortList = new LinkedList<String>();
+        HashMap<String, List<String>> rMap = new HashMap<String, List<String>>();
+        List<String> whys = executableRunner.executeSuccessfully(exe).getStandardOutputAsList();
+
+        for (String m : whys) {
+            if (m.startsWith("#")) {
+                if (!key.equals("")) {
+                    rMap.put(key, shortList);
+                }
+                key = m.substring(2);
+                shortList = new LinkedList<String>();
+            } else {
+                shortList.add(m);
+            }
+        }
+        rMap.put(key, shortList);
+
+        return rMap;
+
+    }
+
+    public List<String> runGoModDirectDeps(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+        //Arrays.asList("go", "list", "-m", "-f", "{{if ( .Main)}}{{.Path}}{{end}}", "all");
+        List<String> commands = new LinkedList<>(Arrays.asList(LIST_COMMAND, MODULE_OUTPUT_FLAG, FORMAT_FLAG, FORMAT_DIRECTS, MODULE_NAME));
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
+                .getStandardOutputAsList();
+    }
+
+    public String runGoModGetMainModule(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+        //Arrays.asList("go", "list", "-m", "-f", "{{if ( .Main)}}{{.Path}}{{end}}", "all");
+        List<String> commands = new LinkedList<>(Arrays.asList(LIST_COMMAND, MODULE_OUTPUT_FLAG, FORMAT_FLAG, FORMAT_FOR_MAIN, MODULE_NAME));
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
+                .getStandardOutputAsList().get(0);
     }
 
 }

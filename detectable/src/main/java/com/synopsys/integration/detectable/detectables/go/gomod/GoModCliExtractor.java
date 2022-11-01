@@ -1,7 +1,9 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,6 +21,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphPar
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoVersionParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModuleDependencyHelper;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModDependencyManager;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoRelationshipManager;
@@ -83,7 +86,19 @@ public class GoModCliExtractor {
 
     private List<GoGraphRelationship> listGraphRelationships(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
         List<String> modGraphOutput = goModCommandRunner.runGoModGraph(directory, goExe);
-        return goGraphParser.parseRelationshipsFromGoModGraph(modGraphOutput);
+
+        // Get the actual main module that produced this graph
+        String mainMod = goModCommandRunner.runGoModGetMainModule(directory, goExe);
+
+        // Get the list of TRUE direct dependencies, then use the main mod name and
+        // this list to create a TRUE dependency graph from the requirement graph
+        List<String> directs = goModCommandRunner.runGoModDirectDeps(directory, goExe);
+        HashMap<String, List<String>> whyModuleMap = goModCommandRunner.runGoModWhyOnModule(directory, goExe);
+        
+        GoModuleDependencyHelper rgdm = new GoModuleDependencyHelper();
+        List<String> actualDependencyList = rgdm.computeDependencies(mainMod, directs, whyModuleMap, modGraphOutput);
+
+        return goGraphParser.parseRelationshipsFromGoModGraph(actualDependencyList);
     }
 
     private GoVersion goVersion(File directory, ExecutableTarget goExe) throws ExecutableFailedException, DetectableException {
