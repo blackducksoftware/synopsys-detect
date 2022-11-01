@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 8.3.0
+
+### New features
+
+* Added support for Reduced Persistence Signature Scanning. This feature allows users to specify if unmatched files should be persisted or discarded. Not storing data for unmatched files decreases scan time and database size.
+
 ## Version 8.2.0
 
 ### New features
