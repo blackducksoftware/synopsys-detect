@@ -82,12 +82,11 @@ public class GoModCommandRunner {
 
     public HashMap<String, List<String>> runGoModWhyOnModule(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
         // executing this command helps produce more accurate results. Parse the output to create a module exclusion list.
-        List<String> commands = new LinkedList<>(Arrays.asList(MOD_COMMAND, MOD_WHY_SUBCOMMAND, MODULE_OUTPUT_FLAG, MODULE_NAME));
-        Executable exe = ExecutableUtils.createFromTarget(directory, goExe, commands);
+        // we'll run this once... using a map of the lists of paths that each module is involved with.
         String key = "";
         List<String> shortList = new LinkedList<String>();
         HashMap<String, List<String>> rMap = new HashMap<String, List<String>>();
-        List<String> whys = executableRunner.executeSuccessfully(exe).getStandardOutputAsList();
+        List<String> whys = this.runGoModWhy(directory, goExe, false);
 
         for (String m : whys) {
             if (m.startsWith("#")) {
@@ -107,14 +106,14 @@ public class GoModCommandRunner {
     }
 
     public List<String> runGoModDirectDeps(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
-        //Arrays.asList("go", "list", "-m", "-f", "{{if ( .Main)}}{{.Path}}{{end}}", "all");
+        //This'll give all direct dependencies for the main module.
         List<String> commands = new LinkedList<>(Arrays.asList(LIST_COMMAND, MODULE_OUTPUT_FLAG, FORMAT_FLAG, FORMAT_DIRECTS, MODULE_NAME));
         return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
                 .getStandardOutputAsList();
     }
 
     public String runGoModGetMainModule(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
-        //Arrays.asList("go", "list", "-m", "-f", "{{if ( .Main)}}{{.Path}}{{end}}", "all");
+        //This gives the value of the main module name.
         List<String> commands = new LinkedList<>(Arrays.asList(LIST_COMMAND, MODULE_OUTPUT_FLAG, FORMAT_FLAG, FORMAT_FOR_MAIN, MODULE_NAME));
         return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
                 .getStandardOutputAsList().get(0);

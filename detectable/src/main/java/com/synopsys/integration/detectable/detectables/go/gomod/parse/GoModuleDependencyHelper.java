@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 
 
 public class GoModuleDependencyHelper {
-
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
  
     public GoModuleDependencyHelper() {
     }
@@ -32,7 +35,7 @@ public class GoModuleDependencyHelper {
                 grphLine = this.getProperParentage(grphLine, splitLine, whyMap, directs);
             }
             if (!goModGraph.contains(grphLine)) {
-                System.out.println(grphLine);
+                logger.debug(grphLine);
                 goModGraph.add(grphLine);
             }
         }
