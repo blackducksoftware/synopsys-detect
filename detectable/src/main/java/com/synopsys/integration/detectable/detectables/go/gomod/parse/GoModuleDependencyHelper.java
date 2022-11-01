@@ -1,6 +1,5 @@
 package com.synopsys.integration.detectable.detectables.go.gomod.parse;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,33 +23,40 @@ public class GoModuleDependencyHelper {
                     containsDirect = true;
                 }
             }
-            if (!containsDirect) {
+            if (!containsDirect) {// anything that falls in here isn't a direct dependency of main
                 grphLine = grphLine.replace(main, "xxxxxx");
             }
             String[] splitLine = grphLine.split(" ");
             if (splitLine[0].equals("xxxxxx")) {
-
-                String childModulePath = splitLine[1].replaceAll("@.*", "");
-                
-                // look up the 'why' results for the module...
-                List<String> trackPath = whyMap.get(childModulePath);
-                String parent = "";
-                if (!trackPath.isEmpty()) {
-                    for (String tp : trackPath) {
-                        for (String directMod : directs) {
-                            if (directMod.contains(tp)) {
-                                parent = directMod;
-                                break;
-                            }
-                        }
-                    }
-                    grphLine = grphLine.replace(splitLine[0], parent);
-                }
+                // Redo the line to establish the direct reference module to this *indirect* module
+                grphLine = this.getProperParentage(grphLine, splitLine, whyMap, directs);
             }
             if (!goModGraph.contains(grphLine)) {
+                System.out.println(grphLine);
                 goModGraph.add(grphLine);
             }
         }
         return goModGraph;
+    }
+
+    private String getProperParentage(String grphLine, String[] splitLine, HashMap<String, List<String>> whyMap, List<String> directs) {
+        String childModulePath = splitLine[1].replaceAll("@.*", "");
+        
+        // look up the 'why' results for the module...  This will tell us
+        // the direct dependency item that pulled this item into the mix.
+        List<String> trackPath = whyMap.get(childModulePath);
+        String parent = "";
+        if (trackPath != null && !trackPath.isEmpty()) {
+            for (String tp : trackPath) {
+                for (String directMod : directs) {
+                    if (directMod.contains(tp)) {
+                        parent = directMod;
+                        break;
+                    }
+                }
+            }
+            grphLine = grphLine.replace(splitLine[0], parent);
+        }
+        return grphLine;
     }
 }
