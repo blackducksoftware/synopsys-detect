@@ -52,7 +52,6 @@ public class CreateAggregateBdio2FileOperation {
             ZonedDateTime.now(),
             new Product.Builder().name(detectCreator.getIdentifier()).build()
         );
-        // TODO the right way to do this will be to add support in bdio2Factory, but overriding what it generates will work for now
         bdioMetadata.correlationId(integratedMatchingCorrelationId);
         bdioMetadata.scanType(scanType);
 

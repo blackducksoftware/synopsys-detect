@@ -23,20 +23,16 @@ import com.synopsys.integration.detect.tool.iac.IacScanReport;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detectable.util.ExternalIdCreator;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
 public class IacScanStepRunner {
-    private static final String SCAN_CREATOR = "IaC";
 
     private final OperationRunner operationRunner;
-    private final IntegrationEscapeUtil integrationEscapeUtil; //TODO- IntegrationEscapeUtil's methods should be static
 
     public IacScanStepRunner(
         OperationRunner operationRunner
     ) {
         this.operationRunner = operationRunner;
-        this.integrationEscapeUtil = new IntegrationEscapeUtil();
     }
 
     public IacScanCodeLocationData runIacScanOnline(String detectRunUuid, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
