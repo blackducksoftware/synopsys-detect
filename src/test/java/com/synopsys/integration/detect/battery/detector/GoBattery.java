@@ -32,7 +32,7 @@ public class GoBattery {
     @Test
     void mod() {
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("go-mod");
-        test.executableFromResourceFiles(DetectProperties.DETECT_GO_PATH, "go-list.xout", "go-version.xout", "go-list-u-json.xout", "go-mod-graph.xout", "go-mod-why.xout");
+        test.executableFromResourceFiles(DetectProperties.DETECT_GO_PATH, "go-list.xout", "go-version.xout", "go-list-u-json.xout", "go-mod-graph.xout", "go-mod-get-main.xout", "go-mod-list-directs.xout", "go-mod-why.xout", "go-mod-why.xout");
         test.sourceDirectoryNamed("source");
         test.sourceFileFromResource("go.mod");
         test.property(DetectProperties.DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED, GoModDependencyType.UNUSED.name());
