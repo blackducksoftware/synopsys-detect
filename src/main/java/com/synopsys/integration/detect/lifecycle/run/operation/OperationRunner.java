@@ -3,7 +3,6 @@ package com.synopsys.integration.detect.lifecycle.run.operation;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -118,6 +117,7 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.Ra
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.detect.workflow.blackduck.developer.blackduck.DetectRapidScanService;
 import com.synopsys.integration.detect.workflow.blackduck.integratedmatching.CorrelatedScanCountUploadService;
+import com.synopsys.integration.detect.workflow.blackduck.integratedmatching.model.ScanCountsPayload;
 import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
 import com.synopsys.integration.detect.workflow.blackduck.project.AddTagsToProjectOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.AddUserGroupsToProjectOperation;
@@ -475,12 +475,11 @@ public class OperationRunner {
         });
     }
 
-    public void uploadCorrelatedScanCounts(BlackDuckRunData blackDuckRunData, String correlationId, Map<DetectTool, Integer> countsByTool) throws OperationException {
-        // TODO this is a nested operation; possible to avoid the nesting??
-        auditLog.namedPublic("Upload Correlated Scan Counts", "UploadCorrelatedScanCounts", () -> {
+    public void uploadCorrelatedScanCounts(BlackDuckRunData blackDuckRunData, String correlationId, ScanCountsPayload scanCountsPayload) throws OperationException {
+        auditLog.namedPublic("Upload Correlated Scan Counts by Detect tool", "UploadCorrelatedScanCounts", () -> {
 
             CorrelatedScanCountUploadService correlatedScanCountUploadService = createCorrelatedScanCountUploadService(blackDuckRunData);
-            correlatedScanCountUploadService.uploadCorrelatedScanCounts(correlationId, countsByTool);
+            correlatedScanCountUploadService.uploadCorrelatedScanCounts(correlationId, scanCountsPayload);
         });
     }
 

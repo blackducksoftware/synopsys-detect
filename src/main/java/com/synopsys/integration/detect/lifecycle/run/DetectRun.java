@@ -24,6 +24,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
 import com.synopsys.integration.detect.tool.detector.factory.DetectorFactory;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
+import com.synopsys.integration.detect.workflow.blackduck.integratedmatching.ScanCountsPayloadCreator;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.util.NameVersion;
@@ -86,6 +87,7 @@ public class DetectRun {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(
                         operationRunner,
                         stepHelper,
+                        new ScanCountsPayloadCreator(),
                         bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId()
                     );
                     intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
@@ -93,6 +95,7 @@ public class DetectRun {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(
                         operationRunner,
                         stepHelper,
+                        new ScanCountsPayloadCreator(),
                         bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId()
                     );
                     intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData());

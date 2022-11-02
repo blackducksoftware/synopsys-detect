@@ -1,11 +1,6 @@
-package com.synopsys.integration.detect.workflow.blackduck.integratedmatching;
-
-import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
+package com.synopsys.integration.detect.workflow.blackduck.integratedmatching.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.util.Stringable;
 
 public class ScanCounts extends Stringable {

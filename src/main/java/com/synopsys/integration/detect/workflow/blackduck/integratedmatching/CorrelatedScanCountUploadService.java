@@ -1,7 +1,5 @@
 package com.synopsys.integration.detect.workflow.blackduck.integratedmatching;
 
-import java.util.Map;
-
 import org.apache.http.entity.ContentType;
 
 import com.google.gson.Gson;
@@ -13,11 +11,10 @@ import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.DataService;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.workflow.blackduck.integratedmatching.model.ScanCountsPayload;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.rest.body.BodyContentConverter;
 import com.synopsys.integration.rest.response.Response;
 
 public class CorrelatedScanCountUploadService extends DataService {
@@ -44,10 +41,9 @@ public class CorrelatedScanCountUploadService extends DataService {
         this.blackDuckBaseUrl = blackDuckBaseUrl;
     }
 
-    public Response uploadCorrelatedScanCounts(String correlationId, Map<DetectTool, Integer> countsByTool) throws IntegrationException {
+    public Response uploadCorrelatedScanCounts(String correlationId, ScanCountsPayload scanCountsPayload) throws IntegrationException {
         HttpUrl url = buildEndpointUrl(correlationId);
 
-        ScanCountsPayload scanCountsPayload = ScanCountsPayload.createFromCountsByTool(countsByTool);
         logger.info(String.format("Uploading scanCountsPayload: %s", scanCountsPayload));
         JsonElement scanCountsElement = gson.toJsonTree(scanCountsPayload);
 

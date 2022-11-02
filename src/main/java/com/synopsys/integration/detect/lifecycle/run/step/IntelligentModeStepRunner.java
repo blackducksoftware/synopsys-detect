@@ -3,9 +3,7 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,7 +31,8 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.WaitableCodeLocationData;
+import com.synopsys.integration.detect.workflow.blackduck.integratedmatching.model.ScanCountsPayload;
+import com.synopsys.integration.detect.workflow.blackduck.integratedmatching.ScanCountsPayloadCreator;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
@@ -46,11 +45,13 @@ public class IntelligentModeStepRunner {
     private final OperationRunner operationRunner;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StepHelper stepHelper;
+    private final ScanCountsPayloadCreator scanCountsPayloadCreator;
     private final String detectRunUuid;
 
-    public IntelligentModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, String detectRunUuid) {
+    public IntelligentModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, ScanCountsPayloadCreator scanCountsPayloadCreator, String detectRunUuid) {
         this.operationRunner = operationRunner;
         this.stepHelper = stepHelper;
+        this.scanCountsPayloadCreator = scanCountsPayloadCreator;
         this.detectRunUuid = detectRunUuid;
     }
 
@@ -170,16 +171,8 @@ public class IntelligentModeStepRunner {
 
     public void uploadCorrelatedScanCounts(BlackDuckRunData blackDuckRunData, CodeLocationAccumulator codeLocationAccumulator, String detectRunUuid) throws OperationException {
         logger.info("Uploading correlated scan counts to Black Duck (correlation ID: {})", detectRunUuid);
-        Map<DetectTool, Integer> countsByTool = new HashMap<>();
-        for (WaitableCodeLocationData waitableCodeLocationData : codeLocationAccumulator.getWaitableCodeLocations()) {
-            int oldCount = countsByTool.getOrDefault(waitableCodeLocationData.getDetectTool(), 0);
-            int newCount = oldCount + waitableCodeLocationData.getSuccessfulCodeLocationNames().size();
-            countsByTool.put(waitableCodeLocationData.getDetectTool(), newCount);
-        }
-        for (Map.Entry<DetectTool, Integer> countEntry : countsByTool.entrySet()) {
-            logger.info("\t{}: {}", countEntry.getKey(), countEntry.getValue());
-        }
-        operationRunner.uploadCorrelatedScanCounts(blackDuckRunData, detectRunUuid, countsByTool);
+        ScanCountsPayload scanCountsPayload = scanCountsPayloadCreator.create(codeLocationAccumulator.getWaitableCodeLocations());
+        operationRunner.uploadCorrelatedScanCounts(blackDuckRunData, detectRunUuid, scanCountsPayload);
     }
 
     public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator) throws OperationException { //this is waiting....
