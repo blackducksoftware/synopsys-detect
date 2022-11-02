@@ -41,7 +41,8 @@ public class CorrelatedScanCountUploadService extends DataService {
     public Response uploadCorrelatedScanCounts(String correlationId, ScanCountsPayload scanCountsPayload) throws IntegrationException {
         HttpUrl url = buildEndpointUrl(correlationId);
 
-        logger.info(String.format("Uploading scanCountsPayload: %s", scanCountsPayload));
+        logger.info(String.format("Uploading scanCountsPayload: correlationId: %s; scanCountsPayload: %s",
+            correlationId, scanCountsPayload));
         JsonElement scanCountsElement = gson.toJsonTree(scanCountsPayload);
 
         BlackDuckResponseRequest request = new BlackDuckRequestBuilder()
