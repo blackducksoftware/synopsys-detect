@@ -510,11 +510,10 @@ public class OperationRunner {
         return auditLog.namedInternal("Create Correlated Scan Count Upload Service", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             Gson gson = blackDuckServicesFactory.getGson();
-            HttpUrl blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl();
             BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
             ApiDiscovery apiDiscovery = blackDuckServicesFactory.getApiDiscovery();
             IntLogger countUploadServiceLogger = blackDuckServicesFactory.getLogger();
-            return new CorrelatedScanCountUploadService(gson, blackDuckUrl, blackDuckApiClient,
+            return new CorrelatedScanCountUploadService(gson, blackDuckApiClient,
                 apiDiscovery, countUploadServiceLogger
             );
         });

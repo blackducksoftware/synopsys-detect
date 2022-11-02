@@ -3,7 +3,7 @@ package com.synopsys.integration.detect.workflow.blackduck.integratedmatching.mo
 import com.synopsys.integration.util.Stringable;
 
 public class ScanCountsPayload extends Stringable {
-    private ScanCounts scanCounts;
+    private final ScanCounts scanCounts;
 
     public ScanCountsPayload(ScanCounts scanCounts) {
         this.scanCounts = scanCounts;

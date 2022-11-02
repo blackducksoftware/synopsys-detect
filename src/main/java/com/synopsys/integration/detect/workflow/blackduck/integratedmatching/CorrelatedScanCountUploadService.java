@@ -23,22 +23,19 @@ public class CorrelatedScanCountUploadService extends DataService {
     // Once this endpoint/payload is added to the Black Duck swagger doc, and blackduck-common-api is
     // regenerated from it, this service can move to blackduck-common, and these details can be sourced
     // from blackduck-common-api, as with other services/endpoints.
-    private final static String CORRELATED_SCAN_COUNT_ENDPOINT_FORMAT_STRING = "/api/scan-correlations/%s/counts";
-    public static final String CONTENT_TYPE_HEADER_KEY = "Content-Type";
-    public static final String CONTENT_TYPE_HEADER_VALUE = "application/vnd.blackducksoftware.scan-5+json";
-    private final HttpUrl blackDuckBaseUrl;
+    private static final String CORRELATED_SCAN_COUNT_ENDPOINT_FORMAT_STRING = "/api/scan-correlations/%s/counts";
+    private static final String CONTENT_TYPE_HEADER_KEY = "Content-Type";
+    private static final String CONTENT_TYPE_HEADER_VALUE = "application/vnd.blackducksoftware.scan-5+json";
     private final Gson gson;
 
     public CorrelatedScanCountUploadService(
         Gson gson,
-        HttpUrl blackDuckBaseUrl,
         BlackDuckApiClient blackDuckApiClient,
         ApiDiscovery apiDiscovery,
         IntLogger logger
     ) {
         super(blackDuckApiClient, apiDiscovery, logger);
         this.gson = gson;
-        this.blackDuckBaseUrl = blackDuckBaseUrl;
     }
 
     public Response uploadCorrelatedScanCounts(String correlationId, ScanCountsPayload scanCountsPayload) throws IntegrationException {

@@ -44,7 +44,7 @@ class ScanCountsPayloadCreatorTest {
         assertEquals(2, payload.getScanCounts().getSignature());
         assertEquals(3, payload.getScanCounts().getBinary());
     }
-    
+
     @Test
     void testAllPkgMgrTypesPlusIgnored() {
         WaitableCodeLocationData bazelWaitableCodeLocationData = Mockito.mock(WaitableCodeLocationData.class);
