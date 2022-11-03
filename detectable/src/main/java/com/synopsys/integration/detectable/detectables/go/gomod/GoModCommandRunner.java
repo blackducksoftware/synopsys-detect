@@ -80,31 +80,6 @@ public class GoModCommandRunner {
             .getStandardOutputAsList();
     }
 
-    public HashMap<String, List<String>> runGoModWhyOnModule(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
-        // executing this command helps produce more accurate results. Parse the output to create a module exclusion list.
-        // we'll run this once... using a map of the lists of paths that each module is involved with.
-        String key = "";
-        List<String> shortList = new LinkedList<String>();
-        HashMap<String, List<String>> rMap = new HashMap<String, List<String>>();
-        List<String> whys = this.runGoModWhy(directory, goExe, false);
-
-        for (String m : whys) {
-            if (m.startsWith("#")) {
-                if (!key.equals("")) {
-                    rMap.put(key, shortList);
-                }
-                key = m.substring(2);
-                shortList = new LinkedList<String>();
-            } else {
-                shortList.add(m);
-            }
-        }
-        rMap.put(key, shortList);
-
-        return rMap;
-
-    }
-
     public List<String> runGoModDirectDeps(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
         //This'll give all direct dependencies for the main module.
         List<String> commands = new LinkedList<>(Arrays.asList(LIST_COMMAND, MODULE_OUTPUT_FLAG, FORMAT_FLAG, FORMAT_DIRECTS, MODULE_NAME));

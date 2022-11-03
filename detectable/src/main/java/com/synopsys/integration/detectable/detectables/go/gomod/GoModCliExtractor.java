@@ -93,10 +93,10 @@ public class GoModCliExtractor {
         // Get the list of TRUE direct dependencies, then use the main mod name and
         // this list to create a TRUE dependency graph from the requirement graph
         List<String> directs = goModCommandRunner.runGoModDirectDeps(directory, goExe);
-        HashMap<String, List<String>> whyModuleMap = goModCommandRunner.runGoModWhyOnModule(directory, goExe);
+        List<String> whyModuleList = goModCommandRunner.runGoModWhy(directory, goExe, false);
         
-        GoModuleDependencyHelper rgdm = new GoModuleDependencyHelper();
-        List<String> actualDependencyList = rgdm.computeDependencies(mainMod, directs, whyModuleMap, modGraphOutput);
+        GoModuleDependencyHelper goModDependencyHelper = new GoModuleDependencyHelper();
+        List<String> actualDependencyList = goModDependencyHelper.computeDependencies(mainMod, directs, whyModuleList, modGraphOutput);
 
         return goGraphParser.parseRelationshipsFromGoModGraph(actualDependencyList);
     }
