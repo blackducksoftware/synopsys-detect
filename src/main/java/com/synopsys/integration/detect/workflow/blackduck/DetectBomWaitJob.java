@@ -7,7 +7,7 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
 import com.synopsys.integration.blackduck.api.core.response.UrlMultipleResponses;
-import com.synopsys.integration.blackduck.api.generated.component.ProjectVersionBomStatusView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionBomStatusView;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionBomStatusType;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
@@ -38,12 +38,8 @@ public class DetectBomWaitJob implements ResilientJob<ProjectVersionBomStatusVie
 
     @Override
     public void attemptJob() throws IntegrationException {
-        Response response = blackDuckApiClient.get(bomUrl);
-        String responseString = response.getContentString();
-            
-        Gson gson = new Gson();
         ProjectVersionBomStatusView initialResponse = 
-                gson.fromJson(responseString, ProjectVersionBomStatusView.class);
+                blackDuckApiClient.getResponse(bomUrl, ProjectVersionBomStatusView.class);
         
         if (initialResponse.getStatus() == ProjectVersionBomStatusType.UP_TO_DATE ||
                 initialResponse.getStatus() == ProjectVersionBomStatusType.UP_TO_DATE_WITH_ERRORS) {
