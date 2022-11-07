@@ -1,6 +1,9 @@
 # Release notes
 
 ## Version 8.3.0
+### Resolved issues
+
+* (IDETECT-3285) go.mod file "// indirects" matching as Direct Dependencies
 
 ### New features
 
