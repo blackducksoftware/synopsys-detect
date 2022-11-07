@@ -80,6 +80,9 @@ public class CreateScanBatchOperation {
 
         signatureScannerOptions.getIndividualFileMatching()
             .ifPresent(scanJobBuilder::individualFileMatching);
+        
+        signatureScannerOptions.getReducedPersistence()
+            .ifPresent(scanJobBuilder::reducedPersistence);
 
         // Someday the integrated matching enabled option will (we think) go away, and we'll always provide
         // detectRunUuid as correlationId, but for now it's optional.
