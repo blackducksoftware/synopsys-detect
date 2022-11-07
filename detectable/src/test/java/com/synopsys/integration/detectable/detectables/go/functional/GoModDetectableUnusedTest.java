@@ -78,10 +78,10 @@ public class GoModDetectableUnusedTest extends DetectableFunctionalTest {
 
 
         ExecutableOutput goListMainOutput = createStandardOutputFromResource("/go/go-mod-get-main.xout");
-        addExecutableOutput(goListMainOutput, "go", "list", "-m", "-f", "{{if (.Main)}}{{.Path}}{{end}}", "all");
+        addExecutableOutput(goListMainOutput, "go", "list", "-mod=readonly", "-m", "-f", "{{if (.Main)}}{{.Path}}{{end}}", "all");
 
         ExecutableOutput goListDirectMods = createStandardOutputFromResource("/go/go-mod-list-directs.xout");
-        addExecutableOutput(goListDirectMods, "go", "list", "-m", "-f", "{{if not (or .Indirect .Main)}}{{.Path}}@{{.Version}}{{end}}", "all");
+        addExecutableOutput(goListDirectMods, "go", "list", "-mod=readonly", "-m", "-f", "{{if not (or .Indirect .Main)}}{{.Path}}@{{.Version}}{{end}}", "all");
 
     }
 

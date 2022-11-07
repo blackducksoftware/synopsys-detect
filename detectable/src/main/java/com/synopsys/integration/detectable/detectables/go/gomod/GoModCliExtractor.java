@@ -58,9 +58,10 @@ public class GoModCliExtractor {
     }
 
     public Extraction extract(File directory, ExecutableTarget goExe) throws ExecutableFailedException, JsonSyntaxException, DetectableException {
+        GoVersion goVersion = goVersion(directory, goExe);
         List<GoListModule> goListModules = listModules(directory, goExe);
-        List<GoListAllData> goListAllModules = listAllModules(directory, goExe);
-        List<GoGraphRelationship> goGraphRelationships = listGraphRelationships(directory, goExe);
+        List<GoListAllData> goListAllModules = listAllModules(directory, goExe, goVersion);
+        List<GoGraphRelationship> goGraphRelationships = listGraphRelationships(directory, goExe, goVersion);
         Set<String> excludedModules = listExcludedModules(directory, goExe);
 
         GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, excludedModules);
@@ -78,21 +79,20 @@ public class GoModCliExtractor {
         return goListParser.parseGoListModuleJsonOutput(listOutput);
     }
 
-    private List<GoListAllData> listAllModules(File directory, ExecutableTarget goExe) throws ExecutableFailedException, JsonSyntaxException, DetectableException {
-        GoVersion goVersion = goVersion(directory, goExe);
+    private List<GoListAllData> listAllModules(File directory, ExecutableTarget goExe, GoVersion goVersion) throws ExecutableFailedException, JsonSyntaxException, DetectableException {
         List<String> listAllOutput = goModCommandRunner.runGoListAll(directory, goExe, goVersion);
         return goListParser.parseGoListAllJsonOutput(listAllOutput);
     }
 
-    private List<GoGraphRelationship> listGraphRelationships(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+    private List<GoGraphRelationship> listGraphRelationships(File directory, ExecutableTarget goExe, GoVersion goVersion) throws ExecutableFailedException {
         List<String> modGraphOutput = goModCommandRunner.runGoModGraph(directory, goExe);
 
         // Get the actual main module that produced this graph
-        String mainMod = goModCommandRunner.runGoModGetMainModule(directory, goExe);
+        String mainMod = goModCommandRunner.runGoModGetMainModule(directory, goExe, goVersion);
 
         // Get the list of TRUE direct dependencies, then use the main mod name and
         // this list to create a TRUE dependency graph from the requirement graph
-        List<String> directs = goModCommandRunner.runGoModDirectDeps(directory, goExe);
+        List<String> directs = goModCommandRunner.runGoModDirectDeps(directory, goExe, goVersion);
         List<String> whyModuleList = goModCommandRunner.runGoModWhy(directory, goExe, false);
         
         GoModuleDependencyHelper goModDependencyHelper = new GoModuleDependencyHelper();

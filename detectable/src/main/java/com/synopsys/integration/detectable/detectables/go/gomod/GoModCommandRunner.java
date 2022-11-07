@@ -80,16 +80,31 @@ public class GoModCommandRunner {
             .getStandardOutputAsList();
     }
 
-    public List<String> runGoModDirectDeps(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+    public List<String> runGoModDirectDeps(File directory, ExecutableTarget goExe, GoVersion goVersion) throws ExecutableFailedException {
         //This'll give all direct dependencies for the main module.
-        List<String> commands = new LinkedList<>(Arrays.asList(LIST_COMMAND, MODULE_OUTPUT_FLAG, FORMAT_FLAG, FORMAT_DIRECTS, MODULE_NAME));
+        List<String> commands = new LinkedList<>();
+        commands.add(LIST_COMMAND);
+        if (goVersion.getMajorVersion() > 1 || goVersion.getMinorVersion() >= 14) {
+            // Providing a readonly flag prevents the command from modifying customer's source.
+            // this flag not supported prior to go 1.14.
+            commands.add(LIST_READONLY_FLAG);
+        }
+        
+        commands.addAll(Arrays.asList(MODULE_OUTPUT_FLAG, FORMAT_FLAG, FORMAT_DIRECTS, MODULE_NAME));
         return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
                 .getStandardOutputAsList();
     }
 
-    public String runGoModGetMainModule(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+    public String runGoModGetMainModule(File directory, ExecutableTarget goExe, GoVersion goVersion) throws ExecutableFailedException {
         //This gives the value of the main module name.
-        List<String> commands = new LinkedList<>(Arrays.asList(LIST_COMMAND, MODULE_OUTPUT_FLAG, FORMAT_FLAG, FORMAT_FOR_MAIN, MODULE_NAME));
+        List<String> commands = new LinkedList<>();
+        commands.add(LIST_COMMAND);
+        if (goVersion.getMajorVersion() > 1 || goVersion.getMinorVersion() >= 14) {
+            // Providing a readonly flag prevents the command from modifying customer's source.
+            // this flag not supported prior to go 1.14
+            commands.add(LIST_READONLY_FLAG);
+        }
+        commands.addAll(Arrays.asList(MODULE_OUTPUT_FLAG, FORMAT_FLAG, FORMAT_FOR_MAIN, MODULE_NAME));
         return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
                 .getStandardOutputAsList().get(0);
     }
