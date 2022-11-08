@@ -16,7 +16,7 @@ docker tag ${INTERNAL_DOCKER_REGISTRY}/${TARGET_REPO}/${TARGET_IMAGE}:${TARGET_I
 # upload to artifactory
 zip_sha=$(echo $(sha256sum synopsys-detect-${RELEASE_VERSION}-air-gap.zip) | cut -d' ' -f 1)
 
-sed -e "s/RELEASE_VERSION/${RELEASE_VERSION}/g" -e "s/UBI_VERSION/${UBI_VERSION}/g" -e "s/ZIP_SHA256_VALUE/${zip_sha}/" hardening_manifest.yaml.template > hardening_manifest.yaml
+sed -e "s/TARGET_IMAGE_TAG/${TARGET_IMAGE_TAG}/g" -e "s/RELEASE_VERSION/${RELEASE_VERSION}/g" -e "s/UBI_VERSION/${UBI_VERSION}/g" -e "s/ZIP_SHA256_VALUE/${zip_sha}/g" hardening_manifest.yaml.template > hardening_manifest.yaml
 
 curl -X PUT -u ${ARTIFACTORY_USERNAME}:${ARTIFACTORY_PASSWORD} ${ARTIFACTORY_HOST}/blackduck-repo1.dso.mil-generic/${TARGET_IMAGE}/synopsys-detect-${RELEASE_VERSION}-air-gap.zip -T synopsys-detect-${RELEASE_VERSION}-air-gap.zip
 
