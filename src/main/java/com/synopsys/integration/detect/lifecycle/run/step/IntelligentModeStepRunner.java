@@ -164,22 +164,14 @@ public class IntelligentModeStepRunner {
      * @throws OperationException 
      */
     private void pollForBomCompletion(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws OperationException, IntegrationException {
-        
-        //String blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString();
-        
-        // TODO feels like we should be using a path from blackduck-common-api for this
-        //String bomToSearchFor = BlackDuckMediaTypeDiscovery.API_PROJECTS_VERSIONS_BOM_STATUS;
-        
-        // TODO in addition to path from api library we likely also need a bom link on this projectVersionView
-        HttpUrl bomToSearchFor = projectVersion.getProjectVersionView().getFirstLink(ProjectVersionView.COMPONENTS_LINK);
-        HttpUrl updatedUrl = new HttpUrl(bomToSearchFor.toString().replace("components", "bom-status"));
+        HttpUrl bomToSearchFor = projectVersion.getProjectVersionView().getFirstLink(ProjectVersionView.BOM_STATUS_LINK);
         
         // TODO how to get scanId? Won't it differ for each scan type? Signature scanner doesn't even give us this does it?
         // do we even need scan ID? I can get bom status by just hitting the version
         //HttpUrl url = new HttpUrl(blackDuckUrl + "/api/projects/{projectId}/versions/{versionId}/bom-status/{scanId}");
         
         // Poll to see if Bom is ready
-        operationRunner.waitForBomCompletion(blackDuckRunData, updatedUrl);
+        operationRunner.waitForBomCompletion(blackDuckRunData, bomToSearchFor);
         
     }
 
