@@ -1,11 +1,14 @@
 package com.synopsys.integration.detectable.detectables.docker;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -19,9 +22,10 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 //TODO: Violates Detectable contract. Take folder -> give project data. This does not take a folder.
-@DetectableInfo(language = "N/A", forge = "Derived from the Linux distribution", requirementsMarkdown = "Access to a Docker Engine. See <a href='https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/'>Docker Inspector documentation</a> for details.")
+@DetectableInfo(name = "Docker CLI", language = "N/A", forge = "Derived from the Linux distribution", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Access to a Docker Engine. See <a href='https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/'>Docker Inspector documentation</a> for details.")
 public class DockerDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DockerInspectorResolver dockerInspectorResolver;
@@ -72,14 +76,7 @@ public class DockerDetectable extends Detectable {
         } catch (Exception e) {
             dockerExe = null;
         }
-        if (dockerExe == null) {
-            if (dockerDetectableOptions.isDockerPathRequired()) {
-                return new ExecutableNotFoundDetectableResult("docker");
-            } else {
-                logger.debug(
-                    "Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool. Running in air-gap mode will not work without a Docker executable.");
-            }
-        } else {
+        if (dockerExe != null) {
             passedResultBuilder.foundExecutable(dockerExe);
         }
         dockerInspectorInfo = dockerInspectorResolver.resolveDockerInspector();
@@ -92,7 +89,7 @@ public class DockerDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException, ExecutableRunnerException {
         String image = dockerDetectableOptions.getSuppliedDockerImage().orElse("");
         String imageId = dockerDetectableOptions.getSuppliedDockerImageId().orElse("");
         String tar = dockerDetectableOptions.getSuppliedDockerTar().orElse("");

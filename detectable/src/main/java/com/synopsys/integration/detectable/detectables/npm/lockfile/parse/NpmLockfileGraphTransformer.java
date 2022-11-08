@@ -6,11 +6,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
@@ -21,16 +20,14 @@ import com.synopsys.integration.util.NameVersion;
 
 public class NpmLockfileGraphTransformer {
     private final Logger logger = LoggerFactory.getLogger(NpmLockfileGraphTransformer.class);
-    private final ExternalIdFactory externalIdFactory;
     private final EnumListFilter<NpmDependencyType> npmDependencyTypeFilter;
 
-    public NpmLockfileGraphTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<NpmDependencyType> npmDependencyTypeFilter) {
-        this.externalIdFactory = externalIdFactory;
+    public NpmLockfileGraphTransformer(EnumListFilter<NpmDependencyType> npmDependencyTypeFilter) {
         this.npmDependencyTypeFilter = npmDependencyTypeFilter;
     }
 
-    public MutableDependencyGraph transform(PackageLock packageLock, NpmProject project, List<NameVersion> externalDependencies) {
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+    public DependencyGraph transform(PackageLock packageLock, NpmProject project, List<NameVersion> externalDependencies) {
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
 
         logger.debug("Processing project.");
         if (packageLock.dependencies != null) {
@@ -71,7 +68,7 @@ public class NpmLockfileGraphTransformer {
     private void addRootDependencies(
         List<NpmDependency> resolvedDependencies,
         List<NpmRequires> requires,
-        MutableDependencyGraph dependencyGraph,
+        DependencyGraph dependencyGraph,
         List<NameVersion> externalDependencies
     ) {
         for (NpmRequires dependency : requires) {
@@ -84,7 +81,7 @@ public class NpmLockfileGraphTransformer {
         }
     }
 
-    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, List<NameVersion> externalDependencies) {
+    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, DependencyGraph dependencyGraph, List<NameVersion> externalDependencies) {
         if (!shouldIncludeDependency(npmDependency)) {
             return;
         }
@@ -109,11 +106,9 @@ public class NpmLockfileGraphTransformer {
             return projectDependency;
         } else {
             Optional<NameVersion> externalNameVersion = externalDependencies.stream().filter(it -> it.getName().equals(name)).findFirst();
-            return externalNameVersion.map(nameVersion -> new Dependency(
-                nameVersion.getName(),
-                nameVersion.getVersion(),
-                externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion())
-            )).orElse(null);
+            return externalNameVersion.map(nameVersion ->
+                Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion())
+            ).orElse(null);
         }
     }
 

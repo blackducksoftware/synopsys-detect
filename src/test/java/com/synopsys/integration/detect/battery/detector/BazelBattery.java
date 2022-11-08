@@ -13,6 +13,10 @@ class BazelBattery {
     private static final String BAZEL_MAVEN_JAR_OUTPUT1_RESOURCE = "bazel-maven-jar-query1.xout";
     private static final String BAZEL_MAVEN_JAR_OUTPUT2_RESOURCE = "bazel-maven-jar-query2.xout";
     private static final String BAZEL_MAVEN_JAR_OUTPUT3_RESOURCE = "bazel-maven-jar-query3.xout";
+    private static final String BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT1_RESOURCE = "bazel-http-archive-query1.xout";
+    private static final String BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT2_RESOURCE = "bazel-http-archive-query2_and_3.xout";
+    private static final String BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT3_RESOURCE = "bazel-http-archive-query4.xout";
+    private static final String BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT4_RESOURCE = "bazel-http-archive-query5.xout";
     private static final String EMPTY_OUTPUT_RESOURCE = "empty.xout";
 
     @Test
@@ -23,6 +27,19 @@ class BazelBattery {
         test.property("detect.bazel.workspace.rules", "MAVEN_INSTALL");
         test.executableFromResourceFiles(DetectProperties.DETECT_BAZEL_PATH, BAZEL_MAVEN_INSTALL_OUTPUT_RESOURCE);
         test.sourceDirectoryNamed("bazel-maven-install");
+        test.sourceFileNamed("WORKSPACE");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void bazelMavenInstallComplexCoordinates() {
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("bazel-maven-install-complex", "bazel/maven-install-complex");
+        test.withToolsValue("BAZEL");
+        test.property("detect.bazel.target", "//tests/integration:ArtifactExclusionsTest");
+        test.property("detect.bazel.workspace.rules", "MAVEN_INSTALL");
+        test.executableFromResourceFiles(DetectProperties.DETECT_BAZEL_PATH, BAZEL_MAVEN_INSTALL_OUTPUT_RESOURCE);
+        test.sourceDirectoryNamed("bazel-maven-install-complex");
         test.sourceFileNamed("WORKSPACE");
         test.expectBdioResources();
         test.run();
@@ -60,8 +77,33 @@ class BazelBattery {
         test.withToolsValue("BAZEL");
         test.property("detect.bazel.target", "//cat_hs/lib/args:args");
         test.property("detect.bazel.workspace.rules", "ALL");
-        test.executableFromResourceFiles(DetectProperties.DETECT_BAZEL_PATH, EMPTY_OUTPUT_RESOURCE, EMPTY_OUTPUT_RESOURCE, BAZEL_HASKELL_CABAL_LIBRARY_OUTPUT_RESOURCE);
+        test.executableFromResourceFiles(
+            DetectProperties.DETECT_BAZEL_PATH,
+            EMPTY_OUTPUT_RESOURCE,
+            EMPTY_OUTPUT_RESOURCE,
+            BAZEL_HASKELL_CABAL_LIBRARY_OUTPUT_RESOURCE,
+            EMPTY_OUTPUT_RESOURCE
+        );
         test.sourceDirectoryNamed("bazel-haskell-cabal-library-all");
+        test.sourceFileNamed("WORKSPACE");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void bazelHttpArchiveGithubUrl() {
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("bazel-http-archive-github", "bazel/http-archive-github");
+        test.withToolsValue("BAZEL");
+        test.property("detect.bazel.target", "//:bd_bazel");
+        test.property("detect.bazel.workspace.rules", "HTTP_ARCHIVE");
+        test.executableFromResourceFiles(
+            DetectProperties.DETECT_BAZEL_PATH,
+            BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT1_RESOURCE,
+            BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT2_RESOURCE,
+            BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT3_RESOURCE,
+            BAZEL_HTTP_ARCHIVE_GITHUB_OUTPUT4_RESOURCE
+        );
+        test.sourceDirectoryNamed("bazel-http-archive-github");
         test.sourceFileNamed("WORKSPACE");
         test.expectBdioResources();
         test.run();

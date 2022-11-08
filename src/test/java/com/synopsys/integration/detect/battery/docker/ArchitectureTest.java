@@ -19,7 +19,7 @@ public class ArchitectureTest {
 
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("EmptyLinux.dockerfile"));
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
-            commandBuilder.property(DetectProperties.DETECT_TOOLS, "NONE");
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.logContains("You seem to be using amd64 architecture.");

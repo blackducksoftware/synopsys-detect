@@ -13,7 +13,6 @@ public class DetectArgumentState {
     private final String parsedValue;
 
     private final boolean isDiagnostic;
-    private final boolean isDiagnosticExtended;
 
     private final boolean isGenerateAirGapZip;
 
@@ -25,7 +24,6 @@ public class DetectArgumentState {
         boolean isDeprecatedHelp,
         @Nullable String parsedValue,
         boolean isDiagnostic,
-        boolean isDiagnosticExtended,
         boolean isGenerateAirGapZip
     ) {
         this.isHelp = isHelp;
@@ -35,7 +33,6 @@ public class DetectArgumentState {
         this.isDeprecatedHelp = isDeprecatedHelp;
         this.parsedValue = parsedValue;
         this.isDiagnostic = isDiagnostic;
-        this.isDiagnosticExtended = isDiagnosticExtended;
         this.isGenerateAirGapZip = isGenerateAirGapZip;
     }
 
@@ -61,10 +58,6 @@ public class DetectArgumentState {
 
     public boolean isDiagnostic() {
         return isDiagnostic;
-    }
-
-    public boolean isDiagnosticExtended() {
-        return isDiagnosticExtended;
     }
 
     @Nullable

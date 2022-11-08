@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.projectinspector;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -21,6 +22,7 @@ import com.synopsys.integration.detectable.detectables.projectinspector.model.Pr
 import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorModule;
 import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorOutput;
 
+// TODO: Should be split into a Parser/Transformer
 public class ProjectInspectorParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Gson gson;
@@ -34,6 +36,12 @@ public class ProjectInspectorParser {
     public List<CodeLocation> parse(String inspectionOutput) {
         ProjectInspectorOutput projectInspectorOutput = gson.fromJson(inspectionOutput, ProjectInspectorOutput.class);
 
+        // If modules is not present in the output then project inspector has not found any open source dependencies.
+        // Return an empty list so callers do not fail when examining the results.
+        if (projectInspectorOutput.modules == null) {
+            return Collections.emptyList();
+        }
+
         return projectInspectorOutput.modules.values().stream()
             .map(this::codeLocationFromModule)
             .collect(Collectors.toList());
@@ -43,15 +51,15 @@ public class ProjectInspectorParser {
         Map<String, Dependency> lookup = new HashMap<>();
 
         //build the map of all external ids
-        module.dependencies.forEach(dependency -> lookup.computeIfAbsent(dependency.id, (missingId) -> convertProjectInspectorDependency(dependency)));
+        module.dependencies.forEach(dependency -> lookup.computeIfAbsent(dependency.id, missingId -> convertProjectInspectorDependency(dependency)));
 
         //and add them to the graph
-        MutableDependencyGraph mutableDependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
         module.dependencies.forEach(moduleDependency -> {
             Dependency dependency = lookup.get(moduleDependency.id);
             moduleDependency.includedBy.forEach(parent -> {
                 if ("DIRECT".equals(parent)) {
-                    mutableDependencyGraph.addChildToRoot(dependency);
+                    mutableDependencyGraph.addDirectDependency(dependency);
                 } else if (lookup.containsKey(parent)) {
                     mutableDependencyGraph.addChildWithParent(dependency, lookup.get(parent));
                 } else { //Theoretically should not happen according to PI devs. -jp

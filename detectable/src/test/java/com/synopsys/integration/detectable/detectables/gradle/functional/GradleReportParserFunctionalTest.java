@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.gradle.functional;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -10,12 +11,10 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
@@ -31,21 +30,20 @@ import com.synopsys.integration.detectable.util.graph.MavenGraphAssert;
 public class GradleReportParserFunctionalTest {
 
     @Test
-    void extractCodeLocationTest() throws JSONException {
+    void extractCodeLocationTest() throws JSONException, IOException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS); //Does not work on windows due to path issues.
 
         GradleReportParser gradleReportParser = new GradleReportParser();
         Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
         Assertions.assertTrue(gradleReport.isPresent());
-        GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory(), EnumListFilter.excludeNone());
+        GradleReportTransformer transformer = new GradleReportTransformer(EnumListFilter.excludeNone());
         CodeLocation codeLocation = transformer.transform(gradleReport.get());
         Assertions.assertNotNull(codeLocation);
 
         Assertions.assertEquals("hub-detect", gradleReport.get().getProjectName());
         Assertions.assertEquals("2.0.0-SNAPSHOT", gradleReport.get().getProjectVersionName());
 
-        String actual = new Gson().toJson(codeLocation);
-
+        String actual = new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation);
         JSONAssert.assertEquals(FunctionalTestFiles.asString("/gradle/dependencyGraph-expected.json"), actual, false);
     }
 
@@ -87,7 +85,7 @@ public class GradleReportParserFunctionalTest {
         if (!includeUnresolvedConfigurations) {
             enumListFilter = EnumListFilter.fromExcluded(GradleConfigurationType.UNRESOLVED);
         }
-        GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory(), enumListFilter);
+        GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(enumListFilter);
 
         return gradleReportParser.parseReport(file)
             .map(gradleReportTransformer::transform);

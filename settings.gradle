@@ -5,3 +5,5 @@ include 'detector'
 include 'configuration'
 include 'common'
 include 'common-test'
+include 'documentation'
+

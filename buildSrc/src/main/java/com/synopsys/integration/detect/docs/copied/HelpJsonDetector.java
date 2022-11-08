@@ -3,7 +3,6 @@ package com.synopsys.integration.detect.docs.copied;
 import java.util.ArrayList;
 import java.util.List;
 
-// Copied from detect-configuration
 public class HelpJsonDetector {
     private String detectableLanguage = "";
     private String detectableRequirementsMarkdown = "";
@@ -98,3 +97,4 @@ public class HelpJsonDetector {
     }
 
 }
+

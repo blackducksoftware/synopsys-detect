@@ -21,6 +21,8 @@ public class Operation {
     private final String name;
     private StatusType statusType;
     private Exception exception;
+    @Nullable
+    private String troubleshootingDetails;
     private final OperationType operationType;
     @Nullable
     private final String phoneHomeKey;
@@ -87,9 +89,17 @@ public class Operation {
     public void error(Exception e) {
         this.statusType = StatusType.FAILURE;
         this.exception = e;
+        this.troubleshootingDetails = null;
         finish();
     }
 
+    public void error(Exception e, String troubleshootingDetails) {
+        this.statusType = StatusType.FAILURE;
+        this.exception = e;
+        this.troubleshootingDetails = troubleshootingDetails;
+        finish();
+    }
+    
     public Instant getStartTime() {
         return startTime;
     }
@@ -116,6 +126,10 @@ public class Operation {
 
     public Optional<Exception> getException() {return Optional.ofNullable(exception);}
 
+    public Optional<String> getTroubleshootingDetails() {
+        return Optional.ofNullable(troubleshootingDetails);
+    }
+    
     public OperationType getOperationType() {
         return operationType;
     }

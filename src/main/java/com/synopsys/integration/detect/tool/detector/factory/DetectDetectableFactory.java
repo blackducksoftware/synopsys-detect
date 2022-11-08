@@ -9,8 +9,8 @@ import com.synopsys.integration.detectable.detectable.inspector.ProjectInspector
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
-import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
-import com.synopsys.integration.detectable.detectables.carthage.CarthageDetectable;
+import com.synopsys.integration.detectable.detectables.cargo.CargoLockDetectable;
+import com.synopsys.integration.detectable.detectables.carthage.CarthageLockDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
@@ -22,20 +22,19 @@ import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDet
 import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
-import com.synopsys.integration.detectable.detectables.git.GitDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleDetectable;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetectable;
+import com.synopsys.integration.detectable.detectables.ivy.IvyParseDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
-import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
@@ -47,15 +46,18 @@ import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetect
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectable;
-import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectable;
+import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
-import com.synopsys.integration.detectable.detectables.swift.SwiftCliDetectable;
-import com.synopsys.integration.detectable.detectables.xcode.XcodeSwiftDetectable;
+import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
+import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
+import com.synopsys.integration.detectable.detectables.xcode.XcodeWorkspaceDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
 
@@ -108,11 +110,11 @@ public class DetectDetectableFactory {
         return detectableFactory.createBitbakeDetectable(environment, detectableOptionFactory.createBitbakeDetectableOptions(), detectExecutableResolver);
     }
 
-    public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
+    public CargoLockDetectable createCargoDetectable(DetectableEnvironment environment) {
         return detectableFactory.createCargoDetectable(environment);
     }
 
-    public CarthageDetectable createCarthageDetectable(DetectableEnvironment environment) {
+    public CarthageLockDetectable createCarthageDetectable(DetectableEnvironment environment) {
         return detectableFactory.createCarthageDetectable(environment);
     }
 
@@ -149,7 +151,7 @@ public class DetectDetectableFactory {
         return detectableFactory.createGemlockDetectable(environment);
     }
 
-    public GitDetectable createGitDetectable(DetectableEnvironment environment) {
+    public GitCliDetectable createGitDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGitDetectable(environment, detectExecutableResolver);
     }
 
@@ -177,7 +179,7 @@ public class DetectDetectableFactory {
         return detectableFactory.createGoGradleDetectable(environment);
     }
 
-    public GradleDetectable createGradleDetectable(DetectableEnvironment environment) {
+    public GradleInspectorDetectable createGradleDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGradleDetectable(environment, detectableOptionFactory.createGradleInspectorOptions(), gradleInspectorResolver, detectExecutableResolver);
     }
 
@@ -195,10 +197,6 @@ public class DetectDetectableFactory {
 
     public MavenPomWrapperDetectable createMavenPomWrapperDetectable(DetectableEnvironment environment) {
         return detectableFactory.createMavenPomWrapperDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
-    }
-
-    public MavenParseDetectable createMavenParseDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createMavenParseDetectable(environment, detectableOptionFactory.createMavenParseOptions());
     }
 
     public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment) {
@@ -245,6 +243,10 @@ public class DetectDetectableFactory {
         return detectableFactory.createPipenvDetectable(environment, detectableOptionFactory.createPipenvDetectableOptions(), detectExecutableResolver, detectExecutableResolver);
     }
 
+    public PipfileLockDetectable createPipfileLockDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createPipfileLockDetectable(environment, detectableOptionFactory.createPipfileLockDetectableOptions());
+    }
+
     public PipInspectorDetectable createPipInspectorDetectable(DetectableEnvironment environment) {
         return detectableFactory.createPipInspectorDetectable(
             environment,
@@ -272,7 +274,7 @@ public class DetectDetectableFactory {
     }
 
     public SbtDetectable createSbtDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createSbtDetectable(environment, detectExecutableResolver, detectableOptionFactory.createSbtResolutionCacheDetectableOptions());
+        return detectableFactory.createSbtDetectable(environment, detectExecutableResolver, detectableOptionFactory.createSbtDetectableOptions());
     }
 
     public SwiftCliDetectable createSwiftCliDetectable(DetectableEnvironment environment) {
@@ -296,7 +298,6 @@ public class DetectDetectableFactory {
     public NugetProjectInspectorDetectable createNugetParseDetectable(DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createNugetParseDetectable(
             detectableEnvironment,
-            detectableOptionFactory.createNugetInspectorOptions(),
             projectInspectorResolver,
             detectableOptionFactory.createProjectInspectorOptions()
         );
@@ -306,7 +307,6 @@ public class DetectDetectableFactory {
         return detectableFactory.createMavenProjectInspectorDetectable(
             detectableEnvironment,
             projectInspectorResolver,
-            detectableOptionFactory.createMavenParseOptions(),
             detectableOptionFactory.createProjectInspectorOptions()
         );
     }
@@ -315,7 +315,15 @@ public class DetectDetectableFactory {
         return detectableFactory.createMavenGradleInspectorDetectable(detectableEnvironment, projectInspectorResolver, detectableOptionFactory.createProjectInspectorOptions());
     }
 
-    public XcodeSwiftDetectable createXcodeSwiftDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createXcodeSwiftDetectable(environment);
+    public SwiftPackageResolvedDetectable createSwiftPackageResolvedDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createSwiftPackageResolvedDetectable(environment);
+    }
+
+    public XcodeWorkspaceDetectable createXcodeWorkspaceDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createXcodeWorkspaceDetectable(environment);
+    }
+
+    public XcodeProjectDetectable createXcodeProjectDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createXcodeProjectDetectable(environment);
     }
 }

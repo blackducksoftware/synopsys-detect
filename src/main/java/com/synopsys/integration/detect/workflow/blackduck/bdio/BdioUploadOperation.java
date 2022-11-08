@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.blackduck.codelocation.bdio2legacy.Bdio2UploadService;
-import com.synopsys.integration.blackduck.codelocation.bdiolegacy.BdioUploadService;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadOutput;
@@ -34,22 +32,6 @@ public abstract class BdioUploadOperation { //TODO: Could use Functional Interfa
     }
 
     protected abstract CodeLocationCreationData<UploadBatchOutput> executeUpload(UploadBatch uploadBatch) throws IntegrationException;
-
-    private CodeLocationCreationData<UploadBatchOutput> legacyUpload(
-        BdioResult bdioResult,
-        UploadBatch uploadBatch,
-        BdioUploadService bdioUploadService,
-        Bdio2UploadService bdio2UploadService
-    ) throws IntegrationException {
-        CodeLocationCreationData<UploadBatchOutput> response;
-        logger.debug("Performing legacy BDIO upload.");
-        if (bdioResult.isBdio2()) {
-            response = bdio2UploadService.uploadBdio(uploadBatch);
-        } else {
-            response = bdioUploadService.uploadBdio(uploadBatch);
-        }
-        return response;
-    }
 
     private UploadBatch createBatch(BdioResult bdioResult) {
         UploadBatch uploadBatch = new UploadBatch();

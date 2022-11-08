@@ -10,12 +10,10 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
@@ -29,11 +27,9 @@ public class BitbakeDependencyGraphTransformer {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final ExternalIdFactory externalIdFactory;
     private final EnumListFilter<BitbakeDependencyType> dependencyTypeFilter;
 
-    public BitbakeDependencyGraphTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<BitbakeDependencyType> dependencyTypeFilter) {
-        this.externalIdFactory = externalIdFactory;
+    public BitbakeDependencyGraphTransformer(EnumListFilter<BitbakeDependencyType> dependencyTypeFilter) {
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
@@ -67,8 +63,8 @@ public class BitbakeDependencyGraphTransformer {
     }
 
     @NotNull
-    private MutableDependencyGraph buildGraph(BitbakeGraph bitbakeGraph, Map<String, Dependency> namesToExternalIds) {
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+    private DependencyGraph buildGraph(BitbakeGraph bitbakeGraph, Map<String, Dependency> namesToExternalIds) {
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
         for (BitbakeNode bitbakeNode : bitbakeGraph.getNodes()) {
             String name = bitbakeNode.getName();
 
@@ -129,7 +125,7 @@ public class BitbakeDependencyGraphTransformer {
         ExternalId externalId = null;
         if (recipeLayerNames != null) {
             dependencyLayer = chooseRecipeLayer(dependencyName, dependencyLayer, recipeLayerNames);
-            externalId = externalIdFactory.createYoctoExternalId(dependencyLayer, dependencyName, dependencyVersion);
+            externalId = ExternalId.FACTORY.createYoctoExternalId(dependencyLayer, dependencyName, dependencyVersion);
         } else {
             logger.debug("Failed to find component '{}' in component layer map. [dependencyVersion: {}; dependencyLayer: {}", dependencyName, dependencyVersion, dependencyLayer);
             if (dependencyName.endsWith(NATIVE_SUFFIX)) {

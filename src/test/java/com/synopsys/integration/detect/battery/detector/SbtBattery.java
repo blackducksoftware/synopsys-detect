@@ -9,18 +9,6 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 @Tag("battery")
 public class SbtBattery {
     @Test
-    void resolutioncache() {
-        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("sbt-resolutioncache");
-        test.sourceDirectoryNamed("linux-sbt");
-        test.sourceFileNamed("build.sbt");
-        test.sourceFolderFromExpandedResource("target");
-        test.git("https://github.com/sbt/sbt-bintray.git", "master");
-        test.executable(DetectProperties.DETECT_SBT_PATH, ""); //empty == no plugins installed
-        test.expectBdioResources();
-        test.run();
-    }
-
-    @Test
     void dotPlugin() {
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("sbt-dot");
         test.sourceDirectoryNamed("sbt-dot");

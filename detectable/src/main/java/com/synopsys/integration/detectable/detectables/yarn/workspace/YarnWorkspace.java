@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
+import com.synopsys.integration.bdio.graph.builder.LazyId;
 import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.WorkspacePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
@@ -47,8 +47,8 @@ public class YarnWorkspace {
         return workspacePackageJson;
     }
 
-    public StringDependencyId generateDependencyId() {
-        return new StringDependencyId(
+    public LazyId generateDependencyId() {
+        return LazyId.fromString(
             getName().orElse(null)
                 + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR
                 + WORKSPACE_VERSION_PREFIX
@@ -69,11 +69,11 @@ public class YarnWorkspace {
         return matches(yarnLockDependency.getName(), yarnLockDependency.getVersion());
     }
 
-    public boolean matches(StringDependencyId givenDependencyId) {
+    public boolean matches(LazyId givenDependencyId) {
         String thisWorkspaceName = getName().orElse(null);
-        String givenDependencyIdString = givenDependencyId.getValue();
+        String givenDependencyIdString = givenDependencyId.toString();
         if (givenDependencyIdString.startsWith(thisWorkspaceName + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR)) {
-            StringDependencyId thisWorkspaceDependencyId = generateDependencyId();
+            LazyId thisWorkspaceDependencyId = generateDependencyId();
             if (!givenDependencyId.equals(thisWorkspaceDependencyId)) {
                 logger.warn(
                     "Dependency ID {} looks like workspace {}, but expected the Dependency ID to be {}",

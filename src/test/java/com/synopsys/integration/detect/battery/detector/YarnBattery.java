@@ -66,7 +66,7 @@ public class YarnBattery {
         test.sourceFileFromResource("workspace-a/package.json");
         test.sourceFileFromResource("workspace-b/package.json");
         test.sourceFileFromResource("workspace-c/package.json");
-        test.property("detect.yarn.prod.only", "true");
+        test.property("detect.yarn.dependency.types.excluded", "NON_PRODUCTION");
         test.expectBdioResources();
         test.run();
     }

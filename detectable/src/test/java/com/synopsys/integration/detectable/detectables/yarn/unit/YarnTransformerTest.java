@@ -96,11 +96,20 @@ class YarnTransformerTest {
 
         ExternalId fooExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "foo", "1.0");
         assertTrue(dependencyGraph.hasDependency(fooExternalId));
-        assertTrue(dependencyGraph.getRootDependencyExternalIds().contains(fooExternalId));
+
+        assertTrue(
+            dependencyGraph.getRootDependencies().stream()
+                .map(Dependency::getExternalId)
+                .anyMatch(fooExternalId::equals)
+        );
 
         ExternalId barExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "bar", "1.0");
         assertTrue(dependencyGraph.hasDependency(barExternalId));
-        assertTrue(dependencyGraph.getRootDependencyExternalIds().contains(barExternalId));
+        assertTrue(
+            dependencyGraph.getRootDependencies().stream()
+                .map(Dependency::getExternalId)
+                .anyMatch(barExternalId::equals)
+        );
 
         ExternalId yarnExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "yarn", "1.22.5");
         assertTrue(dependencyGraph.hasDependency(yarnExternalId));

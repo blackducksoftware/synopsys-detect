@@ -6,9 +6,8 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -23,7 +22,7 @@ public class GoGradleLockParser {
     }
 
     public DependencyGraph parse(File goGradleLockFile) throws IOException, IntegrationException {
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
         YAMLMapper mapper = new YAMLMapper();
         JsonNode rootNode = mapper.readTree(goGradleLockFile);
         JsonNode buildNode = rootNode.findPath("build");
@@ -43,7 +42,7 @@ public class GoGradleLockParser {
                 }
                 ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, dependencyName, commit.get());
                 Dependency dependency = new Dependency(externalId);
-                dependencyGraph.addChildToRoot(dependency);
+                dependencyGraph.addDirectDependency(dependency);
             }
         }
 

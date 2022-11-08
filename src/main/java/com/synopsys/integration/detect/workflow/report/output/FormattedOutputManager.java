@@ -15,7 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detect.configuration.DetectInfo;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
+import com.synopsys.integration.detect.tool.detector.report.detectable.AttemptedDetectableReport;
+import com.synopsys.integration.detect.tool.detector.report.detectable.ExtractedDetectableReport;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
@@ -26,8 +29,9 @@ import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detectable.detectable.explanation.Explanation;
-import com.synopsys.integration.detector.base.DetectorEvaluation;
-import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detector.base.DetectorStatusCode;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class FormattedOutputManager {
@@ -35,6 +39,7 @@ public class FormattedOutputManager {
     private final List<Status> statusSummaries = new ArrayList<>();
     private final List<DetectResult> detectResults = new ArrayList<>();
     private final List<DetectIssue> detectIssues = new ArrayList<>();
+    private final List<ExitCodeType> overallStatus = new ArrayList<>();
     private final Map<String, List<File>> unrecognizedPaths = new HashMap<>();
     private final List<Operation> detectOperations = new LinkedList<>();
     private DetectorToolResult detectorToolResult = null;
@@ -53,7 +58,7 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.DetectOperationsComplete, detectOperations::addAll);
     }
 
-    public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {
+    public FormattedOutput createFormattedOutput(DetectInfo detectInfo, ExitCodeType exitCodeType) {
         FormattedOutput formattedOutput = new FormattedOutput();
         formattedOutput.formatVersion = "0.5.0";
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
@@ -71,12 +76,16 @@ public class FormattedOutputManager {
             .toList();
         formattedOutput.operations = visibleOperations();
 
-        if (detectorToolResult != null) {
-            formattedOutput.detectors = Bds.of(detectorToolResult.getRootDetectorEvaluationTree())
-                .flatMap(DetectorEvaluationTree::allDescendentEvaluations)
-                .filter(DetectorEvaluation::isApplicable)
-                .map(this::convertDetector)
+        // The exit status is known prior to this method being called and is passed in...
+        // we will construct a reasonable facsimile to the other status, issues etc. for outputting the 
+        // detect exit status.
+        overallStatus.add(exitCodeType);
+        formattedOutput.overallStatus = Bds.of(overallStatus)
+                .map(overallStatus -> new FormattedStatusOutput(overallStatus.toString(), overallStatus.getDescription()))
                 .toList();
+
+        if (detectorToolResult != null) { //TODO (Detector): Add formatted output results...
+            formattedOutput.detectors = convertDetectors();
         }
         if (projectNameVersion != null) {
             formattedOutput.projectName = projectNameVersion.getName();
@@ -99,7 +108,8 @@ public class FormattedOutputManager {
         return Bds.of(detectOperations)
             .filter(operation -> operation.getOperationType() == OperationType.PUBLIC
                 || operation.getStatusType() != StatusType.SUCCESS) //EITHER a public operation or a failed internal operation
-            .map(operation -> new FormattedOperationOutput(Operation.formatTimestamp(operation.getStartTime()),
+            .map(operation -> new FormattedOperationOutput(
+                Operation.formatTimestamp(operation.getStartTime()),
                 Operation.formatTimestamp(operation.getEndTime().orElse(null)),
                 operation.getName(),
                 operation.getStatusType().name()
@@ -119,27 +129,67 @@ public class FormattedOutputManager {
             .collect(Collectors.toList());
     }
 
-    private FormattedDetectorOutput convertDetector(DetectorEvaluation evaluation) {
+    private List<FormattedDetectorOutput> convertDetectors() {
+        List<FormattedDetectorOutput> outputs = new ArrayList<>();
+        if (detectorToolResult != null) {
+
+            detectorToolResult.getDetectorReports().forEach(report -> {
+                report.getExtractedDetectors().forEach(extracted -> {
+                    extracted.getAttemptedDetectables().stream()
+                        .map(attempted -> convertAttempted(report.getDirectory(), extracted.getRule().getDetectorType(), attempted, "ATTEMPTED", DetectorStatusCode.ATTEMPTED))
+                        .forEach(outputs::add);
+
+                    outputs.add(convertExtracted(report.getDirectory(), extracted.getRule().getDetectorType(), extracted.getExtractedDetectable(), "SUCCESS"));
+                });
+                report.getNotExtractedDetectors().forEach(notExtracted -> {
+                    notExtracted.getAttemptedDetectables().stream()
+                        .map(attempted -> convertAttempted(report.getDirectory(), notExtracted.getRule().getDetectorType(), attempted, "FAILURE", attempted.getStatusCode()))
+                        .forEach(outputs::add);
+                });
+            });
+        }
+        return outputs;
+    }
+
+    private FormattedDetectorOutput convertAttempted(
+        File directory,
+        DetectorType detectorType,
+        AttemptedDetectableReport attempted,
+        String status,
+        DetectorStatusCode overrideStatusCode
+    ) {
         FormattedDetectorOutput detectorOutput = new FormattedDetectorOutput();
-        detectorOutput.folder = evaluation.getDetectableEnvironment().getDirectory().toString();
-        detectorOutput.descriptiveName = evaluation.getDetectorRule().getDescriptiveName();
-        detectorOutput.detectorName = evaluation.getDetectorRule().getName();
-        detectorOutput.detectorType = evaluation.getDetectorType().toString();
+        detectorOutput.folder = directory.toString();
+        detectorOutput.detectorName = attempted.getDetectable().getName();
+        detectorOutput.detectorType = detectorType.toString();
 
-        detectorOutput.extracted = evaluation.wasExtractionSuccessful();
-        detectorOutput.status = evaluation.getStatus().name();
-        detectorOutput.statusCode = evaluation.getStatusCode();
-        detectorOutput.statusReason = evaluation.getStatusReason();
-        detectorOutput.explanations = Bds.of(evaluation.getAllExplanations()).map(Explanation::describeSelf).toList();
+        detectorOutput.extracted = false;
+        detectorOutput.status = status;
+        detectorOutput.statusCode = overrideStatusCode;
+        detectorOutput.statusReason = attempted.getStatusReason();
+        detectorOutput.explanations = Bds.of(attempted.getExplanations()).map(Explanation::describeSelf).toList();
+        return detectorOutput;
+    }
 
-        if (evaluation.getExtraction() != null) {
-            detectorOutput.extractedReason = evaluation.getExtraction().getDescription();
-            detectorOutput.relevantFiles = Bds.of(evaluation.getExtraction().getRelevantFiles()).map(File::toString).toList();
-            detectorOutput.projectName = evaluation.getExtraction().getProjectName();
-            detectorOutput.projectVersion = evaluation.getExtraction().getProjectVersion();
-            if (evaluation.getExtraction().getCodeLocations() != null) {
-                detectorOutput.codeLocationCount = evaluation.getExtraction().getCodeLocations().size();
-            }
+    private FormattedDetectorOutput convertExtracted(File directory, DetectorType detectorType, ExtractedDetectableReport extracted, String status) {
+        FormattedDetectorOutput detectorOutput = new FormattedDetectorOutput();
+        detectorOutput.folder = directory.toString();
+        detectorOutput.detectorName = extracted.getDetectable().getName();
+        detectorOutput.detectorType = detectorType.toString();
+
+        detectorOutput.extracted = true;
+        detectorOutput.status = status;
+        detectorOutput.statusCode = DetectorStatusCode.PASSED;
+        detectorOutput.statusReason = "Passed";
+        detectorOutput.explanations = Bds.of(extracted.getExplanations()).map(Explanation::describeSelf).toList();
+
+        Extraction extraction = extracted.getExtraction();
+        detectorOutput.extractedReason = extraction.getDescription();
+        detectorOutput.relevantFiles = Bds.of(extraction.getRelevantFiles()).map(File::toString).toList();
+        detectorOutput.projectName = extraction.getProjectName();
+        detectorOutput.projectVersion = extraction.getProjectVersion();
+        if (extraction.getCodeLocations() != null) {
+            detectorOutput.codeLocationCount = extraction.getCodeLocations().size();
         }
 
         return detectorOutput;

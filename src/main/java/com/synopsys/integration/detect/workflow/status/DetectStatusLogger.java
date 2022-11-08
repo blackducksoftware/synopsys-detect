@@ -21,7 +21,6 @@ public class DetectStatusLogger {
         ExitCodeType.FAILURE_DETECTOR_REQUIRED,
         ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED,
         ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR,
-        ExitCodeType.FAILURE_POLARIS_CONNECTIVITY,
         ExitCodeType.FAILURE_TIMEOUT,
         ExitCodeType.FAILURE_CONFIGURATION
     );
@@ -63,9 +62,11 @@ public class DetectStatusLogger {
             logger.info("");
 
             Predicate<DetectIssue> detectorsFilter = issue -> issue.getType() == DetectIssueType.DETECTOR;
+            Predicate<DetectIssue> detectableToolsFilter = issue -> issue.getType() == DetectIssueType.DETECTABLE_TOOL;
             Predicate<DetectIssue> exceptionsFilter = issue -> issue.getType() == DetectIssueType.EXCEPTION;
             Predicate<DetectIssue> deprecationsFilter = issue -> issue.getType() == DetectIssueType.DEPRECATION;
             logIssuesInGroup(logger, "DETECTORS:", detectorsFilter, detectIssues);
+            logIssuesInGroup(logger, "DETECTABLE TOOLS:", detectableToolsFilter, detectIssues);
             logIssuesInGroup(logger, "EXCEPTIONS:", exceptionsFilter, detectIssues);
             logIssuesInGroup(logger, "DEPRECATIONS:", deprecationsFilter, detectIssues);
         }

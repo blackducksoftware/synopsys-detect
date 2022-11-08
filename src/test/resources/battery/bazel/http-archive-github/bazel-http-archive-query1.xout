@@ -1,0 +1,4 @@
+@bazel_tools//third_party/def_parser:def_parser_lib
+@bazel_tools//tools/cpp:malloc
+@com_github_gflags_gflags//:gflags
+@glog//:glog

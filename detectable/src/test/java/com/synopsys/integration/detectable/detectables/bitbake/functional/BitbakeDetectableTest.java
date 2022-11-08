@@ -24,6 +24,7 @@ import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import com.synopsys.integration.executable.ExecutableOutput;
 
+//TODO: When bitbake moves, this test will break.
 public class BitbakeDetectableTest extends DetectableFunctionalTest {
 
     public BitbakeDetectableTest() throws IOException {

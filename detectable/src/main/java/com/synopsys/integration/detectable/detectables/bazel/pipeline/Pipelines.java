@@ -9,9 +9,11 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.xpathquery.HttpArchiveXpath;
 
 public class Pipelines {
     private static final String CQUERY_OPTIONS_PLACEHOLDER = "${detect.bazel.cquery.options}";
+    private static final String QUERY_COMMAND = "query";
     private static final String CQUERY_COMMAND = "cquery";
     private static final String OUTPUT_FLAG = "--output";
     private final EnumMap<WorkspaceRule, Pipeline> availablePipelines = new EnumMap<>(WorkspaceRule.class);
@@ -30,7 +32,7 @@ public class Pipelines {
             .parseReplaceInEachLine("^@", "")
             .parseReplaceInEachLine("//.*", "")
             .parseReplaceInEachLine("^", "//external:")
-            .executeBazelOnEachLine(Arrays.asList("query", "kind(maven_jar, ${input.item})", OUTPUT_FLAG, "xml"), true)
+            .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(maven_jar, ${input.item})", OUTPUT_FLAG, "xml"), true)
             .parseValuesFromXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value")
             .transformToMavenDependencies()
             .build();
@@ -65,6 +67,20 @@ public class Pipelines {
             .transformToHackageDependencies()
             .build();
         availablePipelines.put(WorkspaceRule.HASKELL_CABAL_LIBRARY, haskellCabalLibraryPipeline);
+
+        Pipeline httpArchiveGithubUrlPipeline = (new PipelineBuilder(externalIdFactory, bazelCommandExecutor, bazelVariableSubstitutor, haskellCabalLibraryJsonProtoParser))
+            .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(.*library, deps(${detect.bazel.target}))"), false)
+            .parseSplitEachLine("\r?\n")
+            .parseFilterLines("^@.*//.*$")
+            .parseReplaceInEachLine("^@", "")
+            .parseReplaceInEachLine("//.*", "")
+            .deDupLines()
+            .parseReplaceInEachLine("^", "//external:")
+            .executeBazelOnEachLine(Arrays.asList(QUERY_COMMAND, "kind(.*, ${input.item})", OUTPUT_FLAG, "xml"), true)
+            .parseValuesFromXml(HttpArchiveXpath.QUERY, "value")
+            .transformGithubUrl()
+            .build();
+        availablePipelines.put(WorkspaceRule.HTTP_ARCHIVE, httpArchiveGithubUrlPipeline);
     }
 
     public Pipeline get(WorkspaceRule bazelDependencyType) throws DetectableException {

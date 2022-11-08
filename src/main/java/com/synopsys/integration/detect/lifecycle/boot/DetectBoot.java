@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -17,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
@@ -27,8 +25,11 @@ import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration
 import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
@@ -84,7 +85,7 @@ public class DetectBoot {
         this.installedToolManager = installedToolManager;
     }
 
-    public Optional<DetectBootResult> boot(String detectVersion) throws IOException, IllegalAccessException {
+    public Optional<DetectBootResult> boot(String detectVersion, String detectBuildDate) throws IOException, IllegalAccessException {
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             HelpPrinter helpPrinter = new HelpPrinter();
             helpPrinter.printAppropriateHelpMessage(
@@ -116,7 +117,6 @@ public class DetectBoot {
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
 
         SortedMap<String, String> maskedRawPropertyValues = collectMaskedRawPropertyValues(propertyConfiguration);
-        Set<String> propertyKeys = new HashSet<>(DetectProperties.allProperties().getPropertyKeys());
 
         publishCollectedPropertyValues(maskedRawPropertyValues);
 
@@ -124,17 +124,17 @@ public class DetectBoot {
 
         DetectConfigurationBootManager detectConfigurationBootManager = detectBootFactory.createDetectConfigurationBootManager(propertyConfiguration);
         DeprecationResult deprecationResult = detectConfigurationBootManager.createDeprecationNotesAndPublishEvents(propertyConfiguration);
-        detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, propertyKeys, deprecationResult.getAdditionalNotes());
+        detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, deprecationResult.getAdditionalNotes());
 
         Optional<DetectUserFriendlyException> possiblePropertyParseError = detectConfigurationBootManager.validateForPropertyParseErrors();
         if (possiblePropertyParseError.isPresent()) {
             return Optional.of(DetectBootResult.exception(possiblePropertyParseError.get(), propertyConfiguration));
         }
 
+        logger.info("Detect build date: {}", detectBuildDate);
         logger.debug("Initializing Detect.");
 
         Configuration freemarkerConfiguration = detectBootFactory.createFreemarkerConfiguration();
-        PathResolver pathResolver = detectBootFactory.createPathResolver();
         DetectPropertyConfiguration detectConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
 
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, gson);
@@ -145,11 +145,9 @@ public class DetectBoot {
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, propertyConfiguration);
         if (diagnosticDecision.shouldCreateDiagnosticSystem()) {
             diagnosticSystem = detectBootFactory.createDiagnosticSystem(
-                diagnosticDecision.isExtended(),
                 propertyConfiguration,
                 directoryManager,
-                maskedRawPropertyValues,
-                propertyKeys
+                maskedRawPropertyValues
             );
         }
 
@@ -166,10 +164,8 @@ public class DetectBoot {
                         installedToolManager,
                         installedToolLocator
                     );
-                String gradleInspectorVersion = propertyConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION)
-                    .orElse(null);
 
-                File airGapZip = airGapCreator.createAirGapZip(airGapType, directoryManager.getRunHomeDirectory(), gradleInspectorVersion);
+                File airGapZip = airGapCreator.createAirGapZip(airGapType, directoryManager.getRunHomeDirectory());
 
                 return Optional.of(DetectBootResult.exit(propertyConfiguration, airGapZip, directoryManager, diagnosticSystem));
             } catch (DetectUserFriendlyException e) {
@@ -180,21 +176,44 @@ public class DetectBoot {
         logger.info("");
 
         ProductRunData productRunData;
-        try {
 
+        // store the result of hasImageOrTar... we will need this in more than one place.
+        boolean hasImageOrTar = false;
+        DetectableOptionFactory detectableOptionFactory;
+        try {
+            ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
+            detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, detectableProxyInfo);
+            hasImageOrTar = detectableOptionFactory.createDockerDetectableOptions().hasDockerImageOrTar();
+            oneRequiresTheOther(
+                detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
+                hasImageOrTar,
+                "Detect target type is set to IMAGE, but no docker image was specified."
+            );
+        } catch (DetectUserFriendlyException e) {
+            return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
+        }
+
+        try {
+            BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode();
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
                 detectConfigurationFactory.createBlackDuckConnectionDetails(),
-                detectConfigurationFactory.createBlackDuckSignatureScannerOptions(),
-                detectConfigurationFactory.createScanMode(),
-                detectConfigurationFactory.createBdioOptions()
+                blackduckScanMode,
+                detectConfigurationFactory.createHasSignatureScan()
             );
-            RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE); //TODO: Move to proper decision home. -jp
+
+            // in order to know if docker is needed we have to have either detect.target.type=IMAGE or detect.docker.image
+            RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE || hasImageOrTar, detectConfigurationFactory.createDetectTarget()); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
+            oneRequiresTheOther(
+                detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
+                detectToolFilter.shouldInclude(DetectTool.DOCKER),
+                "Detect target type is set to IMAGE, but the DOCKER tool was excluded."
+            );
 
             logger.debug("Decided what products will be run. Starting product boot.");
 
-            ProductBoot productBoot = detectBootFactory.createProductBoot(detectConfigurationFactory);
+            ProductBoot productBoot = detectBootFactory.createProductBoot(detectConfigurationFactory, detectToolFilter, blackduckScanMode);
             productRunData = productBoot.boot(blackDuckDecision, detectToolFilter);
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
@@ -205,16 +224,9 @@ public class DetectBoot {
             return Optional.of(DetectBootResult.exit(propertyConfiguration, directoryManager, diagnosticSystem));
         }
 
-        DetectableOptionFactory detectableOptionFactory;
-        try {
-            ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
-            detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
-        } catch (DetectUserFriendlyException e) {
-            return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
-        }
-
         BootSingletons bootSingletons = detectBootFactory
-            .createRunDependencies(productRunData,
+            .createRunDependencies(
+                productRunData,
                 propertyConfiguration,
                 detectableOptionFactory,
                 detectConfigurationFactory,
@@ -224,6 +236,15 @@ public class DetectBoot {
                 installedToolLocator
             );
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
+    }
+
+    private void oneRequiresTheOther(boolean firstCondition, boolean secondCondition, String errorMessageIfNot) throws DetectUserFriendlyException {
+        if (firstCondition && !secondCondition) {
+            throw new DetectUserFriendlyException(
+                "Invalid configuration: " + errorMessageIfNot,
+                ExitCodeType.FAILURE_CONFIGURATION
+            );
+        }
     }
 
     private SortedMap<String, String> collectMaskedRawPropertyValues(PropertyConfiguration propertyConfiguration) throws IllegalAccessException {

@@ -1,11 +1,13 @@
 package com.synopsys.integration.detectable.detectables.gradle.parsing;
 
+import java.io.IOException;
 import java.util.Collections;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -17,7 +19,7 @@ import com.synopsys.integration.detectable.detectables.projectinspector.ProjectI
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle")
+@DetectableInfo(name = "Gradle Project Inspector", language = "various", forge = "Maven Central", accuracy = DetectableAccuracyType.LOW, requirementsMarkdown = "File: build.gradle")
 public class GradleProjectInspectorDetectable extends Detectable {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
@@ -57,7 +59,7 @@ public class GradleProjectInspectorDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
         return projectInspectorExtractor.extract(
             projectInspectorOptions,
             Collections.emptyList(),

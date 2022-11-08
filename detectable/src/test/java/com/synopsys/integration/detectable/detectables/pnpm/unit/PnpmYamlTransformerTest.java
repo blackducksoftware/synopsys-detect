@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
@@ -34,7 +33,7 @@ public class PnpmYamlTransformerTest {
 
     private PnpmYamlTransformer createTransformer(PnpmDependencyType... excludedDependencyTypes) {
         EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
-        return new PnpmYamlTransformer(new ExternalIdFactory(), dependencyTypeFilter);
+        return new PnpmYamlTransformer(dependencyTypeFilter);
     }
 
     @Test
@@ -54,15 +53,6 @@ public class PnpmYamlTransformerTest {
         graphAssert.hasRootDependency("devDep", "2.0.0");
         graphAssert.hasRootDependency("optDep", "3.0.0");
         graphAssert.hasParentChildRelationship("dep", "1.0.0", "transitive", "1.1.0");
-    }
-
-    @Test
-    public void testExcludeDependencies() throws IntegrationException {
-        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.APP);
-        DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
-        graphAssert.hasRootSize(2);
     }
 
     @Test

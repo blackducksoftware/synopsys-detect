@@ -1,31 +1,32 @@
 package com.synopsys.integration.detect.workflow.bdio;
 
-public class BdioOptions {
-    private final boolean enabledBdio2;
-    private final String projectCodeLocationSuffix;
-    private final String projectCodeLocationPrefix;
-    private final boolean enabledLegacyUpload;
+import java.util.Optional;
 
-    public BdioOptions(boolean enabledBdio2, String projectCodeLocationPrefix, String projectCodeLocationSuffix, boolean enabledLegacyUpload) {
-        this.enabledBdio2 = enabledBdio2;
+import org.jetbrains.annotations.Nullable;
+
+public class BdioOptions {
+    @Nullable
+    private final String projectCodeLocationSuffix;
+    @Nullable
+    private final String projectCodeLocationPrefix;
+    @Nullable
+    private final String bdioFileName;
+
+    public BdioOptions( @Nullable String projectCodeLocationPrefix, @Nullable String projectCodeLocationSuffix, @Nullable String bdioFileName) {
         this.projectCodeLocationSuffix = projectCodeLocationSuffix;
         this.projectCodeLocationPrefix = projectCodeLocationPrefix;
-        this.enabledLegacyUpload = enabledLegacyUpload;
+        this.bdioFileName = bdioFileName;
     }
 
-    public String getProjectCodeLocationSuffix() {
-        return projectCodeLocationSuffix;
+    public Optional<String> getProjectCodeLocationSuffix() {
+        return Optional.ofNullable(projectCodeLocationSuffix);
     }
 
-    public String getProjectCodeLocationPrefix() {
-        return projectCodeLocationPrefix;
+    public Optional<String> getProjectCodeLocationPrefix() {
+        return Optional.ofNullable(projectCodeLocationPrefix);
     }
 
-    public boolean isBdio2Enabled() {
-        return enabledBdio2;
-    }
-
-    public boolean isLegacyUploadEnabled() {
-        return enabledLegacyUpload;
+    public Optional<String> getBdioFileName() {
+        return Optional.ofNullable(bdioFileName);
     }
 }

@@ -12,6 +12,8 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.jetbrains.annotations.NotNull;
 
 public class SimpleFileFinder implements FileFinder {
+
+    // filter.test(file) should return true for: dirs to Exclude, and files to Include
     @NotNull
     @Override
     public List<File> findFiles(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth, boolean findInsideMatchingDirectories) {
@@ -19,7 +21,7 @@ public class SimpleFileFinder implements FileFinder {
         if (depth < 0) {
             return foundFiles;
         }
-        if (!shouldFindinDirectory(directoryToSearch, followSymLinks)) {
+        if (!shouldFindInDirectory(directoryToSearch, followSymLinks)) {
             return foundFiles;
         }
         File[] allFiles = directoryToSearch.listFiles();
@@ -31,17 +33,15 @@ public class SimpleFileFinder implements FileFinder {
             if (matches) {
                 foundFiles.add(file);
             }
-            if (!matches || findInsideMatchingDirectories) {
-                if (shouldFindinDirectory(file, followSymLinks)) {
-                    foundFiles.addAll(findFiles(file, filter, followSymLinks, depth - 1, findInsideMatchingDirectories));
-                }
+            if ((!matches || findInsideMatchingDirectories) && shouldFindInDirectory(file, followSymLinks)) {
+                foundFiles.addAll(findFiles(file, filter, followSymLinks, depth - 1, findInsideMatchingDirectories));
             }
         }
 
         return foundFiles;
     }
 
-    private boolean shouldFindinDirectory(File file, boolean followSymLinks) {
+    private boolean shouldFindInDirectory(File file, boolean followSymLinks) {
         return (file.isDirectory() && (!Files.isSymbolicLink(file.toPath()) || followSymLinks)) && linkPointsToValidDirectory(file);
     }
 
@@ -52,10 +52,7 @@ public class SimpleFileFinder implements FileFinder {
         } catch (IOException e) {
             return false;
         }
-        if (!Files.isDirectory(linkTarget)) {
-            return false;
-        }
-        return true;
+        return linkTarget.toFile().isDirectory();
     }
 
     @NotNull

@@ -65,6 +65,8 @@ public class CreateScanBatchOperation {
         scanJobBuilder.copyrightSearch(signatureScannerOptions.getCopyrightSearch());
 
         signatureScannerOptions.getAdditionalArguments().ifPresent(scanJobBuilder::additionalScanArguments);
+        
+        scanJobBuilder.rapid(signatureScannerOptions.getIsEphemeral());
 
         String projectName = projectNameVersion.getName();
         String projectVersionName = projectNameVersion.getVersion();
@@ -72,10 +74,11 @@ public class CreateScanBatchOperation {
 
         signatureScannerOptions.getIndividualFileMatching()
             .ifPresent(scanJobBuilder::individualFileMatching);
+        
+        signatureScannerOptions.getReducedPersistence()
+            .ifPresent(scanJobBuilder::reducedPersistence);
 
         File sourcePath = directoryManager.getSourceDirectory();
-        String prefix = signatureScannerOptions.getCodeLocationPrefix().orElse(null);
-        String suffix = signatureScannerOptions.getCodeLocationSuffix().orElse(null);
 
         for (SignatureScanPath scanPath : signatureScanPaths) {
             File dockerTarget = null;
@@ -87,9 +90,7 @@ public class CreateScanBatchOperation {
                 scanPath.getTargetPath(),
                 dockerTarget,
                 projectName,
-                projectVersionName,
-                prefix,
-                suffix
+                projectVersionName
             );
             scanJobBuilder.addTarget(ScanTarget.createBasicTarget(scanPath.getTargetCanonicalPath(), scanPath.getExclusions(), codeLocationName));
         }

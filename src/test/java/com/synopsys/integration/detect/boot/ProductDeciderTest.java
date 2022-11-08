@@ -1,218 +1,131 @@
 package com.synopsys.integration.detect.boot;
 
-import java.nio.file.Path;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
-import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
-import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 
 class ProductDeciderTest {
-    private final String VALID_URL = "http://example";
+    private final String VALID_URL = "https://example.com";
+
+    // dummy booleans to arbitrarily assign whether sig scan has been asked for.
+    private final boolean hasSigScanF = false;
+    private final boolean hasSigScanT = true;
 
     @Test
-    public void shouldRunBlackDuckOfflineWhenOverride() {
+    public void shouldRunIntelligentOffline() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false, true)
+            hasSigScanF
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertTrue(productDecision.isOffline());
+        assertOfflineDecision(productDecision);
     }
 
     @Test
-    public void shouldRunOfflineEvenWhenUrlProvided() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, "http://example.com");
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
-            BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false, true)
-        );
-
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertTrue(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldRunBlackDuckOfflineWhenInstallUrl() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, VALID_URL);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
-            BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false, true)
-        );
-
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertTrue(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldRunBlackDuckOfflineWhenInstallPath() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(Mockito.mock(Path.class), null);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
-            BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false, true)
-        );
-
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertTrue(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldNotRunBlackDuckOfflineWhenUserProvidedHostUrl() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(Mockito.mock(Path.class), VALID_URL);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
-            BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false, true)
-        );
-
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertTrue(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldRunBlackDuckOnline() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
-            BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(true, true)
-        );
-
-        Assertions.assertTrue(productDecision.shouldRun());
-        Assertions.assertFalse(productDecision.isOffline());
-    }
-
-    @Test
-    public void shouldNotRunBlackduckRapidModeAndOffline() {
+    public void shouldRunIntelligentOfflineEvenWhenUrlProvided() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, VALID_URL);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
-            BlackduckScanMode.RAPID,
-            createBdioOptions(false, true)
-        );
-
-        Assertions.assertFalse(productDecision.shouldRun());
-    }
-
-    @Test
-    public void shouldNotRunBlackduckRapidModeAndBDIO2Disabled() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
-            BlackduckScanMode.RAPID,
-            createBdioOptions(false, true)
-        );
-
-        Assertions.assertFalse(productDecision.shouldRun());
-    }
-
-    @Test
-    public void shouldNotRunBlackduckIntelligentModeAndBDIO2Disabled() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false, false)
+            hasSigScanF
         );
 
-        Assertions.assertFalse(productDecision.shouldRun());
+        assertOfflineDecision(productDecision);
     }
 
     @Test
-    public void shouldRunBlackduckRapidModeAndBDIO2Enabled() {
+    public void shouldRunIntelligentOnline() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
-            BlackduckScanMode.RAPID,
-            createBdioOptions(true, true)
-        );
-
-        Assertions.assertTrue(productDecision.shouldRun());
-    }
-
-    @Test
-    public void shouldRunBlackduckIntelligentModeAndBDIO2Enabled() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
             BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(true, false)
+            hasSigScanT
         );
 
-        Assertions.assertTrue(productDecision.shouldRun());
+        assertOnlineDecision(productDecision);
     }
 
     @Test
-    public void shouldRunBlackduckLegacyEnabledAndIntelligentModeAndBDIO2Disabled() {
-        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
-        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
-            blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
-            BlackduckScanMode.INTELLIGENT,
-            createBdioOptions(false, true)
-        );
-
-        Assertions.assertTrue(productDecision.shouldRun());
-    }
-
-    @Test
-    public void shouldNotRunBlackduckURLMissing() {
+    public void shouldNotRunIntelligentOnlineWhenMissingURL() {
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, null);
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
         BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
             blackDuckConnectionDetails,
-            blackDuckSignatureScannerOptions,
+            BlackduckScanMode.INTELLIGENT,
+            hasSigScanF
+        );
+
+        assertSkipDecision(productDecision);
+    }
+
+    @Test
+    public void shouldNotRunRapidOffline() {
+        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, VALID_URL);
+        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
+            blackDuckConnectionDetails,
             BlackduckScanMode.RAPID,
-            createBdioOptions(true, true)
+            hasSigScanF
         );
 
-        Assertions.assertFalse(productDecision.shouldRun());
+        assertSkipDecision(productDecision);
     }
 
-    private BdioOptions createBdioOptions(boolean useBdio2, boolean enableLegacyUpload) {
-        return new BdioOptions(useBdio2, null, null, enableLegacyUpload);
-    }
-
-    private BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions(Path offlineScannerInstallPath, String userProvidedScannerInstallUrl) {
-        return new BlackDuckSignatureScannerOptions(Bds.listOf(), Bds.listOf(), null, 1024, 1, false, null, false, null, null, null, 1, null, false, false, true,
-            true
+    @Test
+    public void shouldRunRapidOnline() {
+        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
+        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
+            blackDuckConnectionDetails,
+            BlackduckScanMode.RAPID,
+            hasSigScanT
         );
+
+        assertOnlineDecision(productDecision);
+    }
+
+    @Test
+    public void shouldNotRunRapidWhenMissingURL() {
+        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, null);
+        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
+            blackDuckConnectionDetails,
+            BlackduckScanMode.RAPID,
+            hasSigScanF
+        );
+
+        assertSkipDecision(productDecision);
+    }
+
+    @Test
+    public void shouldNotRunRapidWhenMissingURLEvenOffline() {
+        BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
+        BlackDuckDecision productDecision = new ProductDecider().decideBlackDuck(
+            blackDuckConnectionDetails,
+            BlackduckScanMode.RAPID,
+            hasSigScanF
+        );
+
+        assertSkipDecision(productDecision);
+    }
+
+    private void assertOfflineDecision(BlackDuckDecision productDecision) {
+        assertTrue(productDecision.shouldRun(), "An offline decision is validated and should be cleared to run");
+        assertTrue(productDecision.isOffline(), "An offline run decision should be reported as 'offline'");
+    }
+
+    private void assertOnlineDecision(BlackDuckDecision productDecision) {
+        assertTrue(productDecision.shouldRun(), "An online decision is validated and should be cleared to run");
+        assertFalse(productDecision.isOffline(), "An online decision is should not be 'offline'");
+    }
+
+    private void assertSkipDecision(BlackDuckDecision productDecision) {
+        assertFalse(productDecision.shouldRun(), "A skip decision should not be run");
+        assertTrue(productDecision.isOffline(), "A skip decision is offline");
     }
 
     private BlackDuckConnectionDetails blackDuckConnectionDetails(boolean offline, String blackduckUrl) {

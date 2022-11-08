@@ -34,11 +34,16 @@ public class DetectZipUtil { //TODO: Add method for extracting without the wrapp
     public static void zip(OutputStream stream, Map<String, Path> entries) throws IOException {
         try (ZipOutputStream outputStream = new ZipOutputStream(stream)) {
             for (Map.Entry<String, Path> entry : entries.entrySet()) {
-                logger.info("Adding entry '{}' to zip as '{}'.", entry.getValue().toString(), entry.getKey());
-                outputStream.putNextEntry(new ZipEntry(entry.getKey()));
-                byte[] bytes = Files.readAllBytes(entry.getValue());
-                outputStream.write(bytes, 0, bytes.length);
-                outputStream.closeEntry();
+                // Files.readAllBytes requires a file
+                if (entry.getValue().toFile().isFile()) {
+                    logger.debug("Adding entry '{}' to zip as '{}'.", entry.getValue().toString(), entry.getKey());
+                    outputStream.putNextEntry(new ZipEntry(entry.getKey()));
+                    byte[] bytes = Files.readAllBytes(entry.getValue());
+                    outputStream.write(bytes, 0, bytes.length);
+                    outputStream.closeEntry();
+                } else {
+                    logger.trace("Non-file {} skipped", entry.getValue().toFile().getAbsolutePath());
+                }
             }
         }
     }
@@ -50,7 +55,7 @@ public class DetectZipUtil { //TODO: Add method for extracting without the wrapp
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 Path entryPath = destPath.resolve(entry.getName());
-                if (!entryPath.normalize().startsWith(dest.toPath())) {
+                if (!entryPath.normalize().startsWith(dest.toPath().normalize())) {
                     throw new IOException("Zip entry contained path traversal");
                 }
                 if (entry.isDirectory()) {

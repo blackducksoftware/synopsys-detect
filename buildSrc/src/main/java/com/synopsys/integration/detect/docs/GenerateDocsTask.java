@@ -22,15 +22,18 @@ import org.gradle.api.tasks.TaskAction;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.docs.copied.HelpJsonData;
+import com.synopsys.integration.detect.docs.copied.HelpJsonDetectorRule;
 import com.synopsys.integration.detect.docs.copied.HelpJsonOption;
 import com.synopsys.integration.detect.docs.model.DeprecatedPropertyTableGroup;
-import com.synopsys.integration.detect.docs.model.Detector;
+import com.synopsys.integration.detect.docs.model.Detectable;
 import com.synopsys.integration.detect.docs.model.DetectorStatusCodes;
 import com.synopsys.integration.detect.docs.model.SimplePropertyTableGroup;
 import com.synopsys.integration.detect.docs.model.SplitGroup;
 import com.synopsys.integration.detect.docs.pages.AdvancedPropertyTablePage;
 import com.synopsys.integration.detect.docs.pages.DeprecatedPropertyTablePage;
-import com.synopsys.integration.detect.docs.pages.DetectorsPage;
+import com.synopsys.integration.detect.docs.pages.DetectorCascadePage;
+import com.synopsys.integration.detect.docs.pages.DetectorEntryPoint;
+import com.synopsys.integration.detect.docs.pages.DetectorType;
 import com.synopsys.integration.detect.docs.pages.ExitCodePage;
 import com.synopsys.integration.detect.docs.pages.SimplePropertyTablePage;
 import com.synopsys.integration.exception.IntegrationException;
@@ -44,13 +47,19 @@ public class GenerateDocsTask extends DefaultTask {
 
     @TaskAction
     public void generateDocs() throws IOException, TemplateException, IntegrationException {
-        Project project = getProject();
-        File file = new File("synopsys-detect-" + project.getVersion() + "-help.json");
-        Reader reader = new FileReader(file);
+        Project docsProject = getProject();
+
+        File helpJsonFile = new File(docsProject.getBuildDir(), "synopsys-detect-" + docsProject.getVersion() + "-help.json");
+        Reader reader = new FileReader(helpJsonFile);
         HelpJsonData helpJson = new Gson().fromJson(reader, HelpJsonData.class);
-        File docsDir = project.file("docs");
-        File sourceMarkdownDir = new File(docsDir, "markdown");
-        File outputDir = project.file("docs/generated"); // TODO use new File(docsDir, "generated")
+
+        File docsProjectDir = docsProject.getProjectDir();
+        File docsSrcMainDir = new File(docsProjectDir, "src/main");
+        File docsSrcMainResourcesDir = new File(docsSrcMainDir, "resources");
+
+        File sourceMarkdownDir = new File(docsSrcMainDir, "markdown");
+        File outputDir = new File(docsProject.getBuildDir(), "generated");
+
         File runningDir = new File(outputDir, "downloadingandrunning");
         File troubleshootingDir = new File(outputDir, "troubleshooting");
 
@@ -58,15 +67,16 @@ public class GenerateDocsTask extends DefaultTask {
         troubleshootingDir.mkdirs();
 
         // Metadata that Zoomin needs
-        FileUtils.copyFileToDirectory(new File(docsDir, "custom.properties"), outputDir);
-        FileUtils.copyFileToDirectory(new File(docsDir, "integrations-classification.xml"), outputDir);
+        FileUtils.copyFileToDirectory(new File(docsProjectDir, "custom.properties"), outputDir);
+        FileUtils.copyFileToDirectory(new File(docsProjectDir, "integrations-classification.xml"), outputDir);
 
-        TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
+        File templatesDir = new File(docsSrcMainResourcesDir, "templates");
+        TemplateProvider templateProvider = new TemplateProvider(templatesDir, docsProject.getVersion().toString());
 
         // Prepare ditamap files
         createFromFreemarker(templateProvider, DITAMAP_TEMPLATE_FILENAME, new File(outputDir, DITAMAP_OUTPUT_FILENAME));
-        FileUtils.copyFileToDirectory(new File(docsDir, "topics.ditamap"), outputDir);
-        FileUtils.copyFileToDirectory(new File(docsDir, "keywords.ditamap"), outputDir);
+        FileUtils.copyFileToDirectory(new File(docsProjectDir, "topics.ditamap"), outputDir);
+        FileUtils.copyFileToDirectory(new File(docsProjectDir, "keywords.ditamap"), outputDir);
 
         FileUtils.copyDirectory(sourceMarkdownDir, outputDir);
         createMarkdownFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
@@ -94,22 +104,35 @@ public class GenerateDocsTask extends DefaultTask {
 
     private void handleDetectors(TemplateProvider templateProvider, File baseOutputDir, HelpJsonData helpJson) throws IOException, TemplateException {
         File outputDir = new File(baseOutputDir, "components");
-        List<Detector> build = helpJson.getBuildDetectors().stream()
-            .map(Detector::new)
-            .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
-            .collect(Collectors.toList());
+        List<DetectorType> detectorTypes = new ArrayList<>();
+        helpJson.getDetectors().stream()
+            .sorted(Comparator.comparing(HelpJsonDetectorRule::getDetectorType))
+            .forEach(detectorRule -> {
+                List<DetectorEntryPoint> entryPointsForRule = new ArrayList<>();
+                detectorRule.getEntryPoints().forEach(entry -> {
+                    List<Detectable> detectables = entry.getDetectables().stream()
+                        .map(detectable -> new Detectable(
+                            detectable.getDetectableName(),
+                            detectable.getDetectableLanguage(),
+                            detectable.getDetectableForge(),
+                            detectable.getDetectableRequirementsMarkdown(),
+                            detectable.getDetectableAccuracy()
+                        ))
+                        .collect(Collectors.toList());
+                    DetectorEntryPoint entryPoint = new DetectorEntryPoint(entry.getName(), detectables);
+                    entryPointsForRule.add(entryPoint);
+                });
+                DetectorType detectorType = new DetectorType(detectorRule.getDetectorType(), entryPointsForRule);
+                detectorTypes.add(detectorType);
+            });
 
-        List<Detector> buildless = helpJson.getBuildlessDetectors().stream()
-            .map(Detector::new)
-            .sorted(Comparator.comparing(Detector::getDetectorType).thenComparing(Detector::getDetectorName))
-            .collect(Collectors.toList());
-
-        createMarkdownFromFreemarker(templateProvider, outputDir, "detectors", new DetectorsPage(buildless, build));
+        createMarkdownFromFreemarker(templateProvider, outputDir, "detectors", new DetectorCascadePage(detectorTypes));
     }
 
     private String encodePropertyLocation(String propertyName) {
         if (!propertyName.equals(propertyName.trim())) {
-            throw new RuntimeException("Property name should not include trim-able white space. Property (" + propertyName + ") should be shortened to (" + propertyName.trim() + ") ");
+            throw new RuntimeException(
+                "Property name should not include trim-able white space. Property (" + propertyName + ") should be shortened to (" + propertyName.trim() + ") ");
         }
         Map<String, String> supportedCharacters = new HashMap<>();
         String literals = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -124,7 +147,11 @@ public class GenerateDocsTask extends DefaultTask {
         for (char character : propertyName.toCharArray()) {
             String charString = String.valueOf(character);
             if (!supportedCharacters.containsKey(charString)) {
-                throw new RuntimeException("Unsupported character literal in property name, please add it to supported characters or remove the character (" + character + ") in (" + propertyName + ") ");
+                throw new RuntimeException(String.format(
+                    "Unsupported character literal in property name, please add it to supported characters or remove the character (%s) in (%s) ",
+                    character,
+                    propertyName
+                ));
             } else {
                 encoded.append(supportedCharacters.get(charString));
             }
@@ -160,7 +187,9 @@ public class GenerateDocsTask extends DefaultTask {
                 .collect(Collectors.toList());
 
             List<HelpJsonOption> simple = group.getValue().stream()
-                .filter(helpJsonObject -> !deprecated.contains(helpJsonObject) && (StringUtils.isBlank(helpJsonObject.getCategory()) || "simple".equals(helpJsonObject.getCategory())))
+                .filter(helpJsonObject -> !deprecated.contains(helpJsonObject)
+                    && (StringUtils.isBlank(helpJsonObject.getCategory()) || "simple".equals(helpJsonObject.getCategory()))
+                )
                 .collect(Collectors.toList());
 
             List<HelpJsonOption> advanced = group.getValue().stream()
@@ -203,7 +232,11 @@ public class GenerateDocsTask extends DefaultTask {
             }
 
             String groupLocation = getGroupLocation(groupLocations, splitGroupOption.getGroupName());
-            DeprecatedPropertyTableGroup deprecatedPropertyTableGroup = new DeprecatedPropertyTableGroup(splitGroupOption.getGroupName(), groupLocation, splitGroupOption.getDeprecated());
+            DeprecatedPropertyTableGroup deprecatedPropertyTableGroup = new DeprecatedPropertyTableGroup(
+                splitGroupOption.getGroupName(),
+                groupLocation,
+                splitGroupOption.getDeprecated()
+            );
             deprecatedPropertyTableData.add(deprecatedPropertyTableGroup);
         }
 

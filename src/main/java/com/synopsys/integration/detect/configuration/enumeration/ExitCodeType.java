@@ -12,14 +12,22 @@ public enum ExitCodeType {
     FAILURE_DETECTOR_REQUIRED(9, "Detect did not run all of the required detectors. Fix detector issues or disable required detectors."),
     FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED(
         10,
-        "Detect attempted an operation that was not supported by your version of Black Duck. Ensure your Black Duck is compatible with this version of detect."
+        "Detect's configuration requires a Black Duck capability that is not supported by your version of Black Duck. Ensure that your Black Duck version is compatible with this version of Detect."
     ),
     FAILURE_BLACKDUCK_FEATURE_ERROR(
         11,
-        "Detect encountered an error while attempting an operation on Black Duck. Ensure your Black Duck is compatible with this version of detect."
+        "Detect encountered an error while attempting an operation on Black Duck. Ensure that your Black Duck version is compatible with this version of Detect, and that your Black Duck user account has the required roles."
     ),
-    FAILURE_POLARIS_CONNECTIVITY(12, "Detect was unable to connect to Polaris. Check your configuration and connection."),
     FAILURE_MINIMUM_INTERVAL_NOT_MET(13, "Detect did not wait the minimum required scan interval."),
+    FAILURE_IAC(
+        14,
+        "Detect was unable to perform IaC Scan against your source. Please check your configuration, and see logs and IaC Scanner documentation for more information."
+    ),
+
+    FAILURE_ACCURACY_NOT_MET(15, "Detect was unable to meet the required accuracy."),
+
+    FAILURE_IMAGE_NOT_AVAILABLE(20, "Image scan attempted but no return data available."),
+
     FAILURE_GENERAL_ERROR(99, "Detect encountered a known error, details of the error are provided."),
     FAILURE_UNKNOWN_ERROR(100, "Detect encountered an unknown error.");
 

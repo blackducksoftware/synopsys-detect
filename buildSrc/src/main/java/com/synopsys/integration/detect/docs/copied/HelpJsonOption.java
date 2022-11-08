@@ -21,7 +21,6 @@ public class HelpJsonOption {
     private String detailedDescription = "";
     private Boolean deprecated = false;
     private String deprecatedDescription = "";
-    private String deprecatedFailInVersion = ""; //TODO: Remove in 8.0.0
     private String deprecatedRemoveInVersion = "";
     private Boolean strictValues = false;
     private Boolean caseSensitiveValues = false;
@@ -209,15 +208,4 @@ public class HelpJsonOption {
     public void setDeprecatedValues(List<HelpJsonOptionDeprecatedValue> deprecatedValues) {
         this.deprecatedValues = deprecatedValues;
     }
-
-    @Deprecated //TODO: Remove in 8.0.0
-    public String getDeprecatedFailInVersion() {
-        return deprecatedFailInVersion;
-    }
-
-    @Deprecated //TODO: Remove in 8.0.0
-    public void setDeprecatedFailInVersion(String deprecatedFailInVersion) {
-        this.deprecatedFailInVersion = deprecatedFailInVersion;
-    }
-
 }

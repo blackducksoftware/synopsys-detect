@@ -7,12 +7,16 @@ import com.synopsys.integration.detector.base.DetectorType;
 public class DetectorToolOptions {
     private final String projectBomTool;
     private final List<DetectorType> requiredDetectors;
-    private final boolean buildless;
+    private final ExcludeIncludeEnumFilter<DetectorType> requiredAccuracyTypes;
 
-    public DetectorToolOptions(String projectBomTool, List<DetectorType> requiredDetectors, boolean buildless) {
+    public DetectorToolOptions(
+        String projectBomTool,
+        List<DetectorType> requiredDetectors,
+        ExcludeIncludeEnumFilter<DetectorType> requiredAccuracyTypes
+    ) {
         this.projectBomTool = projectBomTool;
         this.requiredDetectors = requiredDetectors;
-        this.buildless = buildless;
+        this.requiredAccuracyTypes = requiredAccuracyTypes;
     }
 
     public String getProjectBomTool() {
@@ -23,8 +27,7 @@ public class DetectorToolOptions {
         return requiredDetectors;
     }
 
-    public boolean isBuildless() {
-        return buildless;
+    public ExcludeIncludeEnumFilter<DetectorType> getRequiredAccuracyTypes() {
+        return requiredAccuracyTypes;
     }
-
 }

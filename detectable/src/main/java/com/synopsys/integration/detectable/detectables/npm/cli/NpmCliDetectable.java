@@ -6,6 +6,7 @@ import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -15,7 +16,7 @@ import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFo
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: node_modules, package.json. Executable: npm.")
+@DetectableInfo(name = "NPM CLI", language = "Node JS", forge = "npmjs", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Files: node_modules, package.json. Executable: npm.")
 public class NpmCliDetectable extends Detectable {
     public static final String NODE_MODULES = "node_modules";
     public static final String PACKAGE_JSON = "package.json";

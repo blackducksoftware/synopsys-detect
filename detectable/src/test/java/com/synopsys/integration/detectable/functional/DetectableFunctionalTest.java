@@ -13,11 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -74,7 +77,8 @@ public abstract class DetectableFunctionalTest {
     }
 
     @Test
-    public void run() throws IOException, DetectableException, ExecutableFailedException, MissingExternalIdException, CycleDetectedException, ExecutableRunnerException {
+    public void run() throws IOException, DetectableException, ExecutableFailedException, MissingExternalIdException, CycleDetectedException, ExecutableRunnerException,
+        ParserConfigurationException, SAXException {
         System.out.println(String.format("Function Test (%s) is using temp directory: %s", name, tempDirectory.toAbsolutePath().toString()));
 
         setup();

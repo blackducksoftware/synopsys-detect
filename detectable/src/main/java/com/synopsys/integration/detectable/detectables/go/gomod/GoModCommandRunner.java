@@ -2,13 +2,19 @@ package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
+import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class GoModCommandRunner {
     private static final String VERSION_COMMAND = "version";
@@ -21,6 +27,10 @@ public class GoModCommandRunner {
     private static final String VENDOR_OUTPUT_FLAG = "-vendor";
     private static final String LIST_READONLY_FLAG = "-mod=readonly";
     private static final String MODULE_NAME = "all";
+    private static final String FORMAT_FLAG = "-f";
+    
+    private static final String FORMAT_DIRECTS = "{{if not (or .Indirect .Main)}}{{.Path}}@{{.Version}}{{end}}";
+    private static final String FORMAT_FOR_MAIN = "{{if (.Main)}}{{.Path}}{{end}}";
 
     private final DetectableExecutableRunner executableRunner;
 
@@ -68,6 +78,20 @@ public class GoModCommandRunner {
         commands.add(MODULE_NAME);
         return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
             .getStandardOutputAsList();
+    }
+
+    public List<String> runGoModDirectDeps(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+        //This'll give all direct dependencies for the main module.
+        List<String> commands = new LinkedList<>(Arrays.asList(LIST_COMMAND, MODULE_OUTPUT_FLAG, FORMAT_FLAG, FORMAT_DIRECTS, MODULE_NAME));
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
+                .getStandardOutputAsList();
+    }
+
+    public String runGoModGetMainModule(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+        //This gives the value of the main module name.
+        List<String> commands = new LinkedList<>(Arrays.asList(LIST_COMMAND, MODULE_OUTPUT_FLAG, FORMAT_FLAG, FORMAT_FOR_MAIN, MODULE_NAME));
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, goExe, commands))
+                .getStandardOutputAsList().get(0);
     }
 
 }

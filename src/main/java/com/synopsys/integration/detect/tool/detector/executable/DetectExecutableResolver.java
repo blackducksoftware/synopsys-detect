@@ -17,7 +17,6 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.CpanRe
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DartResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.DotNetResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.FlutterResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
@@ -38,7 +37,7 @@ import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 public class DetectExecutableResolver implements
     JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, DartResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver,
     PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
-    DockerResolver, DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver, FlutterResolver {
+    DockerResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver, FlutterResolver {
 
     private final DirectoryExecutableFinder directoryExecutableFinder;
     private final SystemPathExecutableFinder systemPathExecutableFinder;
@@ -188,12 +187,7 @@ public class DetectExecutableResolver implements
     public ExecutableTarget resolveDocker() throws DetectableException {
         return ExecutableTarget.forFile(resolveCachedSystemExecutable("docker", detectExecutableOptions.getDockerUserPath()));
     }
-
-    @Override
-    public ExecutableTarget resolveDotNet() throws DetectableException {
-        return ExecutableTarget.forFile(resolveCachedSystemExecutable("dotnet", detectExecutableOptions.getDotnetUserPath()));
-    }
-
+    
     @Override
     public ExecutableTarget resolveGit() throws DetectableException {
         return ExecutableTarget.forFile(resolveCachedSystemExecutable("git", detectExecutableOptions.getGitUserPath()));

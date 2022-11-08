@@ -1,7 +1,7 @@
 package com.synopsys.integration.detectable.detectables.gradle.inspection.model;
 
-import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
+import com.synopsys.integration.bdio.graph.builder.LazyId;
 
 public interface GradleGavId {
-    DependencyId toDependencyId();
+    LazyId toDependencyId();
 }

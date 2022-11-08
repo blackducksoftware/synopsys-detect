@@ -85,7 +85,6 @@ public class GradleReplacementDetectableTest extends DetectableFunctionalTest {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
-                "",
                 ""
             ),
             ProxyInfo.NO_PROXY_INFO, EnumListFilter.excludeNone()

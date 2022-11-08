@@ -26,13 +26,15 @@ public enum DetectGroup implements Group {
     REPORT("report"),
     SOURCE_SCAN("source scan"),
     SOURCE_PATH("source path"),
+    RAPID_SCAN("rapid scan"),
+    PROJECT_INSPECTOR("project inspector"),
 
     //Tool Groups
     DETECTOR("detector"),
-    POLARIS("polaris"),
     SIGNATURE_SCANNER("signature scanner"),
     BINARY_SCANNER("binary scanner"),
     IMPACT_ANALYSIS("impact analysis"),
+    IAC_SCAN("iac scan"),
 
     //Detector Groups
     BAZEL("bazel", DETECTORS),
@@ -57,6 +59,7 @@ public enum DetectGroup implements Group {
     PYTHON("python", DETECTORS),
     RUBY("ruby", DETECTORS),
     SBT("sbt", DETECTORS),
+    SWIFT("swift", DETECTORS),
     YARN("yarn", DETECTORS),
 
     //Additional groups (should not be used as a primary group

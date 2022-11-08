@@ -12,11 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
@@ -32,11 +32,9 @@ public class PnpmYamlTransformer {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final ExternalIdFactory externalIdFactory;
     private final EnumListFilter<PnpmDependencyType> dependencyTypeFilter;
 
-    public PnpmYamlTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<PnpmDependencyType> dependencyTypeFilter) {
-        this.externalIdFactory = externalIdFactory;
+    public PnpmYamlTransformer(EnumListFilter<PnpmDependencyType> dependencyTypeFilter) {
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
@@ -53,14 +51,14 @@ public class PnpmYamlTransformer {
         @Nullable Map<String, PnpmPackageInfo> packageMap,
         PnpmLinkedPackageResolver linkedPackageResolver
     ) throws IntegrationException {
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
         List<String> rootPackageIds = extractRootPackageIds(projectPackage, reportingProjectPackagePath, linkedPackageResolver);
         buildGraph(dependencyGraph, rootPackageIds, packageMap, linkedPackageResolver, reportingProjectPackagePath);
 
         if (projectNameVersion != null) {
             return new CodeLocation(
                 dependencyGraph,
-                externalIdFactory.createNameVersionExternalId(Forge.NPMJS, projectNameVersion.getName(), projectNameVersion.getVersion()),
+                ExternalId.FACTORY.createNameVersionExternalId(Forge.NPMJS, projectNameVersion.getName(), projectNameVersion.getVersion()),
                 sourcePath
             );
         }
@@ -68,7 +66,7 @@ public class PnpmYamlTransformer {
     }
 
     private void buildGraph(
-        MutableDependencyGraph graphBuilder,
+        DependencyGraph graphBuilder,
         List<String> rootPackageIds,
         @Nullable Map<String, PnpmPackageInfo> packageMap,
         PnpmLinkedPackageResolver linkedPackageResolver,
@@ -90,7 +88,7 @@ public class PnpmYamlTransformer {
             }
 
             PnpmPackageInfo packageInfo = packageEntry.getValue();
-            if (dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType())) {
+            if (!packageInfo.getDependencyType().isPresent() || dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType().get())) {
                 for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
                     String dependencyPackageId = convertRawEntryToPackageId(packageDependency, linkedPackageResolver, reportingProjectPackagePath);
                     Optional<Dependency> child = buildDependencyFromPackageId(dependencyPackageId);
@@ -116,7 +114,9 @@ public class PnpmYamlTransformer {
         PnpmLinkedPackageResolver linkedPackageResolver
     ) {
         Map<String, String> rawPackageInfo = new HashMap<>();
-        dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.APP, pnpmProjectPackage.dependencies, rawPackageInfo::putAll);
+        if (pnpmProjectPackage.dependencies != null) {
+            rawPackageInfo.putAll(pnpmProjectPackage.dependencies);
+        }
         dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
         dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
 
@@ -151,15 +151,14 @@ public class PnpmYamlTransformer {
     private Optional<Dependency> buildDependencyFromPackageEntry(Map.Entry<String, PnpmPackageInfo> packageEntry) {
         PnpmPackageInfo packageInfo = packageEntry.getValue();
         if (packageInfo.name != null) {
-            return Optional.of(new Dependency(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageInfo.name, packageInfo.version)));
+            return Optional.of(Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, packageInfo.name, packageInfo.version));
         }
         return buildDependencyFromPackageId(packageEntry.getKey());
     }
 
     private Optional<Dependency> buildDependencyFromPackageId(String packageId) {
         return parseNameVersionFromId(packageId)
-            .map(nameVersion -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()))
-            .map(Dependency::new);
+            .map(nameVersion -> Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
     }
 
     private boolean isRootPackage(String id, List<String> rootIds) {

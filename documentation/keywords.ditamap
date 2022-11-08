@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map id="detect-keywords" xml:lang="en-US">
+
+  <keydef keys="company_name"><topicmeta><keywords><keyword>Synopsys</keyword></keywords></topicmeta></keydef>
+  <keydef keys="division_name"><topicmeta><keywords><keyword>Synopsys SIG</keyword></keywords></topicmeta></keydef>
+  <keydef keys="binary_repo_type"><topicmeta><keywords><keyword>Artifactory</keyword></keywords></topicmeta></keydef>
+  <keydef keys="solution_name"><topicmeta><keywords><keyword>Synopsys Detect</keyword></keywords></topicmeta></keydef>
+  <keydef keys="source_project_name"><topicmeta><keywords><keyword>synopsys-detect</keyword></keywords></topicmeta></keydef>
+  <keydef keys="bash_script_name"><topicmeta><keywords><keyword>detect8.sh</keyword></keywords></topicmeta></keydef>
+  <keydef keys="powershell_script_name"><topicmeta><keywords><keyword>detect8.ps1</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_product_name"><topicmeta><keywords><keyword>Black Duck</keyword></keywords></topicmeta></keydef>
+  <keydef keys="coverity_product_name"><topicmeta><keywords><keyword>Coverity</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_signature_scanner_name"><topicmeta><keywords><keyword>Black Duck Signature Scanner</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_signature_scan_act"><topicmeta><keywords><keyword>Black Duck signature scan</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_binary_scan_capability"><topicmeta><keywords><keyword>Black Duck - Binary Analysis</keyword></keywords></topicmeta></keydef>
+  <keydef keys="dockerinspector_name"><topicmeta><keywords><keyword>Black Duck Docker Inspector</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_kb"><topicmeta><keywords><keyword>Black Duck KnowledgeBase</keyword></keywords></topicmeta></keydef>
+  <keydef keys="impact_analysis_name"><topicmeta><keywords><keyword>Vulnerability Impact Analysis Tool</keyword></keywords></topicmeta></keydef>
+  <keydef keys="professional_services"><topicmeta><keywords><keyword>Synopsys Software Integrity Group Client Services</keyword></keywords></topicmeta></keydef>
+  <keydef keys="support"><topicmeta><keywords><keyword>Synopsys Technical Support</keyword></keywords></topicmeta></keydef>
+  <keydef keys="docker_inspector_name"><topicmeta><keywords><keyword>Detect Docker Inspector</keyword></keywords></topicmeta></keydef>
+  <keydef keys="docker_inspector_project_name"><topicmeta><keywords><keyword>detect-docker-inspector</keyword></keywords></topicmeta></keydef>
+  <keydef keys="image_repo_organization"><topicmeta><keywords><keyword>blackducksoftware</keyword></keywords></topicmeta></keydef>
+  <keydef keys="source_raw_content_url_base"><topicmeta><keywords><keyword>https://raw.githubusercontent.com</keyword></keywords></topicmeta></keydef>
+  <keydef keys="imageinspector_image_name_base"><topicmeta><keywords><keyword>blackduck-imageinspector</keyword></keywords></topicmeta></keydef>
+  <keydef keys="source_repo_organization"><topicmeta><keywords><keyword>blackducksoftware</keyword></keywords></topicmeta></keydef>
+
+  <keydef keys="detector_cascade"><topicmeta><keywords><keyword>Detector cascade</keyword></keywords></topicmeta></keydef>
+
+</map>
+
+<!-- TODO these have been removed; replace refs to these with their values:
+container_image_inspector_dir_path=/opt/blackduck
+-->
+

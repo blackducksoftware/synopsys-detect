@@ -2,36 +2,35 @@ package com.synopsys.integration.detect.workflow.bdio;
 
 import java.io.File;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import org.apache.commons.lang3.StringUtils;
+
+import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
+import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
 public class CreateAggregateCodeLocationOperation {
-    private final ExternalIdFactory externalIdFactory;
     private final CodeLocationNameManager codeLocationNameManager;
 
-    public CreateAggregateCodeLocationOperation(ExternalIdFactory externalIdFactory, CodeLocationNameManager codeLocationNameManager) {
-        this.externalIdFactory = externalIdFactory;
+    public CreateAggregateCodeLocationOperation(CodeLocationNameManager codeLocationNameManager) {
         this.codeLocationNameManager = codeLocationNameManager;
     }
 
     public AggregateCodeLocation createAggregateCodeLocation(
         File bdioOutputDirectory,
-        DependencyGraph aggregateDependencyGraph,
+        ProjectDependencyGraph aggregateDependencyGraph,
         NameVersion projectNameVersion,
-        String aggregateName,
-        String extension
+        GitInfo gitInfo,
+        String providedFileName
     ) {
-        ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
         String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
-        String fileName = new IntegrationEscapeUtil().replaceWithUnderscore(aggregateName) + extension;
-        File aggregateBdioFile = new File(bdioOutputDirectory, fileName);
+        String defaultFileName = new IntegrationEscapeUtil().replaceWithUnderscore(projectNameVersion.getName() + "_" + projectNameVersion.getVersion());
+        String bdioFileName = StringUtils.defaultIfBlank(providedFileName, defaultFileName);
+        bdioFileName = bdioFileName + ".bdio";
+        File aggregateBdioFile = new File(bdioOutputDirectory, bdioFileName);
 
-        return new AggregateCodeLocation(aggregateBdioFile, codeLocationName, projectNameVersion, projectExternalId, aggregateDependencyGraph);
+        return new AggregateCodeLocation(aggregateBdioFile, codeLocationName, projectNameVersion, gitInfo, aggregateDependencyGraph);
     }
 }

@@ -14,7 +14,7 @@
     "prefix": "com.blackducksoftware.integration"
   },
   "dependencyGraph": {
-    "rootDependencies": [
+    "directDependencies": [
       {
         "forge": {
           "name": "maven",
@@ -1862,7 +1862,6 @@
           "prefix": "org.springframework"
         }
       ]
-    },
-    "dependencyGraphCombiner": {}
+    }
   }
 }

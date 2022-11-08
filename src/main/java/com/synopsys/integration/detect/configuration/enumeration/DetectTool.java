@@ -5,7 +5,7 @@ public enum DetectTool {
     SIGNATURE_SCAN,
     BINARY_SCAN,
     IMPACT_ANALYSIS,
-    POLARIS,
     DOCKER,
-    BAZEL
+    BAZEL,
+    IAC_SCAN
 }

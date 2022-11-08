@@ -37,7 +37,7 @@ public class FinalStepTransformColonSeparatedGavsToMaven implements FinalStep {
         String[] gavParts = artifactString.split(separatorRegex);
         String group = gavParts[0];
         String artifact = gavParts[1];
-        String version = gavParts[2];
+        String version = gavParts[gavParts.length - 1];
 
         logger.debug("Adding dependency from external id: {}:{}:{}", group, artifact, version);
         ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);

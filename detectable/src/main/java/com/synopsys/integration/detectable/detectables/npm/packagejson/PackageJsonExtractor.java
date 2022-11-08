@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -44,7 +45,7 @@ public class PackageJsonExtractor {
         npmDependencyTypeFilter.ifShouldInclude(NpmDependencyType.DEV, transformDependencies(packageJson.devDependencies), dependencies::addAll);
         npmDependencyTypeFilter.ifShouldInclude(NpmDependencyType.PEER, transformDependencies(packageJson.peerDependencies), dependencies::addAll);
 
-        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
         dependencyGraph.addChildrenToRoot(dependencies);
 
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -28,8 +29,8 @@ public class BinaryScanFindMultipleTargetsOperation {
         this.directoryManager = directoryManager;
     }
 
-    public Optional<File> searchForMultipleTargets(List<String> patterns, boolean followSymLinks, int depth) throws DetectUserFriendlyException {
-        List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), patterns, followSymLinks, depth);
+    public Optional<File> searchForMultipleTargets(Predicate<File> fileFilter, boolean followSymLinks, int depth) throws DetectUserFriendlyException {
+        List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), fileFilter, followSymLinks, depth, false);
         if (multipleTargets.size() > 0) {
             logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
             return Optional.of(zipFilesForUpload(directoryManager.getSourceDirectory(), multipleTargets));

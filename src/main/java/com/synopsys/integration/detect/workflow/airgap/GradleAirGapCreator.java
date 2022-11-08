@@ -42,7 +42,7 @@ public class GradleAirGapCreator {
         this.configuration = configuration;
     }
 
-    public void installGradleDependencies(File gradleTemp, File gradleTarget, String inspectorVersion) throws DetectUserFriendlyException {
+    public void installGradleDependencies(File gradleTemp, File gradleTarget) throws DetectUserFriendlyException {
         logger.info("Checking for gradle on the path.");
         ExecutableTarget gradle;
         try {

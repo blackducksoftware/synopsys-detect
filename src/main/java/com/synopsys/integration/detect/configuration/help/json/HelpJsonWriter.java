@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.configuration.help.json;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -16,6 +17,12 @@ import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.deprecation.PropertyRemovalDeprecationInfo;
 import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonData;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDetectorRule;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDetectorStatusCode;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonExitCode;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonOption;
+import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonOptionDeprecatedValue;
 import com.synopsys.integration.detector.base.DetectorStatusCode;
 
 public class HelpJsonWriter {
@@ -27,23 +34,30 @@ public class HelpJsonWriter {
         this.gson = gson;
     }
 
-    public void writeGsonDocument(String filename, List<Property> detectOptions, List<HelpJsonDetector> buildDetectors, List<HelpJsonDetector> buildlessDetectors) {
+    public void writeGsonDocument(
+        String filename,
+        List<Property> detectOptions,
+        List<HelpJsonDetectorRule> detectorRules
+    ) {
         HelpJsonData data = new HelpJsonData();
 
         data.getOptions().addAll(detectOptions.stream().map(this::convertOption).collect(Collectors.toList()));
         data.getExitCodes().addAll(Stream.of(ExitCodeType.values()).map(this::convertExitCode).collect(Collectors.toList()));
         data.getDetectorStatusCodes().addAll(Stream.of(DetectorStatusCode.values()).map(this::convertDetectorStatusCode).collect(Collectors.toList()));
-        data.setBuildlessDetectors(buildlessDetectors);
-        data.setBuildDetectors(buildDetectors);
+        data.setDetectors(detectorRules);
 
         try {
-            try (Writer writer = new FileWriter(filename)) {
+            File file1 = new File(filename);
+            File buildDir = new File(file1.getParentFile(), "documentation/build");
+            buildDir.mkdirs();
+            File file = new File(buildDir, filename);
+            try (Writer writer = new FileWriter(file)) {
                 gson.toJson(data, writer);
             }
 
-            logger.info(filename + " was created in your current directory.");
+            logger.info("{} was created at {}", filename, file.getAbsolutePath());
         } catch (IOException e) {
-            logger.error("There was an error when creating the html file", e);
+            logger.error("There was an error when creating the json file", e);
         }
     }
 

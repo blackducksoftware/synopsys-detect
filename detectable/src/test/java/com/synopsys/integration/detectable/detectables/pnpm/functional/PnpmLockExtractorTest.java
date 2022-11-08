@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
@@ -22,8 +21,8 @@ public class PnpmLockExtractorTest {
     @Test
     public void testNoFailureOnNullPackageJson() {
         PackageJsonFiles packageJsonFiles = new PackageJsonFiles(new PackageJsonReader(new Gson()));
-        EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(PnpmDependencyType.APP);
-        PnpmLockExtractor extractor = new PnpmLockExtractor(new PnpmLockYamlParser(new PnpmYamlTransformer(new ExternalIdFactory(), dependencyTypeFilter)), packageJsonFiles);
+        EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
+        PnpmLockExtractor extractor = new PnpmLockExtractor(new PnpmLockYamlParser(new PnpmYamlTransformer(dependencyTypeFilter)), packageJsonFiles);
 
         File pnpmLockYaml = FunctionalTestFiles.asFile("/pnpm/pnpm-lock.yaml");
         Extraction extraction = extractor.extract(pnpmLockYaml, null, new PnpmLinkedPackageResolver(new File(""), packageJsonFiles));

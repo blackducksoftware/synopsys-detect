@@ -6,5 +6,7 @@ public enum DetectIssueType {
     DETECTOR,
     SIGNATURE_SCANNER,
     BINARY_SCAN,
-    IMPACT_ANALYSIS
+    IMPACT_ANALYSIS,
+    DETECTABLE_TOOL,
+    IAC_SCANNER
 }

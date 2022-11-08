@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 
 public class BlackDuckSignatureScannerOptions {
@@ -21,12 +22,11 @@ public class BlackDuckSignatureScannerOptions {
 
     @Nullable //Just to note that if you do not want snippet matching, this should be null.
     private final SnippetMatching snippetMatching;
+    
+    @Nullable //Just to note that if you want server defaults this should be null.
+    private final ReducedPersistence reducedPersistence;
 
     private final boolean uploadSource;
-    @Nullable
-    private final String codeLocationPrefix;
-    @Nullable
-    private final String codeLocationSuffix;
     @Nullable
     private final String additionalArguments;
     private final Integer maxDepth;
@@ -36,6 +36,7 @@ public class BlackDuckSignatureScannerOptions {
     private final Boolean copyrightSearch;
     private final Boolean followSymLinks;
     private final Boolean treatSkippedScansAsSuccess;
+    private final Boolean isEphemeral;
 
     public BlackDuckSignatureScannerOptions(
         List<Path> signatureScannerPaths,
@@ -46,15 +47,15 @@ public class BlackDuckSignatureScannerOptions {
         Boolean dryRun,
         @Nullable SnippetMatching snippetMatching,
         @Nullable Boolean uploadSource,
-        @Nullable String codeLocationPrefix,
-        @Nullable String codeLocationSuffix,
         @Nullable String additionalArguments,
         Integer maxDepth,
         @Nullable IndividualFileMatching individualFileMatching,
         Boolean licenseSearch,
         Boolean copyrightSearch,
         Boolean followSymLinks,
-        Boolean treatSkippedScansAsSuccess
+        Boolean treatSkippedScansAsSuccess,
+        Boolean isEphemeral, 
+        ReducedPersistence reducedPersistence
     ) {
 
         this.signatureScannerPaths = signatureScannerPaths;
@@ -65,8 +66,6 @@ public class BlackDuckSignatureScannerOptions {
         this.dryRun = dryRun;
         this.snippetMatching = snippetMatching;
         this.uploadSource = uploadSource;
-        this.codeLocationPrefix = codeLocationPrefix;
-        this.codeLocationSuffix = codeLocationSuffix;
         this.additionalArguments = additionalArguments;
         this.maxDepth = maxDepth;
         this.individualFileMatching = individualFileMatching;
@@ -74,6 +73,8 @@ public class BlackDuckSignatureScannerOptions {
         this.copyrightSearch = copyrightSearch;
         this.followSymLinks = followSymLinks;
         this.treatSkippedScansAsSuccess = treatSkippedScansAsSuccess;
+        this.isEphemeral = isEphemeral;
+        this.reducedPersistence = reducedPersistence;
     }
 
     public List<Path> getSignatureScannerPaths() {
@@ -102,14 +103,6 @@ public class BlackDuckSignatureScannerOptions {
 
     public Boolean getUploadSource() {
         return uploadSource;
-    }
-
-    public Optional<String> getCodeLocationPrefix() {
-        return Optional.ofNullable(codeLocationPrefix);
-    }
-
-    public Optional<String> getCodeLocationSuffix() {
-        return Optional.ofNullable(codeLocationSuffix);
     }
 
     public Optional<String> getAdditionalArguments() {
@@ -142,5 +135,13 @@ public class BlackDuckSignatureScannerOptions {
 
     public Boolean getTreatSkippedScansAsSuccess() {
         return treatSkippedScansAsSuccess;
+    }
+
+    public Boolean getIsEphemeral() {
+        return isEphemeral;
+    }
+    
+    public Optional<ReducedPersistence> getReducedPersistence() {
+        return Optional.ofNullable(reducedPersistence);
     }
 }

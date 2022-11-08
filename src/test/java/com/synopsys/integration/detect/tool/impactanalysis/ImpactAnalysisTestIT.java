@@ -13,8 +13,6 @@ import org.junit.jupiter.api.io.TempDir;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckTestConnection;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchRunner;
@@ -29,7 +27,7 @@ import com.synopsys.integration.util.NoThreadExecutorService;
 
 @Tag("integration")
 public class ImpactAnalysisTestIT {
-    private final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
+    private final CodeLocationNameGenerator codeLocationNameGenerator = CodeLocationNameGenerator.withPrefixSuffix("prefix", "suffix");
     private final CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
 
     @TempDir
@@ -45,11 +43,8 @@ public class ImpactAnalysisTestIT {
         File toScan = new File("./");
         Path outputDirectory = outputDirAsPath.toPath();
 
-        ProjectVersionWrapper projectAndVersion = blackDuckTestConnection.createProjectService().syncProjectAndVersion(ProjectSyncModel.createWithDefaults(projectNameVersion));
-
-        ImpactAnalysisOptions impactAnalysisOptions = new ImpactAnalysisOptions("prefix", "suffix");
         ImpactAnalysisNamingOperation impactAnalysisNamingOperation = new ImpactAnalysisNamingOperation(codeLocationNameManager);
-        String impactAnalysisCodeLocationName = impactAnalysisNamingOperation.createCodeLocationName(toScan, projectNameVersion, impactAnalysisOptions);
+        String impactAnalysisCodeLocationName = impactAnalysisNamingOperation.createCodeLocationName(toScan, projectNameVersion);
 
         GenerateImpactAnalysisOperation generateImpactAnalysisOperation = new GenerateImpactAnalysisOperation();
         Path impactAnalysisFile = generateImpactAnalysisOperation.generateImpactAnalysis(toScan, impactAnalysisCodeLocationName, outputDirectory);

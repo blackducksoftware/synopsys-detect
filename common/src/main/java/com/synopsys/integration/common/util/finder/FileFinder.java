@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +20,7 @@ public interface FileFinder {
     @Nullable
     default File findFile(File directoryToSearch, Predicate<File> filter, boolean followSymLinks, int depth) {
         List<File> files = findFiles(directoryToSearch, filter, followSymLinks, depth);
-        if (files != null && files.size() > 0) {
+        if (CollectionUtils.isNotEmpty(files)) {
             return files.get(0);
         }
         return null;
@@ -47,7 +48,7 @@ public interface FileFinder {
     @Nullable
     default File findFile(File directoryToSearch, String filenamePattern, boolean followSymLinks, int depth) {
         List<File> files = findFiles(directoryToSearch, Collections.singletonList(filenamePattern), followSymLinks, depth);
-        if (files != null && files.size() > 0) {
+        if (CollectionUtils.isNotEmpty(files)) {
             return files.get(0);
         }
         return null;

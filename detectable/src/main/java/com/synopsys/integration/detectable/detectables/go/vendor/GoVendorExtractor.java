@@ -26,9 +26,8 @@ public class GoVendorExtractor {
 
     public Extraction extract(File vendorJsonFile) {
         try {
-            GoVendorJsonParser vendorJsonParser = new GoVendorJsonParser(externalIdFactory);
+            GoVendorJsonParser vendorJsonParser = new GoVendorJsonParser(externalIdFactory); //TODO: This should be injected.
             String vendorJsonContents = FileUtils.readFileToString(vendorJsonFile, StandardCharsets.UTF_8);
-            logger.debug(vendorJsonContents);
 
             DependencyGraph dependencyGraph = vendorJsonParser.parseVendorJson(gson, vendorJsonContents);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);

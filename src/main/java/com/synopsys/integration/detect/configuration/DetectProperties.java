@@ -10,22 +10,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.configuration.property.Properties;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.base.TypedProperty;
 import com.synopsys.integration.configuration.property.types.bool.BooleanProperty;
+import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllEnum;
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
 import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.NoneEnum;
+import com.synopsys.integration.configuration.property.types.enumallnone.property.AllEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enumallnone.property.AllNoneEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enumallnone.property.NoneEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
@@ -49,8 +49,8 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTargetTyp
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
+import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedReducedPersistanceMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
-import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
@@ -61,8 +61,8 @@ import com.synopsys.integration.detectable.detectables.lerna.LernaPackageType;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
+import com.synopsys.integration.detectable.detectables.pipenv.parse.PipenvDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyTypeV2;
 import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detectable.detectables.yarn.YarnDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -72,8 +72,6 @@ import com.synopsys.integration.log.LogLevel;
 // java:S1123: Warning about deprecations not having Java doc.
 @SuppressWarnings({ "java:S1123", "java:S1192" })
 public class DetectProperties {
-    private static final String SBT_REPORT_DEPRECATION_MESSAGE = "This property is being removed. Sbt will no longer parse report files but instead will use a dependency resolution plugin. Please install the appropriate plugin in the future.";
-
     private DetectProperties() {
     }
 
@@ -168,6 +166,18 @@ public class DetectProperties {
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .build();
 
+    public static final AllNoneEnumListProperty<DetectorType> DETECT_ACCURACY_REQUIRED =
+        AllNoneEnumListProperty.newBuilder("detect.accuracy.required", AllNoneEnum.ALL, DetectorType.class)
+            .setInfo("Detector Accuracy Requirements", DetectPropertyFromVersion.VERSION_7_13_0)
+            .setHelp(
+                "Detector types from which HIGH accuracy results are required when a detector of that type applies.",
+                "The value of this property only affects detector types which apply to the source project. If a detector type applies, and is one of the accuracy-required detector types indicated by the value of this property, low accuracy results for that detector type are treated as a failure.  Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Detector cascade and accuracy</i> page for more details."
+            )
+            .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
+            .setExample("ALL,NONE")
+            .setCategory(DetectCategory.Advanced)
+            .build();
+
     public static final IntegerProperty DETECT_PARALLEL_PROCESSORS =
         IntegerProperty.newBuilder("detect.parallel.processors", 1)
             .setInfo("Detect Parallel Processors", DetectPropertyFromVersion.VERSION_6_0_0)
@@ -207,10 +217,11 @@ public class DetectProperties {
             .build();
 
     public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_WORKSPACE_RULES =
-        AllNoneEnumListProperty.newBuilder("detect.bazel.workspace.rules", emptyList(), WorkspaceRule.class)
+        AllNoneEnumListProperty.newBuilder("detect.bazel.workspace.rules", AllNoneEnum.NONE, WorkspaceRule.class)
             .setInfo("Bazel workspace rules", DetectPropertyFromVersion.VERSION_7_12_0)
             .setHelp(
-                "By default Detect discovers Bazel dependencies using all of the supported Bazel workspace rules that it finds in the WORKSPACE file. Alternatively you can use this property to specify the list of Bazel workspace rules Detect should use."
+                "By default Detect discovers Bazel dependencies using all of the supported Bazel workspace rules that it finds in the WORKSPACE file. Alternatively you can use this property to specify the list of Bazel workspace rules Detect should use.",
+                "Setting this property (or letting it default) to NONE tells Detect to use supported rules that it finds in the WORKSPACE file."
             )
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .build();
@@ -225,7 +236,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<ConanDependencyType> DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.conan.dependency.types.excluded", NoneEnum.NONE, ConanDependencyType.class)
             .setInfo("Conan Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Conan dependency types", "detect.conan.include.build.dependencies"))
+            .setHelp(createTypeFilterHelpText("Conan dependency types"))
             .setExample(ConanDependencyType.BUILD.name())
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -247,6 +258,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Should the default change? Has KB matching of Conan projects improved? If so, this could change to 'true'.
     public static final BooleanProperty DETECT_CONAN_REQUIRE_PREV_MATCH =
         BooleanProperty.newBuilder("detect.conan.attempt.package.revision.match", false)
             .setInfo(
@@ -257,11 +269,10 @@ public class DetectProperties {
                 "If package revisions are available (a Conan lock file is found or provided, and Conan's revisions feature is enabled), require that each dependency's package revision match the package revision of the component in the KB.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
-
     public static final NullablePathProperty DETECT_BDIO_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.bdio.output.path")
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The path to the output directory for all BDIO files.", "If not set, the BDIO files are placed in a 'BDIO' subdirectory of the output directory.")
+            .setHelp("The path to the output directory for the generated BDIO file.", "If not set, the BDIO file will be placed in a 'BDIO' subdirectory of the output directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
@@ -269,7 +280,7 @@ public class DetectProperties {
         NullableStringProperty.newBuilder("detect.bdio.file.name")
             .setInfo("BDIO File Name", DetectPropertyFromVersion.VERSION_7_9_0)
             .setHelp(
-                "The desired file name of the single bdio file Detect produces in the BDIO Output Directory.",
+                "The desired file name of BDIO file Detect produces in the BDIO Output Directory.",
                 "If not set, the file name is generated from your project, version and code location names."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
@@ -287,11 +298,12 @@ public class DetectProperties {
         StringListProperty.newBuilder("detect.binary.scan.file.name.patterns", emptyList())
             .setInfo("Binary Scan Filename Patterns", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp(
-                "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "If specified, files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. Directories specified via property detect.excluded.directories are excluded from the file search. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH)
             .setExample("*.jar")
             .build();
 
+    // TODO: Consider raising default search depth
     public static final IntegerProperty DETECT_BINARY_SCAN_SEARCH_DEPTH =
         IntegerProperty.newBuilder("detect.binary.scan.search.depth", 0)
             .setInfo("Binary Scan Search Depth", DetectPropertyFromVersion.VERSION_6_9_0)
@@ -300,6 +312,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Consider removing environment sourcing code in 9.0.0. IDETECT-3167
     public static final StringProperty DETECT_BITBAKE_BUILD_ENV_NAME =
         StringProperty.newBuilder("detect.bitbake.build.env.name", "oe-init-build-env")
             .setInfo("BitBake Init Script Name", DetectPropertyFromVersion.VERSION_4_4_0)
@@ -307,6 +320,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Change to (Nullable?)StringProperty
     public static final StringListProperty DETECT_BITBAKE_PACKAGE_NAMES =
         StringListProperty.newBuilder("detect.bitbake.package.names", emptyList())
             .setInfo("BitBake Package Names", DetectPropertyFromVersion.VERSION_4_4_0)
@@ -314,6 +328,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Consider removing environment sourcing code in 9.0.0. IDETECT-3167
     public static final StringListProperty DETECT_BITBAKE_SOURCE_ARGUMENTS =
         StringListProperty.newBuilder("detect.bitbake.source.arguments", emptyList())
             .setInfo("BitBake Source Arguments", DetectPropertyFromVersion.VERSION_6_0_0)
@@ -321,6 +336,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: The task-depends.dot should be in working directory now, should verify? Maybe keep if IDETECT-3167 is completed
     public static final IntegerProperty DETECT_BITBAKE_SEARCH_DEPTH =
         IntegerProperty.newBuilder("detect.bitbake.search.depth", 1)
             .setInfo("BitBake Search Depth", DetectPropertyFromVersion.VERSION_6_1_0)
@@ -343,20 +359,33 @@ public class DetectProperties {
         NullableStringProperty.newBuilder("detect.blackduck.signature.scanner.arguments")
             .setInfo("Signature Scanner Arguments", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
-                "Additional arguments to use when running the Black Duck signature scanner.",
-                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from \\${HOME}/excludes.txt'"
+                "A space-separated list of additional arguments to use when running the Black Duck signature scanner.",
+                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in the current working directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from ./excludes.txt'"
             )
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+            .setExample("--exclude-from ./excludes.txt")
             .build();
 
+    public static final NullablePathProperty DETECT_PROJECT_INSPECTOR_PATH =
+        NullablePathProperty.newBuilder("detect.project.inspector.path")
+            .setInfo("Project Inspector Path", DetectPropertyFromVersion.VERSION_8_1_0)
+            .setHelp(
+                "Use this property to point Detect to a local Project Inspector zip file, instead of the default Project Inspector zip file that Detect downloads from the binary repository. You need to ensure the version is compatible (the same major version that Detect downloads by default)."
+            )
+            .setGroups(DetectGroup.PROJECT_INSPECTOR, DetectGroup.DEFAULT)
+            .setCategory(DetectCategory.Advanced)
+            .build();
+
+    // TODO: JP don't like it
     public static final NullableStringProperty PROJECT_INSPECTOR_ARGUMENTS =
         NullableStringProperty.newBuilder("detect.project.inspector.arguments")
             .setInfo("Project Inspector Additional Arguments", DetectPropertyFromVersion.VERSION_7_7_0)
             .setHelp("A space-separated list of additional options to pass to all invocations of the project inspector.")
-            .setGroups(DetectGroup.DEFAULT)
+            .setGroups(DetectGroup.PROJECT_INSPECTOR, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Consider detect.blackduck.signature.scanner.search=COPYRIGHT,LICENSE,ALL,NONE
     public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH =
         BooleanProperty.newBuilder("detect.blackduck.signature.scanner.copyright.search", false)
             .setInfo("Signature Scanner Copyright Search", DetectPropertyFromVersion.VERSION_6_4_0)
@@ -384,6 +413,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .build();
 
+    // TODO: Consider detect.blackduck.signature.scanner.search=COPYRIGHT,LICENSE,ALL,NONE
     public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH =
         BooleanProperty.newBuilder("detect.blackduck.signature.scanner.license.search", false)
             .setInfo("Signature Scanner License Search", DetectPropertyFromVersion.VERSION_6_2_0)
@@ -427,6 +457,19 @@ public class DetectProperties {
                 "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
+    
+    public static final ExtendedEnumProperty<ExtendedReducedPersistanceMode, ReducedPersistence> DETECT_BLACKDUCK_SIGNATURE_SCANNER_REDUCED_PERSISTENCE =
+            ExtendedEnumProperty.newBuilder(
+                    "detect.blackduck.signature.scanner.reduced.persistence",
+                    ExtendedEnumValue.ofExtendedValue(ExtendedReducedPersistanceMode.DEFAULT),
+                    ExtendedReducedPersistanceMode.class,
+                    ReducedPersistence.class
+                )
+                .setInfo("Reduced Persistence", DetectPropertyFromVersion.VERSION_8_3_0)
+                .setHelp(
+                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to <xref href=\"https://community.synopsys.com/s/document-item?bundleId=bd-hub&topicId=ComponentDiscovery%2Fabout_reduced_persistence_signature_scanning.html&_LANG=enus\" scope=\"external\" outputclass=\"external\" format=\"html\" target=\"_blank\">about reduced persistence signature scanning.</xref>")
+                .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+                .build();
 
     public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE =
         BooleanProperty.newBuilder("detect.blackduck.signature.scanner.upload.source.mode", false)
@@ -434,13 +477,6 @@ public class DetectProperties {
             .setHelp(
                 "If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .build();
-
-    public static final BooleanProperty DETECT_BUILDLESS =
-        BooleanProperty.newBuilder("detect.detector.buildless", false)
-            .setInfo("Buildless Mode", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, only Detector's capable of running without a build will be run.")
-            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .build();
 
     public static final BooleanProperty DETECT_CLEANUP =
@@ -467,6 +503,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Currently misleading "base-name"
     public static final NullableStringProperty DETECT_CODE_LOCATION_NAME =
         NullableStringProperty.newBuilder("detect.code.location.name")
             .setInfo("Scan Name", DetectPropertyFromVersion.VERSION_4_0_0)
@@ -518,17 +555,29 @@ public class DetectProperties {
             .setGroups(DetectGroup.DART, DetectGroup.GLOBAL)
             .build();
 
+    public static final NoneEnumListProperty<PipenvDependencyType> DETECT_PIPFILE_DEPENDENCY_TYPES_EXCLUDED =
+        NoneEnumListProperty.newBuilder("detect.pipfile.dependency.types.excluded", NoneEnum.NONE, PipenvDependencyType.class)
+            .setInfo("Pipfile Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_13_0)
+            .setHelp(
+                "A comma-separated list of dependency types that will be excluded.",
+                "If DEV is excluded, the Pipfile Lock Detector will exclude 'develop' dependencies when parsing the Pipfile.lock file."
+            )
+            .setExample(PipenvDependencyType.DEV.name())
+            .setGroups(DetectGroup.PIP, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
+            .build();
+
     public static final NoneEnumListProperty<DartPubDependencyType> DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.pub.dependency.types.excluded", NoneEnum.NONE, DartPubDependencyType.class)
             .setInfo("Dart Pub Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
-                createDefaultDrivenPropertyHelpText("Dart pub dependency types", "detect.pub.deps.exclude.dev"),
+                createTypeFilterHelpText("Dart pub dependency types"),
                 "If DEV is excluded, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
             )
             .setExample(DartPubDependencyType.DEV.name())
             .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Increase the depth. Ideally based on some kind of data
     public static final IntegerProperty DETECT_DETECTOR_SEARCH_DEPTH =
         IntegerProperty.newBuilder("detect.detector.search.depth", 0)
             .setInfo("Detector Search Depth", DetectPropertyFromVersion.VERSION_3_2_0)
@@ -539,13 +588,13 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Consider changing to ENUM for future nesting control
     public static final BooleanProperty DETECT_DETECTOR_SEARCH_CONTINUE =
         BooleanProperty.newBuilder("detect.detector.search.continue", false)
             .setInfo("Detector Search Continue", DetectPropertyFromVersion.VERSION_3_2_0)
             .setHelp(
-                "If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.",
-                "If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc. "
-                    + "If false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project."
+                "By default, nesting rules limit which detectors can run on a subdirectory based on which detectors applied on any parent directory. Setting this property to true disables nesting rules.",
+                "Refer to the 'Downloading and Running Synopsys Detect' > 'Detector search and accuracy' page for more information on nesting rules."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -555,14 +604,7 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.diagnostic", false)
             .setInfo("Diagnostic Mode", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp(
-                "When enabled, diagnostic mode collects all files generated by Synopsys Detect and zips the files using a unique run ID. It includes logs, BDIO files, extraction files, and reports.")
-            .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
-            .build();
-
-    public static final BooleanProperty DETECT_DIAGNOSTIC_EXTENDED =
-        BooleanProperty.newBuilder("detect.diagnostic.extended", false)
-            .setInfo("Diagnostic Mode Extended", DetectPropertyFromVersion.VERSION_6_5_0)
-            .setHelp("When enabled, Synopsys Detect performs the actions of --detect.diagnostic, but also includes relevant files such as lock files and build artifacts.")
+                "When enabled, diagnostic mode collects files valuable for troubleshooting (logs, BDIO file, extraction files, reports, etc.), writes them to a zip file, and logs the path to the zip file.")
             .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
             .build();
 
@@ -570,13 +612,14 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.ignore.connection.failures", false)
             .setInfo("Detect Ignore Connection Failures", DetectPropertyFromVersion.VERSION_5_3_0)
             .setHelp(
-                "If true, Detect will ignore any products that it cannot connect to.",
-                "If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product."
+                "If true, Detect will ignore any products (eg. Black Duck) that it cannot connect to.",
+                "If true, when Detect attempts to boot a product (eg. Black Duck) it will also check if it can communicate with it - if it cannot, it will not run the product."
             )
-            .setGroups(DetectGroup.GENERAL, DetectGroup.BLACKDUCK_SERVER, DetectGroup.POLARIS)
+            .setGroups(DetectGroup.GENERAL, DetectGroup.BLACKDUCK_SERVER)
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Consider the script using this property. New Jira ticket please
     public static final PassthroughProperty PHONEHOME_PASSTHROUGH =
         PassthroughProperty.newBuilder("detect.phone.home.passthrough")
             .setInfo("Phone Home Passthrough", DetectPropertyFromVersion.VERSION_6_0_0)
@@ -585,6 +628,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: This could go away if we more tightly integrated Docker Inspector code within Detect. Yuuuge effort
     public static final PassthroughProperty DOCKER_PASSTHROUGH =
         PassthroughProperty.newBuilder("detect.docker.passthrough")
             .setInfo("Docker Passthrough", DetectPropertyFromVersion.VERSION_6_0_0)
@@ -620,9 +664,9 @@ public class DetectProperties {
 
     public static final NullablePathProperty DETECT_DOCKER_INSPECTOR_PATH =
         NullablePathProperty.newBuilder("detect.docker.inspector.path")
-            .setInfo("Docker Inspector .jar File Path", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Docker Inspector Path", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a compatible (the same major version that Detect downloads by default) local Docker Inspector .jar file at this path."
+                "Use this property to point Detect to a local Docker Inspector jar file, instead of the default Docker Inspector jar file that Detect downloads from the binary repository. You need to ensure the version is compatible (the same major version that Detect downloads by default)."
             )
             .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
@@ -637,20 +681,13 @@ public class DetectProperties {
             .setExample("9.1.1")
             .build();
 
+    // The docker exe is only used in air gap mode to load image tarfiles (from the air gap files) for docker inspector
     public static final NullablePathProperty DETECT_DOCKER_PATH =
         NullablePathProperty.newBuilder("detect.docker.path")
             .setInfo("Docker Executable", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Path to the docker executable (used to load image inspector Docker images in order to run the Docker Inspector in air gap mode).")
             .setExample("/usr/local/bin/docker")
             .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
-            .build();
-
-    public static final BooleanProperty DETECT_DOCKER_PATH_REQUIRED =
-        BooleanProperty.newBuilder("detect.docker.path.required", false)
-            .setInfo("Run Without Docker in Path", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
             .build();
 
     public static final NullableStringProperty DETECT_DOCKER_PLATFORM_TOP_LAYER_ID =
@@ -670,24 +707,19 @@ public class DetectProperties {
             .setInfo("Image Archive File", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "An image .tar file which is either a Docker image saved to a file using the 'docker save' command, or an Open Container Initiative (OCI) image .tar file. The file must be readable by all.",
-                "detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties)."
+                "detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties). "
+                    +
+                    "The .tar file must conform to either of the following image format specifications: 1. Docker Image Specification v1.2.0 (https://github.com/moby/moby/blob/master/image/spec/v1.2.md), which is the format produced by the \"docker save\" command, or 2. Open Container Initiative Image Format Specification (https://github.com/opencontainers/image-spec/blob/main/spec.md)."
             )
             .setExample("./ubuntu21_04.tar")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
             .build();
 
-    public static final NullablePathProperty DETECT_DOTNET_PATH =
-        NullablePathProperty.newBuilder("detect.dotnet.path")
-            .setInfo("dotnet Executable", DetectPropertyFromVersion.VERSION_4_4_0)
-            .setHelp("The path to the dotnet executable.")
-            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
-            .build();
-
-    public static final AllNoneEnumListProperty<DetectorType> DETECT_EXCLUDED_DETECTOR_TYPES =
-        AllNoneEnumListProperty.newBuilder("detect.excluded.detector.types", emptyList(), DetectorType.class)
+    public static final NoneEnumListProperty<DetectorType> DETECT_EXCLUDED_DETECTOR_TYPES =
+        NoneEnumListProperty.newBuilder("detect.excluded.detector.types", NoneEnum.NONE, DetectorType.class)
             .setInfo("Detector Types Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.",
+                "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. Exclusion rules always win.",
                 "If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them."
             )
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
@@ -704,7 +736,7 @@ public class DetectProperties {
             .build();
 
     public static final BooleanProperty DETECT_FORCE_SUCCESS_ON_SKIP =
-        BooleanProperty.newBuilder("detect.force.success.on.skip", true)
+        BooleanProperty.newBuilder("detect.force.success.on.skip", false)
             .setInfo("Force Success On Skip", DetectPropertyFromVersion.VERSION_7_12_1)
             .setHelp(
                 "If true, Detect will always exit with code 0 when a scan of any type is skipped. Typically this happens when the Black Duck minimum scan interval timer has not been met.")
@@ -730,7 +762,7 @@ public class DetectProperties {
         EnumProperty.newBuilder("detect.go.mod.dependency.types.excluded", GoModDependencyType.NONE, GoModDependencyType.class)
             .setInfo("Go Mod Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
-                createDefaultDrivenPropertyHelpText("Go Mod dependency types", "detect.go.mod.enable.verification"),
+                createTypeFilterHelpText("Go Mod dependency types"),
                 String.format(
                     "If %s is provided, Detect will use the results of 'go mod why' to filter out unused dependencies from Go modules declaring Go 1.16 or higher. If %s is provided, Detect will use the results of 'go mod why -vendor' to filter out all unused dependencies.",
                     GoModDependencyType.UNUSED.name(),
@@ -751,6 +783,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Inconsistent location of excluded/included within the property names. included/excluded should likely be at the end. Warn support!
     public static final CaseSensitiveStringListProperty DETECT_GRADLE_EXCLUDED_CONFIGURATIONS =
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.excluded.configurations", Collections.emptyList())
             .setInfo("Gradle Exclude Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -766,8 +799,8 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.excluded.projects")
             .setInfo("Gradle Exclude Projects", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "A comma-separated list of Gradle sub-projects to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "A comma-separated list of Gradle subprojects to exclude.",
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subprojects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -775,10 +808,10 @@ public class DetectProperties {
 
     public static final CaseSensitiveStringListProperty DETECT_GRADLE_EXCLUDED_PROJECT_PATHS =
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.excluded.project.paths")
-            .setInfo("Gradle Exclude Project Paths", DetectPropertyFromVersion.VERSION_7_12_0)
+            .setInfo("Gradle Exclude Subproject Paths", DetectPropertyFromVersion.VERSION_7_12_0)
             .setHelp(
-                "A comma-separated list of Gradle sub-project paths to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-project whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "A comma-separated list of Gradle subproject paths to exclude.",
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subproject whose path matches one of the values passed via this property. Run 'gradle projects' to see the paths to your subprojects. Subproject paths have the form ':subproject:subsubproject' and are unique. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -799,7 +832,7 @@ public class DetectProperties {
         NoneEnumListProperty.newBuilder("detect.gradle.configuration.types.excluded", NoneEnum.NONE, GradleConfigurationType.class)
             .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
-                createDefaultDrivenPropertyHelpText("Gradle configuration types", "detect.gradle.include.unresolved.configurations"),
+                createTypeFilterHelpText("Gradle configuration types"),
                 "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
             )
             .setExample(GradleConfigurationType.UNRESOLVED.name())
@@ -810,8 +843,8 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.included.projects")
             .setInfo("Gradle Include Projects", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "A comma-separated list of Gradle sub-projects to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "A comma-separated list of Gradle subprojects to include.",
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -821,8 +854,8 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.included.project.paths")
             .setInfo("Gradle Include Project Paths", DetectPropertyFromVersion.VERSION_7_12_0)
             .setHelp(
-                "A comma-separated list of Gradle sub-project paths to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "A comma-separated list of Gradle subproject paths to include.",
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -847,24 +880,26 @@ public class DetectProperties {
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.",
-                "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
+                "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, will not be searched to find files for binary scanning when property detect.binary.scan.file.name.patterns is set, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .setExample("**/*-test")
             .build();
 
+    // TODO: Horribly named detect.directories.excluded.defaults=false
     public static final BooleanProperty DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED =
         BooleanProperty.newBuilder("detect.excluded.directories.defaults.disabled", false)
             .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "If false, Detect will exclude the default directory names. See the detailed help for more information.",
-                "If false, the following directories will be excluded by Detect when searching for detectors: bin, build, .git, .gradle, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, node_modules, .synopsys."
+                "If false, the following directories will be excluded by Detect when searching for detectors: __MACOX, bin, build, .git, .gradle, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, node_modules, .synopsys."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Rename to included signature scan? @Alex
     public static final IntegerProperty DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH =
         IntegerProperty.newBuilder("detect.excluded.directories.search.depth", 4)
             .setInfo("Detect Excluded Directories Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -890,8 +925,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
-    public static final AllNoneEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
-        AllNoneEnumListProperty.newBuilder("detect.included.detector.types", emptyList(), DetectorType.class)
+    public static final AllEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
+        AllEnumListProperty.newBuilder("detect.included.detector.types", AllEnum.ALL, DetectorType.class)
             .setInfo("Detector Types Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.",
@@ -941,7 +976,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<LernaPackageType> DETECT_LERNA_PACKAGE_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.lerna.package.types.excluded", NoneEnum.NONE, LernaPackageType.class)
             .setInfo("Lerna Package Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Lerna package types", "detect.lerna.include.private"))
+            .setHelp(createTypeFilterHelpText("Lerna package types"))
             .setExample(LernaPackageType.PRIVATE.name())
             .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
             .build();
@@ -960,7 +995,7 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.maven.excluded.modules")
             .setInfo("Maven Modules Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "A comma-separated list of Maven modules (sub-projects) to exclude.",
+                "A comma-separated list of Maven modules (subprojects) to exclude.",
                 "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
@@ -971,7 +1006,7 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.maven.included.modules")
             .setInfo("Maven Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "A comma-separated list of Maven modules (sub-projects) to include.",
+                "A comma-separated list of Maven modules (subprojects) to include.",
                 "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
@@ -1031,7 +1066,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<NpmDependencyType> DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.npm.dependency.types.excluded", NoneEnum.NONE, NpmDependencyType.class)
             .setInfo("Npm Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Npm dependency types", "detect.npm.include.dev.dependencies", "detect.npm.include.peer.dependencies"))
+            .setHelp(createTypeFilterHelpText("Npm dependency types"))
             .setExample(String.format("%s,%s", NpmDependencyType.DEV.name(), NpmDependencyType.PEER.name()))
             .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1078,14 +1113,6 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
-    public static final NullableStringProperty DETECT_NUGET_INSPECTOR_VERSION =
-        NullableStringProperty.newBuilder("detect.nuget.inspector.version")
-            .setInfo("Nuget Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version.")
-            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .build();
-
     public static final StringListProperty DETECT_NUGET_PACKAGES_REPO_URL =
         StringListProperty.newBuilder("detect.nuget.packages.repo.url", singletonList("https://api.nuget.org/v3/index.json"))
             .setInfo("Nuget Packages Repository URL", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1120,14 +1147,14 @@ public class DetectProperties {
     public static final NoneEnumListProperty<PackagistDependencyType> DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.packagist.dependency.types.excluded", NoneEnum.NONE, PackagistDependencyType.class)
             .setInfo("Packagist Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Packagist dependency types", "detect.packagist.include.dev.dependencies"))
+            .setHelp(createTypeFilterHelpText("Packagist dependency types"))
             .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final NoneEnumListProperty<PearDependencyType> DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.pear.dependency.types.excluded", NoneEnum.NONE, PearDependencyType.class)
             .setInfo("Pear Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Pear dependency types", "detect.pear.only.required.deps"))
+            .setHelp(createTypeFilterHelpText("Pear dependency types"))
             .setExample(PearDependencyType.OPTIONAL.name())
             .setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1185,10 +1212,10 @@ public class DetectProperties {
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL)
             .build();
 
-    public static final NoneEnumListProperty<PnpmDependencyTypeV2> DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED =
-        NoneEnumListProperty.newBuilder("detect.pnpm.dependency.types.excluded", NoneEnum.NONE, PnpmDependencyTypeV2.class)
+    public static final NoneEnumListProperty<PnpmDependencyType> DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED =
+        NoneEnumListProperty.newBuilder("detect.pnpm.dependency.types.excluded", NoneEnum.NONE, PnpmDependencyType.class)
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_11_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Pnpm dependency type", "detect.pnpm.dependency.types"))
+            .setHelp(createTypeFilterHelpText("pnpm dependency types"))
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -1196,7 +1223,7 @@ public class DetectProperties {
         NullablePathProperty.newBuilder("detect.swift.path")
             .setInfo("Swift Executable", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("Path of the swift executable.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setGroups(DetectGroup.SWIFT, DetectGroup.GLOBAL)
             .build();
 
     public static final AllNoneEnumListProperty<PolicyRuleSeverityType> DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES =
@@ -1258,16 +1285,7 @@ public class DetectProperties {
             .build();
 
     public static final AllNoneEnumListProperty<ProjectCloneCategoriesType> DETECT_PROJECT_CLONE_CATEGORIES =
-        AllNoneEnumListProperty.newBuilder(
-                "detect.project.clone.categories",
-                Arrays.asList(
-                    ProjectCloneCategoriesType.COMPONENT_DATA,
-                    ProjectCloneCategoriesType.VULN_DATA,
-                    ProjectCloneCategoriesType.VERSION_SETTINGS,
-                    ProjectCloneCategoriesType.CUSTOM_FIELD_DATA,
-                    ProjectCloneCategoriesType.LICENSE_TERM_FULFILLMENT
-                ), ProjectCloneCategoriesType.class
-            )
+        AllNoneEnumListProperty.newBuilder("detect.project.clone.categories", AllNoneEnum.ALL, ProjectCloneCategoriesType.class)
             .setInfo("Clone Project Categories", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
                 "The value of this property is used to set the 'Cloning' settings on created Black Duck projects. If property detect.project.version.update is set to true, the value of this property is used to set the 'Cloning' settings on updated Black Duck projects.")
@@ -1302,7 +1320,7 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_PROJECT_DESCRIPTION =
         NullableStringProperty.newBuilder("detect.project.description")
             .setInfo("Project Description", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("If project description is specified, your project will be created with this description.")
+            .setHelp("If project description is specified, your project will be created with this description. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
@@ -1339,7 +1357,7 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.project.level.adjustments", true)
             .setInfo("Allow Project Level Adjustments", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "Sets the component adjustments setting on the Black Duck project.",
+                "If set, created projects will be created with the value of this property. For updates, see detect.project.version.update.",
                 "Corresponds to the 'Always maintain component adjustments to all versions of this project' checkbox under 'Component Adjustments' on the Black Duck Project settings page."
             )
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING, DetectGroup.GLOBAL)
@@ -1351,7 +1369,7 @@ public class DetectProperties {
             .setInfo("Project Name", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "An override for the name to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING, DetectGroup.RAPID_SCAN)
             .build();
 
     public static final NullableStringProperty DETECT_PARENT_PROJECT_NAME =
@@ -1375,7 +1393,7 @@ public class DetectProperties {
     public static final NullableIntegerProperty DETECT_PROJECT_TIER =
         NullableIntegerProperty.newBuilder("detect.project.tier")
             .setInfo("Project Tier", DetectPropertyFromVersion.VERSION_3_1_0)
-            .setHelp("If a Black Duck project tier is specified, your project will be created with this tier.")
+            .setHelp("If a Black Duck project tier is specified, your project will be created with this tier. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
@@ -1393,7 +1411,7 @@ public class DetectProperties {
     public static final EnumProperty<ProjectVersionDistributionType> DETECT_PROJECT_VERSION_DISTRIBUTION =
         EnumProperty.newBuilder("detect.project.version.distribution", ProjectVersionDistributionType.EXTERNAL, ProjectVersionDistributionType.class)
             .setInfo("Version Distribution", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("An override for the Project Version distribution")
+            .setHelp("If project version distribution is specified, your project version will be created with this distribution. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -1403,27 +1421,27 @@ public class DetectProperties {
             .setInfo("Version Name", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "An override for the version to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING, DetectGroup.RAPID_SCAN)
             .build();
 
     public static final NullableStringProperty DETECT_PROJECT_VERSION_NICKNAME =
         NullableStringProperty.newBuilder("detect.project.version.nickname")
             .setInfo("Version Nickname", DetectPropertyFromVersion.VERSION_5_2_0)
-            .setHelp("If a project version nickname is specified, your project version will be created with this nickname.")
+            .setHelp("If a project version nickname is specified, your project version will be created with this nickname. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
     public static final NullableStringProperty DETECT_PROJECT_VERSION_NOTES =
         NullableStringProperty.newBuilder("detect.project.version.notes")
             .setInfo("Version Notes", DetectPropertyFromVersion.VERSION_3_1_0)
-            .setHelp("If project version notes are specified, your project version will be created with these notes.")
+            .setHelp("If project version notes are specified, your project version will be created with these notes. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
     public static final EnumProperty<ProjectVersionPhaseType> DETECT_PROJECT_VERSION_PHASE =
         EnumProperty.newBuilder("detect.project.version.phase", ProjectVersionPhaseType.DEVELOPMENT, ProjectVersionPhaseType.class)
             .setInfo("Version Phase", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("An override for the Project Version phase.")
+            .setHelp("If project version phase is specified, your project version will be created with this phase. For updates, see detect.project.version.update.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
 
@@ -1431,9 +1449,9 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.project.version.update", false)
             .setInfo("Update Project Version", DetectPropertyFromVersion.VERSION_4_0_0)
             .setHelp(
-                "If set to true, will update the Project Version with the configured properties. See detailed help for more information.",
-                "When set to true, the following properties will be updated on the Project. Project tier (detect.project.tier) and Project Level Adjustments (detect.project.level.adjustments). "
-                    + "The following properties will also be updated on the Version.Version notes (detect.project.version.notes), phase(detect.project.version.phase), distribution(detect.project.version.distribution)."
+                "If set to true, Detect will update the Black Duck project and project version according to configured project and project version properties. (By default, these properties are only set on created projects / project versions.)",
+                "When set to true, the following properties will be updated on the Project: description (detect.project.description), tier (detect.project.tier), and project level adjustments (detect.project.level.adjustments). "
+                    + "The following properties will also be updated on the project version: notes (detect.project.version.notes), phase (detect.project.version.phase), distribution (detect.project.version.distribution), nickname (detect.project.version.nickname), license (detect.project.version.license)."
             )
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
@@ -1441,7 +1459,7 @@ public class DetectProperties {
     public static final NullableStringProperty DETECT_PROJECT_VERSION_LICENSE =
         NullableStringProperty.newBuilder("detect.project.version.license")
             .setInfo("Project Version License", DetectPropertyFromVersion.VERSION_7_11_0)
-            .setHelp("An override for a Project Version's license.")
+            .setHelp("If project version license is specified, your project version will be created with this license. For updates, see detect.project.version.update.")
             .setExample("Apache License 2.0")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .build();
@@ -1481,7 +1499,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<GemspecDependencyType> DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.ruby.dependency.types.excluded", NoneEnum.NONE, GemspecDependencyType.class)
             .setInfo("Ruby Dependency Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Ruby(Gempsec) dependency types", "detect.ruby.include.dev.dependencies", "detect.ruby.include.runtime.dependencies"))
+            .setHelp(createTypeFilterHelpText("Ruby(Gempsec) dependency types"))
             .setExample(String.format("%s,%s", GemspecDependencyType.DEV.name(), GemspecDependencyType.RUNTIME))
             .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1491,7 +1509,7 @@ public class DetectProperties {
             .setInfo("Sbt Executable", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Path to the Sbt executable.", "If set, Detect will use the given Sbt executable instead of searching for one.")
             .setExample("C:\\Program Files (x86)\\sbt\\bin\\sbt.bat")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setGroups(DetectGroup.SBT, DetectGroup.GLOBAL)
             .build();
 
     public static final NullableStringProperty DETECT_SBT_ARGUMENTS =
@@ -1503,44 +1521,40 @@ public class DetectProperties {
             .setExample("\"-Djline.terminal=jline.UnsupportedTerminal\"")
             .build();
 
-    public static final CaseSensitiveStringListProperty DETECT_SBT_EXCLUDED_CONFIGURATIONS =
-        CaseSensitiveStringListProperty.newBuilder("detect.sbt.excluded.configurations")
-            .setInfo("SBT Configurations Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp(
-                "The names of the sbt configurations to exclude.",
-                "This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
-            )
-            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
-    public static final CaseSensitiveStringListProperty DETECT_SBT_INCLUDED_CONFIGURATIONS =
-        CaseSensitiveStringListProperty.newBuilder("detect.sbt.included.configurations")
-            .setInfo("SBT Configurations Included", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp(
-                "The names of the sbt configurations to include.",
-                "This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
-            )
-            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
-    public static final IntegerProperty DETECT_SBT_REPORT_DEPTH =
-        IntegerProperty.newBuilder("detect.sbt.report.search.depth", 3)
-            .setInfo("SBT Report Search Depth", DetectPropertyFromVersion.VERSION_4_3_0)
-            .setHelp("Depth the sbt detector will use to search for report files.")
-            .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
     public static final NullablePathProperty DETECT_SCAN_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.scan.output.path")
             .setInfo("Scan Output Path", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "The output directory for all signature scanner output files. If not set, the signature scanner output files will be in a 'scan' subdirectory of the output directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .build();
+
+    public static final PathListProperty DETECT_IAC_SCAN_PATHS =
+        PathListProperty.newBuilder("detect.iac.scan.paths", emptyList())
+            .setInfo("IaC Scan Target Paths", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "A comma-separated list of paths to perform IaC scans on.",
+                "If this property is set, an IaC scan will be performed on each of the paths provided. If this property is not set, but Iac Scanning is enabled via detect.tools, the IaC scan target path is the source path (see property detect.source.path)."
+            )
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
+            .setExample("/user/source/target1,/user/source/target2")
+            .build();
+
+    public static final NullableStringProperty DETECT_IAC_SCAN_ARGUMENTS =
+        NullableStringProperty.newBuilder("detect.iac.scan.arguments")
+            .setInfo("IaC Scan Arguments", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "A space-separated list of additional arguments to use when running the IaC Scanner.")
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
+            .setExample("--follow-symlinks")
+            .build();
+
+    public static final NullablePathProperty DETECT_IAC_SCANNER_LOCAL_PATH =
+        NullablePathProperty.newBuilder("detect.iac.scanner.local.path")
+            .setInfo("IaC Scanner Local Path", DetectPropertyFromVersion.VERSION_7_14_0)
+            .setHelp(
+                "Use this property to specify the path to a local IaC Scanner.")
+            .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
             .build();
 
     public static final NullablePathProperty DETECT_SOURCE_PATH =
@@ -1560,7 +1574,7 @@ public class DetectProperties {
             .setInfo("Detect Target", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "Informs detect of what is being scanned which allows improved user experience when scanning different types of targets.",
-                "Changes the behaviour of detect to better suite what is being scanned. For example, when IMAGE is selected, detect will not pick a source directory, will automatically disable the DETECTOR tool and run BINARY/SIGNATURE SCAN on the provided image."
+                "Changes the behaviour of detect to better suite what is being scanned. For example, when IMAGE is selected and the DOCKER tool applies and has not been excluded, detect will not pick a source directory, will automatically disable the DETECTOR tool and run BINARY/SIGNATURE SCAN on the provided image."
             )
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Simple)
@@ -1583,8 +1597,8 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
-    public static final AllNoneEnumListProperty<DetectTool> DETECT_TOOLS_EXCLUDED =
-        AllNoneEnumListProperty.newBuilder("detect.tools.excluded", emptyList(), DetectTool.class)
+    public static final NoneEnumListProperty<DetectTool> DETECT_TOOLS_EXCLUDED =
+        NoneEnumListProperty.newBuilder("detect.tools.excluded", emptyList(), DetectTool.class)
             .setInfo("Detect Tools Excluded", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
                 "The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.",
@@ -1594,8 +1608,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
-    public static final AllNoneEnumListProperty<DetectTool> DETECT_TOOLS =
-        AllNoneEnumListProperty.newBuilder("detect.tools", emptyList(), DetectTool.class)
+    public static final AllEnumListProperty<DetectTool> DETECT_TOOLS =
+        AllEnumListProperty.newBuilder("detect.tools", emptyList(), DetectTool.class)
             .setInfo("Detect Tools Included", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
                 "The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.",
@@ -1603,13 +1617,12 @@ public class DetectProperties {
                     "If neither detect.tools nor detect.tools.excluded are set, Detect will allow (run if applicable, based on the values of other properties) all Detect tools. If detect.tools is set, and detect.tools.excluded is not set, Detect will only allow to run those tools that are specified in the detect.tools list. If detect.tools.excluded is set, Detect will only allow those tools that are not specified in the detect.tools.excluded list."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
-            .build()
-            .deprecateNone("The value NONE is deprecated. Instead, you should set " + DETECT_TOOLS_EXCLUDED.getKey() + " to ALL.");
+            .build();
 
     public static final NoneEnumListProperty<YarnDependencyType> DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.yarn.dependency.types.excluded", NoneEnum.NONE, YarnDependencyType.class)
             .setInfo("Yarn Dependency Types Excluded", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp(createDefaultDrivenPropertyHelpText("Yarn dependency types", "detect.yarn.prod.only"))
+            .setHelp(createTypeFilterHelpText("Yarn dependency types"))
             .setExample(YarnDependencyType.NON_PRODUCTION.name())
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1693,7 +1706,7 @@ public class DetectProperties {
                 "Set the Black Duck scanning mode of Detect",
                 "Set the scanning mode of Detect to control how Detect will send data to Black Duck. RAPID will not persist the results and disables select Detect functionality for faster results. INTELLIGENT persists the results and permits all features of Detect."
             )
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.RAPID_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
 
@@ -1704,261 +1717,39 @@ public class DetectProperties {
                 "Controls how rapid scan evaluates policy rules",
                 "Set the compare mode of rapid scan. ALL evaluates all RAPID or FULL policies. BOM_COMPARE_STRICT will only show policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of policy rule modes and behaves like ALL if the policy rule is only RAPID but like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for complete details."
             )
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
+            .setGroups(DetectGroup.RAPID_SCAN, DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
+            .build();
+
+    public static final NullablePathProperty DETECT_STATUS_JSON_OUTPUT_PATH =
+        NullablePathProperty.newBuilder("detect.status.json.output.path")
+            .setInfo("Status JSON Output Path", DetectPropertyFromVersion.VERSION_8_1_0)
+            .setHelp(
+                "The directory to place a copy of the status.json file.",
+                "If set, Detect will use the given directory to store a copy of the status.json file."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
     //#endregion Active Properties
 
     //#region Deprecated Properties
-    // username/password ==> api token
-    public static final String BDIO1_DEPRECATION_MESSAGE = "This property is being removed, along with the option to generate BDIO in BDIO1 format. In the future, BDIO2 format will be the only option.";
-    public static final String AGGREGATION_MODE_DEPRECATION_MESSAGE = "This property is being removed, along with the ability to set the aggregation mode. Detect will only operate in SUBPROJECT aggregation mode to more accurately report the dependency graph.";
-    public static final String BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE = "This property is being removed. Please use property 'detect.bazel.workspace.rules' instead.";
-
-    public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_DEPENDENCY_RULE =
-        AllNoneEnumListProperty.newBuilder("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class)
-            .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp(
-                "The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
-            .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(BAZEL_DEPENDENCY_TYPE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
 
     @Deprecated
-    public static final NullableStringProperty DETECT_BOM_AGGREGATE_NAME =
-        NullableStringProperty.newBuilder("detect.bom.aggregate.name")
-            .setInfo("Aggregate BDIO File Name", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If set, this will aggregate all the BOMs to create a single BDIO file with the filename provided.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
-            .setCategory(DetectCategory.Advanced)
+    public static final BooleanProperty DETECT_DIAGNOSTIC_EXTENDED =
+        BooleanProperty.newBuilder("detect.diagnostic.extended", false)
+            .setInfo("Diagnostic Mode Extended", DetectPropertyFromVersion.VERSION_6_5_0)
+            .setHelp("When enabled, Synopsys Detect performs the actions of --detect.diagnostic, but also includes relevant files such as lock files and build artifacts.")
+            .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
             .setDeprecated(
-                "This property is being removed, use detect.bdio.file.name to control the name of the bdio file Detect generates, currently it works the same as this property. In the future, Detect will only operate in SUBPROJECT aggregation mode and the new property will not control aggregation, only the file name.",
-                DetectMajorVersion.EIGHT
+                "This property is being removed. Use property detect.diagnostic instead. There is no longer any distinction between extended and non-extended diagnostic zip files.",
+                DetectMajorVersion.NINE
             )
             .build();
 
-    @Deprecated
-    public static final EnumProperty<AggregateMode> DETECT_BOM_AGGREGATE_REMEDIATION_MODE =
-        EnumProperty.newBuilder("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode.class)
-            .setInfo("BDIO Aggregate Remediation Mode", DetectPropertyFromVersion.VERSION_6_1_0)
-            .setHelp(
-                "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes " +
-                    "from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
-                    "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the " +
-                    "top of the dependency tree, but all components will appear as TRANSITIVE in the BOM. " +
-                    "SUBPROJECT aggregation mode provides both component source information and correct identification of direct and transitive dependencies by " +
-                    "encoding code location nodes as subprojects in the graph. SUBPROJECT aggregation mode must only be used with Black Duck 2021.8.0 or later, " +
-                    "and has no effect (is equivalent to TRANSITIVE mode) when detect.bdio2.enabled is set to false.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(AGGREGATION_MODE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty BLACKDUCK_LEGACY_UPLOAD_ENABLED =
-        BooleanProperty.newBuilder("blackduck.legacy.upload.enabled", true)
-            .setInfo("Use legacy BDIO upload endpoints in Black Duck", DetectPropertyFromVersion.VERSION_7_0_0)
-            .setHelp(
-                "If set to true, Detect will upload the BDIO files to Black Duck using older REST APIs.  Set this to false if you want to use the intelligent persistent scan endpoints in Black Duck.  The intelligent persistent endpoints are a Black Duck feature to be used with a later Black Duck version.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is being removed as support for the legacy endpoint is dropped.", DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_BDIO2_ENABLED =
-        BooleanProperty.newBuilder("detect.bdio2.enabled", true)
-            .setInfo("BDIO 2 Enabled", DetectPropertyFromVersion.VERSION_6_1_0)
-            .setHelp("The version of BDIO files to generate.", "If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
-            .setDeprecated(BDIO1_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final NullableStringProperty DETECT_GRADLE_INSPECTOR_VERSION =
-        NullableStringProperty.newBuilder("detect.gradle.inspector.version")
-            .setInfo("Gradle Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp(
-                "The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.",
-                "The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector."
-            )
-            .setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(
-                "This property is being removed because it no longer provides functionality. The gradle inspector library is no longer used to gather Gradle dependencies. The init script generated by Detect has all the necessary functionality.",
-                DetectMajorVersion.EIGHT
-            )
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_MAVEN_INCLUDE_PLUGINS =
-        BooleanProperty.newBuilder("detect.maven.include.plugins", false)
-            .setInfo("Maven Include Plugins", DetectPropertyFromVersion.VERSION_5_6_0)
-            .setHelp("Whether or not detect will include the plugins section when parsing a pom.xml in buildless legacy mode. ")
-            .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(
-                "This property is being removed. The project inspector will be used to parse maven projects. Please configure the project inspector to include modules.",
-                DetectMajorVersion.EIGHT
-            )
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_MAVEN_BUILDLESS_LEGACY_MODE =
-        BooleanProperty.newBuilder("detect.maven.buildless.legacy.mode", true)
-            .setInfo("Maven Buildless Legacy Mode", DetectPropertyFromVersion.VERSION_7_5_0)
-            .setHelp("Legacy maven parsing supports plugins but the newer project inspector parser does not. Setting to false enables the project inspector for maven.")
-            .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated("This property is being removed. The legacy maven buildless parser is being replaced by the project inspector.", DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.conan.include.build.dependencies", true)
-            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
-            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_CONAN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_PUD_DEPS_EXCLUDE_DEV =
-        BooleanProperty.newBuilder("detect.pub.deps.exclude.dev", false)
-            .setInfo("Detect Dart Pub Deps Exclude Dev Dependencies", DetectPropertyFromVersion.VERSION_7_5_0)
-            .setHelp(
-                "If true, the Dart Detector will pass the option --no-dev when running the command 'pub deps'."
-            )
-            .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PUB_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_GO_ENABLE_VERIFICATION =
-        BooleanProperty.newBuilder("detect.go.mod.enable.verification", true)
-            .setInfo("Go Mod Dependency Verification", DetectPropertyFromVersion.VERSION_7_1_0)
-            .setHelp("When enabled, Detect will use the results of 'go mod why' to filter out unused dependencies. Set to false if you have an empty BOM.")
-            .setGroups(DetectGroup.GO, DetectGroup.GLOBAL)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_GO_MOD_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_GRADLE_INCLUDE_UNRESOLVED_CONFIGURATIONS =
-        BooleanProperty.newBuilder("detect.gradle.include.unresolved.configurations", false)
-            .setInfo("Gradle Include Unresolved Configurations", DetectPropertyFromVersion.VERSION_7_6_0)
-            .setHelp(
-                "When set to true, dependencies discovered from unresolved Gradle configurations will be included. It is set to false by default for a more accurate BOM.",
-                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
-            )
-            .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_LERNA_INCLUDE_PRIVATE =
-        BooleanProperty.newBuilder("detect.lerna.include.private", false)
-            .setInfo("Include Lerna Packages defined as private.", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("Lerna allows for private packages that do not get published. Set this to true to include all packages including private packages.")
-            .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_LERNA_PACKAGE_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_NPM_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.npm.include.dev.dependencies", true)
-            .setInfo("Include NPM Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set this value to false if you would like to exclude your dev dependencies when ran.")
-            .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_NPM_INCLUDE_PEER_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.npm.include.peer.dependencies", true)
-            .setInfo("Include NPM Peer Dependencies", DetectPropertyFromVersion.VERSION_7_1_0)
-            .setHelp("Set this value to false if you would like to exclude your peer dependencies when ran.")
-            .setGroups(DetectGroup.NPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_NPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.packagist.include.dev.dependencies", true)
-            .setInfo("Include Packagist Development Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set this value to false if you would like to exclude your dev requires dependencies when ran.")
-            .setGroups(DetectGroup.PACKAGIST, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_PEAR_ONLY_REQUIRED_DEPS =
-        BooleanProperty.newBuilder("detect.pear.only.required.deps", false)
-            .setInfo("Include Only Required Pear Dependencies", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Set to true if you would like to include only required packages.")
-            .setGroups(DetectGroup.PEAR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PEAR_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.ruby.include.runtime.dependencies", true)
-            .setInfo("Ruby Runtime Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to false, runtime dependencies will not be included when parsing *.gemspec files.")
-            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES =
-        BooleanProperty.newBuilder("detect.ruby.include.dev.dependencies", false)
-            .setInfo("Ruby Development Dependencies", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, development dependencies will be included when parsing *.gemspec files.")
-            .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_RUBY_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final BooleanProperty DETECT_YARN_PROD_ONLY =
-        BooleanProperty.newBuilder("detect.yarn.prod.only", false)
-            .setInfo("Include Yarn Production Dependencies Only", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("Set this to true to only scan production dependencies.")
-            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    @Deprecated
-    public static final AllNoneEnumListProperty<PnpmDependencyType> DETECT_PNPM_DEPENDENCY_TYPES =
-        AllNoneEnumListProperty.newBuilder("detect.pnpm.dependency.types", AllNoneEnum.ALL, PnpmDependencyType.class)
-            .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
-            .setHelp(
-                "Set this value to indicate which pnpm dependency types for should include in the BOM.",
-                "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported."
-            )
-            .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setDeprecated(createDetectorPropertyDeprecationMessage(DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED), DetectMajorVersion.EIGHT)
-            .build();
-
-    // TODO: Revise in 8.0.0
     // Can't take in the DetectProperty<?> due to an illegal forward reference :(
-    private static String createDefaultDrivenPropertyHelpText(String exclusionTypePlural, String... propertyKeysDrivingDefaults) {
-        String defaults = StringUtils.join(propertyKeysDrivingDefaults, ", ");
-        return String.format(
-            "Set this value to indicate which %s Detect should exclude from the BOM. Currently if this property is not set, the default value is driven by the default values of these properties: %s. In version 8.0.0, all %s will be reported by default.",
-            exclusionTypePlural,
-            defaults,
-            exclusionTypePlural
-        );
-    }
-
-    // TODO: Remove in 8.0.0
-    private static String createDetectorPropertyDeprecationMessage(@NotNull Property replacementProperty) {
-        return String.format(
-            "This property is being removed in favor of %s. If the replacement property is set, this property is ignored. The default value of this property is used if both properties are not set.",
-            replacementProperty.getKey()
-        );
+    private static String createTypeFilterHelpText(String exclusionTypePlural) {
+        return String.format("Set this value to indicate which %s Detect should exclude from the BOM.", exclusionTypePlural);
     }
 
     // Accessor to get all properties

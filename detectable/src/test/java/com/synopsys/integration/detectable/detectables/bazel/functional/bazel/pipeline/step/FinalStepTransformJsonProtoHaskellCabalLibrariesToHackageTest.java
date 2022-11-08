@@ -10,8 +10,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -35,9 +35,9 @@ public class FinalStepTransformJsonProtoHaskellCabalLibrariesToHackageTest {
         input.add(jsonProtoHaskellCabalLibrary);
 
         List<Dependency> dependencies = step.finish(input);
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
         for (Dependency dependency : dependencies) {
-            dependencyGraph.addChildToRoot(dependency);
+            dependencyGraph.addDirectDependency(dependency);
         }
         Forge hackageForge = new Forge("/", "hackage");
         GraphAssert graphAssert = new GraphAssert(hackageForge, dependencyGraph);

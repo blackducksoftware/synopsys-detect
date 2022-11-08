@@ -19,50 +19,9 @@ public class CodeLocationNameManager {
             // The aggregate is exclusively used for the bdio and not the scans
             aggregateCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BOM);
         } else {
-            aggregateCodeLocationName = String.format("%s/%s Black Duck I/O Export", projectNameVersion.getName(), projectNameVersion.getVersion());
+            aggregateCodeLocationName = codeLocationNameGenerator.createAggregateStandardCodeLocationName(projectNameVersion);
         }
         return aggregateCodeLocationName;
-    }
-
-    public String createCodeLocationName(
-        DetectCodeLocation detectCodeLocation,
-        File detectSourcePath,
-        String projectName,
-        String projectVersionName,
-        String prefix,
-        String suffix
-    ) {
-        String codeLocationName;
-        if (codeLocationNameGenerator.useCodeLocationOverride()) {
-            if (detectCodeLocation.getDockerImageName().isPresent()) {
-                codeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.DOCKER);
-            } else {
-                codeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameSourcedBom(detectCodeLocation);
-            }
-        } else {
-            if (detectCodeLocation.getDockerImageName().isPresent()) {
-                String dockerImage = detectCodeLocation.getDockerImageName().get();
-                codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(
-                    detectCodeLocation.getSourcePath(),
-                    projectName,
-                    projectVersionName,
-                    dockerImage,
-                    prefix,
-                    suffix
-                );
-            } else {
-                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(
-                    detectSourcePath,
-                    detectCodeLocation.getSourcePath(),
-                    projectName,
-                    projectVersionName,
-                    detectCodeLocation,
-                    prefix,
-                    suffix
-                );
-            }
-        }
-        return codeLocationName;
     }
 
     public String createScanCodeLocationName(
@@ -70,40 +29,49 @@ public class CodeLocationNameManager {
         File scanTargetPath,
         @Nullable File dockerTar,
         String projectName,
-        String projectVersionName,
-        String prefix,
-        String suffix
+        String projectVersionName
     ) {
         String scanCodeLocationName;
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
-            scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN);
+            scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SIGNATURE);
         } else if (dockerTar != null) {
-            scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTar, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTar, projectName, projectVersionName);
         } else {
-            scanCodeLocationName = codeLocationNameGenerator.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName);
         }
         return scanCodeLocationName;
     }
 
-    public String createBinaryScanCodeLocationName(File targetFile, String projectName, String projectVersionName, String prefix, String suffix) {
+    public String createBinaryScanCodeLocationName(File targetFile, String projectName, String projectVersionName) {
         String scanCodeLocationName;
 
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
-            scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN);
+            scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.BINARY);
         } else {
-            scanCodeLocationName = codeLocationNameGenerator.createBinaryScanCodeLocationName(targetFile, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createBinaryScanCodeLocationName(targetFile, projectName, projectVersionName);
         }
         return scanCodeLocationName;
     }
 
-    public String createImpactAnalysisCodeLocationName(File sourceDirectory, String projectName, String projectVersionName, @Nullable String prefix, @Nullable String suffix) {
+    public String createImpactAnalysisCodeLocationName(File sourceDirectory, String projectName, String projectVersionName) {
         String scanCodeLocationName;
 
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.IMPACT_ANALYSIS);
         } else {
-            scanCodeLocationName = codeLocationNameGenerator.createImpactAnalysisCodeLocationName(sourceDirectory, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createImpactAnalysisCodeLocationName(sourceDirectory, projectName, projectVersionName);
         }
         return scanCodeLocationName;
+    }
+
+    public String createIacScanCodeLocationName(
+        File targetFile, String projectName, String projectVersionName, @Nullable String prefix,
+        @Nullable String suffix
+    ) {
+        if (codeLocationNameGenerator.useCodeLocationOverride()) {
+            return codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.IAC);
+        } else {
+            return codeLocationNameGenerator.createIacScanCodeLocationName(targetFile, projectName, projectVersionName, prefix, suffix);
+        }
     }
 }

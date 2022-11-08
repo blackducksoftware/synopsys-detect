@@ -8,7 +8,6 @@ import com.synopsys.integration.log.LogLevel;
 
 public class DockerDetectableOptions {
 
-    private final boolean dockerPathRequired;
     private final String suppliedDockerImage;
     private final String suppliedDockerImageId;
     private final String suppliedDockerTar;
@@ -19,7 +18,6 @@ public class DockerDetectableOptions {
     private final String dockerPlatformTopLayerId;
 
     public DockerDetectableOptions(
-        boolean dockerPathRequired,
         String suppliedDockerImage,
         String suppliedDockerImageId,
         String suppliedDockerTar,
@@ -29,7 +27,6 @@ public class DockerDetectableOptions {
         Path dockerInspectorPath,
         String dockerPlatformTopLayerId
     ) {
-        this.dockerPathRequired = dockerPathRequired;
         this.suppliedDockerImage = suppliedDockerImage;
         this.suppliedDockerImageId = suppliedDockerImageId;
         this.suppliedDockerTar = suppliedDockerTar;
@@ -38,10 +35,6 @@ public class DockerDetectableOptions {
         this.additionalDockerProperties = additionalDockerProperties;
         this.dockerInspectorPath = dockerInspectorPath;
         this.dockerPlatformTopLayerId = dockerPlatformTopLayerId;
-    }
-
-    public boolean isDockerPathRequired() {
-        return dockerPathRequired;
     }
 
     public Optional<String> getSuppliedDockerImage() {

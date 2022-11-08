@@ -1,7 +1,6 @@
 package com.synopsys.integration.detect.workflow.bdio.aggregation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -20,15 +19,14 @@ import org.junit.jupiter.api.Test;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioReader;
 import com.synopsys.integration.bdio.BdioTransformer;
-import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.blackduck.bdio.model.dependency.ProjectDependency;
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.util.NameVersion;
 
 class BdioAggregationTest {
     private static Gson gson;
@@ -50,58 +48,26 @@ class BdioAggregationTest {
     }
 
     @Test
-    void testTransitiveMode() throws DetectUserFriendlyException {
-        FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator(new SimpleBdioFactory());
+    void testSubProjectMode() {
+        FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator();
 
         DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations(
-            (name, version, externalId) -> new Dependency(name, version, externalId),
             sourceDir,
+            new NameVersion("aggregate-test", "test"),
             inputCodelocations
         );
 
-        assertEquals(3, aggregatedGraph.getRootDependencies().size());
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojectone", "unspecified")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojecttwo", "unspecified")));
+        assertEquals(3, aggregatedGraph.getDirectDependencies().size());
+        assertTrue(aggregatedGraph.getDirectDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
+        assertTrue(aggregatedGraph.getDirectDependencies().contains(genProjectDependency("basic-multiproject", "subprojectone", "unspecified")));
+        assertTrue(aggregatedGraph.getDirectDependencies().contains(genProjectDependency("basic-multiproject", "subprojecttwo", "unspecified")));
 
         Dependency subProjectOne = aggregatedGraph.getDependency(genProjectExternalId("basic-multiproject", "subprojectone", "unspecified"));
         Set<Dependency> subProjectOneDependencies = aggregatedGraph.getChildrenForParent(subProjectOne);
-        assertTrue(subProjectOneDependencies.contains(genComponentDependency("junit", "junit", "4.12")));
-        assertTrue(subProjectOneDependencies.contains(genComponentDependency("joda-time", "joda-time", "2.2")));
-
-        assertFalse(subProjectOne instanceof ProjectDependency);
-    }
-
-    @Test
-    void testSubProjectMode() throws DetectUserFriendlyException {
-        FullAggregateGraphCreator fullAggregateGraphCreator = new FullAggregateGraphCreator(new SimpleBdioFactory());
-
-        DependencyGraph aggregatedGraph = fullAggregateGraphCreator.aggregateCodeLocations(
-            (name, version, externalId) -> new ProjectDependency(name, version, externalId),
-            sourceDir,
-            inputCodelocations
-        );
-
-        assertEquals(3, aggregatedGraph.getRootDependencies().size());
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojectone", "unspecified")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genProjectDependency("basic-multiproject", "subprojecttwo", "unspecified")));
-
-        Dependency subProjectOne = aggregatedGraph.getDependency(genProjectExternalId("basic-multiproject", "subprojectone", "unspecified"));
-        Set<Dependency> subProjectOneDependencies = aggregatedGraph.getChildrenForParent(subProjectOne);
-        assertTrue(subProjectOneDependencies.contains(genComponentDependency("junit", "junit", "4.12")));
-        assertTrue(subProjectOneDependencies.contains(genComponentDependency("joda-time", "joda-time", "2.2")));
+        assertTrue(subProjectOneDependencies.contains(Dependency.FACTORY.createMavenDependency("junit", "junit", "4.12")));
+        assertTrue(subProjectOneDependencies.contains(Dependency.FACTORY.createMavenDependency("joda-time", "joda-time", "2.2")));
 
         assertTrue(subProjectOne instanceof ProjectDependency);
-    }
-
-    @Test
-    void testDirectMode() throws DetectUserFriendlyException {
-        DependencyGraph aggregatedGraph = new AggregateModeDirectOperation(new SimpleBdioFactory()).aggregateCodeLocations(inputCodelocations);
-
-        assertEquals(2, aggregatedGraph.getRootDependencies().size());
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genComponentDependency("junit", "junit", "4.12")));
-        assertTrue(aggregatedGraph.getRootDependencies().contains(genComponentDependency("joda-time", "joda-time", "2.2")));
     }
 
     @NotNull
@@ -114,8 +80,10 @@ class BdioAggregationTest {
             try (InputStream bdioInputStream = new FileInputStream(bdioFile); BdioReader bdioReader = new BdioReader(gson, bdioInputStream)) {
                 simpleBdioDocument = bdioReader.readSimpleBdioDocument();
             }
-            DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.getProject(), simpleBdioDocument.getComponents());
+
             ExternalId externalId = simpleBdioDocument.getProject().bdioExternalIdentifier.externalIdMetaData;
+            ProjectDependency projectDependency = new ProjectDependency(externalId);
+            DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(projectDependency, simpleBdioDocument.getProject(), simpleBdioDocument.getComponents());
             DetectCodeLocation detectCodeLocation = DetectCodeLocation.forCreator(dependencyGraph, sourceDir, externalId, "testcreator");
             inputCodelocations.add(detectCodeLocation);
         }
@@ -131,25 +99,10 @@ class BdioAggregationTest {
     @NotNull
     private ExternalId genProjectExternalId(String group, String artifact, String version) {
         ExternalId extId = new ExternalId(Forge.MAVEN);
-        List<String> moduleNames = Arrays.asList(group, artifact, version, "testcreator");
+        List<String> moduleNames = Arrays.asList(group, artifact, version, "-testcreator");
         String[] moduleNamesArray = new String[moduleNames.size()];
         moduleNames.toArray(moduleNamesArray);
         extId.setModuleNames(moduleNamesArray);
-        return extId;
-    }
-
-    @NotNull
-    private Dependency genComponentDependency(String group, String artifact, String version) {
-        ExternalId extId = genComponentExternalId(group, artifact, version);
-        return new Dependency(artifact, version, extId);
-    }
-
-    @NotNull
-    private ExternalId genComponentExternalId(String group, String artifact, String version) {
-        ExternalId extId = new ExternalId(Forge.MAVEN);
-        extId.setGroup(group);
-        extId.setName(artifact);
-        extId.setVersion(version);
         return extId;
     }
 }

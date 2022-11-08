@@ -24,6 +24,7 @@ import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
@@ -58,6 +59,8 @@ public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
     private static boolean SHOULD_EXIT = true;
+    
+    private static String STATUS_JSON_FILE_NAME = "status.json";
 
     private final ConfigurableEnvironment environment;
 
@@ -131,10 +134,14 @@ public class Application implements ApplicationRunner {
                 .flatMap(BlackDuckRunData::getPhoneHomeManager)
                 .ifPresent(PhoneHomeManager::phoneHomeOperations);
 
-            //Create status output file.
+            //Create status output file.  If we've gotten this far the 
+            // system must now know or be able to compute the winning exit
+            // code.  We'll pass this to FormattedOPutput.createFormattedOutput 
+            // via Application.createStatusOutputFile.
+            ExitCodeType exitCodeType = exitCodeManager.getWinningExitCode();
             logger.info("");
             detectBootResult.getDirectoryManager()
-                .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager));
+                .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager, exitCodeType));
 
             //Create installed tool data file.
             detectBootResult.getDirectoryManager().ifPresent(directoryManager -> createOrUpdateInstalledToolsFile(installedToolManager, directoryManager.getPermanentDirectory()));
@@ -170,7 +177,7 @@ public class Application implements ApplicationRunner {
             DetectBootFactory detectBootFactory = new DetectBootFactory(detectRunId, detectInfo, gson, eventSystem, fileFinder);
             DetectBoot detectBoot = new DetectBoot(eventSystem, gson, detectBootFactory, detectArgumentState, propertySources, installedToolManager);
 
-            bootResult = detectBoot.boot(detectInfo.getDetectVersion());
+            bootResult = detectBoot.boot(detectInfo.getDetectVersion(), detectInfo.getBuildDateString());
 
             logger.debug("Detect boot completed.");
         } catch (Exception e) {
@@ -199,15 +206,21 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    private void createStatusOutputFile(FormattedOutputManager formattedOutputManager, DetectInfo detectInfo, DirectoryManager directoryManager) {
+    private void createStatusOutputFile(FormattedOutputManager formattedOutputManager, DetectInfo detectInfo, DirectoryManager directoryManager, ExitCodeType exitCodeType) {
         logger.info("");
         try {
-            File statusFile = new File(directoryManager.getStatusOutputDirectory(), "status.json");
+            File statusFile = new File(directoryManager.getStatusOutputDirectory(), STATUS_JSON_FILE_NAME);
             logger.info("Creating status file: {}", statusFile);
 
             Gson formattedGson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-            String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo));
+            String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo, exitCodeType));
             FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
+            
+            if (directoryManager.getJsonStatusOutputDirectory() != null) {
+                File statusCopyFile = new File(directoryManager.getJsonStatusOutputDirectory(), STATUS_JSON_FILE_NAME);
+                logger.info("Creating copy of status file: {}", statusCopyFile);
+                FileUtils.writeStringToFile(statusCopyFile, json, Charset.defaultCharset());  
+            }
         } catch (Exception e) {
             logger.warn("There was a problem writing the status output file. The detect run was not affected.");
             logger.debug("The problem creating the status file was: ", e);

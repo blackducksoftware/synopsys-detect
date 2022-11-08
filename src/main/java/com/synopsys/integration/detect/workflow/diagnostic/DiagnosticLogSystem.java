@@ -8,9 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.tool.detector.DetectExtractionEnvironment;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionId;
-import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 
 import ch.qos.logback.classic.Level;
@@ -49,8 +47,9 @@ public class DiagnosticLogSystem {
         restrictConsoleToDebug();
 
         logger.info("Adding additional log listeners to extractions.");
-        eventSystem.registerListener(Event.ExtractionStarted, it -> startLoggingExtraction(((DetectExtractionEnvironment) it.getExtractionEnvironment()).getExtractionId()));
-        eventSystem.registerListener(Event.ExtractionEnded, it -> stopLoggingExtraction(((DetectExtractionEnvironment) it.getExtractionEnvironment()).getExtractionId()));
+        //TODO (detectors): Add the detectors back in.
+        //        eventSystem.registerListener(Event.ExtractionStarted, it -> startLoggingExtraction(((DetectExtractionEnvironment) it.getExtractionEnvironment()).getExtractionId()));
+        //        eventSystem.registerListener(Event.ExtractionEnded, it -> stopLoggingExtraction(((DetectExtractionEnvironment) it.getExtractionEnvironment()).getExtractionId()));
 
         logger.info("Diagnostics is now in control of logging!");
     }

@@ -31,7 +31,6 @@ public class GradleInspectorScriptCreatorTest {
         List<String> excludedConfigurationNames = Arrays.asList("excludedConfig");
         List<String> includedConfigurationNames = Arrays.asList("excludedConfig");
         String gradleInspectorRepositoryUrl = null;
-        String providedOnlineInspectorVersion = null;
         GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(
             excludedProjectNames,
             includedProjectNames,
@@ -39,8 +38,7 @@ public class GradleInspectorScriptCreatorTest {
             Collections.emptyList(),
             excludedConfigurationNames,
             includedConfigurationNames,
-            gradleInspectorRepositoryUrl,
-            providedOnlineInspectorVersion
+            gradleInspectorRepositoryUrl
         );
 
         Configuration configuration = createFreemarkerConfiguration();

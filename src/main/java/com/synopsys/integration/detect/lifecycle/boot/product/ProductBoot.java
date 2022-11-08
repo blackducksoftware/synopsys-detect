@@ -14,6 +14,8 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionChecker;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionCheckerResult;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -28,23 +30,26 @@ public class ProductBoot {
     private final AnalyticsConfigurationService analyticsConfigurationService;
     private final ProductBootFactory productBootFactory;
     private final ProductBootOptions productBootOptions;
+    private final BlackDuckVersionChecker blackDuckVersionChecker;
 
     public ProductBoot(
         BlackDuckConnectivityChecker blackDuckConnectivityChecker,
         AnalyticsConfigurationService analyticsConfigurationService,
         ProductBootFactory productBootFactory,
-        ProductBootOptions productBootOptions
+        ProductBootOptions productBootOptions,
+        BlackDuckVersionChecker blackDuckVersionChecker
     ) {
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
         this.analyticsConfigurationService = analyticsConfigurationService;
         this.productBootFactory = productBootFactory;
         this.productBootOptions = productBootOptions;
+        this.blackDuckVersionChecker = blackDuckVersionChecker;
     }
 
     public ProductRunData boot(BlackDuckDecision blackDuckDecision, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         if (!blackDuckDecision.shouldRun()) {
             throw new DetectUserFriendlyException(
-                "Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.  See online help at: https://detect.synopsys.com/doc/",
+                "Your environment was not sufficiently configured to run Black Duck.  See online help at: https://detect.synopsys.com/doc/",
                 ExitCodeType.FAILURE_CONFIGURATION
             );
 
@@ -90,15 +95,28 @@ public class ProductBoot {
         BlackDuckConnectivityResult blackDuckConnectivityResult = blackDuckConnectivityChecker.determineConnectivity(blackDuckServerConfig);
 
         if (blackDuckConnectivityResult.isSuccessfullyConnected()) {
+            BlackDuckVersionCheckerResult blackDuckVersionCheckerResult = blackDuckVersionChecker.check(blackDuckConnectivityResult.getContactedServerVersion());
+            if (!blackDuckVersionCheckerResult.isPassed()) {
+                throw new DetectUserFriendlyException(
+                    blackDuckVersionCheckerResult.getMessage(),
+                    ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED
+                );
+            }
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
-
+            BlackDuckRunData bdRunData = null;
             if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getBlackDuckApiClient())) {
                 PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
-                return BlackDuckRunData.online(blackDuckDecision.scanMode(), blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
+                bdRunData = BlackDuckRunData.online(
+                    blackDuckDecision.scanMode(),
+                    blackDuckServicesFactory,
+                    phoneHomeManager,
+                    blackDuckConnectivityResult.getBlackDuckServerConfig()
+                );
             } else {
                 logger.debug("Skipping phone home due to Black Duck global settings.");
-                return BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
+                bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
             }
+            return bdRunData;
         } else {
             if (productBootOptions.isIgnoreConnectionFailures()) {
                 logger.info(String.format("Failed to connect to Black Duck: %s", blackDuckConnectivityResult.getFailureReason()));

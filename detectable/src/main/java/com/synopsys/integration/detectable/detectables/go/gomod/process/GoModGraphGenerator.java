@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -28,7 +28,7 @@ public class GoModGraphGenerator {
     }
 
     public CodeLocation generateGraph(GoListModule projectModule, GoRelationshipManager goRelationshipManager, GoModDependencyManager goModDependencyManager) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyGraph graph = new BasicDependencyGraph();
         String moduleName = projectModule.getPath();
         if (goRelationshipManager.hasRelationshipsFor(moduleName)) {
             goRelationshipManager.getRelationshipsFor(moduleName).stream()
@@ -42,7 +42,7 @@ public class GoModGraphGenerator {
     private void addModuleToGraph(
         String moduleName,
         @Nullable Dependency parent,
-        MutableDependencyGraph graph,
+        DependencyGraph graph,
         GoRelationshipManager goRelationshipManager,
         GoModDependencyManager goModDependencyManager
     ) {
@@ -55,7 +55,7 @@ public class GoModGraphGenerator {
         if (parent != null) {
             graph.addChildWithParent(dependency, parent);
         } else {
-            graph.addChildToRoot(dependency);
+            graph.addDirectDependency(dependency);
         }
 
         if (!fullyGraphedModules.contains(moduleName) && goRelationshipManager.hasRelationshipsFor(moduleName)) {

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 
 import org.slf4j.Logger;
@@ -32,14 +31,12 @@ public class DiagnosticSystem {
     private final EventSystem eventSystem;
 
     public DiagnosticSystem(
-        boolean isExtendedMode,
         PropertyConfiguration propertyConfiguration,
         DetectRunId detectRunId,
         DetectInfo detectInfo,
         DirectoryManager directoryManager,
         EventSystem eventSystem,
-        SortedMap<String, String> maskedRawPropertyValues,
-        Set<String> propertyKeys
+        SortedMap<String, String> maskedRawPropertyValues
     ) {
         this.propertyConfiguration = propertyConfiguration;
         this.detectRunId = detectRunId;
@@ -47,19 +44,15 @@ public class DiagnosticSystem {
         this.directoryManager = directoryManager;
         this.eventSystem = eventSystem;
 
-        init(isExtendedMode, maskedRawPropertyValues, propertyKeys);
+        init(maskedRawPropertyValues);
     }
 
-    private void init(boolean isExtendedMode, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
+    private void init(SortedMap<String, String> maskedRawPropertyValues) {
         System.out.println();
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("Diagnostic mode on.");
         System.out.println("A zip file will be created with logs and relevant Detect output files.");
         System.out.println("It is generally not recommended to leave diagnostic mode on as you must manually clean up the zip.");
-        if (!isExtendedMode) {
-            System.out.println(
-                "Additional relevant files such as lock files can be collected automatically in extended diagnostics (--detect.diagnostic.extended=true) but will not be in this run.");
-        }
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println();
 
@@ -68,18 +61,16 @@ public class DiagnosticSystem {
             diagnosticReportHandler = new DiagnosticReportHandler(directoryManager.getReportOutputDirectory(), detectRunId.getRunId(), eventSystem);
             diagnosticLogSystem = new DiagnosticLogSystem(directoryManager.getLogOutputDirectory(), eventSystem);
             diagnosticExecutableCapture = new DiagnosticExecutableCapture(directoryManager.getExecutableOutputDirectory(), eventSystem);
-            if (isExtendedMode) {
-                diagnosticFileCapture = new DiagnosticFileCapture(directoryManager.getRelevantOutputDirectory(), eventSystem);
-            }
+            diagnosticFileCapture = new DiagnosticFileCapture(directoryManager.getRelevantOutputDirectory(), eventSystem);
         } catch (Exception e) {
             logger.error("Failed to process.", e);
         }
 
         logger.info("Creating configuration diagnostics reports.");
 
-        diagnosticReportHandler.configurationsReport(detectInfo, propertyConfiguration, maskedRawPropertyValues, propertyKeys);
+        diagnosticReportHandler.configurationsReport(detectInfo, propertyConfiguration, maskedRawPropertyValues);
 
-        logger.info("Diagnostics system is ready (extended mode: {}).", isExtendedMode);
+        logger.info("Diagnostics system is ready.");
     }
 
     public Map<String, String> getAdditionalDockerProperties() {

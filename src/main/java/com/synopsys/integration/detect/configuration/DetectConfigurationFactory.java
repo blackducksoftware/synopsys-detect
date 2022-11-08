@@ -3,7 +3,7 @@ package com.synopsys.integration.detect.configuration;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +11,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
@@ -20,10 +22,14 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectClone
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
+import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
@@ -37,16 +43,16 @@ import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMod
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
-import com.synopsys.integration.detect.lifecycle.run.AggregateOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
-import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
+import com.synopsys.integration.detect.tool.iac.IacScanOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
+import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedReducedPersistanceMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
+import com.synopsys.integration.detect.util.finder.DetectDirectoryFileFilter;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
-import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanOptions;
@@ -59,9 +65,9 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.Projec
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
+import com.synopsys.integration.detector.accuracy.search.SearchOptions;
 import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
-import com.synopsys.integration.detector.finder.DetectorFinderOptions;
+import com.synopsys.integration.detector.finder.DirectoryFinderOptions;
 import com.synopsys.integration.rest.credentials.Credentials;
 import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
@@ -75,7 +81,7 @@ public class DetectConfigurationFactory {
         this.detectConfiguration = detectConfiguration;
         this.gson = gson;
     }
-
+    
     //#region Prefer These Over Any Property
     public Long findTimeoutInSeconds() {
         return detectConfiguration.getValue(DetectProperties.DETECT_TIMEOUT);
@@ -113,6 +119,17 @@ public class DetectConfigurationFactory {
             return individualFileMatching.getBaseValue().get();
         }
 
+        return null;
+    }
+    
+    @Nullable
+    private ReducedPersistence findReducedPersistence() {
+        ExtendedEnumValue<ExtendedReducedPersistanceMode, ReducedPersistence> reducedPersistence = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_REDUCED_PERSISTENCE);
+        
+        if (reducedPersistence.getBaseValue().isPresent()) {
+            return reducedPersistence.getBaseValue().get();
+        }
+        
         return null;
     }
 
@@ -188,26 +205,28 @@ public class DetectConfigurationFactory {
         return new PhoneHomeOptions(phoneHomePassthrough);
     }
 
+    public boolean createHasSignatureScan() {
+        boolean hss = false;
+        hss = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS).containsValue(DetectTool.SIGNATURE_SCAN);
+        return hss;
+    }
+
     public DetectToolFilter createToolFilter(RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
         Optional<Boolean> impactEnabled = Optional.of(detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED));
 
         AllNoneEnumCollection<DetectTool> includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
         AllNoneEnumCollection<DetectTool> excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
         ExcludeIncludeEnumFilter<DetectTool> filter = new ExcludeIncludeEnumFilter<>(excludedTools, includedTools);
-        return new DetectToolFilter(filter, impactEnabled.orElse(false), runDecision, blackDuckDecision);
-    }
 
-    public AggregateOptions createAggregateOptions() {
-        String aggregateName = detectConfiguration.getNullableValue(DetectProperties.DETECT_BOM_AGGREGATE_NAME);
-        AggregateMode aggregateMode = detectConfiguration.getValue(DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE);
-        String aggregateFileName = detectConfiguration.getNullableValue(DetectProperties.DETECT_BDIO_FILE_NAME);
+        boolean iacEnabled = includedTools.containsValue(DetectTool.IAC_SCAN) || !detectConfiguration.getValue(DetectProperties.DETECT_IAC_SCAN_PATHS).isEmpty();
 
-        return new AggregateOptions(aggregateName, aggregateMode, aggregateFileName);
+        return new DetectToolFilter(filter, impactEnabled.orElse(false), iacEnabled, runDecision, blackDuckDecision);
     }
 
     public RapidScanOptions createRapidScanOptions() {
         RapidCompareMode rapidCompareMode = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE);
-        return new RapidScanOptions(rapidCompareMode);
+        BlackduckScanMode scanMode= detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
+        return new RapidScanOptions(rapidCompareMode, scanMode);
     }
 
     public BlackduckScanMode createScanMode() {
@@ -229,64 +248,54 @@ public class DetectConfigurationFactory {
         Path scanPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_SCAN_OUTPUT_PATH);
         Path toolsOutputPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_TOOLS_OUTPUT_PATH);
         Path impactOutputPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH);
-        return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath, impactOutputPath);
+        Path statusJsonPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_STATUS_JSON_OUTPUT_PATH);
+        return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath, impactOutputPath, statusJsonPath);
     }
 
     public List<String> collectSignatureScannerDirectoryExclusions() {
         List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 
         if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
-            List<String> defaultExcludedFromSignatureScan = Arrays.stream(DefaultSignatureScannerExcludedDirectories.values())
-                .map(DefaultSignatureScannerExcludedDirectories::getDirectoryName)
-                .collect(Collectors.toList());
-            directoryExclusionPatterns.addAll(defaultExcludedFromSignatureScan);
+            directoryExclusionPatterns.addAll(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
         }
 
         return directoryExclusionPatterns;
     }
 
-    private List<String> collectDetectorSearchDirectoryExclusions() {
+    public List<String> collectDetectorSearchDirectoryExclusions() {
         List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
 
         if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
-            List<String> defaultExcludedFromDetectorSearch = Arrays.stream(DefaultDetectorSearchExcludedDirectories.values())
-                .map(DefaultDetectorSearchExcludedDirectories::getDirectoryName)
-                .collect(Collectors.toList());
-            directoryExclusionPatterns.addAll(defaultExcludedFromDetectorSearch);
+            directoryExclusionPatterns.addAll(DefaultDetectorSearchExcludedDirectories.getDirectoryNames());
         }
 
         return directoryExclusionPatterns;
     }
 
-    public DetectorFinderOptions createDetectorFinderOptions() {
+    public DirectoryFinderOptions createDetectorFinderOptions() {
         //Normal settings
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
-        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(collectDetectorSearchDirectoryExclusions());
+        DetectExcludedDirectoryFilter fileFilter = new DetectExcludedDirectoryFilter(collectDirectoryExclusions(DefaultDetectorSearchExcludedDirectories.getDirectoryNames()));
 
-        return new DetectorFinderOptions(fileFilter, maxDepth, getFollowSymLinks());
+        return new DirectoryFinderOptions(fileFilter, maxDepth, getFollowSymLinks());
     }
 
-    public DetectorEvaluationOptions createDetectorEvaluationOptions() {
+    public SearchOptions createDetectorSearchOptions() {
         Boolean forceNestedSearch = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_CONTINUE);
 
         //Detector Filter
-        AllNoneEnumList<DetectorType> excluded = detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DETECTOR_TYPES);
-        AllNoneEnumList<DetectorType> included = detectConfiguration.getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES);
+        NoneEnumList<DetectorType> excluded = detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DETECTOR_TYPES);
+        AllEnumList<DetectorType> included = detectConfiguration.getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES);
         ExcludeIncludeEnumFilter<DetectorType> detectorFilter = new ExcludeIncludeEnumFilter<>(excluded, included);
 
-        Set<DetectorType> includedTypes = Arrays.stream(DetectorType.values())
-            .filter(detectorFilter::shouldInclude)
-            .collect(Collectors.toSet());
-
-        return new DetectorEvaluationOptions(forceNestedSearch, getFollowSymLinks(), (rule -> includedTypes.contains(rule.getDetectorType())));
+        return new SearchOptions(detectorFilter::shouldInclude, forceNestedSearch);
     }
 
     public BdioOptions createBdioOptions() {
         String prefix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String suffix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
-        Boolean useBdio2 = detectConfiguration.getValue(DetectProperties.DETECT_BDIO2_ENABLED);
-        Boolean useLegacyUpload = detectConfiguration.getValue(DetectProperties.BLACKDUCK_LEGACY_UPLOAD_ENABLED);
-        return new BdioOptions(useBdio2, prefix, suffix, useLegacyUpload);
+        String bdioFileName = detectConfiguration.getNullableValue(DetectProperties.DETECT_BDIO_FILE_NAME);
+        return new BdioOptions(prefix, suffix, bdioFileName);
     }
 
     public ProjectNameVersionOptions createProjectNameVersionOptions(String sourceDirectoryName) {
@@ -371,12 +380,12 @@ public class DetectConfigurationFactory {
         Boolean licenseSearch = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH);
         Boolean copyrightSearch = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH);
         Boolean followSymLinks = getFollowSymLinks();
-        String codeLocationPrefix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
-        String codeLocationSuffix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
         String additionalArguments = detectConfiguration.getNullableValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS);
         Path localScannerInstallPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH);
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH);
         Boolean treatSkippedScansAsSuccess = detectConfiguration.getValue(DetectProperties.DETECT_FORCE_SUCCESS_ON_SKIP);
+        Boolean isEphemeral = BlackduckScanMode.EPHEMERAL.equals(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE));
+        
 
         return new BlackDuckSignatureScannerOptions(
             signatureScannerPaths,
@@ -387,15 +396,15 @@ public class DetectConfigurationFactory {
             dryRun,
             findSnippetMatching(),
             uploadSource,
-            codeLocationPrefix,
-            codeLocationSuffix,
             additionalArguments,
             maxDepth,
             findIndividualFileMatching(),
             licenseSearch,
             copyrightSearch,
             followSymLinks,
-            treatSkippedScansAsSuccess
+            treatSkippedScansAsSuccess,
+            isEphemeral,
+            findReducedPersistence()
         );
     }
 
@@ -421,17 +430,22 @@ public class DetectConfigurationFactory {
 
     public BinaryScanOptions createBinaryScanOptions() {
         Path singleTarget = detectConfiguration.getPathOrNull(DetectProperties.DETECT_BINARY_SCAN_FILE);
-        List<String> multipleTargets = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS);
-        String codeLocationPrefix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
-        String codeLocationSuffix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
+        List<String> fileInclusionPatterns = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS);
+        DetectDirectoryFileFilter fileFilter = null;
+        if (fileInclusionPatterns.stream().anyMatch(StringUtils::isNotBlank)) {
+            fileFilter = new DetectDirectoryFileFilter(collectDirectoryExclusions(), fileInclusionPatterns);
+        }
         Integer searchDepth = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_SEARCH_DEPTH);
-        return new BinaryScanOptions(singleTarget, multipleTargets, codeLocationPrefix, codeLocationSuffix, searchDepth, getFollowSymLinks());
+        return new BinaryScanOptions(singleTarget, fileFilter, searchDepth, getFollowSymLinks());
     }
 
-    public ImpactAnalysisOptions createImpactAnalysisOptions() {
+    public IacScanOptions createIacScanOptions() {
+        List<Path> iacScanPaths = detectConfiguration.getPaths(DetectProperties.DETECT_IAC_SCAN_PATHS);
+        Path localIacScannerPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_IAC_SCANNER_LOCAL_PATH);
+        String additionalArguments = detectConfiguration.getNullableValue(DetectProperties.DETECT_IAC_SCAN_ARGUMENTS);
         String codeLocationPrefix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
-        return new ImpactAnalysisOptions(codeLocationPrefix, codeLocationSuffix);
+        return new IacScanOptions(iacScanPaths, localIacScannerPath, additionalArguments, codeLocationPrefix, codeLocationSuffix);
     }
 
     public DetectExecutableOptions createDetectExecutableOptions() {
@@ -454,7 +468,6 @@ public class DetectConfigurationFactory {
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_HEX_REBAR3_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_JAVA_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_DOCKER_PATH),
-            detectConfiguration.getPathOrNull(DetectProperties.DETECT_DOTNET_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_GIT_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_GO_PATH),
             detectConfiguration.getPathOrNull(DetectProperties.DETECT_SWIFT_PATH),
@@ -467,20 +480,37 @@ public class DetectConfigurationFactory {
         return detectConfiguration.getValue(DetectProperties.DETECT_FOLLOW_SYMLINKS);
     }
 
-    public String createCodeLocationOverride() {
-        return detectConfiguration.getNullableValue(DetectProperties.DETECT_CODE_LOCATION_NAME);
-
+    public Optional<String> createCodeLocationOverride() {
+        return Optional.ofNullable(detectConfiguration.getNullableValue(DetectProperties.DETECT_CODE_LOCATION_NAME));
     }
 
     public DetectorToolOptions createDetectorToolOptions() {
         String projectBomTool = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_DETECTOR);
         List<DetectorType> requiredDetectors = detectConfiguration.getValue(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES);
-        boolean buildless = detectConfiguration.getValue(DetectProperties.DETECT_BUILDLESS);
-        return new DetectorToolOptions(projectBomTool, requiredDetectors, buildless);
+        AllNoneEnumList<DetectorType> accuracyRequired = detectConfiguration.getValue(DetectProperties.DETECT_ACCURACY_REQUIRED);
+        ExcludeIncludeEnumFilter<DetectorType> accuracyFilter = new ExcludeIncludeEnumFilter<>(
+            new AllNoneEnumList<>(new ArrayList<>(), DetectorType.class),
+            accuracyRequired
+        );
+        return new DetectorToolOptions(projectBomTool, requiredDetectors, accuracyFilter);
     }
 
     public ProjectGroupOptions createProjectGroupOptions() {
         String projectGroupName = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_GROUP_NAME);
         return new ProjectGroupOptions(projectGroupName);
+    }
+
+    private List<String> collectDirectoryExclusions() {
+        return collectDirectoryExclusions(Collections.emptyList());
+    }
+
+    private List<String> collectDirectoryExclusions(@NotNull List<String> givenExclusions) {
+        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
+
+        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
+            directoryExclusionPatterns.addAll(givenExclusions);
+        }
+
+        return directoryExclusionPatterns;
     }
 }

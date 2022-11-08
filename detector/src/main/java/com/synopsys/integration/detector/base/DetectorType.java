@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public enum DetectorType {
+// TODO: Get as close to the software managing the packages as possible
+public enum DetectorType { // TODO: 8.0.0 Rename DetectorTypes
     BITBAKE,
     CARGO,
     CARTHAGE,
@@ -13,7 +14,7 @@ public enum DetectorType {
     CONDA,
     CPAN,
     CRAN,
-    DART,
+    DART, // PUB
     GIT,
     GO_MOD,
     GO_DEP,
@@ -21,23 +22,23 @@ public enum DetectorType {
     GO_VENDOR,
     GO_GRADLE,
     GRADLE,
-    HEX,
+    HEX, // REBAR
     IVY,
     LERNA,
     MAVEN,
     NPM,
-    NUGET,
+    NUGET, // MSBUILD
     PACKAGIST,
-    PEAR,
+    PEAR, // COMPOSER
     PIP,
     PNPM,
     POETRY,
     RUBYGEMS,
     SBT,
-    SWIFT,
+    SWIFT, // SWIFT_PM
     YARN,
     CLANG,
-    XCODE;
+    XCODE; // Remove this
 
     protected static final List<String> POSSIBLE_NAMES = Arrays.stream(DetectorType.values()).map(DetectorType::name).collect(Collectors.toList());
 

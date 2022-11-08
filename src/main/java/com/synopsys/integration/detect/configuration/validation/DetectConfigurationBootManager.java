@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
 
@@ -90,8 +89,8 @@ public class DetectConfigurationBootManager {
         return new DeprecationResult(additionalNotes);
     }
 
-    public void printConfiguration(SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys, Map<String, String> additionalNotes) {
-        detectConfigurationReporter.printKnownCurrentValues(logger::info, propertyKeys, maskedRawPropertyValues, additionalNotes);
+    public void printConfiguration(SortedMap<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) {
+        detectConfigurationReporter.printCurrentValues(logger::info, maskedRawPropertyValues, additionalNotes);
     }
 
     // Check for options that are just plain bad, ie giving a detector type we don't know about.

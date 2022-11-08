@@ -6,26 +6,17 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
 
 public class PubDepsParser {
-    private static String UNRESOLVED_VERSION_SUFFIX = "...";  //TODO- name this more appropriately
-
-    private ExternalIdFactory externalIdFactory;
-
-    public PubDepsParser(ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
-    }
+    private static final String UNRESOLVED_VERSION_SUFFIX = "...";
 
     public DependencyGraph parse(List<String> pubDepsOutput) {
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
 
         Map<String, String> resolvedVersions = resolveVersionsOfDependencies(pubDepsOutput);
 
@@ -34,7 +25,7 @@ public class PubDepsParser {
         return dependencyGraph;
     }
 
-    private void parseLines(List<String> lines, Map<String, String> resolvedVersions, MutableDependencyGraph dependencyGraph) {
+    private void parseLines(List<String> lines, Map<String, String> resolvedVersions, DependencyGraph dependencyGraph) {
         DependencyHistory dependencyHistory = new DependencyHistory();
         for (String line : lines) {
             int depthOfLine = calculateDepth(line);
@@ -59,8 +50,7 @@ public class PubDepsParser {
 
     private Dependency createDependency(String name, Map<String, String> resolvedVersions) {
         String version = resolvedVersions.get(name);
-        ExternalId externalIdChild = externalIdFactory.createNameVersionExternalId(Forge.DART, name, version);
-        return new Dependency(name, version, externalIdChild);
+        return Dependency.FACTORY.createNameVersionDependency(Forge.DART, name, version);
     }
 
     private Map<String, String> resolveVersionsOfDependencies(List<String> pubDepsOutput) {

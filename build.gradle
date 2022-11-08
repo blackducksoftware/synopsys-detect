@@ -1,10 +1,12 @@
 import com.synopsys.integration.detect.battery.UpdateBatteryTask
 import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
+
 buildscript {
+    apply from: 'shared-version.properties'
     ext {
-        springBootVersion = '2.4.13'
-        blackDuckCommonVersion = '61.2.2'
+        springBootVersion = gradle.ext.springBootVersion
+        blackDuckCommonVersion = gradle.ext.blackDuckCommonVersion
         junitPlatformCustomTestTags = 'docker, battery'
         javaTargetCompatibility = 8
         javaSourceCompatibility = 8
@@ -17,23 +19,23 @@ buildscript {
     }
 }
 
-//TODO Remove this when the Spock dependency, Spock 2.0, is officially released. Upgrade to a Spring Boot version that depends on Groovy 3.0.0 and Spock 2.0 by default.
-ext['groovy.version'] = '3.0.0'
-
 group = 'com.synopsys.integration'
-version = '7.12.2-SNAPSHOT'
+version = '8.3.0-SIGQA4-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-apply from: 'docs.gradle'
-
 final def resources = new File("${projectDir}/src/main/resources")
 final def versionFile = new File(resources, "version.txt")
 resources.mkdirs()
 versionFile.delete()
-versionFile << version
+versionFile << "version=" << version << "\n" << "builddate=" << new Date().format('yyyy-MM-dd')
+
+// By default, starting in 2.5.0, spring boot creates an extra "plain" .jar that we don't want
+jar {
+    enabled = false
+}
 
 def createArtifactName() {
     return "${buildDir}/libs/${project.name}-${version}.jar"
@@ -55,11 +57,11 @@ subprojects {
 
 allprojects {
     dependencies {
-        implementation "org.slf4j:slf4j-api:1.7.30"
-        implementation "org.apache.commons:commons-lang3:3.10" /* this could be managed by blackduck common */
-        implementation 'org.jetbrains:annotations:19.0.0'
-        implementation 'net.minidev:json-smart:2.4.7'
-        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3'
+        implementation "com.google.guava:guava:31.1-jre"
+        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
+
+        implementation 'org.freemarker:freemarker:2.3.31'
+        implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.13'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
@@ -93,18 +95,17 @@ dependencies {
     implementation project(':detectable')
     implementation project(':detector')
 
-    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-classic:1.2.11'
 
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
-    implementation 'com.synopsys:method-analyzer-core:0.1.0'
+    implementation 'com.synopsys:method-analyzer-core:0.2.0'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation "org.springframework.boot:spring-boot"
-    implementation 'org.yaml:snakeyaml:1.27'
+    implementation 'org.yaml:snakeyaml:1.31'
     implementation 'org.zeroturnaround:zt-zip:1.13'
-    implementation 'org.freemarker:freemarker:2.3.26-incubating'
-    implementation 'org.apache.pdfbox:pdfbox:2.0.21'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.25'
 
     // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
     testImplementation 'org.assertj:assertj-core:3.13.2'
@@ -159,8 +160,18 @@ String findGradle() {
     return System.getProperty("os.name").toLowerCase().contains("windows") ? '--detect.gradle.path=gradlew.bat' : '--detect.gradle.path=gradlew';
 }
 
-task createAirGapZip(type: JavaExec) {
+task signJar() {
     dependsOn build
+    finalizedBy 'verifyJar'
+    doLast {
+        exec {
+            commandLine 'jarsigner', '-tsa', 'http://rfc3161timestamp.globalsign.com/advanced', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
+        }
+    }
+}
+
+task createAirGapZip(type: JavaExec) {
+    dependsOn signJar
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
@@ -186,7 +197,7 @@ task publishAirGapZip() {
 }
 
 task createAirGapZipWithoutDocker(type: JavaExec) {
-    dependsOn build
+    dependsOn signJar
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
@@ -217,16 +228,6 @@ task publishAirGapZipWithoutDocker() {
     }
 }
 
-task signJar() {
-    dependsOn build
-    finalizedBy 'verifyJar'
-    doLast {
-        exec {
-            commandLine 'jarsigner', '-tsa', 'http://rfc3161timestamp.globalsign.com/advanced', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
-        }
-    }
-}
-
 task verifyJar() {
     dependsOn signJar
     doLast {
@@ -237,4 +238,14 @@ task verifyJar() {
     }
 }
 
-artifactoryPublish.dependsOn publishDitaSource
+task helpJson(type: JavaExec) {
+    dependsOn build
+
+    classpath = files(createArtifactName())
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'com.synopsys.integration.detect.Application'
+    args = ['--helpjson']
+}
+
+artifactoryPublish.dependsOn ':documentation:publishDitaSource'
+artifactoryPublish.dependsOn signJar

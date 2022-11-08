@@ -16,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
@@ -42,7 +42,6 @@ public class BazelExtractor {
     private final ToolVersionLogger toolVersionLogger;
     private final HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser;
     private final String bazelTarget;
-    private final Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty;
     private final Set<WorkspaceRule> workspaceRulesFromProperty;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
     private final BazelProjectNameGenerator bazelProjectNameGenerator;
@@ -55,7 +54,6 @@ public class BazelExtractor {
         ToolVersionLogger toolVersionLogger,
         HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser,
         String bazelTarget,
-        Set<WorkspaceRule> workspaceRulesFromDeprecatedProperty,
         Set<WorkspaceRule> workspaceRulesFromProperty,
         BazelVariableSubstitutor bazelVariableSubstitutor,
         BazelProjectNameGenerator bazelProjectNameGenerator
@@ -67,23 +65,22 @@ public class BazelExtractor {
         this.toolVersionLogger = toolVersionLogger;
         this.haskellCabalLibraryJsonProtoParser = haskellCabalLibraryJsonProtoParser;
         this.bazelTarget = bazelTarget;
-        this.workspaceRulesFromDeprecatedProperty = workspaceRulesFromDeprecatedProperty;
         this.workspaceRulesFromProperty = workspaceRulesFromProperty;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
         this.bazelProjectNameGenerator = bazelProjectNameGenerator;
     }
 
-    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile) throws DetectableException, ExecutableFailedException {
+    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, File workspaceFile) throws ExecutableFailedException, DetectableException {
         toolVersionLogger.log(workspaceDir, bazelExe, "version");
         BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
         Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
         Set<WorkspaceRule> workspaceRulesFromFile = parseWorkspaceRulesFromFile(workspaceFile);
-        Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, workspaceRulesFromDeprecatedProperty, workspaceRulesFromProperty);
+        Set<WorkspaceRule> workspaceRulesToQuery = workspaceRuleChooser.choose(workspaceRulesFromFile, workspaceRulesFromProperty);
         CodeLocation codeLocation = generateCodelocation(pipelines, workspaceRulesToQuery);
         return buildResults(codeLocation, bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget));
     }
 
-    private Set<WorkspaceRule> parseWorkspaceRulesFromFile(final File workspaceFile) {
+    private Set<WorkspaceRule> parseWorkspaceRulesFromFile(File workspaceFile) {
         List<String> workspaceFileLines;
         try {
             workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
@@ -113,22 +110,13 @@ public class BazelExtractor {
         for (WorkspaceRule workspaceRule : sortedWorkspaceRules) {
             logger.info("Running processing pipeline for rule {}", workspaceRule);
             List<Dependency> ruleDependencies = pipelines.get(workspaceRule).run();
-            logger.info("Number of dependencies discovered for rule {}: {}}", workspaceRule, ruleDependencies.size());
-            logger.debug("Dependencies discovered for rule {}: {}}", workspaceRule, ruleDependencies);
+            logger.info("Number of dependencies discovered for rule {}: {}", workspaceRule, ruleDependencies.size());
+            logger.debug("Dependencies discovered for rule {}: {}", workspaceRule, ruleDependencies);
             aggregatedDependencies.addAll(ruleDependencies);
         }
-        return createCodeLocation(aggregatedDependencies);
-    }
 
-    private CodeLocation createCodeLocation(List<Dependency> dependencies) {
-        MutableDependencyGraph dependencyGraph = createDependencyGraph(dependencies);
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
+        dependencyGraph.addChildrenToRoot(aggregatedDependencies);
         return new CodeLocation(dependencyGraph);
-    }
-
-    @NotNull
-    private MutableDependencyGraph createDependencyGraph(List<Dependency> dependencies) {
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        dependencies.forEach(dependencyGraph::addChildToRoot);
-        return dependencyGraph;
     }
 }

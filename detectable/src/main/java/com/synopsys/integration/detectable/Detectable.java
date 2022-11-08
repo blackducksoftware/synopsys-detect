@@ -2,6 +2,10 @@ package com.synopsys.integration.detectable;
 
 import java.io.IOException;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -33,6 +37,14 @@ public abstract class Detectable {
      * Perform the extraction and in case of error ideally return an Extraction with the exception and additional context such as failure description.
      * If there is no additional context, Detect can catch exceptions listed below. Feel free to add your own.
      */
-    public abstract Extraction extract(ExtractionEnvironment extractionEnvironment)
-        throws ExecutableRunnerException, ExecutableFailedException, IOException, JsonSyntaxException, CycleDetectedException, DetectableException, MissingExternalIdException;
+    public abstract Extraction extract(ExtractionEnvironment extractionEnvironment) throws
+        ExecutableRunnerException,
+        ExecutableFailedException,
+        IOException,
+        JsonSyntaxException,
+        CycleDetectedException,
+        DetectableException,
+        MissingExternalIdException,
+        ParserConfigurationException,
+        SAXException;
 }

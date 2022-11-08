@@ -26,7 +26,7 @@ class GemspecParserTest {
 
     private GemspecParser gemspecParser(GemspecDependencyType... excludedTypes) {
         GemspecLineParser gemspecLineParser = new GemspecLineParser();
-        return new GemspecParser(externalIdFactory, gemspecLineParser, EnumListFilter.fromExcluded(excludedTypes));
+        return new GemspecParser(gemspecLineParser, EnumListFilter.fromExcluded(excludedTypes));
     }
 
     @Test

@@ -240,6 +240,23 @@ public class PropertyConfigurationTest {
     }
 
     @Test
+    public void getRawValueMapWithPassthroughs() {
+        Set<Property> properties = new HashSet<>();
+        PassthroughProperty passthrough = new PassthroughProperty("blackduck.passthrough");
+        properties.add(passthrough);
+
+        Map<String, String> propertyMap = Bds.mapOf(
+            Pair.of("blackduck.passthrough.password", "password")
+        );
+
+        PropertyConfiguration configuration = configOf(propertyMap);
+
+        Map<String, String> rawPropertyValues = configuration.getMaskedRawValueMap(properties, rawKey -> rawKey.contains("password"));
+
+        Assertions.assertEquals("********", rawPropertyValues.get("blackduck.passthrough.password"));
+    }
+
+    @Test
     public void getRawFromKeys() {
         NullableAlikeProperty<String> NullableAlikeProperty = new NullableTestProperty("example.key");
         ValuedAlikeProperty<String> valuedProperty = new ValuedTestProperty("property.two.key", "test");

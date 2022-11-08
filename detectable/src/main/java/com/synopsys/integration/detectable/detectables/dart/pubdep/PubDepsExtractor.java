@@ -1,6 +1,8 @@
 package com.synopsys.integration.detectable.detectables.dart.pubdep;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,11 +24,11 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.util.NameVersion;
 
 public class PubDepsExtractor {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DetectableExecutableRunner executableRunner;
     private final PubDepsParser pubDepsParser;
-    private PubSpecYamlNameVersionParser nameVersionParser;
+    private final PubSpecYamlNameVersionParser nameVersionParser;
     private final ToolVersionLogger toolVersionLogger;
 
     public PubDepsExtractor(
@@ -71,11 +73,16 @@ public class PubDepsExtractor {
                 } else {
                     // If command does not work with Dart, it could be because at least one of the packages requires Flutter
                     logger.debug("Running dart pub deps was not successful.  Going to try running flutter pub deps.");
+                    pubDepsCommand.add(0, "--no-version-check");
                     pubDepsOutput = runPubDepsCommand(directory, flutterExe, pubDepsCommand);
                 }
             }
 
-            Optional<NameVersion> nameVersion = nameVersionParser.parseNameVersion(pubSpecYamlFile);
+            Optional<NameVersion> nameVersion = Optional.empty();
+            if (pubSpecYamlFile != null) {
+                List<String> pubSpecYamlLines = Files.readAllLines(pubSpecYamlFile.toPath(), StandardCharsets.UTF_8);
+                nameVersion = nameVersionParser.parseNameVersion(pubSpecYamlLines);
+            }
 
             DependencyGraph dependencyGraph = pubDepsParser.parse(pubDepsOutput.getStandardOutputAsList());
 
