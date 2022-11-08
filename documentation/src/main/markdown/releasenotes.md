@@ -1,6 +1,9 @@
 # Release notes
 
 ## Version 8.3.0
+### Resolved issues
+
+* (IDETECT-3285) go.mod file "// indirects" matching as Direct Dependencies.  Additional information for the go project is obtained in order to definitively establish direct module dependencies and then establish which module dependencies are transitive.
 
 ### New features
 
