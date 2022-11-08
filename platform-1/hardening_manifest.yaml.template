@@ -8,7 +8,7 @@ name: "synopsys/blackduck/blackduck-client"
 # The most specific version should be the first tag and will be shown
 # on ironbank.dsop.io
 tags:
-- "TARGET_IMAGE_TAG"
+- "RELEASE_VERSION"
 
 # Build args passed to Dockerfile ARGs
 args:
@@ -26,7 +26,7 @@ labels:
   org.opencontainers.image.url: "blackducksoftware/blackduck-client"
   ## Name of the distributing entity, organization or individual
   org.opencontainers.image.vendor: "Synopsysi, Inc."
-  org.opencontainers.image.version: "TARGET_IMAGE_TAG"
+  org.opencontainers.image.version: "RELEASE_VERSION"
   ## Keywords to help with search (ex. "cicd,gitops,golang")
   mil.dso.ironbank.image.keywords: "SCA"
   ## This value can be "opensource" or "commercial"
