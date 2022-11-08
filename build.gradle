@@ -288,6 +288,11 @@ task submitToPlatform1 (type: Exec, dependsOn: [buildPlatform1]){
       branch=branch.replaceFirst('origin/', '')
     }
 
+    boolean isRelease = System.getenv('RUN_RELEASE') ?: false
+    if (isRelease){
+        branch=version
+    }
+
     executable 'bash'
     environment("RELEASE_VERSION", "${version}")
     environment("BRANCH", branch)
