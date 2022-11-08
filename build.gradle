@@ -292,7 +292,6 @@ task submitToPlatform1 (type: Exec, dependsOn: [buildPlatform1]){
     if (isRelease){
         branch=version
     }
-    println "Branch is ${branch}"
 
     executable 'bash'
     environment("RELEASE_VERSION", "${version}")
@@ -301,7 +300,7 @@ task submitToPlatform1 (type: Exec, dependsOn: [buildPlatform1]){
     environment("ARTIFACTORY_USERNAME", System.getenv('ARTIFACTORY_DEPLOYER_USER'))
     environment("ARTIFACTORY_PASSWORD", System.getenv('ARTIFACTORY_DEPLOYER_PASSWORD'))
     environment("ARTIFACTORY_HOST", System.getenv('ARTIFACTORY_HOST'))
-    // args = ["./submit.sh"]
+    args = ["./submit.sh"]
 }
 
 artifactoryPublish.dependsOn ':documentation:publishDitaSource'
