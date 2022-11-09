@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+
+# The repository name in registry1, excluding /ironbank/
+name: "synopsys/blackduck/blackduck-client"
+
+# List of tags to push for the repository in registry1
+# The most specific version should be the first tag and will be shown
+# on ironbank.dsop.io
+tags:
+- "TARGET_IMAGE_TAG"
+
+# Build args passed to Dockerfile ARGs
+args:
+  BASE_IMAGE: "redhat/ubi/ubi8"
+  BASE_TAG: "UBI_VERSION"
+
+# Docker image labels
+labels:
+  org.opencontainers.image.title: "blackduck-client"
+  ## Human-readable description of the software packaged in the image
+  org.opencontainers.image.description: "Client tools for Blackduck"
+  ## License(s) under which contained software is distributed
+  org.opencontainers.image.licenses: "Synopsys proprietary License"
+  ## URL to find more information on the image
+  org.opencontainers.image.url: "blackducksoftware/blackduck-client"
+  ## Name of the distributing entity, organization or individual
+  org.opencontainers.image.vendor: "Synopsysi, Inc."
+  org.opencontainers.image.version: "TARGET_IMAGE_TAG"
+  ## Keywords to help with search (ex. "cicd,gitops,golang")
+  mil.dso.ironbank.image.keywords: "SCA"
+  ## This value can be "opensource" or "commercial"
+  mil.dso.ironbank.image.type: "commercial"
+  ## Product the image belongs to for grouping multiple images
+  mil.dso.ironbank.product.name: "Blackduck"
+
+# List of resources to make available to the offline build context
+resources:
+- filename: synopsys-detect-RELEASE_VERSION-air-gap.zip
+  url: https://sig-repo.synopsys.com/artifactory/blackduck-repo1.dso.mil-generic/blackduck-client/synopsys-detect-RELEASE_VERSION-air-gap.zip
+  validation:
+    type: sha256
+    value: ZIP_SHA256_VALUE
+  auth:
+    type: "basic"
+    id: "synopsys"
+
+# List of project maintainers
+maintainers:
+- email: "mjmcint@synopsys.com"
+  name: "Megan McIntyre"
+  username: "mjmcint"
+  cht_member: false
