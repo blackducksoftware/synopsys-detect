@@ -203,7 +203,7 @@ public class DetectBoot {
             );
 
             // in order to know if docker is needed we have to have either detect.target.type=IMAGE or detect.docker.image
-            RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE || hasImageOrTar); //TODO: Move to proper decision home. -jp
+            RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE || hasImageOrTar, detectConfigurationFactory.createDetectTarget()); //TODO: Move to proper decision home. -jp
             DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
             oneRequiresTheOther(
                 detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
