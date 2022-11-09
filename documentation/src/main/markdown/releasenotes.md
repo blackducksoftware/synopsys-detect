@@ -8,7 +8,7 @@
 ### Resolved issues
 
 * (IDETECT-3285) go.mod file "// indirects" matching as Direct Dependencies.  Additional information for the go project is obtained in order to definitively establish direct module dependencies and then establish which module dependencies are transitive.
-* (IDETECT-3228) Resolved an issue that caused certain Maven dependency tree formats from not being parsed.
+* (IDETECT-3228) Resolved an issue that caused certain Maven dependency tree formats to not be parsed.
 
 ## Version 8.2.0
 
