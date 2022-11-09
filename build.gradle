@@ -20,7 +20,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '8.3.0-SNAPSHOT'
+version = '8.4.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -62,9 +62,6 @@ allprojects {
 
         implementation 'org.freemarker:freemarker:2.3.31'
         implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.13'
-
-	// TODO remove once integration-common is upgraded to eliminate this
-	implementation 'org.apache.commons:commons-text:1.10.0'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
@@ -191,7 +188,7 @@ task publishAirGapZip() {
 
     doLast {
         def airGapZipName = "${project.name}-${version}-air-gap.zip"
-        def airGapZipLocation = createAirGapZip.airGapPath
+        def airGapZipLocation = createAirGapZip.ext.airGapPath
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
                     "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
@@ -219,7 +216,7 @@ task publishAirGapZipWithoutDocker() {
         def airGapZipName = "${project.name}-${version}-air-gap-no-docker.zip"
         def airGapZipNameLegacy = "${project.name}-${version}-air-gap-gradle-nuget.zip"
         //MUST remain for down-stream projects until late 2022
-        def airGapZipLocation = createAirGapZipWithoutDocker.airGapPath
+        def airGapZipLocation = createAirGapZipWithoutDocker.ext.airGapPath
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
                     "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
@@ -248,6 +245,62 @@ task helpJson(type: JavaExec) {
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
     args = ['--helpjson']
+}
+
+task buildPlatform1 () {
+    dependsOn createAirGapZip
+
+    doFirst {
+        copy {
+            from ("${projectDir}/platform-1/") {
+                include "*"
+            }
+            into "${buildDir}/platform-1"
+        }
+    }
+
+    doLast {
+        def airGapZipLocation = createAirGapZip.ext.airGapPath
+        exec {
+            workingDir "${buildDir}/platform-1"
+
+            executable = 'bash'
+            environment("RELEASE_VERSION", "${version}")
+            environment("AIR_GAP_ZIP_LOCATION", "${airGapZipLocation}")
+            args = ["./build.sh"]
+        }
+    }
+}
+
+task submitToPlatform1 (type: Exec, dependsOn: [buildPlatform1]){
+  doFirst {
+        copy {
+            from ("${projectDir}/platform-1/") {
+                include "*"
+            }
+            into "${buildDir}/platform-1"
+        }
+    }
+    def branch = System.getenv('BRANCH') ?: ''
+
+    workingDir "${buildDir}/platform-1"
+    if (branch.startsWith('origin/')){
+      branch=branch.replaceFirst('origin/', '')
+    }
+
+    boolean isRelease = System.getenv('RUN_RELEASE') ? System.getenv('RUN_RELEASE').toBoolean() : false
+    if (isRelease){
+        branch="update.${version}"
+    }
+
+    executable 'bash'
+    environment("RELEASE_VERSION", "${version}")
+    environment("BRANCH", branch)
+    environment("REPO1_URL", System.getenv('REPO1_ACCESS_URL'))
+    environment("ARTIFACTORY_USERNAME", System.getenv('ARTIFACTORY_DEPLOYER_USER'))
+    environment("ARTIFACTORY_PASSWORD", System.getenv('ARTIFACTORY_DEPLOYER_PASSWORD'))
+    environment("ARTIFACTORY_HOST", System.getenv('ARTIFACTORY_HOST'))
+    args = ["./submit.sh"]
 }
 
 artifactoryPublish.dependsOn ':documentation:publishDitaSource'

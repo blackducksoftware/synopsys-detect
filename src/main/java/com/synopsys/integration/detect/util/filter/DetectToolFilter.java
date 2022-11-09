@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
@@ -29,7 +30,7 @@ public class DetectToolFilter {
     private final List<DetectTool> defaultEphemeralTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN);
     
     // A list of all possible ephemeral scan types.
-    private final List<DetectTool> allowedEphemeralTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN, DetectTool.DOCKER);    
+    private final List<DetectTool> allowedEphemeralTools = Arrays.asList(DetectTool.BAZEL, DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN, DetectTool.DOCKER);    
 
     public DetectToolFilter(
         ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter,
@@ -53,7 +54,7 @@ public class DetectToolFilter {
         if (detectTool == DetectTool.IAC_SCAN) {
             return iacEnabled;
         }
-        if (detectTool == DetectTool.DETECTOR && runDecision.isDockerMode()) {
+        if (detectTool == DetectTool.DETECTOR && runDecision.getDockerMode() == DetectTargetType.IMAGE) {
             return false;
         }
         if (blackDuckDecision.scanMode() == BlackduckScanMode.RAPID && !rapidTools.contains(detectTool)) {
@@ -61,16 +62,17 @@ public class DetectToolFilter {
         }
         if (blackDuckDecision.scanMode() == BlackduckScanMode.EPHEMERAL) {
             // If the user specifically asked for something, check that it is an allowed
-            // tool.
-            if (excludedIncludedFilter.includeSpecified()) {
+            // tool or we are in docker mode..
+            if (excludedIncludedFilter.includeSpecified() || runDecision.isDockerMode()) {
                 if (!allowedEphemeralTools.contains(detectTool)) {
                     return false;
                 }
-            // Otherwise only allow default tools unless we are in docker mode.
-            } else if (!defaultEphemeralTools.contains(detectTool) && !runDecision.isDockerMode()) {
+            // Otherwise only allow default tools.
+            } else if (!defaultEphemeralTools.contains(detectTool) ) {
                 return false;
             }
         }
+        
         return excludedIncludedFilter.shouldInclude(detectTool);
     }
 }

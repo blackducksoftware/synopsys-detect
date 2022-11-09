@@ -22,12 +22,14 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectClone
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
+import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
@@ -46,6 +48,7 @@ import com.synopsys.integration.detect.tool.detector.executable.DetectExecutable
 import com.synopsys.integration.detect.tool.iac.IacScanOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
+import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedReducedPersistanceMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.util.finder.DetectDirectoryFileFilter;
@@ -116,6 +119,17 @@ public class DetectConfigurationFactory {
             return individualFileMatching.getBaseValue().get();
         }
 
+        return null;
+    }
+    
+    @Nullable
+    private ReducedPersistence findReducedPersistence() {
+        ExtendedEnumValue<ExtendedReducedPersistanceMode, ReducedPersistence> reducedPersistence = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_REDUCED_PERSISTENCE);
+        
+        if (reducedPersistence.getBaseValue().isPresent()) {
+            return reducedPersistence.getBaseValue().get();
+        }
+        
         return null;
     }
 
@@ -371,6 +385,7 @@ public class DetectConfigurationFactory {
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH);
         Boolean treatSkippedScansAsSuccess = detectConfiguration.getValue(DetectProperties.DETECT_FORCE_SUCCESS_ON_SKIP);
         Boolean isEphemeral = BlackduckScanMode.EPHEMERAL.equals(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE));
+        
 
         return new BlackDuckSignatureScannerOptions(
             signatureScannerPaths,
@@ -388,7 +403,8 @@ public class DetectConfigurationFactory {
             copyrightSearch,
             followSymLinks,
             treatSkippedScansAsSuccess,
-            isEphemeral
+            isEphemeral,
+            findReducedPersistence()
         );
     }
 
