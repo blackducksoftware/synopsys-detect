@@ -1,4 +1,4 @@
-# Ephemeral Scan
+# Ephemeral Scan LCA
 
 Ephemeral Scan or Ephemeral Scan Mode is a new way of running [solution_name] with Black Duck. This mode is designed to be as fast as possible and does not persist any data on Black Duck. Ephemeral Scan Mode has a unique set of restrictions, mode of configuration and set of results.  It is similar to Rapid Scan Mode however it differs in that it supports usage of the SIGNATURE_SCAN tool.  Ephemeral Scan allows non-persistent signature scans to be performed.
 
@@ -45,35 +45,6 @@ Enable this feature by adding [--detect.blackduck.scan.mode=EPHEMERAL](../proper
     * --detect.tools=BAZEL,SIGNATURE_SCAN --detect.blackduck.scan.mode=EPHEMERAL
     * --detect.tools=DETECTOR,DOCKER --detect.blackduck.scan.mode=RAPID
 
-## Configuration
-
-Ephemeral scan policy overrides are the same as for Rapid Scans and can be provided in a file named '.bd-rapid-scan.yaml' in the source directory. The file name must match exactly.
-
-[solution_name] will automatically upload the config file during a rapid scan when present.
-
-The file is a YAML file intended to be checked-in to SCM alongside other build config files.
-
-**NOTE:**
- * This file format is dependent on Black Duck and in the future, different versions of Black Duck may require a different file format.
- * This file will have no effect on Signature Scans run in Ephemeral Mode.
-
-```
-version: 1.0
-policy:
-  overrides:
-  - policyName: policyA
-    components:
-    - name: component1
-      version: version1
-    - name: component2
-  - policyName: policyB
-    components:
-    - name: component3
-      version: version3
-```
-
-Each policy override must apply to a list of specific components, on a specific version (e.g. component1 + version1) or on all versions (e.g. component2).
-
 ## Results
 
 Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast, although the SIGNATURE_SCAN can take some time as communication with Black Duck is a requirement.
@@ -109,9 +80,3 @@ The results are also printed in the logs:
 2021-07-20 13:25:18 EDT INFO  [main] --- 		Components with Policy Violation Warnings:
 2021-07-20 13:25:18 EDT INFO  [main] --- 			Acorn 5.5.3 (npmjs:acorn/5.5.3)
 ```
-
-## Ephemeral Scan Compare Mode
-
-You can configure Ephemeral scan to return only the difference in policy violations between the Ephemeral scan and previous intelligent scans using the same configuration. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
-
-Setting the compare mode to ALL evaluates all RAPID/EPHEMERAL or FULL policies. BOM_COMPARE_STRICT only shows policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of policy rule modes selected and behaves like ALL if the policy rule is only RAPID and like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for complete details.

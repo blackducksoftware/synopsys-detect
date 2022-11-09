@@ -1,7 +1,9 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,6 +21,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoGraphPar
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoListParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModWhyParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoVersionParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.parse.GoModuleDependencyHelper;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModDependencyManager;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.synopsys.integration.detectable.detectables.go.gomod.process.GoRelationshipManager;
@@ -55,9 +58,10 @@ public class GoModCliExtractor {
     }
 
     public Extraction extract(File directory, ExecutableTarget goExe) throws ExecutableFailedException, JsonSyntaxException, DetectableException {
+        GoVersion goVersion = goVersion(directory, goExe);
         List<GoListModule> goListModules = listModules(directory, goExe);
-        List<GoListAllData> goListAllModules = listAllModules(directory, goExe);
-        List<GoGraphRelationship> goGraphRelationships = listGraphRelationships(directory, goExe);
+        List<GoListAllData> goListAllModules = listAllModules(directory, goExe, goVersion);
+        List<GoGraphRelationship> goGraphRelationships = listGraphRelationships(directory, goExe, goVersion);
         Set<String> excludedModules = listExcludedModules(directory, goExe);
 
         GoRelationshipManager goRelationshipManager = new GoRelationshipManager(goGraphRelationships, excludedModules);
@@ -75,15 +79,26 @@ public class GoModCliExtractor {
         return goListParser.parseGoListModuleJsonOutput(listOutput);
     }
 
-    private List<GoListAllData> listAllModules(File directory, ExecutableTarget goExe) throws ExecutableFailedException, JsonSyntaxException, DetectableException {
-        GoVersion goVersion = goVersion(directory, goExe);
+    private List<GoListAllData> listAllModules(File directory, ExecutableTarget goExe, GoVersion goVersion) throws ExecutableFailedException, JsonSyntaxException, DetectableException {
         List<String> listAllOutput = goModCommandRunner.runGoListAll(directory, goExe, goVersion);
         return goListParser.parseGoListAllJsonOutput(listAllOutput);
     }
 
-    private List<GoGraphRelationship> listGraphRelationships(File directory, ExecutableTarget goExe) throws ExecutableFailedException {
+    private List<GoGraphRelationship> listGraphRelationships(File directory, ExecutableTarget goExe, GoVersion goVersion) throws ExecutableFailedException {
         List<String> modGraphOutput = goModCommandRunner.runGoModGraph(directory, goExe);
-        return goGraphParser.parseRelationshipsFromGoModGraph(modGraphOutput);
+
+        // Get the actual main module that produced this graph
+        String mainMod = goModCommandRunner.runGoModGetMainModule(directory, goExe, goVersion);
+
+        // Get the list of TRUE direct dependencies, then use the main mod name and
+        // this list to create a TRUE dependency graph from the requirement graph
+        List<String> directs = goModCommandRunner.runGoModDirectDeps(directory, goExe, goVersion);
+        List<String> whyModuleList = goModCommandRunner.runGoModWhy(directory, goExe, false);
+        
+        GoModuleDependencyHelper goModDependencyHelper = new GoModuleDependencyHelper();
+        List<String> actualDependencyList = goModDependencyHelper.computeDependencies(mainMod, directs, whyModuleList, modGraphOutput);
+
+        return goGraphParser.parseRelationshipsFromGoModGraph(actualDependencyList);
     }
 
     private GoVersion goVersion(File directory, ExecutableTarget goExe) throws ExecutableFailedException, DetectableException {
