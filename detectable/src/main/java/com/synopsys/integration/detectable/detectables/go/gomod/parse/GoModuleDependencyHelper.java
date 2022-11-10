@@ -43,11 +43,15 @@ public class GoModuleDependencyHelper {
                     containsDirect = true;
                 }
             }
-            if (!containsDirect) {// anything that falls in here isn't a direct dependency of main
-                grphLine = grphLine.replace(main, "xxxxxx");
-            }
+            
+            // splitting here allows matching with less effort
             String[] splitLine = grphLine.split(" ");
-            if (splitLine[0].equals("xxxxxx")) {
+            boolean needsRedux = false;
+            if (!containsDirect && splitLine[0].equals(main)) {// anything that falls in here isn't a direct dependency of main
+                needsRedux = true;
+            }
+
+            if (needsRedux) {
                 // Redo the line to establish the direct reference module to this *indirect* module
                 grphLine = this.getProperParentage(grphLine, splitLine, whyMap, directs);
             }
