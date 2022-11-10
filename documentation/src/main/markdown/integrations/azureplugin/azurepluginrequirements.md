@@ -12,6 +12,6 @@ The following is a list of requirements for the [solution_name] in Azure DevOps 
 
 The [solution_name] plugin for Azure DevOps is supported on the same operating systems and browsers as [blackduck_product_name].
 
-For scanning NuGet projects, verify that you have the NuGet tool installer set up in the build job definition.  You can download it at [https://docs.microsoft.com/en-us/Azure DevOps/build-release/tasks/tool/nuget?view=Azure DevOps](https://docs.microsoft.com/en-us/vsts/build-release/tasks/tool/nuget?view=vsts).
+For scanning NuGet projects, verify that you have the NuGet tool installer set up in the build job definition.  For further information see [NuGet tool](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/nuget?view=azure-devops&viewFallbackFrom=vsts%3Fview%3Dvsts)
 
 You can get the [solution_name] for Azure DevOps plugin at [VisualStudio Marketplace](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect).

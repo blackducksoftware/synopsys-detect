@@ -1,5 +1,5 @@
 # Installing the Azure DevOps plugin
-From the Azure Pipelines page, add the Detect plug-in for ADO.
+From the Azure Pipelines page, add the [solution_name] plug-in for ADO.
 
 **Install the [solution_name] extension for Azure DevOps**
 
