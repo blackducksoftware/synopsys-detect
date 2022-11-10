@@ -1,5 +1,6 @@
 # Users and Roles for Jenkins Plugin
 First you must configure a user/API token in [blackduck_product_name] so that the [solution_name] is analyzed in [blackduck_product_name].
+
 ## Generating an API token
 1. Log in into your [blackduck_product_name] instance.
 2. From the user menu located on the top navigation bar, select My Access Tokens. The **My Access Tokens** page appears.

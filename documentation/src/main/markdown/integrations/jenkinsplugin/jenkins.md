@@ -18,7 +18,6 @@ Refer to [How it Works](../../gettingstarted/howitworks.md) to learn more about 
 
 3.      [solution_name] scans the project, for example, the scan might be a step in a Jenkins Pipeline job or post-build action in a Freestyle job.
 
-
 4.      [solution_name] sends the scan results to [blackduck_product_name] for analysis.
 
 After running a [solution_name] scan following the Jenkins build, you can view the scan results in your [blackduck_product_name] instance.

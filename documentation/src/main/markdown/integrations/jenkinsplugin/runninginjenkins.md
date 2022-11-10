@@ -17,18 +17,18 @@ To use the JAR option do the following steps:
 ## Air Gap option
 [solution_name] can be configured to run in an air gap fashion, see: [Air Gap](../downloadingandrunning/airgap.md).
 
-In freestyle and Pipeline jobs, you can toggle between the different modes for running [solution name] in the plugin such as pulling the Detect.jar from scripts or $DETECT\_JAR\_PATH, or from a specified Tool Installation.
+In freestyle and Pipeline jobs, you can toggle between the different modes for running [solution_name] in the plugin such as pulling the Detect.jar from scripts or $DETECT\_JAR\_PATH, or from a specified Tool Installation.
 ## Running Detect in a job
-You can run Detect as a post-build action or a Pipeline step.
+You can run [solution_name] as a post-build action or a Pipeline step.
 ### Pipeline step
 You can configure the scan as a pipeline step in a Pipeline job.
 
-Refer to the [Pipeline example]Refer to the [pipeline example](../../integrations/jenkinsplugin/jenkinspipelinejob.md)
+Refer to the [pipeline example](../../integrations/jenkinsplugin/jenkinspipelinejob.md)
 ### Post-build actions
 You can configure the scan as a post-build action in a freestyle job. You can have multiple post-build actions, but only one [solution_name] post-build action.
 
 Refer to the [freestyle example](../../integrations/jenkinsplugin/jenkinsfreestylejob.md).
 ## DSL considerations
-The [solution_name] for Jenkins plugin provides Dynamic DSL for both freestyle steps and pipeline steps. Read more about Dynamic DSL at <https://github.com/jenkinsci/job-dsl-plugin/wiki/Dynamic-DSL>.
+The [solution_name] for Jenkins plugin provides Dynamic DSL for both freestyle steps and pipeline steps. Read more at [Dynamic DSL](https://github.com/jenkinsci/job-dsl-plugin/wiki/Dynamic-DSL).
 
-**Note:** that versions 1.72 and later of the Job DSL plugin do not support the [solution_name] for Jenkins plugin pipeline steps.
+**Note:** that versions 1.72 and later of the DSL plugin do not support the [solution_name] for Jenkins plugin pipeline steps.
