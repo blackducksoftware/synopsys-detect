@@ -34,6 +34,8 @@ public class GoModuleDependencyHelper {
          * requirements graph to a dependency graph.  True direct dependencies will be left unchanged.
          */
         ArrayList<String> goModGraph = new ArrayList<String>();
+        ArrayList<String> correctedDependencies = new ArrayList<String>();
+
         HashMap<String, List<String>> whyMap = whyListStructureTransform.convertWhyListToWhyMap(whyList);
         // Correct lines that get mis-interpreted as a direct dependency, given the list of direct deps, requirements graph etc.
         for (String grphLine : graph) {
@@ -51,10 +53,26 @@ public class GoModuleDependencyHelper {
                 needsRedux = true;
             }
 
+            // this searches for instances where the main module is apparently referring to itself.  This can
+            // step on the indirect dependency making it seem to be direct.
+            if (splitLine[0].startsWith(main) && splitLine[0].contains("@")) {
+                boolean gotonext = false;
+                for (String adep : correctedDependencies) {
+                    if (splitLine[1].startsWith(adep)) {
+                        gotonext = true;
+                        break;
+                    }
+                }
+                if (gotonext) {
+                    continue;
+                }
+            }
+
             if (needsRedux) {
                 // Redo the line to establish the direct reference module to this *indirect* module
-                grphLine = this.getProperParentage(grphLine, splitLine, whyMap, directs);
+                grphLine = this.getProperParentage(grphLine, splitLine, whyMap, directs, correctedDependencies);
             }
+
             if (!goModGraph.contains(grphLine)) {
                 logger.debug(grphLine);
                 goModGraph.add(grphLine);
@@ -63,8 +81,9 @@ public class GoModuleDependencyHelper {
         return goModGraph;
     }
 
-    private String getProperParentage(String grphLine, String[] splitLine, HashMap<String, List<String>> whyMap, List<String> directs) {
+    private String getProperParentage(String grphLine, String[] splitLine, HashMap<String, List<String>> whyMap, List<String> directs, ArrayList<String> correctedDependencies) {
         String childModulePath = splitLine[1].replaceAll("@.*", "");
+        correctedDependencies.add(childModulePath); // keep track of ones we've fixed.
         
         // look up the 'why' results for the module...  This will tell us
         // the direct dependency item that pulled this item into the mix.
@@ -79,10 +98,10 @@ public class GoModuleDependencyHelper {
                     }
                 }
             }
-            grphLine = grphLine.replace(splitLine[0], parent);
+            if (parent.length() > 0) { // if real direct is found... otherwise do nothing
+                grphLine = grphLine.replace(splitLine[0], parent);
+            }
         }
         return grphLine;
     }
-
-
 }
