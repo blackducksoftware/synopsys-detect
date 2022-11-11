@@ -20,7 +20,7 @@ Configure your [solution_name] for Azure DevOps plugin by adding configuration f
 1. **Detect Version**: Version of the [solution_name] binary to use. Synopsys recommends using the latest but you can specify a version override if desired.
 1. **Detect Run Mode:** Select the run mode. If you select Use Airgap Mode, a Detect Air Gap Jar Directory Path field opens in which you must specify the [solution_name] Air Gap Jar Path.
 1. **Detect Arguments**: Here you can include additional [solution_name]* arguments; [solution_name] picks up your build environment variables and your project variables. Use a new line or space to separate multiple arguments. Use double quotes to escape. You can use environment and build variables.
-For more information on Detect arguments, refer to [solution_name][ Properties](../../properties/configuration/overview.md).
+For more information on [solution_name] arguments, refer to [Properties](../../properties/configuration/overview.md).
 
 1. **Detect Folder**: The location to download the Detect jar or the location of an existing Detect jar. The default is the system temp directory.  To specify a different directory, type the directory path and name in the field.
 
