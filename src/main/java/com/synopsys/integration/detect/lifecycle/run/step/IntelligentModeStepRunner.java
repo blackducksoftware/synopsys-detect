@@ -166,19 +166,14 @@ public class IntelligentModeStepRunner {
      * 
      * @param blackDuckRunData
      * @param projectVersion
+     * @throws OperationException
      * @throws IntegrationException
-     * @throws OperationException 
      */
     private void pollForBomCompletion(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws OperationException, IntegrationException {
         HttpUrl bomToSearchFor = projectVersion.getProjectVersionView().getFirstLink(ProjectVersionView.BOM_STATUS_LINK);
         
-        // TODO how to get scanId? Won't it differ for each scan type? Signature scanner doesn't even give us this does it?
-        // do we even need scan ID? I can get bom status by just hitting the version
-        //HttpUrl url = new HttpUrl(blackDuckUrl + "/api/projects/{projectId}/versions/{versionId}/bom-status/{scanId}");
-        
         // Poll to see if Bom is ready
-        operationRunner.waitForBomCompletion(blackDuckRunData, bomToSearchFor);
-        
+        operationRunner.waitForBomCompletion(blackDuckRunData, bomToSearchFor);    
     }
 
     public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
