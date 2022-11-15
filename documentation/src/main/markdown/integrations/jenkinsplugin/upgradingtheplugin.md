@@ -1,4 +1,4 @@
-# Upgrading from previous plugin versions
+# Upgrading the Plugin
 If you have already configured [solution_name] for Jenkins across a number of jobs, Synopsys provides a script to make the process easier. The script automatically migrates the [solution_name] for Jenkins post-build step in your FreeStyle jobs from the version 1.5.0 format to the new 2.0.x format. 
 Run the script by copying and pasting it into the Jenkins Script Console, then clicking **Run**.  For more information, refer to [Jenkins Script Console](https://www.jenkins.io/doc/book/managing/script-console/).
 

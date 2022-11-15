@@ -1,4 +1,4 @@
-# [solution_name] integrations
+# [solution_name] Integrations
 
 The [solution_name] integrations allow users to install and run [solution_name] in various environments.
 
