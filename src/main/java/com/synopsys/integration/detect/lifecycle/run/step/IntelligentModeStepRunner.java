@@ -132,9 +132,6 @@ public class IntelligentModeStepRunner {
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
             if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults()) {                
                 pollForBomCompletion(blackDuckRunData, projectVersion);
-                    CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
-                    waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion,
-                            blackDuckRunData);
             }
         });
 
