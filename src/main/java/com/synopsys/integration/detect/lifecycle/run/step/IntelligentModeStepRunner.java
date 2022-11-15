@@ -10,19 +10,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.generated.discovery.BlackDuckMediaTypeDiscovery;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.OperationException;
-import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckMinimumVersionChecks;
-import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersion;
-import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionChecker;
-import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionParser;
-import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionSensitiveOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
@@ -49,7 +42,6 @@ public class IntelligentModeStepRunner {
     private final OperationRunner operationRunner;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StepHelper stepHelper;
-    private BlackDuckVersionParser blackDuckVersionParser;
 
     public IntelligentModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper) {
         this.operationRunner = operationRunner;
@@ -139,16 +131,10 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
             if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults()) {                
-                BlackDuckVersion blackDuckServerVersion = blackDuckRunData.getBlackDuckServerVersion().get();
-                BlackDuckVersion minVersion = new BlackDuckVersion(2022, 10, 0);
-                
-                if (blackDuckServerVersion.isAtLeast(minVersion)) {
-                    pollForBomCompletion(blackDuckRunData, projectVersion);
-                } else {
+                pollForBomCompletion(blackDuckRunData, projectVersion);
                     CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
                     waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion,
                             blackDuckRunData);
-                }
             }
         });
 
