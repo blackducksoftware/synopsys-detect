@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
@@ -17,16 +16,14 @@ import com.blackducksoftware.bdio2.Bdio;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionBomStatusView;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionBomStatusView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationWaitResult;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
@@ -84,10 +81,8 @@ import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadO
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
-import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerReport;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.CalculateScanPathsOperation;
-import com.synopsys.integration.detect.tool.signaturescanner.operation.CalculateWaitableSignatureScanCodeLocations;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateScanBatchOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateScanBatchRunnerWithBlackDuck;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.CreateScanBatchRunnerWithLocalInstall;
@@ -105,9 +100,6 @@ import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BomWaitOperation;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.IntelligentPersistentUploadOperation;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitCalculator;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.WaitableCodeLocationData;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeConfigFindOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeGenerateJsonOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeLogReportOperation;
@@ -139,7 +131,6 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.Projec
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseFindResult;
 import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseOptions;
 import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService;
-import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -182,7 +173,6 @@ public class OperationRunner {
 
     private final StatusEventPublisher statusEventPublisher;
     private final ExitCodePublisher exitCodePublisher;
-    private final CodeLocationEventPublisher codeLocationEventPublisher;
     private final DetectorEventPublisher detectorEventPublisher;
 
     private final CodeLocationNameManager codeLocationNameManager;
@@ -212,7 +202,6 @@ public class OperationRunner {
 
         statusEventPublisher = eventSingletons.getStatusEventPublisher();
         exitCodePublisher = eventSingletons.getExitCodePublisher();
-        codeLocationEventPublisher = eventSingletons.getCodeLocationEventPublisher();
         detectorEventPublisher = eventSingletons.getDetectorEventPublisher();
         projectEventPublisher = eventSingletons.getProjectEventPublisher();
 
@@ -372,17 +361,6 @@ public class OperationRunner {
                 blackDuckRunData.getBlackDuckServicesFactory().createIntelligentPersistenceService(),
                 timeout
             ).uploadBdioFiles(bdioResult)
-        );
-    }
-
-    public final CodeLocationWaitData calculateCodeLocationWaitData(List<WaitableCodeLocationData> codeLocationCreationDatas) throws OperationException {
-        return auditLog.namedInternal("Calculate Code Location Wait Data", () -> new CodeLocationWaitCalculator().calculateWaitData(codeLocationCreationDatas));
-    }
-
-    public final void publishCodeLocationNames(Set<String> codeLocationNames) throws OperationException {
-        auditLog.namedInternal(
-            "Publish CodeLocationsCompleted Event",
-            () -> codeLocationEventPublisher.publishCodeLocationsCompleted(codeLocationNames)
         );
     }
 
@@ -613,17 +591,6 @@ public class OperationRunner {
         });
     }
 
-    public SignatureScannerCodeLocationResult calculateWaitableSignatureScannerCodeLocations(
-        NotificationTaskRange notificationTaskRange,
-        List<SignatureScannerReport> reports
-    ) throws OperationException {
-        return auditLog.namedInternal(
-            "Calculate Signature Scanner Waitable Code Locations",
-            () -> new CalculateWaitableSignatureScanCodeLocations()
-                .calculateWaitableCodeLocations(notificationTaskRange, reports)
-        );
-    }
-
     public List<File> calculateIacScanScanTargets() throws OperationException {
         return auditLog.namedInternal(
             "Calculate IacScan Scan Targets",
@@ -703,37 +670,6 @@ public class OperationRunner {
                     .orElse(directoryManager.getSourceDirectory()));
             }
             return Optional.empty();
-        });
-    }
-
-    public void waitForCodeLocations(BlackDuckRunData blackDuckRunData, CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion)
-        throws OperationException {
-        auditLog.namedPublic("Wait for Code Locations", () -> {
-            //TODO fix this when NotificationTaskRange doesn't include task start time
-            // ekerwin - The start time of the task is the earliest time a code location was created.
-            // In order to wait the full timeout, we have to not use that start time and instead use now().
-            NotificationTaskRange notificationTaskRange = Optional.ofNullable(codeLocationWaitData.getNotificationRange())
-                .map(notificationRange -> new NotificationTaskRange(
-                    System.currentTimeMillis(),
-                    codeLocationWaitData.getNotificationRange().getStartDate(),
-                    codeLocationWaitData.getNotificationRange().getEndDate()
-                ))
-                .orElseThrow(() -> new DetectUserFriendlyException("Date range for notification range wasn't set.", ExitCodeType.FAILURE_UNKNOWN_ERROR));
-
-            CodeLocationCreationService codeLocationCreationService = blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationCreationService();
-            CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(
-                notificationTaskRange,
-                projectNameVersion,
-                codeLocationWaitData.getCodeLocationNames(),
-                codeLocationWaitData.getExpectedNotificationCount(),
-                detectConfigurationFactory.findTimeoutInSeconds()
-            );
-            if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
-                throw new DetectUserFriendlyException(
-                    result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."),
-                    ExitCodeType.FAILURE_TIMEOUT
-                );
-            }
         });
     }
 

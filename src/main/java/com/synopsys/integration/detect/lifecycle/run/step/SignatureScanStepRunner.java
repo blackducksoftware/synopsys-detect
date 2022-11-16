@@ -18,7 +18,6 @@ import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.tool.signaturescanner.ScanBatchRunnerUserResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
-import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerReport;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.util.NameVersion;
@@ -32,7 +31,7 @@ public class SignatureScanStepRunner {
         this.operationRunner = operationRunner;
     }
 
-    public SignatureScannerCodeLocationResult runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
+    public void runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException, OperationException {
         ScanBatchRunner scanBatchRunner = resolveOnlineScanBatchRunner(blackDuckRunData);
 
@@ -41,8 +40,6 @@ public class SignatureScanStepRunner {
 
         NotificationTaskRange notificationTaskRange = operationRunner.createCodeLocationRange(blackDuckRunData);
         List<SignatureScannerReport> reports = executeScan(scanBatch, scanBatchRunner, scanPaths);
-
-        return operationRunner.calculateWaitableSignatureScannerCodeLocations(notificationTaskRange, reports);
     }
     
     public SignatureScanOuputResult runRapidSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)

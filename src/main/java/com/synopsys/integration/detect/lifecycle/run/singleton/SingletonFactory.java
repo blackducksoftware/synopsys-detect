@@ -19,7 +19,6 @@ import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
-import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -86,8 +85,7 @@ public class SingletonFactory {
         StatusEventPublisher statusEventPublisher = new StatusEventPublisher(eventSystem);
         ExitCodePublisher exitCodePublisher = new ExitCodePublisher(eventSystem);
         DetectorEventPublisher detectorEventPublisher = new DetectorEventPublisher(eventSystem);
-        CodeLocationEventPublisher codeLocationEventPublisher = new CodeLocationEventPublisher(eventSystem);
         ProjectEventPublisher projectEventPublisher = new ProjectEventPublisher(eventSystem);
-        return new EventSingletons(statusEventPublisher, exitCodePublisher, detectorEventPublisher, codeLocationEventPublisher, projectEventPublisher);
+        return new EventSingletons(statusEventPublisher, exitCodePublisher, detectorEventPublisher, projectEventPublisher);
     }
 }

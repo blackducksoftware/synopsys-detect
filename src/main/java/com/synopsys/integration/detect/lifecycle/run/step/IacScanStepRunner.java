@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.blackducksoftware.bdio2.Bdio;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
@@ -18,7 +16,6 @@ import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
-import com.synopsys.integration.detect.tool.iac.IacScanCodeLocationData;
 import com.synopsys.integration.detect.tool.iac.IacScanReport;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detectable.util.ExternalIdCreator;
@@ -39,7 +36,7 @@ public class IacScanStepRunner {
         this.integrationEscapeUtil = new IntegrationEscapeUtil();
     }
 
-    public IacScanCodeLocationData runIacScanOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+    public void runIacScanOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException, IntegrationException, InterruptedException {
         List<File> iacScanTargets = operationRunner.calculateIacScanScanTargets();
 
@@ -59,13 +56,6 @@ public class IacScanStepRunner {
             iacScanReports.add(iacScanReport);
         }
         operationRunner.publishIacScanReport(iacScanReports);
-
-        Set<String> codeLocationNames = iacScanReports.stream()
-            .map(IacScanReport::getCodeLocationName)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-        return new IacScanCodeLocationData(codeLocationNames);
     }
 
     public void runIacScanOffline() throws OperationException, IntegrationException {
