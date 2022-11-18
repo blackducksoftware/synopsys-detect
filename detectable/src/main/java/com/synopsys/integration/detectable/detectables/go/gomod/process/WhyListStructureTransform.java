@@ -24,6 +24,9 @@ public class WhyListStructureTransform {
         // tells us that we're hitting a new hierarchy chain so we'll use that
         // to enter the item into the map, and start a new list for the next module.
         for (String whyModuleLine : whyList) {
+            if (whyModuleLine.length() <= 0) {
+                continue; // DONT include blank lines from the output in the list!
+            }
             if (whyModuleLine.startsWith("#")) {
                 if (!key.equals("")) {
                     moduleToHierarchyList.put(key, shortList);

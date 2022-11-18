@@ -1,13 +1,16 @@
 # Release notes
 
 ## Version 8.3.0
-### Resolved issues
-
-* (IDETECT-3285) go.mod file "// indirects" matching as Direct Dependencies.  Additional information for the go project is obtained in order to definitively establish direct module dependencies and then establish which module dependencies are transitive.
 
 ### New features
 
 * Added support for Reduced Persistence Signature Scanning. This feature allows users to specify if unmatched files should be persisted or discarded. Not storing data for unmatched files decreases scan time and database size. Note: this feature requires Black Duck 2022.10.0 or later.
+
+### Resolved issues
+
+* (IDETECT-3285) go.mod file "// indirects" matching as Direct Dependencies.  Additional information for the go project is obtained in order to definitively establish direct module dependencies and then establish which module dependencies are transitive.
+
+* (IDETECT-3228) Resolved an issue that caused certain Maven dependency tree formats to not be parsed.
 
 ## Version 8.2.0
 
