@@ -31,7 +31,7 @@ public class SignatureScanStepRunner {
         this.operationRunner = operationRunner;
     }
 
-    public void runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
+    public SignatureScanOuputResult runSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException, OperationException {
         ScanBatchRunner scanBatchRunner = resolveOnlineScanBatchRunner(blackDuckRunData);
 
@@ -39,7 +39,7 @@ public class SignatureScanStepRunner {
         ScanBatch scanBatch = operationRunner.createScanBatchOnline(scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
 
         NotificationTaskRange notificationTaskRange = operationRunner.createCodeLocationRange(blackDuckRunData);
-        List<SignatureScannerReport> reports = executeScan(scanBatch, scanBatchRunner, scanPaths);
+        return executeScan(scanBatch, scanBatchRunner, scanPaths);
     }
     
     public SignatureScanOuputResult runRapidSignatureScannerOnline(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
@@ -67,13 +67,13 @@ public class SignatureScanStepRunner {
         executeScan(scanBatch, scanBatchRunner, scanPaths);
     }
 
-    private List<SignatureScannerReport> executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths) throws OperationException {
+    private SignatureScanOuputResult executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths) throws OperationException {
         SignatureScanOuputResult scanOuputResult = operationRunner.signatureScan(scanBatch, scanBatchRunner);
 
         List<SignatureScannerReport> reports = operationRunner.createSignatureScanReport(scanPaths, scanOuputResult.getScanBatchOutput().getOutputs());
         operationRunner.publishSignatureScanReport(reports);
 
-        return reports;
+        return scanOuputResult;
     }
 
     private ScanBatchRunner resolveOfflineScanBatchRunner() throws DetectUserFriendlyException, OperationException {

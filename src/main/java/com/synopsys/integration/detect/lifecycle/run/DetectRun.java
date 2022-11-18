@@ -82,10 +82,10 @@ public class DetectRun {
                 } else if (blackDuckRunData.isNonPersistent()) {
                     logger.info("Rapid Scan is offline, nothing to do.");
                 } else if (blackDuckRunData.isOnline()) {
-                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper);
+                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
                     intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
                 } else {
-                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper);
+                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
                     intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData());
                 }
             }
