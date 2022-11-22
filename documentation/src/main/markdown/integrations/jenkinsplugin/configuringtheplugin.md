@@ -1,5 +1,5 @@
 # Configuring the Jenkins Plugin
-Use the following process to configure the Synopsys Detect for Jenkins plugin.  Note that the supported credentials formats are user name and password or API token.  SAML is not supported.
+Use the following process to configure the Synopsys Detect for Jenkins plugin.  Note that the supported credential formats are user name and password or API token.  SAML is not supported.
 
 1. After installing, navigate to **Manage Jenkins** > **Configure System**.
 1. Navigate to the **[solution_name]** section, and complete the following.
