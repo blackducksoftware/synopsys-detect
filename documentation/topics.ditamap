@@ -3,7 +3,14 @@
 <map id="detect-user-guide" xml:lang="en-US">
   <title>Synopsys Detect User Guide</title>
   <topicmeta>
-    <shortdesc>Synopsys Detect 8.4.0</shortdesc>
+	<shortdesc>Synopsys Detect</shortdesc>
+        <prodinfo>
+            <prodname>Synopsys Detect</prodname>
+            <vrmlist>
+                <vrm version="8.4.0"/>
+            </vrmlist>
+        </prodinfo>
+
     <!-- zoomin bundle name -->
     <othermeta name="bundle" content="integrations-detect"/>
   </topicmeta>
