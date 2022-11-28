@@ -17,6 +17,7 @@ import com.blackducksoftware.bdio2.Bdio;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionBomStatusView;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
@@ -101,6 +102,7 @@ import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio2FileOpe
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateCodeLocationOperation;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
+import com.synopsys.integration.detect.workflow.blackduck.BomWaitOperation;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.IntelligentPersistentUploadOperation;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitCalculator;
@@ -329,6 +331,16 @@ public class OperationRunner {
                 detectConfigurationFactory.findTimeoutInSeconds(),
                 RapidModeWaitOperation.DEFAULT_WAIT_INTERVAL_IN_SECONDS,
                 mode
+            );
+        });
+    }
+    
+    public ProjectVersionBomStatusView waitForBomCompletion(BlackDuckRunData blackDuckRunData, HttpUrl bomUrl) throws OperationException {
+        return auditLog.namedInternal("Wait for BOM Completion", () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            return new BomWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForBom(
+                    bomUrl,
+                    detectConfigurationFactory.findTimeoutInSeconds()
             );
         });
     }

@@ -34,6 +34,7 @@ import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
 import com.synopsys.integration.detect.workflow.status.OperationType;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
 
@@ -129,8 +130,9 @@ public class IntelligentModeStepRunner {
         });
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
-            CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
-            waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion, blackDuckRunData);
+            if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults()) {                
+                pollForBomCompletion(blackDuckRunData, projectVersion);
+            }
         });
 
         stepHelper.runAsGroup("Black Duck Post Actions", OperationType.INTERNAL, () -> {
@@ -139,6 +141,22 @@ public class IntelligentModeStepRunner {
             noticesReport(blackDuckRunData, projectVersion);
             publishPostResults(bdioResult, projectVersion, detectToolFilter);
         });
+    }
+
+    /**
+     * Polls for the BOM associated with a given version to see if it is completed. Returns nothing
+     * as later code will print out the location.
+     * 
+     * @param blackDuckRunData
+     * @param projectVersion
+     * @throws OperationException
+     * @throws IntegrationException
+     */
+    private void pollForBomCompletion(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws OperationException, IntegrationException {
+        HttpUrl bomToSearchFor = projectVersion.getProjectVersionView().getFirstLink(ProjectVersionView.BOM_STATUS_LINK);
+        
+        // Poll to see if Bom is ready
+        operationRunner.waitForBomCompletion(blackDuckRunData, bomToSearchFor);    
     }
 
     public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
@@ -177,14 +195,6 @@ public class IntelligentModeStepRunner {
         }
         if (operationRunner.createBlackDuckPostOptions().shouldPerformNamePolicyCheck()) {
             operationRunner.checkPolicyByName(blackDuckRunData, projectVersionView);
-        }
-    }
-
-    public void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
-        throws OperationException {
-        logger.info("Checking to see if Detect should wait for bom tool calculations to finish.");
-        if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults() && codeLocationWaitData.getExpectedNotificationCount() > 0) {
-            operationRunner.waitForCodeLocations(blackDuckRunData, codeLocationWaitData, projectNameVersion);
         }
     }
 
