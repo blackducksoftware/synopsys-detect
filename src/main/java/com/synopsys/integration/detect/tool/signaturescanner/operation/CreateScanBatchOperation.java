@@ -74,6 +74,9 @@ public class CreateScanBatchOperation {
 
         signatureScannerOptions.getIndividualFileMatching()
             .ifPresent(scanJobBuilder::individualFileMatching);
+        
+        signatureScannerOptions.getReducedPersistence()
+            .ifPresent(scanJobBuilder::reducedPersistence);
 
         File sourcePath = directoryManager.getSourceDirectory();
 

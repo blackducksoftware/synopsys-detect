@@ -1,0 +1,22 @@
+ARG BASE_REGISTRY=registry1.dso.mil
+ARG BASE_IMAGE=ironbank/redhat/ubi/ubi8
+ARG BASE_TAG=UBI_VERSION
+
+ARG VERSION="RELEASE_VERSION"
+
+FROM ${BASE_REGISTRY}/${BASE_IMAGE}:${BASE_TAG}
+
+ARG VERSION
+
+ENV BLACKDUCK_RELEASE_INFO "com.blackducksoftware.hub.vendor=Black Duck Software, Inc."
+
+COPY synopsys-detect-$VERSION-air-gap.zip /opt/
+
+RUN dnf update -y --nodocs \
+           && groupadd -g 101 client \
+           && useradd -u 100 -g 101 client \
+           && dnf clean all \
+           && rm -rf /var/cache/dnf
+
+USER client
+       
