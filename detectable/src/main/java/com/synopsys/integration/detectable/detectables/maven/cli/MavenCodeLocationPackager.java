@@ -165,7 +165,7 @@ public class MavenCodeLocationPackager {
             }
             dependencyParentStack.clear();
             dependencyParentStack.push(dependency);
-        } else {
+        } else if (level != 0) {
             // level should be greater than 1
             if (level == previousLevel) {
                 // a sibling of the previous dependency
@@ -267,35 +267,64 @@ public class MavenCodeLocationPackager {
         if (!isGav(componentText)) {
             return null;
         }
+        
+        // This is a GAV line.
+        componentText = removeGroupArtifactPipedSuffixIfExists(componentText);
+        
         String[] gavParts = componentText.split(":");
         String group = gavParts[0];
         String artifact = gavParts[1];
-
-        String scope = gavParts[gavParts.length - 1];
-        boolean recognizedScope = KNOWN_SCOPES.stream().anyMatch(scope::startsWith);
-
-        if (!recognizedScope) {
-            logger.warn("This line can not be parsed correctly due to an unknown dependency format - it is unlikely a match will be found for this dependency: " + componentText);
+        String scope = null;
+        String version;
+        if (gavParts.length > 4) {
+            scope = gavParts[gavParts.length - 1];
+            boolean recognizedScope = KNOWN_SCOPES.stream().anyMatch(scope::startsWith);
+            if (!recognizedScope) {
+                logger.warn("This line can not be parsed correctly due to an unknown dependency format - it is unlikely a match will be found for this dependency: " + componentText);
+            }
+            version = gavParts[gavParts.length - 2];
+        } else {
+            logger.warn("This line does not specify a scope - it is possible that a match is not found for this dependency: " + componentText);
+            version = gavParts[gavParts.length - 1];
         }
-        String version = gavParts[gavParts.length - 2];
         ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
         return new ScopedDependency(artifact, version, externalId, scope);
+    }
+    
+    private String removeGroupArtifactPipedSuffixIfExists(String componentText) {
+        int pipeFirstPosition = -1;
+        if ((pipeFirstPosition = componentText.indexOf("|")) > -1) {
+            // There should be a closing |
+            int pipeLastPosition = -1;
+            if ((pipeLastPosition = componentText.lastIndexOf("|")) > -1) {
+                // Check if the same | was found twice.
+                if (pipeFirstPosition != pipeLastPosition) {
+                    // This line has a suffix of the format |group:artifact| for each line. Deal with it.
+                    componentText = componentText.substring(0, pipeFirstPosition).trim();
+                }
+            }
+        }
+        return componentText;
     }
 
     public Dependency textToProject(String componentText) {
         if (!isGav(componentText)) {
             return null;
         }
+        
+        // This is a GAV line.
+        componentText = removeGroupArtifactPipedSuffixIfExists(componentText);
+        
         String[] gavParts = componentText.split(":");
         String group = gavParts[0];
-        String artifact = gavParts[1];
+        String artifact = gavParts[1];        
         String version;
         if (gavParts.length == 4) {
             // Dependency does not include the classifier
             version = gavParts[gavParts.length - 1];
         } else if (gavParts.length == 5) {
             // Dependency does include the classifier
-            version = gavParts[gavParts.length - 1];
+            version = gavParts[gavParts.length - 1]; //Should be 2. Possible sleeper.
         } else {
             logger.debug(String.format("%s does not look like a dependency we can parse", componentText));
             return null;

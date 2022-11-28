@@ -32,6 +32,12 @@ public class GoModDetectableVendoredTest extends DetectableFunctionalTest {
         ExecutableOutput goListOutput = createStandardOutputFromResource("/go/go-list.xout");
         addExecutableOutput(goListOutput, "go", "list", "-m", "-json");
 
+        ExecutableOutput goListMainOutput = createStandardOutputFromResource("/go/go-mod-get-main.xout");
+        addExecutableOutput(goListMainOutput, "go", "list", "-mod=readonly", "-m", "-f", "{{if (.Main)}}{{.Path}}{{end}}", "all");
+
+        ExecutableOutput goListDirectMods = createStandardOutputFromResource("/go/go-mod-list-directs.xout");
+        addExecutableOutput(goListDirectMods, "go", "list", "-mod=readonly", "-m", "-f", "{{if not (or .Indirect .Main)}}{{.Path}}@{{.Version}}{{end}}", "all");
+
         ExecutableOutput goVersionOutput = createStandardOutput(
             "go version go1.16.5 darwin/amd64"
         );
@@ -75,6 +81,10 @@ public class GoModDetectableVendoredTest extends DetectableFunctionalTest {
         );
 
         addExecutableOutput(goModWhyOutput, "go", "mod", "why", "-m", "-vendor", "all");
+
+        ExecutableOutput goModWhyNvOutput = createStandardOutput("/go/gomodwhy.xout");
+            addExecutableOutput(goModWhyNvOutput, "go", "mod", "why", "-m", "all");
+
     }
 
     @NotNull

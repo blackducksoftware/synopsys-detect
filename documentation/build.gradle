@@ -26,10 +26,10 @@ task ditasite() {
             standardOutput = stdOut
             errorOutput = stdError
         }
-        for (String outputLine : stdError.toString().split('\n')) {
+        for (String outputLine : stdError.toString().split(System.lineSeparator())) {
             if (outputLine.matches(".*File.*helpJsonFile:.*not found.*")) throw new Exception("dita error: invalid link: " + outputLine)
         }
-        for (String outputLine : stdOut.toString().split('\n')) {
+        for (String outputLine : stdOut.toString().split(System.lineSeparator())) {
             if (outputLine.matches(".*\\[DOT.*\\].*\\[ERROR\\].*")) throw new Exception("dita error. To run dita by hand: cd documentation/build/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
 
             if (outputLine.matches(".*\\[keyref\\].*\\[DOTJ047I\\].*")) throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes. To run dita by hand: cd documentation/build/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
