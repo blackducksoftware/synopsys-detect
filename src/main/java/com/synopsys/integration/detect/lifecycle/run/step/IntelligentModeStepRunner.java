@@ -198,14 +198,6 @@ public class IntelligentModeStepRunner {
         }
     }
 
-    public void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
-        throws OperationException {
-        logger.info("Checking to see if Detect should wait for bom tool calculations to finish.");
-        if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
-            operationRunner.waitForCodeLocations(blackDuckRunData, codeLocationWaitData, projectNameVersion);
-        }
-    }
-
     public void runImpactAnalysisOnline(
         NameVersion projectNameVersion,
         ProjectVersionWrapper projectVersionWrapper,
