@@ -2,12 +2,10 @@
 To install the [solution_name] for Jenkins plugin, perform the following steps:
 
 1. Navigate to **Manage Jenkins** > **Manage Plugins**.
-1. Select the **Available** tab.  Note that if the plugin is already installed, it does not appear in the **Available** list.
+1. Select the **Available** tab.  (Note that if the plugin is already installed, it does not appear in the **Available** list.)
 1. Select **Synopsys Detect**.
 1. Click **Download now and install after restart**. This is the Synopsys recommendation for installing the plugin.
 1. After restarting Jenkins, confirm that the plugin is successfully installed by navigating to **Manage Jenkins** > **Manage Plugins > Installed**, and verify that **[solution_name]** displays in the list.
-
-[solution_name] plugin for Jenkins versions 3.0.0 and 3.1.0 releases are also available in the public [Artifactory](https://sig-repo.synopsys.com/webapp/#/artifacts/browse/tree/General/bds-integrations-release/com/blackducksoftware/integration/blackduck-detect/).
 
 [solution_name] plugin for Jenkins GitHub page [jenkinsci](https://github.com/jenkinsci/synopsys-detect-plugin).
 

@@ -7,4 +7,4 @@ The following are download locations for the current version of [solution_name]:
 * The [solution_name] binary repository (.jar and air gap zip files): [Binary files](${binary_repo_url_project})
 * The [solution_name] binary repository user interface view (properties, etc.): [Artifactory UI](${binary_repo_ui_url_project})
 
-For certain types of projects, [solution_name] automatically downloads one or more [inspectors](../components/inspectors.md) as needed.
+**Note:** For certain types of projects, [solution_name] automatically downloads one or more [inspectors](../components/inspectors.md) as needed.
