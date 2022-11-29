@@ -8,6 +8,7 @@ To install the [solution_name] for Jenkins plugin, perform the following steps:
 1. After restarting Jenkins, confirm that the plugin is successfully installed by navigating to **Manage Jenkins** > **Manage Plugins > Installed**, and verify that **[solution_name]** displays in the list.
 
 [solution_name] plugin for Jenkins GitHub page [jenkinsci](https://github.com/jenkinsci/synopsys-detect-plugin).
+Additional download locations listed in [Download locations](../../downloadingandrunning/downloadlocations.html).
 
 ## Updating the [solution_name] for Jenkins plugin
 You can update the [solution_name] for Jenkins plugin when new versions are released.
