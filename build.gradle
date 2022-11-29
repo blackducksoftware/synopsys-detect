@@ -292,6 +292,10 @@ task submitToPlatform1 (type: Exec, dependsOn: [buildPlatform1]){
     if (isRelease){
         branch="update.${version}"
     }
+    else{
+      def new_version = version.split('-')[0]
+      branch="update.${new_version}"
+    }
 
     executable 'bash'
     environment("RELEASE_VERSION", "${version}")
