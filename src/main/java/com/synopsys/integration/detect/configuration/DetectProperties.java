@@ -1708,7 +1708,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.RAPID_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .build().deprecateValue(BlackduckScanMode.EPHEMERAL, "Replaced by STATELESS");
+            .build().deprecateValue(BlackduckScanMode.EPHEMERAL, "Replace with STATELESS");
 
     public static final EnumProperty<RapidCompareMode> DETECT_BLACKDUCK_RAPID_COMPARE_MODE =
         EnumProperty.newBuilder("detect.blackduck.rapid.compare.mode", RapidCompareMode.ALL, RapidCompareMode.class)
