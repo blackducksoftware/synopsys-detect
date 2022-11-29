@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.configuration.enumeration;
 public enum BlackduckScanMode {
     RAPID ("Rapid"),
     EPHEMERAL ("Ephemeral"),
+    STATELESS ("Stateless"),
     INTELLIGENT ("Intelligent");
 
     private final String displayName;

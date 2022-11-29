@@ -24,7 +24,7 @@ public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScansS
     private final List<HttpUrl> remainingUrls;
     private final List<HttpUrl> completedUrls;
 
-    //This can't be static because the job name could contain the word "Rapid" OR "Ephemeral" etc.
+    //This can't be static because the job name could contain the word "Rapid" OR "Stateless" etc.
     private final String JOB_NAME;
 
     private boolean complete;

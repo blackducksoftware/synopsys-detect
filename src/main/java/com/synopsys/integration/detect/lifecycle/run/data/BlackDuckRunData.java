@@ -59,7 +59,7 @@ public class BlackDuckRunData {
     }
 
     public Boolean isNonPersistent() {
-        return (scanMode == BlackduckScanMode.EPHEMERAL || scanMode == BlackduckScanMode.RAPID);
+        return (scanMode == BlackduckScanMode.STATELESS || scanMode == BlackduckScanMode.EPHEMERAL || scanMode == BlackduckScanMode.RAPID);
     }
 
     public BlackduckScanMode getScanMode() {

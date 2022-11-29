@@ -66,7 +66,7 @@ public class CreateScanBatchOperation {
 
         signatureScannerOptions.getAdditionalArguments().ifPresent(scanJobBuilder::additionalScanArguments);
         
-        scanJobBuilder.rapid(signatureScannerOptions.getIsEphemeral());
+        scanJobBuilder.rapid(signatureScannerOptions.getIsStateless());
 
         String projectName = projectNameVersion.getName();
         String projectVersionName = projectNameVersion.getVersion();

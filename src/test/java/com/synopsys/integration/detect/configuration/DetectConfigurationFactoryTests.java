@@ -66,7 +66,18 @@ public class DetectConfigurationFactoryTests {
 
         Assertions.assertEquals(defaultExcludedDirectories, actualExcludedDirectories);
     }
-    
+
+    @Test
+    public void testIsStatelessIsEnabled() {
+        DetectConfigurationFactory factory = factoryOf(
+                Pair.of(DetectProperties.DETECT_TOOLS, DetectTool.SIGNATURE_SCAN.toString()),
+                Pair.of(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, BlackduckScanMode.STATELESS.toString()));
+        
+        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = factory.createBlackDuckSignatureScannerOptions();
+
+        Assertions.assertTrue(blackDuckSignatureScannerOptions.getIsStateless());
+    }
+
     @Test
     public void testIsEphemeralIsEnabled() {
         DetectConfigurationFactory factory = factoryOf(
@@ -75,6 +86,6 @@ public class DetectConfigurationFactoryTests {
         
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = factory.createBlackDuckSignatureScannerOptions();
 
-        Assertions.assertTrue(blackDuckSignatureScannerOptions.getIsEphemeral());
+        Assertions.assertTrue(blackDuckSignatureScannerOptions.getIsStateless());
     }
 }
