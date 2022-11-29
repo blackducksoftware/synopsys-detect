@@ -6,7 +6,7 @@
 
 ### Changed features
 
-* The flag value EPHEMERAL has been deprecated in favor of the value STATELESS.  The behavior of the scan mode is generally unchanged.  See the [Stateless Scans page](downloadingandrunning/statelessscan.md) for further details.
+* The flag value EPHEMERAL has been deprecated in favor of the value STATELESS.  See the [Stateless Scans page](downloadingandrunning/statelessscan.md) for further details.
 
 ### Resolved issues
 

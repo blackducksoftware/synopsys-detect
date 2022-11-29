@@ -11,7 +11,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
  * Have Match as a Service (MaaS) enabled within [blackduck_product_name], a feature which will be available with the [blackduck_product_name] 2022.10.0 release.
  * A limited subset of Tools can be run.
     * The currently supported tools are: DETECTOR, BAZEL, SIGNATURE_SCAN and DOCKER.
-    * The STATELESS Signature Scan will not persist on Black Duck. 
+    * The Stateless Signature Scan will not persist on Black Duck. 
     * All other tools are disabled when running in Stateless Scan mode.
  * Stateless Scan and non-persistent SIGNATURE_SCAN
     * To perform a non-persistent Signature Scan in Stateless mode, SIGNATURE_SCAN must be included within --detect.tools.
