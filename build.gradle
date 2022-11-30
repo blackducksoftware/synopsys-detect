@@ -20,7 +20,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '8.4.0-SNAPSHOT'
+version = '8.4.0-SIGQA3-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -291,6 +291,10 @@ task submitToPlatform1 (type: Exec, dependsOn: [buildPlatform1]){
     boolean isRelease = System.getenv('RUN_RELEASE') ? System.getenv('RUN_RELEASE').toBoolean() : false
     if (isRelease){
         branch="update.${version}"
+    }
+    else{
+      def new_version = version.split('-')[0]
+      branch="update.${new_version}"
     }
 
     executable 'bash'
