@@ -73,7 +73,7 @@
     </topicref>
 
     <topicref href="downloadingandrunning/detectorcascade.md" format="markdown"/>
-	<topicref href="downloadingandrunning/ephemeralscan.md" format="markdown"/>
+	<topicref href="downloadingandrunning/statelessscan.md" format="markdown"/>
     <topicref href="downloadingandrunning/rapidscan.md" format="markdown"/>
     <topicref href="downloadingandrunning/iacscan.md" format="markdown"/>
     <topicref href="downloadingandrunning/status-file.md" format="markdown"/>

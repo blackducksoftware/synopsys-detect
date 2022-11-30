@@ -26,11 +26,11 @@ public class DetectToolFilter {
     // detect.tools you can run a subset of this list but scans not mentioned here are not possible.
     private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.DOCKER);
     
-    // If an ephemeral scan is specified, default to running package manager and signature scans.
-    private final List<DetectTool> defaultEphemeralTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN);
+    // If a Stateless scan is specified, default to running package manager and signature scans.
+    private final List<DetectTool> defaultStatelessTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN);
     
-    // A list of all possible ephemeral scan types.
-    private final List<DetectTool> allowedEphemeralTools = Arrays.asList(DetectTool.BAZEL, DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN, DetectTool.DOCKER);    
+    // A list of all possible Stateless scan types.
+    private final List<DetectTool> allowedStatelessTools = Arrays.asList(DetectTool.BAZEL, DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN, DetectTool.DOCKER);    
 
     public DetectToolFilter(
         ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter,
@@ -60,15 +60,15 @@ public class DetectToolFilter {
         if (blackDuckDecision.scanMode() == BlackduckScanMode.RAPID && !rapidTools.contains(detectTool)) {
             return false;
         }
-        if (blackDuckDecision.scanMode() == BlackduckScanMode.EPHEMERAL) {
+        if (blackDuckDecision.scanMode() == BlackduckScanMode.STATELESS) {
             // If the user specifically asked for something, check that it is an allowed
             // tool or we are in docker mode..
             if (excludedIncludedFilter.includeSpecified() || runDecision.isDockerMode()) {
-                if (!allowedEphemeralTools.contains(detectTool)) {
+                if (!allowedStatelessTools.contains(detectTool)) {
                     return false;
                 }
             // Otherwise only allow default tools.
-            } else if (!defaultEphemeralTools.contains(detectTool) ) {
+            } else if (!defaultStatelessTools.contains(detectTool) ) {
                 return false;
             }
         }
