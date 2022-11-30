@@ -36,7 +36,7 @@ public class BlackDuckSignatureScannerOptions {
     private final Boolean copyrightSearch;
     private final Boolean followSymLinks;
     private final Boolean treatSkippedScansAsSuccess;
-    private final Boolean isEphemeral;
+    private final Boolean isStateless;
 
     public BlackDuckSignatureScannerOptions(
         List<Path> signatureScannerPaths,
@@ -54,7 +54,7 @@ public class BlackDuckSignatureScannerOptions {
         Boolean copyrightSearch,
         Boolean followSymLinks,
         Boolean treatSkippedScansAsSuccess,
-        Boolean isEphemeral, 
+        Boolean isStateless, 
         ReducedPersistence reducedPersistence
     ) {
 
@@ -73,7 +73,7 @@ public class BlackDuckSignatureScannerOptions {
         this.copyrightSearch = copyrightSearch;
         this.followSymLinks = followSymLinks;
         this.treatSkippedScansAsSuccess = treatSkippedScansAsSuccess;
-        this.isEphemeral = isEphemeral;
+        this.isStateless = isStateless;
         this.reducedPersistence = reducedPersistence;
     }
 
@@ -137,8 +137,8 @@ public class BlackDuckSignatureScannerOptions {
         return treatSkippedScansAsSuccess;
     }
 
-    public Boolean getIsEphemeral() {
-        return isEphemeral;
+    public Boolean getIsStateless() {
+        return isStateless;
     }
     
     public Optional<ReducedPersistence> getReducedPersistence() {

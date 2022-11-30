@@ -1,5 +1,15 @@
 # Release notes
 
+## Version 8.4.0
+
+### New features
+
+### Changed features
+
+* The flag value EPHEMERAL has been deprecated in favor of the value STATELESS.  See the [Stateless Scans page](downloadingandrunning/statelessscan.md) for further details.
+
+### Resolved issues
+
 ## Version 8.3.0
 
 ### New features
@@ -16,7 +26,7 @@
 
 ### New features
 
-* Ephemeral Scan, or Ephemeral Scan Mode, is a new way of running [solution_name] with [blackduck_product_name]. This mode is designed to be as fast as possible and does not persist any data on [blackduck_product_name]. See the [Ephemeral Scans page](downloadingandrunning/ephemeralscan.md) for further details.
+* Ephemeral Scan, or Ephemeral Scan Mode, is a new way of running [solution_name] with [blackduck_product_name]. This mode is designed to be as fast as possible and does not persist any data on [blackduck_product_name]. See the [Ephemeral Scans page](downloadingandrunning/statelessscan.md) for further details.
 * The output for Rapid and the new Ephemeral Scan Modes will now include upgrade guidance for security errors and warnings.
 
 ## Version 8.1.1
