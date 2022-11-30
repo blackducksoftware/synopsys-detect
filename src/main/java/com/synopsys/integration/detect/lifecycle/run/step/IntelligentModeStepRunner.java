@@ -155,6 +155,7 @@ public class IntelligentModeStepRunner {
                 // If the BD server is older or if we have scans that we are not yet able to obtain the
                 // scanID for, wait at the BOM version level.
                 if (!blackDuckServerVersion.isAtLeast(minVersion) || mustWaitAtBomSummaryLevel.get()) {
+                    Thread.sleep(5000);
                     pollForBomCompletion(blackDuckRunData, projectVersion);
                 }
             }
