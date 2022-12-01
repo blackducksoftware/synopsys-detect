@@ -91,7 +91,7 @@ public class IntelligentModeStepRunner {
         logger.debug("Processing Detect Code Locations.");
         
         Set<String> scanIdsToWaitFor = new HashSet<>();
-        AtomicBoolean canWaitAtScanLevel = new AtomicBoolean(true);
+        AtomicBoolean mustWaitAtBomSummaryLevel = new AtomicBoolean(false);
 
         CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
 
@@ -122,7 +122,7 @@ public class IntelligentModeStepRunner {
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
             binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData).ifPresent(codeLocationAccumulator::addWaitableCodeLocations);
-            canWaitAtScanLevel.set(false);
+            mustWaitAtBomSummaryLevel.set(true);
         });
 
         stepHelper.runToolIfIncludedWithCallbacks(
@@ -130,7 +130,7 @@ public class IntelligentModeStepRunner {
             "Vulnerability Impact Analysis",
             () -> {
                 runImpactAnalysisOnline(projectNameVersion, projectVersion, codeLocationAccumulator, blackDuckRunData.getBlackDuckServicesFactory());
-                canWaitAtScanLevel.set(false);
+                mustWaitAtBomSummaryLevel.set(true);
             },
             operationRunner::publishImpactSuccess,
             operationRunner::publishImpactFailure
@@ -140,7 +140,7 @@ public class IntelligentModeStepRunner {
             IacScanStepRunner iacScanStepRunner = new IacScanStepRunner(operationRunner);
             IacScanCodeLocationData iacScanCodeLocationData = iacScanStepRunner.runIacScanOnline(projectNameVersion, blackDuckRunData);
             codeLocationAccumulator.addNonWaitableCodeLocation(iacScanCodeLocationData.getCodeLocationNames());
-            canWaitAtScanLevel.set(false);
+            mustWaitAtBomSummaryLevel.set(true);
         });
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
@@ -148,12 +148,15 @@ public class IntelligentModeStepRunner {
                 BlackDuckVersion blackDuckServerVersion = blackDuckRunData.getBlackDuckServerVersion().get();
                 BlackDuckVersion minVersion = new BlackDuckVersion(2022, 10, 0);
                 
-                // Polling at the scan level is more reliable, do that if the BD server is new enough
-                // and we don't have scans other than package manager and signature scans that we can
-                // currently get the scanId from.
-                if (blackDuckServerVersion.isAtLeast(minVersion) && canWaitAtScanLevel.get()) {
+                // Waiting at the scan level is more reliable, do that if the BD server is new enough.
+                if (blackDuckServerVersion.isAtLeast(minVersion)) {
                     pollForBomScanCompletion(blackDuckRunData, projectVersion, scanIdsToWaitFor);
-                } else {
+                } 
+
+                // If the BD server is older or if we have scans that we are not yet able to obtain the
+                // scanID for, wait at the BOM version level.
+                if (!blackDuckServerVersion.isAtLeast(minVersion) || mustWaitAtBomSummaryLevel.get()) {
+                    Thread.sleep(5000);
                     pollForBomCompletion(blackDuckRunData, projectVersion);
                 }
             }
