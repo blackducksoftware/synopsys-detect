@@ -1,25 +1,11 @@
 package com.synopsys.integration.detect.workflow.blackduck;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
-import com.synopsys.integration.blackduck.api.core.response.UrlMultipleResponses;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionBomStatusView;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionBomStatusType;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionBomStatusView;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.blackduck.service.request.BlackDuckMultipleRequest;
-import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
-import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsSetting;
-import com.synopsys.integration.detect.workflow.blackduck.developer.blackduck.DetectRapidScanRequestBuilder;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.exception.IntegrationTimeoutException;
 import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.wait.ResilientJob;
 
 public class DetectBomWaitJob implements ResilientJob<ProjectVersionBomStatusView> {
