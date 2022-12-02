@@ -145,19 +145,19 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
             if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults()) {
-                BlackDuckVersion blackDuckServerVersion = blackDuckRunData.getBlackDuckServerVersion().get();
+                BlackDuckVersion blackDuckServerVersion = blackDuckRunData.getBlackDuckServerVersion();
                 BlackDuckVersion minVersion = new BlackDuckVersion(2022, 10, 0);
                 
                 // Waiting at the scan level is more reliable, do that if the BD server is new enough.
-                if (blackDuckServerVersion.isAtLeast(minVersion)) {
+                if (blackDuckServerVersion != null && blackDuckServerVersion.isAtLeast(minVersion)) {
                     pollForBomScanCompletion(blackDuckRunData, projectVersion, scanIdsToWaitFor);
                 } 
 
-                // If the BD server is older or if we have scans that we are not yet able to obtain the
-                // scanID for, wait at the BOM version level.
-                if (!blackDuckServerVersion.isAtLeast(minVersion) || mustWaitAtBomSummaryLevel.get()) {
-                    Thread.sleep(5000);
-                    pollForBomCompletion(blackDuckRunData, projectVersion);
+                // If the BD server is older, or we can't detect its version, or if we have scans that we are 
+                // not yet able to obtain the scanID for, use the original notification based waiting.
+                if (blackDuckServerVersion == null || !blackDuckServerVersion.isAtLeast(minVersion) || mustWaitAtBomSummaryLevel.get()) {
+                    CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
+                    waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion, blackDuckRunData);
                 }
             }
         });
@@ -179,22 +179,6 @@ public class IntelligentModeStepRunner {
 
             operationRunner.waitForBomScanCompletion(blackDuckRunData, scanToSearchFor);
         }
-    }
-
-    /**
-     * Polls for the BOM associated with a given version to see if it is completed. Returns nothing
-     * as later code will print out the location.
-     * 
-     * @param blackDuckRunData
-     * @param projectVersion
-     * @throws OperationException
-     * @throws IntegrationException
-     */
-    private void pollForBomCompletion(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws OperationException, IntegrationException {
-        HttpUrl bomToSearchFor = projectVersion.getProjectVersionView().getFirstLink(ProjectVersionView.BOM_STATUS_LINK);
-        
-        // Poll to see if Bom is ready
-        operationRunner.waitForBomCompletion(blackDuckRunData, bomToSearchFor);    
     }
 
     public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, Set<String> scanIdsToWaitFor, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
@@ -241,6 +225,14 @@ public class IntelligentModeStepRunner {
             operationRunner.checkPolicyByName(blackDuckRunData, projectVersionView);
         }
     }
+    
+    public void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+            throws OperationException {
+            logger.info("Checking to see if Detect should wait for bom tool calculations to finish.");
+            if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults() && codeLocationWaitData.getExpectedNotificationCount() > 0) {
+                operationRunner.waitForCodeLocations(blackDuckRunData, codeLocationWaitData, projectNameVersion);
+            }
+        }
 
     public void runImpactAnalysisOnline(
         NameVersion projectNameVersion,

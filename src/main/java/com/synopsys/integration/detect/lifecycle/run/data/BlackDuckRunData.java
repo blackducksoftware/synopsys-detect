@@ -13,14 +13,14 @@ public class BlackDuckRunData {
     private final BlackDuckServerConfig blackDuckServerConfig;
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final BlackduckScanMode scanMode;
-    private final Optional<BlackDuckVersion> blackDuckServerVersion;
+    private final BlackDuckVersion blackDuckServerVersion;
 
     protected BlackDuckRunData(
         PhoneHomeManager phoneHomeManager,
         BlackDuckServerConfig blackDuckServerConfig,
         BlackDuckServicesFactory blackDuckServicesFactory,
         BlackduckScanMode scanMode,
-        Optional<BlackDuckVersion> blackDuckServerVersion
+        BlackDuckVersion blackDuckServerVersion
     ) {
         this.phoneHomeManager = phoneHomeManager;
         this.blackDuckServerConfig = blackDuckServerConfig;
@@ -54,12 +54,12 @@ public class BlackDuckRunData {
         BlackDuckServicesFactory blackDuckServicesFactory,
         PhoneHomeManager phoneHomeManager,
         BlackDuckServerConfig blackDuckServerConfig,
-        Optional<BlackDuckVersion> blackDuckServerVersion
+        BlackDuckVersion blackDuckServerVersion
     ) {
         return new BlackDuckRunData(phoneHomeManager, blackDuckServerConfig, blackDuckServicesFactory, scanMode, blackDuckServerVersion);
     }
 
-    public static BlackDuckRunData onlineNoPhoneHome(BlackduckScanMode scanMode, BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig, Optional<BlackDuckVersion> blackDuckServerVersion) {
+    public static BlackDuckRunData onlineNoPhoneHome(BlackduckScanMode scanMode, BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig, BlackDuckVersion blackDuckServerVersion) {
         return new BlackDuckRunData(null, blackDuckServerConfig, blackDuckServicesFactory, scanMode, blackDuckServerVersion);
     }
 
@@ -71,7 +71,7 @@ public class BlackDuckRunData {
         return scanMode;
     }
     
-    public Optional<BlackDuckVersion> getBlackDuckServerVersion() {
+    public BlackDuckVersion getBlackDuckServerVersion() {
         return blackDuckServerVersion;
     }
 }
