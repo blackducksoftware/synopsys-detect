@@ -76,7 +76,7 @@ public class NpmLockfileGraphTransformer {
             if (resolved != null) {
                 dependencyGraph.addChildToRoot(resolved);
             } else {
-                logger.warn("No dependency found for package: {}", dependency.getName());
+                logger.debug("No resolved dependency found for dependency package: {}", dependency.getName());
             }
         }
     }
@@ -93,7 +93,7 @@ public class NpmLockfileGraphTransformer {
                 logger.trace(String.format("Found package: %s with version: %s", resolved.getName(), resolved.getVersion()));
                 dependencyGraph.addChildWithParent(resolved, npmDependency);
             } else {
-                logger.warn("No dependency found for package: {}", required.getName());
+                logger.debug("No resolved dependency found for required package: {}", required.getName());
             }
         });
 
@@ -129,7 +129,7 @@ public class NpmLockfileGraphTransformer {
         for (NpmDependency current : dependencies) {
             if (current.getName().equals(name)) {
                 return current;
-            }
+            } 
         }
         return null;
     }
