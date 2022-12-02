@@ -6,16 +6,20 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.OperationException;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersion;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
@@ -23,7 +27,6 @@ import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUpl
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.tool.iac.IacScanCodeLocationData;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
-import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
@@ -42,10 +45,12 @@ public class IntelligentModeStepRunner {
     private final OperationRunner operationRunner;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StepHelper stepHelper;
+    private final Gson gson;
 
-    public IntelligentModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper) {
+    public IntelligentModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson) {
         this.operationRunner = operationRunner;
         this.stepHelper = stepHelper;
+        this.gson = gson;
     }
 
     public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws OperationException {
@@ -84,6 +89,9 @@ public class IntelligentModeStepRunner {
 
         logger.debug("Completed project and version actions.");
         logger.debug("Processing Detect Code Locations.");
+        
+        Set<String> scanIdsToWaitFor = new HashSet<>();
+        AtomicBoolean mustWaitAtBomSummaryLevel = new AtomicBoolean(false);
 
         CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
 
@@ -91,7 +99,7 @@ public class IntelligentModeStepRunner {
             stepHelper.runAsGroup(
                 "Upload Bdio",
                 OperationType.INTERNAL,
-                () -> uploadBdio(blackDuckRunData, bdioResult, codeLocationAccumulator, operationRunner.calculateDetectTimeout())
+                () -> uploadBdio(blackDuckRunData, bdioResult, scanIdsToWaitFor, codeLocationAccumulator, operationRunner.calculateDetectTimeout())
             );
         } else {
             logger.debug("No BDIO results to upload. Skipping.");
@@ -101,24 +109,29 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationRunner);
-            SignatureScannerCodeLocationResult signatureScannerCodeLocationResult = signatureScanStepRunner.runSignatureScannerOnline(
+            signatureScanStepRunner.runSignatureScannerOnline(
                 blackDuckRunData,
                 projectNameVersion,
-                dockerTargetData
+                dockerTargetData,
+                codeLocationAccumulator,
+                scanIdsToWaitFor,
+                gson
             );
-            codeLocationAccumulator.addWaitableCodeLocations(signatureScannerCodeLocationResult.getWaitableCodeLocationData());
-            codeLocationAccumulator.addNonWaitableCodeLocation(signatureScannerCodeLocationResult.getNonWaitableCodeLocationData());
         });
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
             binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData).ifPresent(codeLocationAccumulator::addWaitableCodeLocations);
+            mustWaitAtBomSummaryLevel.set(true);
         });
 
         stepHelper.runToolIfIncludedWithCallbacks(
             DetectTool.IMPACT_ANALYSIS,
             "Vulnerability Impact Analysis",
-            () -> runImpactAnalysisOnline(projectNameVersion, projectVersion, codeLocationAccumulator, blackDuckRunData.getBlackDuckServicesFactory()),
+            () -> {
+                runImpactAnalysisOnline(projectNameVersion, projectVersion, codeLocationAccumulator, blackDuckRunData.getBlackDuckServicesFactory());
+                mustWaitAtBomSummaryLevel.set(true);
+            },
             operationRunner::publishImpactSuccess,
             operationRunner::publishImpactFailure
         );
@@ -127,11 +140,22 @@ public class IntelligentModeStepRunner {
             IacScanStepRunner iacScanStepRunner = new IacScanStepRunner(operationRunner);
             IacScanCodeLocationData iacScanCodeLocationData = iacScanStepRunner.runIacScanOnline(projectNameVersion, blackDuckRunData);
             codeLocationAccumulator.addNonWaitableCodeLocation(iacScanCodeLocationData.getCodeLocationNames());
+            mustWaitAtBomSummaryLevel.set(true);
         });
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
             if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults()) {                
-                pollForBomCompletion(blackDuckRunData, projectVersion);
+                // Waiting at the scan level is more reliable, do that if the BD server is new enough.
+                if (blackDuckRunData.shouldWaitAtScanLevel()) {
+                    pollForBomScanCompletion(blackDuckRunData, projectVersion, scanIdsToWaitFor);
+                } 
+
+                // If the BD server is older, or we can't detect its version, or if we have scans that we are 
+                // not yet able to obtain the scanID for, use the original notification based waiting.
+                if (!blackDuckRunData.shouldWaitAtScanLevel() || mustWaitAtBomSummaryLevel.get()) {
+                    CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
+                    waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion, blackDuckRunData);
+                }
             }
         });
 
@@ -142,26 +166,27 @@ public class IntelligentModeStepRunner {
             publishPostResults(bdioResult, projectVersion, detectToolFilter);
         });
     }
-
-    /**
-     * Polls for the BOM associated with a given version to see if it is completed. Returns nothing
-     * as later code will print out the location.
-     * 
-     * @param blackDuckRunData
-     * @param projectVersion
-     * @throws OperationException
-     * @throws IntegrationException
-     */
-    private void pollForBomCompletion(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion) throws OperationException, IntegrationException {
+    
+    private void pollForBomScanCompletion(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion,
+            Set<String> scanIdsToWaitFor) throws IntegrationException, OperationException {
         HttpUrl bomToSearchFor = projectVersion.getProjectVersionView().getFirstLink(ProjectVersionView.BOM_STATUS_LINK);
-        
-        // Poll to see if Bom is ready
-        operationRunner.waitForBomCompletion(blackDuckRunData, bomToSearchFor);    
+
+        for (String scanId : scanIdsToWaitFor) {
+            HttpUrl scanToSearchFor = new HttpUrl(bomToSearchFor.toString() + "/" + scanId);
+
+            operationRunner.waitForBomScanCompletion(blackDuckRunData, scanToSearchFor);
+        }
     }
 
-    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
+    public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, Set<String> scanIdsToWaitFor, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
         BdioUploadResult uploadResult = operationRunner.uploadBdioIntelligentPersistent(blackDuckRunData, bdioResult, timeout);
         uploadResult.getUploadOutput().ifPresent(codeLocationAccumulator::addWaitableCodeLocations);
+        
+        if (uploadResult.getUploadOutput().isPresent()) {
+            for (UploadOutput result : uploadResult.getUploadOutput().get().getOutput()) {
+                result.getScanId().ifPresent((scanId) -> scanIdsToWaitFor.add(scanId));
+            }
+        }
     }
 
     public CodeLocationResults calculateCodeLocations(CodeLocationAccumulator codeLocationAccumulator) throws OperationException { //this is waiting....
@@ -197,6 +222,14 @@ public class IntelligentModeStepRunner {
             operationRunner.checkPolicyByName(blackDuckRunData, projectVersionView);
         }
     }
+    
+    public void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+            throws OperationException {
+            logger.info("Checking to see if Detect should wait for bom tool calculations to finish.");
+            if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults() && codeLocationWaitData.getExpectedNotificationCount() > 0) {
+                operationRunner.waitForCodeLocations(blackDuckRunData, codeLocationWaitData, projectNameVersion);
+            }
+        }
 
     public void runImpactAnalysisOnline(
         NameVersion projectNameVersion,

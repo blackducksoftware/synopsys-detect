@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.lifecycle.boot.product;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -14,8 +15,10 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersion;
 import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionCheckerResult;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionParser;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -104,17 +107,21 @@ public class ProductBoot {
             }
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
             BlackDuckRunData bdRunData = null;
+            
+            boolean waitAtScanLevel = shouldWaitAtScanLevel(blackDuckConnectivityResult);
+            
             if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getBlackDuckApiClient())) {
                 PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
                 bdRunData = BlackDuckRunData.online(
                     blackDuckDecision.scanMode(),
                     blackDuckServicesFactory,
                     phoneHomeManager,
-                    blackDuckConnectivityResult.getBlackDuckServerConfig()
+                    blackDuckConnectivityResult.getBlackDuckServerConfig(),
+                    waitAtScanLevel
                 );
             } else {
                 logger.debug("Skipping phone home due to Black Duck global settings.");
-                bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
+                bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig(), waitAtScanLevel);
             }
             return bdRunData;
         } else {
@@ -142,5 +149,19 @@ public class ProductBoot {
             logger.trace("Failed to check analytics setting on Black Duck. Likely this Black Duck instance does not support it.", e);
             return true; // Skip phone home will be applied at the library level.
         }
+    }
+    
+    private boolean shouldWaitAtScanLevel(BlackDuckConnectivityResult blackDuckConnectivityResult) {
+        BlackDuckVersionParser parser = new BlackDuckVersionParser();
+        Optional<BlackDuckVersion> blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
+        BlackDuckVersion minVersion = new BlackDuckVersion(2022, 10, 0);
+        
+        boolean waitAtScanLevel = false;
+        
+        if (blackDuckServerVersion.isPresent() && blackDuckServerVersion.get().isAtLeast(minVersion)) {
+            waitAtScanLevel = true;
+        }
+        
+        return waitAtScanLevel;
     }
 }
