@@ -129,7 +129,7 @@ public class NpmLockfileGraphTransformer {
         for (NpmDependency current : dependencies) {
             if (current.getName().equals(name)) {
                 return current;
-            } 
+            }
         }
         return null;
     }
