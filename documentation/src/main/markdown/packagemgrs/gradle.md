@@ -40,4 +40,6 @@ The init-detect.gradle script configures each project with the custom 'gatherDep
 
 The buildless gradle detector uses Project Inspector to find dependencies.
 
-It currently only supports "build.gradle" and does not support Kotlin build files.
+It currently supports "build.gradle" and does not support Kotlin build files.
+
+Project Inspector does not support dependancy exclusions in buildless mode.
