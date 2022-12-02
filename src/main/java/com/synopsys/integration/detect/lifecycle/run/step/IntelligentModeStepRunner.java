@@ -144,18 +144,15 @@ public class IntelligentModeStepRunner {
         });
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
-            if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults()) {
-                BlackDuckVersion blackDuckServerVersion = blackDuckRunData.getBlackDuckServerVersion();
-                BlackDuckVersion minVersion = new BlackDuckVersion(2022, 10, 0);
-                
+            if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults()) {                
                 // Waiting at the scan level is more reliable, do that if the BD server is new enough.
-                if (blackDuckServerVersion != null && blackDuckServerVersion.isAtLeast(minVersion)) {
+                if (blackDuckRunData.shouldWaitAtScanLevel()) {
                     pollForBomScanCompletion(blackDuckRunData, projectVersion, scanIdsToWaitFor);
                 } 
 
                 // If the BD server is older, or we can't detect its version, or if we have scans that we are 
                 // not yet able to obtain the scanID for, use the original notification based waiting.
-                if (blackDuckServerVersion == null || !blackDuckServerVersion.isAtLeast(minVersion) || mustWaitAtBomSummaryLevel.get()) {
+                if (!blackDuckRunData.shouldWaitAtScanLevel() || mustWaitAtBomSummaryLevel.get()) {
                     CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
                     waitForCodeLocations(codeLocationResults.getCodeLocationWaitData(), projectNameVersion, blackDuckRunData);
                 }

@@ -13,20 +13,20 @@ public class BlackDuckRunData {
     private final BlackDuckServerConfig blackDuckServerConfig;
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final BlackduckScanMode scanMode;
-    private final BlackDuckVersion blackDuckServerVersion;
+    private final boolean waitAtScanLevel;
 
     protected BlackDuckRunData(
         PhoneHomeManager phoneHomeManager,
         BlackDuckServerConfig blackDuckServerConfig,
         BlackDuckServicesFactory blackDuckServicesFactory,
         BlackduckScanMode scanMode,
-        BlackDuckVersion blackDuckServerVersion
+        boolean waitAtScanLevel
     ) {
         this.phoneHomeManager = phoneHomeManager;
         this.blackDuckServerConfig = blackDuckServerConfig;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.scanMode = scanMode;
-        this.blackDuckServerVersion = blackDuckServerVersion;
+        this.waitAtScanLevel = waitAtScanLevel;
     }
 
     public boolean isOnline() {
@@ -46,7 +46,7 @@ public class BlackDuckRunData {
     }
 
     public static BlackDuckRunData offline() {
-        return new BlackDuckRunData(null, null, null, null, null);
+        return new BlackDuckRunData(null, null, null, null, false);
     }
 
     public static BlackDuckRunData online(
@@ -54,13 +54,13 @@ public class BlackDuckRunData {
         BlackDuckServicesFactory blackDuckServicesFactory,
         PhoneHomeManager phoneHomeManager,
         BlackDuckServerConfig blackDuckServerConfig,
-        BlackDuckVersion blackDuckServerVersion
+        boolean waitAtScanLevel
     ) {
-        return new BlackDuckRunData(phoneHomeManager, blackDuckServerConfig, blackDuckServicesFactory, scanMode, blackDuckServerVersion);
+        return new BlackDuckRunData(phoneHomeManager, blackDuckServerConfig, blackDuckServicesFactory, scanMode, waitAtScanLevel);
     }
 
-    public static BlackDuckRunData onlineNoPhoneHome(BlackduckScanMode scanMode, BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig, BlackDuckVersion blackDuckServerVersion) {
-        return new BlackDuckRunData(null, blackDuckServerConfig, blackDuckServicesFactory, scanMode, blackDuckServerVersion);
+    public static BlackDuckRunData onlineNoPhoneHome(BlackduckScanMode scanMode, BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig, boolean waitAtScanLevel) {
+        return new BlackDuckRunData(null, blackDuckServerConfig, blackDuckServicesFactory, scanMode, waitAtScanLevel);
     }
 
     public Boolean isNonPersistent() {
@@ -71,7 +71,7 @@ public class BlackDuckRunData {
         return scanMode;
     }
     
-    public BlackDuckVersion getBlackDuckServerVersion() {
-        return blackDuckServerVersion;
+    public boolean shouldWaitAtScanLevel() {
+        return waitAtScanLevel;
     }
 }

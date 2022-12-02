@@ -108,8 +108,7 @@ public class ProductBoot {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
             BlackDuckRunData bdRunData = null;
             
-            BlackDuckVersionParser parser = new BlackDuckVersionParser();
-            Optional<BlackDuckVersion> blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
+            boolean waitAtScanLevel = shouldWaitAtScanLevel(blackDuckConnectivityResult);
             
             if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getBlackDuckApiClient())) {
                 PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
@@ -118,11 +117,11 @@ public class ProductBoot {
                     blackDuckServicesFactory,
                     phoneHomeManager,
                     blackDuckConnectivityResult.getBlackDuckServerConfig(),
-                    blackDuckServerVersion.orElse(null)
+                    waitAtScanLevel
                 );
             } else {
                 logger.debug("Skipping phone home due to Black Duck global settings.");
-                bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig(), blackDuckServerVersion.orElse(null));
+                bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig(), waitAtScanLevel);
             }
             return bdRunData;
         } else {
@@ -150,5 +149,19 @@ public class ProductBoot {
             logger.trace("Failed to check analytics setting on Black Duck. Likely this Black Duck instance does not support it.", e);
             return true; // Skip phone home will be applied at the library level.
         }
+    }
+    
+    private boolean shouldWaitAtScanLevel(BlackDuckConnectivityResult blackDuckConnectivityResult) {
+        BlackDuckVersionParser parser = new BlackDuckVersionParser();
+        Optional<BlackDuckVersion> blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
+        BlackDuckVersion minVersion = new BlackDuckVersion(2022, 10, 0);
+        
+        boolean waitAtScanLevel = false;
+        
+        if (blackDuckServerVersion.isPresent() && blackDuckServerVersion.get().isAtLeast(minVersion)) {
+            waitAtScanLevel = true;
+        }
+        
+        return waitAtScanLevel;
     }
 }
