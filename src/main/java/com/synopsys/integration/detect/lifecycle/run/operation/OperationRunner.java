@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionBomStatusView;
-import com.synopsys.integration.blackduck.api.generated.component.BomStatusScanView;
+import com.synopsys.integration.blackduck.api.generated.view.BomStatusScanView;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;

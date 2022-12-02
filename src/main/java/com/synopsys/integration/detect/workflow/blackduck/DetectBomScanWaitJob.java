@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.workflow.blackduck;
 
-import com.synopsys.integration.blackduck.api.generated.component.BomStatusScanView;
+import com.synopsys.integration.blackduck.api.generated.view.BomStatusScanView;
 import com.synopsys.integration.blackduck.api.generated.enumeration.BomStatusScanStatusType;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.exception.IntegrationException;

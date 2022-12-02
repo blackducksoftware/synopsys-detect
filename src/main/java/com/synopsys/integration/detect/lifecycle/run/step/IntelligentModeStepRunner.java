@@ -203,7 +203,7 @@ public class IntelligentModeStepRunner {
         
         if (uploadResult.getUploadOutput().isPresent()) {
             for (UploadOutput result : uploadResult.getUploadOutput().get().getOutput()) {
-                scanIdsToWaitFor.add(result.getScanId());
+                result.getScanId().ifPresent((scanId) -> scanIdsToWaitFor.add(scanId));
             }
         }
     }

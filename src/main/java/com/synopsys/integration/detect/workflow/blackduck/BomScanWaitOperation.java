@@ -3,7 +3,7 @@ package com.synopsys.integration.detect.workflow.blackduck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.generated.component.BomStatusScanView;
+import com.synopsys.integration.blackduck.api.generated.view.BomStatusScanView;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
