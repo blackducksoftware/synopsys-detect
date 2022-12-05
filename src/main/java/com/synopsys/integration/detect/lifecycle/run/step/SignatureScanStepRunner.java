@@ -49,7 +49,7 @@ public class SignatureScanStepRunner {
         ScanBatch scanBatch = operationRunner.createScanBatchOnline(scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
 
         NotificationTaskRange notificationTaskRange = operationRunner.createCodeLocationRange(blackDuckRunData);
-        List<SignatureScannerReport> reports = executeScan(scanBatch, scanBatchRunner, scanPaths, scanIdsToWaitFor, gson);
+        List<SignatureScannerReport> reports = executeScan(scanBatch, scanBatchRunner, scanPaths, scanIdsToWaitFor, gson, blackDuckRunData.shouldWaitAtScanLevel());
 
         SignatureScannerCodeLocationResult signatureScannerCodeLocationResult = operationRunner.calculateWaitableSignatureScannerCodeLocations(notificationTaskRange, reports);
         codeLocationAccumulator.addWaitableCodeLocations(signatureScannerCodeLocationResult.getWaitableCodeLocationData());
@@ -78,13 +78,15 @@ public class SignatureScanStepRunner {
         List<SignatureScanPath> scanPaths = operationRunner.createScanPaths(projectNameVersion, dockerTargetData);
         ScanBatch scanBatch = operationRunner.createScanBatchOffline(scanPaths, projectNameVersion, dockerTargetData);
 
-        executeScan(scanBatch, scanBatchRunner, scanPaths, null, null);
+        executeScan(scanBatch, scanBatchRunner, scanPaths, null, null, false);
     }
 
-    private List<SignatureScannerReport> executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths, Set<String> scanIdsToWaitFor, Gson gson) throws OperationException, IOException {
+    private List<SignatureScannerReport> executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths, Set<String> scanIdsToWaitFor, Gson gson, boolean shouldWaitAtScanLevel) throws OperationException, IOException {
         SignatureScanOuputResult scanOuputResult = operationRunner.signatureScan(scanBatch, scanBatchRunner);
         
-        if (scanIdsToWaitFor != null) {
+        // Do not attempt to gather additional information, and parse files that are potentially not
+        // there, if we should not wait at the scan level
+        if (shouldWaitAtScanLevel && scanIdsToWaitFor != null) {
             addScansToWaitFor(scanIdsToWaitFor, scanOuputResult, gson);
         }
 
@@ -148,7 +150,11 @@ public class SignatureScanStepRunner {
 
                 SignatureScanRapidResult result = gson.fromJson(reader, SignatureScanRapidResult.class);
 
-                scanIdsToWaitFor.add(result.scanId);
+                // This can happen if we get a NOT_EXECUTED scan if the scanner decides not to run
+                // the scan
+                if (result.scanId != null) {
+                    scanIdsToWaitFor.add(result.scanId);
+                }
         }
     }
 
