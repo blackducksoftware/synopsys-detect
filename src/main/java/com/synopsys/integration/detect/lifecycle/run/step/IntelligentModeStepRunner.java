@@ -172,6 +172,10 @@ public class IntelligentModeStepRunner {
         HttpUrl bomToSearchFor = projectVersion.getProjectVersionView().getFirstLink(ProjectVersionView.BOM_STATUS_LINK);
 
         for (String scanId : scanIdsToWaitFor) {
+            if (scanId == null) {
+                continue;
+            }
+            
             HttpUrl scanToSearchFor = new HttpUrl(bomToSearchFor.toString() + "/" + scanId);
 
             operationRunner.waitForBomScanCompletion(blackDuckRunData, scanToSearchFor);
