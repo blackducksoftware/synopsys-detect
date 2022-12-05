@@ -150,7 +150,11 @@ public class SignatureScanStepRunner {
 
                 SignatureScanRapidResult result = gson.fromJson(reader, SignatureScanRapidResult.class);
 
-                scanIdsToWaitFor.add(result.scanId);
+                // This can happen if we get a NOT_EXECUTED scan if the scanner decides not to run
+                // the scan
+                if (result.scanId != null) {
+                    scanIdsToWaitFor.add(result.scanId);
+                }
         }
     }
 
