@@ -173,6 +173,8 @@ public class IntelligentModeStepRunner {
 
         for (String scanId : scanIdsToWaitFor) {
             if (scanId == null) {
+                logger.debug("Unexpected null scanID for project version" + projectVersion.getProjectVersionView().getVersionName()
+                        + " skipping waiting for this scan.");
                 continue;
             }
             
