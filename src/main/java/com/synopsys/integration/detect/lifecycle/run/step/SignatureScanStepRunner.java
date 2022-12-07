@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
@@ -146,14 +147,19 @@ public class SignatureScanStepRunner {
         for (ScanCommandOutput output : outputs) {
                 File specificRunOutputDirectory = output.getSpecificRunOutputDirectory();
                 String scanOutputLocation = specificRunOutputDirectory.toString() + "/output/scanOutput.json";
-                Reader reader = Files.newBufferedReader(Paths.get(scanOutputLocation));
+                
+                try {
+                    Reader reader = Files.newBufferedReader(Paths.get(scanOutputLocation));
 
-                SignatureScanRapidResult result = gson.fromJson(reader, SignatureScanRapidResult.class);
+                    SignatureScanRapidResult result = gson.fromJson(reader, SignatureScanRapidResult.class);
 
-                // This can happen if we get a NOT_EXECUTED scan if the scanner decides not to run
-                // the scan
-                if (result.scanId != null) {
-                    scanIdsToWaitFor.add(result.scanId);
+                    // This can happen if we get a NOT_EXECUTED scan if the scanner decides not to
+                    // run the scan
+                    if (result.scanId != null) {
+                        scanIdsToWaitFor.add(result.scanId);
+                    }
+                } catch (NoSuchFileException e) {
+                    logger.warn("Unable to find status.json file at location: " + scanOutputLocation + ". Will skip waiting for this signature scan.");
                 }
         }
     }
