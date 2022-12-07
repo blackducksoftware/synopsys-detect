@@ -5,6 +5,8 @@ import java.util.List;
 
 public class HelpJsonSearchRule {
     private List<String> yieldsTo = new ArrayList<>();
+    private List<String> notNestableBeneath = new ArrayList<>();
+    private List<String> notNestableBeneathDetectables = new ArrayList<>();
     private Integer maxDepth = 0;
     private Boolean nestable = false;
 
@@ -32,4 +34,18 @@ public class HelpJsonSearchRule {
         this.yieldsTo = yieldsTo;
     }
 
+    public void setNotNestableBeneath(final List<String> notNestableBeneath) {
+        this.notNestableBeneath = notNestableBeneath;
+    }
+    public List<String> getNotNestableBeneath() {
+        return notNestableBeneath;
+    }
+
+    public void setNotNestableBeneathDetectables(final List<String> notNestableBeneathDetectables) {
+        this.notNestableBeneathDetectables = notNestableBeneathDetectables;
+    }
+
+    public List<String> getNotNestableBeneathDetectables() {
+        return notNestableBeneathDetectables;
+    }
 }
