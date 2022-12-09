@@ -144,11 +144,11 @@ public class IntelligentModeStepRunner {
         });
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
-            if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults()) {  
-                // Calculate code locations. We do this even if we don't wait based on code locations
-                // as we want to report code location data in various reports.
-                CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
-                
+            // Calculate code locations. We do this even if we don't wait as we want to report code location data 
+            // in various reports.
+            CodeLocationResults codeLocationResults = calculateCodeLocations(codeLocationAccumulator);
+            
+            if (operationRunner.createBlackDuckPostOptions().shouldWaitForResults()) {                  
                 // Waiting at the scan level is more reliable, do that if the BD server is new enough.
                 if (blackDuckRunData.shouldWaitAtScanLevel()) {
                     pollForBomScanCompletion(blackDuckRunData, projectVersion, scanIdsToWaitFor);
