@@ -159,7 +159,7 @@ public class SignatureScanStepRunner {
                         scanIdsToWaitFor.add(result.scanId);
                     }
                 } catch (NoSuchFileException e) {
-                    logger.warn("Unable to find status.json file at location: " + scanOutputLocation + ". Will skip waiting for this signature scan.");
+                    logger.warn("Unable to find scanOutput.json file at location: " + scanOutputLocation + ". Will skip waiting for this signature scan.");
                 }
         }
     }
