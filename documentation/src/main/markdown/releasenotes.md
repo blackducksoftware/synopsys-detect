@@ -10,6 +10,8 @@
 
 ### Resolved issues
 
+* (IDETECT-3384) Changed Warning message "No dependency found" in Lerna projects to Debug level.
+
 ## Version 8.3.0
 
 ### New features
