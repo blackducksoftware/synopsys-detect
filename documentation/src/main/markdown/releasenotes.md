@@ -7,7 +7,6 @@
 ### Changed features
 
 * The flag value EPHEMERAL has been deprecated in favor of the value STATELESS.  See the [Stateless Scans page](downloadingandrunning/statelessscan.md) for further details.
-* Package Manager and Signature Scans will now query Black Duck directly when using the detect.wait.for.results property. This allows Detect to determine if results are ready much faster than waiting for a notification from Black Duck. Note: this feature requires Black Duck 2022.10.0 or later.
 
 ### Resolved issues
 
