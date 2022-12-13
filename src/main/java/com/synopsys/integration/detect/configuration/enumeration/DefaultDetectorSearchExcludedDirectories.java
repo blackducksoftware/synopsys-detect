@@ -9,6 +9,7 @@ public enum DefaultDetectorSearchExcludedDirectories {
     BUILD("build"),
     DOT_BUILD(".build"),
     DOT_GRADLE(".gradle"),
+    DOT_YARN(".yarn"),
     MACOSX("__MACOSX"),
     NODE_MODULES("node_modules"),
     OUT("out"),
