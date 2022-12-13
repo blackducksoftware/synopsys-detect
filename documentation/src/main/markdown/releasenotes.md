@@ -2,8 +2,6 @@
 
 ## Version 8.4.0
 
-### New features
-
 ### Changed features
 
 * The flag value EPHEMERAL has been deprecated in favor of the value STATELESS.  See the [Stateless Scans page](downloadingandrunning/statelessscan.md) for further details.
