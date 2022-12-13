@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 8.5.0
+
+### Changed features
+
+* The .yarn directory will now be ignored by default when determining which detectors are applicable to a project.
+
 ## Version 8.4.0
 
 ### New features
