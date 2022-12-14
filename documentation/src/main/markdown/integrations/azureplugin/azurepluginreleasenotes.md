@@ -1,5 +1,10 @@
 # Release Notes for Azure DevOps Plugin
 
+## Version 8.0.0 12 Dec 2022
+**New features**
+
+- Updated the plugin to use Detect 8.
+
 ## Version 7.0.0 13 Sep 2021
 **New features**
 
