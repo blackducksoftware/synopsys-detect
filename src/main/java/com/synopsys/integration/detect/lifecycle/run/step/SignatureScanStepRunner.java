@@ -1,15 +1,23 @@
 package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.OperationException;
@@ -21,6 +29,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerReport;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanRapidResult;
 import com.synopsys.integration.util.NameVersion;
 
 public class SignatureScanStepRunner {
@@ -32,20 +41,15 @@ public class SignatureScanStepRunner {
         this.operationRunner = operationRunner;
     }
 
-    public SignatureScannerCodeLocationResult runSignatureScannerOnline(
-        String detectRunUuid,
-        BlackDuckRunData blackDuckRunData,
-        NameVersion projectNameVersion,
-        DockerTargetData dockerTargetData
-    )
-        throws DetectUserFriendlyException, OperationException {
+    public SignatureScannerCodeLocationResult runSignatureScannerOnline(String detectRunUuid, BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData, Set<String> scanIdsToWaitFor, Gson gson)
+        throws DetectUserFriendlyException, OperationException, IOException {
         ScanBatchRunner scanBatchRunner = resolveOnlineScanBatchRunner(blackDuckRunData);
 
         List<SignatureScanPath> scanPaths = operationRunner.createScanPaths(projectNameVersion, dockerTargetData);
         ScanBatch scanBatch = operationRunner.createScanBatchOnline(detectRunUuid, scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
 
         NotificationTaskRange notificationTaskRange = operationRunner.createCodeLocationRange(blackDuckRunData);
-        List<SignatureScannerReport> reports = executeScan(scanBatch, scanBatchRunner, scanPaths);
+        List<SignatureScannerReport> reports = executeScan(scanBatch, scanBatchRunner, scanPaths, scanIdsToWaitFor, gson, blackDuckRunData.shouldWaitAtScanLevel());
 
         return operationRunner.calculateWaitableSignatureScannerCodeLocations(notificationTaskRange, reports);
     }
@@ -66,18 +70,23 @@ public class SignatureScanStepRunner {
             return scanResult;
         }
 
-    public void runSignatureScannerOffline(String detectRunUuid, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
-        throws DetectUserFriendlyException, OperationException {
+    public void runSignatureScannerOffline(String detectRunUuid, NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException, OperationException, IOException {
         ScanBatchRunner scanBatchRunner = resolveOfflineScanBatchRunner();
 
         List<SignatureScanPath> scanPaths = operationRunner.createScanPaths(projectNameVersion, dockerTargetData);
         ScanBatch scanBatch = operationRunner.createScanBatchOffline(detectRunUuid, scanPaths, projectNameVersion, dockerTargetData);
 
-        executeScan(scanBatch, scanBatchRunner, scanPaths);
+        executeScan(scanBatch, scanBatchRunner, scanPaths, null, null, false);
     }
 
-    private List<SignatureScannerReport> executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths) throws OperationException {
+    private List<SignatureScannerReport> executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths, Set<String> scanIdsToWaitFor, Gson gson, boolean shouldWaitAtScanLevel) throws OperationException, IOException {
         SignatureScanOuputResult scanOuputResult = operationRunner.signatureScan(scanBatch, scanBatchRunner);
+        
+        // Do not attempt to gather additional information, and parse files that are potentially not
+        // there, if we should not wait at the scan level
+        if (shouldWaitAtScanLevel && scanIdsToWaitFor != null) {
+            addScansToWaitFor(scanIdsToWaitFor, scanOuputResult, gson);
+        }
 
         List<SignatureScannerReport> reports = operationRunner.createSignatureScanReport(scanPaths, scanOuputResult.getScanBatchOutput().getOutputs());
         operationRunner.publishSignatureScanReport(reports);
@@ -127,6 +136,29 @@ public class SignatureScanStepRunner {
             return ScanBatchRunnerUserResult.fromLocalInstall(operationRunner.createScanBatchRunnerFromLocalInstall(localScannerPath.get()), localScannerPath.get());
         }
         return ScanBatchRunnerUserResult.none();
+    }
+    
+    private void addScansToWaitFor(Set<String> scanIdsToWaitFor, SignatureScanOuputResult signatureScanOutputResult, Gson gson) throws IOException {
+        List<ScanCommandOutput> outputs = signatureScanOutputResult.getScanBatchOutput().getOutputs();
+
+        for (ScanCommandOutput output : outputs) {
+                File specificRunOutputDirectory = output.getSpecificRunOutputDirectory();
+                String scanOutputLocation = specificRunOutputDirectory.toString() + "/output/scanOutput.json";
+                
+                try {
+                    Reader reader = Files.newBufferedReader(Paths.get(scanOutputLocation));
+
+                    SignatureScanRapidResult result = gson.fromJson(reader, SignatureScanRapidResult.class);
+
+                    // This can happen if we get a NOT_EXECUTED scan if the scanner decides not to
+                    // run the scan
+                    if (result.scanId != null) {
+                        scanIdsToWaitFor.add(result.scanId);
+                    }
+                } catch (NoSuchFileException e) {
+                    logger.warn("Unable to find scanOutput.json file at location: " + scanOutputLocation + ". Will skip waiting for this signature scan.");
+                }
+        }
     }
 
 }

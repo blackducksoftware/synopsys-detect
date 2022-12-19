@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
 <map id="detect-user-guide" xml:lang="en-US">
-  <title>Synopsys Detect</title>
+  <title>Synopsys Detect User Guide</title>
   <topicmeta>
-    <shortdesc>Synopsys Detect 8.2.0</shortdesc>
+	<shortdesc>Synopsys Detect</shortdesc>
+        <prodinfo>
+            <prodname>Synopsys Detect</prodname>
+            <vrmlist>
+                <vrm version="8.4.0"/>
+            </vrmlist>
+        </prodinfo>
+
     <!-- zoomin bundle name -->
     <othermeta name="bundle" content="integrations-detect"/>
   </topicmeta>
@@ -73,7 +80,7 @@
     </topicref>
 
     <topicref href="downloadingandrunning/detectorcascade.md" format="markdown"/>
-	<topicref href="downloadingandrunning/ephemeralscan.md" format="markdown"/>
+	<topicref href="downloadingandrunning/statelessscan.md" format="markdown"/>
     <topicref href="downloadingandrunning/rapidscan.md" format="markdown"/>
     <topicref href="downloadingandrunning/iacscan.md" format="markdown"/>
     <topicref href="downloadingandrunning/status-file.md" format="markdown"/>
@@ -203,7 +210,36 @@
     <topicref href="troubleshooting/solutions.md" format="markdown"/>
     <topicref href="troubleshooting/usage-metrics.md" format="markdown"/>
   </topicref>
+  
+   <topicref href="integrations/integrations.md" format="markdown">
+   
+	<topicref href="integrations/jenkinsplugin/jenkins.md" format="markdown">
+	<topicref href="integrations/jenkinsplugin/jenkinsrequirements.md" format="markdown"/>
+	<topicref href="integrations/jenkinsplugin/downloadingandinstalling.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/configuringtheplugin.md" format="markdown"/>
+	<topicref href="integrations/jenkinsplugin/usersandroles.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/runninginjenkins.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/jenkinspipelinejob.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/jenkinsfreestylejob.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/autoescapingparameters.md" format="markdown"/>
+	<topicref href="integrations/jenkinsplugin/airgapfordetect.md" format="markdown"/>
+	<topicref href="integrations/jenkinsplugin/dockercontainers.md" format="markdown"/>
+    <topicref href="integrations/jenkinsplugin/pluginreleasenotes.md" format="markdown"/>
+   </topicref>
 
+	<topicref href="integrations/azureplugin/azure.md" format="markdown">
+	<topicref href="integrations/azureplugin/azurepluginrequirements.md" format="markdown"/>
+	<topicref href="integrations/azureplugin/installingtheplugin.md" format="markdown"/>
+    <topicref href="integrations/azureplugin/configuringandrunning.md" format="markdown"/>
+	<topicref href="integrations/azureplugin/configuringbuildagent.md" format="markdown"/>
+    <topicref href="integrations/azureplugin/runningthetask.md" format="markdown"/>
+    <topicref href="integrations/azureplugin/azurepluginreleasenotes.md" format="markdown"/>
+   </topicref>
+   
+   <topicref href="integrations/gitlab/gitlabintegration.md" format="markdown">
+   </topicref>
+   
+   </topicref>
 </map>
 
 

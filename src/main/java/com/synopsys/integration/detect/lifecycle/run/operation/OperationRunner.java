@@ -19,6 +19,7 @@ import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
+import com.synopsys.integration.blackduck.api.generated.view.BomStatusScanView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
@@ -101,6 +102,7 @@ import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio2FileOpe
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateCodeLocationOperation;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
+import com.synopsys.integration.detect.workflow.blackduck.BomScanWaitOperation;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.IntelligentPersistentUploadOperation;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitCalculator;
@@ -979,5 +981,16 @@ public class OperationRunner {
             () -> new RapidModeConfigFindOperation(fileFinder)
                 .findRapidScanConfig(directoryManager.getSourceDirectory())
         );
+    }
+    
+    public BomStatusScanView waitForBomScanCompletion(BlackDuckRunData blackDuckRunData, HttpUrl scanUrl) throws OperationException {
+        return auditLog.namedInternal("Wait for scan to potentially be included in BOM", () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            return new BomScanWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForScan(
+                    scanUrl,
+                    detectConfigurationFactory.findTimeoutInSeconds()
+            );
+        });
+
     }
 }

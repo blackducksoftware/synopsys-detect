@@ -12,6 +12,7 @@ public class Terms {
         termMap.put("script_repo_url_powershell", "https://detect.synopsys.com/detect8.ps1");
         termMap.put("binary_repo_url_project", "https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect");
         termMap.put("binary_repo_ui_url_project", "https://sig-repo.synopsys.com/ui/repos/tree/General/bds-integrations-release/com/synopsys/integration/synopsys-detect");
+		termMap.put("binary_repo_jenkins_url_project", "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/blackduck-detect/");
     }
 
     public String put(String termKey, String replacementString) {

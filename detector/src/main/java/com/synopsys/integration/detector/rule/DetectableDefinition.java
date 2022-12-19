@@ -52,4 +52,9 @@ public class DetectableDefinition {
     public DetectableAccuracyType getAccuracyType() {
         return accuracyType;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
