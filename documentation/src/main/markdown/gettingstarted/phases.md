@@ -15,7 +15,7 @@ In this phase, [solution_name] processes an ordered list of tools, invoking all 
 * By default, the build detector tool is run. This detector runs after a build and has access to both build artifacts and build tools; it produces the most accurate results.
 * If [blackduck_product_name] connection details are provided, the [blackduck_product_name] signature scanner tool also runs by default.
 
-Depending on project contents, the detector tool runs different types of detectors to find and extracts dependencies from supported package managers. For example, if [solution_name] finds a pom.xml file, it runs the Maven detector. If [solution_name] finds Gradle files, it runs the Gradle detector.
+Depending on project contents, the detector tool runs different types of detectors to find and extract dependencies from supported package managers. For example, if [solution_name] finds a pom.xml file, it runs the Maven detector. If [solution_name] finds Gradle files, it runs the Gradle detector.
 
 At the end of the run phase, [solution_name] uploads results to [blackduck_product_name], and optionally performs tasks such as generating a risk report or checking for policy violations.
 
