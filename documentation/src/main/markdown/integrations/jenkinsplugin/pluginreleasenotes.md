@@ -1,5 +1,30 @@
 # Release Notes for Jenkins Plugin
 
+## *Version 8.0.0 18 Jan 2023*
+**New features**
+
+- Update plugin to be compatible with [solution_name] 8.x.x. This includes:
+  - Download and use detect8.(sh/ps1)
+
+**Changed features**
+ 
+- The Synopsys Detect Plugin has been upgraded to use Detect 8.0.  The plugin has been built against upgraded Jenkins/Jenkins Plugin versions in order to mitigate known security risks.  The minimal Jenkins version required is 2.377.  A number of issues have been resolved.  Configuration and usage of the plugin is unchanged.
+ 
+**Resolved issues**
+
+- CVE-2022-42889 for Synopsys Detect Jenkins plugin 7.0.0 (IDCTJNKNS-258)
+- Synopsys Detect v8 for Jenkins plugin (IDTCTJNKNS-261)
+- Update dependency for Jenkins version, including optional plugin dependencies (IDTCTJNKNS-255)
+- Only escape Detect parameter values (IDTCTJNKNS-254)
+- Improve clarity of messages logged when running plugin (IDTCTJNKNS-253)
+- Update internal dependencies to latest (IDTCTJNKNS-252)
+- Detect shell scripts are executed first and then downloaded in Pipeline execution in Linux and Windows slave nodes (IDTCTJNKNS-247)
+- Avoid leaking API token string in the console output
+- Unable to use java version specified in pipeline when running Detect in Air Gap mode (IDTCTJNKNS-228)
+- Improve clarity in the transition between the different stages of Detect for Jenkins (IDTCTJNKNS-224)
+- Jenkins Build is changed to Unstable for Invalid values in Synopsys Detect Installers (IDTCTJNKNS-220)
+- Size must be between 1 and 50 when --detect.project.tag is more than 50 characters (IDTCTJNKNS-192)
+
 ## *Version 7.0.0 17 Aug 2021*
 **New features**
 
