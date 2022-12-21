@@ -1,5 +1,5 @@
 # Release Notes for Jenkins Plugin
-
+<!--
 ## **Version 8.0.0**
 **New features**
 
@@ -26,6 +26,7 @@
 * (IDTCTJNKNS-224) Improve clarity in the transition between the different stages of Detect for Jenkins
 * (IDTCTJNKNS-220) Jenkins Build is changed to Unstable for Invalid values in Synopsys Detect Installers
 * (IDTCTJNKNS-192) Size must be between 1 and 50 when --detect.project.tag is more than 50 characters
+-->
 
 ## **Version 7.0.0**
 **New features**
@@ -57,7 +58,7 @@
 **Changed features**
 
 * The Polaris fields in the plugin are removed.
-  This functionality has moved to Synopsys Polaris for Jenkins.
+  - This functionality has moved to Synopsys Polaris for Jenkins.
 * Updated the minimum version for Jenkins to 2.150.3.
 * Connection validation is improved when testing through a proxy.
 
