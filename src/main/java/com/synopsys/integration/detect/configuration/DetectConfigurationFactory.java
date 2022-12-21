@@ -25,6 +25,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
@@ -319,7 +320,19 @@ public class DetectConfigurationFactory {
         Integer projectTier = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_TIER);
         String projectDescription = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_DESCRIPTION);
         String projectVersionNotes = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES);
-        List<ProjectCloneCategoriesType> cloneCategories = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES).representedValues();
+
+        // We check if "ALL" is being specified (the default).  Black Duck will assume "all" if we don't send
+        // anything or we send null.  Leaving cloneCategroies as null will be used to avoid setting cloneCategories in
+        // the ProjectSyncModel,  i.e. the field won't even be created.
+        List<ProjectCloneCategoriesType> cloneCategories = null;
+        boolean hasAll = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES).containsAll();
+        if (!hasAll) { 
+            cloneCategories = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES).representedValues();
+        }
+
+        List<ProjectCloneCategoriesType> l1 = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES).toPresentValues();
+        List<ExtendedEnumValue<AllNoneEnum, ProjectCloneCategoriesType>> l2 = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES).toProvidedValues();
+
         Boolean projectLevelAdjustments = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_LEVEL_ADJUSTMENTS);
         Boolean forceProjectVersionUpdate = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_UPDATE);
         String projectVersionNickname = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME);

@@ -77,7 +77,9 @@ public class SyncProjectOperation {
         }
 
         List<ProjectCloneCategoriesType> cloneCategories = projectSyncOptions.getCloneCategories();
-        projectSyncModel.setCloneCategories(cloneCategories);
+        if (null != cloneCategories) {
+            projectSyncModel.setCloneCategories(cloneCategories);
+        }
 
         String nickname = projectSyncOptions.getProjectVersionNickname();
         if (StringUtils.isNotBlank(nickname)) {
