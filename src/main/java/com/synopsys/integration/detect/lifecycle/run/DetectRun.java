@@ -69,7 +69,8 @@ public class DetectRun {
             NameVersion nameVersion = stepRunner.determineProjectInformation(universalToolsResult);
             operationRunner.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio;
-            if (!universalToolsResult.getDetectCodeLocations().isEmpty()) {
+            if (!universalToolsResult.getDetectCodeLocations().isEmpty() 
+                    || (productRunData.shouldUseBlackDuckProduct() && !productRunData.getBlackDuckRunData().isOnline())) {
                 bdio = stepRunner.generateBdio(universalToolsResult, nameVersion);
             } else {
                 bdio = BdioResult.none();
