@@ -22,6 +22,7 @@ You can update the [solution_name] for Jenkins plugin when new versions are rele
    1. Alternatively, you can force Jenkins to check for plugin updates by clicking **Check now** on the **Updates** tab.
 1. If there are updates, select the one you want, and click **Download now and install after restart**.
 
+<!-- Commenting out until the script is updated to support the current releases
 ## Migrating from plugin version 1.5.0
 If you have already configured [solution_name] for Jenkins across a number of jobs utilizing plugin version 1.5.0, Synopsys provides a script to make the process easier. The script automatically migrates the [solution_name] for Jenkins post-build step in your FreeStyle jobs from the version 1.5.0 format to the new format. 
 Run the script by copying and pasting it into the Jenkins Script Console, then clicking **Run**.  For more information, refer to [Jenkins console scripting](https://wiki.jenkins.io/display/JENKINS/Jenkins+Script+Console).
@@ -30,4 +31,4 @@ This script is run once by a Jenkins administrator after upgrading the plugin fr
 
 The migration script is available on [GitHub](https://github.com/jenkinsci/synopsys-detect-plugin/tree/master/groovy-scripts).
 
-**Note:** Be careful if you use this script as it is an example that makes changes to jobs.
+**Note:** Be careful if you use this script as it is an example that makes changes to jobs. -->
