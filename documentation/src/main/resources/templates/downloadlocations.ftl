@@ -9,4 +9,5 @@ The following are download locations for the current version of [solution_name]:
 * The [solution_name] repository for the Jenkins plugin: [Artifactory](${binary_repo_jenkins_url_project})
 
 **Note:** For certain types of projects, [solution_name] automatically downloads one or more [inspectors](../components/inspectors.md) as needed.
+* In air-gap environments you may need to download the Sigma scanner via artifactory at the following location: [Sigma](${binary_repo_url_sigma})
 
