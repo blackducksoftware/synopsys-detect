@@ -1,5 +1,9 @@
 # Running Synopsys Detect in Jenkins
+<<<<<<< HEAD
 By default, [solution_name] for Jenkins downloads either the latest [solution_name] shell script when run on a UNIX node, or PowerShell script when it's run on a Windows node, to the Jenkins tools directory, and then executes that script. Note that you can also use the JAR option to run [solution_name].
+=======
+By default, [solution_name] for Jenkins downloads either the latest Detect shell script when run on a UNIX node, or PowerShell script when it's run on a Windows node to the Jenkins tools directory of that node, and then executes that script. You can also use the JAR option to run [solution_name].
+>>>>>>> master
 
 The [solution_name] PowerShell or shell script is downloaded once and placed in the [solution_name] working directory. If you want to force the plugin to fetch the latest script, clear out the Detect directory in your Jenkins tools directory.
 # **JAR option**
