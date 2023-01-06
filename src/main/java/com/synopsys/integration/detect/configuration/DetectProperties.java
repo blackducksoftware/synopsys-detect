@@ -1733,7 +1733,7 @@ public class DetectProperties {
     
     public static final BooleanProperty BLACKDUCK_OFFLINE_MODE_FORCE_BDIO =
         BooleanProperty.newBuilder("blackduck.offline.mode.force.bdio", false)
-            .setInfo("Offline Mode", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setInfo("Offline Mode", DetectPropertyFromVersion.VERSION_8_5_0)
             .setHelp(
                 "This property will force Detect in offline mode to generate a BDIO even if no code locations were identified.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
