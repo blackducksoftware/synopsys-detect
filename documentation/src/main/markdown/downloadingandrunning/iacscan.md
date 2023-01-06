@@ -1,6 +1,6 @@
 # IaC Scan
 
-IaC ("Infrastructure as Code") Scan is a new type of scanning supported by [solution_name].
+IaC ("Infrastructure as Code") Scan is a type of scanning supported by [solution_name].
 
 To configure IaC Scan, see [IaC Scan properties](../properties/configuration/iac-scan.md).
 
