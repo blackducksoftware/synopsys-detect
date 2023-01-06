@@ -10,6 +10,7 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.exception.IntegrationTimeoutException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class ExceptionUtility {
@@ -56,7 +57,7 @@ public class ExceptionUtility {
         } else if (e instanceof DetectUserFriendlyException) {
             DetectUserFriendlyException friendlyException = (DetectUserFriendlyException) e;
             return friendlyException.getExitCodeType();
-        } else if (e instanceof BlackDuckTimeoutExceededException) {
+        } else if (e instanceof BlackDuckTimeoutExceededException || e instanceof IntegrationTimeoutException) {
             return ExitCodeType.FAILURE_TIMEOUT;
         } else if (e instanceof BlackDuckApiException) {
             return ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR;
