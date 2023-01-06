@@ -190,15 +190,20 @@ public class DetectConfigurationFactory {
 
     public BlackDuckConnectionDetails createBlackDuckConnectionDetails() throws DetectUserFriendlyException {
         Boolean offline = detectConfiguration.getValue(DetectProperties.BLACKDUCK_OFFLINE_MODE);
+        Boolean forceBdio = forceBdio();
         String blackduckUrl = detectConfiguration.getNullableValue(DetectProperties.BLACKDUCK_URL);
         Set<String> allBlackDuckKeys = BlackDuckServerConfig.newApiTokenBuilder().getPropertyKeys().stream()
             .filter(it -> !(it.toLowerCase().contains("proxy")))
             .collect(Collectors.toSet());
         Map<String, String> blackDuckProperties = detectConfiguration.getRaw(allBlackDuckKeys);
 
-        return new BlackDuckConnectionDetails(offline, blackduckUrl, blackDuckProperties, findParallelProcessors(), createConnectionDetails());
+        return new BlackDuckConnectionDetails(offline, blackduckUrl, blackDuckProperties, findParallelProcessors(), createConnectionDetails(), forceBdio);
     }
     //#endregion
+    
+    public Boolean forceBdio() {
+        return detectConfiguration.getValue(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO);
+    }
 
     public PhoneHomeOptions createPhoneHomeOptions() {
         Map<String, String> phoneHomePassthrough = detectConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH);

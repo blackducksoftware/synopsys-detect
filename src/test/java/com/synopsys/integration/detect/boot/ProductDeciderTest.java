@@ -129,6 +129,6 @@ class ProductDeciderTest {
     }
 
     private BlackDuckConnectionDetails blackDuckConnectionDetails(boolean offline, String blackduckUrl) {
-        return new BlackDuckConnectionDetails(offline, blackduckUrl, null, null, null);
+        return new BlackDuckConnectionDetails(offline, blackduckUrl, null, null, null, false);
     }
 }
