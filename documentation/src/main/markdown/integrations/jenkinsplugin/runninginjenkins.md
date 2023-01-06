@@ -1,11 +1,11 @@
 # Running Synopsys Detect in Jenkins
-By default, [solution_name] for Jenkins downloads either the latest Detect shell script when run on a UNIX node, or PowerShell script when its un on a Windows node to the Jenkins tools directory of that node, and then executes that script. You can also use the JAR option to run [solution_name].
+By default, [solution_name] for Jenkins downloads either the latest [solution_name] shell script when run on a UNIX node, or PowerShell script when it's run on a Windows node, to the Jenkins tools directory, and then executes that script. Note that you can also use the JAR option to run [solution_name].
 
-The Detect PowerShell script or Detect shell script is downloaded once and placed in the Detect working directory. If you want to force the plugin to fetch the latest script, clear out the Detect directory in your Jenkins tools directory.
+The [solution_name] PowerShell or shell script is downloaded once and placed in the [solution_name] working directory. If you want to force the plugin to fetch the latest script, clear out the Detect directory in your Jenkins tools directory.
 # **JAR option**
-If you do not want to download Detect, you can manually put the JAR on the node on which you want Detect to run and specify the DETECT\_JAR environment variable that points to your provided JAR, and [solution_name] for Jenkins executes that JAR instead. 
+If you do not want to download [solution_name], you can manually put the JAR on the node where you want [solution_name] to run and specify the DETECT\_JAR environment variable that points to your provided JAR, and that JAR will be executed instead. 
 
-To use the JAR option do the following steps:
+To use the JAR option, perform the following steps:
 
 1. Navigate to **Dashboard > Manage Jenkins > Configure System > Global properties > Environment variables**. 
 1. Click **Add**.
@@ -13,7 +13,7 @@ To use the JAR option do the following steps:
    1. **Name**: `DETECT\_JAR`.
    1. **Value:** `<path to the Detect jar file on your Jenkins node>`.
    
-**Note:** When your build runs, Jenkins looks for configured environment variables, and if it locates DETECT\_JAR, it uses that instead of pulling the latest Detect shell script.
+**Note:** When your build runs, Jenkins looks for configured environment variables, and if it locates DETECT\_JAR, it uses that instead of pulling the latest [solution_name] shell script.
 ## Air Gap option
 [solution_name] can be configured to run in an air gap fashion, see: [Air Gap](../../downloadingandrunning/airgap.md).
 
