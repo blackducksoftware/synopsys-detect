@@ -1,5 +1,5 @@
 # Release Notes for Jenkins Plugin
-<!--
+<!-- #Commenting out until QA completed on new plugin version for Detect 8#
 ## **Version 8.0.0**
 **New features**
 
