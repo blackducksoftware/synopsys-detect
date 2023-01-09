@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.interactive;
 
 import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_OFFLINE_MODE;
+import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO;
 import static com.synopsys.integration.detect.configuration.DetectProperties.DETECT_PROJECT_NAME;
 import static com.synopsys.integration.detect.configuration.DetectProperties.DETECT_PROJECT_VERSION_NAME;
 import static com.synopsys.integration.detect.configuration.DetectProperties.DETECT_TOOLS_EXCLUDED;
@@ -19,6 +20,7 @@ public class InteractiveModeDecisionTree implements DecisionTree {
     public static final String SHOULD_SAVE_TO_PROFILE = "Would you like save these settings to a profile?";
     public static final String SET_PROFILE_NAME = "What is the profile name?";
     public static final String SHOULD_CONNECT_TO_BLACKDUCK = "Would you like to connect to a Black Duck server?";
+    public static final String SHOULD_FORCE_BDIO_CREATION = "Would you like to mandate BDIO generation even if no code locations are identified?";
     public static final String SHOULD_SET_PROJECT_NAME_VERSION = "Would you like to provide a project name and version to use?";
     public static final String SET_PROJECT_NAME = "What is the project name?";
     public static final String SET_PROJECT_VERSION = "What is the project version?";
@@ -58,6 +60,8 @@ public class InteractiveModeDecisionTree implements DecisionTree {
             }
         } else {
             propertySourceBuilder.setProperty(BLACKDUCK_OFFLINE_MODE, Boolean.TRUE.toString());
+            Boolean forceBdioCreation = writer.askYesOrNo(SHOULD_FORCE_BDIO_CREATION);
+            propertySourceBuilder.setProperty(BLACKDUCK_OFFLINE_MODE_FORCE_BDIO, forceBdioCreation.toString());
         }
 
         Boolean scan = writer.askYesOrNo(SHOULD_RUN_SIGNATURE_SCAN);
