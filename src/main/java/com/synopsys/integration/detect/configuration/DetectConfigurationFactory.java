@@ -204,6 +204,10 @@ public class DetectConfigurationFactory {
     public Boolean forceBdio() {
         return detectConfiguration.getValue(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO);
     }
+    
+    public Boolean isScaEnvironment() {
+        return detectConfiguration.getValue(DetectProperties.BLACKDUCK_SCA_ENVIRONMENT);
+    }
 
     public PhoneHomeOptions createPhoneHomeOptions() {
         Map<String, String> phoneHomePassthrough = detectConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH);

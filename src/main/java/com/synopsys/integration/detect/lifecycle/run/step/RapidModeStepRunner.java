@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -43,7 +45,7 @@ public class RapidModeStepRunner {
     }
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult,
-            DockerTargetData dockerTargetData) throws OperationException {
+            DockerTargetData dockerTargetData, Boolean scaEnvironment) throws OperationException {
         operationRunner.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationRunner.findRapidScanConfig();
         String scanMode = blackDuckRunData.getScanMode().displayName();
@@ -66,6 +68,16 @@ public class RapidModeStepRunner {
                     .runRapidSignatureScannerOnline(blackDuckRunData, projectVersion, dockerTargetData);
 
             parsedUrls.addAll(parseScanUrls(scanMode, signatureScanOutputResult, blackDuckUrl));
+        });
+        
+        stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
+//            BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
+//            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationData = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
+//            
+//            if (codeLocationData.isPresent()) {
+//                codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
+//                mustWaitAtBomSummaryLevel.set(true);
+//            }
         });
 
         // Get info about any scans that were done

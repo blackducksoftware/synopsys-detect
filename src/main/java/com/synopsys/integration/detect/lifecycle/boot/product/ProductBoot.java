@@ -154,7 +154,7 @@ public class ProductBoot {
     private boolean shouldWaitAtScanLevel(BlackDuckConnectivityResult blackDuckConnectivityResult) {
         BlackDuckVersionParser parser = new BlackDuckVersionParser();
         Optional<BlackDuckVersion> blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
-        BlackDuckVersion minVersion = new BlackDuckVersion(2023, 1, 1);
+        BlackDuckVersion minVersion = new BlackDuckVersion(2023, 1, 0);
         
         boolean waitAtScanLevel = false;
         

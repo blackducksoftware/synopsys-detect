@@ -1740,6 +1740,10 @@ public class DetectProperties {
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
 
+    public static final BooleanProperty BLACKDUCK_SCA_ENVIRONMENT =
+            BooleanProperty.newBuilder("blackduck.sca.environment", false)
+            .build();
+    
     //#endregion Active Properties
 
     //#region Deprecated Properties
