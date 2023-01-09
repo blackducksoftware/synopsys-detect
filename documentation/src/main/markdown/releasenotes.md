@@ -9,6 +9,7 @@
 ### Changed features
 
 * The .yarn directory will now be ignored by default when determining which detectors are applicable to a project.
+* An exit code of 2, representing FAILURE_TIMEOUT, will be returned when STATELESS scans do not report status in a timely fashion. The timeout can be controlled using the detect.timeout property.
 
 ## Version 8.4.0
 
