@@ -2,6 +2,10 @@
 
 ## Version 8.5.0
 
+### New features
+
+* Added property blackduck.offline.mode.force.bdio which when set to true will force Detect used in offline mode to create a BDIO even if no code locations were identified.
+
 ### Changed features
 
 * The .yarn directory will now be ignored by default when determining which detectors are applicable to a project.
