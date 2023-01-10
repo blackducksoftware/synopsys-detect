@@ -30,6 +30,7 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
+import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 
 public class RapidModeStepRunner {
@@ -71,6 +72,15 @@ public class RapidModeStepRunner {
         });
         
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
+            logger.debug("Rapid binary scan detected.");
+            
+            // TODO check SCA
+            
+            RapidBinaryScanStepRunner rapidBinaryScanStepRunner = new RapidBinaryScanStepRunner(gson);
+            Response response = rapidBinaryScanStepRunner.submitScan();
+            rapidBinaryScanStepRunner.pollForResults();
+//            rapidBinaryScanStepRunner.getBdio();
+            
 //            BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
 //            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationData = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
 //            
