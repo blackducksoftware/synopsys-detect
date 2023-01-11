@@ -70,7 +70,9 @@ public class DetectRun {
             NameVersion nameVersion = stepRunner.determineProjectInformation(universalToolsResult);
             operationRunner.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio;
-            if (!universalToolsResult.getDetectCodeLocations().isEmpty()) {
+            Boolean forceBdio = bootSingletons.getDetectConfigurationFactory().forceBdio();
+            if (!universalToolsResult.getDetectCodeLocations().isEmpty() 
+                    || (productRunData.shouldUseBlackDuckProduct() && !productRunData.getBlackDuckRunData().isOnline() && forceBdio)) {
                 bdio = stepRunner.generateBdio(bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId(), universalToolsResult, nameVersion);
             } else {
                 bdio = BdioResult.none();

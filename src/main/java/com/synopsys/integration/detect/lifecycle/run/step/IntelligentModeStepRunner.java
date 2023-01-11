@@ -133,10 +133,12 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
-            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationData = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
-            
-            if (codeLocationData.isPresent()) {
-                codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
+            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationCreationData = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
+            if (codeLocationCreationData.isPresent()) {
+                codeLocationAccumulator.addWaitableCodeLocations(
+                    DetectTool.BINARY_SCAN,
+                    codeLocationCreationData.get()
+                );
                 mustWaitAtBomSummaryLevel.set(true);
             }
         });

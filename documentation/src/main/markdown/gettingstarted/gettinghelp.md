@@ -9,3 +9,4 @@
 | Diagnostic | --detect.diagnostic=true | -d | Creates a zip file containing diagnostic information for support. |
 
 Additional resources are available at [Synopsys Software Integrity Community](https://community.synopsys.com).
+

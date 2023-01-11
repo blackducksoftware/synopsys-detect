@@ -1534,7 +1534,7 @@ public class DetectProperties {
             .setInfo("IaC Scan Target Paths", DetectPropertyFromVersion.VERSION_7_14_0)
             .setHelp(
                 "A comma-separated list of paths to perform IaC scans on.",
-                "If this property is set, an IaC scan will be performed on each of the paths provided. If this property is not set, but Iac Scanning is enabled via detect.tools, the IaC scan target path is the source path (see property detect.source.path)."
+                "If this property is set, an IaC scan will be performed on each of the paths provided. If this property is not set, but IaC Scanning is enabled via detect.tools, the IaC scan target path is the source path (see property detect.source.path)."
             )
             .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
             .setExample("/user/source/target1,/user/source/target2")
@@ -1552,17 +1552,18 @@ public class DetectProperties {
     public static final NullablePathProperty DETECT_IAC_SCANNER_LOCAL_PATH =
         NullablePathProperty.newBuilder("detect.iac.scanner.local.path")
             .setInfo("IaC Scanner Local Path", DetectPropertyFromVersion.VERSION_7_14_0)
-            .setHelp(
-                "Use this property to specify the path to a local IaC Scanner.")
+            .setHelp("Use this property to specify the path to a local IaC Scanner.",
+					"If you are running in an Air Gap environment you may need to download the IaC Scanner(Sigma) binary from Artifactory. See the Downloading and Running Synopsys Detect page for download location."
+			)
             .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
             .build();
-
+			
     public static final NullablePathProperty DETECT_SOURCE_PATH =
         NullablePathProperty.newBuilder("detect.source.path")
             .setInfo("Source Path", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "The source path is the path to the project directory to inspect. If no value is provided, the source path defaults to the current working directory.",
-                "Detect will search the source directory for hints that indicate which package manager(s) the project uses, and will attempt to run the corresponding detector(s). "
+                "Detect will search the source directory for hints that indicate which package manager(s) the project uses, and will attempt to run the corresponding detector(s)."
                     +
                     "The source path is also the default target for signature scanning. (This can be overridden with the detect.blackduck.signature.scanner.paths property.)"
             )
@@ -1740,6 +1741,14 @@ public class DetectProperties {
                 "If set, Detect will use the given directory to store a copy of the status.json file."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .build();
+    
+    public static final BooleanProperty BLACKDUCK_OFFLINE_MODE_FORCE_BDIO =
+        BooleanProperty.newBuilder("blackduck.offline.mode.force.bdio", false)
+            .setInfo("Offline Mode", DetectPropertyFromVersion.VERSION_8_5_0)
+            .setHelp(
+                "This property will force Detect in offline mode to generate a BDIO even if no code locations were identified.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
 
     //#endregion Active Properties

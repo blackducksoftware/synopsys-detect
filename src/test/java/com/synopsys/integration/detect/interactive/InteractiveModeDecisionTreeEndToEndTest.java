@@ -70,7 +70,8 @@ public class InteractiveModeDecisionTreeEndToEndTest {
             ),
             Bds.mapOf(
                 Pair.of(DetectProperties.DETECT_TOOLS_EXCLUDED, DetectTool.SIGNATURE_SCAN.toString()),
-                Pair.of(DetectProperties.BLACKDUCK_OFFLINE_MODE, Boolean.TRUE.toString())
+                Pair.of(DetectProperties.BLACKDUCK_OFFLINE_MODE, Boolean.TRUE.toString()),
+                Pair.of(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO, Boolean.FALSE.toString())
             )
         );
     }

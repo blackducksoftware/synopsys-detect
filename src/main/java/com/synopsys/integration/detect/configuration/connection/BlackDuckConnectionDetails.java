@@ -13,19 +13,22 @@ public class BlackDuckConnectionDetails {
     private final Map<String, String> blackduckProperties;
     private final Integer parallelProcessors;
     private final ConnectionDetails connectionDetails;
+    private final Boolean forceBdio;
 
     public BlackDuckConnectionDetails(
         Boolean offline,
         @Nullable String blackDuckUrl,
         Map<String, String> blackduckProperties,
         Integer parallelProcessors,
-        ConnectionDetails connectionDetails
+        ConnectionDetails connectionDetails,
+        Boolean forceBdio
     ) {
         this.offline = offline;
         this.blackDuckUrl = blackDuckUrl;
         this.blackduckProperties = blackduckProperties;
         this.parallelProcessors = parallelProcessors;
         this.connectionDetails = connectionDetails;
+        this.forceBdio = forceBdio;
     }
 
     @NotNull
@@ -51,5 +54,10 @@ public class BlackDuckConnectionDetails {
     @NotNull
     public ConnectionDetails getConnectionDetails() {
         return connectionDetails;
+    }
+    
+    @NotNull
+    public Boolean getForceBdio() {
+        return forceBdio;
     }
 }
