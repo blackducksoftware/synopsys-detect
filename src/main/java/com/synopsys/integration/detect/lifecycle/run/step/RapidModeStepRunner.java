@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanRapidResult;
+import com.synopsys.integration.detect.workflow.bdba.BdbaStatusScanView;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.exception.IntegrationException;
@@ -75,19 +77,12 @@ public class RapidModeStepRunner {
             logger.debug("Rapid binary scan detected.");
             
             // TODO check SCA
+            UUID scanId = UUID.randomUUID();
+            RapidBinaryScanStepRunner rapidBinaryScanStepRunner = new RapidBinaryScanStepRunner(gson, scanId);
             
-            RapidBinaryScanStepRunner rapidBinaryScanStepRunner = new RapidBinaryScanStepRunner(gson);
             Response response = rapidBinaryScanStepRunner.submitScan();
-            rapidBinaryScanStepRunner.pollForResults();
-//            rapidBinaryScanStepRunner.getBdio();
-            
-//            BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
-//            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationData = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
-//            
-//            if (codeLocationData.isPresent()) {
-//                codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
-//                mustWaitAtBomSummaryLevel.set(true);
-//            }
+            BdbaStatusScanView results = rapidBinaryScanStepRunner.pollForResults();
+            rapidBinaryScanStepRunner.getBdio();
         });
 
         // Get info about any scans that were done
