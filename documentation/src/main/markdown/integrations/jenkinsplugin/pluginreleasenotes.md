@@ -1,5 +1,5 @@
 # Release Notes for Jenkins Plugin
-<!-- #Commenting out until QA completed on new plugin version for Detect 8#
+
 ## **Version 8.0.0**
 **New features**
 
@@ -26,7 +26,6 @@
 * (IDTCTJNKNS-224) Improve clarity in the transition between the different stages of Detect for Jenkins
 * (IDTCTJNKNS-220) Jenkins Build is changed to Unstable for Invalid values in Synopsys Detect Installers
 * (IDTCTJNKNS-192) Size must be between 1 and 50 when --detect.project.tag is more than 50 characters
--->
 
 ## **Version 7.0.0**
 **New features**
