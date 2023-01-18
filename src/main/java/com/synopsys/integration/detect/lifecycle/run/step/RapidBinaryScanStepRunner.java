@@ -17,10 +17,16 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.http.HttpHeaders;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.bdba.BdbaStatusScanView;
 import com.synopsys.integration.detect.workflow.bdba.BinaryRapidScanWaitJob;
 import com.synopsys.integration.exception.IntegrationException;
@@ -80,8 +86,20 @@ public class RapidBinaryScanStepRunner {
         return jobExecutor.executeJob(waitJob);
     }
 
-    public void getBdio() {
-        // TODO Auto-generated method stub
+    public String getBdio() throws IntegrationException {
+        RequestBuilder createRequestBuilder = httpClient.createRequestBuilder(HttpMethod.GET);
+        HttpUriRequest request = createRequestBuilder
+            .setUri("http://localhost:9001/scan/" + scanId)
+            .build();
+        Response response = httpClient.execute(request);
+        return response.getContentString();
+    }
+
+    public void submitBdio(BlackDuckRunData blackDuckRunData, String bdio) {
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
         
+//        HttpUrl scanUrl = blackDuckApiClient.post(new HttpUrl("https://localhost/api/developer-scans"), null);
+//        ProjectView projectView = blackDuckApiClient.getResponse(scanUrl, ProjectView.class);
     }
 }

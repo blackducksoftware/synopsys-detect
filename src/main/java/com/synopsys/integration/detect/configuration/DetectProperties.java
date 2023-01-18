@@ -1742,6 +1742,9 @@ public class DetectProperties {
 
     public static final BooleanProperty BLACKDUCK_SCA_ENVIRONMENT =
             BooleanProperty.newBuilder("blackduck.sca.environment", false)
+            .setInfo("temp", DetectPropertyFromVersion.VERSION_8_5_0)
+            .setHelp("temp")
+            .setGroups(DetectGroup.DEFAULT)
             .build();
     
     //#endregion Active Properties
