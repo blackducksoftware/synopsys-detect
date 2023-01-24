@@ -11,7 +11,7 @@ The recommended way of configuring [solution_name] from a GitLab pipeline is to
 
     <figure>
     <img src="../gitlab/images/myaccesstokens.png"
-         alt="Creating Token">
+         alt="Creating an access token">
     <figcaption>Creating the access token</figcaption>
     </figure>
 
@@ -22,7 +22,7 @@ The recommended way of configuring [solution_name] from a GitLab pipeline is to
 
     <figure>
     <img src="../gitlab/images/pipelineconfig1.png"
-         alt="Configuring pipeline">
+         alt="Configuring the pipeline secrets">
     <figcaption>Configuring the pipeline secrets</figcaption>
     </figure>
 

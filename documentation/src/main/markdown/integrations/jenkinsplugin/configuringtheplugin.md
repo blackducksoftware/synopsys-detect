@@ -23,7 +23,7 @@ Use the following process to configure the Synopsys Detect for Jenkins plugin. 
    1. For user API tokens, select **Secret text** from the menu in the **Kind** field, then provide your [blackduck_product_name] access token in the **Secret** field.
    <figure>
     <img src="../jenkinsplugin/images/Configuring3.png"
-         alt="Input secret">
+         alt="Inputting the access token secret">
     <figcaption>Input access token secret.</figcaption>
 </figure>
    1. The other option for credentials is **Username with password**.
@@ -33,7 +33,7 @@ Use the following process to configure the Synopsys Detect for Jenkins plugin. 
    1. **Trust [blackduck_product_name] certificates**: Select the checkbox to allow (SSL) certificates from [blackduck_product_name].
    <figure>
     <img src="../jenkinsplugin/images/Configuring4.jpg"
-         alt="Configure timeout and SSL">
+         alt="Configure connection timeout and SSL">
     <figcaption>Configure timeout and SSL.</figcaption>
 </figure>
 1. Click **Test Connection to [blackduck_product_name]** to verify that your settings are correct. If so, a *Connection successful!* status displays.
