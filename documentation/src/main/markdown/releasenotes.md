@@ -1,5 +1,13 @@
 # Release notes
 
+## Version 8.6.0
+
+### New features
+
+### Changed features
+
+### Resolved issues
+
 ## Version 8.5.0
 
 ### New features
