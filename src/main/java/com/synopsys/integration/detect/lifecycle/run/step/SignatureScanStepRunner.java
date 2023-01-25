@@ -29,7 +29,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerReport;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
-import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanRapidResult;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.util.NameVersion;
 
@@ -145,22 +145,19 @@ public class SignatureScanStepRunner {
         List<ScanCommandOutput> outputs = signatureScanOutputResult.getScanBatchOutput().getOutputs();
 
         for (ScanCommandOutput output : outputs) {
-                File specificRunOutputDirectory = output.getSpecificRunOutputDirectory();
-                String scanOutputLocation = specificRunOutputDirectory.toString() + "/output/scanOutput.json";
+            File specificRunOutputDirectory = output.getSpecificRunOutputDirectory();
+            String scanOutputLocation = specificRunOutputDirectory.toString() + SignatureScanResult.OUTPUT_FILE_PATH;
+
+            try {
+                Reader reader = Files.newBufferedReader(Paths.get(scanOutputLocation));
+
+                SignatureScanResult result = gson.fromJson(reader, SignatureScanResult.class);
                 
-                try {
-                    Reader reader = Files.newBufferedReader(Paths.get(scanOutputLocation));
-
-                    SignatureScanRapidResult result = gson.fromJson(reader, SignatureScanRapidResult.class);
-
-                    // This can happen if we get a NOT_EXECUTED scan if the scanner decides not to
-                    // run the scan
-                    if (result.scanId != null) {
-                        scanIdsToWaitFor.add(result.scanId);
-                    }
-                } catch (NoSuchFileException e) {
-                    logger.warn("Unable to find scanOutput.json file at location: " + scanOutputLocation + ". Will skip waiting for this signature scan.");
-                }
+                scanIdsToWaitFor.addAll(result.parseScanIds());
+            } catch (NoSuchFileException e) {
+                logger.warn("Unable to find scanOutput.json file at location: " + scanOutputLocation
+                        + ". Will skip waiting for this signature scan.");
+            }
         }
     }
 

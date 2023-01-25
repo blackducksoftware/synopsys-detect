@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 8.6.0
+
+### Changed features
+
+* Signature scans will now wait for all scans that the scan CLI might invoke, such as snippet and string search scans, and not just signature scans.
+
 ## Version 8.5.0
 
 ### New features

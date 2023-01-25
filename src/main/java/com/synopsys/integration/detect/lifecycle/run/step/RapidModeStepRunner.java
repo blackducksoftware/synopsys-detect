@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
-import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanRapidResult;
+import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanResult;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.exception.IntegrationException;
@@ -92,15 +93,19 @@ public class RapidModeStepRunner {
         for (ScanCommandOutput output : outputs) {
             try {
                 File specificRunOutputDirectory = output.getSpecificRunOutputDirectory();
-                String scanOutputLocation = specificRunOutputDirectory.toString() + "/output/scanOutput.json";
+                String scanOutputLocation = specificRunOutputDirectory.toString() + SignatureScanResult.OUTPUT_FILE_PATH;
                 Reader reader = Files.newBufferedReader(Paths.get(scanOutputLocation));
 
-                SignatureScanRapidResult result = gson.fromJson(reader, SignatureScanRapidResult.class);
+                SignatureScanResult result = gson.fromJson(reader, SignatureScanResult.class);
+                
+                Set<String> parsedIds = result.parseScanIds();
+                
+                for (String id : parsedIds) {
+                    HttpUrl url = new HttpUrl(blackDuckUrl + "/api/developer-scans/" + id);
 
-                HttpUrl url = new HttpUrl(blackDuckUrl + "/api/developer-scans/" + result.scanId);
-
-                logger.info(scanMode + " mode signature scan URL: {}", url);
-                parsedUrls.add(url);
+                    logger.info(scanMode + " mode signature scan URL: {}", url);
+                    parsedUrls.add(url);
+                }
             } catch (Exception e) {
                 throw new IntegrationException("Unable to parse rapid signature scan results.");
             }
