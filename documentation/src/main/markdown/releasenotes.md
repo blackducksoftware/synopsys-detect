@@ -4,7 +4,7 @@
 
 ### Changed features
 
-* Signature scans will now wait for all scans that the scan CLI might invoke, such as snippet and string search scans, and not just signature scans.
+* Signature scans, when invoked from the CLI, will now wait for all scans, such as snippet and string search, to complete before parsing Scan IDs.
 
 ## Version 8.5.0
 
