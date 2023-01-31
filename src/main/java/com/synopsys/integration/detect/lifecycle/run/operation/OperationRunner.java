@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -10,8 +11,10 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
+import java.util.zip.ZipEntry;
 
 import org.apache.http.HttpHeaders;
+import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -316,16 +319,21 @@ public class OperationRunner {
     }
 
     //Rapid
-    public UUID initiateRapidScan(BlackDuckRunData blackDuckRunData, String blackDuckUrl) throws OperationException {
+    public UUID initiateRapidBinaryScan(BlackDuckRunData blackDuckRunData, String blackDuckUrl) throws OperationException {
         return auditLog.namedInternal("Rapid Upload", () -> {
+            // TODO get and fail if doesn't exist header
+            File bdioHeader = new File(directoryManager.getBdioOutputDirectory() + "/bdio-header.pb");
+               
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
             HttpUrl postUrl = new HttpUrl(blackDuckUrl + "/api/developer-scans");
 
             BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-                    .addHeader("Content-type", "application/vnd.blackducksoftware.developer-scan-1-ld-2+json")
-                    .post() // postString or other similar if necessary
+                    //.addHeader("Content-type", "application/vnd.blackducksoftware.scan-evidence-1+protobuf")
+                    .postFile(bdioHeader, ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protobuf"))
+                    //.postString(bdioHeader., ContentType.APPLICATION_OCTET_STREAM)
+                    //.postString(header.getContent(), ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protob", StandardCharsets.UTF_8))
                     .buildBlackDuckResponseRequest(postUrl);
 
             HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);

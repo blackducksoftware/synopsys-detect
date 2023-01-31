@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ import com.synopsys.integration.detect.workflow.bdba.BdbaStatusScanView;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeWaitOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.response.Response;
@@ -42,12 +44,14 @@ public class RapidModeStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StepHelper stepHelper;
     private final Gson gson;
+    private final DirectoryManager directoryManager;
     private RapidModeWaitOperation rapidModeWaitOperation;
 
-    public RapidModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson) {
+    public RapidModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson, DirectoryManager directoryManager) {
         this.operationRunner = operationRunner;
         this.stepHelper = stepHelper;
         this.gson = gson;
+        this.directoryManager = directoryManager;
     }
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult,
@@ -81,19 +85,27 @@ public class RapidModeStepRunner {
             
             // TODO check SCA
             
-            // Get scanId from BlackDuck
-            UUID scanId = operationRunner.initiateRapidScan(blackDuckRunData, blackDuckUrl);
+            // Generate the UUID we use to communicate with BDBA
+            UUID bdbaScanId = UUID.randomUUID();
             
-            RapidBinaryScanStepRunner rapidBinaryScanStepRunner = new RapidBinaryScanStepRunner(gson, scanId);
-            
+            RapidBinaryScanStepRunner rapidBinaryScanStepRunner = new RapidBinaryScanStepRunner(gson, bdbaScanId);
             Response response = rapidBinaryScanStepRunner.submitScan();
             BdbaStatusScanView results = rapidBinaryScanStepRunner.pollForResults();
-            String bdio = rapidBinaryScanStepRunner.getBdio();
             
-            // Send BDIO to BlackDuck
-            // TODO should be able to get protobuf by changing format in submitScan. It should have
-            // the header in an updated BDBA.
-            rapidBinaryScanStepRunner.submitBdio(blackDuckRunData, bdio);
+            // Download the BDIO file from BDBA and extract it
+            rapidBinaryScanStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
+            
+            // TODO Get scanId from BlackDuck, need to send a Start along with the BDIO header we get
+            // from BDBA
+            UUID bdScanId = operationRunner.initiateRapidBinaryScan(blackDuckRunData, blackDuckUrl);
+            
+            // TODO Send BDIO chunks to BlackDuck
+            rapidBinaryScanStepRunner.submitBdioChunk(blackDuckRunData);
+            
+            // TODO send finish call to BlackDuck to let it know the BDIO is fully submitted
+            
+            // TODO add this scan to the URLs to wait for
+            //d he?parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + bdScanId.toString()));
         });
 
         // Get info about any scans that were done
