@@ -140,28 +140,6 @@ public class RapidBinaryScanStepRunner {
         }
     }
 
-    // TODO move to operationRunnner since this isn't really BDBA? It's like initiateRapidBinaryScan
-    public void submitBdioChunk(BlackDuckRunData blackDuckRunData) throws IntegrationException {
-//        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-//        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
-//        
-//        HttpUrl scanUrl = blackDuckApiClient.post(new HttpUrl("https://localhost/api/developer-scans/" + bdScanId.toString()), null);
-////        ProjectView projectView = blackDuckApiClient.getResponse(scanUrl, ProjectView.class);
-        
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
-
-        HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + "/api/developer-scans");
-
-        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-                .addHeader("Content-type", "application/vnd.blackducksoftware.scan-evidence-1+protob")
-                .put() // putString or other similar if necessary
-                .buildBlackDuckResponseRequest(postUrl);
-
-        Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest);
-
-    }
-
     public void setBdScanId(UUID bdScanId) {
         this.bdScanId = bdScanId;
     }

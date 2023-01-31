@@ -175,6 +175,8 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
+import com.synopsys.integration.rest.body.FileBodyContent;
+import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
@@ -319,7 +321,7 @@ public class OperationRunner {
     }
 
     //Rapid
-    public UUID initiateRapidBinaryScan(BlackDuckRunData blackDuckRunData, String blackDuckUrl) throws OperationException {
+    public UUID initiateRapidBinaryScan(BlackDuckRunData blackDuckRunData) throws OperationException {
         return auditLog.namedInternal("Rapid Upload", () -> {
             // TODO get and fail if doesn't exist header
             File bdioHeader = new File(directoryManager.getBdioOutputDirectory() + "/bdio-header.pb");
@@ -327,7 +329,7 @@ public class OperationRunner {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-            HttpUrl postUrl = new HttpUrl(blackDuckUrl + "/api/developer-scans");
+            HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + "/api/developer-scans");
 
             BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
                     //.addHeader("Content-type", "application/vnd.blackducksoftware.scan-evidence-1+protobuf")
@@ -341,6 +343,35 @@ public class OperationRunner {
 
             return UUID.fromString(path.substring(path.lastIndexOf('/') + 1));
         });
+    }
+    
+    public void uploadBdioEntries(BlackDuckRunData blackDuckRunData, UUID bdScanId) throws IntegrationException {                
+        // TODO parse directory and upload all chunks
+        File bdioDirectory = directoryManager.getBdioOutputDirectory();
+        
+        for (File bdioEntry : bdioDirectory.listFiles()) {
+            if (bdioEntry.getName().equals("bdio-header.pb")) {
+                continue;
+            }
+        
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+        HttpUrl putUrl = new HttpUrl(
+                blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() 
+                + "/api/developer-scans/"
+                + bdScanId);
+        
+        // TODO For PUT there are 2 different modes X-BD-MODE=APPEND,FINISH. if there are multiple chunks. 
+        // it will need to come in as APPEND and once we are finish, we will need to send a FINISH mode without 
+        // data saying we have received all the chunks.
+        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                //.addHeader("Content-type", "application/vnd.blackducksoftware.scan-evidence-1+protob")
+                .putBodyContent(new FileBodyContent(bdioEntry, ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protobuf")))
+                .buildBlackDuckResponseRequest(putUrl);
+
+        Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest);
+        }
     }
     
     public final List<HttpUrl> performRapidUpload(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, @Nullable File rapidScanConfig) throws OperationException {

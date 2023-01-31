@@ -97,15 +97,13 @@ public class RapidModeStepRunner {
             
             // TODO Get scanId from BlackDuck, need to send a Start along with the BDIO header we get
             // from BDBA
-            UUID bdScanId = operationRunner.initiateRapidBinaryScan(blackDuckRunData, blackDuckUrl);
+            UUID bdScanId = operationRunner.initiateRapidBinaryScan(blackDuckRunData);
             
             // TODO Send BDIO chunks to BlackDuck
-            rapidBinaryScanStepRunner.submitBdioChunk(blackDuckRunData);
-            
-            // TODO send finish call to BlackDuck to let it know the BDIO is fully submitted
+            operationRunner.uploadBdioEntries(blackDuckRunData, bdScanId);
             
             // TODO add this scan to the URLs to wait for
-            //d he?parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + bdScanId.toString()));
+            parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + bdScanId.toString()));
         });
 
         // Get info about any scans that were done
