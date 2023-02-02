@@ -5,7 +5,10 @@
 ### Changed features
 
 * Package Manager and Signature Scans will now query Black Duck directly when using the detect.wait.for.results property. This allows Detect to determine if results are ready much faster than waiting for a notification from Black Duck. Note: this feature requires Black Duck 2023.1.1 or later.
-* When waiting for results, Signature Scans will now wait for all scans that the Signature Scan could invoke, such as Snippet and String Search scans. Previously, only the Signature Scan itself was properly checked. Note: this improvement requires Black Duck 2023.1.2 or later. 
+
+### Resolved issues
+
+* (IDETECT-3627) When waiting for results, Signature Scans will now wait for all scans that the Signature Scan could invoke, such as Snippet and String Search scans. Previously, only the Signature Scan itself was properly checked. Note: this improvement requires Black Duck 2023.1.2 or later. 
 
 ## Version 8.5.0
 
