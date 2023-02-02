@@ -15,6 +15,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -68,7 +70,7 @@ public class RapidBinaryScanStepRunner {
     private IntHttpClient httpClient;
     private Gson gson;
     private UUID bdbaScanId;
-    private UUID bdScanId;
+
     private static final int DEFAULT_TIMEOUT = 300;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
@@ -85,18 +87,26 @@ public class RapidBinaryScanStepRunner {
             );
     }
 
-    public Response submitScan() throws IntegrationException {
+    public Response submitScan() throws IntegrationException, IOException {
         // TODO have to be told somehow where file is, using existing property in arguments?
         BodyContent content = 
-                //StringBodyContent.json("{\"format\":\"protobuf\", \"url\":\"file:///foo/TEW-636APB-1002-Firmware.bin\"}");
-                //StringBodyContent.json("{\"url\":\"file:///foo/TEW-636APB-1002-Firmware.bin\"}");
                 StringBodyContent.json("{\"creator\":\"foo\", \"url\":\"file:///foo/TEW-636APB-1002-Firmware.bin\"}");
         Map <String, String> headers = new HashMap<>();
         Map<String, Set<String>> queryParams = new HashMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, "application/json");
         
+        // TODO also have to be told where the worker is. Will get somehow when detect is invoked?
         Request request = new Request(new HttpUrl("http://localhost:9001/scan/" + bdbaScanId), HttpMethod.POST, null, queryParams, headers, content);
-        return httpClient.execute(request);   
+        
+        try (Response response = httpClient.execute(request)) {
+            if (response.isStatusCodeSuccess()) {
+                logger.debug("Created BDBA scan.");
+                return response;
+            } else {
+                logger.trace("Unable to create BDBA scan. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                throw new IntegrationException("Unable to create BDBA scan. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+            }
+        }   
     }
 
     public BdbaStatusScanView pollForResults() throws InterruptedException, IntegrationException {
@@ -107,40 +117,42 @@ public class RapidBinaryScanStepRunner {
         return jobExecutor.executeJob(waitJob);
     }
 
-    public void downloadAndExtractBdio(DirectoryManager directoryManager, NameVersion projectVersion) throws IntegrationException {
+    public void downloadAndExtractBdio(DirectoryManager directoryManager, NameVersion projectVersion) throws IntegrationException, IOException {
         RequestBuilder createRequestBuilder = httpClient.createRequestBuilder(HttpMethod.GET);
+        
+        // TODO get or pass location of BDBA worker
         HttpUriRequest request = createRequestBuilder
             .setUri("http://localhost:9001/scan/" + bdbaScanId)
             .build();
-        Response response = httpClient.execute(request);
         
-        ZipInputStream zis = new ZipInputStream(response.getContent());
-        
-        ZipEntry entry;
-        try {
-            while((entry = zis.getNextEntry()) != null) {
-                String s = String.format("Entry: %s len %d added %TD",
-                        entry.getName(), entry.getSize(),
-                        new Date(entry.getTime()));
-                System.out.println(s);
-                
-                // TODO safe on windows?
-                FileOutputStream fos = new FileOutputStream(directoryManager.getBdioOutputDirectory().getPath() + "/" + entry.getName());
-                for (int byteRead = zis.read(); byteRead != -1; byteRead = zis.read()) {
-                    fos.write(byteRead);
-                }
-                zis.closeEntry();
-                fos.close();
-            }
-            
-            zis.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+        try (Response response = httpClient.execute(request)) {
+            if (response.isStatusCodeSuccess()) {
+                logger.debug("Downloaded BDBA protobuf BDIO. Beginning extraction.");
 
-    public void setBdScanId(UUID bdScanId) {
-        this.bdScanId = bdScanId;
+                ZipInputStream zis = new ZipInputStream(response.getContent());
+
+                ZipEntry entry;
+                while ((entry = zis.getNextEntry()) != null) {
+                    logger.debug("Extracting BDIO content: " + entry.getName());
+
+                    // TODO safe on windows?
+                    FileOutputStream fos = new FileOutputStream(directoryManager.getBdioOutputDirectory().getPath() + "/" + entry.getName());
+                    
+                    for (int byteRead = zis.read(); byteRead != -1; byteRead = zis.read()) {
+                        fos.write(byteRead);
+                    }
+                    
+                    zis.closeEntry();
+                    fos.close();
+                }
+
+                zis.close();
+            } else {
+                logger.trace("Unable to download BDIO from BDBA. Response code: " + response.getStatusCode() + " "
+                        + response.getStatusMessage());
+                throw new IntegrationException("Unable to download BDIO from BDBA. Response code: "
+                        + response.getStatusCode() + " " + response.getStatusMessage());
+            }
+        }
     }
 }

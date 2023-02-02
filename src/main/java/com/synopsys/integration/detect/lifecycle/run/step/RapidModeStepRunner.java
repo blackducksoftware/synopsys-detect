@@ -83,27 +83,26 @@ public class RapidModeStepRunner {
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             logger.debug("Rapid binary scan detected.");
             
-            // TODO check SCA
-            
-            // Generate the UUID we use to communicate with BDBA
-            UUID bdbaScanId = UUID.randomUUID();
-            
-            RapidBinaryScanStepRunner rapidBinaryScanStepRunner = new RapidBinaryScanStepRunner(gson, bdbaScanId);
-            Response response = rapidBinaryScanStepRunner.submitScan();
-            BdbaStatusScanView results = rapidBinaryScanStepRunner.pollForResults();
-            
-            // Download the BDIO file from BDBA and extract it
-            rapidBinaryScanStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
-            
-            // TODO Get scanId from BlackDuck, need to send a Start along with the BDIO header we get
-            // from BDBA
-            UUID bdScanId = operationRunner.initiateRapidBinaryScan(blackDuckRunData);
-            
-            // TODO Send BDIO chunks to BlackDuck
-            operationRunner.uploadBdioEntries(blackDuckRunData, bdScanId);
-            
-            // TODO add this scan to the URLs to wait for
-            parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + bdScanId.toString()));
+            // Check if this is an SCA environment. Rapid Binary Scans are only supported there.
+            if (scaEnvironment) {
+                // Generate the UUID we use to communicate with BDBA
+                UUID bdbaScanId = UUID.randomUUID();
+
+                RapidBinaryScanStepRunner rapidBinaryScanStepRunner = new RapidBinaryScanStepRunner(gson, bdbaScanId);
+                rapidBinaryScanStepRunner.submitScan();
+                rapidBinaryScanStepRunner.pollForResults();
+                rapidBinaryScanStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
+
+                // TODO Get scanId from BlackDuck, need to send along the BDIO
+                // header we get from BDBA
+                UUID bdScanId = operationRunner.initiateRapidBinaryScan(blackDuckRunData);
+
+                // TODO Send BDIO chunks to BlackDuck
+                operationRunner.uploadBdioEntries(blackDuckRunData, bdScanId);
+
+                // add this scan to the URLs to wait for
+                parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + bdScanId.toString()));
+            }
         });
 
         // Get info about any scans that were done

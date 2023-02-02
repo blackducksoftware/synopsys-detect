@@ -11,18 +11,20 @@
  */
 package com.synopsys.integration.detect.workflow.bdba;
 
+import java.io.IOException;
 import java.util.UUID;
 
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.enumeration.BomStatusScanStatusType;
-import com.synopsys.integration.blackduck.api.generated.view.BomStatusScanView;
+import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.exception.IntegrationTimeoutException;
 import com.synopsys.integration.rest.HttpMethod;
 import com.synopsys.integration.rest.client.IntHttpClient;
+import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.wait.ResilientJob;
 
@@ -46,20 +48,24 @@ public class BinaryRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
     @Override
     public void attemptJob() throws IntegrationException {
          RequestBuilder createRequestBuilder = httpClient.createRequestBuilder(HttpMethod.GET);
-         // TODO use this style of request in other calls?
+
+         // TODO need to get or pass the url here instead of hardcoding
          HttpUriRequest request = createRequestBuilder
              .setUri("http://localhost:9001/status/" + scanId)
              .build();
+         
          Response response = httpClient.execute(request);
          
-         String json = response.getContentString();
-         BdbaStatusScanView initialResponse = gson.fromJson(json, BdbaStatusScanView.class);
-       
-         if (initialResponse.getStatus().equals("ready")) {
-            complete = true;
-            scanStatus = initialResponse;
-        }
-    }
+         if (response.isStatusCodeSuccess()) {
+             String json = response.getContentString();
+             BdbaStatusScanView initialResponse = gson.fromJson(json, BdbaStatusScanView.class);
+
+             if (initialResponse.getStatus().equals("ready")) {
+                 complete = true;
+                 scanStatus = initialResponse;
+             }
+         }
+     }
 
     @Override
     public boolean wasJobCompleted() {
