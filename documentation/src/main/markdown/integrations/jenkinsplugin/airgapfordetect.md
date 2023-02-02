@@ -17,7 +17,7 @@ For a platform-dependent tool, multiple installer configurations enable you to r
 
    <figure>
     <img src="../jenkinsplugin/images/AirGap.png"
-         alt="Air Gap">
+         alt="Air Gap mode">
     <figcaption>Air Gap mode.</figcaption>
 </figure>
 

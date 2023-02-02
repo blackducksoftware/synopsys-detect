@@ -4,13 +4,19 @@
 
 ### Changed features
 
-* Signature scans, when invoked from the CLI, will now wait for all scans, such as snippet and string search, to complete before parsing Scan IDs.
+* Package Manager and Signature Scans will now query [blackduck_product_name] directly when using the detect.wait.for.results property. This expedites scanning by allowing [solution_name] to determine if results are ready, rather than waiting for a notification from [blackduck_product_name].
+Note: this feature requires [blackduck_product_name] 2023.1.1 or later.
+
+### Resolved issues
+
+* (IDETECT-3627) When waiting for results, Signature Scans will now wait for all scans that the Signature Scan could invoke, such as Snippet and String Search scans. Previously, only the Signature Scan itself was checked for completion.
+Note: this improvement requires [blackduck_product_name] 2023.1.2 or later. 
 
 ## Version 8.5.0
 
 ### New features
 
-* Added property blackduck.offline.mode.force.bdio which when set to true will force Detect used in offline mode to create a BDIO even if no code locations were identified.
+* Added property blackduck.offline.mode.force.bdio which when set to true will force [solution_name] used in offline mode to create a BDIO even if no code locations were identified.
 
 ### Changed features
 
