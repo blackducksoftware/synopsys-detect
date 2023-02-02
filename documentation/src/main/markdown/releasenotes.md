@@ -2,11 +2,9 @@
 
 ## Version 8.6.0
 
-### New features
-
 ### Changed features
 
-### Resolved issues
+* Signature scans, when invoked from the CLI, will now wait for all scans, such as snippet and string search, to complete before parsing Scan IDs.
 
 ## Version 8.5.0
 
