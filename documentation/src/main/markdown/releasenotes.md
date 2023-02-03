@@ -12,6 +12,10 @@ Note: this feature requires [blackduck_product_name] 2023.1.1 or later.
 * (IDETECT-3627) When waiting for results, Signature Scans will now wait for all scans that the Signature Scan could invoke, such as Snippet and String Search scans. Previously, only the Signature Scan itself was checked for completion.
 Note: this improvement requires [blackduck_product_name] 2023.1.2 or later. 
 
+### Dependency update
+
+* Upgraded Apache Commons Text to version 1.10.0.
+
 ## Version 8.5.0
 
 ### New features
