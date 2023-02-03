@@ -33,7 +33,7 @@ initscript {
             }
         }
 <#else>
-        classpath 'com.synopsys.integration:integration-common:24.2.1'
+        classpath 'com.synopsys.integration:integration-common:26.0.4'
 </#if>
     }
 }
