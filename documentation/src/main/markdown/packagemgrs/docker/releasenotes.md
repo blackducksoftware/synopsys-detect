@@ -1,5 +1,11 @@
 # [docker_inspector_name] Release notes
 
+## Version 10.0.1
+
+### Dependency update
+
+* Updated internal build dependencies for Image inspector library to 14.1.4 and Integration rest library to 10.3.6
+
 ## Version 10.0.0
 
 ### Changed features
