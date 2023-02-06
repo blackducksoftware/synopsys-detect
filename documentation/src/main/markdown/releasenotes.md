@@ -15,6 +15,7 @@ Note: this improvement requires [blackduck_product_name] 2023.1.2 or later.
 ### Dependency update
 
 * Upgraded Apache Commons Text to version 1.10.0.
+* Upgraded Docker Inspector to version 10.0.1.
 
 ## Version 8.5.0
 
