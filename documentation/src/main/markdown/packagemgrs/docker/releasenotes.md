@@ -4,7 +4,7 @@
 
 ### Dependency update
 
-* Updated internal build dependencies for Image inspector library to 14.1.4 and Integration rest library to 10.3.6
+* Updated internal build dependencies for Image inspector library to 14.1.4, Integration rest library to 10.3.6 and Image Inspector Web Service to 5.0.15
 
 ## Version 10.0.0
 
