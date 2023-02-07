@@ -206,7 +206,7 @@ public class DetectConfigurationFactory {
     }
     
     public Boolean isScaEnvironment() {
-        return detectConfiguration.getValue(DetectProperties.BLACKDUCK_SCA_ENVIRONMENT);
+        return detectConfiguration.getValue(DetectProperties.SCA_ENVIRONMENT);
     }
 
     public PhoneHomeOptions createPhoneHomeOptions() {

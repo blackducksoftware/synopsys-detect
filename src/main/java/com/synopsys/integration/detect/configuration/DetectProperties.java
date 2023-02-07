@@ -1740,8 +1740,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
 
-    public static final BooleanProperty BLACKDUCK_SCA_ENVIRONMENT =
-            BooleanProperty.newBuilder("blackduck.sca.environment", false)
+    public static final BooleanProperty SCA_ENVIRONMENT =
+            BooleanProperty.newBuilder("scaaas.environment", false)
             .setInfo("temp", DetectPropertyFromVersion.VERSION_8_5_0)
             .setHelp("temp")
             .setGroups(DetectGroup.DEFAULT)

@@ -85,23 +85,16 @@ public class RapidModeStepRunner {
             
             // Check if this is an SCA environment. Rapid Binary Scans are only supported there.
             if (scaEnvironment) {
-                // Generate the UUID we use to communicate with BDBA
-                UUID bdbaScanId = UUID.randomUUID();
-
-                RapidBinaryScanStepRunner rapidBinaryScanStepRunner = new RapidBinaryScanStepRunner(gson, bdbaScanId);
-                rapidBinaryScanStepRunner.submitScan();
-                rapidBinaryScanStepRunner.pollForResults();
-                rapidBinaryScanStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
-
-                // TODO Get scanId from BlackDuck, need to send along the BDIO
-                // header we get from BDBA
-                UUID bdScanId = operationRunner.initiateRapidBinaryScan(blackDuckRunData);
-
-                // TODO Send BDIO chunks to BlackDuck
-                operationRunner.uploadBdioEntries(blackDuckRunData, bdScanId);
-
-                // add this scan to the URLs to wait for
-                parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + bdScanId.toString()));
+                invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, false);
+            }
+        });
+        
+        stepHelper.runToolIfIncluded(DetectTool.CONTAINER_SCAN, "Container Scanner", () -> {
+            logger.debug("Rapid container scan detected.");
+            
+            // Check if this is an SCA environment. Rapid Container Scans are only supported there.
+            if (scaEnvironment) {
+                invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, true);
             }
         });
 
@@ -113,6 +106,28 @@ public class RapidModeStepRunner {
         File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
         RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults, mode);
         operationRunner.publishRapidResults(jsonFile, summary, mode);
+    }
+
+    private void invokeBdbaRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl,
+            List<HttpUrl> parsedUrls, boolean squashLayers)
+            throws IntegrationException, IOException, InterruptedException, OperationException {
+        // Generate the UUID we use to communicate with BDBA
+        UUID bdbaScanId = UUID.randomUUID();
+
+        RapidBinaryScanStepRunner rapidBinaryScanStepRunner = new RapidBinaryScanStepRunner(gson, bdbaScanId);
+        rapidBinaryScanStepRunner.submitScan(squashLayers);
+        rapidBinaryScanStepRunner.pollForResults();
+        rapidBinaryScanStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
+
+        // TODO Get scanId from BlackDuck, need to send along the BDIO
+        // header we get from BDBA
+        UUID bdScanId = operationRunner.initiateRapidBinaryScan(blackDuckRunData);
+
+        // TODO Send BDIO chunks to BlackDuck
+        operationRunner.uploadBdioEntries(blackDuckRunData, bdScanId);
+
+        // add this scan to the URLs to wait for
+        parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + bdScanId.toString()));
     }
 
     /**

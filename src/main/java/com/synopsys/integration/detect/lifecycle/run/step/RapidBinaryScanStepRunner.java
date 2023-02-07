@@ -87,10 +87,12 @@ public class RapidBinaryScanStepRunner {
             );
     }
 
-    public Response submitScan() throws IntegrationException, IOException {
+    public Response submitScan(boolean squashLayers) throws IntegrationException, IOException {
         // TODO have to be told somehow where file is, using existing property in arguments?
-        BodyContent content = 
-                StringBodyContent.json("{\"creator\":\"foo\", \"url\":\"file:///foo/TEW-636APB-1002-Firmware.bin\"}");
+        BodyContent content = StringBodyContent.json(
+                "{\"format\":\"bdio_protobuf\", \"squashLayers\": "
+                + squashLayers
+                + ", \"url\":\"file:///foo/TEW-636APB-1002-Firmware.bin\"}");
         Map <String, String> headers = new HashMap<>();
         Map<String, Set<String>> queryParams = new HashMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, "application/json");
@@ -135,7 +137,6 @@ public class RapidBinaryScanStepRunner {
                 while ((entry = zis.getNextEntry()) != null) {
                     logger.debug("Extracting BDIO content: " + entry.getName());
 
-                    // TODO safe on windows?
                     FileOutputStream fos = new FileOutputStream(directoryManager.getBdioOutputDirectory().getPath() + "/" + entry.getName());
                     
                     for (int byteRead = zis.read(); byteRead != -1; byteRead = zis.read()) {
