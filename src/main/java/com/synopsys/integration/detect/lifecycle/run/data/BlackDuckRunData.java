@@ -1,11 +1,11 @@
 package com.synopsys.integration.detect.lifecycle.run.data;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
-import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersion;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 
 public class BlackDuckRunData {

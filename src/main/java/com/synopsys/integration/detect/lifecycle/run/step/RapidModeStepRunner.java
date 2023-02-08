@@ -9,17 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.zip.ZipEntry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.OperationException;
@@ -29,14 +26,12 @@ import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanRapidResult;
-import com.synopsys.integration.detect.workflow.bdba.BdbaStatusScanView;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.developer.RapidModeWaitOperation;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 
 public class RapidModeStepRunner {
@@ -45,7 +40,6 @@ public class RapidModeStepRunner {
     private final StepHelper stepHelper;
     private final Gson gson;
     private final DirectoryManager directoryManager;
-    private RapidModeWaitOperation rapidModeWaitOperation;
 
     public RapidModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson, DirectoryManager directoryManager) {
         this.operationRunner = operationRunner;
@@ -55,7 +49,7 @@ public class RapidModeStepRunner {
     }
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult,
-            DockerTargetData dockerTargetData, Boolean scaEnvironment) throws OperationException {
+            DockerTargetData dockerTargetData, Optional<String> scaaasFilePath) throws OperationException {
         operationRunner.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationRunner.findRapidScanConfig();
         String scanMode = blackDuckRunData.getScanMode().displayName();
@@ -84,8 +78,8 @@ public class RapidModeStepRunner {
             logger.debug("Rapid binary scan detected.");
             
             // Check if this is an SCA environment. Rapid Binary Scans are only supported there.
-            if (scaEnvironment) {
-                invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, false);
+            if (scaaasFilePath.isPresent()) {
+                invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, false, scaaasFilePath.get());
             }
         });
         
@@ -93,8 +87,8 @@ public class RapidModeStepRunner {
             logger.debug("Rapid container scan detected.");
             
             // Check if this is an SCA environment. Rapid Container Scans are only supported there.
-            if (scaEnvironment) {
-                invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, true);
+            if (scaaasFilePath.isPresent()) {
+                invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, true, scaaasFilePath.get());
             }
         });
 
@@ -109,21 +103,17 @@ public class RapidModeStepRunner {
     }
 
     private void invokeBdbaRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl,
-            List<HttpUrl> parsedUrls, boolean squashLayers)
+            List<HttpUrl> parsedUrls, boolean squashLayers, String scaasFilePath)
             throws IntegrationException, IOException, InterruptedException, OperationException {
         // Generate the UUID we use to communicate with BDBA
         UUID bdbaScanId = UUID.randomUUID();
-
+        
         RapidBinaryScanStepRunner rapidBinaryScanStepRunner = new RapidBinaryScanStepRunner(gson, bdbaScanId);
-        rapidBinaryScanStepRunner.submitScan(squashLayers);
+        rapidBinaryScanStepRunner.submitScan(squashLayers, scaasFilePath);
         rapidBinaryScanStepRunner.pollForResults();
         rapidBinaryScanStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
 
-        // TODO Get scanId from BlackDuck, need to send along the BDIO
-        // header we get from BDBA
         UUID bdScanId = operationRunner.initiateRapidBinaryScan(blackDuckRunData);
-
-        // TODO Send BDIO chunks to BlackDuck
         operationRunner.uploadBdioEntries(blackDuckRunData, bdScanId);
 
         // add this scan to the URLs to wait for

@@ -339,7 +339,6 @@ public class OperationRunner {
             HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + "/api/developer-scans");
 
             BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-                    //.addHeader("Content-type", "application/vnd.blackducksoftware.scan-evidence-1+protobuf")
                     .postFile(bdioHeader, ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protobuf"))
                     .buildBlackDuckResponseRequest(postUrl);
 

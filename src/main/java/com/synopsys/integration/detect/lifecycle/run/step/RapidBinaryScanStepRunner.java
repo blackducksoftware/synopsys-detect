@@ -87,12 +87,13 @@ public class RapidBinaryScanStepRunner {
             );
     }
 
-    public Response submitScan(boolean squashLayers) throws IntegrationException, IOException {
-        // TODO have to be told somehow where file is, using existing property in arguments?
+    public Response submitScan(boolean squashLayers, String filePath) throws IntegrationException, IOException {
         BodyContent content = StringBodyContent.json(
                 "{\"format\":\"bdio_protobuf\", \"squashLayers\": "
                 + squashLayers
-                + ", \"url\":\"file:///foo/TEW-636APB-1002-Firmware.bin\"}");
+                + ", \"url\":\""
+                + filePath
+                + "\"}");
         Map <String, String> headers = new HashMap<>();
         Map<String, Set<String>> queryParams = new HashMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, "application/json");
