@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -12,9 +11,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
-import java.util.zip.ZipEntry;
 
-import org.apache.http.HttpHeaders;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -353,28 +351,25 @@ public class OperationRunner {
         // parse directory and upload all chunks
         File bdioDirectory = directoryManager.getBdioOutputDirectory();
         
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+        String contentType = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
+        HttpUrl putUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString()
+                + "/api/developer-scans/" + bdScanId);
+        
+        int sentChunks = 0;
+        
         for (File bdioEntry : bdioDirectory.listFiles()) {
             if (bdioEntry.getName().equals("bdio-header.pb")) {
                 continue;
             }
 
-            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
-
-            HttpUrl putUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString()
-                    + "/api/developer-scans/" + bdScanId);
-
-            // TODO For PUT there are 2 different modes X-BD-MODE=APPEND,FINISH. if there
-            // are multiple chunks.
-            // it will need to come in as APPEND and once we are finish, we will need to
-            // send a FINISH mode without
-            // data saying we have received all the chunks.
+            // Send the chunks using append mode.
+            
             BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-                    // .addHeader("Content-type",
-                    // "application/vnd.blackducksoftware.scan-evidence-1+protobuf")
                     .addHeader("X-BD-MODE", "APPEND")
-                    .putBodyContent(new FileBodyContent(bdioEntry,
-                            ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protobuf")))
+                    .putBodyContent(new FileBodyContent(bdioEntry, ContentType.create(contentType)))
                     .buildBlackDuckResponseRequest(putUrl);
 
             try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
@@ -383,6 +378,26 @@ public class OperationRunner {
                 } else {
                     logger.trace("Unable to upload BDIO entry. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
                     throw new IntegrationException("Unable to upload BDIO entry. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                }
+            }
+            sentChunks++;
+        }
+        
+        if (sentChunks != 0) {
+            // We sent something to BD, send a finish message
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                    .addHeader("X-BD-MODE", "FINISH")   
+                    .addHeader("X-BD-DOCUMENT-COUNT", String.valueOf(sentChunks))
+                    .addHeader("Content-type", contentType)
+                    .putString(StringUtils.EMPTY, ContentType.create(contentType, StandardCharsets.UTF_8))
+                    .buildBlackDuckResponseRequest(putUrl);
+            
+            try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+                if (response.isStatusCodeSuccess()) {
+                    logger.debug("Sent FINISH chunk to Black Duck.");
+                } else {
+                    logger.trace("Sent FINISH chunk to Black Duck. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                    throw new IntegrationException("Sent FINISH chunk to Black Duck. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
                 }
             }
         }
