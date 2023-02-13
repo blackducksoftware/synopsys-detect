@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 8.7.0
+
+### Resolved issues
+
+* (IDETECT-2933) Detect's generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported. 
+
 ## Version 8.6.0
 
 ### Changed features
