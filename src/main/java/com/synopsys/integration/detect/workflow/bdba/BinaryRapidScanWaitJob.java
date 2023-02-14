@@ -34,14 +34,16 @@ public class BinaryRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
     private UUID scanId;
     private BdbaStatusScanView scanStatus;
     private Gson gson;
+    private String bdbaBaseUrl;
     
     private boolean complete;
     private static final String JOB_NAME = "Binary Rapid Scan Wait Job ";
 
-    public BinaryRapidScanWaitJob(IntHttpClient httpClient, UUID scanId, Gson gson) {
+    public BinaryRapidScanWaitJob(IntHttpClient httpClient, UUID scanId, Gson gson, String bdbaBaseUrl) {
         this.httpClient = httpClient;
         this.scanId = scanId;
         this.gson = gson;
+        this.bdbaBaseUrl = bdbaBaseUrl;
         complete = false;
     }
 
@@ -49,9 +51,8 @@ public class BinaryRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
     public void attemptJob() throws IntegrationException {
          RequestBuilder createRequestBuilder = httpClient.createRequestBuilder(HttpMethod.GET);
 
-         // TODO need to get or pass the url here instead of hardcoding
          HttpUriRequest request = createRequestBuilder
-             .setUri("http://localhost:9001/status/" + scanId)
+             .setUri(bdbaBaseUrl + "status/" + scanId)
              .build();
          
          Response response = httpClient.execute(request);

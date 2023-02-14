@@ -11,25 +11,15 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.step;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Paths;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -37,12 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
-import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.bdba.BdbaStatusScanView;
 import com.synopsys.integration.detect.workflow.bdba.BinaryRapidScanWaitJob;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -52,13 +38,11 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpMethod;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.body.BodyContent;
-import com.synopsys.integration.rest.body.EntityBodyContent;
 import com.synopsys.integration.rest.body.StringBodyContent;
 import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
-import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.wait.ResilientJobConfig;
 import com.synopsys.integration.wait.ResilientJobExecutor;
@@ -70,14 +54,16 @@ public class RapidBinaryScanStepRunner {
     private IntHttpClient httpClient;
     private Gson gson;
     private UUID bdbaScanId;
+    private String bdbaBaseUrl;
 
     private static final int DEFAULT_TIMEOUT = 300;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
-    public RapidBinaryScanStepRunner(Gson gson, UUID bdbaScanId) {
+    public RapidBinaryScanStepRunner(Gson gson, UUID bdbaScanId) throws DetectUserFriendlyException {
         this.gson = gson;
         this.bdbaScanId = bdbaScanId;
         
+        // Setup base client
         httpClient = new IntHttpClient(
                 new SilentIntLogger(),
                 gson,
@@ -85,6 +71,19 @@ public class RapidBinaryScanStepRunner {
                 true,
                 ProxyInfo.NO_PROXY_INFO
             );
+        
+        
+        // Setup BDBA URL
+        String bdbaPort = System.getenv().get("BDBA_WORKER_PORT");
+        
+        if (bdbaPort == null) {
+            throw new DetectUserFriendlyException(
+                "The port to the BDBA worker must be specified via the BDBA_WORKER_PORT envirionment variable.",
+                ExitCodeType.FAILURE_CONFIGURATION
+            );
+        }
+        
+        bdbaBaseUrl = "http://localhost:" + bdbaPort + "/scan/";
     }
 
     public Response submitScan(boolean squashLayers, String filePath) throws IntegrationException, IOException {
@@ -98,8 +97,7 @@ public class RapidBinaryScanStepRunner {
         Map<String, Set<String>> queryParams = new HashMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, "application/json");
         
-        // TODO also have to be told where the worker is. Will get somehow when detect is invoked?
-        Request request = new Request(new HttpUrl("http://localhost:9001/scan/" + bdbaScanId), HttpMethod.POST, null, queryParams, headers, content);
+        Request request = new Request(new HttpUrl(bdbaBaseUrl + "scan/" + bdbaScanId), HttpMethod.POST, null, queryParams, headers, content);
         
         try (Response response = httpClient.execute(request)) {
             if (response.isStatusCodeSuccess()) {
@@ -115,7 +113,7 @@ public class RapidBinaryScanStepRunner {
     public BdbaStatusScanView pollForResults() throws InterruptedException, IntegrationException {
         WaitIntervalTracker waitIntervalTracker = WaitIntervalTrackerFactory.createProgressive(DEFAULT_TIMEOUT, 60);
         ResilientJobConfig waitJobConfig = new ResilientJobConfig(new Slf4jIntLogger(logger), System.currentTimeMillis(), waitIntervalTracker);
-        BinaryRapidScanWaitJob waitJob = new BinaryRapidScanWaitJob(httpClient, bdbaScanId, gson);
+        BinaryRapidScanWaitJob waitJob = new BinaryRapidScanWaitJob(httpClient, bdbaScanId, gson, bdbaBaseUrl);
         ResilientJobExecutor jobExecutor = new ResilientJobExecutor(waitJobConfig);
         return jobExecutor.executeJob(waitJob);
     }
@@ -123,9 +121,8 @@ public class RapidBinaryScanStepRunner {
     public void downloadAndExtractBdio(DirectoryManager directoryManager, NameVersion projectVersion) throws IntegrationException, IOException {
         RequestBuilder createRequestBuilder = httpClient.createRequestBuilder(HttpMethod.GET);
         
-        // TODO get or pass location of BDBA worker
         HttpUriRequest request = createRequestBuilder
-            .setUri("http://localhost:9001/scan/" + bdbaScanId)
+            .setUri(bdbaBaseUrl + "scan/" + bdbaScanId)
             .build();
         
         try (Response response = httpClient.execute(request)) {

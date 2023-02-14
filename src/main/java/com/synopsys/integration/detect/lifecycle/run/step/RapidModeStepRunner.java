@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.OperationException;
@@ -102,7 +103,7 @@ public class RapidModeStepRunner {
 
     private void invokeBdbaRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl,
             List<HttpUrl> parsedUrls, boolean squashLayers, String scaasFilePath)
-            throws IntegrationException, IOException, InterruptedException, OperationException {
+            throws IntegrationException, IOException, InterruptedException, OperationException, DetectUserFriendlyException {
         // Generate the UUID we use to communicate with BDBA
         UUID bdbaScanId = UUID.randomUUID();
         
