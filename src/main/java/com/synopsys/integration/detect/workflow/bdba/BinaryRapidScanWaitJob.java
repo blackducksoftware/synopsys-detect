@@ -52,7 +52,7 @@ public class BinaryRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
          RequestBuilder createRequestBuilder = httpClient.createRequestBuilder(HttpMethod.GET);
 
          HttpUriRequest request = createRequestBuilder
-             .setUri(bdbaBaseUrl + "status/" + scanId)
+             .setUri(bdbaBaseUrl + "/status/" + scanId)
              .build();
          
          Response response = httpClient.execute(request);

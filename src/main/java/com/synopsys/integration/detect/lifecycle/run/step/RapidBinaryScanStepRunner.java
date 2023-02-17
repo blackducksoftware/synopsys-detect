@@ -83,7 +83,7 @@ public class RapidBinaryScanStepRunner {
             );
         }
         
-        bdbaBaseUrl = "http://localhost:" + bdbaPort + "/scan/";
+        bdbaBaseUrl = "http://localhost:" + bdbaPort;
     }
 
     public Response submitScan(boolean squashLayers, String filePath) throws IntegrationException, IOException {
@@ -97,7 +97,7 @@ public class RapidBinaryScanStepRunner {
         Map<String, Set<String>> queryParams = new HashMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, "application/json");
         
-        Request request = new Request(new HttpUrl(bdbaBaseUrl + "scan/" + bdbaScanId), HttpMethod.POST, null, queryParams, headers, content);
+        Request request = new Request(new HttpUrl(bdbaBaseUrl + "/scan/" + bdbaScanId), HttpMethod.POST, null, queryParams, headers, content);
         
         try (Response response = httpClient.execute(request)) {
             if (response.isStatusCodeSuccess()) {
@@ -122,7 +122,7 @@ public class RapidBinaryScanStepRunner {
         RequestBuilder createRequestBuilder = httpClient.createRequestBuilder(HttpMethod.GET);
         
         HttpUriRequest request = createRequestBuilder
-            .setUri(bdbaBaseUrl + "scan/" + bdbaScanId)
+            .setUri(bdbaBaseUrl + "/scan/" + bdbaScanId)
             .build();
         
         try (Response response = httpClient.execute(request)) {
