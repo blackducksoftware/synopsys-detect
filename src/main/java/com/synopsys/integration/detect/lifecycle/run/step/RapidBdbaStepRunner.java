@@ -30,7 +30,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.bdba.BdbaStatusScanView;
-import com.synopsys.integration.detect.workflow.bdba.BinaryRapidScanWaitJob;
+import com.synopsys.integration.detect.workflow.bdba.BdbaRapidScanWaitJob;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentIntLogger;
@@ -49,7 +49,7 @@ import com.synopsys.integration.wait.ResilientJobExecutor;
 import com.synopsys.integration.wait.tracker.WaitIntervalTracker;
 import com.synopsys.integration.wait.tracker.WaitIntervalTrackerFactory;
 
-public class RapidBinaryScanStepRunner {
+public class RapidBdbaStepRunner {
     
     private IntHttpClient httpClient;
     private Gson gson;
@@ -59,7 +59,7 @@ public class RapidBinaryScanStepRunner {
     private static final int DEFAULT_TIMEOUT = 300;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
-    public RapidBinaryScanStepRunner(Gson gson, UUID bdbaScanId) throws DetectUserFriendlyException {
+    public RapidBdbaStepRunner(Gson gson, UUID bdbaScanId) throws DetectUserFriendlyException {
         this.gson = gson;
         this.bdbaScanId = bdbaScanId;
         
@@ -86,7 +86,7 @@ public class RapidBinaryScanStepRunner {
         bdbaBaseUrl = "http://localhost:" + bdbaPort;
     }
 
-    public Response submitScan(boolean squashLayers, String filePath) throws IntegrationException, IOException {
+    public void submitScan(boolean squashLayers, String filePath) throws IntegrationException, IOException {
         BodyContent content = StringBodyContent.json(
                 "{\"format\":\"bdio_protobuf\", \"squashLayers\": "
                 + squashLayers
@@ -102,7 +102,6 @@ public class RapidBinaryScanStepRunner {
         try (Response response = httpClient.execute(request)) {
             if (response.isStatusCodeSuccess()) {
                 logger.debug("Created BDBA scan.");
-                return response;
             } else {
                 logger.trace("Unable to create BDBA scan. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
                 throw new IntegrationException("Unable to create BDBA scan. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
@@ -110,12 +109,12 @@ public class RapidBinaryScanStepRunner {
         }   
     }
 
-    public BdbaStatusScanView pollForResults() throws InterruptedException, IntegrationException {
+    public void pollForResults() throws InterruptedException, IntegrationException {
         WaitIntervalTracker waitIntervalTracker = WaitIntervalTrackerFactory.createProgressive(DEFAULT_TIMEOUT, 60);
         ResilientJobConfig waitJobConfig = new ResilientJobConfig(new Slf4jIntLogger(logger), System.currentTimeMillis(), waitIntervalTracker);
-        BinaryRapidScanWaitJob waitJob = new BinaryRapidScanWaitJob(httpClient, bdbaScanId, gson, bdbaBaseUrl);
+        BdbaRapidScanWaitJob waitJob = new BdbaRapidScanWaitJob(httpClient, bdbaScanId, gson, bdbaBaseUrl);
         ResilientJobExecutor jobExecutor = new ResilientJobExecutor(waitJobConfig);
-        return jobExecutor.executeJob(waitJob);
+        jobExecutor.executeJob(waitJob);
     }
 
     public void downloadAndExtractBdio(DirectoryManager directoryManager, NameVersion projectVersion) throws IntegrationException, IOException {

@@ -11,24 +11,20 @@
  */
 package com.synopsys.integration.detect.workflow.bdba;
 
-import java.io.IOException;
 import java.util.UUID;
 
-import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.exception.IntegrationTimeoutException;
 import com.synopsys.integration.rest.HttpMethod;
 import com.synopsys.integration.rest.client.IntHttpClient;
-import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.wait.ResilientJob;
 
-public class BinaryRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
+public class BdbaRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
     
     private IntHttpClient httpClient;
     private UUID scanId;
@@ -39,7 +35,7 @@ public class BinaryRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
     private boolean complete;
     private static final String JOB_NAME = "Binary Rapid Scan Wait Job ";
 
-    public BinaryRapidScanWaitJob(IntHttpClient httpClient, UUID scanId, Gson gson, String bdbaBaseUrl) {
+    public BdbaRapidScanWaitJob(IntHttpClient httpClient, UUID scanId, Gson gson, String bdbaBaseUrl) {
         this.httpClient = httpClient;
         this.scanId = scanId;
         this.gson = gson;

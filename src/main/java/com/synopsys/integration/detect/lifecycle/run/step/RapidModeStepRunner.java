@@ -107,7 +107,7 @@ public class RapidModeStepRunner {
         // Generate the UUID we use to communicate with BDBA
         UUID bdbaScanId = UUID.randomUUID();
         
-        RapidBinaryScanStepRunner rapidBinaryScanStepRunner = new RapidBinaryScanStepRunner(gson, bdbaScanId);
+        RapidBdbaStepRunner rapidBinaryScanStepRunner = new RapidBdbaStepRunner(gson, bdbaScanId);
         rapidBinaryScanStepRunner.submitScan(squashLayers, scaasFilePath);
         rapidBinaryScanStepRunner.pollForResults();
         rapidBinaryScanStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
