@@ -86,13 +86,19 @@ public class RapidBdbaStepRunner {
         bdbaBaseUrl = "http://localhost:" + bdbaPort;
     }
 
-    public void submitScan(boolean squashLayers, String filePath) throws IntegrationException, IOException {
+    public void submitScan(boolean isContainerScan, String filePath) throws IntegrationException, IOException {
+        String containerArguments = "";
+        
+        if (isContainerScan) {
+            // Container scans require additional arguments, prepare them now
+            containerArguments = "\"squashLayers\":true,\"scanType\":\"container\",";
+        }
+         
         BodyContent content = StringBodyContent.json(
-                "{\"format\":\"bdio_protobuf\", \"squashLayers\": "
-                + squashLayers
-                + ", \"url\":\""
-                + filePath
-                + "\"}");
+                "{\"format\":\"bdio_protobuf\","
+                + containerArguments
+                + "\"url\":\"" + filePath + "\""
+                + "}");
         Map <String, String> headers = new HashMap<>();
         Map<String, Set<String>> queryParams = new HashMap<>();
         headers.put(HttpHeaders.CONTENT_TYPE, "application/json");

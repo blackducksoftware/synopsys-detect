@@ -64,7 +64,7 @@ public class RapidModeStepRunner {
         }
 
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
-            logger.debug("Rapid scan signature scan detected.");
+            logger.debug("Stateless scan signature scan detected.");
 
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationRunner);
             SignatureScanOuputResult signatureScanOutputResult = signatureScanStepRunner
@@ -74,20 +74,24 @@ public class RapidModeStepRunner {
         });
         
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
-            logger.debug("Rapid binary scan detected.");
+            logger.debug("Stateless binary scan detected.");
             
             // Check if this is an SCA environment. Rapid Binary Scans are only supported there.
             if (scaaasFilePath.isPresent()) {
                 invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, false, scaaasFilePath.get());
+            } else {
+                logger.debug("Rapid binary scan detected but no detect.scaaas.scan.path specified, skipping.");
             }
         });
         
         stepHelper.runToolIfIncluded(DetectTool.CONTAINER_SCAN, "Container Scanner", () -> {
-            logger.debug("Rapid container scan detected.");
+            logger.debug("Stateless container scan detected.");
             
             // Check if this is an SCA environment. Rapid Container Scans are only supported there.
             if (scaaasFilePath.isPresent()) {
                 invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, true, scaaasFilePath.get());
+            } else {
+                logger.debug("Stateless container scan detected but no detect.scaaas.scan.path specified, skipping.");
             }
         });
 
@@ -102,13 +106,13 @@ public class RapidModeStepRunner {
     }
 
     private void invokeBdbaRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl,
-            List<HttpUrl> parsedUrls, boolean squashLayers, String scaasFilePath)
+            List<HttpUrl> parsedUrls, boolean isContainerScan, String scaasFilePath)
             throws IntegrationException, IOException, InterruptedException, OperationException, DetectUserFriendlyException {
         // Generate the UUID we use to communicate with BDBA
         UUID bdbaScanId = UUID.randomUUID();
         
         RapidBdbaStepRunner rapidBinaryScanStepRunner = new RapidBdbaStepRunner(gson, bdbaScanId);
-        rapidBinaryScanStepRunner.submitScan(squashLayers, scaasFilePath);
+        rapidBinaryScanStepRunner.submitScan(isContainerScan, scaasFilePath);
         rapidBinaryScanStepRunner.pollForResults();
         rapidBinaryScanStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
 
