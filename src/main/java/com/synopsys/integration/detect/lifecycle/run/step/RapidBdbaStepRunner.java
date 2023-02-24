@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.workflow.bdba.BdbaStatusScanView;
 import com.synopsys.integration.detect.workflow.bdba.BdbaRapidScanWaitJob;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
@@ -90,8 +89,9 @@ public class RapidBdbaStepRunner {
         String containerArguments = "";
         
         if (isContainerScan) {
-            // Container scans require additional arguments, prepare them now
             containerArguments = "\"squashLayers\":true,\"scanType\":\"container\",";
+        } else {
+            containerArguments = "\"scanType\":\"binary\",";
         }
          
         BodyContent content = StringBodyContent.json(

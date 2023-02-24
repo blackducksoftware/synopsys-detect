@@ -76,18 +76,18 @@ public class RapidModeStepRunner {
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             logger.debug("Stateless binary scan detected.");
             
-            // Check if this is an SCA environment. Rapid Binary Scans are only supported there.
+            // Check if this is an SCA environment. Stateless Binary Scans are only supported there.
             if (scaaasFilePath.isPresent()) {
                 invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, false, scaaasFilePath.get());
             } else {
-                logger.debug("Rapid binary scan detected but no detect.scaaas.scan.path specified, skipping.");
+                logger.debug("Stateless binary scan detected but no detect.scaaas.scan.path specified, skipping.");
             }
         });
         
         stepHelper.runToolIfIncluded(DetectTool.CONTAINER_SCAN, "Container Scanner", () -> {
             logger.debug("Stateless container scan detected.");
             
-            // Check if this is an SCA environment. Rapid Container Scans are only supported there.
+            // Check if this is an SCA environment. Stateless Container Scans are only supported there.
             if (scaaasFilePath.isPresent()) {
                 invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, true, scaaasFilePath.get());
             } else {
@@ -111,12 +111,12 @@ public class RapidModeStepRunner {
         // Generate the UUID we use to communicate with BDBA
         UUID bdbaScanId = UUID.randomUUID();
         
-        RapidBdbaStepRunner rapidBinaryScanStepRunner = new RapidBdbaStepRunner(gson, bdbaScanId);
-        rapidBinaryScanStepRunner.submitScan(isContainerScan, scaasFilePath);
-        rapidBinaryScanStepRunner.pollForResults();
-        rapidBinaryScanStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
+        RapidBdbaStepRunner rapidBdbaStepRunner = new RapidBdbaStepRunner(gson, bdbaScanId);
+        rapidBdbaStepRunner.submitScan(isContainerScan, scaasFilePath);
+        rapidBdbaStepRunner.pollForResults();
+        rapidBdbaStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
 
-        UUID bdScanId = operationRunner.initiateRapidBinaryScan(blackDuckRunData);
+        UUID bdScanId = operationRunner.initiateStatelessBdbaScan(blackDuckRunData);
         operationRunner.uploadBdioEntries(blackDuckRunData, bdScanId);
 
         // add this scan to the URLs to wait for

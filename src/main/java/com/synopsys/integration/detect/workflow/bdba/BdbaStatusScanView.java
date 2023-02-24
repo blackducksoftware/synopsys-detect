@@ -12,7 +12,6 @@
 package com.synopsys.integration.detect.workflow.bdba;
 
 public class BdbaStatusScanView {
-// {"scannedFiles":263,"scannedBytes":17656539,"knownFiles":262,"knownBytes":13462235,"status":"ready","scanId":"2ffbe424-9a3a-4951-8c19-d22852d37428"}
     
     private int scannedFiles;
     private long scannedBytes;

@@ -33,7 +33,7 @@ public class BdbaRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
     private String bdbaBaseUrl;
     
     private boolean complete;
-    private static final String JOB_NAME = "Binary Rapid Scan Wait Job ";
+    private static final String JOB_NAME = "BDBA Stateless Scan Wait Job ";
 
     public BdbaRapidScanWaitJob(IntHttpClient httpClient, UUID scanId, Gson gson, String bdbaBaseUrl) {
         this.httpClient = httpClient;

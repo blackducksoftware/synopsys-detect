@@ -320,8 +320,8 @@ public class OperationRunner {
     }
 
     //Rapid
-    public UUID initiateRapidBinaryScan(BlackDuckRunData blackDuckRunData) throws OperationException {
-        return auditLog.namedInternal("Rapid Upload", () -> {
+    public UUID initiateStatelessBdbaScan(BlackDuckRunData blackDuckRunData) throws OperationException {
+        return auditLog.namedInternal("Initial Stateless BDBA Scan", () -> {
             File bdioHeader = new File(directoryManager.getBdioOutputDirectory() + "/bdio-header.pb");
             
             if (!bdioHeader.exists()) {
