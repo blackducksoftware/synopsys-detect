@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,7 +113,6 @@ public class RapidModeStepRunner {
                 throw new IntegrationException("Unable to parse rapid signature scan results.");
             }
         }
-
         return parsedUrls;
     }
 }
