@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,20 +98,23 @@ public class RapidModeStepRunner {
                 Reader reader = Files.newBufferedReader(Paths.get(scanOutputLocation));
 
                 SignatureScanResult result = gson.fromJson(reader, SignatureScanResult.class);
-                
-                Set<String> parsedIds = result.parseScanIds();
-                
-                for (String id : parsedIds) {
-                    HttpUrl url = new HttpUrl(blackDuckUrl + "/api/developer-scans/" + id);
 
-                    logger.info(scanMode + " mode signature scan URL: {}", url);
-                    parsedUrls.add(url);
+                if (result.getExitStatus() == null || !result.getExitStatus().equalsIgnoreCase("FAILURE")) {
+
+                    Set<String> parsedIds = result.parseScanIds();
+
+                    for (String id : parsedIds) {
+                        HttpUrl url = new HttpUrl(blackDuckUrl + "/api/developer-scans/" + id);
+
+                        logger.info(scanMode + " mode signature scan URL: {}", url);
+                        parsedUrls.add(url);
+                    }
                 }
             } catch (Exception e) {
                 throw new IntegrationException("Unable to parse rapid signature scan results.");
             }
         }
-        
+
         return parsedUrls;
     }
 }

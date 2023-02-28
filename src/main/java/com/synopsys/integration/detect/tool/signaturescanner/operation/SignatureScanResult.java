@@ -45,16 +45,23 @@ public class SignatureScanResult {
             for (String scanId : getScans().values()) {
                 // This can happen if we get a NOT_EXECUTED scan if the scanner decides not to
                 // run the scan
-                if (scanId != null) {
+                if (scanId != null && !checkInvalidScanID(scanId)) {
                     ids.add(scanId);
                 }
             }
-        } else if (getScanId() != null) {
+        } else if (getScanId() != null && !checkInvalidScanID(getScanId()))  {
             // If we are using an older version of the signature scanner, prior to 2023.1.0,
             // the scans field will not exist. Fallback to seeing if we have a high level scan ID
             ids.add(getScanId());
         }
         
         return ids;
+    }
+    private boolean checkInvalidScanID(String scanId) {
+        // if BlackDuck returns an invalid scanID (containing only zeros),
+        // this method will guard.
+
+        String regex = "^0+-0+-0+-0+-0+$";
+        return scanId.matches(regex);
     }
 }
