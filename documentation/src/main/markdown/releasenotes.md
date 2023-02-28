@@ -4,7 +4,11 @@
 
 ### Changed features
 
-* (IDETECT-2933) [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported. 
+* (IDETECT-2933) [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported.
+
+### Resolved issues
+
+* (IDETECT-3630) Notices and risk report PDFs now appropriately contain the supplied project and version name when characters from non-English alphabets are used.
 
 ## Version 8.6.0
 
