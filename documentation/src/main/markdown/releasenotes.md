@@ -9,6 +9,7 @@
 ### Resolved issues
 
 * (IDETECT-3623) [solution_name] will now fail with exit code 3, FAILURE_POLICY_VIOLATION, if Black Duck reports any violated policies during scans.
+* (IDETECT-3630) Notices and risk report PDFs now appropriately contain the supplied project and version name when characters from non-English alphabets are used.
 
 ## Version 8.6.0
 
