@@ -4,7 +4,11 @@
 
 ### Changed features
 
-* (IDETECT-2933) [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported. 
+* (IDETECT-2933) [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported.
+
+### Resolved issues
+
+* (IDETECT-3623) [solution_name] will now fail with exit code 3, FAILURE_POLICY_VIOLATION, if Black Duck reports any violated policies during scans.
 
 ## Version 8.6.0
 
