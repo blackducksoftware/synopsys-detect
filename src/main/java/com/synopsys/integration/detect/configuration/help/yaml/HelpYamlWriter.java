@@ -28,7 +28,7 @@ public class HelpYamlWriter {
 
     public HelpYamlWriter() {}
 
-    public void createHelpYamlDocument(String filename) { // TODO dont forget to remove exceptions and add try/catch
+    public void createHelpYamlDocument(String filename) {
         List<Property> allProperties = DetectProperties.allProperties().getProperties();
 
         List<Property> filteredProperties = allProperties.stream()
@@ -46,7 +46,7 @@ public class HelpYamlWriter {
             writeProperties(bufferWriter, filteredProperties);
             logger.info("{} was created at {}", filename, helpYaml.getAbsolutePath());
         } catch (IOException e) {
-            logger.info("There was an error creating the help-yaml file.", e);
+            logger.info("There was an error creating the help yaml file.", e);
             throw new RuntimeException(e);
         }
     }
@@ -61,8 +61,7 @@ public class HelpYamlWriter {
         String versionFileString = ResourceUtil.getResourceAsString(this.getClass(), "/version.txt", StandardCharsets.UTF_8.toString());
         List<String> versionFileContents = Arrays.asList(versionFileString.split("\n"));
         String versionText = DetectInfoUtility.parseValueFromVersionFileContents(versionFileContents, "version");
-        buffer.write("# v" + versionText);
-        buffer.newLine();
+        buffer.write("# v" + versionText + "\n\n");
 
         String yamlInfoFileString = ResourceUtil.getResourceAsString(this.getClass(), "/help-yaml-header.txt", StandardCharsets.UTF_8.toString());
         buffer.write(yamlInfoFileString);
@@ -89,7 +88,10 @@ public class HelpYamlWriter {
         buffer.write(String.format("\n\n##\n# %S\n##", groupName));
     }
     private void writeProperty(BufferedWriter buffer, Property property) throws IOException {
-            buffer.write("\n#" + property.getKey());
+            buffer.write("\n#" + property.getKey() + ": ");
+            if (property.describeDefault() != null) {
+                buffer.write(property.describeDefault());
+            }
             buffer.write("\n\t\t#" + property.getPropertyHelpInfo().getShortText());
     }
 }
