@@ -4,7 +4,10 @@
 
 ### Changed features
 
+* <add note about -hyaml option>
 * (IDETECT-2933) [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported. 
+
+[//]: # (TODO we don't usually nlcude jira ticket #s unless it is under resolved issues)
 
 ## Version 8.6.0
 

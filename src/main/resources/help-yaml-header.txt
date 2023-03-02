@@ -1,0 +1,5 @@
+# Uncomment and update required options. To use this file as your Detect configuration, rename it to application.yml
+# and place it in the directory from which you are executing Detect.
+# Note that property values set through environment variables, on the command line or in a .properties file will take
+# precedence over the values here.
+########################################################################################################################

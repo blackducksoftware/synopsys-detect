@@ -46,7 +46,7 @@ public class DetectInfoUtility {
         }
     }
 
-    public String parseValueFromVersionFileContents(List<String> versionFileContents, String variableName) {
+    public static String parseValueFromVersionFileContents(List<String> versionFileContents, String variableName) {
         return versionFileContents.stream()
             .filter(s -> s.startsWith(variableName + "="))
             .map(s -> StringUtils.removeStart(s, variableName + "="))
