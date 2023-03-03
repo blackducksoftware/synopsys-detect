@@ -88,11 +88,17 @@ public class HelpYamlWriter {
         buffer.write(String.format("\n\n##\n# %S\n##", groupName));
     }
     private void writeProperty(BufferedWriter buffer, Property property) throws IOException {
-            buffer.write("\n#" + property.getKey() + ": ");
-            if (property.describeDefault() != null) {
-                buffer.write(property.describeDefault());
-            }
-            buffer.write("\n\t\t#" + property.getPropertyHelpInfo().getShortText());
+        buffer.write("\n#" + property.getKey() + ": ");
+        if (property.describeDefault() != null) {
+            buffer.write(property.describeDefault());
+        }
+
+        buffer.write("\n\t\t# " + property.getPropertyHelpInfo().getShortText());
+
+        List<String> acceptableValues;
+        if (!(acceptableValues = property.listExampleValues()).isEmpty()) {
+            buffer.write("\n\t\t# Acceptable values:" + acceptableValues);
+        }
     }
 }
 
