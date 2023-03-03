@@ -81,6 +81,10 @@ public class DetectRun {
                 if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) {
                     RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
                     rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData());
+                    // ^^ RAPID SCAN COMPLETE ^^ //
+                    // ********POC Stuff*******  //
+                        // should go here when complete
+                    // **************************//
                 } else if (blackDuckRunData.isNonPersistent()) {
                     logger.info("Rapid Scan is offline, nothing to do.");
                 } else if (blackDuckRunData.isOnline()) {

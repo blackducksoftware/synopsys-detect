@@ -7,6 +7,7 @@ public class DetectArgumentStateParser {
     }
 
     public DetectArgumentState parseArgs(ArgumentParser parser) {
+        boolean isPOC = parser.isArgumentPresent("-poc", "--poc");
         boolean isHelp = parser.isArgumentPresent("-h", "--help");
         boolean isHelpJsonDocument = parser.isArgumentPresent("-hjson", "--helpjson");
         boolean isHelpYamlDocument = parser.isArgumentPresent("-hyaml", "--helpyaml");
@@ -30,6 +31,7 @@ public class DetectArgumentStateParser {
         }
 
         return new DetectArgumentState(
+            isPOC,
             isHelp,
             isHelpJsonDocument,
             isHelpYamlDocument,

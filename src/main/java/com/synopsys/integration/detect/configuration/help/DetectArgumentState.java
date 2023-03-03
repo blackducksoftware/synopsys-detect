@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.configuration.help;
 import org.jetbrains.annotations.Nullable;
 
 public class DetectArgumentState {
+    private final boolean isPOC;
     private final boolean isHelp;
     private final boolean isHelpJsonDocument;
 
@@ -19,6 +20,7 @@ public class DetectArgumentState {
     private final boolean isGenerateAirGapZip;
 
     public DetectArgumentState(
+        boolean isPOC,
         boolean isHelp,
         boolean isHelpJsonDocument,
         boolean isHelpYamlDocument,
@@ -30,6 +32,7 @@ public class DetectArgumentState {
         boolean isGenerateAirGapZip
     ) {
         this.isHelp = isHelp;
+        this.isPOC = isPOC;
         this.isHelpJsonDocument = isHelpJsonDocument;
         this.isHelpYamlDocument = isHelpYamlDocument;
         this.isInteractive = isInteractive;
@@ -40,6 +43,9 @@ public class DetectArgumentState {
         this.isGenerateAirGapZip = isGenerateAirGapZip;
     }
 
+    public boolean isPOC() {
+        return isPOC;
+    }
     public boolean isHelp() {
         return isHelp;
     }

@@ -197,7 +197,7 @@ public class Application implements ApplicationRunner {
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent() && optionalRunContext.isPresent()) {
             logger.debug("Detect will attempt to run.");
             DetectRun detectRun = new DetectRun(exitCodeManager, exceptionUtility);
-            detectRun.run(optionalRunContext.get());
+            detectRun.run(optionalRunContext.get()); // can I get directory info here?
 
         } else {
             logger.debug("Detect will NOT attempt to run.");

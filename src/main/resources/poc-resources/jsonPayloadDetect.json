@@ -1,0 +1,3005 @@
+{
+    "totalCount": 12,
+    "items": [
+        {
+            "componentName": "Spring Framework",
+            "versionName": "5.3.18",
+            "componentIdentifier": "maven:org.springframework:spring-beans:5.3.18",
+            "externalId": "org.springframework:spring-beans:5.3.18",
+            "violatingPolicies": [
+                {
+                    "policyName": "Vuln01",
+                    "policySeverity": "UNSPECIFIED"
+                }
+            ],
+            "componentViolatingPolicies": [],
+            "allVulnerabilities": [
+                {
+                    "name": "BDSA-2022-1040",
+                    "description": "Spring Framework is vulnerable to data binding protection bypass due to improper validation of specified disallowed fields in `DataBinders`. This could be leveraged by an attacker to bypass the suggested workaround to **CVE-2022-22965** (**BDSA-2022-0858**) if it is improperly implemented.",
+                    "vulnSeverity": "LOW",
+                    "overallScore": 3.2,
+                    "publishedDate": "2022-04-15T15:47:27.162Z",
+                    "vendorFixDate": "2022-04-13T00:00:00.000Z",
+                    "solution": "Fixed  in [**5.3.19**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.19) by [this](https://github.com/spring-projects/spring-framework/commit/a7cf19cec5ebd270f97a194d749e2d5701ad2ab7) commit and [**5.2.21**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.21.RELEASE) by [this](https://github.com/spring-projects/spring-framework/commit/833e750175349ab4fd502109a8b41af77e25cdea) commit.",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-20"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1040",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22968"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1329",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper implementation of data binding functionality. A remote attacker could cause a vulnerable server to crash if that server provides file upload functionality.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 4.6,
+                    "publishedDate": "2022-05-12T15:49:58.879Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1329",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22970"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1330",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper handling of the STOMP protocol for websockets. A remote authenticated attacker could leverage this issue in order to cause a server to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.7,
+                    "publishedDate": "2022-05-13T15:15:26.243Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1330",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22971"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "CVE-2016-1000027",
+                    "description": "Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.",
+                    "vulnSeverity": "CRITICAL",
+                    "overallScore": 9.8,
+                    "publishedDate": "2020-01-02T23:15:00.000Z",
+                    "cweIds": [
+                        "CWE-502"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/CVE-2016-1000027",
+                        "links": []
+                    }
+                }
+            ],
+            "allLicenses": [
+                {
+                    "name": "Apache License 2.0",
+                    "licenseFamilyName": "PERMISSIVE",
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/licenses/7cae335f-1193-421e-92f1-8802b4243e93",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationVulnerabilities": [
+                {
+                    "name": "BDSA-2022-1330",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper handling of the STOMP protocol for websockets. A remote authenticated attacker could leverage this issue in order to cause a server to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.7,
+                    "publishedDate": "2022-05-13T15:15:26.243Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1330",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22971"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1040",
+                    "description": "Spring Framework is vulnerable to data binding protection bypass due to improper validation of specified disallowed fields in `DataBinders`. This could be leveraged by an attacker to bypass the suggested workaround to **CVE-2022-22965** (**BDSA-2022-0858**) if it is improperly implemented.",
+                    "vulnSeverity": "LOW",
+                    "overallScore": 3.2,
+                    "publishedDate": "2022-04-15T15:47:27.162Z",
+                    "vendorFixDate": "2022-04-13T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed  in [**5.3.19**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.19) by [this](https://github.com/spring-projects/spring-framework/commit/a7cf19cec5ebd270f97a194d749e2d5701ad2ab7) commit and [**5.2.21**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.21.RELEASE) by [this](https://github.com/spring-projects/spring-framework/commit/833e750175349ab4fd502109a8b41af77e25cdea) commit.",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-20"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1040",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22968"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "CVE-2016-1000027",
+                    "description": "Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.",
+                    "vulnSeverity": "CRITICAL",
+                    "overallScore": 9.8,
+                    "publishedDate": "2020-01-02T23:15:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "cweIds": [
+                        "CWE-502"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/CVE-2016-1000027",
+                        "links": []
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1329",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper implementation of data binding functionality. A remote attacker could cause a vulnerable server to crash if that server provides file upload functionality.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 4.6,
+                    "publishedDate": "2022-05-12T15:49:58.879Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1329",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22970"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "policyViolationLicenses": [],
+            "failedEvaluationPolicies": [],
+            "partiallyEvaluatedPolicies": [],
+            "nonEvaluatedPolicies": [],
+            "dependencyTrees": [
+                [
+                    "com.synopsys.integration:configuration:8.7.0-SIGQA2-SNAPSHOT:-gradle",
+                    "org.springframework.boot:spring-boot:2.6.6",
+                    "org.springframework:spring-context:5.3.18",
+                    "org.springframework:spring-beans:5.3.18"
+                ]
+            ],
+            "overriddenPolicies": [],
+            "overriddenPoliciesPartial": [],
+            "shortTermUpgradeGuidance": {
+                "versionName": "5.3.25",
+                "vulnerabilityRisk": {
+                    "critical": 1,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.springframework:spring-beans:5.3.25"
+            },
+            "longTermUpgradeGuidance": {
+                "versionName": "6.0.4",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.springframework:spring-beans:6.0.4"
+            },
+            "transitiveUpgradeGuidance": [
+                {
+                    "externalId": "org.springframework.boot:spring-boot:2.6.6",
+                    "shortTermUpgradeGuidance": {
+                        "versionName": "2.7.8",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 0,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "org.springframework.boot:spring-boot:2.7.8"
+                    },
+                    "longTermUpgradeGuidance": {
+                        "versionName": "3.0.2",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 0,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "org.springframework.boot:spring-boot:3.0.2"
+                    }
+                }
+            ],
+            "_meta": {
+                "allow": [
+                    "GET"
+                ],
+                "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1/full-result",
+                "links": [
+                    {
+                        "rel": "component",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7"
+                    },
+                    {
+                        "rel": "version",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7/versions/609dcc1a-4b20-4a67-9362-2389b52d11d0"
+                    },
+                    {
+                        "rel": "origin",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7/versions/609dcc1a-4b20-4a67-9362-2389b52d11d0/origins/393a9c14-b75d-4e47-9163-10dba939b062"
+                    }
+                ]
+            }
+        },
+        {
+            "componentName": "Apache Commons Codec",
+            "versionName": "1.11",
+            "componentIdentifier": "maven:commons-codec:commons-codec:1.11",
+            "externalId": "commons-codec:commons-codec:1.11",
+            "violatingPolicies": [
+                {
+                    "policyName": "Vuln01",
+                    "policySeverity": "UNSPECIFIED"
+                }
+            ],
+            "componentViolatingPolicies": [],
+            "allVulnerabilities": [
+                {
+                    "name": "BDSA-2012-0001",
+                    "description": "Apache Commons contains a flaw that is due to the Base32 codec decoding  invalid strings instead of rejecting them. This may allow a remote attacker to tunnel  additional information via a base 32 string that seems valid.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 4.6,
+                    "publishedDate": "2017-03-24T15:02:34.218Z",
+                    "vendorFixDate": "2019-05-20T00:00:00.000Z",
+                    "solution": "Fixed in version [**1.13-rc1**](https://github.com/apache/commons-codec/releases/tag/commons-codec-1.13-RC1) by [this](https://github.com/apache/commons-codec/commit/48b615756d1d770091ea3322eefc08011ee8b113) commit.",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-88"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2012-0001",
+                        "links": []
+                    }
+                }
+            ],
+            "allLicenses": [
+                {
+                    "name": "Apache License 2.0",
+                    "licenseFamilyName": "PERMISSIVE",
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/licenses/7cae335f-1193-421e-92f1-8802b4243e93",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationVulnerabilities": [
+                {
+                    "name": "BDSA-2012-0001",
+                    "description": "Apache Commons contains a flaw that is due to the Base32 codec decoding  invalid strings instead of rejecting them. This may allow a remote attacker to tunnel  additional information via a base 32 string that seems valid.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 4.6,
+                    "publishedDate": "2017-03-24T15:02:34.218Z",
+                    "vendorFixDate": "2019-05-20T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**1.13-rc1**](https://github.com/apache/commons-codec/releases/tag/commons-codec-1.13-RC1) by [this](https://github.com/apache/commons-codec/commit/48b615756d1d770091ea3322eefc08011ee8b113) commit.",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-88"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2012-0001",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationLicenses": [],
+            "failedEvaluationPolicies": [],
+            "partiallyEvaluatedPolicies": [],
+            "nonEvaluatedPolicies": [],
+            "dependencyTrees": [
+                [
+                    "com.synopsys.integration:detector:8.7.0-SIGQA2-SNAPSHOT:-gradle",
+                    "org.apache.httpcomponents:httpclient-osgi:4.5.13",
+                    "commons-codec:commons-codec:1.11"
+                ]
+            ],
+            "overriddenPolicies": [],
+            "overriddenPoliciesPartial": [],
+            "shortTermUpgradeGuidance": {
+                "versionName": "1.15.0.redhat-00001",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "commons-codec:commons-codec:1.15.0.redhat-00001"
+            },
+            "longTermUpgradeGuidance": {
+                "versionName": "20041127.091804",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "commons-codec:commons-codec:20041127.091804"
+            },
+            "transitiveUpgradeGuidance": [
+                {
+                    "externalId": "org.apache.httpcomponents:httpclient-osgi:4.5.13",
+                    "shortTermUpgradeGuidance": {
+                        "versionName": "4.5.14",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 0,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "org.apache.httpcomponents:httpclient-osgi:4.5.14"
+                    },
+                    "longTermUpgradeGuidance": {
+                        "versionName": "4.5.14",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 0,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "org.apache.httpcomponents:httpclient-osgi:4.5.14"
+                    }
+                }
+            ],
+            "_meta": {
+                "allow": [
+                    "GET"
+                ],
+                "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1/full-result",
+                "links": [
+                    {
+                        "rel": "component",
+                        "href": "https://localhost/api/components/932a1ab1-4722-4bbd-9f5d-d6cd2aa1c7e7"
+                    },
+                    {
+                        "rel": "version",
+                        "href": "https://localhost/api/components/932a1ab1-4722-4bbd-9f5d-d6cd2aa1c7e7/versions/5263e87d-e595-4ffc-b749-f81ae91295e1"
+                    },
+                    {
+                        "rel": "origin",
+                        "href": "https://localhost/api/components/932a1ab1-4722-4bbd-9f5d-d6cd2aa1c7e7/versions/5263e87d-e595-4ffc-b749-f81ae91295e1/origins/ef0ed956-ee79-45a6-8395-6d3f388a9550"
+                    }
+                ]
+            }
+        },
+        {
+            "componentName": "jackson-databind",
+            "versionName": "2.13.2",
+            "componentIdentifier": "maven:com.fasterxml.jackson.core:jackson-databind:2.13.2",
+            "externalId": "com.fasterxml.jackson.core:jackson-databind:2.13.2",
+            "violatingPolicies": [
+                {
+                    "policyName": "Vuln01",
+                    "policySeverity": "UNSPECIFIED"
+                }
+            ],
+            "componentViolatingPolicies": [],
+            "allVulnerabilities": [
+                {
+                    "name": "BDSA-2020-4752",
+                    "description": "jackson-databind is vulnerable to a Java `StackOverflow` exception within its implementation of `UntypedObjectDeserializer` due to how deeply nested objects are handled. An attacker could exploit this in order to cause a denial-of-service (DoS) condition.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.5,
+                    "publishedDate": "2022-03-11T14:59:01.911Z",
+                    "vendorFixDate": "2022-03-22T00:00:00.000Z",
+                    "solution": "Fixed in [**2.13.2.2**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.13.2.2) by [this](https://github.com/FasterXML/jackson-databind/commit/fcfc4998ec23f0b1f7f8a9521c2b317b6c25892b) commit, and in [**2.12.6.1**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.12.6.1) by [this](https://github.com/FasterXML/jackson-databind/commit/83b928dab9ba6ef81cf48987fcd12071e1ddb0c9) commit.\n\n**Note**: This was also fixed in [**2.13.2.1**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.13.2.1), however, the vendor has stated [here](https://github.com/FasterXML/jackson-databind/issues/2816#issue-678075273) that there is a problem in Gradle Module Metadata declaration. This lead to the release of **2.13.2.2**. If you are not using GMM you can use either update. \n\nThe latest stable releases are available [here](https://github.com/FasterXML/jackson-databind/tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-400",
+                        "CWE-674"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2020-4752",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2020-36518"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2768",
+                    "description": "Jackson Databind is vulnerable to denial-of-service (DoS) due to the improper management of system resources within its `BeanDeserializer` component. A remote attacker could cause a vulnerable server to crash by causing that server to process a maliciously crafted serialized object.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-10-04T08:10:24.309Z",
+                    "vendorFixDate": "2022-08-24T00:00:00.000Z",
+                    "solution": "Fixed in version [**2.13.4**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.13.4) by [this](https://github.com/FasterXML/jackson-databind/commit/063183589218fec19a9293ed2f17ec53ea80ba88) commit.\n\nThe latest stable releases can be found [here](https://github.com/FasterXML/jackson-databind/tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-400"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2768",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-42004"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2765",
+                    "description": "Jackson Databind is vulnerable to denial-of-service (DoS) due to the improper management of system resources within its primitive value deserialization functionality. A remote attacker could leverage this issue in order to cause a vulnerable system to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-10-04T08:09:18.818Z",
+                    "vendorFixDate": "2022-09-07T00:00:00.000Z",
+                    "solution": "Fixed in version [**2.14.0-rc1**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.14.0-rc1) by [this](https://github.com/FasterXML/jackson-databind/commit/d78d00ee7b5245b93103fef3187f70543d67ca33) commit.\n\nThe latest stable releases can be found [here](https://github.com/FasterXML/jackson-databind/tags).",
+                    "workaround": "",
+                    "cweIds": [],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2765",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-42003"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "allLicenses": [
+                {
+                    "name": "Apache License 2.0",
+                    "licenseFamilyName": "PERMISSIVE",
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/licenses/7cae335f-1193-421e-92f1-8802b4243e93",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationVulnerabilities": [
+                {
+                    "name": "BDSA-2020-4752",
+                    "description": "jackson-databind is vulnerable to a Java `StackOverflow` exception within its implementation of `UntypedObjectDeserializer` due to how deeply nested objects are handled. An attacker could exploit this in order to cause a denial-of-service (DoS) condition.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.5,
+                    "publishedDate": "2022-03-11T14:59:01.911Z",
+                    "vendorFixDate": "2022-03-22T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in [**2.13.2.2**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.13.2.2) by [this](https://github.com/FasterXML/jackson-databind/commit/fcfc4998ec23f0b1f7f8a9521c2b317b6c25892b) commit, and in [**2.12.6.1**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.12.6.1) by [this](https://github.com/FasterXML/jackson-databind/commit/83b928dab9ba6ef81cf48987fcd12071e1ddb0c9) commit.\n\n**Note**: This was also fixed in [**2.13.2.1**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.13.2.1), however, the vendor has stated [here](https://github.com/FasterXML/jackson-databind/issues/2816#issue-678075273) that there is a problem in Gradle Module Metadata declaration. This lead to the release of **2.13.2.2**. If you are not using GMM you can use either update. \n\nThe latest stable releases are available [here](https://github.com/FasterXML/jackson-databind/tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-400",
+                        "CWE-674"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2020-4752",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2020-36518"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2768",
+                    "description": "Jackson Databind is vulnerable to denial-of-service (DoS) due to the improper management of system resources within its `BeanDeserializer` component. A remote attacker could cause a vulnerable server to crash by causing that server to process a maliciously crafted serialized object.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-10-04T08:10:24.309Z",
+                    "vendorFixDate": "2022-08-24T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**2.13.4**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.13.4) by [this](https://github.com/FasterXML/jackson-databind/commit/063183589218fec19a9293ed2f17ec53ea80ba88) commit.\n\nThe latest stable releases can be found [here](https://github.com/FasterXML/jackson-databind/tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-400"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2768",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-42004"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2765",
+                    "description": "Jackson Databind is vulnerable to denial-of-service (DoS) due to the improper management of system resources within its primitive value deserialization functionality. A remote attacker could leverage this issue in order to cause a vulnerable system to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-10-04T08:09:18.818Z",
+                    "vendorFixDate": "2022-09-07T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**2.14.0-rc1**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.14.0-rc1) by [this](https://github.com/FasterXML/jackson-databind/commit/d78d00ee7b5245b93103fef3187f70543d67ca33) commit.\n\nThe latest stable releases can be found [here](https://github.com/FasterXML/jackson-databind/tags).",
+                    "workaround": "",
+                    "cweIds": [],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2765",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-42003"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "policyViolationLicenses": [],
+            "failedEvaluationPolicies": [],
+            "partiallyEvaluatedPolicies": [],
+            "nonEvaluatedPolicies": [],
+            "dependencyTrees": [
+                [
+                    "com.synopsys.integration:detector:8.7.0-SIGQA2-SNAPSHOT:-gradle",
+                    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2",
+                    "com.fasterxml.jackson.core:jackson-databind:2.13.2"
+                ]
+            ],
+            "overriddenPolicies": [],
+            "overriddenPoliciesPartial": [],
+            "shortTermUpgradeGuidance": {
+                "versionName": "2.14.2",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "com.fasterxml.jackson.core:jackson-databind:2.14.2"
+            },
+            "longTermUpgradeGuidance": {
+                "versionName": "2.14.2",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "com.fasterxml.jackson.core:jackson-databind:2.14.2"
+            },
+            "transitiveUpgradeGuidance": [
+                {
+                    "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2",
+                    "shortTermUpgradeGuidance": {
+                        "versionName": "2.14.2",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 1,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2"
+                    },
+                    "longTermUpgradeGuidance": {
+                        "versionName": "2.14.2",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 1,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2"
+                    }
+                }
+            ],
+            "_meta": {
+                "allow": [
+                    "GET"
+                ],
+                "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1/full-result",
+                "links": [
+                    {
+                        "rel": "component",
+                        "href": "https://localhost/api/components/ce7ad18a-6e02-4565-a51c-4fc2c5bc7c47"
+                    },
+                    {
+                        "rel": "version",
+                        "href": "https://localhost/api/components/ce7ad18a-6e02-4565-a51c-4fc2c5bc7c47/versions/b357e080-5f1d-4eb4-9c47-cdcc68f8b6f1"
+                    },
+                    {
+                        "rel": "origin",
+                        "href": "https://localhost/api/components/ce7ad18a-6e02-4565-a51c-4fc2c5bc7c47/versions/b357e080-5f1d-4eb4-9c47-cdcc68f8b6f1/origins/37d36580-4062-4c6f-ab63-f6d52dcd63cb"
+                    }
+                ]
+            }
+        },
+        {
+            "componentName": "SnakeYAML",
+            "versionName": "1.29",
+            "componentIdentifier": "maven:org.yaml:snakeyaml:1.29",
+            "externalId": "org.yaml:snakeyaml:1.29",
+            "violatingPolicies": [
+                {
+                    "policyName": "Vuln01",
+                    "policySeverity": "UNSPECIFIED"
+                }
+            ],
+            "componentViolatingPolicies": [],
+            "allVulnerabilities": [
+                {
+                    "name": "BDSA-2022-2579",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a lack of nested depth limitation for collections. An attacker could exploit this by providing crafted input in order to cause a crash. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:55:46.371Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-400"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2579",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-25857"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2577",
+                    "description": "SnakeYAML is vulnerable to a stack-based buffer overflow issue when parsing untrusted YAML files. An attacker could exploit this by providing crafted input in order to cause a denial-of-service (DoS) condition. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:23:51.570Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2577",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38749"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2587",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a failure to parse regular expressions that contain large values. A remote attacker could cause a vulnerable application to crash by passing a maliciously crafted regular expression to that application.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T15:49:57.051Z",
+                    "vendorFixDate": "2022-04-29T00:00:00.000Z",
+                    "solution": "Fixed in version [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/f3ab4e0f54c37ddb10f00b71d04187bb0ef1799c) commit and [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/6aedd33a811f7347c5dae2940e75940966f59466) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-229"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2587",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38751"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2590",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a stack overflow which can be triggered by parsing a crafted file. [According to the vendor](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md), such vulnerabilities pose low risks unless the parser input is designed to come from untrusted sources on the internet.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.3,
+                    "publishedDate": "2022-09-19T14:48:16.937Z",
+                    "vendorFixDate": "2022-09-12T00:00:00.000Z",
+                    "solution": "Fixed in [**1.32**](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121",
+                        "CWE-674"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2590",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38752"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2578",
+                    "description": "SnakeYAML is vulnerable to a stack-based buffer overflow issue when parsing untrusted YAML files. An attacker could exploit this by providing crafted input in order to cause a denial-of-service (DoS) condition. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:42:04.227Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2578",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38750"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-3211",
+                    "description": "Snakeyaml contains a vulnerability that can lead to an uncaught exception in its `java.util.AbstractSet.hashCode` component. This can subsequently cause a stack-based buffer overflow. An attacker could exploit this flaw by supplying a crafted YAML file.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.2,
+                    "publishedDate": "2022-11-14T11:15:22.572Z",
+                    "vendorFixDate": "2022-09-10T00:00:00.000Z",
+                    "solution": "Fixed in version [**1.32**](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/5ee00863a816f2a023d35a7512b5f742c9a36b5a) commit.\n\nThe latest stable releases can be found [here](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-3211",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-41854"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "allLicenses": [
+                {
+                    "name": "Apache License 2.0",
+                    "licenseFamilyName": "PERMISSIVE",
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/licenses/7cae335f-1193-421e-92f1-8802b4243e93",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationVulnerabilities": [
+                {
+                    "name": "BDSA-2022-2587",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a failure to parse regular expressions that contain large values. A remote attacker could cause a vulnerable application to crash by passing a maliciously crafted regular expression to that application.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T15:49:57.051Z",
+                    "vendorFixDate": "2022-04-29T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/f3ab4e0f54c37ddb10f00b71d04187bb0ef1799c) commit and [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/6aedd33a811f7347c5dae2940e75940966f59466) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-229"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2587",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38751"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2578",
+                    "description": "SnakeYAML is vulnerable to a stack-based buffer overflow issue when parsing untrusted YAML files. An attacker could exploit this by providing crafted input in order to cause a denial-of-service (DoS) condition. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:42:04.227Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2578",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38750"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2590",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a stack overflow which can be triggered by parsing a crafted file. [According to the vendor](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md), such vulnerabilities pose low risks unless the parser input is designed to come from untrusted sources on the internet.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.3,
+                    "publishedDate": "2022-09-19T14:48:16.937Z",
+                    "vendorFixDate": "2022-09-12T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in [**1.32**](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121",
+                        "CWE-674"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2590",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38752"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-3211",
+                    "description": "Snakeyaml contains a vulnerability that can lead to an uncaught exception in its `java.util.AbstractSet.hashCode` component. This can subsequently cause a stack-based buffer overflow. An attacker could exploit this flaw by supplying a crafted YAML file.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.2,
+                    "publishedDate": "2022-11-14T11:15:22.572Z",
+                    "vendorFixDate": "2022-09-10T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**1.32**](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/5ee00863a816f2a023d35a7512b5f742c9a36b5a) commit.\n\nThe latest stable releases can be found [here](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-3211",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-41854"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2577",
+                    "description": "SnakeYAML is vulnerable to a stack-based buffer overflow issue when parsing untrusted YAML files. An attacker could exploit this by providing crafted input in order to cause a denial-of-service (DoS) condition. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:23:51.570Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2577",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38749"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2579",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a lack of nested depth limitation for collections. An attacker could exploit this by providing crafted input in order to cause a crash. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:55:46.371Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-400"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2579",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-25857"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "policyViolationLicenses": [],
+            "failedEvaluationPolicies": [],
+            "partiallyEvaluatedPolicies": [],
+            "nonEvaluatedPolicies": [],
+            "dependencyTrees": [
+                [
+                    "com.synopsys.integration:detector:8.7.0-SIGQA2-SNAPSHOT:-gradle",
+                    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2",
+                    "org.yaml:snakeyaml:1.29"
+                ]
+            ],
+            "overriddenPolicies": [],
+            "overriddenPoliciesPartial": [],
+            "shortTermUpgradeGuidance": {
+                "versionName": "1.33",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 1,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.yaml:snakeyaml:1.33.0.redhat-00001"
+            },
+            "longTermUpgradeGuidance": {
+                "versionName": "1.33",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 1,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.yaml:snakeyaml:1.33.0.redhat-00001"
+            },
+            "transitiveUpgradeGuidance": [
+                {
+                    "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2",
+                    "shortTermUpgradeGuidance": {
+                        "versionName": "2.14.2",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 1,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2"
+                    },
+                    "longTermUpgradeGuidance": {
+                        "versionName": "2.14.2",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 1,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2"
+                    }
+                }
+            ],
+            "_meta": {
+                "allow": [
+                    "GET"
+                ],
+                "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1/full-result",
+                "links": [
+                    {
+                        "rel": "component",
+                        "href": "https://localhost/api/components/7d5b8a95-2ae3-4f89-9b3b-d47c44f9d187"
+                    },
+                    {
+                        "rel": "version",
+                        "href": "https://localhost/api/components/7d5b8a95-2ae3-4f89-9b3b-d47c44f9d187/versions/30f4c385-f863-4626-a3c9-1bf6d749e29c"
+                    },
+                    {
+                        "rel": "origin",
+                        "href": "https://localhost/api/components/7d5b8a95-2ae3-4f89-9b3b-d47c44f9d187/versions/30f4c385-f863-4626-a3c9-1bf6d749e29c/origins/df1230aa-ae1a-490a-9549-3d8d0250e5f4"
+                    }
+                ]
+            }
+        },
+        {
+            "componentName": "Spring Framework",
+            "versionName": "5.3.18",
+            "componentIdentifier": "maven:org.springframework:spring-core:5.3.18",
+            "externalId": "org.springframework:spring-core:5.3.18",
+            "violatingPolicies": [
+                {
+                    "policyName": "Vuln01",
+                    "policySeverity": "UNSPECIFIED"
+                }
+            ],
+            "componentViolatingPolicies": [],
+            "allVulnerabilities": [
+                {
+                    "name": "BDSA-2022-1040",
+                    "description": "Spring Framework is vulnerable to data binding protection bypass due to improper validation of specified disallowed fields in `DataBinders`. This could be leveraged by an attacker to bypass the suggested workaround to **CVE-2022-22965** (**BDSA-2022-0858**) if it is improperly implemented.",
+                    "vulnSeverity": "LOW",
+                    "overallScore": 3.2,
+                    "publishedDate": "2022-04-15T15:47:27.162Z",
+                    "vendorFixDate": "2022-04-13T00:00:00.000Z",
+                    "solution": "Fixed  in [**5.3.19**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.19) by [this](https://github.com/spring-projects/spring-framework/commit/a7cf19cec5ebd270f97a194d749e2d5701ad2ab7) commit and [**5.2.21**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.21.RELEASE) by [this](https://github.com/spring-projects/spring-framework/commit/833e750175349ab4fd502109a8b41af77e25cdea) commit.",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-20"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1040",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22968"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1329",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper implementation of data binding functionality. A remote attacker could cause a vulnerable server to crash if that server provides file upload functionality.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 4.6,
+                    "publishedDate": "2022-05-12T15:49:58.879Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1329",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22970"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1330",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper handling of the STOMP protocol for websockets. A remote authenticated attacker could leverage this issue in order to cause a server to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.7,
+                    "publishedDate": "2022-05-13T15:15:26.243Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1330",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22971"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "CVE-2016-1000027",
+                    "description": "Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.",
+                    "vulnSeverity": "CRITICAL",
+                    "overallScore": 9.8,
+                    "publishedDate": "2020-01-02T23:15:00.000Z",
+                    "cweIds": [
+                        "CWE-502"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/CVE-2016-1000027",
+                        "links": []
+                    }
+                }
+            ],
+            "allLicenses": [
+                {
+                    "name": "Apache License 2.0",
+                    "licenseFamilyName": "PERMISSIVE",
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/licenses/7cae335f-1193-421e-92f1-8802b4243e93",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationVulnerabilities": [
+                {
+                    "name": "BDSA-2022-1330",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper handling of the STOMP protocol for websockets. A remote authenticated attacker could leverage this issue in order to cause a server to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.7,
+                    "publishedDate": "2022-05-13T15:15:26.243Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1330",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22971"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1040",
+                    "description": "Spring Framework is vulnerable to data binding protection bypass due to improper validation of specified disallowed fields in `DataBinders`. This could be leveraged by an attacker to bypass the suggested workaround to **CVE-2022-22965** (**BDSA-2022-0858**) if it is improperly implemented.",
+                    "vulnSeverity": "LOW",
+                    "overallScore": 3.2,
+                    "publishedDate": "2022-04-15T15:47:27.162Z",
+                    "vendorFixDate": "2022-04-13T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed  in [**5.3.19**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.19) by [this](https://github.com/spring-projects/spring-framework/commit/a7cf19cec5ebd270f97a194d749e2d5701ad2ab7) commit and [**5.2.21**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.21.RELEASE) by [this](https://github.com/spring-projects/spring-framework/commit/833e750175349ab4fd502109a8b41af77e25cdea) commit.",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-20"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1040",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22968"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "CVE-2016-1000027",
+                    "description": "Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.",
+                    "vulnSeverity": "CRITICAL",
+                    "overallScore": 9.8,
+                    "publishedDate": "2020-01-02T23:15:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "cweIds": [
+                        "CWE-502"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/CVE-2016-1000027",
+                        "links": []
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1329",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper implementation of data binding functionality. A remote attacker could cause a vulnerable server to crash if that server provides file upload functionality.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 4.6,
+                    "publishedDate": "2022-05-12T15:49:58.879Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1329",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22970"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "policyViolationLicenses": [],
+            "failedEvaluationPolicies": [],
+            "partiallyEvaluatedPolicies": [],
+            "nonEvaluatedPolicies": [],
+            "dependencyTrees": [
+                [
+                    "com.synopsys.integration:configuration:8.7.0-SIGQA2-SNAPSHOT:-gradle",
+                    "org.springframework:spring-core:5.3.18"
+                ]
+            ],
+            "overriddenPolicies": [],
+            "overriddenPoliciesPartial": [],
+            "shortTermUpgradeGuidance": {
+                "versionName": "5.3.25",
+                "vulnerabilityRisk": {
+                    "critical": 1,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.springframework:spring-core:5.3.25"
+            },
+            "longTermUpgradeGuidance": {
+                "versionName": "6.0.4",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.springframework:spring-core:6.0.4"
+            },
+            "transitiveUpgradeGuidance": [],
+            "_meta": {
+                "allow": [
+                    "GET"
+                ],
+                "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1/full-result",
+                "links": [
+                    {
+                        "rel": "component",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7"
+                    },
+                    {
+                        "rel": "version",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7/versions/609dcc1a-4b20-4a67-9362-2389b52d11d0"
+                    },
+                    {
+                        "rel": "origin",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7/versions/609dcc1a-4b20-4a67-9362-2389b52d11d0/origins/4716f146-eb47-4709-a628-3a52752f10e7"
+                    }
+                ]
+            }
+        },
+        {
+            "componentName": "Spring Framework",
+            "versionName": "5.3.18",
+            "componentIdentifier": "maven:org.springframework:spring-expression:5.3.18",
+            "externalId": "org.springframework:spring-expression:5.3.18",
+            "violatingPolicies": [
+                {
+                    "policyName": "Vuln01",
+                    "policySeverity": "UNSPECIFIED"
+                }
+            ],
+            "componentViolatingPolicies": [],
+            "allVulnerabilities": [
+                {
+                    "name": "BDSA-2022-1040",
+                    "description": "Spring Framework is vulnerable to data binding protection bypass due to improper validation of specified disallowed fields in `DataBinders`. This could be leveraged by an attacker to bypass the suggested workaround to **CVE-2022-22965** (**BDSA-2022-0858**) if it is improperly implemented.",
+                    "vulnSeverity": "LOW",
+                    "overallScore": 3.2,
+                    "publishedDate": "2022-04-15T15:47:27.162Z",
+                    "vendorFixDate": "2022-04-13T00:00:00.000Z",
+                    "solution": "Fixed  in [**5.3.19**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.19) by [this](https://github.com/spring-projects/spring-framework/commit/a7cf19cec5ebd270f97a194d749e2d5701ad2ab7) commit and [**5.2.21**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.21.RELEASE) by [this](https://github.com/spring-projects/spring-framework/commit/833e750175349ab4fd502109a8b41af77e25cdea) commit.",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-20"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1040",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22968"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1329",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper implementation of data binding functionality. A remote attacker could cause a vulnerable server to crash if that server provides file upload functionality.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 4.6,
+                    "publishedDate": "2022-05-12T15:49:58.879Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1329",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22970"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1330",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper handling of the STOMP protocol for websockets. A remote authenticated attacker could leverage this issue in order to cause a server to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.7,
+                    "publishedDate": "2022-05-13T15:15:26.243Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1330",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22971"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "CVE-2016-1000027",
+                    "description": "Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.",
+                    "vulnSeverity": "CRITICAL",
+                    "overallScore": 9.8,
+                    "publishedDate": "2020-01-02T23:15:00.000Z",
+                    "cweIds": [
+                        "CWE-502"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/CVE-2016-1000027",
+                        "links": []
+                    }
+                }
+            ],
+            "allLicenses": [
+                {
+                    "name": "Apache License 2.0",
+                    "licenseFamilyName": "PERMISSIVE",
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/licenses/7cae335f-1193-421e-92f1-8802b4243e93",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationVulnerabilities": [
+                {
+                    "name": "BDSA-2022-1330",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper handling of the STOMP protocol for websockets. A remote authenticated attacker could leverage this issue in order to cause a server to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.7,
+                    "publishedDate": "2022-05-13T15:15:26.243Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1330",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22971"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1040",
+                    "description": "Spring Framework is vulnerable to data binding protection bypass due to improper validation of specified disallowed fields in `DataBinders`. This could be leveraged by an attacker to bypass the suggested workaround to **CVE-2022-22965** (**BDSA-2022-0858**) if it is improperly implemented.",
+                    "vulnSeverity": "LOW",
+                    "overallScore": 3.2,
+                    "publishedDate": "2022-04-15T15:47:27.162Z",
+                    "vendorFixDate": "2022-04-13T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed  in [**5.3.19**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.19) by [this](https://github.com/spring-projects/spring-framework/commit/a7cf19cec5ebd270f97a194d749e2d5701ad2ab7) commit and [**5.2.21**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.21.RELEASE) by [this](https://github.com/spring-projects/spring-framework/commit/833e750175349ab4fd502109a8b41af77e25cdea) commit.",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-20"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1040",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22968"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "CVE-2016-1000027",
+                    "description": "Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.",
+                    "vulnSeverity": "CRITICAL",
+                    "overallScore": 9.8,
+                    "publishedDate": "2020-01-02T23:15:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "cweIds": [
+                        "CWE-502"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/CVE-2016-1000027",
+                        "links": []
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1329",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper implementation of data binding functionality. A remote attacker could cause a vulnerable server to crash if that server provides file upload functionality.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 4.6,
+                    "publishedDate": "2022-05-12T15:49:58.879Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1329",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22970"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "policyViolationLicenses": [],
+            "failedEvaluationPolicies": [],
+            "partiallyEvaluatedPolicies": [],
+            "nonEvaluatedPolicies": [],
+            "dependencyTrees": [
+                [
+                    "com.synopsys.integration:configuration:8.7.0-SIGQA2-SNAPSHOT:-gradle",
+                    "org.springframework.boot:spring-boot:2.6.6",
+                    "org.springframework:spring-context:5.3.18",
+                    "org.springframework:spring-expression:5.3.18"
+                ]
+            ],
+            "overriddenPolicies": [],
+            "overriddenPoliciesPartial": [],
+            "shortTermUpgradeGuidance": {
+                "versionName": "5.3.25",
+                "vulnerabilityRisk": {
+                    "critical": 1,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.springframework:spring-expression:5.3.25"
+            },
+            "longTermUpgradeGuidance": {
+                "versionName": "6.0.4",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.springframework:spring-expression:6.0.4"
+            },
+            "transitiveUpgradeGuidance": [
+                {
+                    "externalId": "org.springframework.boot:spring-boot:2.6.6",
+                    "shortTermUpgradeGuidance": {
+                        "versionName": "2.7.8",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 0,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "org.springframework.boot:spring-boot:2.7.8"
+                    },
+                    "longTermUpgradeGuidance": {
+                        "versionName": "3.0.2",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 0,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "org.springframework.boot:spring-boot:3.0.2"
+                    }
+                }
+            ],
+            "_meta": {
+                "allow": [
+                    "GET"
+                ],
+                "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1/full-result",
+                "links": [
+                    {
+                        "rel": "component",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7"
+                    },
+                    {
+                        "rel": "version",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7/versions/609dcc1a-4b20-4a67-9362-2389b52d11d0"
+                    },
+                    {
+                        "rel": "origin",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7/versions/609dcc1a-4b20-4a67-9362-2389b52d11d0/origins/5237aee3-fad3-4305-8c13-64d041b8988a"
+                    }
+                ]
+            }
+        },
+        {
+            "componentName": "jackson-databind",
+            "versionName": "2.13.2.2",
+            "componentIdentifier": "maven:com.fasterxml.jackson.core:jackson-databind:2.13.2.2",
+            "externalId": "com.fasterxml.jackson.core:jackson-databind:2.13.2.2",
+            "violatingPolicies": [
+                {
+                    "policyName": "Vuln01",
+                    "policySeverity": "UNSPECIFIED"
+                }
+            ],
+            "componentViolatingPolicies": [],
+            "allVulnerabilities": [
+                {
+                    "name": "BDSA-2022-2768",
+                    "description": "Jackson Databind is vulnerable to denial-of-service (DoS) due to the improper management of system resources within its `BeanDeserializer` component. A remote attacker could cause a vulnerable server to crash by causing that server to process a maliciously crafted serialized object.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-10-04T08:10:24.309Z",
+                    "vendorFixDate": "2022-08-24T00:00:00.000Z",
+                    "solution": "Fixed in version [**2.13.4**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.13.4) by [this](https://github.com/FasterXML/jackson-databind/commit/063183589218fec19a9293ed2f17ec53ea80ba88) commit.\n\nThe latest stable releases can be found [here](https://github.com/FasterXML/jackson-databind/tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-400"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2768",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-42004"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2765",
+                    "description": "Jackson Databind is vulnerable to denial-of-service (DoS) due to the improper management of system resources within its primitive value deserialization functionality. A remote attacker could leverage this issue in order to cause a vulnerable system to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-10-04T08:09:18.818Z",
+                    "vendorFixDate": "2022-09-07T00:00:00.000Z",
+                    "solution": "Fixed in version [**2.14.0-rc1**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.14.0-rc1) by [this](https://github.com/FasterXML/jackson-databind/commit/d78d00ee7b5245b93103fef3187f70543d67ca33) commit.\n\nThe latest stable releases can be found [here](https://github.com/FasterXML/jackson-databind/tags).",
+                    "workaround": "",
+                    "cweIds": [],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2765",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-42003"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "allLicenses": [
+                {
+                    "name": "Apache License 2.0",
+                    "licenseFamilyName": "PERMISSIVE",
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/licenses/7cae335f-1193-421e-92f1-8802b4243e93",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationVulnerabilities": [
+                {
+                    "name": "BDSA-2022-2768",
+                    "description": "Jackson Databind is vulnerable to denial-of-service (DoS) due to the improper management of system resources within its `BeanDeserializer` component. A remote attacker could cause a vulnerable server to crash by causing that server to process a maliciously crafted serialized object.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-10-04T08:10:24.309Z",
+                    "vendorFixDate": "2022-08-24T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**2.13.4**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.13.4) by [this](https://github.com/FasterXML/jackson-databind/commit/063183589218fec19a9293ed2f17ec53ea80ba88) commit.\n\nThe latest stable releases can be found [here](https://github.com/FasterXML/jackson-databind/tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-400"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2768",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-42004"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2765",
+                    "description": "Jackson Databind is vulnerable to denial-of-service (DoS) due to the improper management of system resources within its primitive value deserialization functionality. A remote attacker could leverage this issue in order to cause a vulnerable system to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-10-04T08:09:18.818Z",
+                    "vendorFixDate": "2022-09-07T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**2.14.0-rc1**](https://github.com/FasterXML/jackson-databind/releases/tag/jackson-databind-2.14.0-rc1) by [this](https://github.com/FasterXML/jackson-databind/commit/d78d00ee7b5245b93103fef3187f70543d67ca33) commit.\n\nThe latest stable releases can be found [here](https://github.com/FasterXML/jackson-databind/tags).",
+                    "workaround": "",
+                    "cweIds": [],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2765",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-42003"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "policyViolationLicenses": [],
+            "failedEvaluationPolicies": [],
+            "partiallyEvaluatedPolicies": [],
+            "nonEvaluatedPolicies": [],
+            "dependencyTrees": [
+                [
+                    "com.synopsys.integration:detector:8.7.0-SIGQA2-SNAPSHOT:-gradle",
+                    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2",
+                    "com.fasterxml.jackson.core:jackson-databind:2.13.2.2"
+                ]
+            ],
+            "overriddenPolicies": [],
+            "overriddenPoliciesPartial": [],
+            "shortTermUpgradeGuidance": {
+                "versionName": "2.14.2",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "com.fasterxml.jackson.core:jackson-databind:2.14.2"
+            },
+            "longTermUpgradeGuidance": {
+                "versionName": "2.14.2",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "com.fasterxml.jackson.core:jackson-databind:2.14.2"
+            },
+            "transitiveUpgradeGuidance": [
+                {
+                    "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2",
+                    "shortTermUpgradeGuidance": {
+                        "versionName": "2.14.2",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 1,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2"
+                    },
+                    "longTermUpgradeGuidance": {
+                        "versionName": "2.14.2",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 1,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2"
+                    }
+                }
+            ],
+            "_meta": {
+                "allow": [
+                    "GET"
+                ],
+                "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1/full-result",
+                "links": [
+                    {
+                        "rel": "component",
+                        "href": "https://localhost/api/components/ce7ad18a-6e02-4565-a51c-4fc2c5bc7c47"
+                    },
+                    {
+                        "rel": "version",
+                        "href": "https://localhost/api/components/ce7ad18a-6e02-4565-a51c-4fc2c5bc7c47/versions/a24dfb9f-877a-4fce-9ac8-cacf0a72e0b6"
+                    },
+                    {
+                        "rel": "origin",
+                        "href": "https://localhost/api/components/ce7ad18a-6e02-4565-a51c-4fc2c5bc7c47/versions/a24dfb9f-877a-4fce-9ac8-cacf0a72e0b6/origins/4341cf5e-2490-4742-8ac4-57306f915d75"
+                    }
+                ]
+            }
+        },
+        {
+            "componentName": "Spring Framework",
+            "versionName": "5.3.18",
+            "componentIdentifier": "maven:org.springframework:spring-aop:5.3.18",
+            "externalId": "org.springframework:spring-aop:5.3.18",
+            "violatingPolicies": [
+                {
+                    "policyName": "Vuln01",
+                    "policySeverity": "UNSPECIFIED"
+                }
+            ],
+            "componentViolatingPolicies": [],
+            "allVulnerabilities": [
+                {
+                    "name": "BDSA-2022-1040",
+                    "description": "Spring Framework is vulnerable to data binding protection bypass due to improper validation of specified disallowed fields in `DataBinders`. This could be leveraged by an attacker to bypass the suggested workaround to **CVE-2022-22965** (**BDSA-2022-0858**) if it is improperly implemented.",
+                    "vulnSeverity": "LOW",
+                    "overallScore": 3.2,
+                    "publishedDate": "2022-04-15T15:47:27.162Z",
+                    "vendorFixDate": "2022-04-13T00:00:00.000Z",
+                    "solution": "Fixed  in [**5.3.19**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.19) by [this](https://github.com/spring-projects/spring-framework/commit/a7cf19cec5ebd270f97a194d749e2d5701ad2ab7) commit and [**5.2.21**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.21.RELEASE) by [this](https://github.com/spring-projects/spring-framework/commit/833e750175349ab4fd502109a8b41af77e25cdea) commit.",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-20"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1040",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22968"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1329",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper implementation of data binding functionality. A remote attacker could cause a vulnerable server to crash if that server provides file upload functionality.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 4.6,
+                    "publishedDate": "2022-05-12T15:49:58.879Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1329",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22970"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1330",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper handling of the STOMP protocol for websockets. A remote authenticated attacker could leverage this issue in order to cause a server to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.7,
+                    "publishedDate": "2022-05-13T15:15:26.243Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1330",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22971"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "CVE-2016-1000027",
+                    "description": "Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.",
+                    "vulnSeverity": "CRITICAL",
+                    "overallScore": 9.8,
+                    "publishedDate": "2020-01-02T23:15:00.000Z",
+                    "cweIds": [
+                        "CWE-502"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/CVE-2016-1000027",
+                        "links": []
+                    }
+                }
+            ],
+            "allLicenses": [
+                {
+                    "name": "Apache License 2.0",
+                    "licenseFamilyName": "PERMISSIVE",
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/licenses/7cae335f-1193-421e-92f1-8802b4243e93",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationVulnerabilities": [
+                {
+                    "name": "BDSA-2022-1330",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper handling of the STOMP protocol for websockets. A remote authenticated attacker could leverage this issue in order to cause a server to crash.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.7,
+                    "publishedDate": "2022-05-13T15:15:26.243Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1330",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22971"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1040",
+                    "description": "Spring Framework is vulnerable to data binding protection bypass due to improper validation of specified disallowed fields in `DataBinders`. This could be leveraged by an attacker to bypass the suggested workaround to **CVE-2022-22965** (**BDSA-2022-0858**) if it is improperly implemented.",
+                    "vulnSeverity": "LOW",
+                    "overallScore": 3.2,
+                    "publishedDate": "2022-04-15T15:47:27.162Z",
+                    "vendorFixDate": "2022-04-13T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed  in [**5.3.19**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.19) by [this](https://github.com/spring-projects/spring-framework/commit/a7cf19cec5ebd270f97a194d749e2d5701ad2ab7) commit and [**5.2.21**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.21.RELEASE) by [this](https://github.com/spring-projects/spring-framework/commit/833e750175349ab4fd502109a8b41af77e25cdea) commit.",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-20"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1040",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22968"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "CVE-2016-1000027",
+                    "description": "Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.",
+                    "vulnSeverity": "CRITICAL",
+                    "overallScore": 9.8,
+                    "publishedDate": "2020-01-02T23:15:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "cweIds": [
+                        "CWE-502"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/CVE-2016-1000027",
+                        "links": []
+                    }
+                },
+                {
+                    "name": "BDSA-2022-1329",
+                    "description": "Spring Framework is vulnerable to denial-of-service (DoS) due to the improper implementation of data binding functionality. A remote attacker could cause a vulnerable server to crash if that server provides file upload functionality.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 4.6,
+                    "publishedDate": "2022-05-12T15:49:58.879Z",
+                    "vendorFixDate": "2022-05-11T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**5.3.20**](https://github.com/spring-projects/spring-framework/releases/tag/v5.3.20) and in version [**5.2.22**](https://github.com/spring-projects/spring-framework/releases/tag/v5.2.22.RELEASE).\n\nThe latest stable releases can be found [here](https://github.com/spring-projects/spring-framework/releases).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-684"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1329",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-22970"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "policyViolationLicenses": [],
+            "failedEvaluationPolicies": [],
+            "partiallyEvaluatedPolicies": [],
+            "nonEvaluatedPolicies": [],
+            "dependencyTrees": [
+                [
+                    "com.synopsys.integration:configuration:8.7.0-SIGQA2-SNAPSHOT:-gradle",
+                    "org.springframework.boot:spring-boot:2.6.6",
+                    "org.springframework:spring-context:5.3.18",
+                    "org.springframework:spring-aop:5.3.18"
+                ]
+            ],
+            "overriddenPolicies": [],
+            "overriddenPoliciesPartial": [],
+            "shortTermUpgradeGuidance": {
+                "versionName": "5.3.25",
+                "vulnerabilityRisk": {
+                    "critical": 1,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.springframework:spring-aop:5.3.25"
+            },
+            "longTermUpgradeGuidance": {
+                "versionName": "6.0.4",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.springframework:spring-aop:6.0.4"
+            },
+            "transitiveUpgradeGuidance": [
+                {
+                    "externalId": "org.springframework.boot:spring-boot:2.6.6",
+                    "shortTermUpgradeGuidance": {
+                        "versionName": "2.7.8",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 0,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "org.springframework.boot:spring-boot:2.7.8"
+                    },
+                    "longTermUpgradeGuidance": {
+                        "versionName": "3.0.2",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 0,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "org.springframework.boot:spring-boot:3.0.2"
+                    }
+                }
+            ],
+            "_meta": {
+                "allow": [
+                    "GET"
+                ],
+                "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1/full-result",
+                "links": [
+                    {
+                        "rel": "component",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7"
+                    },
+                    {
+                        "rel": "version",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7/versions/609dcc1a-4b20-4a67-9362-2389b52d11d0"
+                    },
+                    {
+                        "rel": "origin",
+                        "href": "https://localhost/api/components/09f17d81-b282-43ec-9f2b-36c8021d3ca7/versions/609dcc1a-4b20-4a67-9362-2389b52d11d0/origins/1d6dfe04-3027-4528-aca8-0b12845dfb64"
+                    }
+                ]
+            }
+        },
+        {
+            "componentName": "Apache PDFBox",
+            "versionName": "2.0.25",
+            "componentIdentifier": "maven:org.apache.pdfbox:pdfbox:2.0.25",
+            "externalId": "org.apache.pdfbox:pdfbox:2.0.25",
+            "violatingPolicies": [
+                {
+                    "policyName": "Vuln01",
+                    "policySeverity": "UNSPECIFIED"
+                }
+            ],
+            "componentViolatingPolicies": [],
+            "allVulnerabilities": [
+                {
+                    "name": "BDSA-2022-1920",
+                    "description": "Apache PDFBox contains a bug that can cause an infinite loop when processing a PDF file. This could allow an attacker to supply a crafted PDF file and cause a denial-of-service (DoS).",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.5,
+                    "publishedDate": "2022-07-12T11:16:32.448Z",
+                    "vendorFixDate": "2022-03-28T00:00:00.000Z",
+                    "solution": "Fixed in:\n* **[2.0.26](https://github.com/apache/pdfbox/releases/tag/2.0.26)** by [this](https://github.com/apache/pdfbox/commit/0058e8c970cfe21254144343a3dcd9fd2ca96b70) commit,\n* **[3.0.0-alpha3](https://github.com/apache/pdfbox/releases/tag/3.0.0-alpha3)** by [this](https://github.com/apache/pdfbox/commit/24d6dc27ee7460cb9ec06aba889a66a2c4db4e4e) commit.\n\nThe latest stable releases can be found [here](https://github.com/apache/pdfbox/tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-835"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1920",
+                        "links": []
+                    }
+                }
+            ],
+            "allLicenses": [
+                {
+                    "name": "Apache License 2.0",
+                    "licenseFamilyName": "PERMISSIVE",
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/licenses/7cae335f-1193-421e-92f1-8802b4243e93",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationVulnerabilities": [
+                {
+                    "name": "BDSA-2022-1920",
+                    "description": "Apache PDFBox contains a bug that can cause an infinite loop when processing a PDF file. This could allow an attacker to supply a crafted PDF file and cause a denial-of-service (DoS).",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.5,
+                    "publishedDate": "2022-07-12T11:16:32.448Z",
+                    "vendorFixDate": "2022-03-28T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in:\n* **[2.0.26](https://github.com/apache/pdfbox/releases/tag/2.0.26)** by [this](https://github.com/apache/pdfbox/commit/0058e8c970cfe21254144343a3dcd9fd2ca96b70) commit,\n* **[3.0.0-alpha3](https://github.com/apache/pdfbox/releases/tag/3.0.0-alpha3)** by [this](https://github.com/apache/pdfbox/commit/24d6dc27ee7460cb9ec06aba889a66a2c4db4e4e) commit.\n\nThe latest stable releases can be found [here](https://github.com/apache/pdfbox/tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-835"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-1920",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationLicenses": [],
+            "failedEvaluationPolicies": [],
+            "partiallyEvaluatedPolicies": [],
+            "nonEvaluatedPolicies": [],
+            "dependencyTrees": [
+                [
+                    "com.synopsys.integration:synopsys-detect:8.7.0-SIGQA2-SNAPSHOT:-gradle",
+                    "org.apache.pdfbox:pdfbox:2.0.25"
+                ]
+            ],
+            "overriddenPolicies": [],
+            "overriddenPoliciesPartial": [],
+            "shortTermUpgradeGuidance": {
+                "versionName": "2.0.27",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.apache.pdfbox:pdfbox:2.0.27"
+            },
+            "longTermUpgradeGuidance": {
+                "versionName": "2.0.27",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.apache.pdfbox:pdfbox:2.0.27"
+            },
+            "transitiveUpgradeGuidance": [],
+            "_meta": {
+                "allow": [
+                    "GET"
+                ],
+                "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1/full-result",
+                "links": [
+                    {
+                        "rel": "component",
+                        "href": "https://localhost/api/components/e0e96fc6-1c0d-48ad-b4a6-8648237179b1"
+                    },
+                    {
+                        "rel": "version",
+                        "href": "https://localhost/api/components/e0e96fc6-1c0d-48ad-b4a6-8648237179b1/versions/1c5b2cfd-2689-43d4-8c19-e2ff2a028455"
+                    },
+                    {
+                        "rel": "origin",
+                        "href": "https://localhost/api/components/e0e96fc6-1c0d-48ad-b4a6-8648237179b1/versions/1c5b2cfd-2689-43d4-8c19-e2ff2a028455/origins/8ec5c594-4fe1-44ae-ada5-5245d92ae40f"
+                    }
+                ]
+            }
+        },
+        {
+            "componentName": "SnakeYAML",
+            "versionName": "1.30",
+            "componentIdentifier": "maven:org.yaml:snakeyaml:1.30",
+            "externalId": "org.yaml:snakeyaml:1.30",
+            "violatingPolicies": [
+                {
+                    "policyName": "Vuln01",
+                    "policySeverity": "UNSPECIFIED"
+                }
+            ],
+            "componentViolatingPolicies": [],
+            "allVulnerabilities": [
+                {
+                    "name": "BDSA-2022-2579",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a lack of nested depth limitation for collections. An attacker could exploit this by providing crafted input in order to cause a crash. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:55:46.371Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-400"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2579",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-25857"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2577",
+                    "description": "SnakeYAML is vulnerable to a stack-based buffer overflow issue when parsing untrusted YAML files. An attacker could exploit this by providing crafted input in order to cause a denial-of-service (DoS) condition. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:23:51.570Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2577",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38749"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2587",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a failure to parse regular expressions that contain large values. A remote attacker could cause a vulnerable application to crash by passing a maliciously crafted regular expression to that application.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T15:49:57.051Z",
+                    "vendorFixDate": "2022-04-29T00:00:00.000Z",
+                    "solution": "Fixed in version [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/f3ab4e0f54c37ddb10f00b71d04187bb0ef1799c) commit and [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/6aedd33a811f7347c5dae2940e75940966f59466) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-229"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2587",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38751"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2590",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a stack overflow which can be triggered by parsing a crafted file. [According to the vendor](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md), such vulnerabilities pose low risks unless the parser input is designed to come from untrusted sources on the internet.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.3,
+                    "publishedDate": "2022-09-19T14:48:16.937Z",
+                    "vendorFixDate": "2022-09-12T00:00:00.000Z",
+                    "solution": "Fixed in [**1.32**](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121",
+                        "CWE-674"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2590",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38752"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "CVE-2022-1471",
+                    "description": "SnakeYaml's Constructor() class does not restrict types which can be instantiated during deserialization. Deserializing yaml content provided by an attacker can lead to remote code execution. We recommend using SnakeYaml's SafeConsturctor when parsing untrusted content to restrict deserialization.",
+                    "vulnSeverity": "CRITICAL",
+                    "overallScore": 9.8,
+                    "publishedDate": "2022-12-01T11:15:00.000Z",
+                    "cweIds": [
+                        "CWE-502"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/CVE-2022-1471",
+                        "links": []
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2578",
+                    "description": "SnakeYAML is vulnerable to a stack-based buffer overflow issue when parsing untrusted YAML files. An attacker could exploit this by providing crafted input in order to cause a denial-of-service (DoS) condition. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:42:04.227Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2578",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38750"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-3211",
+                    "description": "Snakeyaml contains a vulnerability that can lead to an uncaught exception in its `java.util.AbstractSet.hashCode` component. This can subsequently cause a stack-based buffer overflow. An attacker could exploit this flaw by supplying a crafted YAML file.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.2,
+                    "publishedDate": "2022-11-14T11:15:22.572Z",
+                    "vendorFixDate": "2022-09-10T00:00:00.000Z",
+                    "solution": "Fixed in version [**1.32**](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/5ee00863a816f2a023d35a7512b5f742c9a36b5a) commit.\n\nThe latest stable releases can be found [here](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-3211",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-41854"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "allLicenses": [
+                {
+                    "name": "Apache License 2.0",
+                    "licenseFamilyName": "PERMISSIVE",
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/licenses/7cae335f-1193-421e-92f1-8802b4243e93",
+                        "links": []
+                    }
+                }
+            ],
+            "policyViolationVulnerabilities": [
+                {
+                    "name": "BDSA-2022-2587",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a failure to parse regular expressions that contain large values. A remote attacker could cause a vulnerable application to crash by passing a maliciously crafted regular expression to that application.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T15:49:57.051Z",
+                    "vendorFixDate": "2022-04-29T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/f3ab4e0f54c37ddb10f00b71d04187bb0ef1799c) commit and [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/6aedd33a811f7347c5dae2940e75940966f59466) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-229"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2587",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38751"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2578",
+                    "description": "SnakeYAML is vulnerable to a stack-based buffer overflow issue when parsing untrusted YAML files. An attacker could exploit this by providing crafted input in order to cause a denial-of-service (DoS) condition. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:42:04.227Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2578",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38750"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2590",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a stack overflow which can be triggered by parsing a crafted file. [According to the vendor](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md), such vulnerabilities pose low risks unless the parser input is designed to come from untrusted sources on the internet.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.3,
+                    "publishedDate": "2022-09-19T14:48:16.937Z",
+                    "vendorFixDate": "2022-09-12T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in [**1.32**](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121",
+                        "CWE-674"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2590",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38752"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-3211",
+                    "description": "Snakeyaml contains a vulnerability that can lead to an uncaught exception in its `java.util.AbstractSet.hashCode` component. This can subsequently cause a stack-based buffer overflow. An attacker could exploit this flaw by supplying a crafted YAML file.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 5.2,
+                    "publishedDate": "2022-11-14T11:15:22.572Z",
+                    "vendorFixDate": "2022-09-10T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in version [**1.32**](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/5ee00863a816f2a023d35a7512b5f742c9a36b5a) commit.\n\nThe latest stable releases can be found [here](https://bitbucket.org/snakeyaml/snakeyaml/downloads/?tab=tags).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-3211",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-41854"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "CVE-2022-1471",
+                    "description": "SnakeYaml's Constructor() class does not restrict types which can be instantiated during deserialization. Deserializing yaml content provided by an attacker can lead to remote code execution. We recommend using SnakeYaml's SafeConsturctor when parsing untrusted content to restrict deserialization.",
+                    "vulnSeverity": "CRITICAL",
+                    "overallScore": 9.8,
+                    "publishedDate": "2022-12-01T11:15:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "cweIds": [
+                        "CWE-502"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/CVE-2022-1471",
+                        "links": []
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2577",
+                    "description": "SnakeYAML is vulnerable to a stack-based buffer overflow issue when parsing untrusted YAML files. An attacker could exploit this by providing crafted input in order to cause a denial-of-service (DoS) condition. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:23:51.570Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-121"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2577",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-38749"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "BDSA-2022-2579",
+                    "description": "SnakeYAML is vulnerable to denial-of-service (DoS) due to a lack of nested depth limitation for collections. An attacker could exploit this by providing crafted input in order to cause a crash. \n\n**Note**: The vendor disputes the validity of this issue and other similar recently reported issues and have released an [advisory](https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE%20&%20NIST.md) in response.",
+                    "vulnSeverity": "MEDIUM",
+                    "overallScore": 6.7,
+                    "publishedDate": "2022-09-16T11:55:46.371Z",
+                    "vendorFixDate": "2022-04-28T00:00:00.000Z",
+                    "violatingPolicies": [
+                        {
+                            "policyName": "Vuln01",
+                            "policySeverity": "UNSPECIFIED"
+                        }
+                    ],
+                    "solution": "Fixed in [**1.31**](https://mvnrepository.com/artifact/org.yaml/snakeyaml/1.31) by [this](https://bitbucket.org/snakeyaml/snakeyaml/commits/fc30078) commit.\n\nThe latest stable releases can be found [here](https://mvnrepository.com/artifact/org.yaml/snakeyaml).",
+                    "workaround": "",
+                    "cweIds": [
+                        "CWE-400"
+                    ],
+                    "_meta": {
+                        "allow": [
+                            "GET"
+                        ],
+                        "href": "https://localhost/api/vulnerabilities/BDSA-2022-2579",
+                        "links": [
+                            {
+                                "rel": "related-vulnerability",
+                                "href": "https://localhost/api/vulnerabilities/CVE-2022-25857"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "policyViolationLicenses": [],
+            "failedEvaluationPolicies": [],
+            "partiallyEvaluatedPolicies": [],
+            "nonEvaluatedPolicies": [],
+            "dependencyTrees": [
+                [
+                    "com.synopsys.integration:detector:8.7.0-SIGQA2-SNAPSHOT:-gradle",
+                    "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2",
+                    "org.yaml:snakeyaml:1.30"
+                ]
+            ],
+            "overriddenPolicies": [],
+            "overriddenPoliciesPartial": [],
+            "shortTermUpgradeGuidance": {
+                "versionName": "1.33",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 1,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.yaml:snakeyaml:1.33.0.redhat-00001"
+            },
+            "longTermUpgradeGuidance": {
+                "versionName": "1.33",
+                "vulnerabilityRisk": {
+                    "critical": 0,
+                    "high": 1,
+                    "medium": 0,
+                    "low": 0,
+                    "unscored": 0
+                },
+                "externalId": "org.yaml:snakeyaml:1.33.0.redhat-00001"
+            },
+            "transitiveUpgradeGuidance": [
+                {
+                    "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2",
+                    "shortTermUpgradeGuidance": {
+                        "versionName": "2.14.2",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 1,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2"
+                    },
+                    "longTermUpgradeGuidance": {
+                        "versionName": "2.14.2",
+                        "vulnerabilityRisk": {
+                            "critical": 0,
+                            "high": 1,
+                            "medium": 0,
+                            "low": 0,
+                            "unscored": 0
+                        },
+                        "externalId": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2"
+                    }
+                }
+            ],
+            "_meta": {
+                "allow": [
+                    "GET"
+                ],
+                "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1/full-result",
+                "links": [
+                    {
+                        "rel": "component",
+                        "href": "https://localhost/api/components/7d5b8a95-2ae3-4f89-9b3b-d47c44f9d187"
+                    },
+                    {
+                        "rel": "version",
+                        "href": "https://localhost/api/components/7d5b8a95-2ae3-4f89-9b3b-d47c44f9d187/versions/9d020cb4-c33c-4c15-b162-0db77bd0d88d"
+                    },
+                    {
+                        "rel": "origin",
+                        "href": "https://localhost/api/components/7d5b8a95-2ae3-4f89-9b3b-d47c44f9d187/versions/9d020cb4-c33c-4c15-b162-0db77bd0d88d/origins/55c7c019-16ab-4227-b747-f51a5c785643"
+                    }
+                ]
+            }
+        }
+    ],
+    "appliedFilters": [],
+    "_meta": {
+        "allow": [
+            "GET"
+        ],
+        "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1/full-result",
+        "links": [
+            {
+                "rel": "developer-scan",
+                "href": "https://localhost/api/developer-scans/0ddf4a50-def3-45e1-970b-33913ccc4db1"
+            },
+            {
+                "rel": "versions",
+                "href": "https://localhost/api/projects/d19010fb-9d5d-436e-a6d2-d6f9870d1c4d/versions"
+            }
+        ]
+    }
+}

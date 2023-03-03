@@ -12,6 +12,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.synopsys.integration.detect.configuration.help.yaml.HelpYamlWriter;
+import com.synopsys.integration.detect.poc.POCDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +88,27 @@ public class DetectBoot {
     }
 
     public Optional<DetectBootResult> boot(String detectVersion, String detectBuildDate) throws IOException, IllegalAccessException {
+        if (detectArgumentState.isPOC()) {
+            // call poc workflow here for now
+            PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
+            DetectPropertyConfiguration detectConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
+            DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, gson);
+            DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
+            File srcDir = directoryManager.getSourceDirectory();
+
+            // 1. run a rapid scan
+                // 2.  poll for full-result scan endpoint instead (or just leave it)
+            // 3. given the full result from step 2 (OR SIMPLY FROM A HARDCODED SOURCE FILE), trigger generateVulnCompData
+                // 4. getDependencies() --> hash dictionary of dependencies + their whereabouts
+                // 5. <insert Nirav's code>
+
+
+            POCDriver pocDriver = new POCDriver();
+            pocDriver.drive();
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
+        }
+
+
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             HelpPrinter helpPrinter = new HelpPrinter();
             helpPrinter.printAppropriateHelpMessage(
