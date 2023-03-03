@@ -1,10 +1,43 @@
 # Release notes
 
+## Version 8.7.0
+
+### Changed features
+
+* (IDETECT-2933) [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported.
+
+### Resolved issues
+
+* (IDETECT-3623) [solution_name] will now fail with exit code 3, FAILURE_POLICY_VIOLATION, if [blackduck_product_name] reports any violated policies during scans.
+* (IDETECT-3630) Notices and risk report PDFs now appropriately contain the supplied project and version name when characters from non-English alphabets are used.
+
+## Version 8.6.0
+
+### Changed features
+
+* Package Manager and Signature Scans will now query [blackduck_product_name] directly when using the detect.wait.for.results property. This expedites scanning by allowing [solution_name] to determine if results are ready, rather than waiting for a notification from [blackduck_product_name].
+Note: this feature requires [blackduck_product_name] 2023.1.1 or later.
+
+### Resolved issues
+
+* (IDETECT-3627) When waiting for results, Signature Scans will now wait for all scans that the Signature Scan could invoke, such as Snippet and String Search scans. Previously, only the Signature Scan itself was checked for completion.
+Note: this improvement requires [blackduck_product_name] 2023.1.2 or later. 
+
+### Dependency update
+
+* Upgraded Apache Commons Text to version 1.10.0.
+* Upgraded Docker Inspector to version 10.0.1.
+
 ## Version 8.5.0
+
+### New features
+
+* Added property blackduck.offline.mode.force.bdio which when set to true will force [solution_name] used in offline mode to create a BDIO even if no code locations were identified.
 
 ### Changed features
 
 * The .yarn directory will now be ignored by default when determining which detectors are applicable to a project.
+* An exit code of 2, representing FAILURE_TIMEOUT, will be returned when STATELESS scans do not report status in a timely fashion. The timeout can be controlled using the detect.timeout property.
 
 ## Version 8.4.0
 
