@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.tool.signaturescanner.operation;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -58,10 +59,16 @@ public class SignatureScanResult {
         return ids;
     }
     private boolean checkInvalidScanID(String scanId) {
-        // if BlackDuck returns an invalid scanID (containing only zeros),
+        // if BlackDuck returns an invalid scanID (containing only zeros) or an invalid UUID
         // this method will guard.
 
-        String regex = "^0+-0+-0+-0+-0+$";
-        return scanId.matches(regex);
+        Pattern validUUIDRegex = Pattern
+                .compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+        Pattern validScanIdRegex = Pattern.compile("^0+-0+-0+-0+-0+$");
+
+        if (validUUIDRegex.matcher(scanId).matches())
+            return validScanIdRegex.matcher(scanId).matches();
+        else
+            return true;
     }
 }
