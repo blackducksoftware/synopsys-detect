@@ -102,7 +102,6 @@ public class DetectBoot {
                 // 4. getDependencies() --> hash dictionary of dependencies + their whereabouts
                 // 5. <insert Nirav's code>
 
-
             POCDriver pocDriver = new POCDriver();
             pocDriver.drive();
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));

@@ -83,6 +83,9 @@ public class DetectRun {
                     rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData());
                     // ^^ RAPID SCAN COMPLETE ^^ //
                     // ********POC Stuff*******  //
+
+
+
                         // should go here when complete
                     // **************************//
                 } else if (blackDuckRunData.isNonPersistent()) {

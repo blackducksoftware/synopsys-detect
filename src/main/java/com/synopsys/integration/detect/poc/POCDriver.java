@@ -1,9 +1,5 @@
 package com.synopsys.integration.detect.poc;
 
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.synopsys.integration.detect.Application;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 public class POCDriver {
     private String startDir;
