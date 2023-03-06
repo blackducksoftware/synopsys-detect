@@ -177,7 +177,7 @@ public class FormattedOutputManager {
         detectorOutput.folder = directory.toString();
         detectorOutput.detectorName = extracted.getDetectable().getName();
         detectorOutput.detectorType = detectorType.toString();
-        detectorOutput.accuracy = extracted.getDetectable().getAccuracyType().toString();;
+        detectorOutput.accuracy = extracted.getDetectable().getAccuracyType().toString();
 
         detectorOutput.extracted = true;
         detectorOutput.status = status;
