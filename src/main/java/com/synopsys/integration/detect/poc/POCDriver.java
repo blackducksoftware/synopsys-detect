@@ -23,7 +23,7 @@ public class POCDriver {
 
     }
 
-    private void giveMeDictionary() {
+    private HashMap<String, MavenDependencyLocation> giveMeDictionary() {
         pomFinder = new POMFinder();
         List<String> pomPaths = pomFinder.findAllProjectPOMs();
 
@@ -33,7 +33,7 @@ public class POCDriver {
         pomPaths.add(startDir);
         // ***************************** //
 
-        HashMap<String, MavenDependencyLocation> magicDictionary;
+        HashMap<String, MavenDependencyLocation> magicDictionary = new HashMap<>();
         pomParser = new POMParser();
         for (String pom : pomPaths) {
             try {
@@ -42,6 +42,7 @@ public class POCDriver {
                 throw new RuntimeException(e);
             }
         }
+        return magicDictionary;
     }
 
 }
