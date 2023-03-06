@@ -20,7 +20,7 @@ public class POCDriver {
     // 1. Given a maven project directory, find all POMs
     public void drive() {
         // <insert Nirav's main function>
-
+        giveMeDictionary();
     }
 
     private HashMap<String, MavenDependencyLocation> giveMeDictionary() {
@@ -37,7 +37,7 @@ public class POCDriver {
         pomParser = new POMParser();
         for (String pom : pomPaths) {
             try {
-                pomParser.parsePom(pom);
+                pomParser.parsePom(pom, magicDictionary);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
