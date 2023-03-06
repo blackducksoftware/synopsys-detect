@@ -18,8 +18,8 @@ public class FormattedDetectorOutput {
     @SerializedName("detectorName")
     public String detectorName = "";
     
-    @SerializedName("accuracy")
-    public String accuracy = "";
+    @SerializedName("detectorAccuracy")
+    public String detectorAccuracy = "";
 
     @SerializedName("extracted")
     public boolean extracted = true;
