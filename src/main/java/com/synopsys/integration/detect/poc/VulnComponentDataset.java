@@ -1,14 +1,22 @@
 package com.synopsys.integration.detect.poc;
 
+import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class VulnComponentDataset {
+    private HashMap<String, MavenDependencyLocation> componentLocationMap;
+
+    public VulnComponentDataset(HashMap<String, MavenDependencyLocation> componentLocationMap) {
+        this.componentLocationMap = componentLocationMap;
+    }
 
     private void addLocationToItem(JSONObject item) throws JSONException {
-        item.put("filePath", "");
-        item.put("lineNumber", "");
+        MavenDependencyLocation locationObj = this.componentLocationMap.get(item.getString("externalId"));
+        item.put("filePath", locationObj.getPomFilePath());
+        item.put("lineNumber", locationObj.getLineNo());
     }
 
     private JSONObject generateNewItemTemplate(JSONObject item) throws JSONException {
@@ -33,7 +41,7 @@ public class VulnComponentDataset {
         return newItem;
     }
 
-    public JSONObject generateVulnComponentDataset(JSONObject inputJsonObj) throws JSONException {
+    public JSONObject generateVulnComponentDataset(JSONObject inputJsonObj, HashMap<String, MavenDependencyLocation> componentLocationMap) throws JSONException {
 
         // Create result object template
         JSONObject result = new JSONObject();

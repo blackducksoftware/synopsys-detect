@@ -23,31 +23,33 @@ public class POCDriver {
     // btw we are processing strings unsafely -- trusted source assumed
     // 1. Given a maven project directory, find all POMs
     public void drive() {
-//        try {
-//            String inputFilePath = "/poc-resources/jsonPayloadDetect.json";
-//            InputStream inputStream = Application.class.getResourceAsStream(inputFilePath);
-//
-//            VulnComponentDataset vulnComponentDataset = new VulnComponentDataset();
-//            String jsonData = new String(inputStream.readAllBytes());
-//            JSONObject jsonObject = new JSONObject(jsonData);
-//
-//            // Part 1: Generate vulnerability-component dataset
-//            JSONObject intermediateResult = vulnComponentDataset.generateVulnComponentDataset(jsonObject);
-//
-//            System.out.println("\nResult:\n" + intermediateResult.toString(4));
-//
-//            // Write the intermediate output to a folder
-//            File targetDir = new File("target/output-files");
-//            targetDir.mkdirs();
-//            File outputFile = new File(targetDir, "output.json");
-//            PrintWriter fileWriter = new PrintWriter(outputFile);
-//            fileWriter.println(intermediateResult.toString(4));
-//            fileWriter.close();
-//        } catch (IOException | JSONException e) {
-//            System.out.println("An error occurred while reading the file.");
-//            e.printStackTrace();
-//        }
-        giveMeDictionary();
+        try {
+            String inputFilePath = "/poc-resources/jsonPayloadDetect.json";
+            InputStream inputStream = Application.class.getResourceAsStream(inputFilePath);
+
+            String jsonData = new String(inputStream.readAllBytes());
+            JSONObject jsonObject = new JSONObject(jsonData);
+
+            // Part A: Generate component-location hash map
+            HashMap<String, MavenDependencyLocation> componentLocationMap = giveMeDictionary();
+
+            // Part B: Generate vulnerability-component dataset
+            VulnComponentDataset vulnComponentDataset = new VulnComponentDataset(componentLocationMap);
+            JSONObject result = vulnComponentDataset.generateVulnComponentDataset(jsonObject, componentLocationMap);
+
+            System.out.println("\nResult:\n" + result.toString(4));
+
+            // Write the intermediate output to a folder
+            File targetDir = new File("target/output-files");
+            targetDir.mkdirs();
+            File outputFile = new File(targetDir, "output.json");
+            PrintWriter fileWriter = new PrintWriter(outputFile);
+            fileWriter.println(result.toString(4));
+            fileWriter.close();
+        } catch (IOException | JSONException e) {
+            System.out.println("An error occurred while reading the file.");
+            e.printStackTrace();
+        }
     }
 
     private HashMap<String, MavenDependencyLocation> giveMeDictionary() {
