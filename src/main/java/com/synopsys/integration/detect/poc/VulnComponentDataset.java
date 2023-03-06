@@ -41,7 +41,7 @@ public class VulnComponentDataset {
         return newItem;
     }
 
-    public JSONObject generateVulnComponentDataset(JSONObject inputJsonObj, HashMap<String, MavenDependencyLocation> componentLocationMap) throws JSONException {
+    public JSONObject generateVulnComponentDataset(JSONObject inputJsonObj) throws JSONException {
 
         // Create result object template
         JSONObject result = new JSONObject();

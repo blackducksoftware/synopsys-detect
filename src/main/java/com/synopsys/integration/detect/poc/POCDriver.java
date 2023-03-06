@@ -35,7 +35,7 @@ public class POCDriver {
 
             // Part B: Generate vulnerability-component dataset
             VulnComponentDataset vulnComponentDataset = new VulnComponentDataset(componentLocationMap);
-            JSONObject result = vulnComponentDataset.generateVulnComponentDataset(jsonObject, componentLocationMap);
+            JSONObject result = vulnComponentDataset.generateVulnComponentDataset(jsonObject);
 
             System.out.println("\nResult:\n" + result.toString(4));
 
