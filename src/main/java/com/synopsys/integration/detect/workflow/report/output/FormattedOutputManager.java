@@ -63,43 +63,43 @@ public class FormattedOutputManager {
         formattedOutput.formatVersion = "0.5.0";
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
 
-//        formattedOutput.results = Bds.of(detectResults)
-//            .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), removeTabsFromMessages(result.getResultSubMessages())))
-//            .toList();
+        formattedOutput.results = Bds.of(detectResults)
+            .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), removeTabsFromMessages(result.getResultSubMessages())))
+            .toList();
 
-//        formattedOutput.status = Bds.of(statusSummaries)
-//            .map(status -> new FormattedStatusOutput(status.getDescriptionKey(), status.getStatusType().toString()))
-//            .toList();
-//
-//        formattedOutput.issues = Bds.of(detectIssues)
-//            .map(issue -> new FormattedIssueOutput(issue.getType().name(), issue.getTitle(), issue.getMessages()))
-//            .toList();
-//        formattedOutput.operations = visibleOperations();
+        formattedOutput.status = Bds.of(statusSummaries)
+            .map(status -> new FormattedStatusOutput(status.getDescriptionKey(), status.getStatusType().toString()))
+            .toList();
+
+        formattedOutput.issues = Bds.of(detectIssues)
+            .map(issue -> new FormattedIssueOutput(issue.getType().name(), issue.getTitle(), issue.getMessages()))
+            .toList();
+        formattedOutput.operations = visibleOperations();
 
         // The exit status is known prior to this method being called and is passed in...
         // we will construct a reasonable facsimile to the other status, issues etc. for outputting the 
         // detect exit status.
-//        overallStatus.add(exitCodeType);
-//        formattedOutput.overallStatus = Bds.of(overallStatus)
-//                .map(overallStatus -> new FormattedStatusOutput(overallStatus.toString(), overallStatus.getDescription()))
-//                .toList();
-//
+        overallStatus.add(exitCodeType);
+        formattedOutput.overallStatus = Bds.of(overallStatus)
+                .map(overallStatus -> new FormattedStatusOutput(overallStatus.toString(), overallStatus.getDescription()))
+                .toList();
+
         if (detectorToolResult != null) { //TODO (Detector): Add formatted output results...
             formattedOutput.detectors = convertDetectors();
         }
-//        if (projectNameVersion != null) {
-//            formattedOutput.projectName = projectNameVersion.getName();
-//            formattedOutput.projectVersion = projectNameVersion.getVersion();
-//        }
-//
-//        formattedOutput.codeLocations = Bds.of(this.codeLocations)
-//            .map(FormattedCodeLocationOutput::new)
-//            .toList();
-//
-//        formattedOutput.unrecognizedPaths = new HashMap<>();
-//        unrecognizedPaths.keySet().forEach(key -> formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList())));
-//
-//        formattedOutput.propertyValues = rawMaskedPropertyValues;
+        if (projectNameVersion != null) {
+            formattedOutput.projectName = projectNameVersion.getName();
+            formattedOutput.projectVersion = projectNameVersion.getVersion();
+        }
+
+        formattedOutput.codeLocations = Bds.of(this.codeLocations)
+            .map(FormattedCodeLocationOutput::new)
+            .toList();
+
+        formattedOutput.unrecognizedPaths = new HashMap<>();
+        unrecognizedPaths.keySet().forEach(key -> formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList())));
+
+        formattedOutput.propertyValues = rawMaskedPropertyValues;
 
         return formattedOutput;
     }
