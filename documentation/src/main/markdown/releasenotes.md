@@ -2,6 +2,10 @@
 
 ## Version 8.7.0
 
+### New features
+
+* (IDETECT-3655) The accuracy, HIGH or LOW, of any detectors run during a scan will now be recorded in the status.json file.
+
 ### Changed features
 
 * (IDETECT-2933) [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported.
