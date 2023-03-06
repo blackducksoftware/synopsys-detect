@@ -58,7 +58,6 @@ public class SignatureScanResult {
         
         return ids;
     }
-
     private boolean isValidScanID(String scanId) {
         // if BlackDuck returns an invalid scanID (containing only zeros) or an invalid UUID
         // this method will guard.
@@ -67,10 +66,6 @@ public class SignatureScanResult {
                 .compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
         Pattern invalidScanIdRegex = Pattern.compile("^0+-0+-0+-0+-0+$");
 
-        if (validUUIDRegex.matcher(scanId).matches()) {
-            return invalidScanIdRegex.matcher(scanId).matches() ? false : true;
-        } else {
-            return false;
-        }
+        return validUUIDRegex.matcher(scanId).matches() && !invalidScanIdRegex.matcher(scanId).matches();
     }
 }
