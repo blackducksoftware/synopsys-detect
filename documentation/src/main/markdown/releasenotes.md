@@ -4,7 +4,7 @@
 
 ### New features
 
-* (IDETECT-3655) The accuracy, HIGH or LOW, of any detectors run during a scan will now be recorded in the status.json file.
+* (IDETECT-3655) The accuracy of dependency determination, HIGH or LOW, of any detectors run during a scan will now be recorded in the status.json file.
 
 ### Changed features
 
