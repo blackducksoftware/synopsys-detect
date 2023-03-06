@@ -106,6 +106,7 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.33'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.apache.pdfbox:pdfbox:2.0.25'
+    implementation 'org.json:json:20090211'
 
     // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
     testImplementation 'org.assertj:assertj-core:3.13.2'

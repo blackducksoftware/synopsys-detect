@@ -136,7 +136,7 @@ public class Application implements ApplicationRunner {
 
             //Create status output file.  If we've gotten this far the 
             // system must now know or be able to compute the winning exit
-            // code.  We'll pass this to FormattedOPutput.createFormattedOutput 
+            // code.  We'll pass this to FormattedOutput.createFormattedOutput
             // via Application.createStatusOutputFile.
             ExitCodeType exitCodeType = exitCodeManager.getWinningExitCode();
             logger.info("");
