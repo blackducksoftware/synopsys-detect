@@ -115,20 +115,24 @@ public class RapidModeStepRunner {
                 Reader reader = Files.newBufferedReader(Paths.get(scanOutputLocation));
 
                 SignatureScanResult result = gson.fromJson(reader, SignatureScanResult.class);
-                
-                Set<String> parsedIds = result.parseScanIds();
-                
-                for (String id : parsedIds) {
-                    HttpUrl url = new HttpUrl(blackDuckUrl + "/api/developer-scans/" + id);
 
-                    logger.info(scanMode + " mode signature scan URL: {}", url);
-                    parsedUrls.add(url);
+                if (result.getExitStatus() == null || !result.getExitStatus().equalsIgnoreCase("FAILURE")) {
+
+                    Set<String> parsedIds = result.parseScanIds();
+
+                    for (String id : parsedIds) {
+                        HttpUrl url = new HttpUrl(blackDuckUrl + "/api/developer-scans/" + id);
+
+                        logger.info(scanMode + " mode signature scan URL: {}", url);
+                        parsedUrls.add(url);
+                    }
+                } else {
+                    logger.debug("{} mode signature scan result not processed for scan IDs due to exit status from BD: {}", scanMode, result.getExitStatus());
                 }
             } catch (Exception e) {
                 throw new IntegrationException("Unable to parse rapid signature scan results.");
             }
         }
-        
         return parsedUrls;
     }
 }
