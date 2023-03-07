@@ -35,6 +35,7 @@ public class POCDriver {
 
             // Part B: Generate vulnerability-component dataset
             VulnComponentDataset vulnComponentDataset = new VulnComponentDataset(componentLocationMap);
+//            VulnComponentDataset vulnComponentDataset = new VulnComponentDataset();
             JSONObject result = vulnComponentDataset.generateVulnComponentDataset(jsonObject);
 
             System.out.println("\nResult:\n" + result.toString(4));
@@ -42,7 +43,7 @@ public class POCDriver {
             // Write the intermediate output to a folder
             File targetDir = new File("target/output-files");
             targetDir.mkdirs();
-            File outputFile = new File(targetDir, "output.json");
+            File outputFile = new File(targetDir, "vulnerability-component-dataset.json");
             PrintWriter fileWriter = new PrintWriter(outputFile);
             fileWriter.println(result.toString(4));
             fileWriter.close();

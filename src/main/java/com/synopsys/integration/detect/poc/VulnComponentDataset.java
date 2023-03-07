@@ -7,97 +7,137 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class VulnComponentDataset {
-    private HashMap<String, MavenDependencyLocation> componentLocationMap;
+    private final HashMap<String, MavenDependencyLocation> componentLocationMap;
+    private JSONObject resultDataset;
 
     public VulnComponentDataset(HashMap<String, MavenDependencyLocation> componentLocationMap) {
         this.componentLocationMap = componentLocationMap;
+        this.resultDataset = new JSONObject();
     }
 
     private void addLocationToItem(JSONObject item) throws JSONException {
         MavenDependencyLocation locationObj = this.componentLocationMap.get(item.getString("externalId"));
-        item.put("filePath", locationObj.getPomFilePath());
-        item.put("lineNumber", locationObj.getLineNo());
+//        item.put("filePath", locationObj.getPomFilePath());
+//        item.put("lineNumber", locationObj.getLineNo());
+        item.put("filePath", "");
+        item.put("lineNumber", "");
     }
 
-    private JSONObject generateNewItemTemplate(JSONObject item) throws JSONException {
-        Boolean isDirect = item.getJSONArray("transitiveUpgradeGuidance").length() == 0;
+    private JSONObject generateDirDepObject(JSONObject item) throws JSONException {
+        Boolean isExplicitDirect = item.has("transitiveUpgradeGuidance");
 
         JSONObject newItem = new JSONObject();
+
         newItem.put("externalId", item.getString("externalId"));
         newItem.put("shortTermUpgradeGuidance", item.getJSONObject("shortTermUpgradeGuidance"));
         newItem.put("longTermUpgradeGuidance", item.getJSONObject("longTermUpgradeGuidance"));
+        addLocationToItem(newItem);
 
-        if (isDirect) {
-            addLocationToItem(newItem);
-        } else {
-            // If transitive, there can be multiple transitive guidance components available. Add location to each such component.
-            JSONArray transitiveUpgradeGuidanceArr = item.getJSONArray("transitiveUpgradeGuidance");
-            for (int k = 0; k < transitiveUpgradeGuidanceArr.length(); k++) {
-                JSONObject transitiveUpgradeGuidanceObj = transitiveUpgradeGuidanceArr.getJSONObject(k);
-                addLocationToItem(transitiveUpgradeGuidanceObj);
-            }
-            newItem.put("transitiveUpgradeGuidance", transitiveUpgradeGuidanceArr);
+        if (!isExplicitDirect) {
+            newItem.put("affectedTransitiveDependencies", new JSONArray());
         }
+
         return newItem;
+    }
+
+    private void processTransitiveUpgradeGuidance(JSONObject currItem, JSONObject affectedDirDepObject) throws JSONException {
+        JSONArray transitiveUpgradeGuidanceArr = currItem.getJSONArray("transitiveUpgradeGuidance");
+        String currItemExternalId = currItem.getString("externalId");
+
+        for (int k = 0; k < transitiveUpgradeGuidanceArr.length(); k++) {
+            JSONObject currDirDepObj = transitiveUpgradeGuidanceArr.getJSONObject(k);
+            String currDirDepObjExtId = currDirDepObj.getString("externalId");
+
+            // fetch or create new
+            JSONObject newDirDepObj;
+            if (affectedDirDepObject.has(currDirDepObjExtId)) {
+                newDirDepObj = affectedDirDepObject.getJSONObject(currDirDepObjExtId);
+            } else {
+                newDirDepObj = generateDirDepObject(currDirDepObj);
+                /*
+                 Note: One unhandled edge case here could be if the direct dependency is listed in the components of our source JSON
+                 as well as in the "transitiveUpgradeGuidance" section for a transitive dependency *AND* the upgrade guidance in both cases
+                 is different. Currently, above code assumes this case doesn't exist and we will see the last modified upgrade guidance.
+                 If upgrade guidance is same in such cases, then it doesn't matter.
+
+                 However, if the guidance is different for the same component, to handle it:
+                 We need to compare the upgrade guidance sections of both entries and choose the version which is higher.
+                 */
+            }
+
+            newDirDepObj.getJSONArray("affectedTransitiveDependencies").put(currItemExternalId);;
+            affectedDirDepObject.put(currDirDepObjExtId, newDirDepObj);
+        }
+    }
+
+    private void updateVulnObjectWithDependencies(JSONObject vulnObject, JSONObject currItem) throws  JSONException {
+        Boolean isCurrItemDirect = currItem.getJSONArray("transitiveUpgradeGuidance").length() == 0;
+
+        JSONObject affectedDirDepObject = vulnObject.getJSONObject("affectedDirectDependencies");
+
+        String currItemExternalId = currItem.getString("externalId");
+        if (isCurrItemDirect && !affectedDirDepObject.has(currItemExternalId)) {
+            JSONObject newItemObj = generateDirDepObject(currItem);
+            affectedDirDepObject.put(currItemExternalId, newItemObj);
+        } else {
+            // currItem is transitive
+            processTransitiveUpgradeGuidance(currItem, affectedDirDepObject);
+        }
+    }
+
+    private JSONObject fetchOrCreateNewVulnObject(JSONObject currVulnerability) throws JSONException {
+        String currVulnName = currVulnerability.getString("name");
+        String currVulnSeverity = currVulnerability.getString("vulnSeverity");
+        String currVulnDescription = currVulnerability.getString("description");
+
+        // Fetch the vulnerability object based on its key i.e. vulnName
+        JSONObject newVulnObject;
+        if (this.resultDataset.getJSONObject(currVulnSeverity).has(currVulnName)) {
+            newVulnObject = this.resultDataset.getJSONObject(currVulnSeverity).getJSONObject(currVulnName);
+        }
+        // If not found, create a new template object
+        else {
+            newVulnObject = new JSONObject();
+            newVulnObject.put("vulnDescription", currVulnDescription);
+            newVulnObject.put("affectedDirectDependencies", new JSONObject());
+        }
+        return newVulnObject;
     }
 
     public JSONObject generateVulnComponentDataset(JSONObject inputJsonObj) throws JSONException {
 
         // Create result object template
-        JSONObject result = new JSONObject();
-        result.put("CRITICAL", new JSONObject());
-        result.put("HIGH", new JSONObject());
-        result.put("MEDIUM", new JSONObject());
-        result.put("LOW", new JSONObject());
+        this.resultDataset.put("CRITICAL", new JSONObject());
+        this.resultDataset.put("HIGH", new JSONObject());
+        this.resultDataset.put("MEDIUM", new JSONObject());
+        this.resultDataset.put("LOW", new JSONObject());
 
-        JSONArray items = inputJsonObj.getJSONArray("items");
+        JSONArray currItems = inputJsonObj.getJSONArray("items");
 
-        for (int i = 0; i < items.length(); i++) {
-            JSONObject item = items.getJSONObject(i);
+        for (int i = 0; i < currItems.length(); i++) {
+            JSONObject currItem = currItems.getJSONObject(i);
 
             // Direct dependency is identified by the transitiveUpgradeGuidance array being empty
-            Boolean isDirect = item.getJSONArray("transitiveUpgradeGuidance").length() == 0;
+            Boolean isCurrItemDirect = currItem.getJSONArray("transitiveUpgradeGuidance").length() == 0;
 
-            JSONObject newItem = generateNewItemTemplate(item);
-
-            JSONArray vulnerabilities = item.getJSONArray("allVulnerabilities");
+            JSONArray vulnerabilities = currItem.getJSONArray("allVulnerabilities");
             for (int j = 0; j < vulnerabilities.length(); j++) {
 
                 JSONObject currVulnerability = vulnerabilities.getJSONObject(j);
                 String currVulnName = currVulnerability.getString("name");
                 String currVulnSeverity = currVulnerability.getString("vulnSeverity");
-                String currVulnDescription = currVulnerability.getString("description");
 
-                // Fetch the vulnerability object based on it's key i.e. vulnName
-                JSONObject vulnObject;
-                if (result.getJSONObject(currVulnSeverity).has(currVulnName)) {
-                    vulnObject = result.getJSONObject(currVulnSeverity).getJSONObject(currVulnName);
-                }
-                // If not found, create a new template object
-                else {
-                    JSONObject newVulnObject = new JSONObject();
-                    JSONObject newVulnDependencies = new JSONObject();
-                    newVulnDependencies.put("directDependencies", new JSONArray());
-                    newVulnDependencies.put("transitiveDependencies", new JSONArray());
-                    newVulnObject.put("vulnDependencies", newVulnDependencies);
-                    vulnObject = newVulnObject;
-                }
+                // Fetch or create new vulnerability object
+                JSONObject newVulnObject = fetchOrCreateNewVulnObject(currVulnerability);
 
-                // Update the vulnerability object
-                vulnObject.put("vulnDescription", currVulnDescription);
-                if (isDirect) {
-                    JSONArray directDepArray = vulnObject.getJSONObject("vulnDependencies").getJSONArray("directDependencies");
-                    directDepArray.put(newItem);
-                } else {
-                    JSONArray transitiveDepArray = vulnObject.getJSONObject("vulnDependencies").getJSONArray("transitiveDependencies");
-                    transitiveDepArray.put(newItem);
-                }
+                // Retrieve affectedDirectDependencies object (may or may not be empty)
+                updateVulnObjectWithDependencies(newVulnObject, currItem);
 
-                result.getJSONObject(currVulnSeverity).put(currVulnName, vulnObject);
+                this.resultDataset.getJSONObject(currVulnSeverity).put(currVulnName, newVulnObject);
             }
         }
 
-        return result;
+        return this.resultDataset;
     }
 }
 
