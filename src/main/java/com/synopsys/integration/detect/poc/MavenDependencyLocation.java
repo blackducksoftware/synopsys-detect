@@ -1,8 +1,8 @@
 package com.synopsys.integration.detect.poc;
 
 public class MavenDependencyLocation {
-    private String pomFilePath; // relative to the proj src dir (detect.source.path)
-    private int lineNo;
+    private String pomFilePath = ""; // relative to the proj src dir (detect.source.path)
+    private int lineNo = 000;
 
     public MavenDependencyLocation(String pomFilePath, int lineNo) {
         this.pomFilePath = pomFilePath;
@@ -15,7 +15,7 @@ public class MavenDependencyLocation {
     }
 
     public String getPomFilePath() {
-        return pomFilePath;
+        return this.pomFilePath;
     }
 
     public void setPomFilePath(String pomFilePath) {
@@ -23,7 +23,7 @@ public class MavenDependencyLocation {
     }
 
     public int getLineNo() {
-        return lineNo;
+        return this.lineNo;
     }
 
     public void setLineNo(int lineNo) {

@@ -17,10 +17,11 @@ public class VulnComponentDataset {
 
     private void addLocationToItem(JSONObject item) throws JSONException {
         MavenDependencyLocation locationObj = this.componentLocationMap.get(item.getString("externalId"));
-//        item.put("filePath", locationObj.getPomFilePath());
-//        item.put("lineNumber", locationObj.getLineNo());
-        item.put("filePath", "");
-        item.put("lineNumber", "");
+        if (locationObj == null) {
+            locationObj = new MavenDependencyLocation("", 000);
+        }
+        item.put("filePath", locationObj.getPomFilePath());
+        item.put("lineNumber", locationObj.getLineNo());
     }
 
     private JSONObject generateDirDepObject(JSONObject item) throws JSONException {
