@@ -108,8 +108,9 @@ public class RapidModeStepRunner {
                         logger.info(scanMode + " mode signature scan URL: {}", url);
                         parsedUrls.add(url);
                     }
+                } else {
+                    logger.debug("{} mode signature scan result not processed for scan IDs due to exit status from BD: {}", scanMode, result.getExitStatus());
                 }
-                logger.debug("{} mode signature scan result not processed for scan IDs due to exit status from BD: {}", scanMode, result.getExitStatus());
             } catch (Exception e) {
                 throw new IntegrationException("Unable to parse rapid signature scan results.");
             }
