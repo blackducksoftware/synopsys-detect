@@ -93,6 +93,12 @@ public class DetectStatusLogger {
                 if (!detectResult.getResultSubMessages().isEmpty()) {
                     detectResult.getResultSubMessages().forEach(subMessage -> logger.info(String.format("\t%s", subMessage)));
                 }
+
+                if (!detectResult.getTransitiveUpgradeGuidanceSubMessages().isEmpty()) {
+                    logger.info("");
+                    logger.info("===== Transitive Guidance =====");
+                    detectResult.getTransitiveUpgradeGuidanceSubMessages().forEach(subMessage -> logger.info(String.format("\t%s", subMessage)));
+                }
             }
             logger.info("");
         }

@@ -14,7 +14,7 @@ import org.mockito.Mockito;
 import org.zeroturnaround.zip.commons.FileUtils;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.blackduck.api.generated.view.ScanFullResultView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -35,8 +35,10 @@ public class RapidModeGenerateJsonOperationTest {
         RapidModeGenerateJsonOperation op = new RapidModeGenerateJsonOperation(gson, directoryManager);
         NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
 
-        List<DeveloperScansScanView> results = new LinkedList<>();
-        DeveloperScansScanView resultView = Mockito.mock(DeveloperScansScanView.class);
+        //List<DeveloperScansScanView> results = new LinkedList<>();
+        List<ScanFullResultView> results = new LinkedList<>();
+        //DeveloperScansScanView resultView = Mockito.mock(DeveloperScansScanView.class);
+        ScanFullResultView resultView = Mockito.mock(ScanFullResultView.class);
         results.add(resultView);
 
         String mockedResultsJsonString = "mocked json string for results";

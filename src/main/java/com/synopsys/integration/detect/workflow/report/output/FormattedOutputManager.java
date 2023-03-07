@@ -67,6 +67,10 @@ public class FormattedOutputManager {
             .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), removeTabsFromMessages(result.getResultSubMessages())))
             .toList();
 
+        formattedOutput.transitiveGuidance = Bds.of(detectResults)
+                .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), removeTabsFromMessages(result.getTransitiveUpgradeGuidanceSubMessages())))
+                .toList();
+
         formattedOutput.status = Bds.of(statusSummaries)
             .map(status -> new FormattedStatusOutput(status.getDescriptionKey(), status.getStatusType().toString()))
             .toList();

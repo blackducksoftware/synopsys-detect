@@ -14,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.synopsys.integration.blackduck.api.generated.view.ScanFullResultView;
+import com.synopsys.integration.blackduck.api.generated.discovery.BlackDuckMediaTypeDiscovery;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
@@ -59,6 +62,20 @@ public class RapidModeStepRunner {
             parsedUrls.addAll(uploadResultsUrls);
         }
 
+        // this may have to go somewhere else but it's here for now.
+        ArrayList<HttpUrl> ack = new ArrayList<HttpUrl>();
+        for (HttpUrl url : parsedUrls) {
+            try {
+                url = url.appendRelativeUrl("/full-result");
+                ack.add(url);
+            } catch (IntegrationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        parsedUrls.clear();
+        parsedUrls.addAll(ack);
+
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             logger.debug("Rapid scan signature scan detected.");
 
@@ -71,11 +88,12 @@ public class RapidModeStepRunner {
 
         // Get info about any scans that were done
         BlackduckScanMode mode = blackDuckRunData.getScanMode();
-        List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, parsedUrls, mode);
+        List<ScanFullResultView> rapidFullResults = operationRunner.waitForFullRapidResults(blackDuckRunData, parsedUrls, mode);
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
-        File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
-        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults, mode);
+        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
+        // now do the jsonFile instead of before.  
+        File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
         operationRunner.publishRapidResults(jsonFile, summary, mode);
     }
 
