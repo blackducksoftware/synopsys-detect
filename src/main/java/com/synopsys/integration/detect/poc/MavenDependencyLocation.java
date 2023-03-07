@@ -9,6 +9,11 @@ public class MavenDependencyLocation {
         this.lineNo = lineNo;
     }
 
+    public MavenDependencyLocation() {
+        this.pomFilePath = pomFilePath;
+        this.lineNo = lineNo;
+    }
+
     public String getPomFilePath() {
         return pomFilePath;
     }

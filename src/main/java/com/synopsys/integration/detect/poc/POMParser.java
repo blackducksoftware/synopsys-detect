@@ -4,10 +4,18 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.*;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 
 public class POMParser {
@@ -22,10 +30,76 @@ public class POMParser {
             // given: "src/main/resources/poc-resources/pom.xml"
             // 1. standard way to open file for parsing ...
             File pomFile = new File(filepath);
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = null;
-            db = dbf.newDocumentBuilder();
-            Document xmlDoc = db.parse(pomFile);
+//            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder db = null;
+//            db = dbf.newDocumentBuilder();
+//            Document xmlDoc = db.parse(pomFile);
+
+            //***********************************************
+            //InputSource inputSource = new InputSource(new FileReader(filepath));
+            InputStream is = new FileInputStream(pomFile);
+
+            final Document xmlDoc;
+            SAXParser parser;
+            try {
+                SAXParserFactory factory = SAXParserFactory.newInstance();
+                parser = factory.newSAXParser();
+                DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+                xmlDoc = docBuilder.newDocument();
+            } catch(ParserConfigurationException e){
+                throw new RuntimeException("Can't create SAX parser / DOM builder.", e);
+            }
+            /////////////////////////////////////////////////
+            final Deque<Element> elementStack = new ArrayDeque<>();
+            final StringBuilder textBuffer = new StringBuilder();
+            DefaultHandler handler = new DefaultHandler() {
+                private Locator locator;
+
+                @Override
+                public void setDocumentLocator(Locator locator) {
+                    this.locator = locator; //Save the locator, so that it can be used later for line tracking when traversing nodes.
+                }
+
+                @Override
+                public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                    addTextIfNeeded();
+                    Element el = xmlDoc.createElement(qName);
+                    for(int i = 0;i < attributes.getLength(); i++)
+                        el.setAttribute(attributes.getQName(i), attributes.getValue(i));
+                    el.setUserData("lineNo", String.valueOf(locator.getLineNumber()), null);
+                    elementStack.push(el);
+                }
+                @Override
+                public void endElement(String uri, String localName, String qName){
+                    addTextIfNeeded();
+                    Element closedEl = elementStack.pop();
+                    if (elementStack.isEmpty()) { // Is this the root element?
+                        xmlDoc.appendChild(closedEl);
+                    } else {
+                        Element parentEl = elementStack.peek();
+                        parentEl.appendChild(closedEl);
+                    }
+                }
+
+                @Override
+                public void characters (char ch[], int start, int length) throws SAXException {
+                    textBuffer.append(ch, start, length);
+                }
+
+                // Outputs text accumulated under the current node
+                private void addTextIfNeeded() {
+                    if (textBuffer.length() > 0) {
+                        Element el = elementStack.peek();
+                        Node textNode = xmlDoc.createTextNode(textBuffer.toString());
+                        el.appendChild(textNode);
+                        textBuffer.delete(0, textBuffer.length());
+                    }
+                }
+            };
+            parser.parse(is, handler);
+            // look at the xmlDoc
+            /////////////////////////////////////////////////
 
             int count = 0;
             parseProperties(xmlDoc);
@@ -34,7 +108,10 @@ public class POMParser {
             for (int i = 0; i < dependencies.getLength(); i++) {
                 depElement = (Element) dependencies.item(i);
                 childNodes = depElement.getChildNodes();
+
                 ExternalId depExternalId = new ExternalId();
+                MavenDependencyLocation mdl = new MavenDependencyLocation();
+
                 try {
                     depExternalId.setGroupId(childNodes.item(1).getTextContent());
                     depExternalId.setArtifactId(childNodes.item(3).getTextContent());
@@ -44,15 +121,19 @@ public class POMParser {
                         if (isVariable(version)){
                             MavenProperty propertyValAndLineNo = getVariableValue(version);
                             version = propertyValAndLineNo.getValue();
+                            mdl.setLineNo(propertyValAndLineNo.getLineNo());
+                        } else {
+                            mdl.setLineNo(Integer.valueOf(childNodes.item(5).getUserData("lineNo").toString()));
                         }
                         depExternalId.setVersion(version);
+                        mdl.setPomFilePath("pom.xml");
                     } else {
                         System.out.println("\n***EDGE CASE ENCOUNTERED: " + depExternalId.getGAV() + "\n");
                         // TODO print me to a file to collect when edge cases are encountered
                     }
-                    System.out.println(count++);
+//                    System.out.println(count++);
                     // TODO should keep track of keys that got replaced just in case theres something weird going on
-                    dictionary.put(depExternalId.getGAV(), new MavenDependencyLocation("pathToPOM", 123));
+                    dictionary.put(depExternalId.getGAV(), new MavenDependencyLocation(mdl.getPomFilePath(), mdl.getLineNo()));
                 } catch (Exception e) {
                     System.out.println("\n***EDGE CASE ENCOUNTERED: " + depExternalId.getGAV() + "\n"); // TODO print me to a file to collect when edge cases are encountered
                     // for example, one edge case is when version is not specified but the build is successful b/c <ignoredUnusedDeclaredDependencies>
@@ -104,7 +185,8 @@ public class POMParser {
             }
             String propertyName = childNode.getNodeName();
             String propertyValue = childNode.getTextContent();
-            MavenProperty propertyValAndLineNo = new MavenProperty(propertyValue, 222);
+            int lineNo = Integer.valueOf(childNode.getUserData("lineNo").toString());
+            MavenProperty propertyValAndLineNo = new MavenProperty(propertyValue, lineNo);
             propertiesDictionary.put(propertyName, propertyValAndLineNo);
         }
 //        printPropertiesDictionary(propertiesDictionary);
