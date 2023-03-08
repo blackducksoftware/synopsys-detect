@@ -62,19 +62,7 @@ public class RapidModeStepRunner {
             parsedUrls.addAll(uploadResultsUrls);
         }
 
-        // this may have to go somewhere else but it's here for now.
-        ArrayList<HttpUrl> ack = new ArrayList<HttpUrl>();
-        for (HttpUrl url : parsedUrls) {
-            try {
-                url = url.appendRelativeUrl("/full-result");
-                ack.add(url);
-            } catch (IntegrationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        parsedUrls.clear();
-        parsedUrls.addAll(ack);
+        fullResultUrls(parsedUrls);
 
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             logger.debug("Rapid scan signature scan detected.");
@@ -95,6 +83,21 @@ public class RapidModeStepRunner {
         RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
 
         operationRunner.publishRapidResults(jsonFile, summary, mode);
+    }
+
+    private void fullResultUrls(List<HttpUrl> parsedUrls) {
+        // this may have to go somewhere else but it's here for now.
+        ArrayList<HttpUrl> ack = new ArrayList<HttpUrl>();
+        for (HttpUrl url : parsedUrls) {
+            try {
+                url = url.appendRelativeUrl("/full-result");
+                ack.add(url);
+            } catch (IntegrationException e) {
+                logger.error(e.getMessage());
+            }
+        }
+        parsedUrls.clear();
+        parsedUrls.addAll(ack);
     }
 
     /**

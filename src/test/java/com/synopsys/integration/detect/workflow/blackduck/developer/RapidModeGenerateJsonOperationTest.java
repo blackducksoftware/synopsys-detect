@@ -35,9 +35,7 @@ public class RapidModeGenerateJsonOperationTest {
         RapidModeGenerateJsonOperation op = new RapidModeGenerateJsonOperation(gson, directoryManager);
         NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
 
-        //List<DeveloperScansScanView> results = new LinkedList<>();
         List<ScanFullResultView> results = new LinkedList<>();
-        //DeveloperScansScanView resultView = Mockito.mock(DeveloperScansScanView.class);
         ScanFullResultView resultView = Mockito.mock(ScanFullResultView.class);
         results.add(resultView);
 

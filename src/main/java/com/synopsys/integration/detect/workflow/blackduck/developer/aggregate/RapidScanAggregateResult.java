@@ -36,7 +36,7 @@ public class RapidScanAggregateResult {
     public void logResult(IntLogger logger) {
         logGroupDetail(logger, componentDetails);
         logGroupDetail(logger, securityDetails);
-        logTransitiveRubbish(logger);
+        logTransitiveGuidanceInformation(logger);
         logGroupDetail(logger, licenseDetails);
     }
 
@@ -54,7 +54,7 @@ public class RapidScanAggregateResult {
         }
     }
     
-    private void logTransitiveRubbish(IntLogger logger) {
+    private void logTransitiveGuidanceInformation(IntLogger logger) {
         String groupName = "Upgrade Guidance For Transitive Components:";
         String componentMsgString = "component";
         logger.info("");
@@ -62,34 +62,5 @@ public class RapidScanAggregateResult {
         for (String guidance : this.transitiveGuidance) {
             logger.info(String.format("\t\t%s",guidance));
         }
-            
-//        Set<String> componentKeys = this.directToTransitiveChildren.keySet();
-//        for (String key : componentKeys) {
-//            String plural = "s";
-//
-//            String externalId = key;
-//            String componentName = /*externalId;*/this.externalIdToComponentName.get(externalId);
-//            if (componentName == null) {
-//                componentName = externalId;
-//            }
-//            componentName = externalId;
-//            List<String> children = this.directToTransitiveChildren.get(externalId);
-//            String childComponents = StringUtils.join(children, ", ");
-//            if (children.size() == 1) {
-//                plural = "";
-//            }
-//            
-//            String versionsToUse = "";
-//            String[] versions = this.directUpgradeGuidanceVersions.get(externalId);
-//            if (versions[1] != null && versions[0] != null   && versions[1].equals(versions[0])) {
-//                versionsToUse = "version " + versions[1];
-//            } else {
-//                versionsToUse = "versions (Short Term) " + versions[0] +", " + "(Long Term) " + versions[1];
-//            }
-//            
-//            logger.info(String.format("\t\tUpgrade component %s to %s in order to upgrade transitive component%s %s", componentName, versionsToUse, plural, childComponents));
-//
-//            }
-        
     }
 }
