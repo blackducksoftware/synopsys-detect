@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.blackduck.api.generated.view.ScanFullResultView;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -59,6 +59,8 @@ public class RapidModeStepRunner {
             parsedUrls.addAll(uploadResultsUrls);
         }
 
+        fullResultUrls(parsedUrls);
+
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             logger.debug("Rapid scan signature scan detected.");
 
@@ -71,12 +73,28 @@ public class RapidModeStepRunner {
 
         // Get info about any scans that were done
         BlackduckScanMode mode = blackDuckRunData.getScanMode();
-        List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, parsedUrls, mode);
+        List<ScanFullResultView> rapidFullResults = operationRunner.waitForFullRapidResults(blackDuckRunData, parsedUrls, mode);
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
-        File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
-        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults, mode);
+        File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
+        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
+
         operationRunner.publishRapidResults(jsonFile, summary, mode);
+    }
+
+    private void fullResultUrls(List<HttpUrl> parsedUrls) {
+        // this may have to go somewhere else but it's here for now.
+        ArrayList<HttpUrl> ack = new ArrayList<HttpUrl>();
+        for (HttpUrl url : parsedUrls) {
+            try {
+                url = url.appendRelativeUrl("/full-result");
+                ack.add(url);
+            } catch (IntegrationException e) {
+                logger.error(e.getMessage());
+            }
+        }
+        parsedUrls.clear();
+        parsedUrls.addAll(ack);
     }
 
     /**

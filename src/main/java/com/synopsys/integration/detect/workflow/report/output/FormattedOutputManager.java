@@ -67,6 +67,15 @@ public class FormattedOutputManager {
             .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), removeTabsFromMessages(result.getResultSubMessages())))
             .toList();
 
+        // avoid doing this if trans. guidance list is empty because it will just print the
+        // same info as the "results" item above.
+        List<FormattedResultOutput> transitiveOutput = Bds.of(detectResults)
+        .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), removeTabsFromMessages(result.getTransitiveUpgradeGuidanceSubMessages())))
+        .toList();
+        if (!transitiveOutput.get(0).subMessages.isEmpty()) {
+            formattedOutput.transitiveGuidance = transitiveOutput;
+        }
+
         formattedOutput.status = Bds.of(statusSummaries)
             .map(status -> new FormattedStatusOutput(status.getDescriptionKey(), status.getStatusType().toString()))
             .toList();

@@ -26,4 +26,9 @@ public class ReportDetectResult implements DetectResult {
     public List<String> getResultSubMessages() {
         return Collections.emptyList();
     }
+
+    @Override
+    public List<String> getTransitiveUpgradeGuidanceSubMessages() {
+        return Collections.emptyList();
+    }
 }

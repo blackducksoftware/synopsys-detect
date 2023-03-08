@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.http.HttpStatus;
 
+import com.synopsys.integration.blackduck.api.generated.view.ScanFullResultView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
@@ -19,7 +20,7 @@ import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.wait.ResilientJob;
 
-public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScansScanView>> {
+public class DetectRapidScanWaitJobFull implements ResilientJob<List<ScanFullResultView>> {
     private final BlackDuckApiClient blackDuckApiClient;
     private final List<HttpUrl> remainingUrls;
     private final List<HttpUrl> completedUrls;
@@ -29,7 +30,7 @@ public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScansS
 
     private boolean complete;
 
-    public DetectRapidScanWaitJob(BlackDuckApiClient blackDuckApiClient, List<HttpUrl> resultUrl, BlackduckScanMode mode) {
+    public DetectRapidScanWaitJobFull(BlackDuckApiClient blackDuckApiClient, List<HttpUrl> resultUrl, BlackduckScanMode mode) {
         this.blackDuckApiClient = blackDuckApiClient;
         this.remainingUrls = new ArrayList<>();
         remainingUrls.addAll(resultUrl);
@@ -76,23 +77,23 @@ public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScansS
     }
 
     @Override
-    public List<DeveloperScansScanView> onTimeout() throws IntegrationTimeoutException {
+    public List<ScanFullResultView> onTimeout() throws IntegrationTimeoutException {
         throw new IntegrationTimeoutException("Error getting developer scan result. Timeout may have occurred.");
     }
 
     @Override
-    public List<DeveloperScansScanView> onCompletion() throws IntegrationException {
-        List<DeveloperScansScanView> allComponents = new ArrayList<>();
+    public List<ScanFullResultView> onCompletion() throws IntegrationException {
+        List<ScanFullResultView> allComponents = new ArrayList<>();
         for (HttpUrl url : completedUrls) {
             allComponents.addAll(getScanResultsForUrl(url));
         }
         return allComponents;
     }
 
-    private List<DeveloperScansScanView> getScanResultsForUrl(HttpUrl url) throws IntegrationException {
-        BlackDuckMultipleRequest<DeveloperScansScanView> request =
+    private List<ScanFullResultView> getScanResultsForUrl(HttpUrl url) throws IntegrationException {
+        BlackDuckMultipleRequest<ScanFullResultView> request =
             new DetectRapidScanRequestBuilder()
-                .createRequest(url);
+                .createFullRequest(url);
         return blackDuckApiClient.getAllResponses(request);
     }
 
