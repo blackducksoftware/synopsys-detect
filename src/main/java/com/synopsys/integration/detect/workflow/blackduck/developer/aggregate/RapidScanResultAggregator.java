@@ -142,7 +142,7 @@ public class RapidScanResultAggregator {
         }
 
         String childExternalId = resultView.getExternalId();
-        if (resultView.getAllVulnerabilities().size() > 0) {// we'll only count things that HAVE vulnerabilities
+        if (transitiveGuidance.size() > 0  && resultView.getAllVulnerabilities().size() > 0) {// we'll only count things that HAVE vulnerabilities
 
             for (ScanFullResultItemsTransitiveUpgradeGuidanceView guidance : transitiveGuidance) {
                 String parentId = guidance.getExternalId();
