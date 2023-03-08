@@ -1,10 +1,6 @@
 package com.synopsys.integration.detect.workflow.blackduck.developer.aggregate;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.log.IntLogger;
 
