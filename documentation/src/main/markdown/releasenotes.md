@@ -5,6 +5,7 @@
 ### Changed features
 
 * (IDETECT-2933) [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported.
+* (IDETECT-3313) Failures in detectors will now be reported in the console output using the ERROR logging level. The ERROR logging is also used if there are errors in the overall status.
 
 ### Resolved issues
 
