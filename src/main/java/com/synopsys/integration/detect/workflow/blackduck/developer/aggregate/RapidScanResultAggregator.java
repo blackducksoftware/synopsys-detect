@@ -137,7 +137,7 @@ public class RapidScanResultAggregator {
      */
     private void compileTransitiveGuidance(ScanFullResultView resultView, List<ScanFullResultView> results) {
         List<ScanFullResultItemsTransitiveUpgradeGuidanceView> transitiveGuidance = resultView.getTransitiveUpgradeGuidance();
-        if (transitiveGuidance.size() <= 0) {
+        if (transitiveGuidance == null || transitiveGuidance.size() <= 0) {
             return;
         }
 
