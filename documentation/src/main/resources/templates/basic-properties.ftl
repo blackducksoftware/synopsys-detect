@@ -3,7 +3,7 @@
 This page lists [solution_name]'s basic properties.
 For advanced and deprecated properties, refer to [All Properties](all-properties.md).
 
-<#list groups as group>
+<#list groups?sort_by("groupName") as group>
 
 ## [${group.groupName}](${group.location}.md)
 
