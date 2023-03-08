@@ -324,18 +324,6 @@ public class OperationRunner {
         });
     }
 
-    public List<DeveloperScansScanView> waitForRapidResults(BlackDuckRunData blackDuckRunData, List<HttpUrl> rapidScans, BlackduckScanMode mode) throws OperationException {
-        return auditLog.namedInternal("Rapid Wait", () -> {
-            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            return new RapidModeWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForScans(
-                rapidScans,
-                detectConfigurationFactory.findTimeoutInSeconds(),
-                RapidModeWaitOperation.DEFAULT_WAIT_INTERVAL_IN_SECONDS,
-                mode
-            );
-        });
-    }
-
     public List<ScanFullResultView> waitForFullRapidResults(BlackDuckRunData blackDuckRunData, List<HttpUrl> rapidScans, BlackduckScanMode mode) throws OperationException {
         return auditLog.namedInternal("Rapid Wait", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();

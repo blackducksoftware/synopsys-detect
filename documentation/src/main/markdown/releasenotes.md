@@ -5,7 +5,7 @@
 ### New features
 
 * (IDETECT-3655) The accuracy of dependency determination, HIGH or LOW, of any detectors run during a scan will now be recorded in the status.json file.
-* (IDETECT-3547) Upgrade Guidance on transitive dependancies  STATELESS scans now will give upgrade guidance to mitigate vulnerabilities in transitive dependencies.
+* (IDETECT-3547) STATELESS/RAPID scans now will give upgrade guidance to mitigate vulnerabilities in transitive dependencies.
 
 ### Changed features
 

@@ -6,24 +6,18 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsComponentViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsComponentViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationLicensesView;
 import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationVulnerabilitiesView;
 import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.api.generated.view.ScanFullResultView;
 
 public class RapidScanComponentGroupDetail {
     
     private static final String POLICY_SEPARATOR = "/";
-    private static final String POLICY_SERVERITY_BLOCKER = "BLOCKER";
-    private static final String POLICY_SERVERITY_CRITICAL = "CRITICAL";
+    private static final String POLICY_SEVERITY_BLOCKER = "BLOCKER";
+    private static final String POLICY_SEVERITY_CRITICAL = "CRITICAL";
     
     private final RapidScanDetailGroup group;
     private final Set<String> errorMessages = new LinkedHashSet<>();
@@ -101,7 +95,7 @@ public class RapidScanComponentGroupDetail {
 
         String errorMessage = "", warningMessage = "";
 
-            if (componentPolicyViolation.getPolicySeverity().equals(POLICY_SERVERITY_CRITICAL) || componentPolicyViolation.getPolicySeverity().equals(POLICY_SERVERITY_BLOCKER)) {
+            if (componentPolicyViolation.getPolicySeverity().equals(POLICY_SEVERITY_CRITICAL) || componentPolicyViolation.getPolicySeverity().equals(POLICY_SEVERITY_BLOCKER)) {
                 if (errorMessage.equals("")) {
                     errorMessage = baseMessage;
                 } else {
@@ -137,7 +131,7 @@ public class RapidScanComponentGroupDetail {
         for (int i = 0; i < violatingPolicies.size(); i++) {
             ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView violation = violatingPolicies.get(i);
                     
-            if (violation.getPolicySeverity().equals(POLICY_SERVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SERVERITY_BLOCKER)) {
+            if (violation.getPolicySeverity().equals(POLICY_SEVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SEVERITY_BLOCKER)) {
                 if (errorMessage.equals("")) {
                     errorMessage = baseMessage;
                 } else {
@@ -184,7 +178,7 @@ public class RapidScanComponentGroupDetail {
         for (int i = 0; i < violatingPolicies.size(); i++) {
             ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation = violatingPolicies.get(i);
             
-            if (violation.getPolicySeverity().equals(POLICY_SERVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SERVERITY_BLOCKER)) {
+            if (violation.getPolicySeverity().equals(POLICY_SEVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SEVERITY_BLOCKER)) {
                 if (errorMessage.equals("")) {
                     errorMessage = baseMessage;
                 } else {
