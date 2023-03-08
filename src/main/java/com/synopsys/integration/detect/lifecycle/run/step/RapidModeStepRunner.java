@@ -91,9 +91,9 @@ public class RapidModeStepRunner {
         List<ScanFullResultView> rapidFullResults = operationRunner.waitForFullRapidResults(blackDuckRunData, parsedUrls, mode);
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
-        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
-        // now do the jsonFile instead of before.  
         File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
+        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
+
         operationRunner.publishRapidResults(jsonFile, summary, mode);
     }
 
