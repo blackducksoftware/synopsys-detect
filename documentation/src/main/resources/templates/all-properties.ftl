@@ -5,7 +5,7 @@
 This page lists all [solution_name] properties including advanced and deprecated properties.
 For most use cases, refer to [basic properties](basic-properties.md).
 
-<#list groups as group>
+<#list groups?sort_by("groupName") as group>
 
 ## [${group.groupName}](<#noautoesc>${group.location}.md</#noautoesc>)
 
