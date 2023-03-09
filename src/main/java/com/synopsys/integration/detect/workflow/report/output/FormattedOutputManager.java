@@ -72,7 +72,7 @@ public class FormattedOutputManager {
         List<FormattedResultOutput> transitiveOutput = Bds.of(detectResults)
         .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), removeTabsFromMessages(result.getTransitiveUpgradeGuidanceSubMessages())))
         .toList();
-        if (!transitiveOutput.get(0).subMessages.isEmpty()) {
+        if (!transitiveOutput.isEmpty() && !transitiveOutput.get(0).subMessages.isEmpty()) {
             formattedOutput.transitiveGuidance = transitiveOutput;
         }
 
