@@ -46,7 +46,6 @@ report_1: ./report/1/report_file
 ======== Detect Status ========
 
 description 1: SUCCESS
-description 2: FAILURE
 Overall Status: SUCCESS - Detect exited successfully.
 
 ===============================
