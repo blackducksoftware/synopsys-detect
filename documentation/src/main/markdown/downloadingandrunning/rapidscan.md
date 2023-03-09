@@ -81,7 +81,7 @@ The results are also printed in the logs:
 2021-07-20 13:25:18 EDT INFO  [main] --- 		Components with Policy Violation Warnings:
 2021-07-20 13:25:18 EDT INFO  [main] --- 			Acorn 5.5.3 (npmjs:acorn/5.5.3)
 ```
-For [solution_name] version 8.7.0 and later, with [blackduck_product_name] 2023.1.2, rapid scan output now reports upgrade guidance for transitive dependencies. The output gives information as to the direct dependency upgrade options and the transitive dependencies affected.  This output is given in the results section which appears near the end of the [solution_name] run and appears thusly:
+For [solution_name] version 8.7.0 and later, with [blackduck_product_name] 2023.1.2, Rapid Scan output now reports upgrade guidance for transitive dependencies. The output gives information as to the direct dependency upgrade options and the transitive dependencies affected. This output is given in the results section which appears near the end of the [solution_name] run and appears as follows:
 ```
 2023-03-09 13:01:56 EST INFO  [main] --- ===== Transitive Guidance =====
 2023-03-09 13:01:56 EST INFO  [main] --- 
@@ -99,6 +99,8 @@ For [solution_name] version 8.7.0 and later, with [blackduck_product_name] 2023.
 2023-03-09 13:01:56 EST INFO  [main] --- 
 2023-03-09 13:01:56 EST INFO  [main] --- ===============================
 ```
+
+For further remediation and transitive dependency upgrade guidance, please consult the documentation provided by [blackduck_product_name] under the topic: <a href="https://community.synopsys.com/s/document-item?bundleId=bd-hub&topicId=Risk%2FRiskGuidance.html&_LANG=enus" target="_blank">Getting remediation guidance for components with security vulnerabilities.</a>
 
 ## Rapid Scan Compare Mode
 
