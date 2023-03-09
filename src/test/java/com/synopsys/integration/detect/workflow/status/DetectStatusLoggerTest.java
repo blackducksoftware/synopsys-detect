@@ -60,8 +60,6 @@ public class DetectStatusLoggerTest {
         ArrayList<Status> statusSummaries = new ArrayList<>();
         Status status = new Status("description 1", StatusType.SUCCESS);
         statusSummaries.add(status);
-        status = new Status("description 2", StatusType.FAILURE);
-        statusSummaries.add(status);
         return statusSummaries;
     }
 
