@@ -9,19 +9,16 @@
 
 ### Changed features
 
-<<<<<<< HEAD
-* (IDETECT-3309) Addition of command line help option, -hyaml, to generate a template configuration file. 
-* (IDETECT-2933) [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported. 
-=======
+* (IDETECT-3309) Addition of command line help option, -hyaml, to generate a template configuration file.
 * (IDETECT-2933) [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported.
 * (IDETECT-3313) Failures in detectors will now be reported in the console output using the ERROR logging level. The ERROR logging is also used if there are errors in the overall status.
 
 ### Resolved issues
 
+* (IDETECT-3661) [solution_name] will fail and echo the error received from [blackduck_product_name], if a problem occurs during the initiation of a Stateless Signature Scan.
 * (IDETECT-3623) [solution_name] will now fail with exit code 3, FAILURE_POLICY_VIOLATION, if [blackduck_product_name] reports any violated policies during scans.
 * (IDETECT-3630) Notices and risk report PDFs now appropriately contain the supplied project and version name when characters from non-English alphabets are used.
 * (IDETECT-3654) As of version 8.0.0 of [solution_name], Cargo project dependency graphs stopped being post-processed. Previously, attempts to define parent relationships for dependencies when the Cargo.lock file is a flat list resulted in marking any dependencies with a parent relationship as Transitive. This meant a dependency, which if Direct, may appear as Transitive in [blackduck_product_name] if it is also a dependency of another component. BOMs created with 8.0.0 or later, no longer assume any relationships and all dependencies are DIRECT.
->>>>>>> master
 
 ## Version 8.6.0
 
