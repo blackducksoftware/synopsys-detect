@@ -4,14 +4,14 @@
 
 ### New features
 
-* (IDETECT-3655) The accuracy of dependency determination, HIGH or LOW, of any detectors run during a scan will now be recorded in the status.json file.
-* (IDETECT-3547) STATELESS/RAPID scans now will give upgrade guidance to mitigate vulnerabilities in transitive dependencies.
+* The accuracy of dependency determination, HIGH or LOW, of any detectors run during a scan will now be recorded in the status.json file.
+* STATELESS/RAPID scans now will give upgrade guidance to mitigate vulnerabilities in transitive dependencies.
 
 ### Changed features
 
-* (IDETECT-3309) Addition of command line help option, -hyaml, to generate a template configuration file.
-* (IDETECT-2933) [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported.
-* (IDETECT-3313) Failures in detectors will now be reported in the console output using the ERROR logging level. The ERROR logging is also used if there are errors in the overall status.
+* Addition of command line help option, -hyaml, to generate a template configuration file.
+* [solution_name]'s generated air gap zip is uploaded to Artifactory under the name "synopsys-detect-<version>-air-gap-no-docker.zip". Older naming patterns for this file are no longer supported.
+* Failures in detectors will now be reported in the console output using the ERROR logging level. The ERROR logging is also used if there are errors in the overall status.
 
 ### Resolved issues
 
