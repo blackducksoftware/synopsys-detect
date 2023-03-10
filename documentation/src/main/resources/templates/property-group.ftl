@@ -1,7 +1,7 @@
 <#ftl output_format="Markdown">
 # ${groupName}
 
-<#list simple as option>
+<#list simple?sort_by("propertyName") as option>
 ## ${option.propertyName}
 ```<#noautoesc>
 <#if option.hasAcceptableValues>
@@ -33,7 +33,7 @@ ${option.detailedDescription!""}
 <#if option.example?has_content>|Example|<#noautoesc>`${option.example!""}`</#noautoesc>|${'\n'}</#if><#if option.deprecatedValues?has_content>|Deprecated Values|<#list option.deprecatedValues as deprecatedValue> <p>${deprecatedValue.value}: ${deprecatedValue.reason}</p></#list>|</#if>
 </#list> 
 
-<#list advanced as option>
+<#list advanced?sort_by("propertyName") as option>
 ## ${option.propertyName} (Advanced)
 ```<#noautoesc>
 <#if option.hasAcceptableValues>
@@ -66,7 +66,7 @@ ${option.detailedDescription!""}
 </#list> 
 
 
-<#list deprecated as option>
+<#list deprecated?sort_by("propertyName") as option>
 ## ${option.propertyName} (Deprecated) 
 ```<#noautoesc>
 <#if option.hasAcceptableValues>
