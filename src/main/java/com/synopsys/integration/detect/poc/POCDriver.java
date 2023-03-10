@@ -1,9 +1,6 @@
 package com.synopsys.integration.detect.poc;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,10 +19,12 @@ public class POCDriver {
 
     // btw we are processing strings unsafely -- trusted source assumed
     // 1. Given a maven project directory, find all POMs
-    public void drive() {
+    public void drive(File fullResultJsonFile) {
         try {
-            String inputFilePath = "/poc-resources/jsonPayloadDetect.json";
-            InputStream inputStream = Application.class.getResourceAsStream(inputFilePath);
+            InputStream inputStream = new FileInputStream(fullResultJsonFile);
+//            String inputFilePath = "/poc-resources/jsonPayloadDetect.json";
+//            String inputFilePath = jsonFilePath;
+//            InputStream inputStream = Application.class.getResourceAsStream(inputFilePath);
 
             String jsonData = new String(inputStream.readAllBytes());
             JSONObject jsonObject = new JSONObject(jsonData);

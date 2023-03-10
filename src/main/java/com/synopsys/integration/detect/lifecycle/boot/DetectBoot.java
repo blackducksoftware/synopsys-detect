@@ -103,7 +103,7 @@ public class DetectBoot {
                 // 5. <insert Nirav's code>
 
             POCDriver pocDriver = new POCDriver();
-            pocDriver.drive();
+//            pocDriver.drive();
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 

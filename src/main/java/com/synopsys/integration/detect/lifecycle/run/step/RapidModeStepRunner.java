@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.synopsys.integration.detect.poc.POCDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +78,8 @@ public class RapidModeStepRunner {
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
         File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
+        POCDriver pocDriver = new POCDriver();
+        pocDriver.drive(jsonFile);
         RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
 
         operationRunner.publishRapidResults(jsonFile, summary, mode);
