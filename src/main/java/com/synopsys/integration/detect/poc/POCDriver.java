@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.synopsys.integration.detect.Application;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -27,7 +29,9 @@ public class POCDriver {
 //            InputStream inputStream = Application.class.getResourceAsStream(inputFilePath);
 
             String jsonData = new String(inputStream.readAllBytes());
-            JSONObject jsonObject = new JSONObject(jsonData);
+            JSONArray sourceJsonArray = new JSONArray(jsonData);
+            JSONObject sourceJsonObject = new JSONObject();
+            sourceJsonObject.put("items", sourceJsonArray);
 
             // Part A: Generate component-location hash map
             HashMap<String, MavenDependencyLocation> componentLocationMap = giveMeDictionary();
@@ -35,7 +39,7 @@ public class POCDriver {
             // Part B: Generate vulnerability-component dataset
             VulnComponentDataset vulnComponentDataset = new VulnComponentDataset(componentLocationMap);
 //            VulnComponentDataset vulnComponentDataset = new VulnComponentDataset();
-            JSONObject result = vulnComponentDataset.generateVulnComponentDataset(jsonObject);
+            JSONObject result = vulnComponentDataset.generateVulnComponentDataset(sourceJsonObject);
 
             System.out.println("\nResult:\n" + result.toString(4));
 

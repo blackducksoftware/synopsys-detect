@@ -30,8 +30,13 @@ public class VulnComponentDataset {
         JSONObject newItem = new JSONObject();
 
         newItem.put("externalId", item.getString("externalId"));
-        newItem.put("shortTermUpgradeGuidance", item.getJSONObject("shortTermUpgradeGuidance"));
-        newItem.put("longTermUpgradeGuidance", item.getJSONObject("longTermUpgradeGuidance"));
+        if (item.has("shortTermUpgradeGuidance")) {
+            newItem.put("shortTermUpgradeGuidance", item.getJSONObject("shortTermUpgradeGuidance"));
+        }
+        if (item.has("longTermUpgradeGuidance")) {
+            newItem.put("longTermUpgradeGuidance", item.getJSONObject("longTermUpgradeGuidance"));
+        }
+
         addLocationToItem(newItem);
 
         if (!isExplicitDirect) {
@@ -119,6 +124,8 @@ public class VulnComponentDataset {
             JSONObject currItem = currItems.getJSONObject(i);
 
             // Direct dependency is identified by the transitiveUpgradeGuidance array being empty
+            // Assumption based on current source json format: Source JSON will always contain a transitiveUpgradeGuidance field for direct and transitive components.
+            // It will be empty for direct, and non-empty for a transitive dependency.
             Boolean isCurrItemDirect = currItem.getJSONArray("transitiveUpgradeGuidance").length() == 0;
 
             JSONArray vulnerabilities = currItem.getJSONArray("allVulnerabilities");
