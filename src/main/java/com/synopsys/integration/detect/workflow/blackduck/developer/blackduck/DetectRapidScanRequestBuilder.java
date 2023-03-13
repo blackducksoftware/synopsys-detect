@@ -9,7 +9,8 @@ import com.synopsys.integration.blackduck.service.request.BlackDuckResponseReque
 import com.synopsys.integration.rest.HttpUrl;
 
 public class DetectRapidScanRequestBuilder {
-    public static final String CURRENT_MEDIA_TYPE = "application/vnd.blackducksoftware.scan-5+json";
+    // change to v6 for full-result usage.  v5 currently appears to return malformed json.
+    public static final String CURRENT_MEDIA_TYPE = "application/vnd.blackducksoftware.scan-6+json";
     private final BlackDuckRequestBuilder blackDuckRequestBuilder;
 
     public DetectRapidScanRequestBuilder() {
