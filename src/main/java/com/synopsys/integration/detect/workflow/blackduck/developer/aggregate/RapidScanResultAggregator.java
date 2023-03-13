@@ -13,12 +13,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsComponentViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsAllVulnerabilitiesView;
 import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsComponentViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationLicensesView;
 import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView;
@@ -27,9 +21,7 @@ import com.synopsys.integration.blackduck.api.generated.component.ScanFullResult
 import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsTransitiveUpgradeGuidanceLongTermUpgradeGuidanceView;
 import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsTransitiveUpgradeGuidanceShortTermUpgradeGuidanceView;
 import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsTransitiveUpgradeGuidanceView;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.api.generated.view.ScanFullResultView;
-import com.synopsys.integration.log.IntLogger;
 
 public class RapidScanResultAggregator {
     public RapidScanAggregateResult aggregateData(List<ScanFullResultView> results) {
@@ -150,8 +142,17 @@ public class RapidScanResultAggregator {
                         .getShortTermUpgradeGuidance();
                 ScanFullResultItemsTransitiveUpgradeGuidanceLongTermUpgradeGuidanceView ltg = guidance
                         .getLongTermUpgradeGuidance();
-                String shortTermVersion = stg.getVersionName();
-                String longTermVersion = ltg.getVersionName();
+                String shortTermVersion = stg != null ? stg.getVersionName() : "";
+                String longTermVersion = ltg != null ? ltg.getVersionName() : "";
+
+                // occasionally, it seems stg or ltg might be null.  If one or the other is
+                // null, then we'll overwrite the one of the versions with the non-null version
+                // and suggest that in the guidance (as if stg.version = ltg.version)
+                if ( stg == null && ltg != null) {
+                    shortTermVersion = longTermVersion;
+                } else if (stg != null && ltg == null) {
+                    longTermVersion = shortTermVersion;
+                }
 
                 String[] versions = new String[] { shortTermVersion, longTermVersion };
                 this.directUpgradeGuidanceVersions.put(parentId, versions);
