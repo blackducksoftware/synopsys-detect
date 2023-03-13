@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,12 +35,20 @@ public class DetectZipUtil { //TODO: Add method for extracting without the wrapp
     public static void zip(OutputStream stream, Map<String, Path> entries) throws IOException {
         try (ZipOutputStream outputStream = new ZipOutputStream(stream)) {
             for (Map.Entry<String, Path> entry : entries.entrySet()) {
-                // Files.readAllBytes requires a file
                 if (entry.getValue().toFile().isFile()) {
                     logger.debug("Adding entry '{}' to zip as '{}'.", entry.getValue().toString(), entry.getKey());
                     outputStream.putNextEntry(new ZipEntry(entry.getKey()));
-                    byte[] bytes = Files.readAllBytes(entry.getValue());
-                    outputStream.write(bytes, 0, bytes.length);
+                    
+                    File file = entry.getValue().toFile();
+                    InputStream inputStream = new FileInputStream(file);
+                    byte[] streamingStorage = new byte[4096];
+                    
+                    int bytesToWrite;
+                    while ((bytesToWrite  = inputStream.read(streamingStorage)) != -1) {
+                        outputStream.write(streamingStorage, 0, bytesToWrite);
+                    }
+                    
+                    inputStream.close();
                     outputStream.closeEntry();
                 } else {
                     logger.trace("Non-file {} skipped", entry.getValue().toFile().getAbsolutePath());
