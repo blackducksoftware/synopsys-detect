@@ -1,11 +1,8 @@
 package com.synopsys.integration.detect.poc;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import com.synopsys.integration.detect.Application;
 
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import org.json.JSONArray;
@@ -13,7 +10,6 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 public class POCDriver {
-    private String startDir;
     private POMFinder pomFinder;
     private POMParser pomParser;
 
@@ -57,12 +53,12 @@ public class POCDriver {
         }
     }
 
-    private HashMap<String, MavenDependencyLocation> giveMeDictionary(DirectoryManager dm) {
+    public HashMap<String, MavenDependencyLocation> giveMeDictionary(DirectoryManager dm) {
         // --detect.source.path=/Users/shanty/blackduck/gitlab-folder/poc-source/triage
         // ***************************** //
         // path from repository root
 //        startDir = "src/main/resources/poc-resources/pom.xml";
-        startDir = dm.getSourceDirectory().toString() + "/pom.xml";
+        File startDir = dm.getSourceDirectory();
         // ***************************** //
         pomFinder = new POMFinder();
         List<String> pomPaths = pomFinder.findAllProjectPOMs(startDir);
