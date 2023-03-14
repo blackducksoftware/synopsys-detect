@@ -6,12 +6,12 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsComponentViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationLicensesView;
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationVulnerabilitiesView;
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.view.ScanFullResultView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsComponentViolatingPoliciesView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
+import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 
 public class RapidScanComponentGroupDetail {
     
@@ -90,7 +90,7 @@ public class RapidScanComponentGroupDetail {
     // While it may be possible to reduce the overall message generation code in this class by pushing 
     // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
     // as this may be temporary code.
-    public void addComponentMessages(ScanFullResultView resultView, ScanFullResultItemsComponentViolatingPoliciesView componentPolicyViolation) {
+    public void addComponentMessages(DeveloperScansScanView resultView, DeveloperScansScanItemsComponentViolatingPoliciesView componentPolicyViolation) {
         String baseMessage = getBaseMessage(resultView);
 
         String errorMessage = "", warningMessage = "";
@@ -121,15 +121,15 @@ public class RapidScanComponentGroupDetail {
     // While it may be possible to reduce the overall message generation code in this class by pushing 
     // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
     // as this may be temporary code.
-    public void addLicenseMessages(ScanFullResultView resultView, ScanFullResultItemsPolicyViolationLicensesView licensePolicyViolation) {
+    public void addLicenseMessages(DeveloperScansScanView resultView, DeveloperScansScanItemsPolicyViolationLicensesView licensePolicyViolation) {
         String baseMessage = getBaseMessage(resultView);
         
-        List<ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView> violatingPolicies = licensePolicyViolation.getViolatingPolicies();
+        List<DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView> violatingPolicies = licensePolicyViolation.getViolatingPolicies();
         
         String errorMessage = "", warningMessage = "";
         
         for (int i = 0; i < violatingPolicies.size(); i++) {
-            ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView violation = violatingPolicies.get(i);
+            DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView violation = violatingPolicies.get(i);
                     
             if (violation.getPolicySeverity().equals(POLICY_SEVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SEVERITY_BLOCKER)) {
                 if (errorMessage.equals("")) {
@@ -167,16 +167,16 @@ public class RapidScanComponentGroupDetail {
     // While it may be possible to reduce the overall message generation code in this class by pushing 
     // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
     // as this may be temporary code.
-    public void addVulnerabilityMessages(ScanFullResultView resultView,
-            ScanFullResultItemsPolicyViolationVulnerabilitiesView vulnerability) {
+    public void addVulnerabilityMessages(DeveloperScansScanView resultView,
+            DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerabilityPolicyViolation) {
         String baseMessage = getBaseMessage(resultView);
         
-        List<ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> violatingPolicies = vulnerability.getViolatingPolicies();
+        List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> violatingPolicies = vulnerabilityPolicyViolation.getViolatingPolicies();
         
         String errorMessage = "", warningMessage = "";
         
         for (int i = 0; i < violatingPolicies.size(); i++) {
-            ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation = violatingPolicies.get(i);
+            DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation = violatingPolicies.get(i);
             
             if (violation.getPolicySeverity().equals(POLICY_SEVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SEVERITY_BLOCKER)) {
                 if (errorMessage.equals("")) {
@@ -197,8 +197,8 @@ public class RapidScanComponentGroupDetail {
             }
         }
         
-        String summaryMessage = ": found vulnerability " + vulnerability.getName() + " with severity "
-                + vulnerability.getVulnSeverity() + " and CVSS score " + vulnerability.getOverallScore() + ".";
+        String summaryMessage = ": found vulnerability " + vulnerabilityPolicyViolation.getName() + " with severity "
+                + vulnerabilityPolicyViolation.getVulnSeverity() + " and CVSS score " + vulnerabilityPolicyViolation.getOverallScore() + ".";
         
         if (StringUtils.isNotBlank(errorMessage)) {
             errorMessage += summaryMessage;
@@ -223,7 +223,7 @@ public class RapidScanComponentGroupDetail {
         addMessages(errorMessage, warningMessage);
     }
     
-    private String getBaseMessage(ScanFullResultView resultView) {
+    private String getBaseMessage(DeveloperScansScanView resultView) {
         String baseMessage = "Component " + resultView.getComponentName() + " version " + resultView.getVersionName();
         if (StringUtils.isNotBlank(resultView.getExternalId())) {
             baseMessage += " with ID " + resultView.getExternalId();

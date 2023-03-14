@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
-import com.synopsys.integration.blackduck.api.generated.view.ScanFullResultView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -29,7 +28,7 @@ public class RapidModeLogReportOperation {
         this.scanMode = mode.displayName();
     }
 
-    public RapidScanResultSummary perform(List<ScanFullResultView> results) throws DetectUserFriendlyException {
+    public RapidScanResultSummary perform(List<DeveloperScansScanView> results) throws DetectUserFriendlyException {
          RapidScanAggregateResult aggregateResult = rapidScanResultAggregator.aggregateData(results);
         logger.info(String.format("%s:", scanMode + RapidScanDetectResult.NONPERSISTENT_SCAN_RESULT_DETAILS_HEADING));
         aggregateResult.logResult(new Slf4jIntLogger(logger));

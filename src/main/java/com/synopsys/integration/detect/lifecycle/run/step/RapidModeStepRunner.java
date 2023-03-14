@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.view.ScanFullResultView;
+import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -59,8 +59,6 @@ public class RapidModeStepRunner {
             parsedUrls.addAll(uploadResultsUrls);
         }
 
-        fullResultUrls(parsedUrls);
-
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             logger.debug("Rapid scan signature scan detected.");
 
@@ -73,7 +71,7 @@ public class RapidModeStepRunner {
 
         // Get info about any scans that were done
         BlackduckScanMode mode = blackDuckRunData.getScanMode();
-        List<ScanFullResultView> rapidFullResults = operationRunner.waitForFullRapidResults(blackDuckRunData, parsedUrls, mode);
+        List<DeveloperScansScanView> rapidFullResults = operationRunner.waitForFullRapidResults(blackDuckRunData, parsedUrls, mode);
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
         File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
