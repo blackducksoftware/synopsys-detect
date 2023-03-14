@@ -93,11 +93,11 @@ public class HelpYamlWriter {
             buffer.write(property.describeDefault());
         }
 
-        buffer.write("\n\t\t# " + property.getPropertyHelpInfo().getShortText());
+        buffer.write("\n        # " + property.getPropertyHelpInfo().getShortText());
 
         List<String> acceptableValues = property.listExampleValues();
         if (!acceptableValues.isEmpty()) {
-            buffer.write("\n\t\t# Acceptable values:" + acceptableValues);
+            buffer.write("\n        # Acceptable values:" + acceptableValues);
         }
     }
 }
