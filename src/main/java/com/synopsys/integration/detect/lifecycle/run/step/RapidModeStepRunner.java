@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.synopsys.integration.detect.poc.POCDriver;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ public class RapidModeStepRunner {
     }
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult,
-            DockerTargetData dockerTargetData) throws OperationException {
+                          DockerTargetData dockerTargetData, DirectoryManager directoryManager) throws OperationException {
         operationRunner.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationRunner.findRapidScanConfig();
         String scanMode = blackDuckRunData.getScanMode().displayName();
@@ -79,7 +80,7 @@ public class RapidModeStepRunner {
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
         File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
         POCDriver pocDriver = new POCDriver();
-        pocDriver.drive(jsonFile);
+        pocDriver.drive(jsonFile, directoryManager);
         RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
 
         operationRunner.publishRapidResults(jsonFile, summary, mode);

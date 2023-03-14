@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.synopsys.integration.detect.Application;
 
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -21,7 +22,7 @@ public class POCDriver {
 
     // btw we are processing strings unsafely -- trusted source assumed
     // 1. Given a maven project directory, find all POMs
-    public void drive(File fullResultJsonFile) {
+    public void drive(File fullResultJsonFile, DirectoryManager directoryManager) {
         try {
             InputStream inputStream = new FileInputStream(fullResultJsonFile);
 //            String inputFilePath = "/poc-resources/jsonPayloadDetect.json";
@@ -34,7 +35,7 @@ public class POCDriver {
             sourceJsonObject.put("items", sourceJsonArray);
 
             // Part A: Generate component-location hash map
-            HashMap<String, MavenDependencyLocation> componentLocationMap = giveMeDictionary();
+            HashMap<String, MavenDependencyLocation> componentLocationMap = giveMeDictionary(directoryManager);
 
             // Part B: Generate vulnerability-component dataset
             VulnComponentDataset vulnComponentDataset = new VulnComponentDataset(componentLocationMap);
@@ -56,15 +57,15 @@ public class POCDriver {
         }
     }
 
-    private HashMap<String, MavenDependencyLocation> giveMeDictionary() {
-        pomFinder = new POMFinder();
-        List<String> pomPaths = pomFinder.findAllProjectPOMs();
-
+    private HashMap<String, MavenDependencyLocation> giveMeDictionary(DirectoryManager dm) {
+        // --detect.source.path=/Users/shanty/blackduck/gitlab-folder/poc-source/triage
         // ***************************** //
         // path from repository root
-        startDir = "src/main/resources/poc-resources/pom.xml";
-        pomPaths.add(startDir);
+//        startDir = "src/main/resources/poc-resources/pom.xml";
+        startDir = dm.getSourceDirectory().toString() + "/pom.xml";
         // ***************************** //
+        pomFinder = new POMFinder();
+        List<String> pomPaths = pomFinder.findAllProjectPOMs(startDir);
 
         HashMap<String, MavenDependencyLocation> magicDictionary = new HashMap<>();
         pomParser = new POMParser();

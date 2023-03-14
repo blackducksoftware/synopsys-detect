@@ -5,7 +5,9 @@ import java.util.List;
 
 public class POMFinder {
 
-    public List<String> findAllProjectPOMs(){
-        return new ArrayList<String>();
+    public List<String> findAllProjectPOMs(String sourceDirectory){
+        ArrayList<String> pomFilePaths = new ArrayList<String>();
+        pomFilePaths.add(sourceDirectory);
+        return pomFilePaths;
     }
 }
