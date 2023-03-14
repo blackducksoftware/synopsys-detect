@@ -80,3 +80,24 @@ The results are also printed in the logs:
 2021-07-20 13:25:18 EDT INFO  [main] --- 		Components with Policy Violation Warnings:
 2021-07-20 13:25:18 EDT INFO  [main] --- 			Acorn 5.5.3 (npmjs:acorn/5.5.3)
 ```
+For [solution_name] version 8.7.0 and later, with [blackduck_product_name] 2023.1.2, Rapid Scan output now reports upgrade guidance for transitive dependencies with known vulnerabilities. The output gives information as to the direct dependency upgrade options and the transitive dependencies affected. This output is given in the results section which appears near the end of the [solution_name] run and appears as follows:
+```
+2023-03-09 13:01:56 EST INFO  [main] --- ===== Transitive Guidance =====
+2023-03-09 13:01:56 EST INFO  [main] --- 
+2023-03-09 13:01:56 EST INFO  [main] ---        Transitive upgrade guidance:
+2023-03-09 13:01:56 EST INFO  [main] ---            Upgrade component com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2 to version 2.14.2 in order to upgrade transitive components com.fasterxml.jackson.core:jackson-databind:2.13.2, org.yaml:snakeyaml:1.29, com.fasterxml.jackson.core:jackson-databind:2.13.2.2, org.yaml:snakeyaml:1.30
+2023-03-09 13:01:56 EST INFO  [main] ---            Upgrade component org.apache.httpcomponents:httpclient-osgi:4.5.13 to version 4.5.14 in order to upgrade transitive component commons-codec:commons-codec:1.11
+2023-03-09 13:01:56 EST INFO  [main] ---            Upgrade component org.apache.pdfbox:pdfbox:2.0.25 to version 2.0.27 in order to upgrade transitive component org.apache.pdfbox:fontbox:2.0.25
+2023-03-09 13:01:56 EST INFO  [main] ---            Upgrade component org.springframework.boot:spring-boot:2.6.6 to versions (Short Term) 2.7.9, (Long Term) 3.0.4 in order to upgrade transitive components org.springframework:spring-beans:5.3.18, org.springframework:spring-expression:5.3.18, org.springframework:spring-aop:5.3.18, org.springframework:spring-context:5.3.18
+2023-03-09 13:01:56 EST INFO  [main] --- 
+2023-03-09 13:01:56 EST INFO  [main] --- ======== Detect Status ========
+2023-03-09 13:01:56 EST INFO  [main] --- 
+2023-03-09 13:01:56 EST INFO  [main] --- GIT: SUCCESS
+2023-03-09 13:01:56 EST INFO  [main] --- GRADLE: SUCCESS
+2023-03-09 13:01:56 EST INFO  [main] --- Overall Status: SUCCESS - Detect exited successfully.
+2023-03-09 13:01:56 EST INFO  [main] --- 
+2023-03-09 13:01:56 EST INFO  [main] --- ===============================
+```
+
+For further remediation and transitive dependency upgrade guidance, please consult the documentation provided by [blackduck_product_name] under the topic: <a href="https://community.synopsys.com/s/document-item?bundleId=bd-hub&topicId=Risk%2FRiskGuidance.html&_LANG=enus" target="_blank">Getting remediation guidance for components with security vulnerabilities.</a>
+
