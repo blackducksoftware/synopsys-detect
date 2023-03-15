@@ -55,10 +55,10 @@ public class RapidBdbaStepRunner {
     private UUID bdbaScanId;
     private String bdbaBaseUrl;
 
-    private static final int DEFAULT_TIMEOUT = 300;
+    private static final int DEFAULT_TIMEOUT = 600;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
-    public RapidBdbaStepRunner(Gson gson, UUID bdbaScanId) throws DetectUserFriendlyException {
+    public RapidBdbaStepRunner(Gson gson, UUID bdbaScanId, int timeoutInSeconds) throws DetectUserFriendlyException {
         this.gson = gson;
         this.bdbaScanId = bdbaScanId;
         
@@ -66,7 +66,7 @@ public class RapidBdbaStepRunner {
         httpClient = new IntHttpClient(
                 new SilentIntLogger(),
                 gson,
-                Math.toIntExact(DEFAULT_TIMEOUT),
+                timeoutInSeconds > 0 ? timeoutInSeconds : Math.toIntExact(DEFAULT_TIMEOUT),
                 true,
                 ProxyInfo.NO_PROXY_INFO
             );

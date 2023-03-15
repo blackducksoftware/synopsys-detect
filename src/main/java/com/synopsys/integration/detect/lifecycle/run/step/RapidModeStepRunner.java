@@ -112,7 +112,7 @@ public class RapidModeStepRunner {
         // Generate the UUID we use to communicate with BDBA
         UUID bdbaScanId = UUID.randomUUID();
         
-        RapidBdbaStepRunner rapidBdbaStepRunner = new RapidBdbaStepRunner(gson, bdbaScanId);
+        RapidBdbaStepRunner rapidBdbaStepRunner = new RapidBdbaStepRunner(gson, bdbaScanId, blackDuckRunData.getBlackDuckServerConfig().getTimeout());
         rapidBdbaStepRunner.submitScan(isContainerScan, scaasFilePath);
         rapidBdbaStepRunner.pollForResults();
         rapidBdbaStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
