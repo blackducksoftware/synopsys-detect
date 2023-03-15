@@ -15,6 +15,8 @@ import java.util.UUID;
 
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.exception.IntegrationException;
@@ -71,7 +73,24 @@ public class BdbaRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
 
     @Override
     public BdbaStatusScanView onTimeout() throws IntegrationTimeoutException {
-        throw new IntegrationTimeoutException("Error waiting for BDBA worker to respond to scan status request. Timeout may have occurred.");
+        Response response;
+        try {
+            RequestBuilder createRequestBuilder = httpClient.createRequestBuilder(HttpMethod.DELETE);
+
+            HttpUriRequest request = createRequestBuilder
+                .setUri(bdbaBaseUrl + "/scan/" + scanId)
+                .build();
+            
+            response = httpClient.execute(request);
+        } catch (IntegrationException e) {
+            throw new IntegrationTimeoutException("Timeout waiting for BDBA scan. Attempted to terminate BDBA scan but received error: " + e.getMessage());
+        }
+        
+        if (response.isStatusCodeSuccess()) {
+            throw new IntegrationTimeoutException("Error waiting for BDBA worker to respond to scan status request. Timeout occurred.");
+        } else {
+            throw new IntegrationTimeoutException("Timeout waiting for BDBA scan. Attempted to terminate BDBA scan but received status code of: " + response.getStatusCode());            
+        }
     }
 
     @Override

@@ -54,19 +54,20 @@ public class RapidBdbaStepRunner {
     private Gson gson;
     private UUID bdbaScanId;
     private String bdbaBaseUrl;
+    private int timeoutInSeconds;
 
-    private static final int DEFAULT_TIMEOUT = 600;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     public RapidBdbaStepRunner(Gson gson, UUID bdbaScanId, int timeoutInSeconds) throws DetectUserFriendlyException {
         this.gson = gson;
         this.bdbaScanId = bdbaScanId;
+        this.timeoutInSeconds = timeoutInSeconds;
         
         // Setup base client
         httpClient = new IntHttpClient(
                 new SilentIntLogger(),
                 gson,
-                timeoutInSeconds > 0 ? timeoutInSeconds : Math.toIntExact(DEFAULT_TIMEOUT),
+                timeoutInSeconds,
                 true,
                 ProxyInfo.NO_PROXY_INFO
             );
@@ -116,7 +117,7 @@ public class RapidBdbaStepRunner {
     }
 
     public void pollForResults() throws InterruptedException, IntegrationException {
-        WaitIntervalTracker waitIntervalTracker = WaitIntervalTrackerFactory.createProgressive(DEFAULT_TIMEOUT, 60);
+        WaitIntervalTracker waitIntervalTracker = WaitIntervalTrackerFactory.createProgressive(timeoutInSeconds, 60);
         ResilientJobConfig waitJobConfig = new ResilientJobConfig(new Slf4jIntLogger(logger), System.currentTimeMillis(), waitIntervalTracker);
         BdbaRapidScanWaitJob waitJob = new BdbaRapidScanWaitJob(httpClient, bdbaScanId, gson, bdbaBaseUrl);
         ResilientJobExecutor jobExecutor = new ResilientJobExecutor(waitJobConfig);
