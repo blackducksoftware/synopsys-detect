@@ -71,7 +71,7 @@ public class BdbaRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
 
     @Override
     public BdbaStatusScanView onTimeout() throws IntegrationTimeoutException {
-        throw new IntegrationTimeoutException("Error waiting for BDBA worker to response to scan status request. Timeout may have occurred.");
+        throw new IntegrationTimeoutException("Error waiting for BDBA worker to respond to scan status request. Timeout may have occurred.");
     }
 
     @Override
