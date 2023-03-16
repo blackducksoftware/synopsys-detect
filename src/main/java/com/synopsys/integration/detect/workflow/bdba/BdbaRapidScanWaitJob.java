@@ -36,6 +36,7 @@ public class BdbaRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
     
     private boolean complete;
     private static final String JOB_NAME = "BDBA Stateless Scan Wait Job ";
+    private static final String IN_PROGRESS = "inprogress";
 
     public BdbaRapidScanWaitJob(IntHttpClient httpClient, UUID scanId, Gson gson, String bdbaBaseUrl) {
         this.httpClient = httpClient;
@@ -59,7 +60,7 @@ public class BdbaRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
              String json = response.getContentString();
              BdbaStatusScanView initialResponse = gson.fromJson(json, BdbaStatusScanView.class);
 
-             if (initialResponse.getStatus().equals("ready")) {
+             if (!initialResponse.getStatus().equals(IN_PROGRESS)) {
                  complete = true;
                  scanStatus = initialResponse;
              }
