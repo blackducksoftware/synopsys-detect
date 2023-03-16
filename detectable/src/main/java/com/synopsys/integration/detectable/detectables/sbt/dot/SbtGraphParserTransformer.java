@@ -27,7 +27,7 @@ public class SbtGraphParserTransformer {
         Set<String> evictedIds = graphParser.getEdges().values().stream()
         .filter(
             edge -> edge.getAttribute("label") != null
-            && edge.getAttribute("label").toString().contains("Evicted By")
+            && edge.getAttribute("label").toString().toLowerCase().contains("evicted")
             )
             .map(GraphEdge::getNode1)
             .map(GraphElement::getId)
