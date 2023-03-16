@@ -61,7 +61,7 @@ allprojects {
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
 
         implementation 'org.freemarker:freemarker:2.3.31'
-        implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.13'
+        implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.14'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
@@ -105,7 +105,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot"
     implementation 'org.yaml:snakeyaml:1.33'
     implementation 'org.zeroturnaround:zt-zip:1.13'
-    implementation 'org.apache.pdfbox:pdfbox:2.0.25'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.27'
 
     // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
     testImplementation 'org.assertj:assertj-core:3.13.2'
@@ -115,7 +115,7 @@ dependencies {
     testImplementation project(':configuration').sourceSets.test.output
     testImplementation project(':common-test')
     testImplementation 'com.github.docker-java:docker-java-core:3.2.7'
-    testImplementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.7'
+    testImplementation 'com.github.docker-java:docker-java-transport-httpclient5:3.3.0'
 }
 
 springBoot { mainClass = 'com.synopsys.integration.detect.Application' }
