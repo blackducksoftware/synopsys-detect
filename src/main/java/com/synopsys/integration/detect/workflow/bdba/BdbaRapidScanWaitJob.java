@@ -1,22 +1,9 @@
-/*
- * Copyright (C) 2023 Synopsys Inc.
- * http://www.synopsys.com/
- * All rights reserved.
- *
- * This software is the confidential and proprietary information of
- * Synopsys ("Confidential Information"). You shall not
- * disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into
- * with Synopsys.
- */
 package com.synopsys.integration.detect.workflow.bdba;
 
 import java.util.UUID;
 
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.exception.IntegrationException;
