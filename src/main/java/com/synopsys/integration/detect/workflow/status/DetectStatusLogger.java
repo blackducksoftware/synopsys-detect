@@ -46,7 +46,13 @@ public class DetectStatusLogger {
 
         Optional<String> gettingSupportAdvice = getAdvice(exitCodeType);
 
-        logger.info(String.format("Overall Status: %s - %s", exitCodeType.toString(), exitCodeType.getDescription()));
+        String exitMessage = String.format("Overall Status: %s - %s", exitCodeType.toString(), exitCodeType.getDescription());
+        
+        if (exitCodeType.isSuccess()) {
+            logger.info(exitMessage);
+        } else {
+            logger.error(exitMessage); 
+        }
         if (gettingSupportAdvice.isPresent()) {
             logger.info("");
             logger.info(gettingSupportAdvice.get());
@@ -93,6 +99,12 @@ public class DetectStatusLogger {
                 if (!detectResult.getResultSubMessages().isEmpty()) {
                     detectResult.getResultSubMessages().forEach(subMessage -> logger.info(String.format("\t%s", subMessage)));
                 }
+
+                if (!detectResult.getTransitiveUpgradeGuidanceSubMessages().isEmpty()) {
+                    logger.info("");
+                    logger.info("===== Transitive Guidance =====");
+                    detectResult.getTransitiveUpgradeGuidanceSubMessages().forEach(subMessage -> logger.info(String.format("\t%s", subMessage)));
+                }
             }
             logger.info("");
         }
@@ -115,7 +127,14 @@ public class DetectStatusLogger {
             if (previousSummaryClass != null && !previousSummaryClass.equals(status.getClass())) {
                 logger.info("");
             }
-            logger.info(String.format("%s: %s", status.getDescriptionKey(), status.getStatusType().toString()));
+            
+            String detectorStatus = String.format("%s: %s", status.getDescriptionKey(), status.getStatusType().toString());
+            
+            if (status.getStatusType() == StatusType.SUCCESS) {
+                logger.info(detectorStatus);
+            } else {
+                logger.error(detectorStatus);
+            }
 
             previousSummaryClass = status.getClass();
         }

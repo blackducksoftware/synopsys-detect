@@ -98,11 +98,12 @@ public class RapidModeStepRunner {
 
         // Get info about any scans that were done
         BlackduckScanMode mode = blackDuckRunData.getScanMode();
-        List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, parsedUrls, mode);
+        List<DeveloperScansScanView> rapidFullResults = operationRunner.waitForFullRapidResults(blackDuckRunData, parsedUrls, mode);
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
-        File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
-        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults, mode);
+        File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
+        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
+
         operationRunner.publishRapidResults(jsonFile, summary, mode);
     }
 
@@ -123,6 +124,21 @@ public class RapidModeStepRunner {
         // add this scan to the URLs to wait for
         parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + bdScanId.toString()));
     }
+    
+    private void fullResultUrls(List<HttpUrl> parsedUrls) {
+        // this may have to go somewhere else but it's here for now.
+        ArrayList<HttpUrl> ack = new ArrayList<HttpUrl>();
+        for (HttpUrl url : parsedUrls) {
+            try {
+                url = url.appendRelativeUrl("/full-result");
+                ack.add(url);
+            } catch (IntegrationException e) {
+                logger.error(e.getMessage());
+            }
+        }
+        parsedUrls.clear();
+        parsedUrls.addAll(ack);
+    }
 
     /**
      * The signature scanner only returns a high level success or failure to us. Details are in the
@@ -142,20 +158,24 @@ public class RapidModeStepRunner {
                 Reader reader = Files.newBufferedReader(Paths.get(scanOutputLocation));
 
                 SignatureScanResult result = gson.fromJson(reader, SignatureScanResult.class);
-                
-                Set<String> parsedIds = result.parseScanIds();
-                
-                for (String id : parsedIds) {
-                    HttpUrl url = new HttpUrl(blackDuckUrl + "/api/developer-scans/" + id);
 
-                    logger.info(scanMode + " mode signature scan URL: {}", url);
-                    parsedUrls.add(url);
+                if (result.getExitStatus() == null || !result.getExitStatus().equalsIgnoreCase("FAILURE")) {
+
+                    Set<String> parsedIds = result.parseScanIds();
+
+                    for (String id : parsedIds) {
+                        HttpUrl url = new HttpUrl(blackDuckUrl + "/api/developer-scans/" + id);
+
+                        logger.info(scanMode + " mode signature scan URL: {}", url);
+                        parsedUrls.add(url);
+                    }
+                } else {
+                    logger.debug("{} mode signature scan result not processed for scan IDs due to exit status from BD: {}", scanMode, result.getExitStatus());
                 }
             } catch (Exception e) {
                 throw new IntegrationException("Unable to parse rapid signature scan results.");
             }
         }
-        
         return parsedUrls;
     }
 }

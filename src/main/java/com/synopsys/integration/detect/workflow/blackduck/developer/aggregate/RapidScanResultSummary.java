@@ -14,6 +14,8 @@ public class RapidScanResultSummary {
     private final Set<String> policyViolationNames;
     private final Set<String> componentsViolatingPolicy;
     private final Set<String> componentsViolatingPolicyWarnings;
+    
+    private final Set<String> transitiveGuidances;
 
     private RapidScanResultSummary(
         int policyErrorCount,
@@ -24,7 +26,8 @@ public class RapidScanResultSummary {
         int licenseWarningCount,
         Set<String> policyViolationNames,
         Set<String> componentsViolatingPolicy,
-        Set<String> componentsViolatingPolicyWarnings
+        Set<String> componentsViolatingPolicyWarnings,
+        Set<String> transitiveGuidances
     ) {
         this.policyErrorCount = policyErrorCount;
         this.policyWarningCount = policyWarningCount;
@@ -35,6 +38,7 @@ public class RapidScanResultSummary {
         this.policyViolationNames = policyViolationNames;
         this.componentsViolatingPolicy = componentsViolatingPolicy;
         this.componentsViolatingPolicyWarnings = componentsViolatingPolicyWarnings;
+        this.transitiveGuidances = transitiveGuidances;
     }
 
     public boolean hasErrors() {
@@ -76,6 +80,9 @@ public class RapidScanResultSummary {
     public Set<String> getComponentsViolatingPolicyWarnings() {
         return componentsViolatingPolicyWarnings;
     }
+    public Set<String> getTransitiveGuidances() {
+        return transitiveGuidances;
+    }
 
     public static class Builder {
         private int policyErrors;
@@ -89,6 +96,8 @@ public class RapidScanResultSummary {
         private final Set<String> componentsViolatingPolicy;
         private final Set<String> componentsViolatingPolicyWarnings;
 
+        private final Set<String> transitiveGuidances;
+
         public Builder() {
             this.policyErrors = 0;
             this.policyWarnings = 0;
@@ -100,6 +109,7 @@ public class RapidScanResultSummary {
             this.violatedPolicyNames = new LinkedHashSet<>();
             this.componentsViolatingPolicy = new LinkedHashSet<>();
             this.componentsViolatingPolicyWarnings = new LinkedHashSet<>();
+            this.transitiveGuidances = new LinkedHashSet<>();
         }
 
         public void addPolicyViolations(int count) {
@@ -138,6 +148,11 @@ public class RapidScanResultSummary {
             componentsViolatingPolicyWarnings.add(componentName);
         }
 
+        public void  addTransitiveGuidances(Set<String> tGuidances) {
+            transitiveGuidances.addAll(tGuidances);
+            return;
+        }
+
         public void addDetailData(RapidScanComponentDetail detail) {
             String formattedComponentName = String.format("%s %s (%s)", detail.getComponent(), detail.getVersion(), detail.getComponentIdentifier());
             if (detail.hasWarnings()) {
@@ -168,7 +183,8 @@ public class RapidScanResultSummary {
                 this.licenseWarnings,
                 violatedPolicyNames,
                 componentsViolatingPolicy,
-                componentsViolatingPolicyWarnings
+                componentsViolatingPolicyWarnings,
+                transitiveGuidances
             );
         }
     }

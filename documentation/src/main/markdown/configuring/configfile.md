@@ -29,6 +29,7 @@ file syntax: `propertyName=propertyValue`, one per line.
 
 When setting a property value in a .yml file, do not prefix the property name with hyphens,
 and adhere to YAML syntax for dictionaries: `propertyName: propertyValue`, one per line.
+There is a Detect command line help option, -hyaml, that can be used to generate a template YAML configuration file. 
 
 ## Running [solution_name] from a directory that contains a file named *config*
 

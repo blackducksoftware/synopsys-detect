@@ -8,4 +8,6 @@ public interface DetectResult {
     String getResultMessage();
 
     List<String> getResultSubMessages();
+
+    List<String> getTransitiveUpgradeGuidanceSubMessages();
 }

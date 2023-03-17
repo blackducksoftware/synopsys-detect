@@ -20,7 +20,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '8.8.0-SIGQA2-SNAPSHOT'
+version = '8.8.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -58,10 +58,10 @@ subprojects {
 allprojects {
     dependencies {
         implementation "com.google.guava:guava:31.1-jre"
-        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
+        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2'
 
         implementation 'org.freemarker:freemarker:2.3.31'
-        implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.13'
+        implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.14'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
@@ -103,9 +103,9 @@ dependencies {
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation "org.springframework.boot:spring-boot"
-    implementation 'org.yaml:snakeyaml:1.33'
+    implementation 'org.yaml:snakeyaml:2.0'
     implementation 'org.zeroturnaround:zt-zip:1.13'
-    implementation 'org.apache.pdfbox:pdfbox:2.0.25'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.27'
 
     // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
     testImplementation 'org.assertj:assertj-core:3.13.2'
@@ -115,7 +115,7 @@ dependencies {
     testImplementation project(':configuration').sourceSets.test.output
     testImplementation project(':common-test')
     testImplementation 'com.github.docker-java:docker-java-core:3.2.7'
-    testImplementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.7'
+    testImplementation 'com.github.docker-java:docker-java-transport-httpclient5:3.3.0'
 }
 
 springBoot { mainClass = 'com.synopsys.integration.detect.Application' }

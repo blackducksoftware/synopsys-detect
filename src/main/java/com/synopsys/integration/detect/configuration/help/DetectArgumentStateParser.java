@@ -9,6 +9,7 @@ public class DetectArgumentStateParser {
     public DetectArgumentState parseArgs(ArgumentParser parser) {
         boolean isHelp = parser.isArgumentPresent("-h", "--help");
         boolean isHelpJsonDocument = parser.isArgumentPresent("-hjson", "--helpjson");
+        boolean isHelpYamlDocument = parser.isArgumentPresent("-hyaml", "--helpyaml");
         boolean isInteractive = parser.isArgumentPresent("-i", "--interactive");
 
         boolean isVerboseHelp = parser.isArgumentPresent("-hv", "--helpVerbose");
@@ -31,6 +32,7 @@ public class DetectArgumentStateParser {
         return new DetectArgumentState(
             isHelp,
             isHelpJsonDocument,
+            isHelpYamlDocument,
             isInteractive,
             isVerboseHelp,
             isDeprecatedHelp,
