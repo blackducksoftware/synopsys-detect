@@ -58,7 +58,7 @@ subprojects {
 allprojects {
     dependencies {
         implementation "com.google.guava:guava:31.1-jre"
-        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2'
+        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0-rc1'
 
         implementation 'org.freemarker:freemarker:2.3.31'
         implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.13'
