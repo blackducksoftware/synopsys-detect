@@ -163,6 +163,7 @@ import com.synopsys.integration.detector.accuracy.search.SearchEvaluator;
 import com.synopsys.integration.detector.accuracy.search.SearchOptions;
 import com.synopsys.integration.detector.finder.DirectoryFinder;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
@@ -171,6 +172,7 @@ import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
 
+import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectDetectableFactory detectDetectableFactory;
@@ -195,8 +197,8 @@ public class OperationRunner {
     private final RapidScanResultAggregator rapidScanResultAggregator;
     private final ProjectEventPublisher projectEventPublisher;
     private final DetectExecutableRunner executableRunner;
-
     private final OperationAuditLog auditLog;
+    private static final int[] fibonacciSequence = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -330,7 +332,8 @@ public class OperationRunner {
                 rapidScans,
                 detectConfigurationFactory.findTimeoutInSeconds(),
                 RapidModeWaitOperation.DEFAULT_WAIT_INTERVAL_IN_SECONDS,
-                mode
+                mode,
+                calculateMaxWaitInSeconds()
             );
         });
     }
@@ -953,15 +956,33 @@ public class OperationRunner {
                 .findRapidScanConfig(directoryManager.getSourceDirectory())
         );
     }
-    
-    public BomStatusScanView waitForBomScanCompletion(BlackDuckRunData blackDuckRunData, HttpUrl scanUrl) throws OperationException {
+
+    private int countBdioEntryFiles() throws IntegrationException {
+        File bdioFile = this.fileFinder.findFile(directoryManager.getBdioOutputDirectory(), "*.bdio");
+        Bdio2ContentExtractor bdio2Extractor = new Bdio2ContentExtractor();
+        return bdio2Extractor.extractContent(bdioFile).size() - 1; // excludes bdio header file
+    }
+
+    private int calculateMaxWaitInSeconds() throws IntegrationException {
+        // Max polling interval time will be the (N+1)th Fibonacci number in seconds, where N is the number of BDIO chunks (entry files)
+        int bdioChunks = countBdioEntryFiles();
+        int maxWaitInSeconds = 1;
+        if (bdioChunks > fibonacciSequence.length - 1) {
+            maxWaitInSeconds = fibonacciSequence[fibonacciSequence.length - 1];
+        } else if (bdioChunks > 0) {
+            maxWaitInSeconds = fibonacciSequence[bdioChunks];
+        }
+        return maxWaitInSeconds;
+    }
+
+    public BomStatusScanView waitForBomScanCompletion(BlackDuckRunData blackDuckRunData, HttpUrl scanUrl) throws OperationException, IntegrationException {
         return auditLog.namedInternal("Wait for scan to potentially be included in BOM", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             return new BomScanWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForScan(
                     scanUrl,
-                    detectConfigurationFactory.findTimeoutInSeconds()
+                    detectConfigurationFactory.findTimeoutInSeconds(),
+                    calculateMaxWaitInSeconds()
             );
         });
-
     }
 }
