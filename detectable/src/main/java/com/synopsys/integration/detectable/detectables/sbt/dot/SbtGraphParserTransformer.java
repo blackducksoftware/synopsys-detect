@@ -40,8 +40,8 @@ public class SbtGraphParserTransformer {
             if (projectNodeId.equals(graphEdge.getNode1().getId())) {
                 graph.addChildToRoot(child);
             } else {
-                    if (!evictedIds.contains(graphEdge.getNode2().getId())) {
-                        graph.addChildWithParent(child, parent);
+                if (!evictedIds.contains(graphEdge.getNode2().getId())) {
+                    graph.addChildWithParent(child, parent);
                 }
             }
         }
