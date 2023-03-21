@@ -10,7 +10,11 @@ public class PackageLock {
 
     @SerializedName("version")
     public String version;
+    
+    @SerializedName("packages")
+    public Map<String, PackageLockPackage> packages;
 
+    // TODO remove not in version 3 of package lock, leaving here so other code compiles
     @SerializedName("dependencies")
     public Map<String, PackageLockDependency> dependencies;
 }
