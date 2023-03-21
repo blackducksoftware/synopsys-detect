@@ -965,17 +965,17 @@ public class OperationRunner {
 
     private int calculateMaxWaitInSeconds() throws IntegrationException {
         // Max polling interval time will be the (N+1)th Fibonacci number in seconds, where N is the number of BDIO chunks (entry files)
-        int bdioChunks = countBdioEntryFiles();
+        int bdioEntriesCount = countBdioEntryFiles();
         int maxWaitInSeconds = 1;
-        if (bdioChunks > fibonacciSequence.length - 1) {
+        if (bdioEntriesCount > fibonacciSequence.length - 1) {
             maxWaitInSeconds = fibonacciSequence[fibonacciSequence.length - 1];
-        } else if (bdioChunks > 0) {
-            maxWaitInSeconds = fibonacciSequence[bdioChunks];
+        } else if (bdioEntriesCount > 0) {
+            maxWaitInSeconds = fibonacciSequence[bdioEntriesCount];
         }
         return maxWaitInSeconds;
     }
 
-    public BomStatusScanView waitForBomScanCompletion(BlackDuckRunData blackDuckRunData, HttpUrl scanUrl) throws OperationException, IntegrationException {
+    public BomStatusScanView waitForBomScanCompletion(BlackDuckRunData blackDuckRunData, HttpUrl scanUrl) throws OperationException {
         return auditLog.namedInternal("Wait for scan to potentially be included in BOM", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             return new BomScanWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForScan(
