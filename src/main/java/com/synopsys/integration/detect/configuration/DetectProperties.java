@@ -1739,7 +1739,15 @@ public class DetectProperties {
                 "This property will force Detect in offline mode to generate a BDIO even if no code locations were identified.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
-
+    
+    public static final NullableStringProperty DETECT_SCAAAS_SCAN_PATH =
+            NullableStringProperty.newBuilder("detect.scaaas.scan.path")
+            .setInfo("SCAAAS Scan Target", DetectPropertyFromVersion.VERSION_8_8_0)
+            .setHelp(
+                "This file will be uploaded to the BDBA worker for scan analysis in an SCA as a service environment.")            
+            .setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH)
+            .build();
+    
     //#endregion Active Properties
 
     //#region Deprecated Properties
