@@ -42,7 +42,7 @@ Linux Docker images that use the DPKG, RPM, or APK package manager database form
 
 Signature and binary scan targets contain the container file system.
 The container file system
-is the file system that a container created from the target image would start with. The
+is the file system that a container created from the target image. The
 container file system is (by default) returned to [solution_name] in two forms:
 as an archive file that contains the container file system (the preferred format for binary
 scanning), and as a saved squashed (single layer) image
@@ -96,13 +96,13 @@ inside a container where [docker_inspector_name] cannot perform Docker operation
 For information on running [docker_inspector_name] in container mode,
 refer to [Deploying](deployment.md).
 
-It possible to utilize container mode when running [solution_name] and [docker_inspector_name] on a host
+It is possible to utilize container mode when running [solution_name] and [docker_inspector_name] on a host
 that supports host mode. Container mode is more difficult to manage than host mode,
 but you might choose container mode in order to increase throughput (to scan more images per hour).
 Most of the time spent by [docker_inspector_name] running in host mode is spent starting and stopping the image inspector services.
 When these services are already running (in the usual sense of the word "service")
 as they do in container mode,
-[docker_inspector_name] much more quickly than it would in host mode.
+[docker_inspector_name] executes much more quickly than it would in host mode.
 
 ## Requirements
 
