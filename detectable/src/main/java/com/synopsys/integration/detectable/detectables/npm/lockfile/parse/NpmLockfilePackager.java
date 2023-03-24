@@ -36,9 +36,16 @@ public class NpmLockfilePackager {
     }
 
     public NpmPackagerResult parseAndTransform(@Nullable String packageJsonText, String lockFileText, List<NameVersion> externalDependencies) {
+        // TODO this is too simplistic as without modifications it almost certainly will be picking up 
+        // only the root package.json
         PackageJson packageJson = Optional.ofNullable(packageJsonText)
             .map(content -> gson.fromJson(content, PackageJson.class))
             .orElse(null);
+        
+        // Flatten the lock file, removing node_modules from the package names
+        // TODO we'll likely lose relationships from this so probably need to add some more complex parsing
+        // later.
+        lockFileText = lockFileText.replaceAll("node_modules/", "");
 
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
 

@@ -16,6 +16,7 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmPro
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLockDependency;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLockPackage;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class NpmDependencyConverter {
@@ -29,8 +30,8 @@ public class NpmDependencyConverter {
         List<NpmRequires> declaredDependencies = new ArrayList<>();
         List<NpmDependency> resolvedDependencies = new ArrayList<>();
 
-        if (packageLock.dependencies != null) {
-            List<NpmDependency> children = convertPackageMapToDependencies(null, packageLock.dependencies);
+        if (packageLock.packages != null) {
+            List<NpmDependency> children = convertPackageMapToDependencies(null, packageLock.packages);
             resolvedDependencies.addAll(children);
         }
 
@@ -54,25 +55,26 @@ public class NpmDependencyConverter {
         return new NpmProject(packageLock.name, packageLock.version, declaredDevDependencies, declaredPeerDependencies, declaredDependencies, resolvedDependencies);
     }
 
-    public List<NpmDependency> convertPackageMapToDependencies(NpmDependency parent, Map<String, PackageLockDependency> packageLockDependencyMap) {
+    public List<NpmDependency> convertPackageMapToDependencies(NpmDependency parent, Map<String, PackageLockPackage> packages) {
         List<NpmDependency> children = new ArrayList<>();
 
-        if (packageLockDependencyMap == null || packageLockDependencyMap.size() == 0) {
+        if (packages == null || packages.size() == 0) {
             return children;
         }
 
-        for (Map.Entry<String, PackageLockDependency> packageEntry : packageLockDependencyMap.entrySet()) {
+        for (Map.Entry<String, PackageLockPackage> packageEntry : packages.entrySet()) {
             String packageName = packageEntry.getKey();
-            PackageLockDependency packageLockDependency = packageEntry.getValue();
+            PackageLockPackage packageLockDependency = packageEntry.getValue();
 
             NpmDependency dependency = createNpmDependency(packageName, packageLockDependency.version, packageLockDependency.dev, packageLockDependency.peer);
             dependency.setParent(parent);
             children.add(dependency);
 
-            List<NpmRequires> requires = convertNameVersionMapToRequires(packageLockDependency.requires);
+            List<NpmRequires> requires = convertNameVersionMapToRequires(packageLockDependency.dependencies);
             dependency.addAllRequires(requires);
 
-            List<NpmDependency> grandChildren = convertPackageMapToDependencies(dependency, packageLockDependency.dependencies);
+            // TODO this will likely not work due to the flattening not yet accounting for node_modules/x/node_modules/y
+            List<NpmDependency> grandChildren = convertPackageMapToDependencies(dependency, packageLockDependency.packages);
             dependency.addAllDependencies(grandChildren);
         }
         return children;
