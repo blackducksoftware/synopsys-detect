@@ -198,7 +198,6 @@ public class OperationRunner {
     private final ProjectEventPublisher projectEventPublisher;
     private final DetectExecutableRunner executableRunner;
     private final OperationAuditLog auditLog;
-    private static final int[] fibonacciSequence = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -328,12 +327,13 @@ public class OperationRunner {
     public List<DeveloperScansScanView> waitForFullRapidResults(BlackDuckRunData blackDuckRunData, List<HttpUrl> rapidScans, BlackduckScanMode mode) throws OperationException {
         return auditLog.namedInternal("Rapid Wait", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            int bdioEntriesCount = countBdioEntryFiles();
             return new RapidModeWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForFullScans(
                 rapidScans,
                 detectConfigurationFactory.findTimeoutInSeconds(),
                 RapidModeWaitOperation.DEFAULT_WAIT_INTERVAL_IN_SECONDS,
                 mode,
-                calculateMaxWaitInSeconds()
+                calculateMaxWaitInSeconds(bdioEntriesCount)
             );
         });
     }
@@ -957,20 +957,21 @@ public class OperationRunner {
         );
     }
 
-    private int countBdioEntryFiles() throws IntegrationException {
+    public int countBdioEntryFiles() throws IntegrationException {
         File bdioFile = this.fileFinder.findFile(directoryManager.getBdioOutputDirectory(), "*.bdio");
         Bdio2ContentExtractor bdio2Extractor = new Bdio2ContentExtractor();
         return bdio2Extractor.extractContent(bdioFile).size() - 1; // excludes bdio header file
     }
 
-    private int calculateMaxWaitInSeconds() throws IntegrationException {
+    public int calculateMaxWaitInSeconds(int bdioEntriesCount) {
         // Max polling interval time will be the (N+1)th Fibonacci number in seconds, where N is the number of BDIO chunks (entry files)
-        int bdioEntriesCount = countBdioEntryFiles();
         int maxWaitInSeconds = 1;
-        if (bdioEntriesCount > fibonacciSequence.length - 1) {
-            maxWaitInSeconds = fibonacciSequence[fibonacciSequence.length - 1];
+        int[] customFibonacciSequence = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
+
+        if (bdioEntriesCount > customFibonacciSequence.length - 1) {
+            maxWaitInSeconds = customFibonacciSequence[customFibonacciSequence.length - 1];
         } else if (bdioEntriesCount > 0) {
-            maxWaitInSeconds = fibonacciSequence[bdioEntriesCount];
+            maxWaitInSeconds = customFibonacciSequence[bdioEntriesCount];
         }
         return maxWaitInSeconds;
     }
@@ -978,10 +979,11 @@ public class OperationRunner {
     public BomStatusScanView waitForBomScanCompletion(BlackDuckRunData blackDuckRunData, HttpUrl scanUrl) throws OperationException {
         return auditLog.namedInternal("Wait for scan to potentially be included in BOM", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            int bdioEntriesCount = countBdioEntryFiles();
             return new BomScanWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForScan(
                     scanUrl,
                     detectConfigurationFactory.findTimeoutInSeconds(),
-                    calculateMaxWaitInSeconds()
+                    calculateMaxWaitInSeconds(bdioEntriesCount)
             );
         });
     }
