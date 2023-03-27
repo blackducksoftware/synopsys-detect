@@ -1,5 +1,5 @@
 # This generates the website for  https://blackducksoftware.github.io/synopsys-detect/latest/, so
-# it points to the Confluence doc.
+# it points to the Documentation Portal.
 #
 # To generate the site:
 # 1. Make any updates you want in markdown/index.md
