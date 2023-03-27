@@ -21,9 +21,6 @@ public class POCDriver {
     public void drive(File fullResultJsonFile, DirectoryManager directoryManager) {
         try {
             InputStream inputStream = new FileInputStream(fullResultJsonFile);
-//            String inputFilePath = "/poc-resources/jsonPayloadDetect.json";
-//            String inputFilePath = jsonFilePath;
-//            InputStream inputStream = Application.class.getResourceAsStream(inputFilePath);
 
             String jsonData = new String(inputStream.readAllBytes());
             JSONArray sourceJsonArray = new JSONArray(jsonData);
@@ -35,15 +32,12 @@ public class POCDriver {
 
             // Part B: Generate vulnerability-component dataset
             VulnComponentDataset vulnComponentDataset = new VulnComponentDataset(componentLocationMap);
-//            VulnComponentDataset vulnComponentDataset = new VulnComponentDataset();
             JSONObject result = vulnComponentDataset.generateVulnComponentDataset(sourceJsonObject);
 
             System.out.println("\nResult:\n" + result.toString(4));
 
             // Write the intermediate output to a folder
-            File targetDir = new File("target/output-files");
-            targetDir.mkdirs();
-            File outputFile = new File(targetDir, "vulnerability-component-dataset.json");
+            File outputFile = new File(directoryManager.getStatusOutputDirectory(), "vulnerability-remediation.json");
             PrintWriter fileWriter = new PrintWriter(outputFile);
             fileWriter.println(result.toString(4));
             fileWriter.close();
