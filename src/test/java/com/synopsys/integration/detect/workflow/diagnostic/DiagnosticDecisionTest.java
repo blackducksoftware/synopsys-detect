@@ -53,7 +53,7 @@ class DiagnosticDecisionTest {
     }
 
     private DetectArgumentState createDetectArgumentState(boolean isDiagnostic) {
-        return new DetectArgumentState(false, false, false, false, false, false, null, isDiagnostic, false);
+        return new DetectArgumentState(false,false, false, false, false, false, false, null, isDiagnostic, false);
     }
 
 }

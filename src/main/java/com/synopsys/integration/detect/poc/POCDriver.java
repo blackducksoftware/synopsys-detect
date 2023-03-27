@@ -34,7 +34,7 @@ public class POCDriver {
             VulnComponentDataset vulnComponentDataset = new VulnComponentDataset(componentLocationMap);
             JSONObject result = vulnComponentDataset.generateVulnComponentDataset(sourceJsonObject);
 
-            System.out.println("\nResult:\n" + result.toString(4));
+//            System.out.println("\nResult:\n" + result.toString(4));
 
             // Write the intermediate output to a folder
             File outputFile = new File(directoryManager.getStatusOutputDirectory(), "vulnerability-remediation.json");
