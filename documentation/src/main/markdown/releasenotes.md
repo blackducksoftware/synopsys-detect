@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 8.8.0
+
+### Resolved issues
+
+* (IDETECT-3111) When scanning SBT projects, "Evicted" dependencies are appearing in the resulting BOM when they should be excluded.
+
 ## Version 8.7.0
 
 ### New features

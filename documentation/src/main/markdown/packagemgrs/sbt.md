@@ -12,6 +12,8 @@
 
 The SBT detector requires a compatible dependency graph plugin and the "depedencyDot" task to generate dependency graphs for SBT projects. The plugin generates dot file graphs for each project and [solution_name] parses each dot graph into it's own code location.
 
+As of version 8.8.0, [solution_name], will no longer include "Evicted" dependencies in the BOM file generated during a scan.
+
 Starting with SBT 1.4.0, a dependency graph plugin comes with SBT and can be enabled by adding ```addDependencyTreePlugin``` to "project/plugins.sbt".
 
 For older versions of SBT, a [dependency graph plugin](https://github.com/sbt/sbt-dependency-graph) can be installed [globally](https://www.scala-sbt.org/1.x/docs/Using-Plugins.html) or per project.
