@@ -957,7 +957,7 @@ public class OperationRunner {
         );
     }
 
-    public int countBdioEntryFiles() throws IntegrationException {
+    private int countBdioEntryFiles() throws IntegrationException {
         File bdioFile = this.fileFinder.findFile(directoryManager.getBdioOutputDirectory(), "*.bdio");
         Bdio2ContentExtractor bdio2Extractor = new Bdio2ContentExtractor();
         return bdio2Extractor.extractContent(bdioFile).size() - 1; // excludes bdio header file
