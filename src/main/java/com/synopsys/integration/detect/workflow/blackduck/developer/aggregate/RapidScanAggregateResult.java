@@ -32,7 +32,6 @@ public class RapidScanAggregateResult {
     public void logResult(IntLogger logger) {
         logGroupDetail(logger, componentDetails);
         logGroupDetail(logger, securityDetails);
-        logTransitiveGuidanceInformation(logger);
         logGroupDetail(logger, licenseDetails);
     }
 

@@ -31,6 +31,7 @@ import com.synopsys.integration.configuration.property.types.enumallnone.list.Al
 import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
+import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
@@ -488,6 +489,10 @@ public class DetectConfigurationFactory {
 
     public Optional<String> createCodeLocationOverride() {
         return Optional.ofNullable(detectConfiguration.getNullableValue(DetectProperties.DETECT_CODE_LOCATION_NAME));
+    }
+    
+    public Optional<String> getScaaasFilePath() {
+        return Optional.ofNullable(detectConfiguration.getNullableValue(DetectProperties.DETECT_SCAAAS_SCAN_PATH));
     }
 
     public DetectorToolOptions createDetectorToolOptions() {

@@ -1,7 +1,6 @@
 package com.synopsys.integration.detect.workflow.blackduck.developer.blackduck;
 
 import com.synopsys.integration.blackduck.api.core.response.UrlMultipleResponses;
-import com.synopsys.integration.blackduck.api.generated.view.ScanFullResultView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.request.BlackDuckMultipleRequest;
@@ -25,8 +24,8 @@ public class DetectRapidScanRequestBuilder {
     public BlackDuckMultipleRequest<DeveloperScansScanView> createRequest(HttpUrl httpUrl) {
         return blackDuckRequestBuilder.buildBlackDuckRequest(new UrlMultipleResponses<>(httpUrl, DeveloperScansScanView.class));
     }
-    public BlackDuckMultipleRequest<ScanFullResultView> createFullRequest(HttpUrl httpUrl) {
-        return blackDuckRequestBuilder.buildBlackDuckRequest(new UrlMultipleResponses<>(httpUrl, ScanFullResultView.class));
+    public BlackDuckMultipleRequest<DeveloperScansScanView> createFullRequest(HttpUrl httpUrl) {
+        return blackDuckRequestBuilder.buildBlackDuckRequest(new UrlMultipleResponses<>(httpUrl, DeveloperScansScanView.class));
     }
 
 }
