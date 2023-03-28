@@ -5,7 +5,7 @@
 ### New features
 
 * The accuracy of dependency determination, HIGH or LOW, of any detectors run during a scan will now be recorded in the status.json file.
-* STATELESS/RAPID scans now will give upgrade guidance to mitigate vulnerabilities in transitive dependencies.
+* STATELESS/RAPID scans, when run against [blackduck_product_name] 2023.1.2 or later, will provide upgrade guidance for mitigation of vulnerabilities in transitive dependencies.
 
 ### Changed features
 

@@ -15,14 +15,7 @@ import com.synopsys.integration.blackduck.api.generated.component.DeveloperScans
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsComponentViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationLicensesView;
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationVulnerabilitiesView;
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.ScanFullResultItemsViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
-import com.synopsys.integration.blackduck.api.generated.view.ScanFullResultView;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanAggregateResult;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
@@ -32,7 +25,7 @@ import com.synopsys.integration.log.LogLevel;
 public class RapidScanResultAggregatorTest {
     @Test
     public void testEmptyResults() {
-        List<ScanFullResultView> results = Collections.emptyList();
+        List<DeveloperScansScanView> results = Collections.emptyList();
         RapidScanResultAggregator aggregator = new RapidScanResultAggregator();
         RapidScanAggregateResult aggregateResult = aggregator.aggregateData(results);
         BufferedIntLogger logger = new BufferedIntLogger();
@@ -49,7 +42,7 @@ public class RapidScanResultAggregatorTest {
 
     @Test
     public void testResults() {
-        List<ScanFullResultView> results = createResultList();
+        List<DeveloperScansScanView> results = createResultList();
         RapidScanResultAggregator aggregator = new RapidScanResultAggregator();
         RapidScanAggregateResult aggregateResult = aggregator.aggregateData(results);
         BufferedIntLogger logger = new BufferedIntLogger();
@@ -64,15 +57,15 @@ public class RapidScanResultAggregatorTest {
         assertFalse(logger.getOutputList(LogLevel.INFO).isEmpty());
     }
 
-    private List<ScanFullResultView> createResultList() {
-        List<ScanFullResultView> resultList = new ArrayList<>();
-        ScanFullResultView view = createView();
+    private List<DeveloperScansScanView> createResultList() {
+        List<DeveloperScansScanView> resultList = new ArrayList<>();
+        DeveloperScansScanView view = createView();
         resultList.add(view);
         return resultList;
     }
 
-    private ScanFullResultView createView() {
-        return new ScanFullResultView() {
+    private DeveloperScansScanView createView() {
+        return new DeveloperScansScanView() {
             @Override
             public String getComponentName() {
                 return "component_1";
@@ -89,14 +82,14 @@ public class RapidScanResultAggregatorTest {
             }
             
             @Override
-            public List<ScanFullResultItemsComponentViolatingPoliciesView> getComponentViolatingPolicies() {
-                List<ScanFullResultItemsComponentViolatingPoliciesView> componentViolatingPolicies = new ArrayList<>();
+            public List<DeveloperScansScanItemsComponentViolatingPoliciesView> getComponentViolatingPolicies() {
+                List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolatingPolicies = new ArrayList<>();
                 
-                ScanFullResultItemsComponentViolatingPoliciesView componentViolatingPolicy = new ScanFullResultItemsComponentViolatingPoliciesView();
+                DeveloperScansScanItemsComponentViolatingPoliciesView componentViolatingPolicy = new DeveloperScansScanItemsComponentViolatingPoliciesView();
                 componentViolatingPolicy.setPolicyName("component_policy");
                 componentViolatingPolicy.setPolicySeverity("CRITICAL");
                 
-                ScanFullResultItemsComponentViolatingPoliciesView componentViolatingPolicy2 = new ScanFullResultItemsComponentViolatingPoliciesView();
+                DeveloperScansScanItemsComponentViolatingPoliciesView componentViolatingPolicy2 = new DeveloperScansScanItemsComponentViolatingPoliciesView();
                 componentViolatingPolicy2.setPolicyName("component_policy_warning");
                 componentViolatingPolicy2.setPolicySeverity("MINOR");
                 
@@ -106,16 +99,16 @@ public class RapidScanResultAggregatorTest {
             }
 
             @Override
-            public List<ScanFullResultItemsViolatingPoliciesView> getViolatingPolicies() {
-                List<ScanFullResultItemsViolatingPoliciesView> violatingPolicies = new ArrayList<>();
+            public List<DeveloperScansScanItemsViolatingPoliciesView> getViolatingPolicies() {
+                List<DeveloperScansScanItemsViolatingPoliciesView> violatingPolicies = new ArrayList<>();
 
-                ScanFullResultItemsViolatingPoliciesView view = new ScanFullResultItemsViolatingPoliciesView();
+                DeveloperScansScanItemsViolatingPoliciesView view = new DeveloperScansScanItemsViolatingPoliciesView();
                 view.setPolicyName("component_policy");
                 view.setPolicySeverity("CRITICAL");
-                ScanFullResultItemsViolatingPoliciesView view2 = new ScanFullResultItemsViolatingPoliciesView();
+                DeveloperScansScanItemsViolatingPoliciesView view2 = new DeveloperScansScanItemsViolatingPoliciesView();
                 view2.setPolicyName("vulnerability_policy");
                 view2.setPolicySeverity("CRITICAL");
-                ScanFullResultItemsViolatingPoliciesView view3 = new ScanFullResultItemsViolatingPoliciesView();
+                DeveloperScansScanItemsViolatingPoliciesView view3 = new DeveloperScansScanItemsViolatingPoliciesView();
                 view3.setPolicyName("license_policy");
                 view3.setPolicySeverity("MINOR");
 
@@ -126,9 +119,9 @@ public class RapidScanResultAggregatorTest {
             }
 
             @Override
-            public List<ScanFullResultItemsPolicyViolationVulnerabilitiesView> getPolicyViolationVulnerabilities() {
-                List<ScanFullResultItemsPolicyViolationVulnerabilitiesView> vulnerabilities = new ArrayList<>();
-                ScanFullResultItemsPolicyViolationVulnerabilitiesView view = new ScanFullResultItemsPolicyViolationVulnerabilitiesView() {
+            public List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> getPolicyViolationVulnerabilities() {
+                List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilities = new ArrayList<>();
+                DeveloperScansScanItemsPolicyViolationVulnerabilitiesView view = new DeveloperScansScanItemsPolicyViolationVulnerabilitiesView() {
                     @Override
                     public String getName() {
                         return "Vulnerability violation";
@@ -140,14 +133,14 @@ public class RapidScanResultAggregatorTest {
                     }
 
                     @Override
-                    public List<ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> getViolatingPolicies() {
-                        List<ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> violatingPolicies = new ArrayList<>();
+                    public List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> getViolatingPolicies() {
+                        List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> violatingPolicies = new ArrayList<>();
                         
-                        ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView view = new ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView();
+                        DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView view = new DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView();
                         view.setPolicyName("vulnerability_policy");
                         view.setPolicySeverity("CRITICAL");
                         
-                        ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView view2 = new ScanFullResultItemsPolicyViolationVulnerabilitiesViolatingPoliciesView();
+                        DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView view2 = new DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView();
                         view2.setPolicyName("vulnerability_policy_warning");
                         view2.setPolicySeverity("MINOR");
                  
@@ -161,24 +154,24 @@ public class RapidScanResultAggregatorTest {
             }
 
             @Override
-            public List<ScanFullResultItemsPolicyViolationLicensesView> getPolicyViolationLicenses() {
-                List<ScanFullResultItemsPolicyViolationLicensesView> licenses = new ArrayList<>();
+            public List<DeveloperScansScanItemsPolicyViolationLicensesView> getPolicyViolationLicenses() {
+                List<DeveloperScansScanItemsPolicyViolationLicensesView> licenses = new ArrayList<>();
                 
-                ScanFullResultItemsPolicyViolationLicensesView view = new ScanFullResultItemsPolicyViolationLicensesView() {
+                DeveloperScansScanItemsPolicyViolationLicensesView view = new DeveloperScansScanItemsPolicyViolationLicensesView() {
                     @Override
                     public String getName() {
                         return "License name";
                     }
 
                     @Override
-                    public List<ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView> getViolatingPolicies() {
-                        List<ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView> violatingPolicies = new ArrayList<>();
+                    public List<DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView> getViolatingPolicies() {
+                        List<DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView> violatingPolicies = new ArrayList<>();
                         
-                        ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView view = new ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView(); 
+                        DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView view = new DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView(); 
                         view.setPolicyName("license_policy");
                         view.setPolicySeverity("CRITICAL");
                         
-                        ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView view2 = new ScanFullResultItemsPolicyViolationLicensesViolatingPoliciesView(); 
+                        DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView view2 = new DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView(); 
                         view2.setPolicyName("license_policy_warning");
                         view2.setPolicySeverity("MINOR");
                         

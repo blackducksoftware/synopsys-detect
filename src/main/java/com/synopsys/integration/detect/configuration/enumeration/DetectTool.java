@@ -7,5 +7,6 @@ public enum DetectTool {
     IMPACT_ANALYSIS,
     DOCKER,
     BAZEL,
-    IAC_SCAN
+    IAC_SCAN,
+    CONTAINER_SCAN
 }
