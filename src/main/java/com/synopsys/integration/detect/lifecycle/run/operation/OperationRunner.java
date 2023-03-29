@@ -198,8 +198,8 @@ public class OperationRunner {
     private final ProjectEventPublisher projectEventPublisher;
     private final DetectExecutableRunner executableRunner;
     private final OperationAuditLog auditLog;
-    private static final int[] limitedFibonacciSequence = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
-    private static final int defaultMaxWaitInSeconds = 10;
+    private static final int[] LIMITED_FIBONACCI_SEQUENCE = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
+    private static final int MAX_WAIT_IN_SECONDS_IF_BDIO_UNAVAILABLE = 5;
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -970,16 +970,14 @@ public class OperationRunner {
         }
     }
 
-    public int calculateMaxWaitInSeconds(int bdioEntriesCount) {
-        int fibonacciSequenceIndex = bdioEntriesCount;
-        int fibonacciSequenceLastIndex = limitedFibonacciSequence.length - 1;
-
+    public int calculateMaxWaitInSeconds(int fibonacciSequenceIndex) {
+        int fibonacciSequenceLastIndex = LIMITED_FIBONACCI_SEQUENCE.length - 1;
         if (fibonacciSequenceIndex > fibonacciSequenceLastIndex) {
-            return limitedFibonacciSequence[fibonacciSequenceLastIndex];
+            return LIMITED_FIBONACCI_SEQUENCE[fibonacciSequenceLastIndex];
         } else if (fibonacciSequenceIndex > 0) {
-            return limitedFibonacciSequence[fibonacciSequenceIndex];
+            return LIMITED_FIBONACCI_SEQUENCE[fibonacciSequenceIndex];
         }
-        return defaultMaxWaitInSeconds;
+        return MAX_WAIT_IN_SECONDS_IF_BDIO_UNAVAILABLE;
     }
 
     public BomStatusScanView waitForBomCompletion(BlackDuckRunData blackDuckRunData, HttpUrl scanUrl) throws OperationException {
