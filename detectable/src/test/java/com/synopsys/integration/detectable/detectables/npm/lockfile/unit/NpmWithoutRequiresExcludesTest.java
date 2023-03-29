@@ -22,7 +22,7 @@ public class NpmWithoutRequiresExcludesTest {
     @Test
     public void testDevDependencyExcluded() {
         PackageLock packageLock = new PackageLock();
-        packageLock.dependencies = new HashMap<>();
+        packageLock.packages = new HashMap<>();
 
         List<NpmDependency> resolvedDependencies = new ArrayList<>();
         resolvedDependencies.add(new NpmDependency("example", "1.0.0", true, true));

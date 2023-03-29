@@ -37,19 +37,22 @@ public class NpmLockfilePackager {
 
     public NpmPackagerResult parseAndTransform(@Nullable String packageJsonText, String lockFileText, List<NameVersion> externalDependencies) {
         // TODO this is too simplistic as without modifications it almost certainly will be picking up 
-        // only the root package.json
+        // only the root package.json, can I just basically slam them all together?
         PackageJson packageJson = Optional.ofNullable(packageJsonText)
             .map(content -> gson.fromJson(content, PackageJson.class))
             .orElse(null);
-        
-        // Flatten the lock file, removing node_modules from the package names
-        // TODO we'll likely lose relationships from this so probably need to add some more complex parsing
-        // later.
+          
+        // Flatten the lock file, removing node_modules from the package names. The code expects them in this
+        // format as it aligns with the previous dependencies section of the lock file.
         lockFileText = lockFileText.replaceAll("node_modules/", "");
-
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
-
+        
         NpmDependencyConverter dependencyConverter = new NpmDependencyConverter(externalIdFactory);
+        
+        // Link up any subpackages that no longer have a nice nested relationship in the packages areas of the 
+        // lock file
+        dependencyConverter.linkPackagesDependencies(packageLock);
+        
         NpmProject project = dependencyConverter.convertLockFile(packageLock, packageJson);
 
         DependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies);
