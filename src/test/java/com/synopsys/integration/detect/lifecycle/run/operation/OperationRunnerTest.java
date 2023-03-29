@@ -29,8 +29,8 @@ public class OperationRunnerTest {
     @Test
     public void testCalculateMaxWaitInSeconds() throws IntegrationException {
         // Lower bound edge cases
-        Assertions.assertEquals(1, operationRunner.calculateMaxWaitInSeconds(0));
-        Assertions.assertEquals(1, operationRunner.calculateMaxWaitInSeconds(-1));
+        Assertions.assertEquals(10, operationRunner.calculateMaxWaitInSeconds(0));
+        Assertions.assertEquals(10, operationRunner.calculateMaxWaitInSeconds(-1));
 
         // Core cases
         Assertions.assertEquals(1, operationRunner.calculateMaxWaitInSeconds(2));
