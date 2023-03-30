@@ -1,9 +1,13 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
@@ -31,16 +35,12 @@ public class NpmLockfilePackager {
         this.graphTransformer = graphTransformer;
     }
 
-    public NpmPackagerResult parseAndTransform(@Nullable String packageJsonText, String lockFileText) {
-        return parseAndTransform(packageJsonText, lockFileText, new ArrayList<>());
+    public NpmPackagerResult parseAndTransform(@Nullable String rootJsonPath, @Nullable String packageJsonText, String lockFileText) throws IOException {
+        return parseAndTransform(rootJsonPath, packageJsonText, lockFileText, new ArrayList<>());
     }
 
-    public NpmPackagerResult parseAndTransform(@Nullable String packageJsonText, String lockFileText, List<NameVersion> externalDependencies) {
-        // TODO this is too simplistic as without modifications it almost certainly will be picking up 
-        // only the root package.json, can I just basically slam them all together?
-        PackageJson packageJson = Optional.ofNullable(packageJsonText)
-            .map(content -> gson.fromJson(content, PackageJson.class))
-            .orElse(null);
+    public NpmPackagerResult parseAndTransform(@Nullable String rootJsonPath, @Nullable String packageJsonText, String lockFileText, List<NameVersion> externalDependencies) throws IOException {
+        PackageJson packageJson = constructPackageJson(rootJsonPath, packageJsonText);
           
         // Flatten the lock file, removing node_modules from the package names. The code expects them in this
         // format as it aligns with the previous dependencies section of the lock file.
@@ -59,6 +59,35 @@ public class NpmLockfilePackager {
         ExternalId projectId = projectIdTransformer.transform(packageJson, packageLock);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmPackagerResult(projectId.getName(), projectId.getVersion(), codeLocation);
+    }
+
+    private PackageJson constructPackageJson(String rootJsonPath, String packageJsonText) throws IOException {
+        PackageJson packageJson = Optional.ofNullable(packageJsonText)
+            .map(content -> gson.fromJson(content, PackageJson.class))
+            .orElse(null);
+        
+        if (packageJson.workspaces != null && rootJsonPath != null) {
+            // If there are workspaces there are additional package.json's we need to parse
+            String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf("/") + 1);
+            
+            for(String workspace : packageJson.workspaces) {
+                String workspaceJsonPath = projectRoot + workspace + "/package.json";
+                
+                String workspaceJsonString 
+                    = FileUtils.readFileToString(new File(workspaceJsonPath), StandardCharsets.UTF_8);
+                
+                PackageJson workspacePackageJson = Optional.ofNullable(workspaceJsonString)
+                        .map(content -> gson.fromJson(content, PackageJson.class))
+                        .orElse(null);
+                
+                // TODO might get conflicts
+                packageJson.dependencies.putAll(workspacePackageJson.dependencies);
+                packageJson.devDependencies.putAll(workspacePackageJson.devDependencies);
+                packageJson.peerDependencies.putAll(workspacePackageJson.peerDependencies);
+            }
+        }
+        
+        return packageJson;
     }
 
 }

@@ -28,7 +28,7 @@ public class NpmLockfileExtractor {
                 packageText = FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8);
             }
 
-            NpmPackagerResult result = npmLockfilePackager.parseAndTransform(packageText, lockText);
+            NpmPackagerResult result = npmLockfilePackager.parseAndTransform(packageJson.getPath(), packageText, lockText);
 
             return new Extraction.Builder()
                 .success(result.getCodeLocation())
