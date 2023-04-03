@@ -80,7 +80,7 @@ public class NpmLockfilePackager {
                         .map(content -> gson.fromJson(content, PackageJson.class))
                         .orElse(null);
                 
-                // TODO might get conflicts
+                // TODO might get conflicts, return a new type of merged package json?
                 packageJson.dependencies.putAll(workspacePackageJson.dependencies);
                 packageJson.devDependencies.putAll(workspacePackageJson.devDependencies);
                 packageJson.peerDependencies.putAll(workspacePackageJson.peerDependencies);

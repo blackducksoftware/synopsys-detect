@@ -108,6 +108,9 @@ public class NpmDependencyConverter {
             // Otherwise look for any relationships previously nested in the dependencies object prior to
             // npm 9. In the packages object these are stored at the root of the object in a parent/child and
             // perhaps even /grandchild relationship.
+            // TODO seems like it might be possible to have / in a package name so we can't totally depend on it.
+            // TODO maybe in previous code where replace node_packages/ with an empty string I can replace it with
+            // TODO an invalid character like * instead and then parse based on that
             if (packageName.contains("/") && !rootPackage.workspaces.contains(packageName)) { 
                 
                 // This packageName contains one or more /'s indicating a parent/child relationship.
