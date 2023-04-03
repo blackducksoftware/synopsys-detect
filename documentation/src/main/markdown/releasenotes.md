@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 8.8.0
+
+### New features
+
+* New Binary Stateless and Container Stateless Scans have been added to [solution_name]. These scans require the new detect.scaaas.scan.path property to be set to either a binary file or a compressed Docker image. These scan types also require a Black Duck Binary Analysis (BDBA) license. See the [Stateless Scans page](downloadingandrunning/statelessscan.md) for further details.
+
 ## Version 8.7.0
 
 ### New features
