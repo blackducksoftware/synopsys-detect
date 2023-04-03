@@ -34,7 +34,7 @@ In some cases, the dot files are not generated in "./target" and while those gra
 
 **NOTE: Older SBT projects that generate a resolution cache are still supported but are being deprecated. You must install the plugin for SBT to continue working uninterrupted.
 
-Evicted dependencies in Simple Build Tool(SBT) projects will not be included in the Bill of Materials(BoM) generated during the scan.
+As of 8.8.0 of [solution_name], evicted dependencies in Simple Build Tool(SBT) projects will not be included in the Bill of Materials(BoM) generated during the scan.
 
 ## Background execution
 
