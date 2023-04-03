@@ -32,4 +32,12 @@ public class CocoapodsPackagerTest {
         DependencyGraph projectDependencies = podlockParser.extractDependencyGraph(podlockText);
         GraphCompare.assertEqualsResource("/cocoapods/complexExpected_graph.json", projectDependencies);
     }
+    
+    @Test
+    @Disabled
+    public void noPodsTest() throws IOException, MissingExternalIdException {
+        String podlockText = FunctionalTestFiles.asString("/cocoapods/nopodsPodfile.lock");
+        DependencyGraph projectDependencies = podlockParser.extractDependencyGraph(podlockText);
+        GraphCompare.assertEqualsResource("/cocoapods/noPodsExpected_graph.json", projectDependencies);
+    }
 }
