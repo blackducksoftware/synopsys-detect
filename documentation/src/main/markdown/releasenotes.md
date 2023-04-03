@@ -1,5 +1,15 @@
 # Release notes
 
+## Version 8.8.0
+
+### Changed features
+
+* Evicted dependencies in Simple Build Tool(SBT) projects will no longer be included in the Bill of Materials(BoM) generated during the scan.
+
+### Resolved issues
+
+* (IDETECT-3111) When scanning SBT projects, "Evicted" dependencies are appearing in the resulting BOM when they should be excluded.
+
 ## Version 8.7.0
 
 ### New features
