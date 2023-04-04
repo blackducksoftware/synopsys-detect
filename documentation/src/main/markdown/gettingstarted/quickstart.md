@@ -51,7 +51,7 @@ In the junit4 case, [solution_name] will:
 1. Run the Maven detector, which uses Maven to discover dependencies.
 2. Run the [blackduck_signature_scanner_name] which scans the files in the source directory to discover dependencies.
 3. Upload the discovered dependencies to [blackduck_product_name].
-4. Provide in the log a "Black Duck Project BOM URL that you can use to view the results in [blackduck_product_name].
+4. Provide in the log a Black Duck Project BOM URL that you can use to view the results in [blackduck_product_name].
 
 Point your browser to the Black Duck Project BOM URL to see the Bill Of Materials for junit4.
 
