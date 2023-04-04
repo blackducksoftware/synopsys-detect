@@ -1,6 +1,10 @@
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +12,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -329,13 +335,13 @@ public class OperationRunner {
     public List<DeveloperScansScanView> waitForFullRapidResults(BlackDuckRunData blackDuckRunData, List<HttpUrl> rapidScans, BlackduckScanMode mode) throws OperationException {
         return auditLog.namedInternal("Rapid Wait", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            int bdioEntriesCount = countBdioEntryFiles();
+            int fibonacciSequenceIndex = getFibonacciSequenceIndex();
             return new RapidModeWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForFullScans(
                 rapidScans,
                 detectConfigurationFactory.findTimeoutInSeconds(),
                 RapidModeWaitOperation.DEFAULT_WAIT_INTERVAL_IN_SECONDS,
                 mode,
-                calculateMaxWaitInSeconds(bdioEntriesCount)
+                calculateMaxWaitInSeconds(fibonacciSequenceIndex)
             );
         });
     }
@@ -959,7 +965,38 @@ public class OperationRunner {
         );
     }
 
-    public int countBdioEntryFiles() {
+    public int countSignatureScannerBdioChunks() {
+        try {
+            File blackDuckScanOutputDirectory = this.fileFinder.findFile(directoryManager.getScanOutputDirectory(), "BlackDuckScanOutput");
+            File scanIdDirectory = this.fileFinder.findFile(blackDuckScanOutputDirectory, "*");
+            File scanLogDirectory = this.fileFinder.findFile(scanIdDirectory, "log");
+            File scanCliOutputLogFile = this.fileFinder.findFile(scanLogDirectory, "*.log");
+
+            BufferedReader reader = new BufferedReader(new FileReader(scanCliOutputLogFile));
+
+            Pattern pattern = Pattern.compile("scanNodeList\\.size\\(\\)=(\\d+).*scanLeafList\\.size\\(\\)=(\\d+)");
+            int scanNodeCount = 0;
+            int scanLeafCount = 0;
+
+            String line = reader.readLine();
+            while (line != null) {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find() && matcher.groupCount() == 2) {
+                    scanNodeCount = Integer.parseInt(matcher.group(1));
+                    scanLeafCount = Integer.parseInt(matcher.group(2));
+                }
+                line = reader.readLine();
+            }
+            long sumOfScanNodesAndLeaves = scanNodeCount + scanLeafCount;
+            int bdioChunksCount = (int) Math.ceil(sumOfScanNodesAndLeaves / 30000D);
+            return bdioChunksCount;
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            return 0;
+        }
+    }
+
+    public int countDetectBdioEntryFiles() {
         try {
             File bdioFile = this.fileFinder.findFile(directoryManager.getBdioOutputDirectory(), "*.bdio");
             Bdio2ContentExtractor bdio2Extractor = new Bdio2ContentExtractor();
@@ -980,14 +1017,19 @@ public class OperationRunner {
         return MAX_WAIT_IN_SECONDS_IF_BDIO_UNAVAILABLE;
     }
 
+    public int getFibonacciSequenceIndex() {
+        int bdioChunksCount = countSignatureScannerBdioChunks();
+        return bdioChunksCount != 0 ? bdioChunksCount : countDetectBdioEntryFiles();
+    }
+
     public BomStatusScanView waitForBomCompletion(BlackDuckRunData blackDuckRunData, HttpUrl scanUrl) throws OperationException {
         return auditLog.namedInternal("Wait for scan to potentially be included in BOM", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            int bdioEntriesCount = countBdioEntryFiles();
+            int fibonacciSequenceIndex = getFibonacciSequenceIndex();
             return new BomScanWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForScan(
                 scanUrl,
                 detectConfigurationFactory.findTimeoutInSeconds(),
-                calculateMaxWaitInSeconds(bdioEntriesCount)
+                calculateMaxWaitInSeconds(fibonacciSequenceIndex)
             );
         });
     }
