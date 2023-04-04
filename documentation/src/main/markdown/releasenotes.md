@@ -14,6 +14,7 @@
 ### Resolved issues
 
 * (IDETECT-3111) When scanning SBT projects, "Evicted" dependencies are appearing in the resulting BOM when they should be excluded.
+* (IDETECT-3685) Null Pointer Exception when parsing a Podfile.lock file without PODS.
 
 ## Version 8.7.0
 
