@@ -34,7 +34,6 @@ public class CocoapodsPackagerTest {
     }
     
     @Test
-    @Disabled
     public void noPodsTest() throws IOException, MissingExternalIdException {
         String podlockText = FunctionalTestFiles.asString("/cocoapods/nopodsPodfile.lock");
         DependencyGraph projectDependencies = podlockParser.extractDependencyGraph(podlockText);
