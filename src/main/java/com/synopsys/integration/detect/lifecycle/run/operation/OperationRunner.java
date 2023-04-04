@@ -975,8 +975,8 @@ public class OperationRunner {
             BufferedReader reader = new BufferedReader(new FileReader(scanCliOutputLogFile));
 
             Pattern pattern = Pattern.compile("scanNodeList\\.size\\(\\)=(\\d+).*scanLeafList\\.size\\(\\)=(\\d+)");
-            int scanNodeCount = 0;
-            int scanLeafCount = 0;
+            long scanNodeCount = 0;
+            long scanLeafCount = 0;
 
             String line = reader.readLine();
             while (line != null) {
