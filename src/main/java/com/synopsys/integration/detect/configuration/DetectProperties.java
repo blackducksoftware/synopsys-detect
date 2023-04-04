@@ -376,6 +376,17 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    public static final NullableStringProperty PROJECT_INSPECTOR_GLOBAL_ARGUMENTS =
+        NullableStringProperty.newBuilder("detect.project.inspector.global.arguments")
+        .setInfo("Project Inspector Global Arguments", DetectPropertyFromVersion.VERSION_8_8_0)
+        .setHelp(
+            "A space-separated list of global options to pass to all invocations of the project inspector."
+        )
+        .setExample("--help --quiet")
+        .setGroups(DetectGroup.PROJECT_INSPECTOR, DetectGroup.DEFAULT)
+        .setCategory(DetectCategory.Advanced)
+        .build();
+
     // TODO: JP don't like it
     public static final NullableStringProperty PROJECT_INSPECTOR_ARGUMENTS =
         NullableStringProperty.newBuilder("detect.project.inspector.arguments")
