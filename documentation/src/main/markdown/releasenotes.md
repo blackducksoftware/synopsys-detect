@@ -7,6 +7,14 @@
 * New Binary Stateless and Container Stateless Scans have been added to [solution_name]. These scans require the new detect.scaaas.scan.path property to be set to either a binary file or a compressed Docker image. See the [Stateless Scans page](downloadingandrunning/statelessscan.md) for further details.
 <note type="attention">A Black Duck Binary Analysis (BDBA) license is required to execute these scan types.</note>
 
+### Changed features
+
+* Evicted dependencies in Simple Build Tool(SBT) projects will no longer be included in the Bill of Materials(BoM) generated during the scan.
+
+### Resolved issues
+
+* (IDETECT-3111) When scanning SBT projects, "Evicted" dependencies are appearing in the resulting BOM when they should be excluded.
+
 ## Version 8.7.0
 
 ### New features
