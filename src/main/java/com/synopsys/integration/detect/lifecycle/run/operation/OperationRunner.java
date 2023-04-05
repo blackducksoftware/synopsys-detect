@@ -2,7 +2,6 @@ package com.synopsys.integration.detect.lifecycle.run.operation;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -965,13 +964,26 @@ public class OperationRunner {
         );
     }
 
+    public File getScanCliOutputLogFile() {
+        File blackDuckScanOutputDirectory = this.fileFinder.findFile(directoryManager.getScanOutputDirectory(), "BlackDuckScanOutput");
+        if (blackDuckScanOutputDirectory != null) {
+            File scanIdDirectory = this.fileFinder.findFile(blackDuckScanOutputDirectory, "*");
+            if (scanIdDirectory != null) {
+                File scanLogDirectory = this.fileFinder.findFile(scanIdDirectory, "log");
+                if (scanLogDirectory != null) {
+                    return this.fileFinder.findFile(scanLogDirectory, "*.log");
+                }
+            }
+        }
+        return null;
+    }
+
     public int countSignatureScannerBdioChunks() {
         try {
-            File blackDuckScanOutputDirectory = this.fileFinder.findFile(directoryManager.getScanOutputDirectory(), "BlackDuckScanOutput");
-            File scanIdDirectory = this.fileFinder.findFile(blackDuckScanOutputDirectory, "*");
-            File scanLogDirectory = this.fileFinder.findFile(scanIdDirectory, "log");
-            File scanCliOutputLogFile = this.fileFinder.findFile(scanLogDirectory, "*.log");
-
+            File scanCliOutputLogFile = getScanCliOutputLogFile();
+            if (scanCliOutputLogFile == null) {
+                return 0;
+            }
             BufferedReader reader = new BufferedReader(new FileReader(scanCliOutputLogFile));
 
             Pattern pattern = Pattern.compile("scanNodeList\\.size\\(\\)=(\\d+).*scanLeafList\\.size\\(\\)=(\\d+)");
@@ -991,7 +1003,6 @@ public class OperationRunner {
             int bdioChunksCount = (int) Math.ceil(sumOfScanNodesAndLeaves / 30000D);
             return bdioChunksCount;
         } catch (IOException e) {
-            logger.error(e.getMessage());
             return 0;
         }
     }
