@@ -29,3 +29,5 @@ docker-test/
 *.hprof
 *.bak
 *.gradle
+
+download/
