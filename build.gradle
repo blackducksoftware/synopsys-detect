@@ -58,7 +58,7 @@ subprojects {
 allprojects {
     dependencies {
         implementation "com.google.guava:guava:31.1-jre"
-        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2'
+        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
 
         implementation 'org.freemarker:freemarker:2.3.31'
         implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.14'
@@ -103,7 +103,7 @@ dependencies {
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation "org.springframework.boot:spring-boot"
-    implementation 'org.yaml:snakeyaml:2.0'
+    implementation 'org.yaml:snakeyaml:1.33'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.apache.pdfbox:pdfbox:2.0.27'
 
