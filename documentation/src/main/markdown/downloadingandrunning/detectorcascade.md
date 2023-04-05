@@ -84,9 +84,7 @@ Cascade sequences are not configurable.
 
 ## Entry points
 
-In the
-[Detector Types, Entry Points, and Detectors](detectors.html)
-table, most Detector Types have a single Entry Point. For those Detector Types, the Entry Point column can be ignored.
+In the [detector table](../components/detectors.md), most Detector Types have a single Entry Point. For those Detector Types, the Entry Point column can be ignored.
 
 There are a few Detector Types for which multiple Entry Points are defined.
 When multiple Entry Points are defined for a Detector Type,

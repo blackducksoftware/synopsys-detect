@@ -467,7 +467,7 @@ public class DetectProperties {
                 )
                 .setInfo("Reduced Persistence", DetectPropertyFromVersion.VERSION_8_3_0)
                 .setHelp(
-                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to <xref href=\"https://community.synopsys.com/s/document-item?bundleId=bd-hub&topicId=ComponentDiscovery%2Fabout_reduced_persistence_signature_scanning.html&_LANG=enus\" scope=\"external\" outputclass=\"external\" format=\"html\" target=\"_blank\">about reduced persistence signature scanning.</xref>")
+                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to <xref href=\"https://sig-product-docs.synopsys.com/bundle/bd-hub/page/ComponentDiscovery/about_reduced_persistence_signature_scanning.html\" scope=\"external\" outputclass=\"external\" format=\"html\" target=\"_blank\">about reduced persistence signature scanning.</xref>")
                 .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
                 .build();
 
@@ -1739,7 +1739,15 @@ public class DetectProperties {
                 "This property will force Detect in offline mode to generate a BDIO even if no code locations were identified.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
-
+    
+    public static final NullableStringProperty DETECT_SCAAAS_SCAN_PATH =
+            NullableStringProperty.newBuilder("detect.scaaas.scan.path")
+            .setInfo("SCAAAS Scan Target", DetectPropertyFromVersion.VERSION_8_8_0)
+            .setHelp(
+                "This file will be uploaded to the BDBA worker for scan analysis in an SCA as a service environment.")            
+            .setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH)
+            .build();
+    
     //#endregion Active Properties
 
     //#region Deprecated Properties

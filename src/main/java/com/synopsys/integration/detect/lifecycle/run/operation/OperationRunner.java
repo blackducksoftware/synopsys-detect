@@ -4,16 +4,20 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +42,12 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
@@ -172,6 +178,8 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
+import com.synopsys.integration.rest.body.FileBodyContent;
+import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
@@ -318,6 +326,89 @@ public class OperationRunner {
     }
 
     //Rapid
+    public UUID initiateStatelessBdbaScan(BlackDuckRunData blackDuckRunData) throws OperationException {
+        return auditLog.namedInternal("Initial Stateless BDBA Scan", () -> {
+            File bdioHeader = new File(directoryManager.getBdioOutputDirectory() + "/bdio-header.pb");
+
+            if (!bdioHeader.exists()) {
+                throw new DetectUserFriendlyException(
+                        "Unble to locate BDIO header from BDBA scan.",
+                        ExitCodeType.FAILURE_SCAN
+                    );
+            }
+
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+            HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + "/api/developer-scans");
+
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                    .postFile(bdioHeader, ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protobuf"))
+                    .buildBlackDuckResponseRequest(postUrl);
+
+            HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);
+            String path = responseUrl.uri().getPath();
+
+            return UUID.fromString(path.substring(path.lastIndexOf('/') + 1));
+        });
+    }
+
+    public void uploadBdioEntries(BlackDuckRunData blackDuckRunData, UUID bdScanId) throws IntegrationException, IOException {
+        // parse directory and upload all chunks
+        File bdioDirectory = directoryManager.getBdioOutputDirectory();
+
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+        String contentType = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
+        HttpUrl putUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString()
+                + "/api/developer-scans/" + bdScanId);
+
+        int sentChunks = 0;
+
+        for (File bdioEntry : bdioDirectory.listFiles()) {
+            if (bdioEntry.getName().equals("bdio-header.pb")) {
+                continue;
+            }
+
+            // Send the chunks using append mode.
+
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                    .addHeader("X-BD-MODE", "APPEND")
+                    .putBodyContent(new FileBodyContent(bdioEntry, ContentType.create(contentType)))
+                    .buildBlackDuckResponseRequest(putUrl);
+
+            try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+                if (response.isStatusCodeSuccess()) {
+                    logger.debug("Uploaded BDIO entry file: " + bdioEntry.getName());
+                } else {
+                    logger.trace("Unable to upload BDIO entry. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                    throw new IntegrationException("Unable to upload BDIO entry. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                }
+            }
+            sentChunks++;
+        }
+
+        if (sentChunks != 0) {
+            // We sent something to BD, send a finish message
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                    .addHeader("X-BD-MODE", "FINISH")
+                    .addHeader("X-BD-DOCUMENT-COUNT", String.valueOf(sentChunks))
+                    .addHeader("Content-type", contentType)
+                    .putString(StringUtils.EMPTY, ContentType.create(contentType, StandardCharsets.UTF_8))
+                    .buildBlackDuckResponseRequest(putUrl);
+
+            try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+                if (response.isStatusCodeSuccess()) {
+                    logger.debug("Sent FINISH chunk to Black Duck.");
+                } else {
+                    logger.trace("Sent FINISH chunk to Black Duck. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                    throw new IntegrationException("Sent FINISH chunk to Black Duck. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                }
+            }
+        }
+    }
+
     public final List<HttpUrl> performRapidUpload(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, @Nullable File rapidScanConfig) throws OperationException {
         return auditLog.namedInternal("Rapid Upload", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
