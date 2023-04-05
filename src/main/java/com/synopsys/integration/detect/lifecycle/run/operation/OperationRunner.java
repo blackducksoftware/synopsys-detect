@@ -1055,7 +1055,7 @@ public class OperationRunner {
         );
     }
 
-    public File getScanCliOutputLogFile() {
+    private File getScanCliOutputLogFile() {
         File blackDuckScanOutputDirectory = this.fileFinder.findFile(directoryManager.getScanOutputDirectory(), "BlackDuckScanOutput");
         if (blackDuckScanOutputDirectory != null) {
             File scanIdDirectory = this.fileFinder.findFile(blackDuckScanOutputDirectory, "*");
@@ -1069,7 +1069,7 @@ public class OperationRunner {
         return null;
     }
 
-    public int countSignatureScannerBdioChunks() {
+    private int countSignatureScannerBdioChunks() {
         try {
             File scanCliOutputLogFile = getScanCliOutputLogFile();
             if (scanCliOutputLogFile == null) {
@@ -1098,13 +1098,15 @@ public class OperationRunner {
         }
     }
 
-    public int countDetectBdioEntryFiles() {
+    private int countDetectBdioEntryFiles() {
         try {
             File bdioFile = this.fileFinder.findFile(directoryManager.getBdioOutputDirectory(), "*.bdio");
+            if (bdioFile == null) {
+                return 0;
+            }
             Bdio2ContentExtractor bdio2Extractor = new Bdio2ContentExtractor();
             return bdio2Extractor.extractContent(bdioFile).size() - 1;
         } catch (IntegrationException e) {
-            logger.error(e.getMessage());
             return 0;
         }
     }
