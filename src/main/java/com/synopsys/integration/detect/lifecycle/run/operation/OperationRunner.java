@@ -1070,12 +1070,13 @@ public class OperationRunner {
     }
 
     private int countSignatureScannerBdioChunks() {
+        BufferedReader reader = null;
         try {
             File scanCliOutputLogFile = getScanCliOutputLogFile();
             if (scanCliOutputLogFile == null) {
                 return 0;
             }
-            BufferedReader reader = new BufferedReader(new FileReader(scanCliOutputLogFile));
+            reader = new BufferedReader(new FileReader(scanCliOutputLogFile));
 
             Pattern pattern = Pattern.compile("scanNodeList\\.size\\(\\)=(\\d+).*scanLeafList\\.size\\(\\)=(\\d+)");
             long scanNodeCount = 0;
@@ -1094,7 +1095,18 @@ public class OperationRunner {
             int bdioChunksCount = (int) Math.ceil(sumOfScanNodesAndLeaves / 30000D);
             return bdioChunksCount;
         } catch (IOException e) {
+            logger.error(e.getMessage());
             return 0;
+        }
+        finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                    return 0;
+                }
+            }
         }
     }
 
