@@ -10,11 +10,15 @@
 ### Changed features
 
 * Evicted dependencies in Simple Build Tool(SBT) projects will no longer be included in the Bill of Materials(BoM) generated during the scan.
+* Introduced an optional flag to allow a space-separated list of global options to pass to all invocations of Project Inspector. Specify the <code>--detect.project.inspector.global.arguments</code> flag in the command, followed by other global flags if needed for pass through to Project Inspector. <br />
+See [project-inspector properties for further details](properties/configuration/project-inspector.md).
+* The maximum polling interval threshold is now dynamic when [solution_name] polls Black Duck for results. This dynamic threshold is dependent upon, and optimized for, the specific scan size. (The maximum polling threshold was formerly a fixed 60-second value.)
 
 ### Resolved issues
 
 * (IDETECT-3111) When scanning SBT projects, "Evicted" dependencies are excluded from the resulting BOM.
 * (IDETECT-3685) Gracefully handled use case when a Podfile.lock file has no PODS or dependencies in the generated dependency graph.
+* (IDETECT-3738) Repositioned the global flags for inclusion before sub-commands for Project Inspector invocation.
 
 ## Version 8.7.0
 
