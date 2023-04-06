@@ -14,7 +14,7 @@
 ### Resolved issues
 
 * (IDETECT-3111) When scanning SBT projects, "Evicted" dependencies are excluded from the resulting BOM.
-* (IDETECT-3685) Gracefully handled use case when a Poffile.lock file has no PODS or dependencies in the generated dependency graph.
+* (IDETECT-3685) Gracefully handled use case when a Podile.lock file has no PODS or dependencies in the generated dependency graph.
 
 ## Version 8.7.0
 
