@@ -39,7 +39,7 @@ If you are offline the air gap inspector runtime files are located at the provid
 
 In either case the located executable is run which communicates with NuGet and the dotnet build system.
 
-The source code for the NuGet inspector is located at [GitHub](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/detect-nuget-inspector/).
+The source code for the NuGet inspector is located at [GitHub](https://github.com/blackducksoftware/detect-nuget-inspector).
 
 ## Python Inspector
 
