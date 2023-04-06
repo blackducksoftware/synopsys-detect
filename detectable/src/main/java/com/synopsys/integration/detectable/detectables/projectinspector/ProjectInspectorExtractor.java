@@ -37,6 +37,9 @@ public class ProjectInspectorExtractor {
 
         // TODO: Could use a command runner
         List<String> arguments = new LinkedList<>();
+        Optional.ofNullable(projectInspectorOptions.getGlobalArguments())
+                .map(arg -> arg.split(" "))
+                .ifPresent(globalArguments -> arguments.addAll(Arrays.asList(globalArguments)));
         arguments.add("inspect");
         arguments.add("--dir");
         arguments.add(targetDirectory.toString());

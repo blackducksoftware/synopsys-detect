@@ -187,8 +187,7 @@ public class IntelligentModeStepRunner {
             }
             
             HttpUrl scanToSearchFor = new HttpUrl(bomToSearchFor.toString() + "/" + scanId);
-
-            operationRunner.waitForBomScanCompletion(blackDuckRunData, scanToSearchFor);
+            operationRunner.waitForBomCompletion(blackDuckRunData, scanToSearchFor);
         }
     }
 

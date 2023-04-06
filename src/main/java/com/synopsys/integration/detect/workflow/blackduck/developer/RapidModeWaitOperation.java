@@ -27,9 +27,9 @@ public class RapidModeWaitOperation {
         this.blackDuckApiClient = blackDuckApiClient;
     }
 
-    public List<DeveloperScansScanView> waitForFullScans(List<HttpUrl> uploadedScans, long timeoutInSeconds, int waitIntervalInSeconds, BlackduckScanMode mode)
+    public List<DeveloperScansScanView> waitForFullScans(List<HttpUrl> uploadedScans, long timeoutInSeconds, int waitIntervalInSeconds, BlackduckScanMode mode, int maxWaitInSeconds)
             throws IntegrationException, InterruptedException {
-            WaitIntervalTracker waitIntervalTracker = WaitIntervalTrackerFactory.createProgressive(timeoutInSeconds, 60);
+            WaitIntervalTracker waitIntervalTracker = WaitIntervalTrackerFactory.createProgressive(timeoutInSeconds, maxWaitInSeconds);
             ResilientJobConfig waitJobConfig = new ResilientJobConfig(new Slf4jIntLogger(logger), System.currentTimeMillis(), waitIntervalTracker);
             DetectRapidScanWaitJobFull waitJob = new DetectRapidScanWaitJobFull(blackDuckApiClient, uploadedScans, mode);
             ResilientJobExecutor jobExecutor = new ResilientJobExecutor(waitJobConfig);
