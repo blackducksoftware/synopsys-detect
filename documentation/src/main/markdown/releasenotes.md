@@ -10,13 +10,14 @@
 ### Changed features
 
 * Evicted dependencies in Simple Build Tool(SBT) projects will no longer be included in the Bill of Materials(BoM) generated during the scan.
-* Introduced an optional flag <code>--detect.project.inspector.global.arguments</code> for global flags of Project Inspector. Then, <code>--quite</code> flag and other global flags can be set to this new flag if needed for appropriate pass through to Project Inspector.
+* Introduced an optional flag to allow a space-separated list of global options to pass to all invocations of Project Inspector. Specify the <code>--detect.project.inspector.global.arguments</code> flag in the command, followed by other global flags if needed for pass through to Project Inspector. <br />
+See [project-inspector properties for further details](properties/configuration/project-inspector.md).
 
 ### Resolved issues
 
 * (IDETECT-3111) When scanning SBT projects, "Evicted" dependencies are excluded from the resulting BOM.
 * (IDETECT-3685) Gracefully handled use case when a Poffile.lock file has no PODS or dependencies in the generated dependency graph.
-* (IDETECT-3738) Repositioned the global flags for project inspector invocation.
+* (IDETECT-3738) Repositioned the global flags for inclusion before sub-commands for Project Inspector invocation.
 
 ## Version 8.7.0
 
