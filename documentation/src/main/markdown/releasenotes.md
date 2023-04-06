@@ -10,7 +10,7 @@
 ### Changed features
 
 * Evicted dependencies in Simple Build Tool(SBT) projects will no longer be included in the Bill of Materials(BoM) generated during the scan.
-* The maximum polling interval threshold is now dynamic when [solution_name] polls Black Duck for the Bill of Materials(BoM) status and is dependent upon, and optimized for, the specific scan size. (The maximum polling threshold was formerly a fixed 60-second value.)
+* The maximum polling interval threshold is now dynamic when [solution_name] polls Black Duck for results. This dynamic threshold is dependent upon, and optimized for, the specific scan size. (The maximum polling threshold was formerly a fixed 60-second value.)
 
 ### Resolved issues
 
