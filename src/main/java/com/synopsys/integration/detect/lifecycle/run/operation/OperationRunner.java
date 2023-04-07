@@ -1055,7 +1055,7 @@ public class OperationRunner {
         );
     }
 
-    private File getScanCliOutputLogFile() {
+    private File findScanCliOutputLogFile() {
         File blackDuckScanOutputDirectory = this.fileFinder.findFile(directoryManager.getScanOutputDirectory(), "BlackDuckScanOutput");
         if (blackDuckScanOutputDirectory != null) {
             File scanIdDirectory = this.fileFinder.findFile(blackDuckScanOutputDirectory, "*");
@@ -1070,14 +1070,11 @@ public class OperationRunner {
     }
 
     private int countSignatureScannerBdioChunks() {
-        BufferedReader reader = null;
-        try {
-            File scanCliOutputLogFile = getScanCliOutputLogFile();
-            if (scanCliOutputLogFile == null) {
-                return 0;
-            }
-            reader = new BufferedReader(new FileReader(scanCliOutputLogFile));
-
+        File scanCliOutputLogFile = findScanCliOutputLogFile();
+        if (scanCliOutputLogFile == null) {
+            return 0;
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(scanCliOutputLogFile))) {
             Pattern pattern = Pattern.compile("scanNodeList\\.size\\(\\)=(\\d+).*scanLeafList\\.size\\(\\)=(\\d+)");
             long scanNodeCount = 0;
             long scanLeafCount = 0;
@@ -1094,19 +1091,9 @@ public class OperationRunner {
             long sumOfScanNodesAndLeaves = scanNodeCount + scanLeafCount;
             int bdioChunksCount = (int) Math.ceil(sumOfScanNodesAndLeaves / 30000D);
             return bdioChunksCount;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return 0;
-        }
-        finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage());
-                    return 0;
-                }
-            }
         }
     }
 
