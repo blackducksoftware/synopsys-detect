@@ -31,11 +31,11 @@ public class OperationRunnerTest {
         // Lower bound edge cases
         Assertions.assertEquals(5, operationRunner.calculateMaxWaitInSeconds(0));
         Assertions.assertEquals(5, operationRunner.calculateMaxWaitInSeconds(-1));
+        Assertions.assertEquals(5, operationRunner.calculateMaxWaitInSeconds(2));
+        Assertions.assertEquals(5, operationRunner.calculateMaxWaitInSeconds(3));
+        Assertions.assertEquals(5, operationRunner.calculateMaxWaitInSeconds(4));
 
         // Core cases
-        Assertions.assertEquals(1, operationRunner.calculateMaxWaitInSeconds(2));
-        Assertions.assertEquals(2, operationRunner.calculateMaxWaitInSeconds(3));
-        Assertions.assertEquals(3, operationRunner.calculateMaxWaitInSeconds(4));
         Assertions.assertEquals(5, operationRunner.calculateMaxWaitInSeconds(5));
         Assertions.assertEquals(8, operationRunner.calculateMaxWaitInSeconds(6));
         Assertions.assertEquals(13, operationRunner.calculateMaxWaitInSeconds(7));

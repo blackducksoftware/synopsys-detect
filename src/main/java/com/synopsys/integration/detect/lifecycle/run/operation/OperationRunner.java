@@ -212,7 +212,7 @@ public class OperationRunner {
     private final DetectExecutableRunner executableRunner;
     private final OperationAuditLog auditLog;
     private static final int[] LIMITED_FIBONACCI_SEQUENCE = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
-    private static final int MAX_WAIT_IN_SECONDS_IF_BDIO_UNAVAILABLE = 5;
+    private static final int MIN_POLLING_INTERVAL_THRESHOLD_IN_SECONDS = 5;
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -1127,10 +1127,10 @@ public class OperationRunner {
         int fibonacciSequenceLastIndex = LIMITED_FIBONACCI_SEQUENCE.length - 1;
         if (fibonacciSequenceIndex > fibonacciSequenceLastIndex) {
             return LIMITED_FIBONACCI_SEQUENCE[fibonacciSequenceLastIndex];
-        } else if (fibonacciSequenceIndex > 0) {
+        } else if (fibonacciSequenceIndex > 4) {
             return LIMITED_FIBONACCI_SEQUENCE[fibonacciSequenceIndex];
         }
-        return MAX_WAIT_IN_SECONDS_IF_BDIO_UNAVAILABLE;
+        return MIN_POLLING_INTERVAL_THRESHOLD_IN_SECONDS;
     }
 
     public int getFibonacciSequenceIndex() {
