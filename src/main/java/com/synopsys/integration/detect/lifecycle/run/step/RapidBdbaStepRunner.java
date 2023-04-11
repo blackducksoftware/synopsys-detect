@@ -1,6 +1,5 @@
 package com.synopsys.integration.detect.lifecycle.run.step;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -134,7 +133,7 @@ public class RapidBdbaStepRunner {
     }
 
     private void extractBdio(DirectoryManager directoryManager, Response response)
-            throws IntegrationException, IOException, FileNotFoundException {
+            throws IntegrationException, IOException {
         logger.debug("Downloaded BDBA protobuf BDIO. Beginning extraction.");
 
         try (ZipInputStream zis = new ZipInputStream(response.getContent())) {
