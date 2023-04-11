@@ -113,7 +113,7 @@ public class RapidBdbaStepRunner {
         jobExecutor.executeJob(waitJob);
     }
 
-    public void downloadAndExtractBdio(DirectoryManager directoryManager, NameVersion projectVersion) throws IntegrationException, IOException {
+    public void downloadAndExtractBdio(DirectoryManager directoryManager) throws IntegrationException, IOException {
         RequestBuilder createRequestBuilder = httpClient.createRequestBuilder(HttpMethod.GET);
         
         HttpUriRequest request = createRequestBuilder

@@ -116,7 +116,7 @@ public class RapidModeStepRunner {
         RapidBdbaStepRunner rapidBdbaStepRunner = new RapidBdbaStepRunner(gson, bdbaScanId, blackDuckRunData.getBlackDuckServerConfig().getTimeout());
         rapidBdbaStepRunner.submitScan(isContainerScan, scaasFilePath);
         rapidBdbaStepRunner.pollForResults();
-        rapidBdbaStepRunner.downloadAndExtractBdio(directoryManager, projectVersion);
+        rapidBdbaStepRunner.downloadAndExtractBdio(directoryManager);
 
         UUID bdScanId = operationRunner.initiateStatelessBdbaScan(blackDuckRunData);
         operationRunner.uploadBdioEntries(blackDuckRunData, bdScanId);
