@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.lifecycle.run.step;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -122,30 +123,34 @@ public class RapidBdbaStepRunner {
         
         try (Response response = httpClient.execute(request)) {
             if (response.isStatusCodeSuccess()) {
-                logger.debug("Downloaded BDBA protobuf BDIO. Beginning extraction.");
-
-                ZipInputStream zis = new ZipInputStream(response.getContent());
-
-                ZipEntry entry;
-                while ((entry = zis.getNextEntry()) != null) {
-                    logger.debug("Extracting BDIO content: " + entry.getName());
-
-                    FileOutputStream fos = new FileOutputStream(directoryManager.getBdioOutputDirectory().getPath() + "/" + entry.getName());
-                    
-                    for (int byteRead = zis.read(); byteRead != -1; byteRead = zis.read()) {
-                        fos.write(byteRead);
-                    }
-                    
-                    zis.closeEntry();
-                    fos.close();
-                }
-
-                zis.close();
+                extractBdio(directoryManager, response);
             } else {
                 logger.trace("Unable to download BDIO from BDBA. Response code: " + response.getStatusCode() + " "
                         + response.getStatusMessage());
                 throw new IntegrationException("Unable to download BDIO from BDBA. Response code: "
                         + response.getStatusCode() + " " + response.getStatusMessage());
+            }
+        }
+    }
+
+    private void extractBdio(DirectoryManager directoryManager, Response response)
+            throws IntegrationException, IOException, FileNotFoundException {
+        logger.debug("Downloaded BDBA protobuf BDIO. Beginning extraction.");
+
+        try (ZipInputStream zis = new ZipInputStream(response.getContent())) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                logger.debug("Extracting BDIO content: " + entry.getName());
+
+                try (FileOutputStream fos = new FileOutputStream(
+                        directoryManager.getBdioOutputDirectory().getPath() + "/" + entry.getName())) {
+
+                    for (int byteRead = zis.read(); byteRead != -1; byteRead = zis.read()) {
+                        fos.write(byteRead);
+                    }
+
+                    zis.closeEntry();
+                }
             }
         }
     }
