@@ -97,33 +97,29 @@ public class NpmDependencyConverter {
             .collect(Collectors.toList());
     }
 
-    public void linkPackagesDependencies(PackageLock packageLock) {
-        PackageLockPackage rootPackage = packageLock.packages.get("");
-        
+    public void linkPackagesDependencies(PackageLock packageLock) {        
         Set<String> packagesToRemove = new HashSet<>();
                 
         for(String packageName : packageLock.packages.keySet()) { 
             
-            // Skip anything in rootPackage.workspaces, we don't want to process any custom workspace code.
-            // Otherwise look for any relationships previously nested in the dependencies object prior to
+            // Look for any relationships previously nested in the dependencies object prior to
             // npm 9. In the packages object these are stored at the root of the object in a parent/child and
-            // perhaps even /grandchild relationship.
-            // TODO seems like it might be possible to have / in a package name so we can't totally depend on it.
-            // TODO maybe in previous code where replace node_packages/ with an empty string I can replace it with
-            // TODO an invalid character like * instead and then parse based on that
-            if (packageName.contains("/") && !rootPackage.workspaces.contains(packageName)) { 
+            // perhaps even /grandchild relationship. Look for the * in the packageName that we have inserted 
+            // before loading data into packageLock. This character is not allowed in npm package names and
+            // indicates we should link up this set of packages.
+            if (packageName.contains("*")) { 
                 
-                // This packageName contains one or more /'s indicating a parent/child relationship.
-                // The parent will be the portion of the package name up to and not including the final /.
+                // This packageName contains one or more *'s indicating a parent/child relationship.
+                // The parent will be the portion of the package name up to and not including the final *.
                 PackageLockPackage parentPackage = 
-                        packageLock.packages.get(packageName.substring(0, packageName.lastIndexOf("/")));
+                        packageLock.packages.get(packageName.substring(0, packageName.lastIndexOf("*")));
                 
                 if (parentPackage.packages == null) {
                     parentPackage.packages = new HashMap<String, PackageLockPackage>();
                 }
                 
                 // Link the child back to the parent. The child will be the leaf of the overall packageName.
-                parentPackage.packages.put(packageName.substring(packageName.lastIndexOf("/") + 1, packageName.length()), 
+                parentPackage.packages.put(packageName.substring(packageName.lastIndexOf("*") + 1, packageName.length()), 
                         packageLock.packages.get(packageName));
                 
                 packagesToRemove.add(packageName);

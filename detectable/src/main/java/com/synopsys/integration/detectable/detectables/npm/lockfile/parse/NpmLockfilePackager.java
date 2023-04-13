@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
@@ -41,10 +42,15 @@ public class NpmLockfilePackager {
 
     public NpmPackagerResult parseAndTransform(@Nullable String rootJsonPath, @Nullable String packageJsonText, String lockFileText, List<NameVersion> externalDependencies) throws IOException {
         PackageJson packageJson = constructPackageJson(rootJsonPath, packageJsonText);
-          
+
         // Flatten the lock file, removing node_modules from the package names. The code expects them in this
-        // format as it aligns with the previous dependencies section of the lock file.
-        lockFileText = lockFileText.replaceAll("node_modules/", "");
+        // format as it aligns with the previous dependencies section of the lock file. For any package names that
+        // contain /node_modules/ not at the beginning of the path, insert a * to indicate a parent/child relationship
+        // That we'll link up later in the call to linkPackagesDependencies.
+        lockFileText = StringUtils.replaceEach(lockFileText, 
+                new String[]{"/node_modules/", "node_modules/"}, 
+                new String[]{"*", ""});        
+        
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
         
         NpmDependencyConverter dependencyConverter = new NpmDependencyConverter(externalIdFactory);
