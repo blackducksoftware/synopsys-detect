@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,14 +43,8 @@ public class NpmLockfilePackager {
 
     public NpmPackagerResult parseAndTransform(@Nullable String rootJsonPath, @Nullable String packageJsonText, String lockFileText, List<NameVersion> externalDependencies) throws IOException {
         PackageJson packageJson = constructPackageJson(rootJsonPath, packageJsonText);
-
-        // Flatten the lock file, removing node_modules from the package names. The code expects them in this
-        // format as it aligns with the previous dependencies section of the lock file. For any package names that
-        // contain /node_modules/ not at the beginning of the path, insert a * to indicate a parent/child relationship
-        // That we'll link up later in the call to linkPackagesDependencies.
-        lockFileText = StringUtils.replaceEach(lockFileText, 
-                new String[]{"/node_modules/", "node_modules/"}, 
-                new String[]{"*", ""});        
+        
+        lockFileText = removePathInfoFromPackageName(lockFileText, packageJson);        
         
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
         
@@ -65,6 +60,27 @@ public class NpmLockfilePackager {
         ExternalId projectId = projectIdTransformer.transform(packageJson, packageLock);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmPackagerResult(projectId.getName(), projectId.getVersion(), codeLocation);
+    }
+
+    private String removePathInfoFromPackageName(String lockFileText, PackageJson packageJson) {
+        List<String> searchList = new ArrayList<>(Arrays.asList("/node_modules/", "node_modules/"));
+        List<String> replaceList = new ArrayList<>(Arrays.asList("*", ""));
+        
+        // Add any workspaces to the searchList so we can remove their name from the package name.
+        // Add a trailing slash so we can later handle the node_modules portion of the path.
+        packageJson.workspaces.forEach(workspace -> {
+            searchList.add(workspace + "/");
+            replaceList.add("");
+        });
+
+        // Flatten the lock file, removing node_modules from the package names. The code expects them in this
+        // format as it aligns with the previous dependencies section of the lock file. For any package names that
+        // contain /node_modules/ not at the beginning of the path, insert a * to indicate a parent/child relationship
+        // That we'll link up later in the call to linkPackagesDependencies.
+        lockFileText = StringUtils.replaceEach(lockFileText, 
+                searchList.toArray(new String[searchList.size()]), 
+                replaceList.toArray(new String[replaceList.size()]));
+        return lockFileText;
     }
 
     private PackageJson constructPackageJson(String rootJsonPath, String packageJsonText) throws IOException {
