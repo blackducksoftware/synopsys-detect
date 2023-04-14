@@ -85,7 +85,12 @@ public class NpmLockfileGraphTransformer {
         if (!shouldIncludeDependency(npmDependency)) {
             return;
         }
-
+        
+        // TODO add workspaces here as direct dependencies
+        if (npmDependency.getName().equals("packages/a")) {
+            dependencyGraph.addDirectDependency(npmDependency);
+        }
+        
         npmDependency.getRequires().forEach(required -> {
             logger.trace(String.format("Required package: %s of version: %s", required.getName(), required.getFuzzyVersion()));
             Dependency resolved = lookupDependency(required.getName(), npmDependency, npmProject, externalDependencies);

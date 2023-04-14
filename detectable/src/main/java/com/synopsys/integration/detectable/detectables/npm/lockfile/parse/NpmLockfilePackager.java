@@ -46,6 +46,8 @@ public class NpmLockfilePackager {
         
         lockFileText = removePathInfoFromPackageName(lockFileText, packageJson);        
         
+        // TODO after removal this blows up on duplicate packages if both the root and a workspace have it?
+        // look at BDIO and BD if I leave the workspace packages prefix in there.
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
         
         NpmDependencyConverter dependencyConverter = new NpmDependencyConverter(externalIdFactory);
@@ -68,10 +70,12 @@ public class NpmLockfilePackager {
         
         // Add any workspaces to the searchList so we can remove their name from the package name.
         // Add a trailing slash so we can later handle the node_modules portion of the path.
-        packageJson.workspaces.forEach(workspace -> {
-            searchList.add(workspace + "/");
-            replaceList.add("");
-        });
+        // TODO probably don't want to filter this, probably just want to send it up as a dependency in
+        // the graph code
+//        packageJson.workspaces.forEach(workspace -> {
+//            searchList.add(workspace + "/");
+//            replaceList.add("");
+//        });
 
         // Flatten the lock file, removing node_modules from the package names. The code expects them in this
         // format as it aligns with the previous dependencies section of the lock file. For any package names that
@@ -102,7 +106,8 @@ public class NpmLockfilePackager {
                         .map(content -> gson.fromJson(content, PackageJson.class))
                         .orElse(null);
                 
-                // TODO might get conflicts, return a new type of merged package json?
+                // TODO same package but different version will get a hash collision, 
+                // return a new type of merged package json?
                 packageJson.dependencies.putAll(workspacePackageJson.dependencies);
                 packageJson.devDependencies.putAll(workspacePackageJson.devDependencies);
                 packageJson.peerDependencies.putAll(workspacePackageJson.peerDependencies);
