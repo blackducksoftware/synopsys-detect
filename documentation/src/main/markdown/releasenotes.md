@@ -4,7 +4,7 @@
 
 ### New features
 
-* New Binary Stateless and Container Stateless Scans have been added to [solution_name]. These scans require the new detect.scaaas.scan.path property to be set to either a binary file or a compressed Docker image. See the [Stateless Scans page](downloadingandrunning/statelessscan.md) for further details.
+* New Binary Stateless and Container Stateless Scans have been added to [solution_name]. These scans require the new detect.scaaas.scan.path property to be set to either a binary file or a compressed Docker image. See the [Stateless Scans page](runningdetect/statelessscan.md) for further details.
 <note type="attention">A Black Duck Binary Analysis (BDBA) license is required to execute these scan types.</note>
 
 ### Changed features
@@ -72,7 +72,7 @@ Note: this improvement requires [blackduck_product_name] 2023.1.2 or later.
 
 ### Changed features
 
-* The flag value EPHEMERAL has been deprecated in favor of the value STATELESS.  See the [Stateless Scans page](downloadingandrunning/statelessscan.md) for further details.
+* The flag value EPHEMERAL has been deprecated in favor of the value STATELESS.  See the [Stateless Scans page](runningdetect/statelessscan.md) for further details.
 
 ### Resolved issues
 
@@ -94,7 +94,7 @@ Note: this improvement requires [blackduck_product_name] 2023.1.2 or later.
 
 ### New features
 
-* Ephemeral Scan, or Ephemeral Scan Mode, is a new way of running [solution_name] with [blackduck_product_name]. This mode is designed to be as fast as possible and does not persist any data on [blackduck_product_name]. See the [Ephemeral Scans page](downloadingandrunning/statelessscan.md) for further details.
+* Ephemeral Scan, or Ephemeral Scan Mode, is a new way of running [solution_name] with [blackduck_product_name]. This mode is designed to be as fast as possible and does not persist any data on [blackduck_product_name]. See the [Ephemeral Scans page](runningdetect/statelessscan.md) for further details.
 * The output for Rapid and the new Ephemeral Scan Modes will now include upgrade guidance for security errors and warnings.
 
 ## Version 8.1.1
@@ -132,7 +132,7 @@ Note: this improvement requires [blackduck_product_name] 2023.1.2 or later.
 ### New features
 
 * [solution_name] will now retry (until timeout; see property `detect.timeout`) BDIO2 uploads that fail with a non-fatal exit code.
-* Added Detector cascade. Refer to [Detector search and accuracy](downloadingandrunning/detectorcascade.md) for more information.
+* Added Detector cascade. Refer to [Detector search and accuracy](runningdetect/detectorcascade.md) for more information.
 
 ### Changed features
 
@@ -180,7 +180,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 ### New features
 * Added support for Swift projects built with Swift 5.6 or later.
 
-* Added support for running IaC scans via [solution_name]. See [IaC Scan](downloadingandrunning/iacscan.md) for more details. Note: IaC capabilities require Black Duck 2022.7.0 or later.
+* Added support for running IaC scans via [solution_name]. See [IaC Scan](runningdetect/iacscan.md) for more details. Note: IaC capabilities require Black Duck 2022.7.0 or later.
 
 ## Version 7.13.2
 
@@ -445,7 +445,7 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 
 * Added ability to specify custom fonts to be used during risk report generation. See [here](results/reports.md#risk-report-generation) for more details.
 * There now exist Docker images that can be used to run [solution_name] from within a container.
-  See [Running Synopsys Detect from within a Docker container](downloadingandrunning/runincontainer.md#running-synopsys-detect-from-within-a-docker-container) for more details.
+  See [Running Synopsys Detect from within a Docker container](runningdetect/runincontainer.md#running-synopsys-detect-from-within-a-docker-container) for more details.
 * Added detect.go.mod.enable.verification for disabling the `go mod why` check that [solution_name] uses to filter out unused dependencies.
 * Added support for dotnet 5 when running the NuGet inspector.
 * Added a new property [detect.npm.include.peer.dependencies](properties/detectors/npm.md#include-npm-peer-dependencies) which allows the users to filter out NPM peer dependencies
@@ -724,9 +724,9 @@ GO_MOD, GRADLE, LERNA, RUBYGEMS.
 
 ### New features
 
-* The [solution_name] .jar file is now signed, enabling [code verification](downloadingandrunning/verification.md) by users.
+* The [solution_name] .jar file is now signed, enabling [code verification](downloadingandinstalling/verification.md) by users.
 * [Simple proxy information](packagemgrs/gradle.md#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
-* Detect now creates a status file describing the results of the run which includes things like [issues, results, and status codes.](downloadingandrunning/status-file.md)
+* Detect now creates a status file describing the results of the run which includes things like [issues, results, and status codes.](runningdetect/status-file.md)
 * The property configuration table in the log now includes the origin of the property's value.
 * Added the property [detect.blackduck.signature.scanner.license.search](properties/configuration/signature-scanner.md#signature-scanner-license-search-advanced).
 * Added the property [detect.blackduck.signature.scanner.individual.file.matching](properties/configuration/signature-scanner.md#individual-file-matching-advanced).
