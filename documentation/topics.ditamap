@@ -202,46 +202,6 @@
     <topicref href="results/reports.md" format="markdown"/>
   </topicref>
 
-<!--  <topicref href="packagemgrs/overview.md" format="markdown">
-    <topicref href="packagemgrs/bazel.md" format="markdown"/>
-    <topicref href="packagemgrs/bitbake.md" format="markdown"/>
-    <topicref href="packagemgrs/cargo.md" format="markdown"/>
-    <topicref href="packagemgrs/carthage.md" format="markdown"/>
-    <topicref href="packagemgrs/clang.md" format="markdown"/>
-    <topicref href="packagemgrs/conan.md" format="markdown"/>
-    <topicref href="packagemgrs/conda.md" format="markdown"/>
-    <topicref href="packagemgrs/dart.md" format="markdown"/>
-    <topicref href="packagemgrs/docker/intro.md" format="markdown">
-      <topicref href="packagemgrs/docker/formats.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/workflow.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/filepermissions.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/scantarget.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/isolatingapplication.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/windowsimages.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/runningonwindows.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/architecture.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/advanced.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/advanced-properties.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/deployment.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/troubleshooting.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/releasenotes.md" format="markdown"/>
-    </topicref>
-    <topicref href="packagemgrs/git.md" format="markdown"/>
-    <topicref href="packagemgrs/golang.md" format="markdown"/>
-    <topicref href="packagemgrs/gradle.md" format="markdown"/>
-    <topicref href="packagemgrs/hex.md" format="markdown"/>
-    <topicref href="packagemgrs/ivy.md" format="markdown"/>
-    <topicref href="packagemgrs/lerna.md" format="markdown"/>
-    <topicref href="packagemgrs/maven.md" format="markdown"/>
-    <topicref href="packagemgrs/npm.md" format="markdown"/>
-    <topicref href="packagemgrs/nuget.md" format="markdown"/>
-    <topicref href="packagemgrs/pnpm.md" format="markdown"/>
-    <topicref href="packagemgrs/python.md" format="markdown"/>
-    <topicref href="packagemgrs/sbt.md" format="markdown"/>
-    <topicref href="packagemgrs/swift.md" format="markdown"/>
-    <topicref href="packagemgrs/yarn.md" format="markdown"/>
-  </topicref>
-  
    <topicref href="troubleshooting/intro.md" format="markdown">
     <topicref href="troubleshooting/gettinginfo.md" format="markdown"/>
     <topicref href="troubleshooting/commonproblems.md" format="markdown"/>
@@ -249,7 +209,7 @@
     <topicref href="troubleshooting/exit-codes.md" format="markdown"/>
     <topicref href="troubleshooting/solutions.md" format="markdown"/>
     <topicref href="troubleshooting/usage-metrics.md" format="markdown"/>
-  </topicref> -->
+  </topicref>
   
    <topicref href="integrations/integrations.md" format="markdown">
    
