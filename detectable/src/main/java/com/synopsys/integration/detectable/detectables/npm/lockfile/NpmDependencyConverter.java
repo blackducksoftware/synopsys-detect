@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.MultiValuedMap;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.bdio.model.Forge;
@@ -19,6 +20,7 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmPro
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLockPackage;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class NpmDependencyConverter {
@@ -26,7 +28,7 @@ public class NpmDependencyConverter {
 
     public NpmDependencyConverter(ExternalIdFactory externalIdFactory) {this.externalIdFactory = externalIdFactory;}
 
-    public NpmProject convertLockFile(PackageLock packageLock, @Nullable PackageJson packageJson) {
+    public NpmProject convertLockFile(PackageLock packageLock, @Nullable CombinedPackageJson combinedPackageJson) {
         List<NpmRequires> declaredDevDependencies = new ArrayList<>();
         List<NpmRequires> declaredPeerDependencies = new ArrayList<>();
         List<NpmRequires> declaredDependencies = new ArrayList<>();
@@ -37,19 +39,19 @@ public class NpmDependencyConverter {
             resolvedDependencies.addAll(children);
         }
 
-        if (packageJson != null) {
-            if (packageJson.dependencies != null) {
-                List<NpmRequires> rootRequires = convertNameVersionMapToRequires(packageJson.dependencies);
+        if (combinedPackageJson != null) {
+            if (!combinedPackageJson.getDependencies().isEmpty()) {
+                List<NpmRequires> rootRequires = convertNameVersionMapToRequires(combinedPackageJson.getDependencies());
                 declaredDependencies.addAll(rootRequires);
             }
 
-            if (packageJson.devDependencies != null) {
-                List<NpmRequires> rootDevRequires = convertNameVersionMapToRequires(packageJson.devDependencies);
+            if (!combinedPackageJson.getDevDependencies().isEmpty()) {
+                List<NpmRequires> rootDevRequires = convertNameVersionMapToRequires(combinedPackageJson.getDevDependencies());
                 declaredDevDependencies.addAll(rootDevRequires);
             }
 
-            if (packageJson.peerDependencies != null) {
-                List<NpmRequires> rootPeerRequires = convertNameVersionMapToRequires(packageJson.peerDependencies);
+            if (!combinedPackageJson.getPeerDependencies().isEmpty()) {
+                List<NpmRequires> rootPeerRequires = convertNameVersionMapToRequires(combinedPackageJson.getPeerDependencies());
                 declaredPeerDependencies.addAll(rootPeerRequires);
             }
         }
@@ -88,6 +90,15 @@ public class NpmDependencyConverter {
         return new NpmDependency(name, version, externalId, dev, peer);
     }
 
+    public List<NpmRequires> convertNameVersionMapToRequires(MultiValuedMap<String, String> requires) {
+        if (requires == null || requires.size() == 0) {
+            return Collections.emptyList();
+        }
+        return requires.entries().stream()
+            .map(entry -> new NpmRequires(entry.getKey(), entry.getValue()))
+            .collect(Collectors.toList());
+    }
+    
     public List<NpmRequires> convertNameVersionMapToRequires(Map<String, String> requires) {
         if (requires == null || requires.size() == 0) {
             return Collections.emptyList();

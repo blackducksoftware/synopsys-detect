@@ -21,6 +21,7 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmDependenc
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmProject;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.util.NameVersion;
 
@@ -42,9 +43,9 @@ public class NpmLockfilePackager {
     }
 
     public NpmPackagerResult parseAndTransform(@Nullable String rootJsonPath, @Nullable String packageJsonText, String lockFileText, List<NameVersion> externalDependencies) throws IOException {
-        PackageJson packageJson = constructPackageJson(rootJsonPath, packageJsonText);
+        CombinedPackageJson combinedPackageJson = constructCombinedPackageJson(rootJsonPath, packageJsonText);
         
-        lockFileText = removePathInfoFromPackageName(lockFileText, packageJson);
+        lockFileText = removePathInfoFromPackageName(lockFileText);
 
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
         
@@ -54,15 +55,15 @@ public class NpmLockfilePackager {
         // lock file
         dependencyConverter.linkPackagesDependencies(packageLock);
         
-        NpmProject project = dependencyConverter.convertLockFile(packageLock, packageJson);
+        NpmProject project = dependencyConverter.convertLockFile(packageLock, combinedPackageJson);
 
-        DependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies, packageJson.workspaces);
-        ExternalId projectId = projectIdTransformer.transform(packageJson, packageLock);
+        DependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies, combinedPackageJson.getWorkspaces());
+        ExternalId projectId = projectIdTransformer.transform(combinedPackageJson, packageLock);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmPackagerResult(projectId.getName(), projectId.getVersion(), codeLocation);
     }
 
-    private String removePathInfoFromPackageName(String lockFileText, PackageJson packageJson) {
+    private String removePathInfoFromPackageName(String lockFileText) {
         List<String> searchList = new ArrayList<>(Arrays.asList("/node_modules/", "node_modules/"));
         List<String> replaceList = new ArrayList<>(Arrays.asList("*", ""));
 
@@ -76,10 +77,25 @@ public class NpmLockfilePackager {
         return lockFileText;
     }
 
-    private PackageJson constructPackageJson(String rootJsonPath, String packageJsonText) throws IOException {
+    /**
+     * Merge the root package.json with any potential workspace package.json files.
+     */
+    private CombinedPackageJson constructCombinedPackageJson(String rootJsonPath, String packageJsonText) throws IOException {
         PackageJson packageJson = Optional.ofNullable(packageJsonText)
             .map(content -> gson.fromJson(content, PackageJson.class))
             .orElse(null);
+        
+        CombinedPackageJson combinedPackageJson = new CombinedPackageJson();
+        
+        // Take fields that will be related to BD projects from the root project.json
+        combinedPackageJson.setName(packageJson.name);
+        combinedPackageJson.setVersion(packageJson.version);
+        combinedPackageJson.setWorkspaces(packageJson.workspaces);
+        
+        // Add dependencies from the root of the project
+        combinedPackageJson.getDependencies().putAll(packageJson.dependencies);
+        combinedPackageJson.getDevDependencies().putAll(packageJson.devDependencies);
+        combinedPackageJson.getPeerDependencies().putAll(packageJson.peerDependencies);
         
         if (packageJson.workspaces != null && rootJsonPath != null) {
             // If there are workspaces there are additional package.json's we need to parse
@@ -95,15 +111,13 @@ public class NpmLockfilePackager {
                         .map(content -> gson.fromJson(content, PackageJson.class))
                         .orElse(null);
                 
-                // TODO same package but different version will get a hash collision, 
-                // return a new type of merged package json?
-                packageJson.dependencies.putAll(workspacePackageJson.dependencies);
-                packageJson.devDependencies.putAll(workspacePackageJson.devDependencies);
-                packageJson.peerDependencies.putAll(workspacePackageJson.peerDependencies);
+                combinedPackageJson.getDependencies().putAll(workspacePackageJson.dependencies);
+                combinedPackageJson.getDevDependencies().putAll(workspacePackageJson.devDependencies);
+                combinedPackageJson.getPeerDependencies().putAll(workspacePackageJson.peerDependencies);
             }
         }
         
-        return packageJson;
+        return combinedPackageJson;
     }
 
 }
