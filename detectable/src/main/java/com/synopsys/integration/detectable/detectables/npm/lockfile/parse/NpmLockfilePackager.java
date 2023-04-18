@@ -65,20 +65,11 @@ public class NpmLockfilePackager {
     private String removePathInfoFromPackageName(String lockFileText, PackageJson packageJson) {
         List<String> searchList = new ArrayList<>(Arrays.asList("/node_modules/", "node_modules/"));
         List<String> replaceList = new ArrayList<>(Arrays.asList("*", ""));
-        
-        // Add any workspaces to the searchList so we can remove their name from the package name.
-        // Add a trailing slash so we can later handle the node_modules portion of the path.
-        // TODO probably don't want to filter this, probably just want to send it up as a dependency in
-        // the graph code
-//        packageJson.workspaces.forEach(workspace -> {
-//            searchList.add(workspace + "/");
-//            replaceList.add("");
-//        });
 
         // Flatten the lock file, removing node_modules from the package names. The code expects them in this
-        // format as it aligns with the previous dependencies section of the lock file. For any package names that
-        // contain /node_modules/ not at the beginning of the path, insert a * to indicate a parent/child relationship
-        // That we'll link up later in the call to linkPackagesDependencies.
+        // format as it aligns with the previous dependencies section of the lock file that was removed in npm9. 
+        // For any package names that contain /node_modules/ not at the beginning of the path, insert a * to 
+        // indicate a parent/child relationship. We'll link up later in the call to linkPackagesDependencies.
         lockFileText = StringUtils.replaceEach(lockFileText, 
                 searchList.toArray(new String[searchList.size()]), 
                 replaceList.toArray(new String[replaceList.size()]));
