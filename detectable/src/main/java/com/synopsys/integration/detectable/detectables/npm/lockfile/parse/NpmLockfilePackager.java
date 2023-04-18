@@ -44,10 +44,8 @@ public class NpmLockfilePackager {
     public NpmPackagerResult parseAndTransform(@Nullable String rootJsonPath, @Nullable String packageJsonText, String lockFileText, List<NameVersion> externalDependencies) throws IOException {
         PackageJson packageJson = constructPackageJson(rootJsonPath, packageJsonText);
         
-        lockFileText = removePathInfoFromPackageName(lockFileText, packageJson);        
-        
-        // TODO after removal this blows up on duplicate packages if both the root and a workspace have it?
-        // look at BDIO and BD if I leave the workspace packages prefix in there.
+        lockFileText = removePathInfoFromPackageName(lockFileText, packageJson);
+
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
         
         NpmDependencyConverter dependencyConverter = new NpmDependencyConverter(externalIdFactory);
