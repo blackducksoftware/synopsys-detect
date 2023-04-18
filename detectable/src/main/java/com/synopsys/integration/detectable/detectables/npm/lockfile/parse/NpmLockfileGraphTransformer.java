@@ -16,6 +16,7 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDep
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmProject;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.util.NameVersion;
 
 public class NpmLockfileGraphTransformer {
@@ -26,7 +27,7 @@ public class NpmLockfileGraphTransformer {
         this.npmDependencyTypeFilter = npmDependencyTypeFilter;
     }
 
-    public DependencyGraph transform(PackageLock packageLock, NpmProject project, List<NameVersion> externalDependencies) {
+    public DependencyGraph transform(PackageLock packageLock, NpmProject project, List<NameVersion> externalDependencies, List<String> workspaces) {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
 
         logger.debug("Processing project.");
@@ -35,7 +36,7 @@ public class NpmLockfileGraphTransformer {
 
             //First we will recreate the graph from the resolved npm dependencies
             for (NpmDependency resolved : project.getResolvedDependencies()) {
-                transformTreeToGraph(resolved, project, dependencyGraph, externalDependencies);
+                transformTreeToGraph(resolved, project, dependencyGraph, externalDependencies, workspaces);
             }
 
             //Then we will add relationships between the project (root) and the graph
@@ -81,13 +82,13 @@ public class NpmLockfileGraphTransformer {
         }
     }
 
-    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, DependencyGraph dependencyGraph, List<NameVersion> externalDependencies) {
+    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, DependencyGraph dependencyGraph, List<NameVersion> externalDependencies, List<String> workspaces) {
         if (!shouldIncludeDependency(npmDependency)) {
             return;
         }
         
-        // TODO add workspaces here as direct dependencies
-        if (npmDependency.getName().equals("packages/a")) {
+        // add workspaces as direct dependencies
+        if (workspaces.contains(npmDependency.getName())) {
             dependencyGraph.addDirectDependency(npmDependency);
         }
         
@@ -102,7 +103,7 @@ public class NpmLockfileGraphTransformer {
             }
         });
 
-        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, externalDependencies));
+        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, externalDependencies, workspaces));
     }
 
     private Dependency lookupProjectOrExternal(String name, List<NpmDependency> projectResolvedDependencies, List<NameVersion> externalDependencies) {

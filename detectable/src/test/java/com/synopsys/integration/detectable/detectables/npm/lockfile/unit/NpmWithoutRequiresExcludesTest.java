@@ -38,7 +38,7 @@ public class NpmWithoutRequiresExcludesTest {
         NpmLockfileGraphTransformer graphTransformer = new NpmLockfileGraphTransformer(
             EnumListFilter.fromExcluded(NpmDependencyType.DEV, NpmDependencyType.PEER)
         );
-        DependencyGraph graph = graphTransformer.transform(packageLock, npmProject, Collections.emptyList());
+        DependencyGraph graph = graphTransformer.transform(packageLock, npmProject, Collections.emptyList(), null);
 
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, graph);
         graphAssert.hasRootSize(0);

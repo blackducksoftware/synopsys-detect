@@ -58,7 +58,7 @@ public class NpmLockfilePackager {
         
         NpmProject project = dependencyConverter.convertLockFile(packageLock, packageJson);
 
-        DependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies);
+        DependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies, packageJson.workspaces);
         ExternalId projectId = projectIdTransformer.transform(packageJson, packageLock);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmPackagerResult(projectId.getName(), projectId.getVersion(), codeLocation);
