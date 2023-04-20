@@ -19,7 +19,13 @@
     href="integrations-classification.xml" outputclass="classmapdata" scope="local"/>
 
 	<topicref href="introduction.md" format="markdown"/>
-	<topicref href="releasenotes.md" format="markdown"/>
+	
+	<topichead navtitle="Release Notes" format="markdown" collection-type="sequence">
+		<topicref href="currentreleasenotes.md" format="markdown"/>
+		<topicref href="previousreleasenotes.md" format="markdown"/>
+		<topicref href="unsupportedreleasenotes.md" format="markdown"/>
+    </topichead>  
+
 	<topicref href="gettingstarted/requirements.md" format="markdown"/>
 	<topicref href="downloadingandinstalling/intro.md" format="markdown">
 		<topicref href="downloadingandinstalling/downloadlocations.md" format="markdown"/>
