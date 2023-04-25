@@ -92,6 +92,7 @@ public class RapidModeStepRunner {
             if (scaaasFilePath.isPresent()) {
                 invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, true, scaaasFilePath.get());
             } else {
+                invokeContainerRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls);
                 logger.debug("Stateless container scan detected but no detect.scaaas.scan.path specified, skipping.");
             }
         });
@@ -123,6 +124,12 @@ public class RapidModeStepRunner {
 
         // add this scan to the URLs to wait for
         parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + bdScanId.toString()));
+    }
+
+    private void invokeContainerRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl, List<HttpUrl> parsedUrls)
+        throws DetectUserFriendlyException, IOException, IntegrationException {
+        RapidContainerScanStepRunner rapidContainerScanStepRunner = new RapidContainerScanStepRunner(operationRunner, gson, blackDuckRunData.getBlackDuckServerConfig().getTimeout());
+        UUID scanId = rapidContainerScanStepRunner.submitScan(blackDuckRunData);
     }
     
     private void fullResultUrls(List<HttpUrl> parsedUrls) {
