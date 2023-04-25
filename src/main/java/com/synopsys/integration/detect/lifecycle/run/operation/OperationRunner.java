@@ -336,21 +336,24 @@ public class OperationRunner {
                         ExitCodeType.FAILURE_SCAN
                     );
             }
-
-            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
-
-            HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + "/api/developer-scans");
-
-            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-                    .postFile(bdioHeader, ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protobuf"))
-                    .buildBlackDuckResponseRequest(postUrl);
-
-            HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);
-            String path = responseUrl.uri().getPath();
-
-            return UUID.fromString(path.substring(path.lastIndexOf('/') + 1));
+            return uploadBdioHeaderToInitiateStatelessScan(blackDuckRunData, bdioHeader);
         });
+    }
+
+    public UUID uploadBdioHeaderToInitiateStatelessScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile) throws IntegrationException {
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+        HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + "/api/developer-scans");
+
+        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+            .postFile(bdioHeaderFile, ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protobuf"))
+            .buildBlackDuckResponseRequest(postUrl);
+
+        HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);
+        String path = responseUrl.uri().getPath();
+
+        return UUID.fromString(path.substring(path.lastIndexOf('/') + 1));
     }
 
     public void uploadBdioEntries(BlackDuckRunData blackDuckRunData, UUID bdScanId) throws IntegrationException, IOException {
