@@ -74,7 +74,7 @@ public class MavenProjectInspectorTest extends DetectableFunctionalTest {
         return detectableFactory.createMavenProjectInspectorDetectable(
             detectableEnvironment,
             () -> ExecutableTarget.forFile(new File("inspector")),
-            new ProjectInspectorOptions(null, null)
+            new ProjectInspectorOptions(null, null, null)
         );
     }
 

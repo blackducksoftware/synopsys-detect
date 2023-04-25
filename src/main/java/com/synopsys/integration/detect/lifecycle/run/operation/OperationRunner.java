@@ -1,14 +1,23 @@
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +42,12 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
@@ -163,14 +174,18 @@ import com.synopsys.integration.detector.accuracy.search.SearchEvaluator;
 import com.synopsys.integration.detector.accuracy.search.SearchOptions;
 import com.synopsys.integration.detector.finder.DirectoryFinder;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
+import com.synopsys.integration.rest.body.FileBodyContent;
+import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
 
+import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectDetectableFactory detectDetectableFactory;
@@ -195,8 +210,9 @@ public class OperationRunner {
     private final RapidScanResultAggregator rapidScanResultAggregator;
     private final ProjectEventPublisher projectEventPublisher;
     private final DetectExecutableRunner executableRunner;
-
     private final OperationAuditLog auditLog;
+    private static final int[] LIMITED_FIBONACCI_SEQUENCE = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
+    private static final int MIN_POLLING_INTERVAL_THRESHOLD_IN_SECONDS = 5;
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -310,6 +326,89 @@ public class OperationRunner {
     }
 
     //Rapid
+    public UUID initiateStatelessBdbaScan(BlackDuckRunData blackDuckRunData) throws OperationException {
+        return auditLog.namedInternal("Initial Stateless BDBA Scan", () -> {
+            File bdioHeader = new File(directoryManager.getBdioOutputDirectory() + "/bdio-header.pb");
+
+            if (!bdioHeader.exists()) {
+                throw new DetectUserFriendlyException(
+                        "Unble to locate BDIO header from BDBA scan.",
+                        ExitCodeType.FAILURE_SCAN
+                    );
+            }
+
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+            HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + "/api/developer-scans");
+
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                    .postFile(bdioHeader, ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protobuf"))
+                    .buildBlackDuckResponseRequest(postUrl);
+
+            HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);
+            String path = responseUrl.uri().getPath();
+
+            return UUID.fromString(path.substring(path.lastIndexOf('/') + 1));
+        });
+    }
+
+    public void uploadBdioEntries(BlackDuckRunData blackDuckRunData, UUID bdScanId) throws IntegrationException, IOException {
+        // parse directory and upload all chunks
+        File bdioDirectory = directoryManager.getBdioOutputDirectory();
+
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+        String contentType = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
+        HttpUrl putUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString()
+                + "/api/developer-scans/" + bdScanId);
+
+        int sentChunks = 0;
+
+        for (File bdioEntry : bdioDirectory.listFiles()) {
+            if (bdioEntry.getName().equals("bdio-header.pb")) {
+                continue;
+            }
+
+            // Send the chunks using append mode.
+
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                    .addHeader("X-BD-MODE", "APPEND")
+                    .putBodyContent(new FileBodyContent(bdioEntry, ContentType.create(contentType)))
+                    .buildBlackDuckResponseRequest(putUrl);
+
+            try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+                if (response.isStatusCodeSuccess()) {
+                    logger.debug("Uploaded BDIO entry file: " + bdioEntry.getName());
+                } else {
+                    logger.trace("Unable to upload BDIO entry. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                    throw new IntegrationException("Unable to upload BDIO entry. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                }
+            }
+            sentChunks++;
+        }
+
+        if (sentChunks != 0) {
+            // We sent something to BD, send a finish message
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                    .addHeader("X-BD-MODE", "FINISH")
+                    .addHeader("X-BD-DOCUMENT-COUNT", String.valueOf(sentChunks))
+                    .addHeader("Content-type", contentType)
+                    .putString(StringUtils.EMPTY, ContentType.create(contentType, StandardCharsets.UTF_8))
+                    .buildBlackDuckResponseRequest(putUrl);
+
+            try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+                if (response.isStatusCodeSuccess()) {
+                    logger.debug("Sent FINISH chunk to Black Duck.");
+                } else {
+                    logger.trace("Sent FINISH chunk to Black Duck. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                    throw new IntegrationException("Sent FINISH chunk to Black Duck. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                }
+            }
+        }
+    }
+
     public final List<HttpUrl> performRapidUpload(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, @Nullable File rapidScanConfig) throws OperationException {
         return auditLog.namedInternal("Rapid Upload", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
@@ -326,11 +425,13 @@ public class OperationRunner {
     public List<DeveloperScansScanView> waitForFullRapidResults(BlackDuckRunData blackDuckRunData, List<HttpUrl> rapidScans, BlackduckScanMode mode) throws OperationException {
         return auditLog.namedInternal("Rapid Wait", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            int fibonacciSequenceIndex = getFibonacciSequenceIndex();
             return new RapidModeWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForFullScans(
                 rapidScans,
                 detectConfigurationFactory.findTimeoutInSeconds(),
                 RapidModeWaitOperation.DEFAULT_WAIT_INTERVAL_IN_SECONDS,
-                mode
+                mode,
+                calculateMaxWaitInSeconds(fibonacciSequenceIndex)
             );
         });
     }
@@ -953,15 +1054,86 @@ public class OperationRunner {
                 .findRapidScanConfig(directoryManager.getSourceDirectory())
         );
     }
-    
-    public BomStatusScanView waitForBomScanCompletion(BlackDuckRunData blackDuckRunData, HttpUrl scanUrl) throws OperationException {
+
+    private File findScanCliOutputLogFile() {
+        File blackDuckScanOutputDirectory = this.fileFinder.findFile(directoryManager.getScanOutputDirectory(), "BlackDuckScanOutput");
+        if (blackDuckScanOutputDirectory != null) {
+            File scanIdDirectory = this.fileFinder.findFile(blackDuckScanOutputDirectory, "*");
+            if (scanIdDirectory != null) {
+                File scanLogDirectory = this.fileFinder.findFile(scanIdDirectory, "log");
+                if (scanLogDirectory != null) {
+                    return this.fileFinder.findFile(scanLogDirectory, "*.log");
+                }
+            }
+        }
+        return null;
+    }
+
+    private int countSignatureScannerBdioChunks() {
+        File scanCliOutputLogFile = findScanCliOutputLogFile();
+        if (scanCliOutputLogFile == null) {
+            return 0;
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(scanCliOutputLogFile))) {
+            Pattern pattern = Pattern.compile("scanNodeList\\.size\\(\\)=(\\d+).*scanLeafList\\.size\\(\\)=(\\d+)");
+            long scanNodeCount = 0;
+            long scanLeafCount = 0;
+
+            String line = reader.readLine();
+            while (line != null) {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find() && matcher.groupCount() == 2) {
+                    scanNodeCount = Integer.parseInt(matcher.group(1));
+                    scanLeafCount = Integer.parseInt(matcher.group(2));
+                }
+                line = reader.readLine();
+            }
+            long sumOfScanNodesAndLeaves = scanNodeCount + scanLeafCount;
+            int bdioChunksCount = (int) Math.ceil(sumOfScanNodesAndLeaves / 30000D);
+            return bdioChunksCount;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return 0;
+        }
+    }
+
+    private int countDetectBdioEntryFiles() {
+        try {
+            File bdioFile = this.fileFinder.findFile(directoryManager.getBdioOutputDirectory(), "*.bdio");
+            if (bdioFile == null) {
+                return 0;
+            }
+            Bdio2ContentExtractor bdio2Extractor = new Bdio2ContentExtractor();
+            return bdio2Extractor.extractContent(bdioFile).size() - 1;
+        } catch (IntegrationException e) {
+            return 0;
+        }
+    }
+
+    public int calculateMaxWaitInSeconds(int fibonacciSequenceIndex) {
+        int fibonacciSequenceLastIndex = LIMITED_FIBONACCI_SEQUENCE.length - 1;
+        if (fibonacciSequenceIndex > fibonacciSequenceLastIndex) {
+            return LIMITED_FIBONACCI_SEQUENCE[fibonacciSequenceLastIndex];
+        } else if (fibonacciSequenceIndex > 4) {
+            return LIMITED_FIBONACCI_SEQUENCE[fibonacciSequenceIndex];
+        }
+        return MIN_POLLING_INTERVAL_THRESHOLD_IN_SECONDS;
+    }
+
+    public int getFibonacciSequenceIndex() {
+        int bdioChunksCount = countSignatureScannerBdioChunks();
+        return bdioChunksCount != 0 ? bdioChunksCount : countDetectBdioEntryFiles();
+    }
+
+    public BomStatusScanView waitForBomCompletion(BlackDuckRunData blackDuckRunData, HttpUrl scanUrl) throws OperationException {
         return auditLog.namedInternal("Wait for scan to potentially be included in BOM", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            int fibonacciSequenceIndex = getFibonacciSequenceIndex();
             return new BomScanWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForScan(
-                    scanUrl,
-                    detectConfigurationFactory.findTimeoutInSeconds()
+                scanUrl,
+                detectConfigurationFactory.findTimeoutInSeconds(),
+                calculateMaxWaitInSeconds(fibonacciSequenceIndex)
             );
         });
-
     }
 }

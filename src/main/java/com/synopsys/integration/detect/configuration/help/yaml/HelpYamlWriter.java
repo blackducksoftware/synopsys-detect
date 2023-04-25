@@ -26,8 +26,6 @@ public class HelpYamlWriter {
         }
     };
 
-    public HelpYamlWriter() {}
-
     public void createHelpYamlDocument(String filename) {
         List<Property> allProperties = DetectProperties.allProperties().getProperties();
 
