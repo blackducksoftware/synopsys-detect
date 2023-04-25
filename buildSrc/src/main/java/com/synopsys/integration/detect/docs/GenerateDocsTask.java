@@ -60,7 +60,8 @@ public class GenerateDocsTask extends DefaultTask {
         File sourceMarkdownDir = new File(docsSrcMainDir, "markdown");
         File outputDir = new File(docsProject.getBuildDir(), "generated");
 
-        File runningDir = new File(outputDir, "downloadingandrunning");
+        File runningDir = new File(outputDir, "runningdetect");
+		File installDir = new File(outputDir, "downloadingandinstalling");
         File troubleshootingDir = new File(outputDir, "troubleshooting");
 
         FileUtils.deleteDirectory(outputDir);
@@ -83,7 +84,7 @@ public class GenerateDocsTask extends DefaultTask {
         createMarkdownFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
         handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);
-        createFromFreemarker(templateProvider, "downloadlocations.ftl", new File(runningDir, "downloadlocations.md"));
+        createFromFreemarker(templateProvider, "downloadlocations.ftl", new File(installDir, "downloadlocations.md"));
     }
 
     private void createMarkdownFromFreemarker(TemplateProvider templateProvider, File outputDir, String templateName, Object data) throws IOException, TemplateException {
