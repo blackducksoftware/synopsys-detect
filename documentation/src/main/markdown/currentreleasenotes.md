@@ -1,5 +1,11 @@
 # Current Release notes
 
+## Version 8.9.0
+
+### Resolved issues
+
+* (IDETECT-3613) Resolved an issue where running a scan with `detect.maven.build.command=-Dverbose` caused a KB mismatch issue for omitted transitive dependencies.
+
 ## Version 8.8.0
 
 ### New features
