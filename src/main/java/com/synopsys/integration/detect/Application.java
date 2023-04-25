@@ -54,6 +54,7 @@ import com.synopsys.integration.detect.workflow.report.output.FormattedOutputMan
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
+import java.util.Arrays;
 
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
@@ -81,8 +82,31 @@ public class Application implements ApplicationRunner {
     public static void main(String[] args) {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(Application.class);
         builder.logStartupInfo(false);
-        builder.run(args);
+        boolean hasNoUpdateFlag = hasNoUpdate(args);
+        if (hasNoUpdateFlag) {
+            builder.run(args);
+        }
     }
+    
+    private static boolean hasNoUpdate(String[] args) {
+        boolean hasNoUpdateFlag = true;
+        List argsList = Arrays.asList(args);
+        int indexOfDetectversion = argsList.indexOf("detect-version");
+        if (indexOfDetectversion == -1) {
+            // No Detect version has been specified.
+            int indexOfJarPath = argsList.indexOf("jar-path");
+            String jarPath;
+            if (indexOfJarPath > -1) {
+                // A path for Detect JAR has been specified.
+                jarPath = (String) argsList.get(indexOfJarPath + 1);
+            } else {
+                jarPath = "./";
+            }
+            
+            // Call BD Version API
+        }
+        return hasNoUpdateFlag;
+    } 
 
     @Override
     public void run(ApplicationArguments applicationArguments) {
