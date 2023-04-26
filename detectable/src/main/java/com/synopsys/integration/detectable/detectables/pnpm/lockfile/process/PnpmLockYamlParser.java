@@ -13,6 +13,8 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
@@ -103,9 +105,12 @@ public class PnpmLockYamlParser {
     }
 
     private PnpmLockYaml parseYamlFile(File pnpmLockYamlFile) throws FileNotFoundException {
-        Representer representer = new Representer();
+        DumperOptions dumperOptions = new DumperOptions();
+        Representer representer = new Representer(dumperOptions);
         representer.getPropertyUtils().setSkipMissingProperties(true);
-        Yaml yaml = new Yaml(new Constructor(PnpmLockYaml.class), representer);
+
+        LoaderOptions loaderOptions = new LoaderOptions();
+        Yaml yaml = new Yaml(new Constructor(PnpmLockYaml.class, loaderOptions), representer);
         return yaml.load(new FileReader(pnpmLockYamlFile));
     }
 
