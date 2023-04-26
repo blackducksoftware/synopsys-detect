@@ -33,4 +33,3 @@ file. To find it, navigate to the .jar file in the
 and scroll to the bottom of the page. Various tools (such as md5sum, sha1sum, and sha256sum on Linux, and certutil and Get-FileHash on Windows) are available for
 calculating checksums of files on your computer. Use one of those tools to get a checksum for your copy of the [solution_name] .jar, and compare it
 to the corresponding checksum on the binary repository page to make sure they match.
-

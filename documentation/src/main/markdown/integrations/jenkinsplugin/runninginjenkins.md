@@ -17,7 +17,7 @@ To use the JAR option, perform the following steps:
    
 **Note:** When your build runs, Jenkins looks for configured environment variables, and if it locates DETECT\_JAR, it uses that instead of pulling the latest [solution_name] shell script.
 ## Air Gap option
-[solution_name] can be configured to run in an air gap fashion, see: [Air Gap](../../downloadingandrunning/airgap.md).
+[solution_name] can be configured to run in an air gap fashion, see: [Air Gap](../../downloadingandinstalling/airgap.md).
 
 In freestyle and Pipeline jobs, you can toggle between the different modes for running [solution_name] in the plugin such as pulling the Detect.jar from scripts or $DETECT\_JAR\_PATH, or from a specified Tool Installation.
 ## Running Detect in a job
