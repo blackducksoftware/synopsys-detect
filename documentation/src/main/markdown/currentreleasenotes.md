@@ -6,6 +6,11 @@
 
 * (IDETECT-3613) Resolved an issue where running a scan with `detect.maven.build.command=-Dverbose` caused a KB mismatch issue for omitted transitive dependencies.
 
+### Dependency update
+
+* Upgraded SnakeYAML to version 2.0.
+* Upgraded Jackson Dataformat YAML to version 2.15.0.
+
 ## Version 8.8.0
 
 ### New features
