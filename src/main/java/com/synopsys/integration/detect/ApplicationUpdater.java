@@ -1,18 +1,25 @@
 package com.synopsys.integration.detect;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.detect.configuration.DetectInfo;
+import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.rest.HttpMethod;
@@ -21,11 +28,6 @@ import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ApplicationUpdater {
     public static final String DOWNLOAD_URL = "api/tools/detect";
@@ -38,6 +40,7 @@ public class ApplicationUpdater {
     private final List<String> argsList;
     private final String blackduckHost;
     private final int indexOfOfflineMode;
+    private final DetectInfo detectInfo;
 
     public ApplicationUpdater(String[] args) {
         argsList = Arrays.asList(args);
@@ -54,6 +57,8 @@ public class ApplicationUpdater {
                 true, 
                 ProxyInfo.NO_PROXY_INFO
         );
+        DetectInfoUtility detectInfoUtility = new DetectInfoUtility();
+        detectInfo = detectInfoUtility.createDetectInfo();
     }
     
     private boolean canSelfUpdate() {
@@ -68,22 +73,15 @@ public class ApplicationUpdater {
     }
     
     private String determineJarDownloadPath() {
-        String jarDownloadPath;
-        String detectJarDownloadPath = System.getenv("DETECT_JAR_DOWNLOAD_DIR");
-        if (detectJarDownloadPath == null) {
-            String tmp = System.getenv("TMP");
-            if (tmp == null) {
-                String home = System.getenv("HOME");
-                if (home == null) {
-                    jarDownloadPath = "./";
-                } else {
-                    jarDownloadPath = home.endsWith("/")? home.concat("tmp") : home.concat("/tmp");
-                }
-            } else {
-                jarDownloadPath = tmp;
-            }
-        } else {
+        String home, tmp, detectJarDownloadPath, jarDownloadPath;
+        if ((detectJarDownloadPath = System.getenv("DETECT_JAR_DOWNLOAD_DIR")) != null) {
             jarDownloadPath = detectJarDownloadPath;
+        } else if ((tmp = System.getenv("TMP")) != null) {
+            jarDownloadPath = tmp;
+        } else if ((home = System.getenv("HOME")) != null) {
+            jarDownloadPath = home.endsWith("/")? home.concat("tmp") : home.concat("/tmp");
+        } else {
+            jarDownloadPath = "./";
         }
         return jarDownloadPath;
     }
@@ -112,7 +110,7 @@ public class ApplicationUpdater {
         File detectInstallation = new File(installDirectory, fileName);
         HttpUrl downloadUrl = buildDownloadUrl();
         try {
-            Optional<String> currentInstalledVersion = determineInstalledVersion(installDirectory);
+            Optional<String> currentInstalledVersion = determineInstalledVersion();
             String newInstalledVersion = download(detectInstallation, downloadUrl, currentInstalledVersion.orElse(""));
             if (!detectInstallation.setExecutable(true)) {
                 throw new IntegrationException(String.format("Attempt to make %s executable failed.", detectInstallation.getAbsolutePath()));
@@ -125,7 +123,7 @@ public class ApplicationUpdater {
         }
     }
     
-    public int executeRunnableJar(String jarFullPath, List<String> argsList) throws Exception {
+    private int executeRunnableJar(String jarFullPath, List<String> argsList) throws Exception {
         List<String> commands = Arrays.asList("java", "-jar", jarFullPath);
         commands.addAll(argsList);
         ProcessBuilder processBuilder = new ProcessBuilder(commands);
@@ -173,13 +171,13 @@ public class ApplicationUpdater {
 
     private void updateVersionFile(String installedVersion, File installDirectory) throws IOException {
         File versionFile = new File(installDirectory, INSTALLED_VERSION_FILE_NAME);
-        FileUtils.writeStringToFile(versionFile, installedVersion, Charset.defaultCharset());
+        FileUtils.writeStringToFile(versionFile, installedVersion, StandardCharsets.UTF_8.toString());
     }
 
-    private Optional<String> determineInstalledVersion(File installDirectory) throws IOException {
-        File versionFile = new File(installDirectory, INSTALLED_VERSION_FILE_NAME);
-        if (versionFile.exists()) {
-            return Optional.of(FileUtils.readFileToString(versionFile, Charset.defaultCharset()));
+    private Optional<String> determineInstalledVersion() {
+        String detectVersion = detectInfo.getDetectVersion();
+        if (detectVersion != null) {
+            return Optional.of(detectInfo.getDetectVersion());
         } else {
             return Optional.empty();
         }
