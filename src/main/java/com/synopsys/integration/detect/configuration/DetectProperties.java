@@ -315,6 +315,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_SCAN)
             .build();
 
+    public static final NullablePathProperty DETECT_CONTAINER_SCAN_FILE =
+        NullablePathProperty.newBuilder("detect.container.scan.file.path")
+            .setInfo("Container Scan Target", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp(
+                "If specified, this file and this file only will be uploaded for container scan analysis. The CONTAINER_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the CONTAINER_SCAN tool is invoked.")
+            .setGroups(DetectGroup.CONTAINER_SCANNER, DetectGroup.SOURCE_PATH)
+            .build();
+
     // TODO: Consider removing environment sourcing code in 9.0.0. IDETECT-3167
     public static final StringProperty DETECT_BITBAKE_BUILD_ENV_NAME =
         StringProperty.newBuilder("detect.bitbake.build.env.name", "oe-init-build-env")

@@ -213,6 +213,10 @@ public class OperationRunner {
     private final OperationAuditLog auditLog;
     private static final int[] LIMITED_FIBONACCI_SEQUENCE = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
     private static final int MIN_POLLING_INTERVAL_THRESHOLD_IN_SECONDS = 5;
+    private static final String RAPID_SCAN_ENDPOINT = "/api/developer-scans";
+    private static final String RAPID_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
+    private static final String INTELLIGENT_SCAN_ENDPOINT = "/api/intelligent-persistence-scans";
+    private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -336,18 +340,36 @@ public class OperationRunner {
                         ExitCodeType.FAILURE_SCAN
                     );
             }
-            return uploadBdioHeaderToInitiateStatelessScan(blackDuckRunData, bdioHeader);
+            
+            return uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeader);
         });
     }
 
-    public UUID uploadBdioHeaderToInitiateStatelessScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile) throws IntegrationException {
+
+    private String getScanServicePostEndpoint() {
+        if (detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT) {
+            return INTELLIGENT_SCAN_ENDPOINT;
+        }
+        return RAPID_SCAN_ENDPOINT;
+    }
+
+    private String getScanServicePostContentType() {
+        if (detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT) {
+            return INTELLIGENT_SCAN_CONTENT_TYPE;
+        }
+        return RAPID_SCAN_CONTENT_TYPE;
+    }
+
+    public UUID uploadBdioHeaderToInitiateScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile) throws IntegrationException {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + "/api/developer-scans");
+        String scanServicePostEndpoint = getScanServicePostEndpoint();
+        HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + scanServicePostEndpoint);
 
+        String scanServicePostContentType = getScanServicePostContentType();
         BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-            .postFile(bdioHeaderFile, ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protobuf"))
+            .postFile(bdioHeaderFile, ContentType.create(scanServicePostContentType))
             .buildBlackDuckResponseRequest(postUrl);
 
         HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);

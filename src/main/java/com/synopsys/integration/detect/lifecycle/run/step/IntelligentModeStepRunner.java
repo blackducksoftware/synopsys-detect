@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -127,6 +128,11 @@ public class IntelligentModeStepRunner {
                 codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
                 mustWaitAtBomSummaryLevel.set(true);
             }
+        });
+
+        stepHelper.runToolIfIncluded(DetectTool.CONTAINER_SCAN, "Container Scanner", () -> {
+            ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner);
+            UUID scanId = containerScanStepRunner.submitScan(blackDuckRunData);
         });
 
         stepHelper.runToolIfIncludedWithCallbacks(
