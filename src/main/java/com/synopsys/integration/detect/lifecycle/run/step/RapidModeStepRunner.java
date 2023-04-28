@@ -87,13 +87,14 @@ public class RapidModeStepRunner {
         
         stepHelper.runToolIfIncluded(DetectTool.CONTAINER_SCAN, "Container Scanner", () -> {
             logger.debug("Stateless container scan detected.");
-            
-            // Check if this is an SCA environment. Stateless Container Scans are only supported there.
+
+            // Check if this is an SCA environment.
             if (scaaasFilePath.isPresent()) {
+                logger.debug("Invoking SCAaaS container scan.");
                 invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, true, scaaasFilePath.get());
             } else {
+                logger.debug("Invoking non-SCAaaS container scan.");
                 invokeContainerRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls);
-                logger.debug("Stateless container scan detected but no detect.scaaas.scan.path specified, skipping.");
             }
         });
 
@@ -128,8 +129,8 @@ public class RapidModeStepRunner {
 
     private void invokeContainerRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl, List<HttpUrl> parsedUrls)
         throws DetectUserFriendlyException, IOException, IntegrationException {
-        RapidContainerScanStepRunner rapidContainerScanStepRunner = new RapidContainerScanStepRunner(operationRunner, gson, blackDuckRunData.getBlackDuckServerConfig().getTimeout());
-        UUID scanId = rapidContainerScanStepRunner.submitScan(blackDuckRunData);
+        ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner);
+        UUID scanId = containerScanStepRunner.submitScan(blackDuckRunData);
     }
     
     private void fullResultUrls(List<HttpUrl> parsedUrls) {
