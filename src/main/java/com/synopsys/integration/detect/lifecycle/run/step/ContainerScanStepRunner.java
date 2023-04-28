@@ -19,6 +19,16 @@ public class ContainerScanStepRunner {
         this.operationRunner = operationRunner;
     }
 
+    public UUID submitScan(BlackDuckRunData blackDuckRunData) throws IOException, IntegrationException {
+//        File bdioHeaderFile = new File(Application.class.getResource("/test-inputs/bdio-header.pb").getPath()); // temporary
+        DetectProtobufBdioUtil detectProtobufBdioUtil = new DetectProtobufBdioUtil(UUID.randomUUID().toString(), "CONTAINER");
+        File bdioHeaderFile = detectProtobufBdioUtil.createProtobufBdioHeader();
+        return operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
+    }
+
+//    public void createProtobufBdioHeaderFile() throws IOException {
+//        DNUProtobufBdioHeader DNUProtobufBdioHeader = new DNUProtobufBdioHeader();
+//    }
     public UUID initiateScan(BlackDuckRunData blackDuckRunData) throws IOException, IntegrationException {
         DetectProtobufBdioUtil detectProtobufBdioUtil = new DetectProtobufBdioUtil(UUID.randomUUID().toString(), "CONTAINER");
         File bdioHeaderFile = detectProtobufBdioUtil.createProtobufBdioHeader();
