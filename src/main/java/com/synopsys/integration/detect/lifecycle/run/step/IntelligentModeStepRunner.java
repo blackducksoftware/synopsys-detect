@@ -132,7 +132,7 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.CONTAINER_SCAN, "Container Scanner", () -> {
             ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner);
-            UUID scanId = containerScanStepRunner.initiateScan(blackDuckRunData);
+            UUID scanId = containerScanStepRunner.submitScan(blackDuckRunData);
         });
 
         stepHelper.runToolIfIncludedWithCallbacks(
