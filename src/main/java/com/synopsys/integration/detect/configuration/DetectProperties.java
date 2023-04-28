@@ -936,6 +936,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
+    public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED =
+            BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
+                    .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_6_5_0)
+                    .setHelp(
+                            "<TODO confirm wording>.") // TOME
+                    .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+                    .build();
+
     public static final AllEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
         AllEnumListProperty.newBuilder("detect.included.detector.types", AllEnum.ALL, DetectorType.class)
             .setInfo("Detector Types Included", DetectPropertyFromVersion.VERSION_3_0_0)

@@ -3,6 +3,8 @@ package com.synopsys.integration.detect.lifecycle.run;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
+import com.synopsys.integration.detect.workflow.report.componentlocationanalysis.ComponentLocationAnalysis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,27 +68,36 @@ public class DetectRun {
             // test to ensure image scan results are available (i.e. image scan success) throws an
             // exception if results components are empty and/or not found.  This will never throw an
             // exception for any other scan type
-            imageScanCanScanFurther(universalToolsResult, bootSingletons);
+            imageScanCanScanFurther(universalToolsResult, bootSingletons); // TOME consider if source can be image
 
             // combine: processProjectInformation() -> ProjectResult (nameversion, bdio)
             NameVersion nameVersion = stepRunner.determineProjectInformation(universalToolsResult);
             operationRunner.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio;
             Boolean forceBdio = bootSingletons.getDetectConfigurationFactory().forceBdio();
-            if (!universalToolsResult.getDetectCodeLocations().isEmpty() 
-                    || (productRunData.shouldUseBlackDuckProduct() && !productRunData.getBlackDuckRunData().isOnline() && forceBdio && !universalToolsResult.didAnyFail() && exitCodeManager.getWinningExitCode().isSuccess())) {
+            if (!universalToolsResult.getDetectCodeLocations().isEmpty() // TOME do we want empty components-with-locations generated in this case?
+                    || (productRunData.shouldUseBlackDuckProduct() // TOME false when bdRunData is null, wouldnt boot if that was the case
+                    && !productRunData.getBlackDuckRunData().isOnline() // TOME !false when workflow = polaris
+                    && forceBdio && !universalToolsResult.didAnyFail()
+                    // TOME forceBdio ||inclusive or|| (component.analysis.enabled == true)
+                    && exitCodeManager.getWinningExitCode().isSuccess())) {
                 bdio = stepRunner.generateBdio(universalToolsResult, nameVersion);
             } else {
                 bdio = BdioResult.none();
+            }
+            if (bootSingletons.getDetectConfigurationFactory().componentLocationAnalysisEnabled()) {
+                ComponentLocationAnalysis.generateLocationFileForOfflineScan(bdio, bootSingletons.getDirectoryManager());
+            }
+            if (bootSingletons.getDetectConfigurationFactory().componentLocationAnalysisEnabled()) {
+                // ComponentLocationAnalysisEnabled.generateComponentsWithLocationFile_offline(bdio)
             }
             if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
                 if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) {
                     RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), bootSingletons.getDirectoryManager());
                     
-                    Optional<String> scaaasFilePath = bootSingletons.getDetectConfigurationFactory().getScaaasFilePath();
-                    
-                    rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData(), scaaasFilePath);
+                    DetectConfigurationFactory configurationFactory = bootSingletons.getDetectConfigurationFactory();
+                    rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData(), configurationFactory);
                 } else if (blackDuckRunData.isNonPersistent()) {
                     logger.info("Rapid Scan is offline, nothing to do.");
                 } else if (blackDuckRunData.isOnline()) {
@@ -94,7 +105,7 @@ public class DetectRun {
                     intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
                 } else {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
-                    intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData());
+                    intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData()); // TOME offline but allows for signature scanner and iac scan ..
                 }
             }
         } catch (Exception e) {
