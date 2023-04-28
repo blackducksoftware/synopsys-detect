@@ -109,7 +109,7 @@ dependencies {
     implementation 'com.google.protobuf:protobuf-java:3.22.3'
     // TODO: Update bdio-protobuf jar location once bds-bdio-release is updated with latest released version.
     // implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.6'
-    implementation files('/Users/niravr/Downloads/bdio-protobuf-3.2.6.jar')
+    implementation files('libs/bdio-protobuf-3.2.6.jar')
 
     // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
     testImplementation 'org.assertj:assertj-core:3.13.2'

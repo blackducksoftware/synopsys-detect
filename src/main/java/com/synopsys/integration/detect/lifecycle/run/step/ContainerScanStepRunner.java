@@ -24,8 +24,4 @@ public class ContainerScanStepRunner {
         File bdioHeaderFile = detectProtobufBdioUtil.createProtobufBdioHeader();
         return operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
     }
-
-//    public void createProtobufBdioHeaderFile() throws IOException {
-//        DNUProtobufBdioHeader DNUProtobufBdioHeader = new DNUProtobufBdioHeader();
-//    }
 }
