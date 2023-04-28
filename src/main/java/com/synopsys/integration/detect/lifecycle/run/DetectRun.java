@@ -1,13 +1,11 @@
 package com.synopsys.integration.detect.lifecycle.run;
 
-import java.nio.file.Path;
 import java.util.Optional;
 
+import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.configuration.property.types.path.PathValue;
-import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -73,35 +71,37 @@ public class DetectRun {
             operationRunner.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio;
             Boolean forceBdio = bootSingletons.getDetectConfigurationFactory().forceBdio();
-            if (!universalToolsResult.getDetectCodeLocations().isEmpty() 
-                    || (productRunData.shouldUseBlackDuckProduct() && !productRunData.getBlackDuckRunData().isOnline() && forceBdio && !universalToolsResult.didAnyFail() && exitCodeManager.getWinningExitCode().isSuccess())) {
+            if (!universalToolsResult.getDetectCodeLocations().isEmpty()
+                    || (productRunData.shouldUseBlackDuckProduct()
+                    && !productRunData.getBlackDuckRunData().isOnline()
+                    && forceBdio && !universalToolsResult.didAnyFail()
+                    && exitCodeManager.getWinningExitCode().isSuccess())) {
                 bdio = stepRunner.generateBdio(universalToolsResult, nameVersion);
             } else {
                 bdio = BdioResult.none();
             }
-            if (productRunData.shouldUseBlackDuckProduct()) {
+            if (productRunData.shouldUseBlackDuckProduct()) { // T
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
-                if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) {
+                if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) { // F
+                    // TODO shanty pass config factory in to the constructor instead
                     RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), bootSingletons.getDirectoryManager());
-                    
-                    Optional<String> scaaasFilePath = bootSingletons.getDetectConfigurationFactory().getScaaasFilePath();
-                    
-                    rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData(), scaaasFilePath);
-                } else if (blackDuckRunData.isNonPersistent()) {
+                    DetectConfigurationFactory configurationFactory = bootSingletons.getDetectConfigurationFactory();
+                    rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData(), configurationFactory);
+                } else if (blackDuckRunData.isNonPersistent()) { // F
                     logger.info("Rapid Scan is offline, nothing to do.");
-                } else if (blackDuckRunData.isOnline()) {
-                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
+                } else if (blackDuckRunData.isOnline()) { // F
+                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), bootSingletons.getDetectConfigurationFactory());
                     intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
                 } else {
-                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
-                    intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData());
+                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), bootSingletons.getDetectConfigurationFactory());
+                    intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData(), bdio);
                 }
             }
         } catch (Exception e) {
             logger.error(ReportConstants.RUN_SEPARATOR);
             logger.error("Detect run failed.");
             exceptionUtility.logException(e);
-            logger.debug("An exception was thrown during the detect run.", e);
+            logger.debug("An exception was thrown during the Detect run.", e);
             logger.error(ReportConstants.RUN_SEPARATOR);
             exitCodeManager.requestExitCode(e);
             checkForInterruptedException(e);

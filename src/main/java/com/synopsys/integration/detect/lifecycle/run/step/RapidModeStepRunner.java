@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.Set;
 
+import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,7 @@ public class RapidModeStepRunner {
     }
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult,
-            DockerTargetData dockerTargetData, Optional<String> scaaasFilePath) throws OperationException, IOException {
+                          DockerTargetData dockerTargetData, DetectConfigurationFactory configurationFactory) throws OperationException, IOException, DetectUserFriendlyException {
         operationRunner.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationRunner.findRapidScanConfig();
         String scanMode = blackDuckRunData.getScanMode().displayName();
@@ -73,7 +74,8 @@ public class RapidModeStepRunner {
 
             parsedUrls.addAll(parseScanUrls(scanMode, signatureScanOutputResult, blackDuckUrl));
         });
-        
+
+        Optional<String> scaaasFilePath = configurationFactory.getScaaasFilePath();
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             logger.debug("Stateless binary scan detected.");
             
@@ -104,7 +106,12 @@ public class RapidModeStepRunner {
         File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
         RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
 
+        if (configurationFactory.componentLocationAnalysisEnabled()) {
+            File componentsWithLocationsFile = operationRunner.generateComponentsWithLocationsFile(rapidFullResults);
+            operationRunner.publishComponentsWithLocationsFile(componentsWithLocationsFile);
+        } else {
         operationRunner.publishRapidResults(jsonFile, summary, mode);
+        }
     }
 
     private void invokeBdbaRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl,
