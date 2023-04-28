@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -21,7 +24,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.SilentIntLogger;
+import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpMethod;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.client.IntHttpClient;
@@ -38,20 +41,39 @@ public class ApplicationUpdater {
 
     private final IntHttpClient intHttpClient;
     private final List<String> argsList;
-    private final String blackduckHost;
-    private final int indexOfOfflineMode;
+    private String blackduckHost = null;
+    private String offlineMode = null;
     private final DetectInfo detectInfo;
+    private final static String BLACKDUCK_OFFLINE_MODE_ARG = "blackduck.offline.mode";
+    private final static String BLACKDUCK_URL_ARG = "blackduck.url";
+    
+    private void parseArguments() {
+        ListIterator<String> it = argsList.listIterator();
+        while (it.hasNext()) {
+            String argument = it.next();
+            if (argument.contains(BLACKDUCK_OFFLINE_MODE_ARG)) {
+                offlineMode = findArgument(it, argument);
+            } else if (argument.contains(BLACKDUCK_URL_ARG)) {
+                blackduckHost = findArgument(it, argument);
+            }
+        }
+        //blackduckHost = "https://prd-kb-match-dev-hub01.dc2.lan";
+    }
+    
+    private String findArgument(ListIterator<String> it, String argument) {
+        int equalsIndex;
+        if ((equalsIndex = argument.indexOf("=")) > -1) {
+            return argument.substring(equalsIndex + 1, argument.length());
+        } else if (it.hasNext()) {
+            return it.next();
+        }
+        return null;
+    }
 
     public ApplicationUpdater(String[] args) {
         argsList = Arrays.asList(args);
-        indexOfOfflineMode = argsList.indexOf("blackduck.offline.mode");
-        int indexOfBlackduckHost = argsList.indexOf("blackduck.url");
-        if (argsList.size() > 1 && indexOfBlackduckHost > -1 && indexOfBlackduckHost + 1 < argsList.size()) {
-            blackduckHost = argsList.get(indexOfBlackduckHost + 1);
-        } else {
-            blackduckHost = null;
-        }
-        intHttpClient = new IntHttpClient(new SilentIntLogger(),
+        parseArguments();
+        intHttpClient = new IntHttpClient(new Slf4jIntLogger(logger),
                 BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create(),
                 BlackDuckServerConfigBuilder.DEFAULT_TIMEOUT_SECONDS, 
                 true, 
@@ -68,7 +90,7 @@ public class ApplicationUpdater {
         return detectSource == null 
                 && detectLatestReleaseVersion == null
                 && detectVersionKey == null
-                && indexOfOfflineMode == -1
+                && offlineMode == null
                 && blackduckHost != null;
     }
     
@@ -87,19 +109,22 @@ public class ApplicationUpdater {
     }
     
     protected boolean selfUpdate() {
-        boolean canSelfUpdateFlag;
-        if (canSelfUpdateFlag = canSelfUpdate()) {
+        if (canSelfUpdate()) {
             try {
                 String jarDownloadPath = determineJarDownloadPath();
                 File newDetectJar = installOrUpdateScanner(jarDownloadPath, "synopsys-detect.jar");
-                this.executeRunnableJar(newDetectJar.getAbsolutePath(), argsList);
+                if (newDetectJar != null) {
+                    this.executeRunnableJar(newDetectJar.getAbsolutePath(), argsList);
+                    return true;
+                }
             } catch (IntegrationException ex) {
-                canSelfUpdateFlag = false;
+                logger.error(ex.getMessage());
             } catch (Exception ex) {
-                canSelfUpdateFlag = false;
+                logger.error(ex.getMessage());
+                return true;
             }
         }
-        return canSelfUpdateFlag;
+        return false;
     }
 
     private File installOrUpdateScanner(String dirPath, String fileName) throws IntegrationException {
@@ -112,15 +137,18 @@ public class ApplicationUpdater {
         try {
             Optional<String> currentInstalledVersion = determineInstalledVersion();
             String newInstalledVersion = download(detectInstallation, downloadUrl, currentInstalledVersion.orElse(""));
-            if (!detectInstallation.setExecutable(true)) {
-                throw new IntegrationException(String.format("Attempt to make %s executable failed.", detectInstallation.getAbsolutePath()));
+            if (newInstalledVersion != null) {
+                if (!detectInstallation.setExecutable(true)) {
+                    throw new IntegrationException(String.format("Attempt to make %s executable failed.", detectInstallation.getAbsolutePath()));
+                }
+                updateVersionFile(newInstalledVersion, installDirectory);
+                logger.info("Detect was downloaded/found successfully: " + installDirectory.getAbsolutePath());
+                return detectInstallation;
             }
-            updateVersionFile(newInstalledVersion, installDirectory);
-            logger.info("Detect was downloaded/found successfully: " + installDirectory.getAbsolutePath());
-            return detectInstallation;
         } catch (IntegrationException | IOException e) {
             throw new BlackDuckIntegrationException("Detect could not be downloaded successfully: " + e.getMessage(), e);
         }
+        return null;
     }
     
     private int executeRunnableJar(String jarFullPath, List<String> argsList) throws Exception {
@@ -143,30 +171,27 @@ public class ApplicationUpdater {
     // Downloads Detect from BD.  If successful, returns downloaded version, otherwise throws exception
     private String download(File installDirectory, HttpUrl downloadUrl, String currentVersion) throws IntegrationException, IOException {
         logger.debug(String.format("Downloading artifact to '%s' from '%s'.", installDirectory.getAbsolutePath(), downloadUrl));
-        
         Map <String, String> headers = new HashMap<>();
         Map<String, Set<String>> queryParams = new HashMap<>();
         headers.put(DOWNLOAD_VERSION_HEADER, currentVersion);
-        
         Request request = new Request(downloadUrl, HttpMethod.GET, null, queryParams, headers, null);
-        
         try (Response response = intHttpClient.execute(request)) {
             if (response.isStatusCodeSuccess()) {
                 logger.debug("Deleting existing file.");
                 FileUtils.deleteQuietly(installDirectory);
                 logger.debug("Writing to file.");
-                InputStream jarBytesInputStream = response.getContent();
-                FileUtils.copyInputStreamToFile(jarBytesInputStream, installDirectory);
+                try (InputStream jarInputStream = response.getContent()) {
+                    Files.copy(jarInputStream, installDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
                 logger.debug("Successfully wrote response to file.");
                 return response.getHeaderValue(DOWNLOAD_VERSION_HEADER);
             } else if (response.getStatusCode() == 304) {
                 logger.debug("Present Detect installation is up to date - skipping download.");
-                return currentVersion;
             } else {
                 logger.trace("Unable to download artifact. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
-                throw new IntegrationException("Unable to download artifact. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
             }
         }
+        return null;
     }
 
     private void updateVersionFile(String installedVersion, File installDirectory) throws IOException {

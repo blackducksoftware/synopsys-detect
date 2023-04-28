@@ -79,6 +79,21 @@ public class Application implements ApplicationRunner {
     }
 
     public static void main(String[] args) {
+        args = new String[] {
+            "-jar=/users/gopanna/work/synopsys-detect/build/libs/synopsys-detect-8.3.0-SIGQA5-SNAPSHOT.jar",
+            "--blackduck.url=https://us1a-qa-hub34.nprd.sig.synopsys.com", 
+            "--blackduck.trust.cert=true", 
+            "--blackduck.api.token=YmJkMjhlOTctY2Y5My00MzY4LTliYTMtZTA3ZDY4MDQ2NmY0OjBmMTNlMTA2LTdmM2EtNDAxYS1hM2M5LWYzY2E1MzYzNzFiYg==", 
+            "--detect.source.path=/Users/gopanna/Downloads/Downloads/Downloads/bd-simple-demo/bd-simple-demo", "--detect.detector.search.depth=10", 
+            "--detect.project.name=lerna_test", 
+            "--detect.project.version.name=hoist_disabled", 
+            "--detect.cleanup=false", 
+            "--detect.diagnostic=false",
+            "--detect.tools.excluded=SIGNATURE_SCAN",
+            "--detect.lerna.path=/usr/local/bin/lerna",
+            //"--logging.level.com.synopsys.integration=DEBUG",
+            "--logging.level.detect=DEBUG",
+            "--stacktrace"};
         SpringApplicationBuilder builder = new SpringApplicationBuilder(Application.class);
         builder.logStartupInfo(false);
         ApplicationUpdater updater = new ApplicationUpdater(args);
