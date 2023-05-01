@@ -13,15 +13,17 @@ import com.synopsys.integration.exception.IntegrationException;
 public class ContainerScanStepRunner {
 
     private final OperationRunner operationRunner;
+    private UUID scanId;
 
     public ContainerScanStepRunner(OperationRunner operationRunner) throws DetectUserFriendlyException {
         this.operationRunner = operationRunner;
     }
 
-    public UUID submitScan(BlackDuckRunData blackDuckRunData) throws IOException, IntegrationException {
+    public UUID initiateScan(BlackDuckRunData blackDuckRunData) throws IOException, IntegrationException {
 //        File bdioHeaderFile = new File(Application.class.getResource("/test-inputs/bdio-header.pb").getPath()); // temporary
         DetectProtobufBdioUtil detectProtobufBdioUtil = new DetectProtobufBdioUtil(UUID.randomUUID().toString(), "CONTAINER");
         File bdioHeaderFile = detectProtobufBdioUtil.createProtobufBdioHeader();
-        return operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
+        scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
+        return scanId;
     }
 }
