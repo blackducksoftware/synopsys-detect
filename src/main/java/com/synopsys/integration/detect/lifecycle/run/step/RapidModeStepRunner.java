@@ -130,7 +130,9 @@ public class RapidModeStepRunner {
     private void invokeContainerRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl, List<HttpUrl> parsedUrls)
         throws DetectUserFriendlyException, IOException, IntegrationException {
         ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner);
-        UUID scanId = containerScanStepRunner.submitScan(blackDuckRunData);
+        containerScanStepRunner.initiateScan(blackDuckRunData);
+        containerScanStepRunner.uploadImageToStorageService(blackDuckRunData);
+        containerScanStepRunner.uploadImageMetadataToStorageService(blackDuckRunData);
     }
     
     private void fullResultUrls(List<HttpUrl> parsedUrls) {

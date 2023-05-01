@@ -360,6 +360,51 @@ public class OperationRunner {
         return RAPID_SCAN_CONTENT_TYPE;
     }
 
+    public File getContainerScanImage() {
+        Optional<Path> containerImageFilePath = detectConfigurationFactory.getContainerScanFilePath();
+        File containerImageFile = null;
+        if (containerImageFilePath.isPresent()) {
+            containerImageFile = containerImageFilePath.get().toFile();
+        }
+        return containerImageFile;
+    }
+
+    public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType)
+        throws IntegrationException {
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+        HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + storageServiceEndpoint);
+        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+            .postFile(payloadFile, ContentType.create(postContentType))
+            .buildBlackDuckResponseRequest(postUrl);
+
+        try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+            return response;
+        } catch (IntegrationException | IOException e) {
+            throw new IntegrationException("Could not execute file upload request to storage service.");
+        }
+    }
+
+    public Response uploadJsonToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, String jsonPayload, String postContentType)
+        throws IntegrationException {
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+        HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + storageServiceEndpoint);
+
+        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+            .postString(jsonPayload, ContentType.create(postContentType))
+            .buildBlackDuckResponseRequest(postUrl);
+
+        try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+            return response;
+        } catch (IntegrationException | IOException e) {
+            throw new IntegrationException("Could not execute JSON upload request to storage service.");
+        }
+    }
+
+
     public UUID uploadBdioHeaderToInitiateScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile) throws IntegrationException {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
@@ -385,7 +430,7 @@ public class OperationRunner {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        String contentType = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
+        String contentType = RAPID_SCAN_CONTENT_TYPE;
         HttpUrl putUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString()
                 + "/api/developer-scans/" + bdScanId);
 
