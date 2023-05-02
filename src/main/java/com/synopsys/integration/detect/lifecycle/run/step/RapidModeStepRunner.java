@@ -94,7 +94,12 @@ public class RapidModeStepRunner {
                 invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, true, scaaasFilePath.get());
             } else {
                 logger.debug("Invoking non-SCAaaS container scan.");
-                invokeContainerRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls);
+                ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData);
+                UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+
+                String statelessScanEndpoint = operationRunner.getScanServicePostEndpoint();
+                HttpUrl scanServiceUrlToPoll = new HttpUrl(blackDuckUrl + statelessScanEndpoint + "/" + scanId.toString());
+                parsedUrls.add(scanServiceUrlToPoll);
             }
         });
 
@@ -127,14 +132,6 @@ public class RapidModeStepRunner {
         parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + bdScanId.toString()));
     }
 
-    private void invokeContainerRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl, List<HttpUrl> parsedUrls)
-        throws DetectUserFriendlyException, IOException, IntegrationException {
-        ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner);
-        containerScanStepRunner.initiateScan(blackDuckRunData);
-        containerScanStepRunner.uploadImageToStorageService(blackDuckRunData);
-        containerScanStepRunner.uploadImageMetadataToStorageService(blackDuckRunData);
-    }
-    
     private void fullResultUrls(List<HttpUrl> parsedUrls) {
         // this may have to go somewhere else but it's here for now.
         ArrayList<HttpUrl> ack = new ArrayList<HttpUrl>();
