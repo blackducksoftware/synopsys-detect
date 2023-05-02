@@ -178,7 +178,7 @@ public class DetectBoot {
             } catch (DetectUserFriendlyException e) {
                 return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
             }
-        }
+        } // TOME
 
         logger.info("");
 
