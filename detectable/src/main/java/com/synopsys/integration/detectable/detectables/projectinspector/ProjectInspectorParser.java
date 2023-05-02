@@ -1,12 +1,13 @@
 package com.synopsys.integration.detectable.detectables.projectinspector;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,6 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorDependency;
 import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorMavenCoordinate;
 import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorModule;
-import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorOutput;
 
 // TODO: Should be split into a Parser/Transformer
 public class ProjectInspectorParser {
@@ -33,18 +33,40 @@ public class ProjectInspectorParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public List<CodeLocation> parse(String inspectionOutput) {
-        ProjectInspectorOutput projectInspectorOutput = gson.fromJson(inspectionOutput, ProjectInspectorOutput.class);
+    public List<CodeLocation> parse(File outputFile) {
 
-        // If modules is not present in the output then project inspector has not found any open source dependencies.
-        // Return an empty list so callers do not fail when examining the results.
-        if (projectInspectorOutput.modules == null) {
-            return Collections.emptyList();
+        List<CodeLocation> codeLocations = new ArrayList<>();
+
+        if (outputFile == null || !outputFile.exists() || !outputFile.isFile()) {
+            return codeLocations;
         }
 
-        return projectInspectorOutput.modules.values().stream()
-            .map(this::codeLocationFromModule)
-            .collect(Collectors.toList());
+        //Utilized streaming parser to process the JSON file incrementally, without loading the entire file into memory.
+        //Memory-efficient for processing a large(400-500MB) JSON file.
+        try (JsonReader reader = new JsonReader(new FileReader(outputFile))) {
+            reader.beginObject();
+            while (reader.hasNext()) {
+                String moduleName = reader.nextName();
+                if (moduleName != null && moduleName.equals("Modules")) {
+                    reader.beginObject();
+                    while (reader.hasNext()) {
+                        String moduleId = reader.nextName();
+                        if (moduleId != null) {
+                            JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
+                            ProjectInspectorModule projectInspectorModule = gson.fromJson(module, ProjectInspectorModule.class);
+                            codeLocations.add(codeLocationFromModule(projectInspectorModule));
+                        }
+                    }
+                    reader.endObject();
+                } else {
+                    reader.skipValue();
+                }
+            }
+            reader.endObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return codeLocations;
     }
 
     public CodeLocation codeLocationFromModule(ProjectInspectorModule module) {
