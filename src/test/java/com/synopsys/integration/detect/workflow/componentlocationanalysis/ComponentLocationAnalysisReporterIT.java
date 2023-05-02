@@ -12,22 +12,36 @@ import java.io.IOException;
 
 @Tag("integration")
 public class ComponentLocationAnalysisReporterIT {
-//    @Test
-//    void offlinePkgMngrScan_analysisEnabled() throws IOException {
-//        try (DetectDockerTestRunner test = new DetectDockerTestRunner("component-location-analysis-test", "gradle-simple:1.0.0")) {
-//            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle.dockerfile"));
-//
-//            DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
-//            commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
-//            DockerAssertions dockerAssertions = test.run(commandBuilder);
-//
-//            dockerAssertions.successfulTool("IMPACT_ANALYSIS");
-//            dockerAssertions.logContainsPattern("Vulnerability Impact Analysis generated report at /opt/results/output/runs/.*/impact-analysis/external-method-uses.bdmu");
-//            dockerAssertions.successfulOperation("Generate Impact Analysis File");
-//        }
-//    }
+    @Test
+    void offlinePkgMngrScan_analysisEnabled() throws IOException {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("component-location-analysis-test", "gradle-simple:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle.dockerfile"));
 
+            DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
+            commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
+            commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
+            commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO, "true");
+            commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, "DETECTOR");
 
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
 
+            dockerAssertions.successfulOperation("Publish Components with Locations File");
+        }
+    }
+    @Test
+    void onlineRapidPkgMngrScan_analysisEnabled() throws IOException {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("component-location-analysis-test", "gradle-simple:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle.dockerfile"));
 
+            DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
+            commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
+            commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
+            commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO, "true");
+            commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, "RAPID");
+
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
+
+            dockerAssertions.successfulOperation("Publish Components with Locations File");
+        }
+    }
 }

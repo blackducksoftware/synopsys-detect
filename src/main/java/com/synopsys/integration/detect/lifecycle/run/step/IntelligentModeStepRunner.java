@@ -49,7 +49,6 @@ public class IntelligentModeStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StepHelper stepHelper;
     private final Gson gson;
-
     private final DetectConfigurationFactory configurationFactory;
 
     public IntelligentModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson, DetectConfigurationFactory configurationFactory) {

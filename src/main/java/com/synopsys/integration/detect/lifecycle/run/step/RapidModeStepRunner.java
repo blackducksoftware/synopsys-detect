@@ -41,16 +41,18 @@ public class RapidModeStepRunner {
     private final StepHelper stepHelper;
     private final Gson gson;
     private final DirectoryManager directoryManager;
+    private final DetectConfigurationFactory configurationFactory;
 
-    public RapidModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson, DirectoryManager directoryManager) {
+    public RapidModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson, DirectoryManager directoryManager, DetectConfigurationFactory configurationFactory) {
         this.operationRunner = operationRunner;
         this.stepHelper = stepHelper;
         this.gson = gson;
         this.directoryManager = directoryManager;
+        this.configurationFactory = configurationFactory;
     }
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult,
-                          DockerTargetData dockerTargetData, DetectConfigurationFactory configurationFactory) throws OperationException, IOException, DetectUserFriendlyException {
+            DockerTargetData dockerTargetData) throws OperationException, DetectUserFriendlyException {
         operationRunner.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationRunner.findRapidScanConfig();
         String scanMode = blackDuckRunData.getScanMode().displayName();

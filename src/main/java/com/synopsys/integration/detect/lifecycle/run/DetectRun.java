@@ -2,7 +2,6 @@ package com.synopsys.integration.detect.lifecycle.run;
 
 import java.util.Optional;
 
-import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,10 +71,7 @@ public class DetectRun {
             BdioResult bdio;
             Boolean forceBdio = bootSingletons.getDetectConfigurationFactory().forceBdio();
             if (!universalToolsResult.getDetectCodeLocations().isEmpty()
-                    || (productRunData.shouldUseBlackDuckProduct()
-                    && !productRunData.getBlackDuckRunData().isOnline()
-                    && forceBdio && !universalToolsResult.didAnyFail()
-                    && exitCodeManager.getWinningExitCode().isSuccess())) {
+                    || (productRunData.shouldUseBlackDuckProduct() && !productRunData.getBlackDuckRunData().isOnline() && forceBdio && !universalToolsResult.didAnyFail() && exitCodeManager.getWinningExitCode().isSuccess())) {
                 bdio = stepRunner.generateBdio(universalToolsResult, nameVersion);
             } else {
                 bdio = BdioResult.none();
@@ -83,9 +79,9 @@ public class DetectRun {
             if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
                 if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) {
-                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), bootSingletons.getDirectoryManager());
-                    DetectConfigurationFactory configurationFactory = bootSingletons.getDetectConfigurationFactory();
-                    rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData(), configurationFactory);
+                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), bootSingletons.getDirectoryManager(), bootSingletons.getDetectConfigurationFactory());
+
+                    rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData());
                 } else if (blackDuckRunData.isNonPersistent()) {
                     logger.info("Rapid Scan is offline, nothing to do.");
                 } else if (blackDuckRunData.isOnline()) {
@@ -100,7 +96,7 @@ public class DetectRun {
             logger.error(ReportConstants.RUN_SEPARATOR);
             logger.error("Detect run failed.");
             exceptionUtility.logException(e);
-            logger.debug("An exception was thrown during the Detect run.", e);
+            logger.debug("An exception was thrown during the detect run.", e);
             logger.error(ReportConstants.RUN_SEPARATOR);
             exitCodeManager.requestExitCode(e);
             checkForInterruptedException(e);

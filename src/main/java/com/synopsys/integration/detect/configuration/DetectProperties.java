@@ -941,9 +941,7 @@ public class DetectProperties {
                     .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_8_0) // TODO update Detect version before merging FIX PR feature branch to master
                     .setHelp(
                             "If set to true, Detect will generate an output file detailing where dependencies are declared.",
-                            // TOME: or include where to find the file? "If set to true, Detect will generate, and save in the scan output directory, a file detailing where dependencies are declared."
                             "All dependencies will be included when using Synopsys Detect in offline mode. Only policy violating dependencies will be included for Rapid and Stateless Scan modes.")
-                    // TOME: rapid/stateless "pkg mngr"/Detector scans? or do that clarification in the release notes?
                     .setGroups(DetectGroup.GENERAL)
                     .build();
 
