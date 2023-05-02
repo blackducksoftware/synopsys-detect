@@ -12,6 +12,7 @@ import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.util.bdio.protobuf.DetectProtobufBdioUtil;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.response.Response;
+import com.synopsys.integration.util.NameVersion;
 
 import net.minidev.json.JSONObject;
 
@@ -20,19 +21,30 @@ public class ContainerScanStepRunner {
     private final OperationRunner operationRunner;
     private UUID scanId;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final NameVersion projectNameVersion;
+    private final BlackDuckRunData blackDuckRunData;
 
-    public ContainerScanStepRunner(OperationRunner operationRunner) {
+    public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) {
         this.operationRunner = operationRunner;
+        this.projectNameVersion = projectNameVersion;
+        this.blackDuckRunData = blackDuckRunData;
     }
 
-    public void initiateScan(BlackDuckRunData blackDuckRunData) throws IOException, IntegrationException {
+    public UUID invokeContainerScanningWorkflow() throws IntegrationException, IOException {
+        initiateScan();
+        uploadImageToStorageService();
+        uploadImageMetadataToStorageService();
+        return scanId;
+    }
+
+    public void initiateScan() throws IOException, IntegrationException {
 //        File bdioHeaderFile = new File(Application.class.getResource("/test-inputs/bdio-header.pb").getPath()); // temporary
         DetectProtobufBdioUtil detectProtobufBdioUtil = new DetectProtobufBdioUtil(UUID.randomUUID().toString(), "CONTAINER");
         File bdioHeaderFile = detectProtobufBdioUtil.createProtobufBdioHeader();
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
     }
 
-    public void uploadImageToStorageService(BlackDuckRunData blackDuckRunData) throws IntegrationException {
+    public void uploadImageToStorageService() throws IntegrationException {
         File containerImage = operationRunner.getContainerScanImage();
         String storageServiceEndpoint = "/api/storage/containers/" + scanId;
         String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
@@ -54,14 +66,11 @@ public class ContainerScanStepRunner {
         }
     }
 
-    public void uploadImageMetadataToStorageService(BlackDuckRunData blackDuckRunData) throws IntegrationException {
+    public void uploadImageMetadataToStorageService() throws IntegrationException {
         String storageServiceEndpoint = "/api/storage/containers/" + scanId + "/message";
         String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-message-1+json";
 
-        JSONObject imageMetadataObject = new JSONObject();
-        imageMetadataObject.put("scanId", scanId.toString());
-        imageMetadataObject.put("scanType", "CONTAINER");
-        imageMetadataObject.put("scanPersistence", "STATELESS");
+        JSONObject imageMetadataObject = operationRunner.createContainerScanImageMetadata(scanId, projectNameVersion);
 
         try (Response response = operationRunner.uploadJsonToStorageService(
             blackDuckRunData,
@@ -78,7 +87,5 @@ public class ContainerScanStepRunner {
         } catch (IOException | IntegrationException e) {
             throw new IntegrationException(e);
         }
-
-
     }
 }

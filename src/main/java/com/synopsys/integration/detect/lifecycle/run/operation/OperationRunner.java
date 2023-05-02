@@ -186,6 +186,9 @@ import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
 
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
+
+import net.minidev.json.JSONObject;
+
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectDetectableFactory detectDetectableFactory;
@@ -346,14 +349,14 @@ public class OperationRunner {
     }
 
 
-    private String getScanServicePostEndpoint() {
+    public String getScanServicePostEndpoint() {
         if (detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT) {
             return INTELLIGENT_SCAN_ENDPOINT;
         }
         return RAPID_SCAN_ENDPOINT;
     }
 
-    private String getScanServicePostContentType() {
+    public String getScanServicePostContentType() {
         if (detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT) {
             return INTELLIGENT_SCAN_CONTENT_TYPE;
         }
@@ -367,6 +370,21 @@ public class OperationRunner {
             containerImageFile = containerImageFilePath.get().toFile();
         }
         return containerImageFile;
+    }
+
+    public JSONObject createContainerScanImageMetadata(UUID scanId, NameVersion projectNameVersion) {
+        String scanPersistence = detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT ? "STATEFUL" : "STATELESS";
+        String projectGroupName = detectConfigurationFactory.createProjectGroupOptions().getProjectGroup();
+
+        JSONObject imageMetadataObject = new JSONObject();
+        imageMetadataObject.put("scanId", scanId.toString());
+        imageMetadataObject.put("scanType", "CONTAINER");
+        imageMetadataObject.put("scanPersistence", scanPersistence);
+        imageMetadataObject.put("projectName", projectNameVersion.getName());
+        imageMetadataObject.put("projectVersionName", projectNameVersion.getVersion());
+        imageMetadataObject.put("projectGroupName", projectGroupName);
+
+        return imageMetadataObject;
     }
 
     public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType)
