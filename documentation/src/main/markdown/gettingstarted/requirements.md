@@ -15,7 +15,7 @@ refer to [Air Gap Mode](../downloadingandinstalling/airgap.md).
 
 * Licensed installation of the current version of [blackduck_product_name] with access credentials.
 Visit the [Black Duck release page](https://github.com/blackducksoftware/hub/releases) to determine the current version of [blackduck_product_name].
-* For information on additional compatible versions of [blackduck_product_name], consult the   
+* For information about additional compatible versions of [blackduck_product_name], consult the   
 <xref href="Black-Duck-Release-Compatibility.dita" scope="peer"> Black Duck Release Compatibility matrix.<data name="facets" value="pubname=blackduck-compatibility"/>
 * The [blackduck_product_name] notifications module must be enabled.
 * A [blackduck_product_name] user with the [required roles](usersandroles.md).
