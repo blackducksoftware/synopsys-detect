@@ -80,16 +80,15 @@ public class DetectRun {
             } else {
                 bdio = BdioResult.none();
             }
-            if (productRunData.shouldUseBlackDuckProduct()) { // T
+            if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
-                if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) { // F
-                    // TODO shanty pass config factory in to the constructor instead
+                if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) {
                     RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), bootSingletons.getDirectoryManager());
                     DetectConfigurationFactory configurationFactory = bootSingletons.getDetectConfigurationFactory();
                     rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData(), configurationFactory);
-                } else if (blackDuckRunData.isNonPersistent()) { // F
+                } else if (blackDuckRunData.isNonPersistent()) {
                     logger.info("Rapid Scan is offline, nothing to do.");
-                } else if (blackDuckRunData.isOnline()) { // F
+                } else if (blackDuckRunData.isOnline()) {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), bootSingletons.getDetectConfigurationFactory());
                     intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
                 } else {

@@ -944,8 +944,7 @@ public class DetectProperties {
                             // TOME: or include where to find the file? "If set to true, Detect will generate, and save in the scan output directory, a file detailing where dependencies are declared."
                             "All dependencies will be included when using Synopsys Detect in offline mode. Only policy violating dependencies will be included for Rapid and Stateless Scan modes.")
                     // TOME: rapid/stateless "pkg mngr"/Detector scans? or do that clarification in the release notes?
-                    .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-                    .setCategory(DetectCategory.Advanced)
+                    .setGroups(DetectGroup.GENERAL)
                     .build();
 
     public static final AllEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
