@@ -332,6 +332,10 @@ public class OperationRunner {
         auditLog.namedPublic("Phone Home", () -> blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome));
     }
 
+    public DirectoryManager getDirectoryManager() {
+        return directoryManager;
+    }
+
     //Rapid
     public UUID initiateStatelessBdbaScan(BlackDuckRunData blackDuckRunData) throws OperationException {
         return auditLog.namedInternal("Initial Stateless BDBA Scan", () -> {
