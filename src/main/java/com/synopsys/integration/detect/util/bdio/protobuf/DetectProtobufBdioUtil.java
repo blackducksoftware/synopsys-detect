@@ -9,14 +9,17 @@ import java.util.zip.ZipOutputStream;
 import com.blackducksoftware.bdio.proto.ProtobufBdioWriter;
 import com.blackducksoftware.bdio.proto.api.BdioHeader;
 import com.synopsys.integration.detect.util.DetectZipUtil;
+import com.synopsys.integration.util.NameVersion;
 
 public class DetectProtobufBdioUtil {
     private final String scanId;
     private final String scanType;
+    private final NameVersion projectNameVersion;
 
-    public DetectProtobufBdioUtil(String scanId, String scanType) {
+    public DetectProtobufBdioUtil(String scanId, String scanType, NameVersion projectNameVersion) {
         this.scanId = scanId;
         this.scanType = scanType;
+        this.projectNameVersion = projectNameVersion;
     }
 
     public File createProtobufBdioHeader(File targetDirectory) throws IOException {
@@ -24,8 +27,8 @@ public class DetectProtobufBdioUtil {
             scanId,
             scanType,
             "codeLocation name",
-            "project name",
-            "version name",
+            projectNameVersion.getName(),
+            projectNameVersion.getVersion(),
             "publisher name",
             "publisher version",
             "publisher comment",
@@ -43,7 +46,7 @@ public class DetectProtobufBdioUtil {
             null)
             ;
 
-        String tempBdioArchivePath = targetDirectory.toPath().toString() + "/protobuf-bdio.zip";
+        String tempBdioArchivePath = targetDirectory.toPath().toString() + "/bdio-protobuf.zip";
         try (
             FileOutputStream outputStream = new FileOutputStream(tempBdioArchivePath);
             ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
