@@ -1,30 +1,42 @@
 package com.synopsys.integration.detect;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.common.base.Throwables;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.log.LogLevel;
+import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.rest.HttpMethod;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.client.IntHttpClient;
@@ -32,23 +44,109 @@ import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 
-public class ApplicationUpdater {
+import freemarker.template.Version;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ApplicationUpdater extends URLClassLoader {
+    
     public static final String DOWNLOAD_URL = "api/tools/detect";
     public static final String DOWNLOAD_VERSION_HEADER = "Version";
+    public static final String DOWNLOADED_FILE_NAME = "X-Artifactory-Filename";
     public static final String INSTALLED_VERSION_FILE_NAME = "version.txt";
+    private static final Version MINIMUM_DETECT_VERSION = new Version(8, 9, 0);
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final IntHttpClient intHttpClient;
-    private final List<String> argsList;
+    private final String[] args;
     private String blackduckHost = null;
     private String offlineMode = null;
     private final DetectInfo detectInfo;
     private final static String BLACKDUCK_OFFLINE_MODE_ARG = "blackduck.offline.mode";
     private final static String BLACKDUCK_URL_ARG = "blackduck.url";
     
-    private void parseArguments() {
-        ListIterator<String> it = argsList.listIterator();
+    public ApplicationUpdater(String[] args) {
+        super(new URL[] {}, Thread.currentThread().getContextClassLoader());
+        this.args = parseArguments(args);
+        SilentIntLogger silentLogger = new SilentIntLogger();
+        silentLogger.setLogLevel(LogLevel.WARN);
+        intHttpClient = new IntHttpClient(silentLogger,
+                BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create(),
+                IntHttpClient.DEFAULT_TIMEOUT, 
+                true, 
+                ProxyInfo.NO_PROXY_INFO
+        );
+        detectInfo = new DetectInfoUtility().createDetectInfo();
+    }
+    
+    private void runMainClass(Path jarPath, String[] launchArgs) throws Exception {
+        logger.info("Running new Detect JAR: {}", jarPath);
+        try {
+            loadJar(jarPath.toAbsolutePath().toString(), launchArgs);
+        } catch (InvocationTargetException e) {
+            Throwables.propagateIfPossible(e.getTargetException(), Exception.class);
+        } finally {
+            close();
+        }
+    }
+    
+    public void loadJar(final String pathToJar, String[] args) 
+            throws IOException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        final Map<String, Class<?>> classMap = new HashMap<>();
+        try (JarFile jarFile = new JarFile(pathToJar)) {
+            final Enumeration<JarEntry> jarEntryEnum = jarFile.entries();
+            final URL[] urls = { new URL("jar:file:" + pathToJar + "!/") };
+            final URLClassLoader urlClassLoader = URLClassLoader.newInstance(urls);
+            while (jarEntryEnum.hasMoreElements()) {
+                final JarEntry jarEntry = jarEntryEnum.nextElement();
+                String jarEntryName = jarEntry.getName();
+                if (jarEntry.getName().startsWith("org/springframework/boot") 
+                        && jarEntry.getName().endsWith(".class") == true) {
+                    int endIndex = jarEntryName.lastIndexOf(".class");
+                    String className = jarEntryName.substring(0, endIndex).replace('/', '.');
+                    try {
+                        final Class<?> loadedClass = urlClassLoader.loadClass(className);
+                        classMap.put(loadedClass.getName(), loadedClass);
+                    } catch (final ClassNotFoundException ex) {
+                        logger.error(ex.getMessage());
+                    }
+                }
+            }
+        }
+        final Class<?> jarFileArchiveClass = classMap.get("org.springframework.boot.loader.archive.JarFileArchive");
+        final Constructor<?> jarFileArchiveConstructor = jarFileArchiveClass.getConstructor(File.class);
+        final Object jarFileArchive = jarFileArchiveConstructor.newInstance(new File(pathToJar));
+        final Class<?> archiveClass = classMap.get("org.springframework.boot.loader.archive.Archive");
+        final Class mainClass = classMap.get("org.springframework.boot.loader.JarLauncher");
+        final Constructor<?> jarLauncherConstructor = mainClass.getDeclaredConstructor(archiveClass);
+        jarLauncherConstructor.setAccessible(true);
+        final Object jarLauncher = jarLauncherConstructor.newInstance(jarFileArchive);
+        final Class<?> launcherClass = 	classMap.get("org.springframework.boot.loader.Launcher");
+        final Method launchMethod = launcherClass.getDeclaredMethod("launch", String[].class);
+        launchMethod.setAccessible(true);
+        launchMethod.invoke(jarLauncher, new Object[]{args});
+    }
+    
+    private boolean checkInstallationDir(Path path) throws IOException {
+        Path parentPath = path.getParent();
+        Path directoryPath = Files.createDirectories(parentPath);
+        if (!Files.exists(directoryPath)) {
+            String parentPathString = (parentPath != null) ? parentPath.toString() : null;
+            throw new NoSuchFileException(parentPathString, path.toString(), "Unable to locate the installation directory.");
+        } else if (Files.exists(path)) {
+            if (Files.isWritable(path)) {
+                return true;
+            } else {
+                throw new AccessDeniedException(path.toString(), null, "No write permisison to store Jar in the installation directory: " + path.getFileName());
+            }
+        }
+        return false;
+    }
+    
+    private String[] parseArguments(String[] args) {
+        ListIterator<String> it = Arrays.asList(args).listIterator();
         while (it.hasNext()) {
             String argument = it.next();
             if (argument.contains(BLACKDUCK_OFFLINE_MODE_ARG)) {
@@ -57,7 +155,7 @@ public class ApplicationUpdater {
                 blackduckHost = findArgument(it, argument);
             }
         }
-        //blackduckHost = "https://prd-kb-match-dev-hub01.dc2.lan";
+        return args;
     }
     
     private String findArgument(ListIterator<String> it, String argument) {
@@ -69,19 +167,6 @@ public class ApplicationUpdater {
         }
         return null;
     }
-
-    public ApplicationUpdater(String[] args) {
-        argsList = Arrays.asList(args);
-        parseArguments();
-        intHttpClient = new IntHttpClient(new Slf4jIntLogger(logger),
-                BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create(),
-                BlackDuckServerConfigBuilder.DEFAULT_TIMEOUT_SECONDS, 
-                true, 
-                ProxyInfo.NO_PROXY_INFO
-        );
-        DetectInfoUtility detectInfoUtility = new DetectInfoUtility();
-        detectInfo = detectInfoUtility.createDetectInfo();
-    }
     
     private boolean canSelfUpdate() {
         String detectSource = System.getenv("DETECT_SOURCE");
@@ -92,6 +177,48 @@ public class ApplicationUpdater {
                 && detectVersionKey == null
                 && offlineMode == null
                 && blackduckHost != null;
+    }
+    
+    private Version convert(String versionString) {
+        List<Integer> versionParts = Arrays.stream(versionString.split("\\."))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+        Version versionObj;
+        switch(versionParts.size()) {
+            case 1:
+               versionObj = new Version(
+                       versionParts.get(0), 
+                       0, 
+                       0);
+               break;
+            case 2:
+               versionObj = new Version(
+                       versionParts.get(0), 
+                       versionParts.get(1), 
+                       0);
+               break;
+            default:
+               versionObj = new Version(
+                       versionParts.get(0), 
+                       versionParts.get(1), 
+                       versionParts.get(2));
+        }
+        return versionObj;
+    }
+    
+    private boolean isDownloadVersionTooOld(String downloadVersionString) {
+        Version downloadVersion = convert(downloadVersionString);
+        if (downloadVersion.getMajor() < MINIMUM_DETECT_VERSION.getMajor()
+            || (downloadVersion.getMajor() == MINIMUM_DETECT_VERSION.getMajor() 
+                && (downloadVersion.getMinor() < MINIMUM_DETECT_VERSION.getMinor()
+                || (downloadVersion.getMinor() == MINIMUM_DETECT_VERSION.getMinor()
+                    && (downloadVersion.getMicro() < MINIMUM_DETECT_VERSION.getMicro()))))) {
+            logger.warn("The Detect version mapped at Black Duck server is "
+                    + "not eligible for downgrade as it lacks the self-update feature. "
+                    + "The self-update feature is available from 8.9.0 onwards.");
+            return true;
+        }
+        return false;
     }
     
     private String determineJarDownloadPath() {
@@ -112,13 +239,14 @@ public class ApplicationUpdater {
         if (canSelfUpdate()) {
             try {
                 String jarDownloadPath = determineJarDownloadPath();
-                File newDetectJar = installOrUpdateScanner(jarDownloadPath, "synopsys-detect.jar");
+                File newDetectJar = installOrUpdateScanner(jarDownloadPath);
                 if (newDetectJar != null) {
-                    this.executeRunnableJar(newDetectJar.getAbsolutePath(), argsList);
+                    runMainClass(newDetectJar.toPath(), args);
                     return true;
                 }
-            } catch (IntegrationException ex) {
+            } catch (BlackDuckIntegrationException ex) {
                 logger.error(ex.getMessage());
+                return true;
             } catch (Exception ex) {
                 logger.error(ex.getMessage());
                 return true;
@@ -127,23 +255,33 @@ public class ApplicationUpdater {
         return false;
     }
 
-    private File installOrUpdateScanner(String dirPath, String fileName) throws IntegrationException {
-        File installDirectory = new File(dirPath);
-        if (!installDirectory.exists()) {
-            installDirectory.mkdirs();
-        }
-        File detectInstallation = new File(installDirectory, fileName);
-        HttpUrl downloadUrl = buildDownloadUrl();
+    private File installOrUpdateScanner(String dirPath) throws BlackDuckIntegrationException {
         try {
+            File installDirectory = new File(dirPath);
+            if (!installDirectory.exists()) {
+                installDirectory.mkdir();
+            } else if (!checkInstallationDir(installDirectory.toPath())) {
+                return null;
+            }
+            HttpUrl downloadUrl = buildDownloadUrl();
             Optional<String> currentInstalledVersion = determineInstalledVersion();
-            String newInstalledVersion = download(detectInstallation, downloadUrl, currentInstalledVersion.orElse(""));
-            if (newInstalledVersion != null) {
-                if (!detectInstallation.setExecutable(true)) {
-                    throw new IntegrationException(String.format("Attempt to make %s executable failed.", detectInstallation.getAbsolutePath()));
+            Path newJar = download(installDirectory, downloadUrl, currentInstalledVersion.orElse(""));
+            if (newJar != null) {
+                File newJarFile = newJar.toFile();
+                String newFileName = newJar.getFileName().toString();
+                if (isValidDetectFileName(newFileName)) {
+                    String newVersionString = getVersionFromDetectFileName(newFileName);
+                    if (!newVersionString.isBlank() 
+                            && !newVersionString.equals(currentInstalledVersion.get())
+                            && isDownloadVersionTooOld(newVersionString)) {
+                        if (newJarFile.setExecutable(true)) {
+                            logger.info("Detect was downloaded/found successfully: " + newJarFile.getAbsolutePath());
+                            return newJarFile;
+                        } else {
+                            throw new IntegrationException(String.format("Attempt to make %s executable failed.", newJarFile.getAbsolutePath()));
+                        }
+                    }
                 }
-                updateVersionFile(newInstalledVersion, installDirectory);
-                logger.info("Detect was downloaded/found successfully: " + installDirectory.getAbsolutePath());
-                return detectInstallation;
             }
         } catch (IntegrationException | IOException e) {
             throw new BlackDuckIntegrationException("Detect could not be downloaded successfully: " + e.getMessage(), e);
@@ -151,14 +289,14 @@ public class ApplicationUpdater {
         return null;
     }
     
-    private int executeRunnableJar(String jarFullPath, List<String> argsList) throws Exception {
-        List<String> commands = Arrays.asList("java", "-jar", jarFullPath);
-        commands.addAll(argsList);
-        ProcessBuilder processBuilder = new ProcessBuilder(commands);
-        Process process = processBuilder.start();
-        return process.waitFor();
+    private boolean isValidDetectFileName(String newFileName) {
+        return newFileName.lastIndexOf("-") > -1 && newFileName.lastIndexOf(".") > 0;
     }
-
+    
+    private String getVersionFromDetectFileName(String newFileName) {
+        return newFileName.substring(newFileName.lastIndexOf("-") + 1, newFileName.lastIndexOf("."));
+    }
+    
     private HttpUrl buildDownloadUrl() throws IntegrationException {
         StringBuilder url = new StringBuilder(blackduckHost);
         if (!blackduckHost.endsWith("/")) {
@@ -168,8 +306,7 @@ public class ApplicationUpdater {
         return new HttpUrl(url.toString());
     }
 
-    // Downloads Detect from BD.  If successful, returns downloaded version, otherwise throws exception
-    private String download(File installDirectory, HttpUrl downloadUrl, String currentVersion) throws IntegrationException, IOException {
+    private Path download(File installDirectory, HttpUrl downloadUrl, String currentVersion) throws IntegrationException, IOException {
         logger.debug(String.format("Downloading artifact to '%s' from '%s'.", installDirectory.getAbsolutePath(), downloadUrl));
         Map <String, String> headers = new HashMap<>();
         Map<String, Set<String>> queryParams = new HashMap<>();
@@ -177,14 +314,17 @@ public class ApplicationUpdater {
         Request request = new Request(downloadUrl, HttpMethod.GET, null, queryParams, headers, null);
         try (Response response = intHttpClient.execute(request)) {
             if (response.isStatusCodeSuccess()) {
-                logger.debug("Deleting existing file.");
-                FileUtils.deleteQuietly(installDirectory);
-                logger.debug("Writing to file.");
-                try (InputStream jarInputStream = response.getContent()) {
-                    Files.copy(jarInputStream, installDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                String newFileName = response.getHeaderValue(DOWNLOADED_FILE_NAME);
+                Path targetFilePath = Paths.get(installDirectory.getAbsolutePath(), "/", newFileName);
+                File targetFile = targetFilePath.toFile();
+                if (!Files.exists(targetFilePath, LinkOption.NOFOLLOW_LINKS)) {
+                    logger.debug("Writing to file.");
+                    ReadableByteChannel readableByteChannel = Channels.newChannel(response.getContent());
+                    FileOutputStream fileOutputStream = new FileOutputStream(targetFile);
+                    fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+                    logger.debug("Successfully wrote response to file.");
                 }
-                logger.debug("Successfully wrote response to file.");
-                return response.getHeaderValue(DOWNLOAD_VERSION_HEADER);
+                return targetFilePath;
             } else if (response.getStatusCode() == 304) {
                 logger.debug("Present Detect installation is up to date - skipping download.");
             } else {
@@ -192,11 +332,6 @@ public class ApplicationUpdater {
             }
         }
         return null;
-    }
-
-    private void updateVersionFile(String installedVersion, File installDirectory) throws IOException {
-        File versionFile = new File(installDirectory, INSTALLED_VERSION_FILE_NAME);
-        FileUtils.writeStringToFile(versionFile, installedVersion, StandardCharsets.UTF_8.toString());
     }
 
     private Optional<String> determineInstalledVersion() {
