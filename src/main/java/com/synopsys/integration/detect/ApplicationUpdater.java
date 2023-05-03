@@ -273,7 +273,7 @@ public class ApplicationUpdater extends URLClassLoader {
                     String newVersionString = getVersionFromDetectFileName(newFileName);
                     if (!newVersionString.isBlank() 
                             && !newVersionString.equals(currentInstalledVersion.get())
-                            && isDownloadVersionTooOld(newVersionString)) {
+                            && !isDownloadVersionTooOld(newVersionString)) {
                         if (newJarFile.setExecutable(true)) {
                             logger.info("Detect was downloaded/found successfully: " + newJarFile.getAbsolutePath());
                             return newJarFile;
