@@ -11,8 +11,6 @@ import com.blackducksoftware.bdio.proto.api.BdioHeader;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 
 public class DetectProtobufBdioUtil {
-    private static final String TEMP_BDIO_ARCHIVE_PATH = "target/bdio-protobuf.zip";
-
     private final String scanId;
     private final String scanType;
 
@@ -21,7 +19,7 @@ public class DetectProtobufBdioUtil {
         this.scanType = scanType;
     }
 
-    public File createProtobufBdioHeader() throws IOException {
+    public File createProtobufBdioHeader(File targetDirectory) throws IOException {
         BdioHeader bdioHeader = new BdioHeader(
             scanId,
             scanType,
@@ -45,16 +43,16 @@ public class DetectProtobufBdioUtil {
             null)
             ;
 
+        String tempBdioArchivePath = targetDirectory.toPath().toString() + "/protobuf-bdio.zip";
         try (
-            FileOutputStream outputStream = new FileOutputStream(TEMP_BDIO_ARCHIVE_PATH);
+            FileOutputStream outputStream = new FileOutputStream(tempBdioArchivePath);
             ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
             ProtobufBdioWriter protobufBdioWriter = new ProtobufBdioWriter(zipOutputStream)
         ) {
             protobufBdioWriter.writeHeader(bdioHeader);
         }
-        File bdioZipFile = new File(TEMP_BDIO_ARCHIVE_PATH);
-        DetectZipUtil.unzip(bdioZipFile, new File("target"));
-        return new File("target/bdio-header.pb");
-
+        File bdioZipFile = new File(tempBdioArchivePath);
+        DetectZipUtil.unzip(bdioZipFile, targetDirectory);
+        return new File(targetDirectory.toPath().toString() + "/bdio-header.pb");
     }
 }
