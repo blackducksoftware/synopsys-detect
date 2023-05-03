@@ -16,14 +16,16 @@ import java.util.List;
  * For now, it generates an empty components_with_locations.json file for testing purposes.
  */
 public class ComponentLocationAnalysisReporter {
-
+    private static final String OUTPUT_FILE_NAME = "components_with_locations.json";
     public static File generateFileForNonPersistentPkgMngrScan(List<DeveloperScansScanView> rapidFullResults, DirectoryManager dm) throws DetectUserFriendlyException {
-        File componentsWithLocations =  new File (dm.getScanOutputDirectory(), "components_with_locations.json");
+        File componentsWithLocations =  new File (dm.getScanOutputDirectory(), OUTPUT_FILE_NAME);
         return generatePlaceHolderJsonFile(componentsWithLocations);
     }
 
     public static File generateFileForOfflinePkgMngrScan(BdioResult bdioPkgMngrResults, DirectoryManager dm) throws DetectUserFriendlyException {
-        File componentsWithLocation = new File (dm.getScanOutputDirectory(), "components_with_locations.json");
+        File componentsWithLocation = new File (dm.getScanOutputDirectory(), OUTPUT_FILE_NAME);
+        // <insert call to Component Locator Library to locateComponents() which will work with the above JSON file>
+        // return will be the generated components_with_locations.json file f
         return generatePlaceHolderJsonFile(componentsWithLocation);
     }
 
