@@ -150,7 +150,7 @@ public class ApplicationUpdater extends URLClassLoader {
         while (it.hasNext()) {
             String argument = it.next();
             if (argument.contains(BLACKDUCK_OFFLINE_MODE_ARG)) {
-                offlineMode = findArgument(it, argument).toLowerCase();
+                offlineMode = findArgument(it, argument);
             } else if (argument.contains(BLACKDUCK_URL_ARG)) {
                 blackduckHost = findArgument(it, argument);
             }
@@ -175,7 +175,7 @@ public class ApplicationUpdater extends URLClassLoader {
         return detectSource == null 
                 && detectLatestReleaseVersion == null
                 && detectVersionKey == null
-                && offlineMode == null || offlineMode.equals("false")
+                && offlineMode == null || offlineMode.toLowerCase().equals("false")
                 && blackduckHost != null;
     }
     
