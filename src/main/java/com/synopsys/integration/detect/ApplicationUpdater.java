@@ -175,7 +175,7 @@ public class ApplicationUpdater extends URLClassLoader {
         return detectSource == null 
                 && detectLatestReleaseVersion == null
                 && detectVersionKey == null
-                && offlineMode == null || offlineMode.toLowerCase().equals("false")
+                && (offlineMode == null || offlineMode.toLowerCase().equals("false"))
                 && blackduckHost != null;
     }
     
