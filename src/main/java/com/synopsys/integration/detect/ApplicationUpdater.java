@@ -195,13 +195,13 @@ public class ApplicationUpdater extends URLClassLoader {
         addConditionalLogMessageForSysEnvProp(logMessages, DETECT_LATEST_RELEASE_VERSION_SYS_ENV_PROP, detectLatestReleaseVersion);
         addConditionalLogMessageForSysEnvProp(logMessages, DETECT_VERSION_KEY_SYS_ENV_PROP, detectVersionKey);
         if (offlineMode != null && offlineMode.toLowerCase().equals("true")) {
-            logMessages.add("The presence of the input argument "
-                    .concat(offlineMode)
+            logMessages.add("The presence of the input argument --"
+                    .concat(BLACKDUCK_OFFLINE_MODE_ARG)
                     .concat("=true to run Detect in offline mode is incompatible with the Self-Update feature."));
         }
         if (blackduckHost == null) {
-            logMessages.add("The absence of the input argument "
-                    .concat(blackduckHost)
+            logMessages.add("The absence of the input argument --"
+                    .concat(BLACKDUCK_URL_ARG)
                     .concat(" to specify a Black Duck server is incompatible with the Self-Update feature."));
         }
         if(!logMessages.isEmpty()) {
