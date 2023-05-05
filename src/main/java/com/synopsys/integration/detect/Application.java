@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.google.gson.Gson;
@@ -53,7 +54,6 @@ import com.synopsys.integration.detect.workflow.report.output.FormattedOutputMan
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
@@ -81,7 +81,7 @@ public class Application implements ApplicationRunner {
     public static void main(String[] args) {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(Application.class);
         builder.logStartupInfo(false);
-        ApplicationUpdater updater = new ApplicationUpdater(args);
+        ApplicationUpdater updater = new ApplicationUpdater(new ApplicationUpdaterUtility(), args);
         if (!updater.selfUpdate()) {
             builder.run(args);
         }
