@@ -60,7 +60,7 @@ public class Application implements ApplicationRunner {
 
     private static boolean SHOULD_EXIT = true;
     
-    private static String STATUS_JSON_FILE_NAME = "status.json";
+    private static final String STATUS_JSON_FILE_NAME = "status.json";
 
     private final ConfigurableEnvironment environment;
 
@@ -81,7 +81,10 @@ public class Application implements ApplicationRunner {
     public static void main(String[] args) {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(Application.class);
         builder.logStartupInfo(false);
-        builder.run(args);
+        ApplicationUpdater updater = new ApplicationUpdater(new ApplicationUpdaterUtility(), args);
+        if (!updater.selfUpdate()) {
+            builder.run(args);
+        }
     }
 
     @Override
