@@ -6,7 +6,7 @@
 
 The Self Update feature will call the `/api/tools/detect` API to check for the existence of a mapped [solution_name] version in [blackduck_product_name]. If a version that is eligible for upgrade or downgrade has been mapped, the API will redirect the request to download that version and the current execution of [solution_name] will invoke the downloaded version to execute the requested scan. 
 
-[solution_name] will download the required version from sig-repo or from a custom URL as configured in [blackduck_product_name].
+[solution_name] will download the required version from sig-repo or from a custom URL as configured in [blackduck_product_name]. Centralized [solution_name] Version Management feature support in [blackduck_product_name] is available from [blackduck_product_name] version 2023.4.0 onwards.
 
 ## Scenarios where [solution_name] self update will not execute
 
