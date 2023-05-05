@@ -20,6 +20,21 @@ For further [blackduck_product_name] configuration information, consult the docu
 <xref href="DetectLocation.dita" scope="peer"> Hosting location for Synopsys Detect.
 <data name="facets" value="pubname=bd-hub"/>
 
+## [solution_name] log examples for self update
+
+<b>Downgrade to prior-self-update-feature version blocked example:<b/>
+2023-05-05 12:20:57 EDT INFO  [main] - Detect-Self-Updater:  Checking https://us1a-qa-hub34.nprd.sig.synopsys.com/api/tools/detect API for centrally managed Detect version to download to /Users/gopanna/tmp.
+2023-05-05 12:21:03 EDT WARN  [main] - Detect-Self-Updater:  The Detect version 8.7.0 mapped at Black Duck server is not eligible for downgrade as it lacks the self-update feature. The self-update feature is available from 8.9.0 onwards.
+
+<b>Update to post-self-update-feature version allowed example (8.9.0+):</b>
+2023-05-05 12:33:52 EDT INFO  [main] - Detect-Self-Updater:  Checking https://us1a-qa-hub34.nprd.sig.synopsys.com/api/tools/detect API for centrally managed Detect version to download to /Users/gopanna/tmp.
+2023-05-05 12:33:53 EDT WARN  [main] - Detect-Self-Updater:  The Detect version 8.9.2 mapped at Black Duck server is eligible for downgrade from the current version of 8.10.0. The self-update feature is available from 8.9.0 onwards.
+2023-05-05 12:33:53 EDT INFO  [main] - Detect-Self-Updater:  Centrally managed version of Detect was downloaded successfully and is ready to be run: /Users/gopanna/tmp/synopsys-detect-8.9.2.jar.
+
+<b>Current version of [solution_name] matches the mapped version or there is no mapped version in [blackduck_product_name]:</>
+2023-05-05 12:33:52 EDT INFO  [main] - Detect-Self-Updater:  Checking https://us1a-qa-hub34.nprd.sig.synopsys.com/api/tools/detect API for centrally managed Detect version to download to /Users/gopanna/tmp.
+2023-05-05 12:33:53 EDT INFO  [main] - Detect-Self-Updater:  Present Detect installation is up to date - skipping download.
+
 <note type="important">
 <ul>
 <li>
@@ -32,7 +47,6 @@ When running an "Internally Hosted" instance of Synopsys Detect and using custom
 </li>
 </ul>
 </note>
-
 
 Downgrade to prior-self-update-feature version blocked example:
 2023-05-05 12:20:57 EDT INFO  [main] - Detect-Self-Updater:  Checking https://us1a-qa-hub34.nprd.sig.synopsys.com/api/tools/detect API for centrally managed Detect version to download to /Users/gopanna/tmp.
