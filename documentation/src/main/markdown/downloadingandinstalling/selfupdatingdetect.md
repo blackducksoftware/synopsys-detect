@@ -21,6 +21,8 @@ Downgrading to versions earlier than 8.9.0 is not supported.
 </li>
 <li>  
 This feature is not available in offline or AirGap configurations.
+<li>
+When running an "Internally Hosted" instance of Synopsys Detect and using custom scripts, checks should be made to prevent Detect from querying Black Duck for version management and re-downloading itself.
 </li>
 </ul>
 </note>
