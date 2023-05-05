@@ -5,6 +5,7 @@
 ### Resolved issues
 
 * (IDETECT-3613) Resolved an issue where running a scan with `detect.maven.build.command=-Dverbose` caused a KB mismatch issue for omitted transitive dependencies.
+* (IDETECT-3657) Resolved an issue where intelligent persistent scans would fail if a project or version name included non-ASCII characters.
 
 ### Dependency update
 
