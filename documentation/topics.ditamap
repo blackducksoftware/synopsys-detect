@@ -30,6 +30,7 @@
 	<topicref href="downloadingandinstalling/intro.md" format="markdown">
 		<topicref href="downloadingandinstalling/downloadlocations.md" format="markdown"/>
 		<topicref href="downloadingandinstalling/upgradingdetect.md" format="markdown"/>
+		<topicref href="downloadingandinstalling/selfupdatingdetect.md" format="markdown"/>
 		<topicref href="downloadingandinstalling/verification.md" format="markdown"/>
 		<topicref href="downloadingandinstalling/airgap.md" format="markdown"/>
 	</topicref>
