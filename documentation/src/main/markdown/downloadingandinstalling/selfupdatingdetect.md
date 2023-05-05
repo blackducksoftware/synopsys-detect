@@ -17,7 +17,7 @@ For further [blackduck_product_name] configuration information, consult the docu
 <note type="restrictions">
 <ul>
 <li>
-Downgrading [solution_name] versions earlier than 8.9.0 is not supported. 
+Downgrading to versions earlier than 8.9.0 is not supported. 
 </li>
 <li>  
 This feature is not available in offline or AirGap configurations.
