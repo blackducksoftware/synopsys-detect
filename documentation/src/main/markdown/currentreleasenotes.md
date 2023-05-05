@@ -2,6 +2,10 @@
 
 ## Version 8.9.0
 
+### New features
+
+* [solution_name] Self Update feature will allow customers who choose to enable Centralized [solution_name] Version Management in Black Duck to automate the update of [solution_name] across their pipelines. The Self Update feature will call the '/api/tools/detect' API to check for the existence of a mapped [solution_name] version in [blackduck_product_name]. If a version has been mapped, the API will redirect the request to download the specified version and the current execution of [solution_name] will invoke it to execute the requested scan. If no mapping exists, the current version of [solution_name] matches the mapped version in [blackduck_product_name], or if there is any issue during the execution of the Self Update feature, then [solution_name] will continue with the currently deployed version to execute the scan.
+
 ### Changed features
 
 * Release notes are now broken into sections covering the current, supported, and unsupported [solution_name] releases.
