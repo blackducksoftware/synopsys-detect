@@ -2,15 +2,22 @@
 
 ## Version 8.9.0
 
+### Changed features
+
+* Release notes are now broken into sections covering the current, supported, and unsupported [solution_name] releases.
+
 ### Resolved issues
 
 * (IDETECT-3613) Resolved an issue where running a scan with `detect.maven.build.command=-Dverbose` caused a KB mismatch issue for omitted transitive dependencies.
 * (IDETECT-3657) Resolved an issue where intelligent persistent scans would fail if a project or version name included non-ASCII characters.
 
-### Dependency update
+* (IDETECT-3657) Resolved an issue where intelligent persistent scans would fail if a project or version name included non-ASCII characters.
 
-* Upgraded SnakeYAML to version 2.0.
-* Upgraded Jackson Dataformat YAML to version 2.15.0.
+### Dependency updates
+
+* Upgraded SnakeYAML to version 2.0 to resolve critical severity [CVE-2022-1471]( https://nvd.nist.gov/vuln/detail/CVE-2022-1471)
+* Upgraded Jackson Dataformat YAML to version 2.15.0 to resolve critical severity [CVE-2022-1471]( https://nvd.nist.gov/vuln/detail/CVE-2022-1471)
+* Upgraded Spring Boot to version 2.7.11 to resolve high severity [CVE-2023-20873](https://nvd.nist.gov/vuln/detail/CVE-2023-20873)
 
 ## Version 8.8.0
 
@@ -64,7 +71,7 @@ Note: this feature requires [blackduck_product_name] 2023.1.1 or later.
 * (IDETECT-3627) When waiting for results, Signature Scans will now wait for all scans that the Signature Scan could invoke, such as Snippet and String Search scans. Previously, only the Signature Scan itself was checked for completion.
 Note: this improvement requires [blackduck_product_name] 2023.1.2 or later. 
 
-### Dependency update
+### Dependency updates
 
 * Upgraded Apache Commons Text to version 1.10.0.
 * Upgraded Docker Inspector to version 10.0.1.
