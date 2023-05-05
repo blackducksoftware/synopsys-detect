@@ -2,7 +2,7 @@
 
 Self-updating [solution_name] allows the version management of [solution_name] across numerous pipelines being executed against the same [blackduck_product_name] instance.
 
-### How self-updating Detect functions
+## How self-updating [solution_name] functions
  
 If the [solution_name] version has been hardcoded via [solution_name] version property it will continue download the requested version of [solution_name] if not already downloaded.
 
