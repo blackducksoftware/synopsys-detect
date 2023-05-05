@@ -215,7 +215,7 @@ public class ApplicationUpdater extends URLClassLoader {
     }
     
     private Version convert(String versionString) {
-        versionString = versionString.replaceAll(".*?((?<!\\w)\\d+([.]\\d+)*).*", "$1");
+        versionString = getVersionFromDetectFileName(versionString);
         final List<Integer> versionParts = Arrays.stream(versionString.split("\\."))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
@@ -292,11 +292,11 @@ public class ApplicationUpdater extends URLClassLoader {
                             | InvocationTargetException ex) {
                 logger.error("{} Self-Update of Detect failed due to {}. "
                         + "Detect will now continue with existing version.", 
-                        LOG_PREFIX, ex.getMessage());
+                        LOG_PREFIX, ex);
             } catch (IOException ex) {
                 logger.error("{} Self-Update of Detect failed due to {}. "
                         + "Detect will now continue with existing version.", 
-                        LOG_PREFIX, ex.getMessage());
+                        LOG_PREFIX, ex);
             }
         }
         return false;
@@ -317,6 +317,7 @@ public class ApplicationUpdater extends URLClassLoader {
             final String newFileName = newJar.getFileName().toString();
             if (isValidDetectFileName(newFileName)) {
                 final String newVersionString = getVersionFromDetectFileName(newFileName);
+                logger.debug("{} New File Name: {}, new version string: {}", LOG_PREFIX, newFileName, newVersionString);
                 if (!StringUtils.isBlank(newVersionString) 
                         && !newVersionString.equals(currentInstalledVersion.get())
                         && !isDownloadVersionTooOld(newVersionString)) {
@@ -337,7 +338,7 @@ public class ApplicationUpdater extends URLClassLoader {
     }
     
     private String getVersionFromDetectFileName(String newFileName) {
-        return newFileName.substring(newFileName.lastIndexOf("-") + 1, newFileName.lastIndexOf("."));
+        return newFileName.replaceAll(".*?((?<!\\w)\\d+([.]\\d+)*).*", "$1");
     }
     
     private HttpUrl buildDownloadUrl() throws IntegrationException {
