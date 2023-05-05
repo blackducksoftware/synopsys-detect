@@ -5,12 +5,11 @@
 ### Changed features
 
 * Release notes are now broken into sections covering the current, supported, and unsupported [solution_name] releases.
+* npm 6 has reached end of life and is being deprecated. Support for npm 6 will be removed in [solution_name] 9.
 
 ### Resolved issues
 
 * (IDETECT-3613) Resolved an issue where running a scan with `detect.maven.build.command=-Dverbose` caused a KB mismatch issue for omitted transitive dependencies.
-* (IDETECT-3657) Resolved an issue where intelligent persistent scans would fail if a project or version name included non-ASCII characters.
-
 * (IDETECT-3657) Resolved an issue where intelligent persistent scans would fail if a project or version name included non-ASCII characters.
 
 ### Dependency updates
