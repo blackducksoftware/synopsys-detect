@@ -23,17 +23,17 @@ For further [blackduck_product_name] configuration information, consult the docu
 ## [solution_name] log examples for self update
 
 <b>Downgrade to prior-self-update-feature version blocked example:<b/>
-2023-05-05 12:20:57 EDT INFO  [main] - Detect-Self-Updater:  Checking https://us1a-qa-hub34.nprd.sig.synopsys.com/api/tools/detect API for centrally managed Detect version to download to /Users/gopanna/tmp.
-2023-05-05 12:21:03 EDT WARN  [main] - Detect-Self-Updater:  The Detect version 8.7.0 mapped at Black Duck server is not eligible for downgrade as it lacks the self-update feature. The self-update feature is available from 8.9.0 onwards.
+`2023-05-05 12:20:57 EDT INFO  [main] - Detect-Self-Updater:  Checking https://test1.synopsys .com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.
+2023-05-05 12:21:03 EDT WARN  [main] - Detect-Self-Updater:  The Detect version 8.7.0 mapped at Black Duck server is not eligible for downgrade as it lacks the self-update feature. The self-update feature is available from 8.9.0 onwards.`
 
 <b>Update to post-self-update-feature version allowed example (8.9.0+):</b>
-2023-05-05 12:33:52 EDT INFO  [main] - Detect-Self-Updater:  Checking https://us1a-qa-hub34.nprd.sig.synopsys.com/api/tools/detect API for centrally managed Detect version to download to /Users/gopanna/tmp.
+`2023-05-05 12:33:52 EDT INFO  [main] - Detect-Self-Updater:  Checking https://test1.synopsys .com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.
 2023-05-05 12:33:53 EDT WARN  [main] - Detect-Self-Updater:  The Detect version 8.9.2 mapped at Black Duck server is eligible for downgrade from the current version of 8.10.0. The self-update feature is available from 8.9.0 onwards.
-2023-05-05 12:33:53 EDT INFO  [main] - Detect-Self-Updater:  Centrally managed version of Detect was downloaded successfully and is ready to be run: /Users/gopanna/tmp/synopsys-detect-8.9.2.jar.
+2023-05-05 12:33:53 EDT INFO  [main] - Detect-Self-Updater:  Centrally managed version of Detect was downloaded successfully and is ready to be run: /Users/gopanna/tmp/synopsys-detect-8.9.2.jar.`
 
 <b>Current version of [solution_name] matches the mapped version or there is no mapped version in [blackduck_product_name]:</>
-2023-05-05 12:33:52 EDT INFO  [main] - Detect-Self-Updater:  Checking https://us1a-qa-hub34.nprd.sig.synopsys.com/api/tools/detect API for centrally managed Detect version to download to /Users/gopanna/tmp.
-2023-05-05 12:33:53 EDT INFO  [main] - Detect-Self-Updater:  Present Detect installation is up to date - skipping download.
+`2023-05-05 12:33:52 EDT INFO  [main] - Detect-Self-Updater:  Checking https://test1.synopsys .com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.
+2023-05-05 12:33:53 EDT INFO  [main] - Detect-Self-Updater:  Present Detect installation is up to date - skipping download.`
 
 <note type="important">
 <ul>
@@ -41,20 +41,10 @@ For further [blackduck_product_name] configuration information, consult the docu
 Downgrading to versions earlier than 8.9.0 is not supported. 
 </li>
 <li>  
-This feature is not available in offline 'blackduck.offline.mode=true' or AirGap configurations or if the [blackduck_product_name] URL has not been provided to  [solution_name] via the `blackduck.url` variable.
+This feature is not available in offline 'blackduck.offline.mode=true' or AirGap configurations or if the Black Duck URL has not been provided via the `blackduck.url` variable.
 <li>
 When running an "Internally Hosted" instance of Synopsys Detect and using custom scripts, checks should be made to prevent Detect from querying Black Duck for version management and re-downloading itself.
 </li>
 </ul>
 </note>
 
-Downgrade to prior-self-update-feature version blocked example:
-2023-05-05 12:20:57 EDT INFO  [main] - Detect-Self-Updater:  Checking https://us1a-qa-hub34.nprd.sig.synopsys.com/api/tools/detect API for centrally managed Detect version to download to /Users/gopanna/tmp.
-2023-05-05 12:21:03 EDT WARN  [main] - Detect-Self-Updater:  The Detect version 8.7.0 mapped at Black Duck server is not eligible for downgrade as it lacks the self-update feature. The self-update feature is available from 8.9.0 onwards.
-Update to post-self-update-feature version allowed example (future looking):
-2023-05-05 12:33:52 EDT INFO  [main] - Detect-Self-Updater:  Checking https://us1a-qa-hub34.nprd.sig.synopsys.com/api/tools/detect API for centrally managed Detect version to download to /Users/gopanna/tmp.
-2023-05-05 12:33:53 EDT WARN  [main] - Detect-Self-Updater:  The Detect version 8.9.2 mapped at Black Duck server is eligible for downgrade from the current version of 8.10.0. The self-update feature is available from 8.9.0 onwards.
-2023-05-05 12:33:53 EDT INFO  [main] - Detect-Self-Updater:  Centrally managed version of Detect was downloaded successfully and is ready to be run: /Users/gopanna/tmp/synopsys-detect-8.9.2.jar.
-Current version of Detect matches the mapped version or there is no mapped version in Black Duck:
-2023-05-05 12:33:52 EDT INFO  [main] - Detect-Self-Updater:  Checking https://us1a-qa-hub34.nprd.sig.synopsys.com/api/tools/detect API for centrally managed Detect version to download to /Users/gopanna/tmp.
-2023-05-05 12:33:53 EDT INFO  [main] - Detect-Self-Updater:  Present Detect installation is up to date - skipping download.
