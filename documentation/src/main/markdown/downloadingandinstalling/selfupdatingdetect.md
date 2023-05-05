@@ -1,6 +1,6 @@
 # Self-updating [solution_name]
 
-Self-updating [solution_name] allows the version management of [solution_name] across numerous pipelines being executed against the same [blackduck_product_name] instance.
+Self-updating [solution_name] allows for the version management of [solution_name] across numerous pipeline scans being executed against the same [blackduck_product_name] instance.
 
 ## How self-updating [solution_name] functions
  
