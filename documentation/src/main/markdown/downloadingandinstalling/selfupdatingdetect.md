@@ -14,8 +14,15 @@ For further [blackduck_product_name] configuration information, consult the docu
 <xref href="DetectLocation.dita" scope="peer"> Hosting location for Synopsys Detect.
 <data name="facets" value="pubname=bd-hub"/>
 
-<note type="restriction">Downgrading [solution_name] versions earlier than 8.9.0 is not supported.</note>
+<note type="restrictions">
+<ul>
+<li>
+Downgrading [solution_name] versions earlier than 8.9.0 is not supported. 
+</li>
+<li>  
+This feature is not available in offline or AirGap configurations.
+</li>
+</ul>
+</note>
 
-## How execute self-updating [solution_name]
 
-### Command line input
