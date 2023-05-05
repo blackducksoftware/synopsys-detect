@@ -50,9 +50,9 @@ import org.slf4j.LoggerFactory;
 
 public class ApplicationUpdater extends URLClassLoader {
     
+    public static final String DOWNLOAD_VERSION_HEADER = "Version";
     private static final String LOG_PREFIX = "Detect-Self-Updater: ";
     private static final String DOWNLOAD_URL = "api/tools/detect";
-    private static final String DOWNLOAD_VERSION_HEADER = "Version";
     private static final String DOWNLOADED_FILE_NAME = "X-Artifactory-Filename";
     private static final Version MINIMUM_DETECT_VERSION = new Version(8, 9, 0);
 
@@ -82,6 +82,81 @@ public class ApplicationUpdater extends URLClassLoader {
                 ProxyInfo.NO_PROXY_INFO
         );
         detectInfo = new DetectInfoUtility().createDetectInfo();
+    }
+    
+    protected boolean selfUpdate() {
+        if (canSelfUpdate()) {
+            try {
+                final String jarDownloadPath = determineJarDownloadPath();
+                final File newDetectJar = installOrUpdateScanner(jarDownloadPath);
+                if (newDetectJar != null) {
+                    runMainClass(newDetectJar.toPath(), args);
+                    return true;
+                }
+            } catch (
+                    IntegrationException 
+                            | AccessDeniedException
+                            | ClassNotFoundException 
+                            | IllegalAccessException 
+                            | IllegalArgumentException 
+                            | InstantiationException 
+                            | NoSuchMethodException 
+                            | InvocationTargetException ex) {
+                logger.error("{} Self-Update of Detect failed due to {}. "
+                        + "Detect will now continue with existing version.", 
+                        LOG_PREFIX, ex);
+            } catch (IOException ex) {
+                logger.error("{} Self-Update of Detect failed due to {}. "
+                        + "Detect will now continue with existing version.", 
+                        LOG_PREFIX, ex);
+            }
+        }
+        return false;
+    }
+    
+    private String determineJarDownloadPath() {
+        final String home, tmp, detectJarDownloadPath, jarDownloadPath;
+        if ((detectJarDownloadPath = System.getenv("DETECT_JAR_DOWNLOAD_DIR")) != null) {
+            jarDownloadPath = detectJarDownloadPath;
+        } else if ((tmp = System.getenv("TMP")) != null) {
+            jarDownloadPath = tmp;
+        } else if ((home = System.getenv("HOME")) != null) {
+            jarDownloadPath = home.endsWith("/")? home.concat("tmp") : home.concat("/tmp");
+        } else {
+            jarDownloadPath = "./";
+        }
+        return jarDownloadPath;
+    }
+    
+    private File installOrUpdateScanner(String dirPath) throws AccessDeniedException, IOException, IntegrationException {
+        final File installDirectory = new File(dirPath);
+        if (!installDirectory.exists()) {
+            installDirectory.mkdir();
+        } else if (!checkInstallationDir(installDirectory.toPath())) {
+            return null;
+        }
+        final HttpUrl downloadUrl = buildDownloadUrl();
+        final Optional<String> currentInstalledVersion = determineInstalledVersion();
+        final Path newJar = download(installDirectory, downloadUrl, currentInstalledVersion.orElse(""));
+        if (newJar != null) {
+            final File newJarFile = newJar.toFile();
+            final String newFileName = newJar.getFileName().toString();
+            if (isValidDetectFileName(newFileName)) {
+                final String newVersionString = getVersionFromDetectFileName(newFileName);
+                logger.debug("{} New File Name: {}, new version string: {}", LOG_PREFIX, newFileName, newVersionString);
+                if (!StringUtils.isBlank(newVersionString) 
+                        && !newVersionString.equals(currentInstalledVersion.get())
+                        && !isDownloadVersionTooOld(newVersionString)) {
+                    if (newJarFile.setExecutable(true)) {
+                        logger.info("{} Centrally managed version of Detect was downloaded successfully and is ready to be run: {}", LOG_PREFIX, newJarFile.getAbsolutePath());
+                        return newJarFile;
+                    } else {
+                        throw new IntegrationException(String.format("Failed to make %s executable. Please permissions of the parent directory and the file.", newJarFile.getAbsolutePath()));
+                    }
+                }
+            }
+        }
+        return null;
     }
     
     private void runMainClass(Path jarPath, String[] launchArgs) 
@@ -256,81 +331,6 @@ public class ApplicationUpdater extends URLClassLoader {
             return true;
         }
         return false;
-    }
-    
-    private String determineJarDownloadPath() {
-        final String home, tmp, detectJarDownloadPath, jarDownloadPath;
-        if ((detectJarDownloadPath = System.getenv("DETECT_JAR_DOWNLOAD_DIR")) != null) {
-            jarDownloadPath = detectJarDownloadPath;
-        } else if ((tmp = System.getenv("TMP")) != null) {
-            jarDownloadPath = tmp;
-        } else if ((home = System.getenv("HOME")) != null) {
-            jarDownloadPath = home.endsWith("/")? home.concat("tmp") : home.concat("/tmp");
-        } else {
-            jarDownloadPath = "./";
-        }
-        return jarDownloadPath;
-    }
-    
-    protected boolean selfUpdate() {
-        if (canSelfUpdate()) {
-            try {
-                final String jarDownloadPath = determineJarDownloadPath();
-                final File newDetectJar = installOrUpdateScanner(jarDownloadPath);
-                if (newDetectJar != null) {
-                    runMainClass(newDetectJar.toPath(), args);
-                    return true;
-                }
-            } catch (
-                    IntegrationException 
-                            | AccessDeniedException
-                            | ClassNotFoundException 
-                            | IllegalAccessException 
-                            | IllegalArgumentException 
-                            | InstantiationException 
-                            | NoSuchMethodException 
-                            | InvocationTargetException ex) {
-                logger.error("{} Self-Update of Detect failed due to {}. "
-                        + "Detect will now continue with existing version.", 
-                        LOG_PREFIX, ex);
-            } catch (IOException ex) {
-                logger.error("{} Self-Update of Detect failed due to {}. "
-                        + "Detect will now continue with existing version.", 
-                        LOG_PREFIX, ex);
-            }
-        }
-        return false;
-    }
-
-    private File installOrUpdateScanner(String dirPath) throws AccessDeniedException, IOException, IntegrationException {
-        final File installDirectory = new File(dirPath);
-        if (!installDirectory.exists()) {
-            installDirectory.mkdir();
-        } else if (!checkInstallationDir(installDirectory.toPath())) {
-            return null;
-        }
-        final HttpUrl downloadUrl = buildDownloadUrl();
-        final Optional<String> currentInstalledVersion = determineInstalledVersion();
-        final Path newJar = download(installDirectory, downloadUrl, currentInstalledVersion.orElse(""));
-        if (newJar != null) {
-            final File newJarFile = newJar.toFile();
-            final String newFileName = newJar.getFileName().toString();
-            if (isValidDetectFileName(newFileName)) {
-                final String newVersionString = getVersionFromDetectFileName(newFileName);
-                logger.debug("{} New File Name: {}, new version string: {}", LOG_PREFIX, newFileName, newVersionString);
-                if (!StringUtils.isBlank(newVersionString) 
-                        && !newVersionString.equals(currentInstalledVersion.get())
-                        && !isDownloadVersionTooOld(newVersionString)) {
-                    if (newJarFile.setExecutable(true)) {
-                        logger.info("{} Centrally managed version of Detect was downloaded successfully and is ready to be run: {}", LOG_PREFIX, newJarFile.getAbsolutePath());
-                        return newJarFile;
-                    } else {
-                        throw new IntegrationException(String.format("Failed to make %s executable. Please permissions of the parent directory and the file.", newJarFile.getAbsolutePath()));
-                    }
-                }
-            }
-        }
-        return null;
     }
     
     private boolean isValidDetectFileName(String newFileName) {

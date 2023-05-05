@@ -1,49 +1,46 @@
 package com.synopsys.integration.detect;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.detect.battery.docker.integration.BlackDuckTestConnection;
 import com.synopsys.integration.detect.configuration.DetectInfo;
-import com.synopsys.integration.detect.configuration.DetectInfoUtility;
-import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.rest.client.IntHttpClient;
+import com.synopsys.integration.rest.request.Request;
+import com.synopsys.integration.rest.response.Response;
 
 @Tag("integration")
 public class ApplicationUpdaterTest {
-    @Disabled //TODO- remove this when Detect tests with a BD version >= 2022.7.0
+    
+    private final String[] args = new String[] {
+            "-jar",
+            "/fake/path/to/synopsys-detect-n.n.n.jar",
+            "--blackduck.url=https://not.real.url.of.synopsys.com", 
+            "--blackduck.trust.cert=true", 
+            "--blackduck.api.token=dummyToken",
+            "--detect.tools=DETECTOR"};
+    
+    @Disabled
     @Test
-    public void testInstall() throws IOException, IntegrationException {
-//        BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-//        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckTestConnection.getBlackDuckServicesFactory();
-//        BlackDuckHttpClient blackDuckHttpClient = blackDuckServicesFactory.getBlackDuckHttpClient();
-//
-//        DetectInfo detectInfo = Mockito.mock(DetectInfo.class);
-//        DetectInfoUtility detectInfoUtility = new DetectInfoUtility();
-//        Mockito.when(detectInfo.getCurrentOs()).thenReturn(detectInfoUtility.findOperatingSystemType());
-//
-//        DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
-//        File installationDir = Files.createTempDirectory("IacScannerInstallationTest").toFile();
-//        Mockito.when(directoryManager.getPermanentDirectory(IacScannerInstaller.IAC_SCANNER_INSTALL_DIR_NAME)).thenReturn(installationDir);
-//
-//        IacScannerInstaller iacScannerInstaller = new IacScannerInstaller(blackDuckHttpClient, detectInfo, blackDuckHttpClient.getBlackDuckUrl(), directoryManager);
-//        File iacScanner = iacScannerInstaller.installOrUpdateScanner();
-//        File versionFile = new File(installationDir, IacScannerInstaller.IAC_SCANNER_INSTALLED_VERSION_FILE_NAME);
-//
-//        Assertions.assertNotNull(iacScanner);
-//        Assertions.assertEquals(IacScannerInstaller.IAC_SCANNER_INSTALL_FILE_NAME, iacScanner.getName());
-//        Assertions.assertNotNull(versionFile);
-//        Assertions.assertNotEquals(0, FileUtils.readFileToString(versionFile, Charset.defaultCharset()).length());
+    public void testSelfUpdate() throws IntegrationException {
+
+        DetectInfo detectInfo = Mockito.mock(DetectInfo.class);
+        Mockito.when(detectInfo.getDetectVersion()).thenReturn("8.9.0");
+        
+        Response response = Mockito.mock(Response.class);
+        Mockito.when(response.getStatusCode()).thenReturn(200);
+        Mockito.when(response.getHeaderValue(ApplicationUpdater.DOWNLOAD_VERSION_HEADER)).thenReturn("8.10.0");
+        
+        Request request = Mockito.mock(Request.class);
+        IntHttpClient intHttpClient = Mockito.mock(IntHttpClient.class);
+        Mockito.when(intHttpClient.execute(request)).thenReturn(response);
+        
+        ApplicationUpdater applicationUpdater = new ApplicationUpdater(args);
+        boolean selfUpdated = applicationUpdater.selfUpdate();
+
+        Assertions.assertTrue(selfUpdated);
     }
 }
