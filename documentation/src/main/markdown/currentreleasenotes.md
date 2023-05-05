@@ -14,8 +14,8 @@
 
 ### Dependency updates
 
-* Upgraded SnakeYAML to version 2.0
-* Upgraded Jackson Dataformat YAML to version 2.15.0
+* Upgraded SnakeYAML to version 2.0 to resolve critical severity [CVE-2022-1471]( https://nvd.nist.gov/vuln/detail/CVE-2022-1471)
+* Upgraded Jackson Dataformat YAML to version 2.15.0 to resolve critical severity [CVE-2022-1471]( https://nvd.nist.gov/vuln/detail/CVE-2022-1471)
 * Upgraded Spring Boot to version 2.7.11 to resolve high severity [CVE-2023-20873](https://nvd.nist.gov/vuln/detail/CVE-2023-20873)
 
 ## Version 8.8.0
