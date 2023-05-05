@@ -14,9 +14,9 @@ If there exists no mapping in [blackduck_product_name], or if the current versio
 
 If the [solution_name] URL of the [solution_name] .jar file to download and run has been hardcoded via [solution_name] property `DETECT_SOURCE` environment variable or the [solution_name] version set by the `DETECT_LATEST_RELEASE_VERSION` or `DETECT_VERSION_KEY` variables, self update will not occur.
 
-If the [blackduck_product_name] “Internally Hosted” option has been selected and a [solution_name] download location has not been provided, the feature will not be enbled.
+If the [blackduck_product_name] “Internally Hosted” option has been selected and a [solution_name] download location has not been provided, the feature will not be enabled.
 
-For further [blackduck_product_name] configuration information, consult the documentation provided under the topic:
+For further [blackduck_product_name] configuration information, refer to the documentation provided under the topic:
 <xref href="DetectLocation.dita" scope="peer"> Hosting location for Synopsys Detect.
 <data name="facets" value="pubname=bd-hub"/>
 
