@@ -214,7 +214,13 @@ public class ApplicationUpdater extends URLClassLoader {
         return true;
     }
     
+    public static void main(String[] args) {
+        ApplicationUpdater applicationUpdater = new ApplicationUpdater(args);
+        applicationUpdater.isDownloadVersionTooOld("8.9.0-SIGQA14.jar");
+    }
+    
     private Version convert(String versionString) {
+        versionString = versionString.replaceAll(".*?((?<!\\w)\\d+([.]\\d+)*).*", "$1");
         final List<Integer> versionParts = Arrays.stream(versionString.split("\\."))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
