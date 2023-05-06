@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.client.IntHttpClient;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 
@@ -35,10 +36,9 @@ public class ApplicationUpdaterTest {
         Mockito.when(detectInfo.getDetectVersion()).thenReturn("8.9.0");
         ApplicationUpdaterUtility applicationUpdaterUtility = Mockito.mock(ApplicationUpdaterUtility.class);
         ApplicationUpdater applicationUpdater = new ApplicationUpdater(applicationUpdaterUtility, args);
-        Mockito.when(applicationUpdaterUtility.getIntHttpClient()).thenReturn(intHttpClient);
+        Mockito.when(applicationUpdaterUtility.getIntHttpClient(true, ProxyInfo.NO_PROXY_INFO)).thenReturn(intHttpClient);
         
         boolean selfUpdated = applicationUpdater.selfUpdate();
-
         Assertions.assertTrue(selfUpdated);
     }
 }
