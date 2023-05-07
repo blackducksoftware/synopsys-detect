@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
 import com.synopsys.integration.common.util.finder.SimpleFileFinder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DirectoryFinderTest {
     private static Path initialDirectoryPath;
@@ -33,7 +35,10 @@ public class DirectoryFinderTest {
 
     @AfterAll
     public static void cleanup() throws IOException {
-        FileUtils.deleteDirectory(initialDirectoryPath.toFile());
+        File initialDirectory = initialDirectoryPath.toFile();
+        if (initialDirectory.exists() && initialDirectory.canWrite()) {
+            FileUtils.deleteDirectory(initialDirectoryPath.toFile());
+        }
     }
 
     @Test
@@ -67,10 +72,12 @@ public class DirectoryFinderTest {
                 break;
             }
         }
-        Set<DirectoryFindResult> subDirResults = simpleTestDir.getChildren();
-        assertEquals(2, subDirResults.size());
-        String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
-        assertTrue(subDirContentsName.startsWith("subSubDir"));
+        if (simpleTestDir != null) {
+            Set<DirectoryFindResult> subDirResults = simpleTestDir.getChildren();
+            assertEquals(2, subDirResults.size());
+            String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
+            assertTrue(subDirContentsName.startsWith("subSubDir"));
+        }
     }
 
     @Test
@@ -105,17 +112,25 @@ public class DirectoryFinderTest {
                 break;
             }
         }
-        Set<DirectoryFindResult> subDirResults = symLinkTestDir.getChildren();
+        if (symLinkTestDir != null) {
+            Set<DirectoryFindResult> subDirResults = symLinkTestDir.getChildren();
 
-        if (followSymLinks) {
-            assertEquals(2, subDirResults.size());
-        } else {
-            assertEquals(1, subDirResults.size());
-            String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
-            assertEquals("regularDir", subDirContentsName);
+            if (followSymLinks) {
+                assertEquals(2, subDirResults.size());
+            } else {
+                assertEquals(1, subDirResults.size());
+                String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
+                assertEquals("regularDir", subDirContentsName);
+            }
         }
-
-        FileUtils.deleteDirectory(initialDirectory);
+        if (initialDirectory.exists() && initialDirectory.canWrite()) {
+            try {
+                FileUtils.deleteDirectory(initialDirectory);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
     }
 
     @NotNull

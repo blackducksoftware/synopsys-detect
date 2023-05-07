@@ -32,11 +32,22 @@ public class SimpleFileFinderTest {
     }
 
     @AfterEach
-    public void cleanup() throws IOException {
+    public void cleanup() {
+        File initialDirectory = initialDirectoryPath.toFile();
         try {
-            Files.delete(initialDirectoryPath);
+            if (initialDirectory.exists() && initialDirectory.canWrite()) {
+                Files.delete(initialDirectoryPath);
+            }
         } catch (DirectoryNotEmptyException e) {
-            FileUtils.deleteDirectory(initialDirectoryPath.toFile());
+            if (initialDirectory.isDirectory() && initialDirectory.canRead() && initialDirectory.canWrite()) {
+                try {
+                    FileUtils.deleteDirectory(initialDirectory);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
