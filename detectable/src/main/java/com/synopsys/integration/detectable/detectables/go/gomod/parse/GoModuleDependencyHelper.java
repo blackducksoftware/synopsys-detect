@@ -88,18 +88,16 @@ public class GoModuleDependencyHelper {
         // look up the 'why' results for the module...  This will tell us
         // the direct dependency item that pulled this item into the mix.
         List<String> trackPath = whyMap.get(childModulePath);
-        String parent = "";
         if (trackPath != null && !trackPath.isEmpty()) {
             for (String tp : trackPath) {
-                for (String directMod : directs) {
-                    if (directMod.contains(tp)) {
-                        parent = directMod;
-                        break;
-                    }
+                String parent = directs.stream()
+                        .filter(directMod -> directMod.contains(tp) || tp.contains(directMod.replaceAll("@.*","")))
+                        .findFirst()
+                        .orElse(null);
+                if (parent != null) { // if real direct is found... otherwise do nothing
+                    grphLine = grphLine.replace(splitLine[0], parent);
+                    break;
                 }
-            }
-            if (parent.length() > 0) { // if real direct is found... otherwise do nothing
-                grphLine = grphLine.replace(splitLine[0], parent);
             }
         }
         return grphLine;
