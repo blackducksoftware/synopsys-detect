@@ -37,7 +37,7 @@ Update to version allowed (8.9.0+):
 
 2023-05-05 12:33:53 EDT WARN  \[main] - Detect-Self-Updater:  The Detect version 8.9.2 mapped at Black Duck server is eligible for downgrade from the current version of 8.10.0. The self-update feature is available from 8.9.0 onwards.
 
-2023-05-05 12:33:53 EDT INFO  \[main] - Detect-Self-Updater:  Centrally managed version of Detect was downloaded successfully and is ready to be run: /Users/gopanna/tmp/synopsys-detect-8.9.2.jar.
+2023-05-05 12:33:53 EDT INFO  \[main] - Detect-Self-Updater:  Centrally managed version of Detect was downloaded successfully and is ready to be run: /Users/testuser/tmp/synopsys-detect-8.9.2.jar.
 ```
 
 Current version of [solution_name] matches the mapped version or there is no mapped version in [blackduck_product_name]:   
