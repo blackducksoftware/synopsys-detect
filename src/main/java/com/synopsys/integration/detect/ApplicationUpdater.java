@@ -97,12 +97,12 @@ public class ApplicationUpdater extends URLClassLoader {
     public ApplicationUpdater(ApplicationUpdaterUtility applicationUpdaterUtility, String[] args) {
         super(new URL[] {}, Thread.currentThread().getContextClassLoader());
         // System Environment Properties are checked before application arguments.
+        proxyProperties = new HashMap<>(7);
+        proxyIgnoredHosts = new HashSet<>();
         checkEnvironmentProperties();
         this.args = parseArguments(args);
         this.applicationUpdaterUtility = applicationUpdaterUtility;
         detectInfo = new DetectInfoUtility().createDetectInfo();
-        proxyProperties = new HashMap<>(7);
-        proxyIgnoredHosts = new HashSet<>();
     }
     
     public boolean selfUpdate() {
@@ -264,7 +264,7 @@ public class ApplicationUpdater extends URLClassLoader {
     }
     
     private String[] parseArguments(String[] args) {
-        Map<String, String> tempProxyProperties = new HashMap<>(7);
+        final Map<String, String> tempProxyProperties = new HashMap<>(7);
         final ListIterator<String> it = Arrays.asList(args).listIterator();
         while (it.hasNext()) {
             String argument = it.next();
@@ -304,12 +304,12 @@ public class ApplicationUpdater extends URLClassLoader {
             ListIterator<String> it, 
             String argument, 
             Map<String, String> tempProxyProperties) {
-        String value = findArgumentValue(it, argument);
+        final String value = findArgumentValue(it, argument);
         tempProxyProperties.put(argKey, value);
     }
     
     private String findArgumentValue(ListIterator<String> it, String argument) {
-        int equalsIndex;
+        final int equalsIndex;
         if ((equalsIndex = argument.indexOf("=")) > -1) {
             return argument.substring(equalsIndex + 1, argument.length());
         } else if (it.hasNext()) {
@@ -319,8 +319,8 @@ public class ApplicationUpdater extends URLClassLoader {
     }
     
     private Set<String> findArgumentCommaDelimitedValues(ListIterator<String> it, String argument) {
-        int equalsIndex;
-        String delimitedValues;
+        final int equalsIndex;
+        final String delimitedValues;
         if ((equalsIndex = argument.indexOf("=")) > -1) {
             delimitedValues = argument.substring(equalsIndex + 1, argument.length());
             return Arrays.stream(delimitedValues.split("\\,"))
@@ -406,8 +406,8 @@ public class ApplicationUpdater extends URLClassLoader {
     }
     
     private ProxyInfo prepareProxyInfo() {
-        ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder();
-        CredentialsBuilder credentialsBuilder = Credentials.newBuilder();
+        final ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder();
+        final CredentialsBuilder credentialsBuilder = Credentials.newBuilder();
         credentialsBuilder.setUsernameAndPassword(proxyProperties.get(ARG_PROXY_USERNAME), 
                 proxyProperties.get(ARG_PROXY_PASSWORD));
         proxyInfoBuilder.setCredentials(credentialsBuilder.build());
@@ -426,13 +426,13 @@ public class ApplicationUpdater extends URLClassLoader {
         headers.put(DOWNLOAD_VERSION_HEADER, currentVersion);
         final Request request = new Request(downloadUrl, HttpMethod.GET, 
                 null, queryParams, headers, null);
-        ProxyInfo proxyInfo;
-        if (proxyIgnoredHosts.contains(blackduckHost)) {
+        final ProxyInfo proxyInfo;
+        if (proxyIgnoredHosts.contains(blackduckHost) || proxyProperties.isEmpty()) {
             proxyInfo = ProxyInfo.NO_PROXY_INFO;
         } else {
             proxyInfo = prepareProxyInfo();
         }
-        IntHttpClient intHttpClient = applicationUpdaterUtility.getIntHttpClient(trustCertificate, proxyInfo);
+        final IntHttpClient intHttpClient = applicationUpdaterUtility.getIntHttpClient(trustCertificate, proxyInfo);
         try (final Response response = intHttpClient.execute(request)) {
             if (response.isStatusCodeSuccess()) {
                 final String newFileName = response.getHeaderValue(DOWNLOADED_FILE_NAME);
