@@ -441,11 +441,13 @@ public class ApplicationUpdater extends URLClassLoader {
                 
                 if (!Files.exists(targetFilePath, LinkOption.NOFOLLOW_LINKS)) {
                     logger.debug("{} Writing to file {}.", LOG_PREFIX, targetFilePath.toAbsolutePath());
-                    try (final ReadableByteChannel readableByteChannel = Channels.newChannel(response.getContent())) {
-                        try (final FileOutputStream fileOutputStream = new FileOutputStream(targetFile)) {
+                    try(final ReadableByteChannel readableByteChannel = Channels.newChannel(response.getContent())) {
+                        try(final FileOutputStream fileOutputStream = new FileOutputStream(targetFile)) {
                             fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
                             logger.debug("{} Successfully wrote response to file {}.", LOG_PREFIX, targetFilePath.toAbsolutePath());
+                            fileOutputStream.close();
                         }
+                        readableByteChannel.close();
                     }
                 }
                 return targetFilePath;
