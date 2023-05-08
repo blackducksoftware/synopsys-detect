@@ -117,7 +117,7 @@ public class DirectoryFinderTest {
 
         FileUtils.deleteDirectory(initialDirectory);
     }
-        
+    
     @NotNull
     private DirectoryFinderOptions createFinderOptions(boolean followSymLinks) {
         Predicate<File> fileFilter = f -> true;

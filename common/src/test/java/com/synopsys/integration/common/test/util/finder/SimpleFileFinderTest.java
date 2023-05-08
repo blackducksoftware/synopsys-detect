@@ -34,11 +34,11 @@ public class SimpleFileFinderTest {
     @AfterEach
     public void cleanup() throws IOException {
         try {
-                Files.delete(initialDirectoryPath);
+            Files.delete(initialDirectoryPath);
         } catch (DirectoryNotEmptyException e) {
             FileUtils.deleteDirectory(initialDirectoryPath.toFile());
-                }
-            }
+        }
+    }
 
     @Test
     @DisabledOnOs(WINDOWS)
