@@ -38,6 +38,7 @@ public class ProjectInspectorParser {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         if (outputFile == null || !outputFile.exists() || !outputFile.isFile()) {
+            logger.info("Something is wrong with inspection.json file");
             return codeLocations;
         }
 
@@ -64,7 +65,7 @@ public class ProjectInspectorParser {
             }
             reader.endObject();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("An error occurred while reading inspection.json file: {}", e.getMessage());
         }
         return codeLocations;
     }
