@@ -1702,6 +1702,13 @@ public class DetectProperties {
             .setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.timeout is exceeded.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .build();
+    
+    public static final BooleanProperty DETECT_DISTRIBUTED_FASTSCA =
+        BooleanProperty.newBuilder("detect.distributed.fastsca", false)
+            .setInfo("Distributed Processing of  Scans", DetectPropertyFromVersion.VERSION_9_0_0)
+            .setHelp("If set to true, Detect will process the scan entirely on the client and remove the server as a factor for scalability. There are two submodes: serverless-direct-to-kb and server-as-proxy-to-kb. In the former, KB Host details are needed. In the latter, Black Duck host details are needed.")
+            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
+            .build();
 
     public static final BooleanProperty DETECT_FOLLOW_SYMLINKS =
         BooleanProperty.newBuilder("detect.follow.symbolic.links", true)

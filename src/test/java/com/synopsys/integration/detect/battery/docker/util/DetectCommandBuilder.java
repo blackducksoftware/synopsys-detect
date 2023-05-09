@@ -77,6 +77,11 @@ public class DetectCommandBuilder {
         return this;
     }
 
+    public DetectCommandBuilder distributedFastSca() {
+        property(DetectProperties.DETECT_DISTRIBUTED_FASTSCA, "true");
+        return this;
+    }
+    
     public void projectNameVersion(NameVersion projectNameVersion) {
         property(DetectProperties.DETECT_PROJECT_NAME, projectNameVersion.getName());
         property(DetectProperties.DETECT_PROJECT_VERSION_NAME, projectNameVersion.getVersion());

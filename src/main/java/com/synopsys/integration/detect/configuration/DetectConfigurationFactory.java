@@ -417,6 +417,7 @@ public class DetectConfigurationFactory {
 
     public BlackDuckPostOptions createBlackDuckPostOptions() {
         Boolean waitForResults = detectConfiguration.getValue(DetectProperties.DETECT_WAIT_FOR_RESULTS);
+        Boolean distributedFastSca = detectConfiguration.getValue(DetectProperties.DETECT_DISTRIBUTED_FASTSCA);
         Boolean runRiskReport = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF);
         Boolean runNoticesReport = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT);
         Path riskReportPdfPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_RISK_REPORT_PDF_PATH);
@@ -426,6 +427,7 @@ public class DetectConfigurationFactory {
 
         return new BlackDuckPostOptions(
             waitForResults,
+            distributedFastSca,
             runRiskReport,
             runNoticesReport,
             riskReportPdfPath,
