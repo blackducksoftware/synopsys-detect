@@ -128,7 +128,7 @@ public class DirectoryFinderTest {
                 .forEach(File::delete);
         }
     }
-
+    
     @NotNull
     private DirectoryFinderOptions createFinderOptions(boolean followSymLinks) {
         Predicate<File> fileFilter = f -> true;
