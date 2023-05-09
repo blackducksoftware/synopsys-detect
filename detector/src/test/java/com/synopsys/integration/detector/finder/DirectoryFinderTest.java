@@ -8,11 +8,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
@@ -33,7 +34,13 @@ public class DirectoryFinderTest {
 
     @AfterAll
     public static void cleanup() throws IOException {
-        FileUtils.deleteDirectory(initialDirectoryPath.toFile());
+        if (Files.exists(initialDirectoryPath)) {
+            try (Stream<Path> walk = Files.walk(initialDirectoryPath)) {
+                walk.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+            }
+        }
     }
 
     @Test
@@ -115,7 +122,11 @@ public class DirectoryFinderTest {
             assertEquals("regularDir", subDirContentsName);
         }
 
-        FileUtils.deleteDirectory(initialDirectory);
+        try (Stream<Path> walk = Files.walk(initialDirectory.toPath())) {
+            walk.sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        }
     }
     
     @NotNull
