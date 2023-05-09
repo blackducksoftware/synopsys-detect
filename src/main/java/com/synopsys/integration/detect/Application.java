@@ -54,6 +54,7 @@ import com.synopsys.integration.detect.workflow.report.output.FormattedOutputMan
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
+import java.io.IOException;
 
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
@@ -81,8 +82,17 @@ public class Application implements ApplicationRunner {
     public static void main(String[] args) {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(Application.class);
         builder.logStartupInfo(false);
-        ApplicationUpdater updater = new ApplicationUpdater(new ApplicationUpdaterUtility(), args);
-        if (!updater.selfUpdate()) {
+        boolean selfUpdated = false;
+        ApplicationUpdater updater = null;
+        try {
+            updater = new ApplicationUpdater(new ApplicationUpdaterUtility(), args);
+            selfUpdated = updater.selfUpdate();
+        } finally {
+            if (updater != null) {
+                updater.closeUpdater();
+            }
+        }
+        if (!selfUpdated) {
             builder.run(args);
         }
     }

@@ -8,14 +8,14 @@ import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 public class ApplicationUpdaterUtility {
     
-    protected IntHttpClient getIntHttpClient() {
+    protected IntHttpClient getIntHttpClient(boolean trustCertificate, ProxyInfo proxyInfo) {
         final SilentIntLogger silentLogger = new SilentIntLogger();
         silentLogger.setLogLevel(LogLevel.WARN);
         return new IntHttpClient(silentLogger,
                 BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create(),
                 IntHttpClient.DEFAULT_TIMEOUT, 
-                true, 
-                ProxyInfo.NO_PROXY_INFO
+                trustCertificate, 
+                proxyInfo
         );
     }
 }
