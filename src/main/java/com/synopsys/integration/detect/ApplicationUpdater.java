@@ -68,6 +68,8 @@ public class ApplicationUpdater extends URLClassLoader {
     private final Map<String, String> proxyProperties;
     private final ApplicationUpdaterUtility applicationUpdaterUtility;
     
+    private final static String SYS_ENV_PROP_BLACKDUCK_URL = "BLACKDUCK_URL";
+    
     private final static String SYS_ENV_PROP_DETECT_SOURCE = "DETECT_SOURCE";
     private final static String SYS_ENV_PROP_DETECT_LATEST_RELEASE_VERSION = "DETECT_LATEST_RELEASE_VERSION";
     private final static String SYS_ENV_PROP_DETECT_VERSION_KEY = "DETECT_VERSION_KEY";
@@ -245,14 +247,18 @@ public class ApplicationUpdater extends URLClassLoader {
     }
     
     private void checkEnvironmentProperties() {
+        this.blackduckHost = System.getenv(SYS_ENV_PROP_BLACKDUCK_URL);
         final String httpsHost = System.getenv(SYS_ENV_PROP_PROXY_HTTPS_HOST);
         final String httpHost = System.getenv(SYS_ENV_PROP_PROXY_HTTP_HOST);
+        
         if (httpsHost != null && StringUtils.isNotBlank(httpsHost)) {
+            /* HTTPS Proxy System Environment settings are preferred. */
             proxyProperties.put(ARG_PROXY_PORT, httpsHost);
             proxyProperties.put(ARG_PROXY_PORT, System.getenv(SYS_ENV_PROP_PROXY_HTTPS_PORT));
             proxyProperties.put(ARG_PROXY_PORT, System.getenv(SYS_ENV_PROP_PROXY_HTTPS_USERNAME));
             proxyProperties.put(ARG_PROXY_PORT, System.getenv(SYS_ENV_PROP_PROXY_HTTPS_PASSWORD));
         } else if (httpHost != null && StringUtils.isNotBlank(httpHost)) {
+            /* If not HTTPS, then HTTP is fine. But Log a warning. */
             logger.warn("{} Use of HTTP instead of HTTPS for Proxy system environment properties was found. "
                     + "It is strongly recommended to use HTTPS over HTTP for increased security."
                     + "Detect will continue self update check with the configured HTTP settings.");
@@ -263,6 +269,15 @@ public class ApplicationUpdater extends URLClassLoader {
         }
     }
     
+    /**
+     * Any proxy setting arguments found are loaded into a temporary map so that 
+     * they can be discarded entirely if the proxy host and port are not set in the arguments. 
+     * Note that the arguments can come in any order. This way, incomplete proxy 
+     * argument settings do not overwrite complete proxy settings set through 
+     * system environment properties.
+     * @param args
+     * @return 
+     */
     private String[] parseArguments(String[] args) {
         final Map<String, String> tempProxyProperties = new HashMap<>(7);
         final ListIterator<String> it = Arrays.asList(args).listIterator();
@@ -300,6 +315,13 @@ public class ApplicationUpdater extends URLClassLoader {
         return args;
     }
     
+    /**
+     * Add one proxy setting from argument to the temporary map.
+     * @param argKey
+     * @param it
+     * @param argument
+     * @param tempProxyProperties 
+     */
     private void addProxyPropertyToTempMap(String argKey,
             ListIterator<String> it, 
             String argument, 
@@ -318,6 +340,12 @@ public class ApplicationUpdater extends URLClassLoader {
         return null;
     }
     
+    /**
+     * To load the comma separated values of an argument, in this case - that of the ignored hosts for proxy argument.
+     * @param it List iterator of the arguments. This is used to choose between an assigned value (--arg=value) or a space delimited value (--args value).
+     * @param argument The argument
+     * @return The set of values of the argument.
+     */
     private Set<String> findArgumentCommaDelimitedValues(ListIterator<String> it, String argument) {
         final int equalsIndex;
         final String delimitedValues;
@@ -426,6 +454,10 @@ public class ApplicationUpdater extends URLClassLoader {
         headers.put(DOWNLOAD_VERSION_HEADER, currentVersion);
         final Request request = new Request(downloadUrl, HttpMethod.GET, 
                 null, queryParams, headers, null);
+        
+        /*  Check if the BD host is on the ignore-host-for-proxy list or no proxy 
+        *   settings are found to be configured. Then, opt for No Proxy. 
+        *   Otherwise, prepare the proxy information from the identified proxy settings. */
         final ProxyInfo proxyInfo;
         if (proxyIgnoredHosts.contains(blackduckHost) || proxyProperties.isEmpty()) {
             proxyInfo = ProxyInfo.NO_PROXY_INFO;
