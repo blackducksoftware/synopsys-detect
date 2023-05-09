@@ -2,14 +2,25 @@
 
 ## Version 8.9.0
 
+### New features
+
+* [solution_name] Self Update feature will allow customers who choose to enable Centralized [solution_name] Version Management in [blackduck_product_name] to automate the update of [solution_name] across their pipelines. The Self Update feature will call the '/api/tools/detect' API to check for the existence of a mapped [solution_name] version in [blackduck_product_name]. If a version has been mapped, the API will redirect the request to download the specified version and the current execution of [solution_name] will invoke it to execute the requested scan. If no mapping exists, the current version of [solution_name] matches the mapped version in [blackduck_product_name], or if there is any issue during the execution of the Self Update feature, then [solution_name] will continue with the currently deployed version to execute the scan. Centralized [solution_name] Version Management feature support in [blackduck_product_name] is available from [blackduck_product_name] version 2023.4.0 onwards.
+
+### Changed features
+
+* Release notes are now broken into sections covering the current, supported, and unsupported [solution_name] releases.
+* npm 6 has reached end of life and is being deprecated. Support for npm 6 will be removed in [solution_name] 9.
+
 ### Resolved issues
 
 * (IDETECT-3613) Resolved an issue where running a scan with `detect.maven.build.command=-Dverbose` caused a KB mismatch issue for omitted transitive dependencies.
+* (IDETECT-3657) Resolved an issue where intelligent persistent scans would fail if a project or version name included non-ASCII characters.
 
-### Dependency update
+### Dependency updates
 
-* Upgraded SnakeYAML to version 2.0.
-* Upgraded Jackson Dataformat YAML to version 2.15.0.
+* Upgraded SnakeYAML to version 2.0 to resolve critical severity [CVE-2022-1471]( https://nvd.nist.gov/vuln/detail/CVE-2022-1471)
+* Upgraded Jackson Dataformat YAML to version 2.15.0 to resolve critical severity [CVE-2022-1471]( https://nvd.nist.gov/vuln/detail/CVE-2022-1471)
+* Upgraded Spring Boot to version 2.7.11 to resolve high severity [CVE-2023-20873](https://nvd.nist.gov/vuln/detail/CVE-2023-20873)
 
 ## Version 8.8.0
 
@@ -63,7 +74,7 @@ Note: this feature requires [blackduck_product_name] 2023.1.1 or later.
 * (IDETECT-3627) When waiting for results, Signature Scans will now wait for all scans that the Signature Scan could invoke, such as Snippet and String Search scans. Previously, only the Signature Scan itself was checked for completion.
 Note: this improvement requires [blackduck_product_name] 2023.1.2 or later. 
 
-### Dependency update
+### Dependency updates
 
 * Upgraded Apache Commons Text to version 1.10.0.
 * Upgraded Docker Inspector to version 10.0.1.
