@@ -433,8 +433,9 @@ public class ApplicationUpdater extends URLClassLoader {
             return true;
         }
         logger.warn("{} The Detect version {} mapped at Black Duck server is "
-                + "eligible for updating the current version of {} as the self-update feature is available in mapped version. "
-                + "The self-update feature is available from {} onwards.", 
+                + "eligible for updating the current version of {} as the self-update "
+                + "feature is available in mapped version. It will not be possible to "
+                + "use the self-update feature as the feature is available only from {} onwards.", 
                 LOG_PREFIX, downloadVersionString, currentVersion, MINIMUM_DETECT_VERSION);
         return false;
     }
