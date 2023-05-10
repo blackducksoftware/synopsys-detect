@@ -424,7 +424,7 @@ public class ApplicationUpdater extends URLClassLoader {
                     && (downloadVersion.getMicro() < MINIMUM_DETECT_VERSION.getMicro()))))) {
             logger.warn("{} The Detect version {} mapped at Black Duck server is "
                     + "not eligible for downgrade from the current version of {} "
-                    + "because will not be possible to use the self-update feature "
+                    + "because it will not be possible to use the self-update feature "
                     + "after the update as the feature is available only from {} onwards.", 
                     LOG_PREFIX, downloadVersionString, currentVersion, MINIMUM_DETECT_VERSION);
             return true;
