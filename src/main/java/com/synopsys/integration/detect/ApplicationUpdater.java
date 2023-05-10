@@ -268,7 +268,7 @@ public class ApplicationUpdater extends URLClassLoader {
             /* If not HTTPS, then HTTP is fine. But Log a warning. */
             logger.warn("{} Use of HTTP instead of HTTPS for Proxy system environment properties was found. "
                     + "It is strongly recommended to use HTTPS over HTTP for increased security."
-                    + "Detect will continue self update check with the configured HTTP settings.");
+                    + "Detect will continue self update check with the configured HTTP settings.", LOG_PREFIX);
             proxyPropertiesPut(ARG_PROXY_HOST, httpHost);
             proxyPropertiesPut(ARG_PROXY_PORT, utility.getSysEnvProperty(SYS_ENV_PROP_PROXY_HTTP_PORT));
             proxyPropertiesPut(ARG_PROXY_USERNAME, utility.getSysEnvProperty(SYS_ENV_PROP_PROXY_HTTP_USERNAME));
