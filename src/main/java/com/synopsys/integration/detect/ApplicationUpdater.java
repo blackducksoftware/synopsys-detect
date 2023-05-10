@@ -436,7 +436,7 @@ public class ApplicationUpdater extends URLClassLoader {
         logger.info("{} The Detect version {} mapped at Black Duck server is "
                 + "eligible for updating the current version of {} as the self-update "
                 + "feature is available in the mapped version.", 
-                LOG_PREFIX, downloadVersionString, currentVersion, MINIMUM_DETECT_VERSION);
+                LOG_PREFIX, downloadVersionString, currentVersion);
         return false;
     }
     
