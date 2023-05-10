@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 public class ApplicationUpdaterTest {
     
     private final String fakeUrl = "https://synopsys.com";
-    private final ApplicationUpdaterUtility utility = new ApplicationUpdaterUtility();
     
     private final String[] successArgs = new String[] {
             "-jar",
@@ -47,12 +46,12 @@ public class ApplicationUpdaterTest {
     
     @Test
     public void testCanSelfUpdate() {
-        Assertions.assertTrue(new ApplicationUpdater(utility, successArgs).canSelfUpdate());
+        Assertions.assertTrue(new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).canSelfUpdate());
     }
     
     @Test
     public void testCanSelfUpdateWithoutBdUrl() {
-        Assertions.assertFalse(new ApplicationUpdater(utility, failureArgs).canSelfUpdate());
+        Assertions.assertFalse(new ApplicationUpdater(new ApplicationUpdaterUtility(), failureArgs).canSelfUpdate());
     }
     
     @Test
@@ -115,36 +114,36 @@ public class ApplicationUpdaterTest {
     
     @Test
     public void testProxyFoundThree() {
-        Assertions.assertEquals(ProxyInfo.NO_PROXY_INFO, new ApplicationUpdater(utility, successArgsWithInvalidProxy).getProxyInfo());
+        Assertions.assertEquals(ProxyInfo.NO_PROXY_INFO, new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgsWithInvalidProxy).getProxyInfo());
     }
     
     @Test
     public void testProxyFoundFour() {
-        Assertions.assertNotEquals(ProxyInfo.NO_PROXY_INFO, new ApplicationUpdater(utility, successArgsWithValidProxy).getProxyInfo());
+        Assertions.assertNotEquals(ProxyInfo.NO_PROXY_INFO, new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgsWithValidProxy).getProxyInfo());
     }
     
     @Test
     public void testValidDetectFileName() {
-        Assertions.assertTrue(new ApplicationUpdater(utility, successArgs).isValidDetectFileName("synopsys-detect-8.9.0-SIGQA6-SNAPSHOT.jar"));
+        Assertions.assertTrue(new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).isValidDetectFileName("synopsys-detect-8.9.0-SIGQA6-SNAPSHOT.jar"));
     }
     
     @Test
     public void testVersionFromDetectFileName() {
-        Assertions.assertEquals("8.9.0", new ApplicationUpdater(utility, successArgs).getVersionFromDetectFileName("synopsys-detect-8.9.0-SIGQA6-SNAPSHOT.jar"));
+        Assertions.assertEquals("8.9.0", new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).getVersionFromDetectFileName("synopsys-detect-8.9.0-SIGQA6-SNAPSHOT.jar"));
     }
     
     @Test
     public void testVersionConvert() {
-        Assertions.assertEquals(new Version(8, 9, 0), new ApplicationUpdater(utility, successArgs).convert("8.9.0"));
+        Assertions.assertEquals(new Version(8, 9, 0), new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).convert("8.9.0"));
     }
     
     @Test
     public void testTooOldDownloadVersion() {
-        Assertions.assertTrue(new ApplicationUpdater(utility, successArgs).isDownloadVersionTooOld("8.9.0", "8.8.0"));
+        Assertions.assertTrue(new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).isDownloadVersionTooOld("8.9.0", "8.8.0"));
     }
     
     @Test
     public void testNotSoOldDownloadVersion() {
-        Assertions.assertFalse(new ApplicationUpdater(utility, successArgs).isDownloadVersionTooOld("8.10.0", "8.9.0"));
+        Assertions.assertFalse(new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).isDownloadVersionTooOld("8.10.0", "8.9.0"));
     }
 }
