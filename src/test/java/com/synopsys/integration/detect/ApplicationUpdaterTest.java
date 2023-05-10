@@ -51,7 +51,9 @@ public class ApplicationUpdaterTest {
     
     @Test
     public void testCanSelfUpdateWithoutBdUrl() {
-        Assertions.assertFalse(new ApplicationUpdater(new ApplicationUpdaterUtility(), failureArgs).canSelfUpdate());
+        ApplicationUpdaterUtility mockedUtility = Mockito.mock(ApplicationUpdaterUtility.class);
+        Mockito.when(mockedUtility.getSysEnvProperty(ApplicationUpdater.SYS_ENV_PROP_BLACKDUCK_URL)).thenReturn(null);
+        Assertions.assertFalse(new ApplicationUpdater(mockedUtility, failureArgs).canSelfUpdate());
     }
     
     @Test
