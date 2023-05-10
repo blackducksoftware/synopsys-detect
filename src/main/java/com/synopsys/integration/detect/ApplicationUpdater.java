@@ -427,15 +427,15 @@ public class ApplicationUpdater extends URLClassLoader {
                 || (downloadVersion.getMinor() == MINIMUM_DETECT_VERSION.getMinor()
                     && (downloadVersion.getMicro() < MINIMUM_DETECT_VERSION.getMicro()))))) {
             logger.warn("{} The Detect version {} mapped at Black Duck server is "
-                    + "not eligible for downgrade from the current version of {}. "
-                    + "The self-update feature is available from {} onwards.", 
+                    + "not eligible for downgrade from the current version of {} "
+                    + "because will not be possible to use the self-update feature "
+                    + "after the update as the feature is available only from {} onwards.", 
                     LOG_PREFIX, downloadVersionString, currentVersion, MINIMUM_DETECT_VERSION);
             return true;
         }
-        logger.warn("{} The Detect version {} mapped at Black Duck server is "
+        logger.info("{} The Detect version {} mapped at Black Duck server is "
                 + "eligible for updating the current version of {} as the self-update "
-                + "feature is available in mapped version. It will not be possible to "
-                + "use the self-update feature as the feature is available only from {} onwards.", 
+                + "feature is available in the mapped version.", 
                 LOG_PREFIX, downloadVersionString, currentVersion, MINIMUM_DETECT_VERSION);
         return false;
     }
