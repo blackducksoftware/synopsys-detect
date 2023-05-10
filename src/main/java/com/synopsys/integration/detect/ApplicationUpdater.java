@@ -3,14 +3,11 @@ package com.synopsys.integration.detect;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import java.net.URL;
 import java.net.URLClassLoader;
-
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.AccessDeniedException;
@@ -19,7 +16,6 @@ import java.nio.file.LinkOption;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
