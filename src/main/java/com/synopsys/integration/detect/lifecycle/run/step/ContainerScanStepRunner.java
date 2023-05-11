@@ -20,7 +20,6 @@ public class ContainerScanStepRunner {
     }
 
     public UUID initiateScan(BlackDuckRunData blackDuckRunData) throws IOException, IntegrationException {
-//        File bdioHeaderFile = new File(Application.class.getResource("/test-inputs/bdio-header.pb").getPath()); // temporary
         DetectProtobufBdioUtil detectProtobufBdioUtil = new DetectProtobufBdioUtil(UUID.randomUUID().toString(), "CONTAINER");
         File bdioHeaderFile = detectProtobufBdioUtil.createProtobufBdioHeader();
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
