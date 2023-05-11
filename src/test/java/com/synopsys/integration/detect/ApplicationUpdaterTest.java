@@ -44,6 +44,15 @@ public class ApplicationUpdaterTest {
             "--blackduck.proxy.host=".concat(fakeUrl),
             "--detect.tools=DETECTOR"};
     
+    private final String[] alreadySelfUpdatedArgs = new String[] {
+            "-jar",
+            "/fake/path/to/synopsys-detect-n.n.n.jar",
+            "--blackduck.url=".concat(fakeUrl), 
+            "--blackduck.trust.cert=true", 
+            "--blackduck.api.token=dummyToken",
+            "--detect.tools=DETECTOR",
+            "--selfUpdated"};
+    
     @Test
     public void testCanSelfUpdate() {
         Assertions.assertTrue(new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).canSelfUpdate());
@@ -147,5 +156,15 @@ public class ApplicationUpdaterTest {
     @Test
     public void testNotSoOldDownloadVersion() {
         Assertions.assertFalse(new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).isDownloadVersionTooOld("8.10.0", "8.9.0"));
+    }
+    
+    @Test
+    public void testNewDownloadVersion() {
+        Assertions.assertFalse(new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).isDownloadVersionTooOld("8.9.0", "8.9.0"));
+    }
+    
+    @Test
+    public void testCanSelfUpdateIfAlreadyUpdated() {
+        Assertions.assertFalse(new ApplicationUpdater(new ApplicationUpdaterUtility(), alreadySelfUpdatedArgs).canSelfUpdate());
     }
 }
