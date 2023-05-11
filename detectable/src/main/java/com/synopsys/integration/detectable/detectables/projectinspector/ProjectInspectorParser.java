@@ -38,7 +38,7 @@ public class ProjectInspectorParser {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         if (outputFile == null || !outputFile.exists() || !outputFile.isFile()) {
-            logger.info("Something is wrong with inspection.json file");
+            logger.info("inspection.json file doesn't exist.");
             return codeLocations;
         }
 
