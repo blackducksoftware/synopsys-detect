@@ -11,12 +11,12 @@ import com.blackducksoftware.bdio.proto.api.BdioHeader;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.util.NameVersion;
 
-public class DetectProtobufBdioUtil {
+public class DetectProtobufBdioHeaderUtil {
     private final String scanId;
     private final String scanType;
     private final NameVersion projectNameVersion;
 
-    public DetectProtobufBdioUtil(String scanId, String scanType, NameVersion projectNameVersion) {
+    public DetectProtobufBdioHeaderUtil(String scanId, String scanType, NameVersion projectNameVersion) {
         this.scanId = scanId;
         this.scanType = scanType;
         this.projectNameVersion = projectNameVersion;
