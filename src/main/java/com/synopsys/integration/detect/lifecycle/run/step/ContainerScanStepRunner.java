@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
-import com.synopsys.integration.detect.util.bdio.protobuf.DetectProtobufBdioUtil;
+import com.synopsys.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
@@ -41,8 +41,8 @@ public class ContainerScanStepRunner {
 
     public void initiateScan() throws IOException, IntegrationException {
 //        File bdioHeaderFile = new File(Application.class.getResource("/test-inputs/bdio-header.pb").getPath()); // temporary
-        DetectProtobufBdioUtil detectProtobufBdioUtil = new DetectProtobufBdioUtil(UUID.randomUUID().toString(), "CONTAINER", projectNameVersion);
-        File bdioHeaderFile = detectProtobufBdioUtil.createProtobufBdioHeader(binaryRunDirectory);
+        DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(UUID.randomUUID().toString(), "CONTAINER", projectNameVersion);
+        File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(binaryRunDirectory);
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
         String scanIdString = scanId.toString();
         logger.debug("Scan initiated with scan service. Scan ID received: {}", scanIdString);
