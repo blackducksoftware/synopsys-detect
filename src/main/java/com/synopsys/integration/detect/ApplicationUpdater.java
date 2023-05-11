@@ -119,6 +119,9 @@ public class ApplicationUpdater extends URLClassLoader {
                 final String jarDownloadPath = determineJarDownloadPath();
                 final File newDetectJar = installOrUpdateScanner(jarDownloadPath);
                 if (newDetectJar != null) {
+                    /* If self-update feature already updated Detect once, 
+                    subsequent Detect invocation will be informed about it so 
+                    that it need not check for self update again.*/
                     List<String> arrlist = new LinkedList<>(Arrays.asList(args));
                     arrlist.add("--selfUpdated");
                     args = arrlist.toArray(args);
