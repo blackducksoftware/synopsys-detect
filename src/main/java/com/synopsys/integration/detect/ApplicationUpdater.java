@@ -66,7 +66,8 @@ public class ApplicationUpdater extends URLClassLoader {
     private String offlineMode = null;
     private boolean trustCertificate = false;
     private Set<String> proxyIgnoredHosts = new HashSet<>();
-    private final String[] args;
+    private String[] args;
+    private boolean isAlreadySelfUpdated = false;
     private final DetectInfo detectInfo;
     private final Map<String, String> proxyProperties;
     
@@ -97,15 +98,16 @@ public class ApplicationUpdater extends URLClassLoader {
     private final static String ARG_PROXY_PASSWORD = "blackduck.proxy.password";
     private final static String ARG_PROXY_PORT = "blackduck.proxy.port";
     private final static String ARG_PROXY_USERNAME = "blackduck.proxy.username";
+    private final static String ARG_SELF_UPDATED = "selfUpdated";
     
     private final ApplicationUpdaterUtility utility;
     
     public ApplicationUpdater(ApplicationUpdaterUtility utility, String[] args) {
         super(new URL[] {}, Thread.currentThread().getContextClassLoader());
-        // System Environment Properties are checked before application arguments.
         this.utility = utility;
         proxyProperties = new HashMap<>(7);
         proxyIgnoredHosts = new HashSet<>();
+        // System Environment Properties are checked before application arguments.
         checkEnvironmentProperties();
         this.args = parseArguments(args);
         detectInfo = new DetectInfoUtility().createDetectInfo();
@@ -117,6 +119,9 @@ public class ApplicationUpdater extends URLClassLoader {
                 final String jarDownloadPath = determineJarDownloadPath();
                 final File newDetectJar = installOrUpdateScanner(jarDownloadPath);
                 if (newDetectJar != null) {
+                    List<String> arrlist = new LinkedList<>(Arrays.asList(args));
+                    arrlist.add("--selfUpdated");
+                    args = arrlist.toArray(args);
                     return runMainClass(newDetectJar.toPath(), args);
                 }
             } catch (
@@ -316,6 +321,8 @@ public class ApplicationUpdater extends URLClassLoader {
                 addProxyPropertyToTempMap(ARG_PROXY_NTLM_WORKSTATION, it, argument, tempProxyProperties);
             } else if (argument.contains(ARG_PROXY_IGNORED_HOSTS)) {
                 proxyIgnoredHosts = findArgumentCommaDelimitedValues(it, argument);
+            } else if (argument.contains(ARG_SELF_UPDATED)) {
+                isAlreadySelfUpdated = true;
             }
         }
         
@@ -388,6 +395,9 @@ public class ApplicationUpdater extends URLClassLoader {
     }
     
     protected boolean canSelfUpdate() {
+        if (isAlreadySelfUpdated) {
+            return false;
+        }
         final String detectSource = utility.getSysEnvProperty(SYS_ENV_PROP_DETECT_SOURCE);
         final String detectLatestReleaseVersion = utility.getSysEnvProperty(SYS_ENV_PROP_DETECT_LATEST_RELEASE_VERSION);
         final String detectVersionKey = utility.getSysEnvProperty(SYS_ENV_PROP_DETECT_VERSION_KEY);
