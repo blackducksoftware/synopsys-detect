@@ -62,7 +62,8 @@ allprojects {
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0'
 
         implementation 'org.freemarker:freemarker:2.3.31'
-        implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.14'
+        implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+        implementation 'org.apache.httpcomponents.core5:httpcore5:5.2.1'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
         testImplementation 'org.mockito:mockito-core:2.+'
@@ -102,6 +103,9 @@ dependencies {
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.2.0'
 
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+    implementation 'org.apache.httpcomponents.core5:httpcore5:5.2.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.0'
