@@ -231,6 +231,8 @@ public class ApplicationUpdater extends URLClassLoader {
             final Class<?> launcherClass = 	classMap.get("org.springframework.boot.loader.Launcher");
             final Method launchMethod = launcherClass.getDeclaredMethod("launch", String[].class);
             launchMethod.setAccessible(true);
+            checkEnvironmentProperties();
+            args = parseArguments(args);
             launchMethod.invoke(jarLauncher, new Object[]{args});
         } finally {
             close();
