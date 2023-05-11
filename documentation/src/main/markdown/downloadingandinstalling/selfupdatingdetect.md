@@ -12,7 +12,7 @@ The Self Update feature will call the `/api/tools/detect` API to check for the e
 
 If there exists no mapping in [blackduck_product_name], or if the current version of [solution_name] matches the mapped version in [blackduck_product_name], or any issue occurs during the execution of the Self Update feature, then [solution_name] will continue with the current version to execute the scan.
 
-If the [solution_name] URL of the [solution_name] .jar file to download and run has been hardcoded via [solution_name] property `DETECT_SOURCE` environment variable or the [solution_name] version set by the `DETECT_LATEST_RELEASE_VERSION` or `DETECT_VERSION_KEY` variables, self update will not occur.
+If the [solution_name] URL of the [solution_name] .jar file to download and run has been hardcoded via [solution_name] property `DETECT_SOURCE` environment variable or the [solution_name] version set by the `DETECT_LATEST_RELEASE_VERSION` or `DETECT_VERSION_KEY` variables, self update will not occur. These are optional System environment properties used by Detect upgrade scripts.
 
 If the [blackduck_product_name] “Internally Hosted” option has been selected and a [solution_name] download location has not been provided, the feature will not be enabled.
 
