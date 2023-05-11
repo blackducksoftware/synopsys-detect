@@ -524,6 +524,6 @@ public class DetectConfigurationFactory {
     }
 
     public Optional<Path> getContainerScanFilePath() {
-        return Optional.ofNullable(detectConfiguration.getPathOrNull(DetectProperties.DETECT_BINARY_SCAN_FILE));
+        return Optional.ofNullable(detectConfiguration.getPathOrNull(DetectProperties.DETECT_CONTAINER_SCAN_FILE));
     }
 }
