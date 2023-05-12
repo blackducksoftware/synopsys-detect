@@ -97,11 +97,19 @@ public class IntelligentModeStepRunner {
         CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
 
         if (bdioResult.isNotEmpty()) {
-            stepHelper.runAsGroup(
-                "Upload Bdio",
-                OperationType.INTERNAL,
-                () -> uploadBdio(blackDuckRunData, bdioResult, scanIdsToWaitFor, codeLocationAccumulator, operationRunner.calculateDetectTimeout())
-            );
+            if (operationRunner.createBlackDuckPostOptions().shouldDistributeFastSca()) {
+                stepHelper.runAsGroup(
+                    "Distributed fastSCA",
+                    OperationType.INTERNAL,
+                    () -> runDistributedFastSca(blackDuckRunData, bdioResult, scanIdsToWaitFor, codeLocationAccumulator, operationRunner.calculateDetectTimeout())
+                );
+            } else {
+                stepHelper.runAsGroup(
+                    "Upload Bdio",
+                    OperationType.INTERNAL,
+                    () -> uploadBdio(blackDuckRunData, bdioResult, scanIdsToWaitFor, codeLocationAccumulator, operationRunner.calculateDetectTimeout())
+                );
+            }
         } else {
             logger.debug("No BDIO results to upload. Skipping.");
         }
@@ -191,6 +199,12 @@ public class IntelligentModeStepRunner {
         }
     }
 
+    public void runDistributedFastSca(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, Set<String> scanIdsToWaitFor, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
+        logger.info("Call fastSCA");
+        logger.info("Generate report");
+        logger.info("Possible upload report");
+    }
+    
     public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, Set<String> scanIdsToWaitFor, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
         BdioUploadResult uploadResult = operationRunner.uploadBdioIntelligentPersistent(blackDuckRunData, bdioResult, timeout);
         uploadResult.getUploadOutput().ifPresent(codeLocationAccumulator::addWaitableCodeLocations);
