@@ -51,7 +51,7 @@ public class LernaExternalDetectableTest extends DetectableFunctionalTest {
             "{",
             "   \"name\": \"lerna-project-name\",",
             "   \"version\": \"1.0.0\",",
-            "   \"dependencies\": {",
+            "   \"packages\": {",
             "   }",
             "}"
         );
