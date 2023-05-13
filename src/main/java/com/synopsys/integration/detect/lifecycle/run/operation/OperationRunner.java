@@ -186,6 +186,8 @@ import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
 
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
+import com.synopsys.integration.detect.fastsca.options.ScaOptions;
+
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectDetectableFactory detectDetectableFactory;
@@ -1135,5 +1137,9 @@ public class OperationRunner {
                 calculateMaxWaitInSeconds(fibonacciSequenceIndex)
             );
         });
+    }
+    
+    public ScaOptions getScaOptions() {
+        return detectConfigurationFactory.createScaOptions(directoryManager.getBdioOutputDirectory());
     }
 }

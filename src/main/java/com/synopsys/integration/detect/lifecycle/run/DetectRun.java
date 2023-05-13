@@ -94,7 +94,7 @@ public class DetectRun {
                     intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
                 } else {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
-                    intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData());
+                    intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData(), bdio);
                 }
             }
         } catch (Exception e) {

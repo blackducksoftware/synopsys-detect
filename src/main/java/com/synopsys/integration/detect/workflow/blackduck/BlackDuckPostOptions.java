@@ -11,7 +11,6 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSe
 
 public class BlackDuckPostOptions {
     private final boolean waitForResults;
-    private final boolean distributedFastSca;
     private final boolean generateRiskReport;
     private final boolean generateNoticesReport;
     private final @Nullable Path riskReportPdfPath;
@@ -21,7 +20,6 @@ public class BlackDuckPostOptions {
 
     public BlackDuckPostOptions(
         boolean waitForResults,
-        boolean distributedFastSca,
         boolean generateRiskReport,
         boolean generateNoticesReport,
         @Nullable Path riskReportPdfPath,
@@ -30,7 +28,6 @@ public class BlackDuckPostOptions {
         List<String> policyNamesToFailPolicyCheck
     ) {
         this.waitForResults = waitForResults;
-        this.distributedFastSca = distributedFastSca;
         this.generateRiskReport = generateRiskReport;
         this.generateNoticesReport = generateNoticesReport;
         this.riskReportPdfPath = riskReportPdfPath;
@@ -41,10 +38,6 @@ public class BlackDuckPostOptions {
 
     public boolean shouldWaitForResults() {
         return waitForResults || shouldGenerateAnyReport() || shouldPerformAnyPolicyCheck();
-    }
-    
-    public boolean shouldDistributeFastSca() {
-        return distributedFastSca;
     }
 
     public boolean shouldGenerateRiskReport() {

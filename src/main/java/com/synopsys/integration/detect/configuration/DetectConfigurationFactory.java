@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.io.IOException;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +42,8 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTargetTyp
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
+import com.synopsys.integration.detect.configuration.enumeration.ScaStrategy;
+import com.synopsys.integration.detect.fastsca.options.ScaOptions;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
@@ -417,7 +420,6 @@ public class DetectConfigurationFactory {
 
     public BlackDuckPostOptions createBlackDuckPostOptions() {
         Boolean waitForResults = detectConfiguration.getValue(DetectProperties.DETECT_WAIT_FOR_RESULTS);
-        Boolean distributedFastSca = detectConfiguration.getValue(DetectProperties.DETECT_DISTRIBUTED_FASTSCA);
         Boolean runRiskReport = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF);
         Boolean runNoticesReport = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT);
         Path riskReportPdfPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_RISK_REPORT_PDF_PATH);
@@ -427,7 +429,6 @@ public class DetectConfigurationFactory {
 
         return new BlackDuckPostOptions(
             waitForResults,
-            distributedFastSca,
             runRiskReport,
             runNoticesReport,
             riskReportPdfPath,
@@ -525,5 +526,12 @@ public class DetectConfigurationFactory {
         }
 
         return directoryExclusionPatterns;
+    }
+    
+    public ScaOptions createScaOptions(File outputDirectory) {
+        Enum<ScaStrategy> scaStrategy = detectConfiguration.getValue(DetectProperties.SCA_STRATEGY);
+        String kbUrl = detectConfiguration.getNullableValue(DetectProperties.SCA_KB_URL);
+        String kbApiToken = detectConfiguration.getNullableValue(DetectProperties.SCA_KB_TOKEN);
+        return new ScaOptions(scaStrategy, kbUrl, kbApiToken, outputDirectory);
     }
 }

@@ -77,8 +77,8 @@ public class DetectCommandBuilder {
         return this;
     }
 
-    public DetectCommandBuilder distributedFastSca() {
-        property(DetectProperties.DETECT_DISTRIBUTED_FASTSCA, "true");
+    public DetectCommandBuilder scaStrategy() {
+        property(DetectProperties.SCA_STRATEGY, "centralized");
         return this;
     }
     

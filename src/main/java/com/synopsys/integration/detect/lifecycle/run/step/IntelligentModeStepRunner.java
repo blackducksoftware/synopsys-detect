@@ -16,9 +16,15 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadOutput;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.ScaStrategy;
+import com.synopsys.integration.detect.fastsca.model.FastScaEvidence;
+import com.synopsys.integration.detect.fastsca.model.FastScaMetadata;
+import com.synopsys.integration.detect.fastsca.options.ScaOptions;
+import com.synopsys.integration.detect.fastsca.report.FastScaReportApi;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersion;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -30,6 +36,7 @@ import com.synopsys.integration.detect.tool.iac.IacScanCodeLocationData;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
+import com.synopsys.integration.detect.workflow.blackduck.BomScanWaitOperation;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
@@ -41,6 +48,10 @@ import com.synopsys.integration.detect.workflow.status.OperationType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
+import java.time.OffsetDateTime;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 public class IntelligentModeStepRunner {
     private final OperationRunner operationRunner;
@@ -54,7 +65,15 @@ public class IntelligentModeStepRunner {
         this.gson = gson;
     }
 
-    public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws OperationException {
+    public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData, BdioResult bdioResult) throws OperationException {
+        ScaOptions scaOptions = operationRunner.getScaOptions();
+        if (scaOptions.getStrategy().equals(ScaStrategy.DISTRIBUTED)) {
+            stepHelper.runAsGroup(
+                "Distributed fastSCA",
+                OperationType.INTERNAL,
+                () -> performDistributedSca(bdioResult, scaOptions));
+        }
+        
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> { //Internal: Sig scan publishes it's own status.
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationRunner);
             signatureScanStepRunner.runSignatureScannerOffline(projectNameVersion, dockerTargetData);
@@ -97,19 +116,11 @@ public class IntelligentModeStepRunner {
         CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
 
         if (bdioResult.isNotEmpty()) {
-            if (operationRunner.createBlackDuckPostOptions().shouldDistributeFastSca()) {
-                stepHelper.runAsGroup(
-                    "Distributed fastSCA",
-                    OperationType.INTERNAL,
-                    () -> runDistributedFastSca(blackDuckRunData, bdioResult, scanIdsToWaitFor, codeLocationAccumulator, operationRunner.calculateDetectTimeout())
-                );
-            } else {
-                stepHelper.runAsGroup(
-                    "Upload Bdio",
-                    OperationType.INTERNAL,
-                    () -> uploadBdio(blackDuckRunData, bdioResult, scanIdsToWaitFor, codeLocationAccumulator, operationRunner.calculateDetectTimeout())
-                );
-            }
+        stepHelper.runAsGroup(
+            "Upload Bdio",
+            OperationType.INTERNAL,
+            () -> uploadBdio(blackDuckRunData, bdioResult, scanIdsToWaitFor, codeLocationAccumulator, operationRunner.calculateDetectTimeout())
+        );
         } else {
             logger.debug("No BDIO results to upload. Skipping.");
         }
@@ -199,10 +210,23 @@ public class IntelligentModeStepRunner {
         }
     }
 
-    public void runDistributedFastSca(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, Set<String> scanIdsToWaitFor, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {
+    public void performDistributedSca(BdioResult bdioResult, ScaOptions scaOptions) throws OperationException {
         logger.info("Call fastSCA");
-        logger.info("Generate report");
-        logger.info("Possible upload report");
+        String kbHost = scaOptions.getKbHost();
+        String kbApiToken = scaOptions.getKbApiToken();
+        Set<FastScaEvidence> evidences = convert(bdioResult);
+        File targetFile = new File(scaOptions.getOutputFile(), "fastSCA".concat(OffsetDateTime.now().toString()).concat(".json"));
+        FastScaMetadata meta = new FastScaMetadata(UUID.randomUUID(), "DETECT", "8.9.0", OffsetDateTime.now(), "hackathon", "demo");
+        FastScaReportApi fastScaReportApi = new FastScaReportApi(kbHost, kbHost, 0, kbApiToken, kbApiToken);
+        fastScaReportApi.create(evidences, meta, targetFile);
+    }
+    
+    private Set<FastScaEvidence> convert(BdioResult bdioResult) {
+        List<UploadTarget> identifiedComponents = bdioResult.getUploadTargets();
+        for (UploadTarget component : identifiedComponents) {
+        }
+        Set<FastScaEvidence> evidences = new HashSet<>();
+        return evidences;
     }
     
     public void uploadBdio(BlackDuckRunData blackDuckRunData, BdioResult bdioResult, Set<String> scanIdsToWaitFor, CodeLocationAccumulator codeLocationAccumulator, Long timeout) throws OperationException {

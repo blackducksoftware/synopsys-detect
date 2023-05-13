@@ -48,6 +48,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVers
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
+import com.synopsys.integration.detect.configuration.enumeration.ScaStrategy;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedReducedPersistanceMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
@@ -1703,13 +1704,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .build();
     
-    public static final BooleanProperty DETECT_DISTRIBUTED_FASTSCA =
-        BooleanProperty.newBuilder("detect.distributed.fastsca", false)
-            .setInfo("Distributed Processing of  Scans", DetectPropertyFromVersion.VERSION_9_0_0)
-            .setHelp("If set to true, Detect will process the scan entirely on the client and remove the server as a factor for scalability. There are two submodes: serverless-direct-to-kb and server-as-proxy-to-kb. In the former, KB Host details are needed. In the latter, Black Duck host details are needed.")
-            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
-            .build();
-
     public static final BooleanProperty DETECT_FOLLOW_SYMLINKS =
         BooleanProperty.newBuilder("detect.follow.symbolic.links", true)
             .setInfo("Follow Symbolic Links", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -1764,6 +1758,32 @@ public class DetectProperties {
             .setHelp(
                 "This file will be uploaded to the BDBA worker for scan analysis in an SCA as a service environment.")            
             .setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH)
+            .build();
+    
+    public static final EnumProperty<ScaStrategy> SCA_STRATEGY =
+        EnumProperty.newBuilder("sca.strategy", ScaStrategy.CENTRALIZED, ScaStrategy.class)
+            .setInfo("SCA Strategy", DetectPropertyFromVersion.VERSION_9_0_0)
+            .setHelp("Set the SCA strategy.", "Set the SCA strategy to choose between Distributed SCA or Centralized SCA (default). "
+                        + "Distributed SCA will execute SCA entirely on the client and requires direct or proxy connectivity to a KB. "
+                        + "Centralized SCA will execute SCA with both the client and the server.")
+            .setGroups(DetectGroup.SCA_STRATEGY)
+            .setCategory(DetectCategory.Advanced)
+            .build();
+    
+    public static final NullableStringProperty SCA_KB_URL =
+        NullableStringProperty.newBuilder("sca.kb.url")
+            .setInfo("Specifies KB URL for Distributed Processing of Scans.", DetectPropertyFromVersion.VERSION_9_0_0)
+            .setHelp("This URL is used to communicate with KB for scan analysis in perform distributed fastSCA.")            
+            .setGroups(DetectGroup.SCA_STRATEGY)
+            .setCategory(DetectCategory.Advanced)
+            .build();
+    
+    public static final NullableStringProperty SCA_KB_TOKEN =
+        NullableStringProperty.newBuilder("sca.kb.token")
+            .setInfo("Synopsys Knowledge Base API Token", DetectPropertyFromVersion.VERSION_9_0_0)
+            .setHelp("The access token is used to authenticate with a KB service.")
+            .setGroups(DetectGroup.SCA_STRATEGY)
+            .setCategory(DetectCategory.Advanced)
             .build();
     
     //#endregion Active Properties

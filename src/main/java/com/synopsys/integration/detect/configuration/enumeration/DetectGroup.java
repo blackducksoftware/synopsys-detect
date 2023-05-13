@@ -71,6 +71,7 @@ public enum DetectGroup implements Group {
     PROJECT_SETTING("project setting"),
     REPORT_SETTING("report setting"),
     SEARCH("search"),
+    SCA_STRATEGY("sca"),
     DEFAULT("default");
 
     private final String name;
