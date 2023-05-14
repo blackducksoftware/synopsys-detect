@@ -6,13 +6,13 @@ import java.io.File;
 public class ScaOptions {
     private final Enum<ScaStrategy> strategy;
     private final String kbHost;
-    private final String kbApiToken;
+    private final String licenseKey;
     private final File outputDirectory;
 
-    public ScaOptions(Enum<ScaStrategy> strategy, String kbHost, String kbApiToken, File outputDirectory) {
+    public ScaOptions(Enum<ScaStrategy> strategy, String kbHost, String licenseKey, File outputDirectory) {
         this.strategy = strategy;
         this.kbHost = kbHost;
-        this.kbApiToken = kbApiToken;
+        this.licenseKey = licenseKey;
         this.outputDirectory = outputDirectory;
     }
 
@@ -24,8 +24,8 @@ public class ScaOptions {
         return kbHost;
     }
 
-    public String getKbApiToken() {
-        return kbApiToken;
+    public String getLicenseKey() {
+        return licenseKey;
     }
 
     public File getOutputFile() {

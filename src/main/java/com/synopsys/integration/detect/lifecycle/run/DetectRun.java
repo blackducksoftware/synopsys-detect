@@ -11,6 +11,7 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.configuration.enumeration.ScaStrategy;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
@@ -20,6 +21,7 @@ import com.synopsys.integration.detect.lifecycle.run.singleton.SingletonFactory;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
 import com.synopsys.integration.detect.lifecycle.run.step.IntelligentModeStepRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.RapidModeStepRunner;
+import com.synopsys.integration.detect.lifecycle.run.step.ScaStepRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.UniversalStepRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExceptionUtility;
@@ -73,7 +75,11 @@ public class DetectRun {
             operationRunner.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio;
             Boolean forceBdio = bootSingletons.getDetectConfigurationFactory().forceBdio();
-            if (!universalToolsResult.getDetectCodeLocations().isEmpty() 
+            if (!universalToolsResult.getDetectCodeLocations().isEmpty() && operationRunner.getScaOptions().getStrategy().equals(ScaStrategy.DISTRIBUTED)) {
+                ScaStepRunner scaStepRunner = new ScaStepRunner(operationRunner, stepHelper, universalToolsResult, nameVersion);
+                scaStepRunner.run();
+                bdio = BdioResult.none();
+            } else if (!universalToolsResult.getDetectCodeLocations().isEmpty()
                     || (productRunData.shouldUseBlackDuckProduct() && !productRunData.getBlackDuckRunData().isOnline() && forceBdio && !universalToolsResult.didAnyFail() && exitCodeManager.getWinningExitCode().isSuccess())) {
                 bdio = stepRunner.generateBdio(universalToolsResult, nameVersion);
             } else {
