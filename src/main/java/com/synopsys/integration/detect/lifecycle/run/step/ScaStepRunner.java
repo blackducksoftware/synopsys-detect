@@ -63,7 +63,7 @@ public class ScaStepRunner {
         File targetFile = new File(scaOptions.getOutputFile(), "fastSCA".concat(scanId.toString()).concat(".json"));
         FastScaMetadata meta = new FastScaMetadata(scanId, "DETECT", "8.9.0", OffsetDateTime.now(), 
                 nameVersion.getName(), nameVersion.getVersion());
-        FastScaReportApi fastScaReportApi = new FastScaReportApi("https", "kbtest.blackducksoftware.com", 443, "gopanna_hub", "gopanna");
+        FastScaReportApi fastScaReportApi = new FastScaReportApi("https", "kbtest.blackducksoftware.com", 443, licenseKey, "gopanna");
         fastScaReportApi.create(evidences, meta, targetFile);
     }
     
