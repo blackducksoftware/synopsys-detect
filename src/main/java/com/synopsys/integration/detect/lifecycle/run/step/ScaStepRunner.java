@@ -1,7 +1,21 @@
 package com.synopsys.integration.detect.lifecycle.run.step;
 
+import java.io.File;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.jsonldjava.shaded.com.google.common.collect.ImmutableList;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.configuration.enumeration.ScaStrategy;
 import com.synopsys.integration.detect.fastsca.model.FastScaDependency;
 import com.synopsys.integration.detect.fastsca.model.FastScaDependencyTree;
@@ -14,20 +28,9 @@ import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
-import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.status.OperationType;
 import com.synopsys.integration.util.NameVersion;
-import java.io.File;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ScaStepRunner {
     
@@ -63,26 +66,49 @@ public class ScaStepRunner {
         File targetFile = new File(scaOptions.getOutputFile(), "fastSCA".concat(scanId.toString()).concat(".json"));
         FastScaMetadata meta = new FastScaMetadata(scanId, "DETECT", "8.9.0", OffsetDateTime.now(), 
                 nameVersion.getName(), nameVersion.getVersion());
-        FastScaReportApi fastScaReportApi = new FastScaReportApi("https", "kbtest.blackducksoftware.com", 443, licenseKey, "gopanna");
+        FastScaReportApi fastScaReportApi = new FastScaReportApi("https", "kbtest.blackducksoftware.com", 443, "invalid_license_key", "gopanna");
         fastScaReportApi.create(evidences, meta, targetFile);
     }
     
     private Set<FastScaEvidence> convert(UniversalToolsResult universalToolsResult) {
-        Set<FastScaEvidence> evidences = new HashSet<>();
         List<DetectCodeLocation> detectCodeLocations = universalToolsResult.getDetectCodeLocations();
+        
+        SetMultimap<FastScaDependency, FastScaDependencyTree> evidences = HashMultimap.create();
+        
+        // Each Detect code location is a project or subproject within the top-level code target.
         for (DetectCodeLocation detectCodeLocation : detectCodeLocations) {
-            FastScaDependency fastScaDependency = new FastScaDependency("GRADLE", 
-                    detectCodeLocation.getExternalId().createExternalId());
-            List<String> dependencyTree = new ArrayList<>();
-            detectCodeLocation.getDependencyGraph().getDirectDependencies().forEach(action -> {
-                dependencyTree.add(action.getExternalId().createExternalId());
-            });
-            FastScaDependencyTree fastScaDependencyTree = new FastScaDependencyTree(dependencyTree, FastScaDependencyType.DIRECT);
-            Set<FastScaDependencyTree> fastScaDependencyTrees = new HashSet<>();
-            fastScaDependencyTrees.add(fastScaDependencyTree);
-            FastScaEvidence fastScaEvidence = new FastScaEvidence(fastScaDependency, fastScaDependencyTrees);
-            evidences.add(fastScaEvidence);
+        	DependencyGraph dependencyGraph = detectCodeLocation.getDependencyGraph();
+        	Set<Dependency> directDependencies = dependencyGraph.getDirectDependencies();
+        	
+        	int depth = 1;
+        	List<String> ongoingDependencyTree = new ArrayList<>();
+        	String projectExternalId = detectCodeLocation.getExternalId().createExternalId();
+        	ongoingDependencyTree.add(projectExternalId);
+        	
+        	for (Dependency directDependency : directDependencies) {
+        		String externalNamespace = directDependency.getExternalId().getForge().getName();
+        		String externalId = directDependency.getExternalId().createExternalId();
+        		FastScaDependency fastScaDependency = new FastScaDependency(externalNamespace, externalId);
+        		ongoingDependencyTree.add(externalId);
+        		
+        		List<String> dependencyTree = ImmutableList.copyOf(ongoingDependencyTree);
+        		FastScaDependencyType dependencyType = (1 == depth) ? FastScaDependencyType.DIRECT : FastScaDependencyType.TRANSITIVE;
+        		FastScaDependencyTree fastScaDependencyTree = new FastScaDependencyTree(dependencyTree, dependencyType);
+        		evidences.put(fastScaDependency, fastScaDependencyTree);
+        		
+        		depth++;
+        	}
         }
-        return evidences;
+        
+        Set<FastScaEvidence> results = new HashSet<>();
+        
+        Set<FastScaDependency> fastScaDependencies = evidences.keySet();
+        for (FastScaDependency fastScaDependency : fastScaDependencies) {
+        	Set<FastScaDependencyTree> fastScaDependencyTrees = evidences.get(fastScaDependency);
+        	FastScaEvidence fastScaEvidence = new FastScaEvidence(fastScaDependency, fastScaDependencyTrees);
+        	results.add(fastScaEvidence);
+        }
+        
+        return results;
     }
 }
