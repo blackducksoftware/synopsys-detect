@@ -24,11 +24,13 @@ public class NpmLockfileExtractor {
         try {
             String lockText = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
             String packageText = null;
+            String packagePath = null;
             if (packageJson != null) {
                 packageText = FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8);
+                packagePath = packageJson.getPath();
             }
 
-            NpmPackagerResult result = npmLockfilePackager.parseAndTransform(packageJson.getPath(), packageText, lockText);
+            NpmPackagerResult result = npmLockfilePackager.parseAndTransform(packagePath, packageText, lockText);
 
             return new Extraction.Builder()
                 .success(result.getCodeLocation())

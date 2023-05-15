@@ -88,7 +88,7 @@ public class NpmLockfileGraphTransformer {
         }
         
         // add workspaces as direct dependencies
-        if (workspaces.contains(npmDependency.getName())) {
+        if (workspaces != null && workspaces.contains(npmDependency.getName())) {
             dependencyGraph.addDirectDependency(npmDependency);
             
             // add workspace requires

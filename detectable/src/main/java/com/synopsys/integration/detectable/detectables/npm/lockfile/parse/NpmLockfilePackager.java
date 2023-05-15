@@ -56,8 +56,9 @@ public class NpmLockfilePackager {
         dependencyConverter.linkPackagesDependencies(packageLock);
         
         NpmProject project = dependencyConverter.convertLockFile(packageLock, combinedPackageJson);
-
-        DependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies, combinedPackageJson.getWorkspaces());
+        
+        DependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies, 
+                combinedPackageJson == null ? null : combinedPackageJson.getWorkspaces());
         ExternalId projectId = projectIdTransformer.transform(combinedPackageJson, packageLock);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmPackagerResult(projectId.getName(), projectId.getVersion(), codeLocation);
@@ -81,6 +82,10 @@ public class NpmLockfilePackager {
      * Merge the root package.json with any potential workspace package.json files.
      */
     private CombinedPackageJson constructCombinedPackageJson(String rootJsonPath, String packageJsonText) throws IOException {
+        if (packageJsonText == null) {
+            return null;
+        }
+        
         PackageJson packageJson = Optional.ofNullable(packageJsonText)
             .map(content -> gson.fromJson(content, PackageJson.class))
             .orElse(null);
