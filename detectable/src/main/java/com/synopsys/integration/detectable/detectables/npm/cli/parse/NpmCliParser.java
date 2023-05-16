@@ -117,9 +117,23 @@ public class NpmCliParser {
         if (name != null && version != null) {
             ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
             Dependency child = new Dependency(name, version, externalId);
+            
+            // Any workspace dependency is considered a direct dependency
+            boolean directWorkspaceDependency = false;
+            String possibleWorkspaceDependency = Optional.ofNullable(element.getAsJsonPrimitive("resolved"))
+                    .filter(JsonPrimitive::isString)
+                    .map(JsonPrimitive::getAsString)
+                    .orElse(null);
+            
+            if (packageJson.workspaces != null && possibleWorkspaceDependency != null) {
+                directWorkspaceDependency = 
+                        packageJson.workspaces.stream().anyMatch(possibleWorkspaceDependency::contains);
+            }
+            
 
-            populateChildren(graph, child, children, false, packageJson);
-            if (isRootDependency) {
+            populateChildren(graph, child, children, directWorkspaceDependency, packageJson);
+
+            if (isRootDependency || directWorkspaceDependency) {
                 graph.addChildToRoot(child);
             } else {
                 graph.addParentWithChild(parentDependency, child);
