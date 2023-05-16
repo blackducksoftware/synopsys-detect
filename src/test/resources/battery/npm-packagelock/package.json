@@ -17,7 +17,7 @@
   "homepage": "https://github.com/BlackDuckCoPilot/example-npm-travis#readme",
   "dependencies": {
     "express": "^4.15.4",
-    "moment": "^2.18.1",
+    "moment": "^2.29.4",
     "request": "^2.81.0",
     "uuid": "^3.1.0"
   }
