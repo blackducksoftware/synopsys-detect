@@ -7,7 +7,7 @@
     ]
   },
   "dependencies": {
-    "semver": "^7.3.4",
+    "semver": "^7.5.0",
     "workspace-b": "1.0.0"
   }
 }
