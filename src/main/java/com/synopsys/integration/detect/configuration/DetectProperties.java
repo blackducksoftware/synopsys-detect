@@ -1770,18 +1770,42 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
     
-    public static final NullableStringProperty SCA_KB_URL =
-        NullableStringProperty.newBuilder("sca.kb.url")
-            .setInfo("Specifies KB URL for Distributed Processing of Scans.", DetectPropertyFromVersion.VERSION_9_0_0)
-            .setHelp("This URL is used to communicate with KB for scan analysis in perform distributed fastSCA.")            
+    public static final NullableStringProperty SCA_KB_SCHEME =
+        NullableStringProperty.newBuilder("sca.kb.scheme")
+            .setInfo("Specifies KB API Request Scheme for Distributed Processing of Scans.", DetectPropertyFromVersion.VERSION_9_0_0)
+            .setHelp("This Scheme is used to communicate with KB for scan analysis in perform distributed fastSCA.")            
             .setGroups(DetectGroup.SCA_STRATEGY)
             .setCategory(DetectCategory.Advanced)
             .build();
     
-    public static final NullableStringProperty SCA_KB_TOKEN =
-        NullableStringProperty.newBuilder("sca.kb.token")
-            .setInfo("Synopsys Knowledge Base API Token", DetectPropertyFromVersion.VERSION_9_0_0)
-            .setHelp("The access token is used to authenticate with a KB service.")
+    public static final NullableStringProperty SCA_KB_HOST =
+        NullableStringProperty.newBuilder("sca.kb.host")
+            .setInfo("Specifies KB Host for Distributed Processing of Scans.", DetectPropertyFromVersion.VERSION_9_0_0)
+            .setHelp("This Host is used to communicate with KB for scan analysis in perform distributed fastSCA.")            
+            .setGroups(DetectGroup.SCA_STRATEGY)
+            .setCategory(DetectCategory.Advanced)
+            .build();
+    
+    public static final NullableStringProperty SCA_KB_PORT =
+        NullableStringProperty.newBuilder("sca.kb.port")
+            .setInfo("Specifies KB Port for Distributed Processing of Scans.", DetectPropertyFromVersion.VERSION_9_0_0)
+            .setHelp("This Port is used to communicate with KB for scan analysis in perform distributed fastSCA.")            
+            .setGroups(DetectGroup.SCA_STRATEGY)
+            .setCategory(DetectCategory.Advanced)
+            .build();
+    
+    public static final NullableStringProperty SCA_KB_LICENSE =
+        NullableStringProperty.newBuilder("sca.kb.license")
+            .setInfo("Synopsys Knowledge Base License", DetectPropertyFromVersion.VERSION_9_0_0)
+            .setHelp("The license is used to authenticate with a KB service.")
+            .setGroups(DetectGroup.SCA_STRATEGY)
+            .setCategory(DetectCategory.Advanced)
+            .build();
+    
+    public static final NullableStringProperty SCA_USER =
+        NullableStringProperty.newBuilder("sca.user")
+            .setInfo("The SCA User", DetectPropertyFromVersion.VERSION_9_0_0)
+            .setHelp("The user name behind the SCA request.")
             .setGroups(DetectGroup.SCA_STRATEGY)
             .setCategory(DetectCategory.Advanced)
             .build();

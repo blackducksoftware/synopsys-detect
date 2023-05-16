@@ -1142,4 +1142,8 @@ public class OperationRunner {
     public ScaOptions getScaOptions() {
         return detectConfigurationFactory.createScaOptions(directoryManager.getBdioOutputDirectory());
     }
+    
+    public String getDetectVersion() {
+        return detectInfo.getDetectVersion();
+    }
 }

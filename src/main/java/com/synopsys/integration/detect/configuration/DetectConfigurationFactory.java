@@ -530,8 +530,11 @@ public class DetectConfigurationFactory {
     
     public ScaOptions createScaOptions(File outputDirectory) {
         Enum<ScaStrategy> scaStrategy = detectConfiguration.getValue(DetectProperties.SCA_STRATEGY);
-        String kbUrl = detectConfiguration.getNullableValue(DetectProperties.SCA_KB_URL);
-        String kbApiToken = detectConfiguration.getNullableValue(DetectProperties.SCA_KB_TOKEN);
-        return new ScaOptions(scaStrategy, kbUrl, kbApiToken, outputDirectory);
+        String kbScheme = detectConfiguration.getNullableValue(DetectProperties.SCA_KB_SCHEME);
+        String kbHost = detectConfiguration.getNullableValue(DetectProperties.SCA_KB_HOST);
+        int kbPort = Integer.parseInt(detectConfiguration.getNullableValue(DetectProperties.SCA_KB_PORT));
+        String kbLicenseKey = detectConfiguration.getNullableValue(DetectProperties.SCA_KB_LICENSE);
+        String user = detectConfiguration.getNullableValue(DetectProperties.SCA_USER);
+        return new ScaOptions(scaStrategy, kbScheme, kbHost, kbPort, kbLicenseKey, user, outputDirectory);
     }
 }

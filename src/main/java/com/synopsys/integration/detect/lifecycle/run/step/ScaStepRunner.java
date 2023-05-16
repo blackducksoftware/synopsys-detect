@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.jsonldjava.shaded.com.google.common.collect.ImmutableList;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -34,7 +31,6 @@ import com.synopsys.integration.util.NameVersion;
 
 public class ScaStepRunner {
     
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final OperationRunner operationRunner;
     private final StepHelper stepHelper;
     private final UniversalToolsResult universalToolsResult;
@@ -51,62 +47,57 @@ public class ScaStepRunner {
         ScaOptions scaOptions = operationRunner.getScaOptions();
         if (scaOptions.getStrategy().equals(ScaStrategy.DISTRIBUTED)) {
             stepHelper.runAsGroup(
-                "Distributed fastSCA",
+                "Distributed SCA",
                 OperationType.INTERNAL,
                 () -> performDistributedSca(universalToolsResult, scaOptions));
         }
     }
     
     private void performDistributedSca(UniversalToolsResult universalToolsResult, ScaOptions scaOptions) throws OperationException {
-        logger.info("Call fastSCA");
-        String kbHost = scaOptions.getKbHost();
-        String licenseKey = scaOptions.getLicenseKey();
         Set<FastScaEvidence> evidences = convert(universalToolsResult);
         UUID scanId = UUID.randomUUID();
+        String version = operationRunner.getDetectVersion();
         File targetFile = new File(scaOptions.getOutputFile(), "fastSCA".concat(scanId.toString()).concat(".json"));
-        FastScaMetadata meta = new FastScaMetadata(scanId, "DETECT", "8.9.0", OffsetDateTime.now(), 
-                nameVersion.getName(), nameVersion.getVersion());
-        FastScaReportApi fastScaReportApi = new FastScaReportApi("https", "kbtest.blackducksoftware.com", 443, "invalid_license_key", "gopanna");
+        FastScaMetadata meta = new FastScaMetadata(scanId, "DETECT", version, OffsetDateTime.now(), nameVersion.getName(), nameVersion.getVersion());
+        FastScaReportApi fastScaReportApi = new FastScaReportApi(scaOptions.getKbScheme(), scaOptions.getKbHost(), scaOptions.getKbPort(), scaOptions.getInvalidLicenseKey(), scaOptions.getUser());
         fastScaReportApi.create(evidences, meta, targetFile);
     }
     
     private Set<FastScaEvidence> convert(UniversalToolsResult universalToolsResult) {
         List<DetectCodeLocation> detectCodeLocations = universalToolsResult.getDetectCodeLocations();
-        
         SetMultimap<FastScaDependency, FastScaDependencyTree> evidences = HashMultimap.create();
         
         // Each Detect code location is a project or subproject within the top-level code target.
         for (DetectCodeLocation detectCodeLocation : detectCodeLocations) {
-        	DependencyGraph dependencyGraph = detectCodeLocation.getDependencyGraph();
-        	Set<Dependency> directDependencies = dependencyGraph.getDirectDependencies();
-        	
-        	int depth = 1;
-        	List<String> ongoingDependencyTree = new ArrayList<>();
-        	String projectExternalId = detectCodeLocation.getExternalId().createExternalId();
-        	ongoingDependencyTree.add(projectExternalId);
-        	
-        	for (Dependency directDependency : directDependencies) {
-        		String externalNamespace = directDependency.getExternalId().getForge().getName();
-        		String externalId = directDependency.getExternalId().createExternalId();
-        		FastScaDependency fastScaDependency = new FastScaDependency(externalNamespace, externalId);
-        		ongoingDependencyTree.add(externalId);
-        		
-        		List<String> dependencyTree = ImmutableList.copyOf(ongoingDependencyTree);
-        		FastScaDependencyType dependencyType = (1 == depth) ? FastScaDependencyType.DIRECT : FastScaDependencyType.TRANSITIVE;
-        		FastScaDependencyTree fastScaDependencyTree = new FastScaDependencyTree(dependencyTree, dependencyType);
-        		evidences.put(fastScaDependency, fastScaDependencyTree);
-        		
-        		depth++;
-        	}
+            DependencyGraph dependencyGraph = detectCodeLocation.getDependencyGraph();
+            Set<Dependency> directDependencies = dependencyGraph.getDirectDependencies();
+
+            int depth = 1;
+            List<String> ongoingDependencyTree = new ArrayList<>();
+            String projectExternalId = detectCodeLocation.getExternalId().createExternalId();
+            ongoingDependencyTree.add(projectExternalId);
+
+            for (Dependency directDependency : directDependencies) {
+                String externalNamespace = directDependency.getExternalId().getForge().getName();
+                String externalId = directDependency.getExternalId().createExternalId();
+                FastScaDependency fastScaDependency = new FastScaDependency(externalNamespace, externalId);
+                ongoingDependencyTree.add(externalId);
+
+                List<String> dependencyTree = ImmutableList.copyOf(ongoingDependencyTree);
+                FastScaDependencyType dependencyType = (1 == depth) ? FastScaDependencyType.DIRECT : FastScaDependencyType.TRANSITIVE;
+                FastScaDependencyTree fastScaDependencyTree = new FastScaDependencyTree(dependencyTree, dependencyType);
+                evidences.put(fastScaDependency, fastScaDependencyTree);
+
+                depth++;
+            }
         }
         
         Set<FastScaEvidence> results = new HashSet<>();
-        
         Set<FastScaDependency> fastScaDependencies = evidences.keySet();
         for (FastScaDependency fastScaDependency : fastScaDependencies) {
-        	Set<FastScaDependencyTree> fastScaDependencyTrees = evidences.get(fastScaDependency);
-        	FastScaEvidence fastScaEvidence = new FastScaEvidence(fastScaDependency, fastScaDependencyTrees);
-        	results.add(fastScaEvidence);
+            Set<FastScaDependencyTree> fastScaDependencyTrees = evidences.get(fastScaDependency);
+            FastScaEvidence fastScaEvidence = new FastScaEvidence(fastScaDependency, fastScaDependencyTrees);
+            results.add(fastScaEvidence);
         }
         
         return results;
