@@ -62,10 +62,7 @@ public class GoModuleDependencyHelper {
     }
     
     private boolean containsDirectDependencies(List<String> directs, String main, String grphLine) {
-        for (String directMod : directs) {
-            return grphLine.startsWith(main) && grphLine.contains(directMod);
-        }
-        return false;
+        return grphLine.startsWith(main) && directs.stream().anyMatch(grphLine::contains);
     }
     
     private boolean hasDependency(List<String> correctedDependencies, String splitLinePart){
