@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
+import java.util.HashSet;
 
 class GoGraphParserTest {
     @Test
@@ -56,6 +57,6 @@ class GoGraphParserTest {
 
     private List<GoGraphRelationship> generateRelationships(String... goModGraphOutput) {
         GoGraphParser goGraphParser = new GoGraphParser();
-        return goGraphParser.parseRelationshipsFromGoModGraph(Arrays.asList(goModGraphOutput));
+        return goGraphParser.parseRelationshipsFromGoModGraph(new HashSet<>(Arrays.asList(goModGraphOutput)));
     }
 }
