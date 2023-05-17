@@ -129,7 +129,6 @@ public class NpmCliParser {
                 directWorkspaceDependency = 
                         packageJson.workspaces.stream().anyMatch(possibleWorkspaceDependency::contains);
             }
-            
 
             populateChildren(graph, child, children, directWorkspaceDependency, packageJson);
 

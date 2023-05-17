@@ -1,12 +1,19 @@
 package com.synopsys.integration.detectable.detectables.npm.packagejson;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
@@ -19,6 +26,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
@@ -33,25 +41,32 @@ public class PackageJsonExtractor {
         this.npmDependencyTypeFilter = npmDependencyTypeFilter;
     }
 
-    public Extraction extract(InputStream packageJsonInputStream) {
-        Reader packageJsonReader = new InputStreamReader(packageJsonInputStream);
-        PackageJson packageJson = gson.fromJson(packageJsonReader, PackageJson.class);
+    public Extraction extract(File packageJsonFile) throws IOException {
+        String packageText = null;
+        String packagePath = null;
+        if (packageJsonFile != null) {
+            packageText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
+            packagePath = packageJsonFile.getPath();
+        }
 
-        return extract(packageJson);
+        CombinedPackageJsonExtractor extractor = new CombinedPackageJsonExtractor(gson);
+        CombinedPackageJson combinedPackageJson = extractor.constructCombinedPackageJson(packagePath, packageText);
+
+        return extract(combinedPackageJson);
     }
 
-    public Extraction extract(PackageJson packageJson) {
-        List<Dependency> dependencies = transformDependencies(packageJson.dependencies);
-        npmDependencyTypeFilter.ifShouldInclude(NpmDependencyType.DEV, transformDependencies(packageJson.devDependencies), dependencies::addAll);
-        npmDependencyTypeFilter.ifShouldInclude(NpmDependencyType.PEER, transformDependencies(packageJson.peerDependencies), dependencies::addAll);
+    public Extraction extract(CombinedPackageJson combinedPackageJson) {
+        List<Dependency> dependencies = transformDependencies(combinedPackageJson.getDependencies());
+        npmDependencyTypeFilter.ifShouldInclude(NpmDependencyType.DEV, transformDependencies(combinedPackageJson.getDevDependencies()), dependencies::addAll);
+        npmDependencyTypeFilter.ifShouldInclude(NpmDependencyType.PEER, transformDependencies(combinedPackageJson.getPeerDependencies()), dependencies::addAll);
 
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
         dependencyGraph.addChildrenToRoot(dependencies);
 
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
-        String projectName = StringUtils.stripToNull(packageJson.name);
-        String projectVersion = StringUtils.stripToNull(packageJson.version);
+        String projectName = StringUtils.stripToNull(combinedPackageJson.getName());
+        String projectVersion = StringUtils.stripToNull(combinedPackageJson.getVersion());
 
         return new Extraction.Builder()
             .success(codeLocation)
@@ -60,14 +75,17 @@ public class PackageJsonExtractor {
             .build();
     }
 
-    private List<Dependency> transformDependencies(Map<String, String> dependencies) {
-        return dependencies.entrySet().stream()
-            .map(this::entryToDependency)
+    private List<Dependency> transformDependencies(MultiValuedMap<String, String> dependencies) {
+        if (dependencies == null || dependencies.size() == 0) {
+            return Collections.emptyList();
+        }
+        return dependencies.entries().stream()
+            .map(entry -> entryToDependency(entry.getKey(), entry.getValue()))
             .collect(Collectors.toList());
     }
 
-    private Dependency entryToDependency(Map.Entry<String, String> dependencyEntry) {
-        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, dependencyEntry.getKey(), dependencyEntry.getValue());
+    private Dependency entryToDependency(String key, String value) {
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, key, value);
         return new Dependency(externalId);
     }
 

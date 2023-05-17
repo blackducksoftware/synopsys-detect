@@ -22,6 +22,8 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmPro
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJsonExtractor;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.util.NameVersion;
 
@@ -43,7 +45,8 @@ public class NpmLockfilePackager {
     }
 
     public NpmPackagerResult parseAndTransform(@Nullable String rootJsonPath, @Nullable String packageJsonText, String lockFileText, List<NameVersion> externalDependencies) throws IOException {
-        CombinedPackageJson combinedPackageJson = constructCombinedPackageJson(rootJsonPath, packageJsonText);
+        CombinedPackageJsonExtractor extractor = new CombinedPackageJsonExtractor(gson);
+        CombinedPackageJson combinedPackageJson = extractor.constructCombinedPackageJson(rootJsonPath, packageJsonText);
         
         lockFileText = removePathInfoFromPackageName(lockFileText);
 
@@ -77,52 +80,4 @@ public class NpmLockfilePackager {
                 replaceList.toArray(new String[replaceList.size()]));
         return lockFileText;
     }
-
-    /**
-     * Merge the root package.json with any potential workspace package.json files.
-     */
-    private CombinedPackageJson constructCombinedPackageJson(String rootJsonPath, String packageJsonText) throws IOException {
-        if (packageJsonText == null) {
-            return null;
-        }
-        
-        PackageJson packageJson = Optional.ofNullable(packageJsonText)
-            .map(content -> gson.fromJson(content, PackageJson.class))
-            .orElse(null);
-        
-        CombinedPackageJson combinedPackageJson = new CombinedPackageJson();
-        
-        // Take fields that will be related to BD projects from the root project.json
-        combinedPackageJson.setName(packageJson.name);
-        combinedPackageJson.setVersion(packageJson.version);
-        combinedPackageJson.setWorkspaces(packageJson.workspaces);
-        
-        // Add dependencies from the root of the project
-        combinedPackageJson.getDependencies().putAll(packageJson.dependencies);
-        combinedPackageJson.getDevDependencies().putAll(packageJson.devDependencies);
-        combinedPackageJson.getPeerDependencies().putAll(packageJson.peerDependencies);
-        
-        if (packageJson.workspaces != null && rootJsonPath != null) {
-            // If there are workspaces there are additional package.json's we need to parse
-            String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf("/") + 1);
-            
-            for(String workspace : packageJson.workspaces) {
-                String workspaceJsonPath = projectRoot + workspace + "/package.json";
-                
-                String workspaceJsonString 
-                    = FileUtils.readFileToString(new File(workspaceJsonPath), StandardCharsets.UTF_8);
-                
-                PackageJson workspacePackageJson = Optional.ofNullable(workspaceJsonString)
-                        .map(content -> gson.fromJson(content, PackageJson.class))
-                        .orElse(null);
-                
-                combinedPackageJson.getDependencies().putAll(workspacePackageJson.dependencies);
-                combinedPackageJson.getDevDependencies().putAll(workspacePackageJson.devDependencies);
-                combinedPackageJson.getPeerDependencies().putAll(workspacePackageJson.peerDependencies);
-            }
-        }
-        
-        return combinedPackageJson;
-    }
-
 }
