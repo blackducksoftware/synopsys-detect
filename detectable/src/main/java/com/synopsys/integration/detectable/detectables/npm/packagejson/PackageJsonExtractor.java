@@ -2,14 +2,9 @@ package com.synopsys.integration.detectable.detectables.npm.packagejson;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.MultiValuedMap;
@@ -26,8 +21,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class PackageJsonExtractor {
