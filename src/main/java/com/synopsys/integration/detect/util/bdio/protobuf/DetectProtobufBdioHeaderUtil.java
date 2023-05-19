@@ -46,7 +46,7 @@ public class DetectProtobufBdioHeaderUtil {
             null)
             ;
 
-        String tempBdioArchivePath = targetDirectory.toPath().toString() + "/bdio-protobuf.zip";
+        String tempBdioArchivePath = targetDirectory.toPath() + "/bdio-protobuf.zip";
         try (
             FileOutputStream outputStream = new FileOutputStream(tempBdioArchivePath);
             ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
@@ -56,6 +56,6 @@ public class DetectProtobufBdioHeaderUtil {
         }
         File bdioZipFile = new File(tempBdioArchivePath);
         DetectZipUtil.unzip(bdioZipFile, targetDirectory);
-        return new File(targetDirectory.toPath().toString() + "/bdio-header.pb");
+        return new File(targetDirectory.toPath() + "/bdio-header.pb");
     }
 }

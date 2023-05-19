@@ -14,7 +14,7 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 
-import net.minidev.json.JSONObject;
+import com.google.gson.JsonObject;
 
 public class ContainerScanStepRunner {
 
@@ -40,7 +40,6 @@ public class ContainerScanStepRunner {
     }
 
     public void initiateScan() throws IOException, IntegrationException {
-//        File bdioHeaderFile = new File(Application.class.getResource("/test-inputs/bdio-header.pb").getPath()); // temporary
         DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(UUID.randomUUID().toString(), "CONTAINER", projectNameVersion);
         File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(binaryRunDirectory);
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
@@ -52,6 +51,7 @@ public class ContainerScanStepRunner {
         File containerImage = operationRunner.getContainerScanImage();
         String storageServiceEndpoint = "/api/storage/containers/" + scanId;
         String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
+        logger.debug("Uploading container image artifact to storage endpoint: {}", storageServiceEndpoint);
 
         try (Response response = operationRunner.uploadFileToStorageService(
             blackDuckRunData,
@@ -73,8 +73,9 @@ public class ContainerScanStepRunner {
     public void uploadImageMetadataToStorageService() throws IntegrationException {
         String storageServiceEndpoint = "/api/storage/containers/" + scanId + "/message";
         String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-message-1+json";
+        logger.debug("Uploading container image metadata to storage endpoint: {}", storageServiceEndpoint);
 
-        JSONObject imageMetadataObject = operationRunner.createContainerScanImageMetadata(scanId, projectNameVersion);
+        JsonObject imageMetadataObject = operationRunner.createContainerScanImageMetadata(scanId, projectNameVersion);
 
         try (Response response = operationRunner.uploadJsonToStorageService(
             blackDuckRunData,
