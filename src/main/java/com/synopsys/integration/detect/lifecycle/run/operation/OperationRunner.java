@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.bdio2.Bdio;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
@@ -186,8 +187,6 @@ import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
 
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
-
-import net.minidev.json.JSONObject;
 
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -376,17 +375,17 @@ public class OperationRunner {
         return containerImageFile;
     }
 
-    public JSONObject createContainerScanImageMetadata(UUID scanId, NameVersion projectNameVersion) {
+    public JsonObject createContainerScanImageMetadata(UUID scanId, NameVersion projectNameVersion) {
         String scanPersistence = detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT ? "STATEFUL" : "STATELESS";
         String projectGroupName = detectConfigurationFactory.createProjectGroupOptions().getProjectGroup();
 
-        JSONObject imageMetadataObject = new JSONObject();
-        imageMetadataObject.put("scanId", scanId.toString());
-        imageMetadataObject.put("scanType", "CONTAINER");
-        imageMetadataObject.put("scanPersistence", scanPersistence);
-        imageMetadataObject.put("projectName", projectNameVersion.getName());
-        imageMetadataObject.put("projectVersionName", projectNameVersion.getVersion());
-        imageMetadataObject.put("projectGroupName", projectGroupName);
+        JsonObject imageMetadataObject = new JsonObject();
+        imageMetadataObject.addProperty("scanId", scanId.toString());
+        imageMetadataObject.addProperty("scanType", "CONTAINER");
+        imageMetadataObject.addProperty("scanPersistence", scanPersistence);
+        imageMetadataObject.addProperty("projectName", projectNameVersion.getName());
+        imageMetadataObject.addProperty("projectVersionName", projectNameVersion.getVersion());
+        imageMetadataObject.addProperty("projectGroupName", projectGroupName);
 
         return imageMetadataObject;
     }
@@ -396,7 +395,7 @@ public class OperationRunner {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + storageServiceEndpoint);
+        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
         BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
             .postFile(payloadFile, ContentType.create(postContentType))
             .buildBlackDuckResponseRequest(postUrl);
@@ -413,7 +412,7 @@ public class OperationRunner {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + storageServiceEndpoint);
+        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
 
         BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
             .postString(jsonPayload, ContentType.create(postContentType))
@@ -432,7 +431,7 @@ public class OperationRunner {
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
         String scanServicePostEndpoint = getScanServicePostEndpoint();
-        HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + scanServicePostEndpoint);
+        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(scanServicePostEndpoint);
 
         String scanServicePostContentType = getScanServicePostContentType();
         BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
@@ -452,7 +451,7 @@ public class OperationRunner {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        String contentType = RAPID_SCAN_CONTENT_TYPE;
+        final String contentType = RAPID_SCAN_CONTENT_TYPE;
         HttpUrl putUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString()
                 + "/api/developer-scans/" + bdScanId);
 
