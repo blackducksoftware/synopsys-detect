@@ -51,7 +51,7 @@ public class ContainerScanStepRunner {
 
     public void uploadImageToStorageService() throws IntegrationException {
         File containerImage = operationRunner.getContainerScanImage();
-        String storageServiceEndpoint = "/api/storage/containers/" + scanId;
+        String storageServiceEndpoint = String.join("", "/api/storage/containers/", scanId.toString());
         String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
         logger.debug("Uploading container image artifact to storage endpoint: {}", storageServiceEndpoint);
 
@@ -64,8 +64,8 @@ public class ContainerScanStepRunner {
             if (response.isStatusCodeSuccess()) {
                 logger.debug("Container scan image uploaded to storage service.");
             } else {
-                logger.trace("Unable to upload container image." + response.getStatusCode() + " " + response.getStatusMessage());
-                throw new IntegrationException("Unable to upload container image. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                logger.trace("Unable to upload container image. {} {}", response.getStatusCode(), response.getStatusMessage());
+                throw new IntegrationException(String.join(" ", "Unable to upload container image. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
             }
         } catch (IOException | IntegrationException e) {
             throw new IntegrationException(e);
@@ -73,7 +73,7 @@ public class ContainerScanStepRunner {
     }
 
     public void uploadImageMetadataToStorageService() throws IntegrationException {
-        String storageServiceEndpoint = "/api/storage/containers/" + scanId + "/message";
+        String storageServiceEndpoint = String.join("", "/api/storage/containers/", scanId.toString(), "/message");
         String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-message-1+json";
         logger.debug("Uploading container image metadata to storage endpoint: {}", storageServiceEndpoint);
 
@@ -89,7 +89,8 @@ public class ContainerScanStepRunner {
                 logger.debug("Container scan image metadata uploaded to storage service.");
             } else {
                 logger.trace("Unable to upload container image metadata." + response.getStatusCode() + " " + response.getStatusMessage());
-                throw new IntegrationException("Unable to upload container image metadata. Response code: " + response.getStatusCode() + " " + response.getStatusMessage());
+                throw new IntegrationException(String.join(" ", "Unable to upload container image metadata. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
+
             }
         } catch (IOException | IntegrationException e) {
             throw new IntegrationException(e);
