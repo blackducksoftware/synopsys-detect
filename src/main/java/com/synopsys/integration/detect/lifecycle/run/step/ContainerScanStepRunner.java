@@ -22,6 +22,7 @@ public class ContainerScanStepRunner {
     private UUID scanId;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final NameVersion projectNameVersion;
+    private final String projectGroupName;
     private final BlackDuckRunData blackDuckRunData;
     private final File binaryRunDirectory;
 
@@ -30,6 +31,7 @@ public class ContainerScanStepRunner {
         this.projectNameVersion = projectNameVersion;
         this.blackDuckRunData = blackDuckRunData;
         binaryRunDirectory = operationRunner.getDirectoryManager().getBinaryOutputDirectory();
+        projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
     }
 
     public UUID invokeContainerScanningWorkflow() throws IntegrationException, IOException {
@@ -40,7 +42,7 @@ public class ContainerScanStepRunner {
     }
 
     public void initiateScan() throws IOException, IntegrationException {
-        DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(UUID.randomUUID().toString(), "CONTAINER", projectNameVersion);
+        DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(UUID.randomUUID().toString(), "CONTAINER", projectNameVersion, projectGroupName);
         File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(binaryRunDirectory);
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
         String scanIdString = scanId.toString();
