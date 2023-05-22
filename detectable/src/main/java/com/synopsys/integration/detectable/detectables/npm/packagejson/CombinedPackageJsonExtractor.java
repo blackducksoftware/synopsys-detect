@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.npm.packagejson;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
@@ -47,10 +48,11 @@ public class CombinedPackageJsonExtractor {
             String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf("/") + 1);
             
             for(String workspace : packageJson.workspaces) {
-                String workspaceJsonPath = projectRoot + workspace + "/package.json";
+                Path workspaceJsonPath =
+                        Path.of(projectRoot + workspace + "/package.json").normalize();
                 
                 String workspaceJsonString 
-                    = FileUtils.readFileToString(new File(workspaceJsonPath), StandardCharsets.UTF_8);
+                    = FileUtils.readFileToString(new File(workspaceJsonPath.toString()), StandardCharsets.UTF_8);
                 
                 PackageJson workspacePackageJson = Optional.ofNullable(workspaceJsonString)
                         .map(content -> gson.fromJson(content, PackageJson.class))
