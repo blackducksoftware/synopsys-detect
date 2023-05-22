@@ -391,7 +391,7 @@ public class OperationRunner {
     }
 
     public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType)
-        throws IntegrationException {
+        throws IntegrationException, IOException {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
@@ -402,13 +402,17 @@ public class OperationRunner {
 
         try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
             return response;
-        } catch (IntegrationException | IOException e) {
-            throw new IntegrationException("Could not execute file upload request to storage service.");
+        } catch (IntegrationException e) {
+            logger.trace("Could not execute file upload request to storage service.");
+            throw new IntegrationException("Could not execute file upload request to storage service.", e);
+        } catch (IOException e) {
+            logger.trace("I/O error occurred during file upload request.");
+            throw new IOException("I/O error occurred during file upload request to storage service.", e);
         }
     }
 
     public Response uploadJsonToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, String jsonPayload, String postContentType)
-        throws IntegrationException {
+        throws IntegrationException, IOException {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
@@ -420,8 +424,12 @@ public class OperationRunner {
 
         try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
             return response;
-        } catch (IntegrationException | IOException e) {
-            throw new IntegrationException("Could not execute JSON upload request to storage service.");
+        } catch (IntegrationException e) {
+            logger.trace("Could not execute JSON upload request to storage service.");
+            throw new IntegrationException("Could not execute JSON upload request to storage service.", e);
+        } catch (IOException e) {
+            logger.trace("I/O error occurred during JSON upload request.");
+            throw new IOException("I/O error occurred during JSON upload request to storage service.", e);
         }
     }
 
