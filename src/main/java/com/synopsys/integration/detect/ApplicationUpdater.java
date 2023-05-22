@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -17,9 +18,11 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -30,6 +33,9 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.Set;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
@@ -47,7 +53,6 @@ import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 
 import freemarker.template.Version;
-import java.io.FileNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,13 +69,15 @@ public class ApplicationUpdater extends URLClassLoader {
 
     private String blackduckHost = null;
     private String offlineMode = null;
-    private boolean trustCertificate = false;
     private Set<String> proxyIgnoredHosts = new HashSet<>();
     private String[] args;
+    private boolean trustCertificate = false;
     private boolean isAlreadySelfUpdated = false;
     private final DetectInfo detectInfo;
     private final Map<String, String> proxyProperties;
+    private final Map<String, String> springbootEnvMap;
     
+    protected final static String SYS_ENV_PROP_SPRING_BOOT = "SPRING_APPLICATION_JSON";
     protected final static String SYS_ENV_PROP_BLACKDUCK_URL = "BLACKDUCK_URL";
     
     protected final static String SYS_ENV_PROP_DETECT_SOURCE = "DETECT_SOURCE";
@@ -108,9 +115,25 @@ public class ApplicationUpdater extends URLClassLoader {
         proxyProperties = new HashMap<>(7);
         proxyIgnoredHosts = new HashSet<>();
         // System Environment Properties are checked before application arguments.
+        springbootEnvMap = loadSpringBootEnvProperties();
         checkEnvironmentProperties();
         this.args = parseArguments(args);
         detectInfo = new DetectInfoUtility().createDetectInfo();
+    }
+    
+    private Map<String, String> loadSpringBootEnvProperties() {
+        String spingBootEnvironmentPropertyJson = utility.getSysEnvProperty(SYS_ENV_PROP_SPRING_BOOT);
+        if (!StringUtils.isEmpty(spingBootEnvironmentPropertyJson)) {
+            try {
+                return new ObjectMapper()
+                        .readValue(spingBootEnvironmentPropertyJson, 
+                                new TypeReference<LinkedHashMap<String, String>>() {});
+            } catch (JsonProcessingException ex) {
+                logger.error("{} Self-Update of Detect failed to load Spring Boot Environment arguments due to the following exception.", 
+                        LOG_PREFIX, ex);
+            }
+        }
+        return Collections.EMPTY_MAP;
     }
     
     protected boolean selfUpdate() {
@@ -136,11 +159,11 @@ public class ApplicationUpdater extends URLClassLoader {
                             | InstantiationException 
                             | NoSuchMethodException 
                             | InvocationTargetException ex) {
-                logger.error("{} Self-Update of Detect failed due to {}. "
+                logger.error("{} Self-Update of Detect failed due to the following exception. "
                         + "Detect will now continue with existing version.", 
                         LOG_PREFIX, ex);
             } catch (IOException ex) {
-                logger.error("{} Self-Update of Detect failed due to {}. "
+                logger.error("{} Self-Update of Detect failed due to the following exception. "
                         + "Detect will now continue with existing version.", 
                         LOG_PREFIX, ex);
             }
@@ -284,6 +307,35 @@ public class ApplicationUpdater extends URLClassLoader {
             proxyPropertiesPut(ARG_PROXY_USERNAME, utility.getSysEnvProperty(SYS_ENV_PROP_PROXY_HTTP_USERNAME));
             proxyPropertiesPut(ARG_PROXY_PASSWORD, utility.getSysEnvProperty(SYS_ENV_PROP_PROXY_HTTP_PASSWORD));
         }
+        
+        if (!springbootEnvMap.isEmpty()) {
+            updateFromSpringBootPropertiesIfAny();
+        }
+    }
+    
+    private void updateFromSpringBootPropertiesIfAny() {
+        if (springbootEnvMap.containsKey(ARG_BLACKDUCK_URL)) {
+            blackduckHost = springbootEnvMap.get(ARG_BLACKDUCK_URL);
+        }
+        if (springbootEnvMap.containsKey(ARG_BLACKDUCK_OFFLINE_MODE)) {
+            offlineMode = springbootEnvMap.get(ARG_BLACKDUCK_OFFLINE_MODE);
+        }
+        if (springbootEnvMap.containsKey(ARG_TRUST_CERTIFICATE)) {
+            trustCertificate = Boolean.parseBoolean(springbootEnvMap.get(ARG_TRUST_CERTIFICATE));
+        }
+        updateProxyPropertyIfSpringKeyExists(ARG_PROXY_HOST);
+        updateProxyPropertyIfSpringKeyExists(ARG_PROXY_IGNORED_HOSTS);
+        updateProxyPropertyIfSpringKeyExists(ARG_PROXY_NTLM_DOMAIN);
+        updateProxyPropertyIfSpringKeyExists(ARG_PROXY_NTLM_WORKSTATION);
+        updateProxyPropertyIfSpringKeyExists(ARG_PROXY_PASSWORD);
+        updateProxyPropertyIfSpringKeyExists(ARG_PROXY_PORT);
+        updateProxyPropertyIfSpringKeyExists(ARG_PROXY_USERNAME);
+    }
+    
+    private void updateProxyPropertyIfSpringKeyExists(String key) {
+        if (springbootEnvMap.containsKey(key)) {
+            proxyPropertiesPut(key, springbootEnvMap.get(key));
+        }
     }
     
     private void proxyPropertiesPut(String key, String value) {
@@ -311,7 +363,7 @@ public class ApplicationUpdater extends URLClassLoader {
             } else if (argument.contains(ARG_BLACKDUCK_URL)) {
                 blackduckHost = findArgumentValue(it, argument);
             } else if (argument.contains(ARG_TRUST_CERTIFICATE)) {
-                trustCertificate = findArgumentValue(it, argument).toLowerCase().equals("true");
+                trustCertificate = Boolean.parseBoolean(findArgumentValue(it, argument));
             } else if (argument.contains(ARG_PROXY_HOST)) {
                 addProxyPropertyToTempMap(ARG_PROXY_HOST, it, argument, tempProxyProperties);
             } else if (argument.contains(ARG_PROXY_PORT)) {
@@ -511,7 +563,7 @@ public class ApplicationUpdater extends URLClassLoader {
         headers.put(DOWNLOAD_VERSION_HEADER, currentVersion);
         final Request request = new Request(downloadUrl, HttpMethod.GET, null, new HashMap<>(), headers, null);
         ProxyInfo proxyInfo = getProxyInfo();
-        final IntHttpClient intHttpClient = getIntHttpClient(trustCertificate, proxyInfo);
+        final IntHttpClient intHttpClient = getIntHttpClient(proxyInfo);
         try (final Response response = intHttpClient.execute(request)) {
             if (response.isStatusCodeSuccess()) {
                 return handleSuccessResponse(response, installDirectory.getAbsolutePath());
@@ -540,7 +592,7 @@ public class ApplicationUpdater extends URLClassLoader {
         return targetFilePath;
     }
     
-    private IntHttpClient getIntHttpClient(boolean trustCertificate, ProxyInfo proxyInfo) {
+    private IntHttpClient getIntHttpClient(ProxyInfo proxyInfo) {
         final SilentIntLogger silentLogger = new SilentIntLogger();
         silentLogger.setLogLevel(LogLevel.WARN);
         return new IntHttpClient(silentLogger,
