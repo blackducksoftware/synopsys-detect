@@ -344,6 +344,10 @@ public class ApplicationUpdater extends URLClassLoader {
         }
     }
     
+    protected boolean isTrustCertificate() {
+        return trustCertificate;
+    }
+    
     /**
      * Any proxy setting arguments found are loaded into a temporary map so that 
      * they can be discarded entirely if the proxy host and port are not set in the arguments. 
