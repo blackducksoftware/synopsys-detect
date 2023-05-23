@@ -52,7 +52,7 @@ public class ProductBoot {
     public ProductRunData boot(BlackDuckDecision blackDuckDecision, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         if (!blackDuckDecision.shouldRun()) {
             throw new DetectUserFriendlyException(
-                "Your environment was not sufficiently configured to run Black Duck.  See online help at: https://detect.synopsys.com/doc/",
+                "Your environment was not sufficiently configured to run Black Duck.  See online help at: https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/introduction.html",
                 ExitCodeType.FAILURE_CONFIGURATION
             );
 
