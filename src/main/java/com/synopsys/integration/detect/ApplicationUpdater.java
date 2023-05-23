@@ -122,11 +122,11 @@ public class ApplicationUpdater extends URLClassLoader {
     }
     
     private Map<String, String> loadSpringBootEnvProperties() {
-        String spingBootEnvironmentPropertyJson = utility.getSysEnvProperty(SYS_ENV_PROP_SPRING_BOOT);
-        if (!StringUtils.isEmpty(spingBootEnvironmentPropertyJson)) {
+        String springBootEnvironmentPropertyJson = utility.getSysEnvProperty(SYS_ENV_PROP_SPRING_BOOT);
+        if (!StringUtils.isEmpty(springBootEnvironmentPropertyJson)) {
             try {
                 return new ObjectMapper()
-                        .readValue(spingBootEnvironmentPropertyJson, 
+                        .readValue(springBootEnvironmentPropertyJson, 
                                 new TypeReference<LinkedHashMap<String, String>>() {});
             } catch (JsonProcessingException ex) {
                 logger.error("{} Self-Update of Detect failed to load Spring Boot Environment arguments due to the following exception.", 
