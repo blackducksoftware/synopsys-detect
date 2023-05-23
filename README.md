@@ -39,7 +39,7 @@ The latest quickstart documentation is [here](https://sig-product-docs.synopsys.
 
 The latest full documentation is [here](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/introduction.html).
 
-Links to certain earlier versions can be found [here](https://community.synopsys.com/s/user-guide-archive) and [here](https://detect.synopsys.com/docs).
+Links to certain earlier versions can be found [here](https://community.synopsys.com/s/user-guide-archive).
 
 ## Getting help
 
