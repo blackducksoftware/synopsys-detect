@@ -12,7 +12,7 @@ The Self Update feature will call the `/api/tools/detect` API to check for the e
 
 If there exists no mapping in [blackduck_product_name], or if the current version of [solution_name] matches the mapped version in [blackduck_product_name], or any issue occurs during the execution of the Self Update feature, then [solution_name] will continue with the current version to execute the scan.
 
-If the [solution_name] URL of the [solution_name] .jar file to download and run has been hardcoded via [solution_name] property `DETECT_SOURCE` environment variable or the [solution_name] version set by the `DETECT_LATEST_RELEASE_VERSION` or `DETECT_VERSION_KEY` variables, self update will not occur.
+If the [solution_name] URL of the [solution_name] .jar file to download and run has been hardcoded via [solution_name] property `DETECT_SOURCE` environment variable or the [solution_name] version set by the `DETECT_LATEST_RELEASE_VERSION` or `DETECT_VERSION_KEY` variables, self update will not occur. These are optional System environment properties used by Detect upgrade scripts.
 
 If the [blackduck_product_name] “Internally Hosted” option has been selected and a [solution_name] download location has not been provided, the feature will not be enabled.
 
@@ -37,7 +37,7 @@ Update to version allowed (8.9.0+):
 
 2023-05-05 12:33:53 EDT WARN  \[main] - Detect-Self-Updater:  The Detect version 8.9.2 mapped at Black Duck server is eligible for downgrade from the current version of 8.10.0. The self-update feature is available from 8.9.0 onwards.
 
-2023-05-05 12:33:53 EDT INFO  \[main] - Detect-Self-Updater:  Centrally managed version of Detect was downloaded successfully and is ready to be run: /Users/gopanna/tmp/synopsys-detect-8.9.2.jar.
+2023-05-05 12:33:53 EDT INFO  \[main] - Detect-Self-Updater:  Centrally managed version of Detect was downloaded successfully and is ready to be run: /Users/testuser/tmp/synopsys-detect-8.9.2.jar.
 ```
 
 Current version of [solution_name] matches the mapped version or there is no mapped version in [blackduck_product_name]:   

@@ -41,4 +41,4 @@ The risk report requires that the following fonts are installed:
 ## Supported [solution_name] versions and Service duration
 
 * For information about support and service durations for [solution_name] versions, consult the   
-<xref href="Support-and-Service-Schedule.dita scope="peer"> Support and Service Schedule.<data name="facets" value="pubname=blackduck-compatibility"/>
+<xref href="Support-and-Service-Schedule.dita" scope="peer"> Support and Service Schedule.<data name="facets" value="pubname=blackduck-compatibility"/>

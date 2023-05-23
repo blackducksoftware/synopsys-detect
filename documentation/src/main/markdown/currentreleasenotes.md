@@ -4,7 +4,9 @@
 
 ### New features
 
-* [solution_name] Self Update feature will allow customers who choose to enable Centralized [solution_name] Version Management in [blackduck_product_name] to automate the update of [solution_name] across their pipelines. The Self Update feature will call the '/api/tools/detect' API to check for the existence of a mapped [solution_name] version in [blackduck_product_name]. If a version has been mapped, the API will redirect the request to download the specified version and the current execution of [solution_name] will invoke it to execute the requested scan. If no mapping exists, the current version of [solution_name] matches the mapped version in [blackduck_product_name], or if there is any issue during the execution of the Self Update feature, then [solution_name] will continue with the currently deployed version to execute the scan. Centralized [solution_name] Version Management feature support in [blackduck_product_name] is available from [blackduck_product_name] version 2023.4.0 onwards.
+* [solution_name] Self Update feature will allow customers who choose to enable Centralized [solution_name] Version Management in [blackduck_product_name] to automate the update of [solution_name] across their pipelines. The Self Update feature will call the '/api/tools/detect' API to check for the existence of a mapped [solution_name] version in [blackduck_product_name]. If a version has been mapped, the API will redirect the request to download the specified version and the current execution of [solution_name] will invoke it to execute the requested scan. If no mapping exists, the current version of [solution_name] matches the mapped version in [blackduck_product_name], or if there is any issue during the execution of the Self Update feature, then [solution_name] will continue with the currently deployed version to execute the scan.
+	* Centralized [solution_name] Version Management feature support in [blackduck_product_name] is available from [blackduck_product_name] version 2023.4.0 onwards.
+	* See [Version Management](downloadingandinstalling/selfupdatingdetect.md) for more details.
 
 ### Changed features
 
@@ -14,7 +16,6 @@
 ### Resolved issues
 
 * (IDETECT-3613) Resolved an issue where running a scan with `detect.maven.build.command=-Dverbose` caused a KB mismatch issue for omitted transitive dependencies.
-* (IDETECT-3657) Resolved an issue where intelligent persistent scans would fail if a project or version name included non-ASCII characters.
 
 ### Dependency updates
 
