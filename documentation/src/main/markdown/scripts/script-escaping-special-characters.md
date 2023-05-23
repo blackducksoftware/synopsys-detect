@@ -35,7 +35,7 @@ This section describes running
 [powershell_script_name] in a [Windows Command Prompt](https://en.wikipedia.org/wiki/Cmd.exe)
 session.
 
-When an argument contains a space, comma or other non quote special character, you can wrap the argument in single quotes, or escape the special character with a backtick (`). The quotes can surround either the value or the entire argument. 
+When an argument contains a space or other non quote special character, you can wrap the argument in single quotes, or escape the special character with a backtick (`). The quotes can surround either the value or the entire argument. 
 
 For example:
 ```
@@ -47,9 +47,14 @@ powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://d
 
 # name: Project Test
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect" --detect.project.name=Project` Test
+```   
 
+When an argument contains a comma, you must wrap the argument in single quotes, and escape the special character with a backtick (`).   
+
+For example:
+```
 # name: Project,Test
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect" --detect.project.name=Project`,Test
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect" --detect.project.name='Project`,Test'
 ```
 
 You can include a single quote by doubling it:
