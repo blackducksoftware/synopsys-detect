@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
@@ -47,7 +50,10 @@ public class CombinedPackageJsonExtractor {
             // If there are workspaces there are additional package.json's we need to parse
             String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf("/") + 1);
             
-            for(String workspace : packageJson.workspaces) {
+            List<String> convertedWorkspaces = 
+                    convertWorkspaceWildcards(projectRoot, packageJson.workspaces);
+            
+            for(String workspace : convertedWorkspaces) {
                 Path workspaceJsonPath =
                         Path.of(projectRoot + workspace + "/package.json").normalize();
                 
@@ -65,5 +71,28 @@ public class CombinedPackageJsonExtractor {
         }
         
         return combinedPackageJson;
+    }
+
+    // TODO confirm works with ./directory/* and directory/*
+    private List<String> convertWorkspaceWildcards(String projectRoot, List<String> workspaces) {
+        List<String> convertedWorkspaces = new ArrayList<>();
+        
+        for (String workspace : workspaces) {
+            if (!workspace.contains("*")) {
+                convertedWorkspaces.add(workspace);
+            } else {
+                // TODO currently only handling one wildcard
+                int wildcardIndex = workspace.lastIndexOf(File.separator);
+                String mainWorkspace = workspace.substring(0, wildcardIndex + 1);
+                
+                File mainWorkspaceDirectory = new File(projectRoot + File.separator + mainWorkspace);
+                File[] childWorkspaces = mainWorkspaceDirectory.listFiles(File::isDirectory);
+                Arrays.stream(childWorkspaces)
+                    .map(File::getPath)
+                    .forEach(convertedWorkspaces::add);   
+            }
+        }
+        
+        return convertedWorkspaces;
     }
 }
