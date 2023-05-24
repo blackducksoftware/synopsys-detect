@@ -27,6 +27,7 @@ public class ProjectInspectorParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Gson gson;
     private final ExternalIdFactory externalIdFactory;
+    private static final String MODULES_KEY = "Modules";
 
     public ProjectInspectorParser(Gson gson, ExternalIdFactory externalIdFactory) {
         this.gson = gson;
@@ -34,7 +35,6 @@ public class ProjectInspectorParser {
     }
 
     public List<CodeLocation> parse(File outputFile) {
-
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         if (outputFile == null || !outputFile.exists() || !outputFile.isFile()) {
@@ -48,27 +48,37 @@ public class ProjectInspectorParser {
             reader.beginObject();
             while (reader.hasNext()) {
                 String moduleName = reader.nextName();
-                if (moduleName != null && moduleName.equals("Modules")) {
-                    reader.beginObject();
-                    while (reader.hasNext()) {
-                        String moduleId = reader.nextName();
-                        if (moduleId != null) {
-                            JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
-                            ProjectInspectorModule projectInspectorModule = gson.fromJson(module, ProjectInspectorModule.class);
-                            codeLocations.add(codeLocationFromModule(projectInspectorModule));
-                        }
-                    }
-                    reader.endObject();
+                if (moduleName != null && moduleName.equals(MODULES_KEY)) {
+                    codeLocations = processModules(reader);
                 } else {
                     reader.skipValue();
                 }
             }
             reader.endObject();
-        } catch (IOException e) {
-            logger.error("An error occurred while reading inspection.json file: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("An error occurred while reading inspection.json file", e);
         }
         return codeLocations;
     }
+
+    public List<CodeLocation> processModules(JsonReader reader) throws IOException {
+        List<CodeLocation> codeLocations = new ArrayList<>();
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String moduleId = reader.nextName();
+            if (moduleId != null) {
+                JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
+                ProjectInspectorModule projectInspectorModule = gson.fromJson(module, ProjectInspectorModule.class);
+                CodeLocation codeLocation = codeLocationFromModule(projectInspectorModule);
+                codeLocations.add(codeLocation);
+            }
+        }
+        reader.endObject();
+
+        return codeLocations;
+    }
+
 
     public CodeLocation codeLocationFromModule(ProjectInspectorModule module) {
         Map<String, Dependency> lookup = new HashMap<>();
