@@ -91,7 +91,7 @@ public class GoModuleDependencyHelper {
         if (trackPath != null && !trackPath.isEmpty()) {
             for (String tp : trackPath) {
                 String parent = directs.stream()
-                        .filter(directMod -> directMod.contains(tp) || tp.contains(directMod.replaceAll("@.*","")))
+                        .filter(directMod -> tp.contains(directMod.replaceAll("@.*","")))
                         .findFirst()
                         .orElse(null);
                 if (parent != null) { // if real direct is found... otherwise do nothing
