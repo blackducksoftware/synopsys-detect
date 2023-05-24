@@ -951,7 +951,7 @@ public class DetectProperties {
     public static final NullablePathProperty DETECT_JAVA_PATH =
         NullablePathProperty.newBuilder("detect.java.path")
             .setInfo("Java Executable", DetectPropertyFromVersion.VERSION_5_0_0)
-            .setHelp("Path to the java executable.", "If set, Detect will use the given java executable instead of searching for one.")
+            .setHelp("Path to the Java executable used by Docker Inspector.", "If set, Detect will use the given Java executable instead of searching for one.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
