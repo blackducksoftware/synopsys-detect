@@ -49,12 +49,15 @@ powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://d
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect" --detect.project.name=Project` Test
 ```   
 
-When an argument contains a comma, you must wrap the argument in single quotes, and escape the special character with a backtick (`).   
+When an argument contains a comma, you must wrap the argument in single quotes, and escape the special character with a backtick (`). In the case of a name with a comma and a space, you would use a backtick in front of both the comma and space.
 
 For example:
 ```
 # name: Project,Test
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect" --detect.project.name='Project`,Test'
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect" --detect.project.name='Project`,Test'   
+
+# name: Project, Test
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect" --detect.project.name='Project`,` Test'
 ```
 
 You can include a single quote by doubling it:
