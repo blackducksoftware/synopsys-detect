@@ -26,6 +26,7 @@ public class ContainerScanStepRunner {
     private final String projectGroupName;
     private final BlackDuckRunData blackDuckRunData;
     private final File binaryRunDirectory;
+    private final File containerImage;
 
     public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) {
         this.operationRunner = operationRunner;
@@ -33,6 +34,7 @@ public class ContainerScanStepRunner {
         this.blackDuckRunData = blackDuckRunData;
         binaryRunDirectory = operationRunner.getDirectoryManager().getBinaryOutputDirectory();
         projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
+        containerImage = operationRunner.getContainerScanImage();
     }
 
     public UUID invokeContainerScanningWorkflow() throws IntegrationException, IOException {
@@ -43,13 +45,11 @@ public class ContainerScanStepRunner {
     }
 
     private String getContainerScanCodeLocationName() {
-        File containerImage = operationRunner.getContainerScanImage();
         CodeLocationNameManager codeLocationNameManager = operationRunner.getCodeLocationNameManager();
         return codeLocationNameManager.createContainerScanCodeLocationName(containerImage, projectNameVersion.getName(), projectNameVersion.getVersion());
     }
 
     public void initiateScan() throws IOException, IntegrationException {
-
         DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(
             UUID.randomUUID().toString(),
             "CONTAINER",
@@ -63,7 +63,6 @@ public class ContainerScanStepRunner {
     }
 
     public void uploadImageToStorageService() throws IntegrationException {
-        File containerImage = operationRunner.getContainerScanImage();
         String storageServiceEndpoint = String.join("", "/api/storage/containers/", scanId.toString());
         String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
         logger.debug("Uploading container image artifact to storage endpoint: {}", storageServiceEndpoint);
