@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
@@ -41,8 +42,20 @@ public class ContainerScanStepRunner {
         return scanId;
     }
 
+    private String getContainerScanCodeLocationName() {
+        File containerImage = operationRunner.getContainerScanImage();
+        CodeLocationNameManager codeLocationNameManager = operationRunner.getCodeLocationNameManager();
+        return codeLocationNameManager.createContainerScanCodeLocationName(containerImage, projectNameVersion.getName(), projectNameVersion.getVersion());
+    }
+
     public void initiateScan() throws IOException, IntegrationException {
-        DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(UUID.randomUUID().toString(), "CONTAINER", projectNameVersion, projectGroupName);
+
+        DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(
+            UUID.randomUUID().toString(),
+            "CONTAINER",
+            projectNameVersion,
+            projectGroupName,
+            getContainerScanCodeLocationName());
         File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(binaryRunDirectory);
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
         String scanIdString = scanId.toString();
