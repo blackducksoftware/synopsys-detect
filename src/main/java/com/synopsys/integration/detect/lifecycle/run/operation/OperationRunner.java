@@ -54,6 +54,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectorToolOptions;
+import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -108,6 +109,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.PublishSi
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
+import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio2FileOperation;
@@ -366,11 +368,19 @@ public class OperationRunner {
         return RAPID_SCAN_CONTENT_TYPE;
     }
 
-    public File getContainerScanImage() {
-        Optional<Path> containerImageFilePath = detectConfigurationFactory.getContainerScanFilePath();
+    public File getContainerScanImage(Gson gson) throws IntegrationException, IOException, DetectUserFriendlyException {
+        Optional<String> containerImageFilePath = detectConfigurationFactory.getContainerScanFilePath();
         File containerImageFile = null;
         if (containerImageFilePath.isPresent()) {
-            containerImageFile = containerImageFilePath.get().toFile();
+            String containerImageUri = containerImageFilePath.get();
+            String targetPathName = String.join("", getDirectoryManager().getBinaryOutputDirectory().toString(), "/targetImage");
+            if (containerImageUri.startsWith("http")) {
+                ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
+                ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
+                return artifactResolver.downloadArtifact(new File(targetPathName), containerImageUri);
+            } else {
+                containerImageFile = new File(containerImageUri);
+            }
         }
         return containerImageFile;
     }

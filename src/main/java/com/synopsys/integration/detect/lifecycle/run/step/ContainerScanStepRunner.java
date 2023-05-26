@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
@@ -20,21 +22,23 @@ public class ContainerScanStepRunner {
 
     private final OperationRunner operationRunner;
     private UUID scanId;
+    private final Gson gson;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final NameVersion projectNameVersion;
     private final String projectGroupName;
     private final BlackDuckRunData blackDuckRunData;
     private final File binaryRunDirectory;
 
-    public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) {
+    public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData, Gson gson) {
         this.operationRunner = operationRunner;
         this.projectNameVersion = projectNameVersion;
         this.blackDuckRunData = blackDuckRunData;
         binaryRunDirectory = operationRunner.getDirectoryManager().getBinaryOutputDirectory();
         projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
+        this.gson = gson;
     }
 
-    public UUID invokeContainerScanningWorkflow() throws IntegrationException, IOException {
+    public UUID invokeContainerScanningWorkflow() throws IntegrationException, IOException, DetectUserFriendlyException {
         initiateScan();
         uploadImageToStorageService();
         uploadImageMetadataToStorageService();
@@ -49,8 +53,8 @@ public class ContainerScanStepRunner {
         logger.debug("Scan initiated with scan service. Scan ID received: {}", scanIdString);
     }
 
-    public void uploadImageToStorageService() throws IntegrationException {
-        File containerImage = operationRunner.getContainerScanImage();
+    public void uploadImageToStorageService() throws IntegrationException, DetectUserFriendlyException, IOException {
+        File containerImage = operationRunner.getContainerScanImage(gson);
         String storageServiceEndpoint = String.join("", "/api/storage/containers/", scanId.toString());
         String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
         logger.debug("Uploading container image artifact to storage endpoint: {}", storageServiceEndpoint);

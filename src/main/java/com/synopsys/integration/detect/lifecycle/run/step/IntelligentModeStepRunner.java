@@ -131,7 +131,7 @@ public class IntelligentModeStepRunner {
         });
 
         stepHelper.runToolIfIncluded(DetectTool.CONTAINER_SCAN, "Container Scanner", () -> {
-            ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData);
+            ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData, gson);
             UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
             scanIdsToWaitFor.add(scanId.toString());
         });

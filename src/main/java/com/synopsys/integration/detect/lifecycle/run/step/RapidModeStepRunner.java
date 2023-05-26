@@ -94,7 +94,7 @@ public class RapidModeStepRunner {
                 invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, true, scaaasFilePath.get());
             } else {
                 logger.debug("Invoking non-SCAaaS container scan.");
-                ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData);
+                ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData, gson);
                 UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
 
                 String statelessScanEndpoint = operationRunner.getScanServicePostEndpoint();
