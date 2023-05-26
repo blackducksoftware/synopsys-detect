@@ -93,7 +93,10 @@ public class DetectProperties {
     public static final NullableStringProperty BLACKDUCK_PROXY_HOST =
         NullableStringProperty.newBuilder("blackduck.proxy.host")
             .setInfo("Proxy Host", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Hostname for proxy server.")
+            .setHelp(
+			"Hostname of the proxy server.",
+			"Schema/protocol is not accepted by this parameter.")
+			.setExample("--blackduck.proxy.host=<Proxy_IP/URL>:port")
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -137,7 +140,7 @@ public class DetectProperties {
     public static final NullableStringProperty BLACKDUCK_PROXY_PORT =
         NullableStringProperty.newBuilder("blackduck.proxy.port")
             .setInfo("Proxy Port", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Proxy port.")
+            .setHelp("Proxy port number.")
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
             .build();
