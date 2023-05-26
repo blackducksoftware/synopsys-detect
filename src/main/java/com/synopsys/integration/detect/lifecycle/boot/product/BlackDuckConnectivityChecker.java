@@ -64,7 +64,6 @@ public class BlackDuckConnectivityChecker {
                 logger.debug("Roles: " + roles.stream().map(RoleAssignmentView::getName).distinct().collect(Collectors.joining(", ")));
 
                 BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
-                blackDuckApiClient.setBlackDuckVersion(null);
                 List<UserGroupView> groups = blackDuckApiClient.getAllResponses(userView.metaMultipleResponses(USERGROUPS));
                 logger.debug("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
             }
