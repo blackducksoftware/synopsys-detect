@@ -30,6 +30,8 @@ public class DetectBomScanWaitJob implements ResilientJob<BomStatusScanView> {
         if (initialResponse.getStatus() != BomStatusScanStatusType.BUILDING) {
             complete = true;
             scanResponse = initialResponse;
+        } else {
+            String breakHere = "";
         }
     }
 
