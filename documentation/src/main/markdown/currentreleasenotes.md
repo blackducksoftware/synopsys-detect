@@ -1,5 +1,9 @@
 # Current Release notes
 
+## Version 8.10.0
+
+### Resolved issues
+
 ## Version 8.9.0
 
 ### New features
