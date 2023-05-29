@@ -1,5 +1,11 @@
 # Current Release notes
 
+## Version 8.10.0
+
+### Resolved issues
+
+* (IDETECT-3776) Resolved misclassification issues for certain components in the `go.mod` file by improving identification of direct and indirect dependencies.
+
 ## Version 8.9.0
 
 ### New features
