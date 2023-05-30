@@ -1,10 +1,10 @@
 # Running with [blackduck_product_name]
 
-[solution_name] can be used with [blackduck_product_name] to perform Software Composition Analysis (SCA).
+[solution_name] can be used with multiple Synopsys platforms and [blackduck_product_name] to perform Software Composition Analysis (SCA).
 
 ## Overview
 
-When [blackduck_product_name] connection details are provided, [solution_name] executes
+Running with [blackduck_product_name] and connection details are provided, [solution_name] executes
 the following by default:
 
 * The [detector tool](../../components/detectors.md), which runs the appropriate package manager-specific detector; the Maven detector
