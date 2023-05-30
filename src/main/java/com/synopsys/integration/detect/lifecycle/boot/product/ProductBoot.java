@@ -106,8 +106,6 @@ public class ProductBoot {
                 );
             }
             
-            
-            
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
             setBlackDuckVersionLevel(blackDuckServicesFactory, blackDuckConnectivityResult);
             BlackDuckRunData bdRunData = null;
