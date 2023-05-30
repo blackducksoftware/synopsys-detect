@@ -33,7 +33,7 @@ You can run [solution_name] in offline mode using the [offline mode property](..
 
 ## BDIO format
 
-[solution_name] produces dependency information for [blackduck_product_name] in Black Duck Input Output (BDIO) format files.
-[solution_name] now only supports generating BDIO version 2 documents.
+[solution_name] produces dependency information for [blackduck_product_name], and other Synopsys products and platforms, in [blackduck_product_name] Input Output (BDIO) format files.
+[solution_name] supports generating BDIO version 2 documents.
 
 
