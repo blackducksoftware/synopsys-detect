@@ -6,6 +6,10 @@
 
 * (IDETECT-3776) Resolved an issue with not detecting certain components in `go.mod` files as transitive dependencies when marked with `// indirect`, by improving identification of direct and indirect dependencies.
 
+### Dependency updates
+
+* Upgraded Spring Boot to version 2.7.12 to resolve [CVE-2023-20883](https://nvd.nist.gov/vuln/detail/CVE-2023-20883)
+
 ## Version 8.9.0
 
 ### New features
