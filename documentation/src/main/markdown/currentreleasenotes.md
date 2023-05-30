@@ -1,5 +1,11 @@
 # Current Release notes
 
+## Version 8.10.0
+
+### Resolved issues
+
+* (IDETECT-3657) Resolved an issue where intelligent persistent scans would fail if a project or version name included non-ASCII characters. 
+
 ## Version 8.9.0
 
 ### New features
