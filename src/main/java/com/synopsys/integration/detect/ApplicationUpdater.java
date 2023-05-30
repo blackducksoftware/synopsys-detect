@@ -263,7 +263,7 @@ public class ApplicationUpdater extends URLClassLoader {
             final Map<String, Class<?>> classMap = new HashMap<>();
             try (JarFile jarFile = new JarFile(pathToJar)) {
                 final Enumeration<JarEntry> jarEntryEnum = jarFile.entries();
-                logger.info("{} Number of entries in downloaded zip: {}", LOG_PREFIX, jarFile.size());
+                logger.debug("{} Number of entries in downloaded zip: {}", LOG_PREFIX, jarFile.size());
                 final URL[] urls = { new URL("jar:file:" + pathToJar + "!/") };
                 try (final URLClassLoader urlClassLoader = URLClassLoader.newInstance(urls)) {
                     while (jarEntryEnum.hasMoreElements()) {
