@@ -186,7 +186,7 @@ public class ApplicationUpdater extends URLClassLoader {
             newVersionString = getVersionFromDetectFileName(newFileName);
         }
         if (response.isStatusCodeSuccess() && newVersionString != null) {
-            logger.info("{} Old version: {},New Version from header: {}", LOG_PREFIX, currentInstalledVersion, newVersionString);
+            logger.info("{} Old version: {}, New Version from header: {}", LOG_PREFIX, currentInstalledVersion, newVersionString);
             if (StringUtils.isNotBlank(newVersionString)
                 && !newVersionString.equals(currentInstalledVersion)
                 && !isDownloadVersionTooOld(currentInstalledVersion, newVersionString)) {
@@ -244,7 +244,7 @@ public class ApplicationUpdater extends URLClassLoader {
             logger.info("{} Centrally managed version of Detect was downloaded successfully and is ready to be run: {}", LOG_PREFIX, newJarFile.getAbsolutePath());
             return newJarFile;
         } else {
-            throw new IntegrationException(String.format("Failed to make %s executable. Please permissions of the parent directory and the file.", newJarFile.getAbsolutePath()));
+            throw new IntegrationException(String.format("Failed to make %s executable. Please check permissions of the parent directory and the file.", newJarFile.getAbsolutePath()));
         }
     }
     
@@ -616,7 +616,7 @@ public class ApplicationUpdater extends URLClassLoader {
             final File newJarFile = targetFilePath.toFile();
             String newFileName = targetFilePath.getFileName().toString();
             if (isValidDetectFileName(newFileName)) {
-                logger.debug("{} New File Name: {}, new version string: {}", LOG_PREFIX, newFileName, newVersionString);
+                logger.debug("{} New File Name: {}, New Version String: {}", LOG_PREFIX, newFileName, newVersionString);
                 return validateDownloadedJar(newJarFile);
             }
         }
