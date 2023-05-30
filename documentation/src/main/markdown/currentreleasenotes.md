@@ -1,5 +1,11 @@
 # Current Release notes
 
+## Version 8.10.0
+
+### Resolved issues
+
+* (IDETECT-3776) Resolved an issue with not detecting certain components in `go.mod` files as transitive dependencies when marked with `// indirect`, by improving identification of direct and indirect dependencies.
+
 ## Version 8.9.0
 
 ### New features
