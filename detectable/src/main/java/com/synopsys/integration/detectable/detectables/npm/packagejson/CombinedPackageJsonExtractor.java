@@ -55,14 +55,16 @@ public class CombinedPackageJsonExtractor {
             List<String> convertedWorkspaces = 
                     convertWorkspaceWildcards(projectRoot, packageJson.workspaces);
             
-            for(String workspace : convertedWorkspaces) {
+            for(String convertedWorkspace : convertedWorkspaces) {
                 Path workspaceJsonPath =
-                        Path.of(workspace + "/package.json").normalize();
+                        Path.of(convertedWorkspace + "/package.json").normalize();
                 
                 // We are looking for a package.json but they aren't always where we expect them.
                 // Don't try to read a file that doesn't exist.
                 if (!Files.exists(workspaceJsonPath)) {
                     continue;
+                } else {
+                    combinedPackageJson.getConvertedWorkspaces().add(convertedWorkspace);
                 }
                 
                 String workspaceJsonString 
