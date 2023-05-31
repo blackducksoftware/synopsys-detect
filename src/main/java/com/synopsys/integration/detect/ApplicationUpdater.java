@@ -611,11 +611,11 @@ public class ApplicationUpdater extends URLClassLoader {
         final Path targetFilePath = Paths.get(installDirAbsolutePath, "/", response.getHeaderValue(DOWNLOADED_FILE_NAME));
         if (targetFilePath != null) {
             if (!targetFilePath.toFile().exists()) {
-                logger.info("{} Writing to file {}.", LOG_PREFIX, targetFilePath.toAbsolutePath());
+                logger.debug("{} Writing to file {}.", LOG_PREFIX, targetFilePath.toAbsolutePath());
                 try(final ReadableByteChannel readableByteChannel = Channels.newChannel(response.getContent())) {
                     try(final FileOutputStream fileOutputStream = new FileOutputStream(targetFilePath.toFile())) {
                         fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-                        logger.info("{} Successfully wrote response to file {}.", LOG_PREFIX, targetFilePath.toAbsolutePath());
+                        logger.debug("{} Successfully downloaded new Detect version to {}.", LOG_PREFIX, targetFilePath.toAbsolutePath());
                     }
                 }
             }
