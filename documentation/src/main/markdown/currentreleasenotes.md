@@ -4,7 +4,7 @@
 
 ### Resolved issues
 
-* (IDETECT-3641) Resolved scan failure caused by leading/trailing spaces specified within quotes for `--detect.project.name` or `--detect.project.version.name` properties.
+* (IDETECT-3641) Resolved scan failure caused by leading/trailing spaces specified within quotes for `detect.project.name` or `detect.project.version.name` properties.
 * (IDETECT-3776) Resolved an issue with not detecting certain components in `go.mod` files as transitive dependencies when marked with `// indirect`, by improving identification of direct and indirect dependencies.
 * (IDETECT-3817) Improved handling of large inspection results to prevent OutOfMemory exceptions and optimize memory usage.
 
