@@ -16,20 +16,22 @@ public class DetectProtobufBdioHeaderUtil {
     private final String scanType;
     private final NameVersion projectNameVersion;
     private final String projectGroupName;
+    private final String codeLocationName;
     private static final String CREATOR_NAME = "SYNOPSYS_DETECT";
 
-    public DetectProtobufBdioHeaderUtil(String scanId, String scanType, NameVersion projectNameVersion, String projectGroupName) {
+    public DetectProtobufBdioHeaderUtil(String scanId, String scanType, NameVersion projectNameVersion, String projectGroupName, String codeLocationName) {
         this.scanId = scanId;
         this.scanType = scanType;
         this.projectNameVersion = projectNameVersion;
         this.projectGroupName = projectGroupName;
+        this.codeLocationName = codeLocationName;
     }
 
     public File createProtobufBdioHeader(File targetDirectory) throws IOException {
         BdioHeader bdioHeader = new BdioHeader(
             scanId,
             scanType,
-            "",
+            codeLocationName,
             projectNameVersion.getName(),
             projectNameVersion.getVersion(),
             "",
