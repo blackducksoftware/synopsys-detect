@@ -47,8 +47,8 @@ public class ProjectInspectorParser {
         try (JsonReader reader = new JsonReader(new FileReader(outputFile))) {
             reader.beginObject();
             while (reader.hasNext()) {
-                String moduleName = reader.nextName();
-                if (moduleName != null && moduleName.equals(MODULES_KEY)) {
+                String modulesObject = reader.nextName();
+                if (modulesObject != null && modulesObject.equals(MODULES_KEY)) {
                     codeLocations = processModules(reader);
                 } else {
                     reader.skipValue();
