@@ -6,13 +6,10 @@
 
 The recommended environment ("parent shell") for running [bash_script_name] on Linux is Bash, and Bash or Zsh on Mac.
 
-When an argument contains a space or other non double quote special character, you can wrap the argument in single quotes, double quotes, or escape the special character with a backslash (\\). The quotes can surround either the value or the entire argument. 
+When an argument contains a space or other non double quote special character, you can wrap the argument in single quotes, or escape the special character with a backslash (\\). The quotes can surround either the value or the entire argument. 
 
 For example:
 ```
-# name: Project Test
-bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --detect.project.name="Project Test"
-
 # name: Project Test
 bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --detect.project.name='Project Test'
 
@@ -82,13 +79,10 @@ This invocation has an important distinction from the Command Prompt invocation 
 
 _When running from within a CI/CD environment either omit the passthrough flag or use the command prompt invocation as the job may not set the proper exit code if the session does not exit._
 
-When an argument contains a space or other non-quote special character, you can wrap the argument in single quotes, double quotes, or escape the special character with a backtick. The quotes can surround either the value or the entire argument. 
+When an argument contains a space or other non-quote special character, you can wrap the argument in single quotes, or escape the special character with a backtick. The quotes can surround either the value or the entire argument. 
 
 For example:
 ```
-# name: Project Test
-[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect --detect.project.name="Project Test"
-
 # name: Project Test
 [Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect --detect.project.name='Project Test'
 
@@ -112,4 +106,3 @@ You can include a double quote using this sequence: backslash, backtick, double 
 # license: BSD 3-clause "New" or "Revised" License
 [Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect --detect.project.version.license="BSD 3-clause \`"New\`" or \`"Revised\`" License"
 ```
-
