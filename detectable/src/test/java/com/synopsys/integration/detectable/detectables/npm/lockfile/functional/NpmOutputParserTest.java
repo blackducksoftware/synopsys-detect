@@ -12,6 +12,7 @@ import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmDependencyTypeFilter;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -57,8 +58,8 @@ public class NpmOutputParserTest {
             "}"
         ));
         NpmDependencyTypeFilter npmDependencyTypeFilter = new NpmDependencyTypeFilter(Collections.emptySet(), Collections.emptySet(), true, true);
-        PackageJson packageJson = new PackageJson();
-        NpmPackagerResult result = parser.convertNpmJsonFileToCodeLocation(testIn, packageJson);
+        CombinedPackageJson combinedPackageJson = new CombinedPackageJson();
+        NpmPackagerResult result = parser.convertNpmJsonFileToCodeLocation(testIn, combinedPackageJson);
 
         Assertions.assertEquals("node-js", result.getProjectName());
         Assertions.assertEquals("0.2.0", result.getProjectVersion());
