@@ -53,6 +53,13 @@ public class ApplicationUpdaterTest {
             "--detect.tools=DETECTOR",
             "--selfUpdated"};
     
+    private final String[] successArgsWithSpringBootCertValue = new String[] {
+            "-jar",
+            "/fake/path/to/synopsys-detect-n.n.n.jar",
+            "--blackduck.url=".concat(fakeUrl), 
+            "--blackduck.api.token=dummyToken",
+            "--detect.tools=DETECTOR"};
+    
     @Test
     public void testCanSelfUpdate() {
         Assertions.assertTrue(new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).canSelfUpdate());
@@ -166,5 +173,12 @@ public class ApplicationUpdaterTest {
     @Test
     public void testCanSelfUpdateIfAlreadyUpdated() {
         Assertions.assertFalse(new ApplicationUpdater(new ApplicationUpdaterUtility(), alreadySelfUpdatedArgs).canSelfUpdate());
+    }
+    
+    @Test
+    public void testCanSelfUpdateWithSpringBootProperty() {
+        ApplicationUpdaterUtility mockedUtility = Mockito.mock(ApplicationUpdaterUtility.class);
+        Mockito.when(mockedUtility.getSysEnvProperty(ApplicationUpdater.SYS_ENV_PROP_SPRING_BOOT)).thenReturn("{\"blackduck.trust.cert\":\"true\"}");
+        Assertions.assertTrue(new ApplicationUpdater(mockedUtility, successArgsWithSpringBootCertValue).isTrustCertificate());
     }
 }
