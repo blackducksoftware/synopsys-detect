@@ -179,25 +179,7 @@ public class ApplicationUpdater extends URLClassLoader {
         
         final HttpUrl downloadUrl = buildDownloadUrl();
         final String currentInstalledVersion = determineInstalledVersion().orElse("");
-        final Response response = download(installDirectory, downloadUrl, currentInstalledVersion);
-        String newVersionString = response.getHeaderValue(DOWNLOAD_VERSION_HEADER);
-        String newFileName;
-        if (newVersionString == null && (newFileName = response.getHeaderValue(DOWNLOADED_FILE_NAME)) != null) {
-            newVersionString = getVersionFromDetectFileName(newFileName);
-        }
-        if (response.isStatusCodeSuccess() && newVersionString != null) {
-            logger.info("{} Old version: {}, New Version from header: {}", LOG_PREFIX, currentInstalledVersion, newVersionString);
-            if (StringUtils.isNotBlank(newVersionString)
-                && !newVersionString.equals(currentInstalledVersion)
-                && !isDownloadVersionTooOld(currentInstalledVersion, newVersionString)) {
-                return handleSuccessResponse(response, installDirectory.getAbsolutePath(), newVersionString);
-            }
-        } else if (response.getStatusCode() == 304) {
-            logger.info("{} Present Detect installation is up to date - skipping download.", LOG_PREFIX);
-        } else {
-            logger.warn("{} Unable to download artifact. Response code: {} {}", LOG_PREFIX, response.getStatusCode(), response.getStatusMessage());
-        }
-        return null;
+        return download(installDirectory, downloadUrl, currentInstalledVersion);
     }
     
     protected String getVersionFromDetectFileName(String input) {
@@ -285,12 +267,14 @@ public class ApplicationUpdater extends URLClassLoader {
             final Class<?> archiveClass = classMap.get("org.springframework.boot.loader.archive.Archive");
             final Class<?> mainClass = classMap.get("org.springframework.boot.loader.JarLauncher");
             final Constructor<?> jarLauncherConstructor = mainClass.getDeclaredConstructor(archiveClass);
+            jarLauncherConstructor.setAccessible(true);
             final Object jarLauncher = jarLauncherConstructor.newInstance(jarFileArchive);
             final Class<?> launcherClass = 	classMap.get("org.springframework.boot.loader.Launcher");
             final Method launchMethod = launcherClass.getDeclaredMethod("launch", String[].class);
+            launchMethod.setAccessible(true);
             checkEnvironmentProperties();
             args = parseArguments(args);
-            launchMethod.invoke(jarLauncher, (Object[]) args);
+            launchMethod.invoke(jarLauncher, new Object[]{args});
         } finally {
             close();
         }
@@ -589,7 +573,7 @@ public class ApplicationUpdater extends URLClassLoader {
         return proxyInfo;
     }
 
-    private Response download(File installDirectory, HttpUrl downloadUrl, String currentVersion) throws IntegrationException, IOException {
+    private File download(File installDirectory, HttpUrl downloadUrl, String currentVersion) throws IntegrationException, IOException {
         logger.info("{} Checking {} API for centrally managed Detect version to download to {}.", LOG_PREFIX, downloadUrl, installDirectory.getAbsolutePath());
         final Map <String, String> headers = new HashMap<>();
         headers.put(DOWNLOAD_VERSION_HEADER, currentVersion);
@@ -597,19 +581,41 @@ public class ApplicationUpdater extends URLClassLoader {
         ProxyInfo proxyInfo = getProxyInfo();
         final IntHttpClient intHttpClient = getIntHttpClient(proxyInfo);
         try (final Response response = intHttpClient.execute(request)) {
-            return response;
+            return handleResponse(response, currentVersion, installDirectory);
         }
+    }
+    
+    private File handleResponse(Response response, String currentInstalledVersion, File installDirectory) throws IOException, IntegrationException {
+        String newVersionString = response.getHeaderValue(DOWNLOAD_VERSION_HEADER);
+        String newFileName;
+        if (newVersionString == null && (newFileName = response.getHeaderValue(DOWNLOADED_FILE_NAME)) != null) {
+            newVersionString = getVersionFromDetectFileName(newFileName);
+        }
+        currentInstalledVersion = getVersionFromDetectFileName(currentInstalledVersion);
+        if (response.isStatusCodeSuccess() && newVersionString != null) {
+            logger.debug("{} Old version: {}, New Version: {}", LOG_PREFIX, currentInstalledVersion, newVersionString);
+            if (StringUtils.isNotBlank(newVersionString)
+                && !newVersionString.equals(currentInstalledVersion)
+                && !isDownloadVersionTooOld(currentInstalledVersion, newVersionString)) {
+                return handleSuccessResponse(response, installDirectory.getAbsolutePath(), newVersionString);
+            }
+        } else if (response.getStatusCode() == 304) {
+            logger.info("{} Present Detect installation is up to date - skipping download.", LOG_PREFIX);
+        } else {
+            logger.warn("{} Unable to download artifact. Response code: {} {}", LOG_PREFIX, response.getStatusCode(), response.getStatusMessage());
+        }
+        return null;
     }
     
     private File handleSuccessResponse(Response response, String installDirAbsolutePath, String newVersionString) throws IOException, IntegrationException {
         final Path targetFilePath = Paths.get(installDirAbsolutePath, "/", response.getHeaderValue(DOWNLOADED_FILE_NAME));
         if (targetFilePath != null) {
             if (!targetFilePath.toFile().exists()) {
-                logger.debug("{} Writing to file {}.", LOG_PREFIX, targetFilePath.toAbsolutePath());
+                logger.info("{} Writing to file {}.", LOG_PREFIX, targetFilePath.toAbsolutePath());
                 try(final ReadableByteChannel readableByteChannel = Channels.newChannel(response.getContent())) {
                     try(final FileOutputStream fileOutputStream = new FileOutputStream(targetFilePath.toFile())) {
                         fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-                        logger.debug("{} Successfully wrote response to file {}.", LOG_PREFIX, targetFilePath.toAbsolutePath());
+                        logger.info("{} Successfully wrote response to file {}.", LOG_PREFIX, targetFilePath.toAbsolutePath());
                     }
                 }
             }
