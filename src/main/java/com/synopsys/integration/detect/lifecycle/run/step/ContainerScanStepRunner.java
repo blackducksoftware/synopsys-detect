@@ -29,11 +29,14 @@ public class ContainerScanStepRunner {
     private final BlackDuckRunData blackDuckRunData;
     private final File binaryRunDirectory;
 
-    public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData, Gson gson) {
+    public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData, Gson gson) throws IntegrationException {
         this.operationRunner = operationRunner;
         this.projectNameVersion = projectNameVersion;
         this.blackDuckRunData = blackDuckRunData;
         binaryRunDirectory = operationRunner.getDirectoryManager().getBinaryOutputDirectory();
+        if (binaryRunDirectory == null || !binaryRunDirectory.exists()) {
+            throw new IntegrationException("Binary run directory does not exist.");
+        }
         projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
         this.gson = gson;
     }
@@ -54,7 +57,7 @@ public class ContainerScanStepRunner {
     }
 
     public void uploadImageToStorageService() throws IntegrationException, DetectUserFriendlyException, IOException {
-        File containerImage = operationRunner.getContainerScanImage(gson);
+        File containerImage = operationRunner.getContainerScanImage(gson, binaryRunDirectory);
         String storageServiceEndpoint = String.join("", "/api/storage/containers/", scanId.toString());
         String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
         logger.debug("Uploading container image artifact to storage endpoint: {}", storageServiceEndpoint);
