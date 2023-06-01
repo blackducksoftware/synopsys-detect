@@ -6,4 +6,4 @@ This section contains details about properties that configure the [solution_name
 
 By default, all detectors are eligible to run. The set of detectors that actually run depends on the files that exist in your project directory. 
 
-<note type="note">Low accuracy detectors, see [Detector search and accuracy](../../runningdetect/detectorcascade.md), do not support configuration properties.</note>
+<note type="note">Not all low accuracy detectors, see [Detector search and accuracy](../../runningdetect/detectorcascade.md), support configuration properties. See specific [Package Manager](../../packagemgrs/overview.md) pages for further information.</note>
