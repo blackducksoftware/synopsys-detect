@@ -1,6 +1,6 @@
 ## Overview
 
-Synopsys Detect is Black Duck's intelligent scan client that scans code bases in your projects and folders to perform compositional analysis. Synopsys Detect sends scan results to Black Duck, which generates risk analysis when identifying open source components, licenses, and security vulnerabilities.
+Synopsys Detect scans code bases in your projects and folders to perform compositional analysis and functions as an intelligent scan client for Black Duck and other Synopsys SCA products. Synopsys Detect can send scan results to Black Duck, which generates risk analysis when identifying open source components, licenses, and security vulnerabilities.
 
 ## Build
 
@@ -39,7 +39,7 @@ The latest quickstart documentation is [here](https://sig-product-docs.synopsys.
 
 The latest full documentation is [here](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/introduction.html).
 
-Links to certain earlier versions can be found [here](https://community.synopsys.com/s/user-guide-archive) and [here](https://detect.synopsys.com/docs).
+Links to certain earlier versions can be found [here](https://community.synopsys.com/s/user-guide-archive).
 
 ## Getting help
 
