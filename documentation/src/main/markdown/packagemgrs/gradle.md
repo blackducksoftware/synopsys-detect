@@ -4,8 +4,7 @@
 
 [Detector properties](../properties/detectors/gradle.md)
 
-<note type="Note">
-* Gradle Project Inspector relies on Project Inspector thus does not accept Gradle specific configuration properties.
+<note type="Note">Gradle Project Inspector relies on the Project Inspector tool thus does not accept Gradle specific configuration properties.
 </note>
 
 ## Overview
