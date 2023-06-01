@@ -97,7 +97,7 @@ public class CombinedPackageJsonExtractor {
     
     private String replaceWildcards(String path, List<String> convertedWorkspaces) {        
         if (!path.contains("*")) {
-            convertedWorkspaces.add(path);
+            convertedWorkspaces.add(Path.of(path).normalize().toString());
             return path;
         }
         
