@@ -4,7 +4,7 @@
 
 ### Resolved issues
 
-* (IDETECT-3657) Resolved an issue where Intelligent Persistent Scans would fail if a project or version name included non-ASCII characters. 
+* (IDETECT-3657) Resolved an issue where Intelligent Scans would fail if a project or version name included non-ASCII characters. 
 * (IDETECT-3776) Resolved an issue with not detecting certain components in `go.mod` files as transitive dependencies when marked with `// indirect`, by improving identification of direct and indirect dependencies.
 
 ### Dependency updates
