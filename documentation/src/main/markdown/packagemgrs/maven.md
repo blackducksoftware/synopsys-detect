@@ -12,6 +12,11 @@
 * Maven Wrapper CLI
 * Maven Project Inspector
 
+<note type="Note">
+
+* Maven Project Inspector relies on Project Inspector thus does not accept Maven specific configuration properties.
+</note>
+
 ## Maven CLI
 
 The Maven CLI detector discovers dependencies of Maven projects by executing mvn commands.
@@ -58,10 +63,10 @@ From that output we can tell that C is part of the compile scope, but there is n
 graph C belongs. Its position in the test scope is irrelevant since test scope is being excluded. Rather than excluding C in this case,
 [solution_name] puts it under the placeholder "component" named *Additional_Components*.
 
-## Maven Wrapper CLI
+### Maven Wrapper CLI
 
 The Maven Wrapper CLI detector attempts to run on your project if it finds a pom.groovy file in the source directory (top level), and then operates exactly as the Maven CLI detector does.
 
-## Maven Project Inspector
+### Maven Project Inspector
 
 The Maven Project Inspector detector uses Project Inspector, which currently does not support plugins.
