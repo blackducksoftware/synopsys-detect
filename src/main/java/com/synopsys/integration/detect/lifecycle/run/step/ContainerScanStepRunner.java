@@ -44,6 +44,10 @@ public class ContainerScanStepRunner {
         return scanId;
     }
 
+    public Boolean shouldRunContainerScan() {
+        return containerImage != null && containerImage.exists();
+    }
+
     private String getContainerScanCodeLocationName() {
         CodeLocationNameManager codeLocationNameManager = operationRunner.getCodeLocationNameManager();
         return codeLocationNameManager.createContainerScanCodeLocationName(containerImage, projectNameVersion.getName(), projectNameVersion.getVersion());
@@ -58,6 +62,10 @@ public class ContainerScanStepRunner {
             getContainerScanCodeLocationName());
         File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(binaryRunDirectory);
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
+        if (scanId == null) {
+            logger.debug("Scan ID not received in the response header.");
+            throw new IntegrationException("Scan ID not received in the response header.");
+        }
         String scanIdString = scanId.toString();
         logger.debug("Scan initiated with scan service. Scan ID received: {}", scanIdString);
     }
