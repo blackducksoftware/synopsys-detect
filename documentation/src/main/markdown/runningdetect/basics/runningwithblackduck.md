@@ -1,10 +1,10 @@
 # Running with [blackduck_product_name]
 
-[solution_name] can be used with [blackduck_product_name] to perform Software Composition Analysis (SCA).
+[solution_name] can be used with multiple Synopsys platforms and [blackduck_product_name] to perform Software Composition Analysis (SCA).
 
 ## Overview
 
-When [blackduck_product_name] connection details are provided, [solution_name] executes
+Running with [blackduck_product_name] and connection details are provided, [solution_name] executes
 the following by default:
 
 * The [detector tool](../../components/detectors.md), which runs the appropriate package manager-specific detector; the Maven detector
@@ -33,7 +33,7 @@ You can run [solution_name] in offline mode using the [offline mode property](..
 
 ## BDIO format
 
-[solution_name] produces dependency information for [blackduck_product_name] in Black Duck Input Output (BDIO) format files.
-[solution_name] now only supports generating BDIO version 2 documents.
+[solution_name] produces dependency information for [blackduck_product_name], and other Synopsys products and platforms, in [blackduck_product_name] Input Output (BDIO) format files.
+[solution_name] supports generating BDIO version 2 documents.
 
 
