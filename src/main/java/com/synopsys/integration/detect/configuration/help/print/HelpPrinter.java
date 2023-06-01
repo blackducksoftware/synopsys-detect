@@ -213,6 +213,7 @@ public class HelpPrinter {
         writer.println("To search options, you may specify a search term with '-h [term]'");
         writer.println();
         writer.println("To run in interactive mode (which prompts you for the values needed for common use cases), run Detect with the argument '--interactive'");
+		writer.println();
 		writer.println("Note that low accuracy Gradle, NuGet, and Maven Project Inspectors do not support package manager specific properties.");
         writer.println();
     }
