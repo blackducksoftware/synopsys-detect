@@ -53,6 +53,7 @@ import com.synopsys.integration.rest.response.Response;
 
 import freemarker.template.Version;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,6 +169,10 @@ public class ApplicationUpdater extends URLClassLoader {
         return false;
     }
     
+    /**
+     * @return an instance of File representing the downloaded Detect JAR or null 
+     * if unsuccessful due to lack of permissions, incorrect input or connectivity issues.
+     */
     private File installOrUpdateScanner(String dirPath) throws IOException, IntegrationException {
         final File installDirectory = new File(dirPath);
         
@@ -599,7 +604,7 @@ public class ApplicationUpdater extends URLClassLoader {
                 && !isDownloadVersionTooOld(currentInstalledVersion, newVersionString)) {
                 return handleSuccessResponse(response, installDirectory.getAbsolutePath(), newVersionString);
             }
-        } else if (response.getStatusCode() == 304) {
+        } else if (response.getStatusCode() == HttpStatus.SC_NOT_MODIFIED) {
             logger.info("{} Present Detect installation is up to date - skipping download.", LOG_PREFIX);
         } else {
             logger.warn("{} Unable to download artifact. Response code: {} {}", LOG_PREFIX, response.getStatusCode(), response.getStatusMessage());
