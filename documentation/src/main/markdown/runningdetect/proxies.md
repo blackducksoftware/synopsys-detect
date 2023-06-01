@@ -22,8 +22,8 @@ When setting the blackduck.proxy.host (proxy hostname), property the schema/prot
 
 For example:  
  
-	Correct: `--blackduck.proxy.host=<Proxy_IP/URL>:port`   
-	Incorrect: `--blackduck.proxy.host=<https‎ ://(IP/Server_URL)>:port`   
+	Correct: `--blackduck.proxy.host=<Proxy_IP/URL>`   
+	Incorrect: `--blackduck.proxy.host=<https‎ ://(IP/Server_URL)>`   
 	
 
 Refer to [properties](../properties/configuration/proxy.md) for more information.

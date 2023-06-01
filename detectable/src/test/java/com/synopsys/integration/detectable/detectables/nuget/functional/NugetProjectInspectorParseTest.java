@@ -17,8 +17,8 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 public class NugetProjectInspectorParseTest {
     @Test
     void checkParse() {
-        String inspectorOutput = FunctionalTestFiles.asString("/nuget/project_inspector/ConsoleApp.json");
-        List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(inspectorOutput);
+        String inspectorOutputPath = FunctionalTestFiles.resolvePath("/nuget/project_inspector/ConsoleApp.json");
+        List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(new File(inspectorOutputPath));
 
         Assertions.assertEquals(2, codeLocations.size());
         Assertions.assertEquals(new File("C:\\Users\\jordanp\\source\\repos\\ConsoleApp3\\ConsoleApp1\\ConsoleApp1.csproj"), codeLocations.get(0).getSourcePath().orElse(null));
@@ -36,8 +36,8 @@ public class NugetProjectInspectorParseTest {
 
     @Test
     void checkParsingWithNoResults() {
-        String inspectorOutput = FunctionalTestFiles.asString("/nuget/project_inspector/ProjectInspectorNoResults.json");
-        List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(inspectorOutput);
+        String inspectorOutputPath = FunctionalTestFiles.resolvePath("/nuget/project_inspector/ProjectInspectorNoResults.json");
+        List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(new File(inspectorOutputPath));
 
         Assertions.assertEquals(0, codeLocations.size());
     }
