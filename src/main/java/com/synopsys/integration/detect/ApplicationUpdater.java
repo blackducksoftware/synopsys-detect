@@ -272,11 +272,10 @@ public class ApplicationUpdater extends URLClassLoader {
             final Class<?> archiveClass = classMap.get("org.springframework.boot.loader.archive.Archive");
             final Class<?> mainClass = classMap.get("org.springframework.boot.loader.JarLauncher");
             final Constructor<?> jarLauncherConstructor = mainClass.getDeclaredConstructor(archiveClass);
-            jarLauncherConstructor.setAccessible(true);
-            final Object jarLauncher = jarLauncherConstructor.newInstance(jarFileArchive);
             final Class<?> launcherClass = 	classMap.get("org.springframework.boot.loader.Launcher");
             final Method launchMethod = launcherClass.getDeclaredMethod("launch", String[].class);
-            launchMethod.setAccessible(true);
+            setAccessibilityOf(jarLauncherConstructor, launchMethod);
+            final Object jarLauncher = jarLauncherConstructor.newInstance(jarFileArchive);
             checkEnvironmentProperties();
             args = parseArguments(args);
             launchMethod.invoke(jarLauncher, new Object[]{args});
@@ -284,6 +283,12 @@ public class ApplicationUpdater extends URLClassLoader {
             close();
         }
         return true;
+    }
+    
+    @java.lang.SuppressWarnings("java:S3011")
+    private void setAccessibilityOf(Constructor<?> jarLauncherConstructor, Method launchMethod) {
+        jarLauncherConstructor.setAccessible(true);
+        launchMethod.setAccessible(true);
     }
     
     private boolean checkInstallationDir(Path path) throws IOException {
