@@ -341,6 +341,9 @@ public class ApplicationUpdater extends URLClassLoader {
     private void updateFromSpringBootPropertiesIfAny() {
         if (springbootEnvMap.containsKey(ARG_BLACKDUCK_URL)) {
             blackduckHost = springbootEnvMap.get(ARG_BLACKDUCK_URL);
+            if (blackduckHost != null && blackduckHost.contains(SYS_ENV_PROP_BLACKDUCK_URL)) {
+                blackduckHost = utility.getSysEnvProperty(SYS_ENV_PROP_BLACKDUCK_URL);
+            }
         }
         if (springbootEnvMap.containsKey(ARG_BLACKDUCK_OFFLINE_MODE)) {
             offlineMode = springbootEnvMap.get(ARG_BLACKDUCK_OFFLINE_MODE);
