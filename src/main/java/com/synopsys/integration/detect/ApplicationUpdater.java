@@ -504,7 +504,7 @@ public class ApplicationUpdater extends URLClassLoader {
         if(!logMessages.isEmpty()) {
             logMessages.add(0, message);
             for (String logMessage : logMessages) {
-                logger.warn("{} ".concat(logMessage), LOG_PREFIX);
+                logger.warn("{} {}", LOG_PREFIX, logMessage);
             }
             return false;
         }
