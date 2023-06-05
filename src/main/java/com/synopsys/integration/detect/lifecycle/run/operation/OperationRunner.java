@@ -368,16 +368,20 @@ public class OperationRunner {
         return RAPID_SCAN_CONTENT_TYPE;
     }
 
+    public File downloadContainerImage(Gson gson, File downloadDirectory, String containerImageUri) throws DetectUserFriendlyException, IntegrationException, IOException {
+        String targetPathName = String.join("", downloadDirectory.toString(), "/targetImage");
+        ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
+        ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
+        return artifactResolver.downloadArtifact(new File(targetPathName), containerImageUri);
+    }
+
     public File getContainerScanImage(Gson gson, File downloadDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
         Optional<String> containerImageFilePath = detectConfigurationFactory.getContainerScanFilePath();
         File containerImageFile = null;
         if (containerImageFilePath.isPresent()) {
             String containerImageUri = containerImageFilePath.get();
-            String targetPathName = String.join("", downloadDirectory.toString(), "/targetImage");
             if (containerImageUri.startsWith("http")) {
-                ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
-                ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
-                return artifactResolver.downloadArtifact(new File(targetPathName), containerImageUri);
+                containerImageFile = downloadContainerImage(gson, downloadDirectory, containerImageUri);
             } else {
                 containerImageFile = new File(containerImageUri);
             }
