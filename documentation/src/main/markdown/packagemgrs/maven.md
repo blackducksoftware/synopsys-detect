@@ -12,14 +12,19 @@
 * Maven Wrapper CLI
 * Maven Project Inspector
 
+<note type="Note">
+
+* Maven Project Inspector relies on Project Inspector thus does not accept Maven specific configuration properties.
+</note>
+
 ## Maven CLI
 
-The Maven CLI detector discovers dependencies of Maven projects by executing mvn commands.
+* Discovers dependencies of Maven projects by executing mvn commands.
 
-The Maven CLI detector attempts to run on your project if it finds a pom.xml file in the source directory (top level). It requires either mvnw or mvn:
+* Will run on your project if it finds a pom.xml file in the top level source directory and requires either `mvnw` or `mvn`.
 
-1. [solution_name] looks for mvnw in the source directory (top level). You can override this by setting the Maven path property. If not overridden and not found:
-1. [solution_name] looks for mvn on $PATH.
+1. [solution_name] looks for `mvnw` in the source directory (top level). You can override this by setting the Maven path property.  
+1.  If `mvnw` path is not overridden and `mvnw` is not found:[solution_name] looks for mvn on $PATH.
 
 The Maven CLI detector runs `mvn dependency:tree` to get a list of the project's dependencies and then parses the output.
 [solution_name] assumes the output of this command will be in Maven's default logging format. Customizations of Maven's logging format can break [solution_name]'s parsing.
@@ -58,10 +63,10 @@ From that output we can tell that C is part of the compile scope, but there is n
 graph C belongs. Its position in the test scope is irrelevant since test scope is being excluded. Rather than excluding C in this case,
 [solution_name] puts it under the placeholder "component" named *Additional_Components*.
 
-## Maven Wrapper CLI
+### Maven Wrapper CLI
 
 The Maven Wrapper CLI detector attempts to run on your project if it finds a pom.groovy file in the source directory (top level), and then operates exactly as the Maven CLI detector does.
 
-## Maven Project Inspector
+### Maven Project Inspector
 
 The Maven Project Inspector detector uses Project Inspector, which currently does not support plugins.
