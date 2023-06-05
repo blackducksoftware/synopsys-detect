@@ -19,9 +19,9 @@
 
 ## Maven CLI
 
-The Maven CLI detector discovers dependencies of Maven projects by executing mvn commands.
+* Discovers dependencies of Maven projects by executing mvn commands.
 
-The Maven CLI detector attempts to run on your project if it finds a pom.xml file in the top level source directory and requires either `mvnw` or `mvn`.
+* Will run on your project if it finds a pom.xml file in the top level source directory and requires either `mvnw` or `mvn`.
 
 1. [solution_name] looks for `mvnw` in the source directory (top level). You can override this by setting the Maven path property.  
 1.  If `mvnw` path is not overridden and `mvnw` is not found:[solution_name] looks for mvn on $PATH.
