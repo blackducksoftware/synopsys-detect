@@ -305,8 +305,8 @@ public class DetectConfigurationFactory {
     }
 
     public ProjectNameVersionOptions createProjectNameVersionOptions(String sourceDirectoryName) {
-        String overrideProjectName = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_NAME);
-        String overrideProjectVersionName = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NAME);
+        String overrideProjectName = StringUtils.trimToNull(detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_NAME));
+        String overrideProjectVersionName = StringUtils.trimToNull(detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NAME));
         return new ProjectNameVersionOptions(sourceDirectoryName, overrideProjectName, overrideProjectVersionName);
     }
 

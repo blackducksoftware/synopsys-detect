@@ -136,8 +136,9 @@ def recursively_resolve_dependencies(package_name, history):
     dependency_node = DependencyNode(package.project_name, package.version)
 
     if package_name.lower() not in history:
+        history.append(package_name.lower())
         for package_dependency in package.requires():
-            child_node = recursively_resolve_dependencies(package_dependency.key, history + [package_name.lower()])
+            child_node = recursively_resolve_dependencies(package_dependency.key, history)
             if child_node is not None:
                 dependency_node.children = dependency_node.children + [child_node]
 

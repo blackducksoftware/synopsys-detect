@@ -15,7 +15,7 @@ refer to [Air Gap Mode](../downloadingandinstalling/airgap.md).
 
 * Licensed installation of the current version of [blackduck_product_name] with access credentials.
 Visit the [Black Duck release page](https://github.com/blackducksoftware/hub/releases) to determine the current version of [blackduck_product_name].
-* For information about additional compatible versions of [blackduck_product_name], consult the   
+* For information about additional compatible versions of [blackduck_product_name], consult the
 <xref href="Black-Duck-Release-Compatibility.dita" scope="peer"> Black Duck Release Compatibility matrix.<data name="facets" value="pubname=blackduck-compatibility"/>
 * The [blackduck_product_name] notifications module must be enabled.
 * A [blackduck_product_name] user with the [required roles](usersandroles.md).
@@ -40,5 +40,5 @@ The risk report requires that the following fonts are installed:
 
 ## Supported [solution_name] versions and Service duration
 
-* For information about support and service durations for [solution_name] versions, consult the   
+* For information about support and service durations for [solution_name] versions, consult the
 <xref href="Support-and-Service-Schedule.dita" scope="peer"> Support and Service Schedule.<data name="facets" value="pubname=blackduck-compatibility"/>

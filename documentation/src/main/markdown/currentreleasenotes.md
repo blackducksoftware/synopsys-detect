@@ -1,5 +1,20 @@
 # Current Release notes
 
+## Version 8.10.0
+
+### Resolved issues
+
+* (IDETECT-3641) Resolved scan failure caused by leading/trailing spaces specified within quotes for `detect.project.name` or `detect.project.version.name` properties.
+* (IDETECT-3657) Resolved an issue where Intelligent Scans would fail if a project or version name included non-ASCII characters. 
+* (IDETECT-3776) Resolved an issue with not detecting certain components in `go.mod` files as transitive dependencies when marked with `// indirect`, by improving identification of direct and indirect dependencies.
+* (IDETECT-3817) Improved handling of large inspection results to prevent OutOfMemory exceptions and optimize memory usage.
+* (IDETECT-3888) Improved the runtime performance of PIP Inspector for aws-cdk dependency cases by passing the package history list by reference instead of value.
+* (IDETECT-3867) Resolved a lack of support for properties set in SPRING_APPLICATION_JSON environment variable for configuring [solution_name] when the Self Update feature is utilized.
+
+### Dependency updates
+
+* Upgraded Spring Boot to version 2.7.12 to resolve [CVE-2023-20883](https://nvd.nist.gov/vuln/detail/CVE-2023-20883)
+
 ## Version 8.9.0
 
 ### New features
