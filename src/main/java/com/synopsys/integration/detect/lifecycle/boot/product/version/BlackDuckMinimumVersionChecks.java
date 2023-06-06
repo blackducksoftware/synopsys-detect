@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.lifecycle.boot.product.version;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.synopsys.integration.blackduck.version.BlackDuckVersion;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;

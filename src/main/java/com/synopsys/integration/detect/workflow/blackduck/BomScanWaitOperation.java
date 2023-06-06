@@ -22,8 +22,8 @@ public class BomScanWaitOperation {
         this.blackDuckApiClient = blackDuckApiClient;
     }
 
-    public BomStatusScanView waitForScan(HttpUrl scanUrl, long timeoutInSeconds) throws InterruptedException, IntegrationException {
-        WaitIntervalTracker waitIntervalTracker = WaitIntervalTrackerFactory.createProgressive(timeoutInSeconds, 60);
+    public BomStatusScanView waitForScan(HttpUrl scanUrl, long timeoutInSeconds, int maxWaitInSeconds) throws InterruptedException, IntegrationException {
+        WaitIntervalTracker waitIntervalTracker = WaitIntervalTrackerFactory.createProgressive(timeoutInSeconds, maxWaitInSeconds);
         ResilientJobConfig waitJobConfig = new ResilientJobConfig(new Slf4jIntLogger(logger), System.currentTimeMillis(), waitIntervalTracker);
         
         DetectBomScanWaitJob waitJob = new DetectBomScanWaitJob(blackDuckApiClient, scanUrl);

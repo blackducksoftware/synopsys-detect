@@ -11,10 +11,11 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,8 +36,12 @@ public class SimpleFileFinderTest {
     public void cleanup() throws IOException {
         try {
             Files.delete(initialDirectoryPath);
-        } catch (DirectoryNotEmptyException e) {
-            FileUtils.deleteDirectory(initialDirectoryPath.toFile());
+        } catch (DirectoryNotEmptyException e) {            
+            try (Stream<Path> walk = Files.walk(initialDirectoryPath)) {
+                walk.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 # Running the [solution_name] .jar
 
-Recent versions of the [solution_name] .jar file are available for download from the location specified in [download locations](../downloadlocations.md).
+Recent versions of the [solution_name] .jar file are available for download from the location specified in [download locations](../../downloadingandinstalling/downloadlocations.md).
 
 To run [solution_name] by invoking the .jar file:
 

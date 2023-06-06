@@ -20,7 +20,6 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.OperationException;
-import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersion;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
@@ -187,8 +186,7 @@ public class IntelligentModeStepRunner {
             }
             
             HttpUrl scanToSearchFor = new HttpUrl(bomToSearchFor.toString() + "/" + scanId);
-
-            operationRunner.waitForBomScanCompletion(blackDuckRunData, scanToSearchFor);
+            operationRunner.waitForBomCompletion(blackDuckRunData, scanToSearchFor);
         }
     }
 

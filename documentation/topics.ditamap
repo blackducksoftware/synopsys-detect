@@ -7,7 +7,7 @@
         <prodinfo>
             <prodname>Synopsys Detect</prodname>
             <vrmlist>
-                <vrm version="8.6.0"/>
+                <vrm version="8.10.0"/>
             </vrmlist>
         </prodinfo>
 
@@ -18,11 +18,25 @@
   <topicref processing-role="resource-only" format="xml" type="xml"
     href="integrations-classification.xml" outputclass="classmapdata" scope="local"/>
 
-  <topicref href="introduction.md" format="markdown"/>
-  <topicref href="releasenotes.md" format="markdown"/>
+	<topicref href="introduction.md" format="markdown"/>
+	
+	<topichead navtitle="Release Notes" format="markdown" collection-type="sequence">
+		<topicref href="currentreleasenotes.md" format="markdown"/>
+		<topicref href="previousreleasenotes.md" format="markdown"/>
+		<topicref href="unsupportedreleasenotes.md" format="markdown"/>
+    </topichead>  
 
+	<topicref href="gettingstarted/requirements.md" format="markdown"/>
+	<topicref href="downloadingandinstalling/intro.md" format="markdown">
+		<topicref href="downloadingandinstalling/downloadlocations.md" format="markdown"/>
+		<topicref href="downloadingandinstalling/upgradingdetect.md" format="markdown"/>
+		<topicref href="downloadingandinstalling/selfupdatingdetect.md" format="markdown"/>
+		<topicref href="downloadingandinstalling/verification.md" format="markdown"/>
+		<topicref href="downloadingandinstalling/airgap.md" format="markdown"/>
+	</topicref>
+	<topicref href="gettingstarted/quickstart.md" format="markdown"/>
+	
   <topicref href="gettingstarted/overview.md" format="markdown">
-
     <topicref href="gettingstarted/terms/intro.md" format="markdown">
       <topicref href="gettingstarted/terms/sca.md" format="markdown"/>
       <topicref href="gettingstarted/terms/run.md" format="markdown"/>
@@ -41,54 +55,11 @@
     <topicref href="gettingstarted/workflow.md" format="markdown"/>
     <topicref href="gettingstarted/phases.md" format="markdown"/>
 	<topicref href="gettingstarted/configuring.md" format="markdown"/>
-    <topicref href="gettingstarted/requirements.md" format="markdown"/>
     <topicref href="gettingstarted/usersandroles.md" format="markdown"/>
-    <topicref href="gettingstarted/quickstart.md" format="markdown"/>
     <topicref href="gettingstarted/gettinghelp.md" format="markdown"/>
   </topicref>
   
-  <topicref href="components/overview.md" format="markdown">
-    <topicref href="components/tools.md" format="markdown"/>
-    <topicref href="components/detectors.md" format="markdown"/>
-    <topicref href="components/inspectors.md" format="markdown"/>
-  </topicref>
-
-  <topicref href="downloadingandrunning/intro.md" format="markdown">
-
-    <topicref href="downloadingandrunning/basics/intro.md" format="markdown">
-      <topicref href="downloadingandrunning/basics/decidinghowtouse.md" format="markdown"/>
-      <topicref href="downloadingandrunning/basics/positioning.md" format="markdown"/>
-      <topicref href="downloadingandrunning/basics/choosingworkingdir.md" format="markdown"/>
-      <topicref href="downloadingandrunning/basics/choosingrunmethod.md" format="markdown"/>
-      <topicref href="downloadingandrunning/basics/manual.md" format="markdown"/>
-      <topicref href="downloadingandrunning/basics/runningscript.md" format="markdown"/>
-      <topicref href="downloadingandrunning/basics/runningjar.md" format="markdown"/>
-      <topicref href="downloadingandrunning/basics/choosingtargettype.md" format="markdown"/>
-      <topicref href="downloadingandrunning/basics/runningwithblackduck.md" format="markdown"/>
-      <topicref href="downloadingandrunning/basics/upgradingdetect.md" format="markdown"/>
-    </topicref>
-
-    <topicref href="downloadingandrunning/downloadlocations.md" format="markdown"/>
-	<topicref href="downloadingandrunning/verification.md" format="markdown"/>
-    <topicref href="downloadingandrunning/airgap.md" format="markdown"/>
-
-    <topicref href="downloadingandrunning/includingexcluding/intro.md" format="markdown">
-      <topicref href="downloadingandrunning/includingexcluding/tools.md" format="markdown"/>
-      <topicref href="downloadingandrunning/includingexcluding/detectors.md" format="markdown"/>
-      <topicref href="downloadingandrunning/includingexcluding/pkgmgrs.md" format="markdown"/>
-      <topicref href="downloadingandrunning/includingexcluding/directories.md" format="markdown"/>
-    </topicref>
-
-    <topicref href="downloadingandrunning/detectorcascade.md" format="markdown"/>
-	<topicref href="downloadingandrunning/statelessscan.md" format="markdown"/>
-    <topicref href="downloadingandrunning/rapidscan.md" format="markdown"/>
-    <topicref href="downloadingandrunning/iacscan.md" format="markdown"/>
-    <topicref href="downloadingandrunning/status-file.md" format="markdown"/>
-    <topicref href="downloadingandrunning/proxies.md" format="markdown"/>
-    <topicref href="downloadingandrunning/concurrent.md" format="markdown"/>
-    <topicref href="downloadingandrunning/runincontainer.md" format="markdown"/>
-  </topicref>
-
+  
   <topicref href="configuring/overview.md" format="markdown">
     <topicref href="configuring/commandline.md" format="markdown"/>
     <topicref href="configuring/envvars.md" format="markdown"/>
@@ -107,6 +78,86 @@
     <topicref href="naming/projectversionscannaming.md" format="markdown"/>
     <topicref href="naming/aggregation.md" format="markdown"/>
   </topicref>
+  
+  <topicref href="runningdetect/intro.md" format="markdown">
+    <topicref href="runningdetect/basics/intro.md" format="markdown">
+      <topicref href="runningdetect/basics/decidinghowtouse.md" format="markdown"/>
+      <topicref href="runningdetect/basics/positioning.md" format="markdown"/>
+      <topicref href="runningdetect/basics/choosingworkingdir.md" format="markdown"/>
+      <topicref href="runningdetect/basics/choosingrunmethod.md" format="markdown"/>
+      <topicref href="runningdetect/basics/manual.md" format="markdown"/>
+      <topicref href="runningdetect/basics/runningscript.md" format="markdown"/>
+      <topicref href="runningdetect/basics/runningjar.md" format="markdown"/>
+      <topicref href="runningdetect/basics/choosingtargettype.md" format="markdown"/>
+      <topicref href="runningdetect/basics/runningwithblackduck.md" format="markdown"/>	  
+    </topicref>
+
+    <topicref href="runningdetect/includingexcluding/intro.md" format="markdown">
+      <topicref href="runningdetect/includingexcluding/tools.md" format="markdown"/>
+      <topicref href="runningdetect/includingexcluding/detectors.md" format="markdown"/>
+      <topicref href="runningdetect/includingexcluding/pkgmgrs.md" format="markdown"/>
+      <topicref href="runningdetect/includingexcluding/directories.md" format="markdown"/>
+    </topicref>
+	
+    <topicref href="runningdetect/detectorcascade.md" format="markdown"/>
+	<topicref href="runningdetect/statelessscan.md" format="markdown"/>
+    <topicref href="runningdetect/rapidscan.md" format="markdown"/>
+    <topicref href="runningdetect/iacscan.md" format="markdown"/>
+	<topicref href="runningdetect/runningairgap.md" format="markdown"/>
+    <topicref href="runningdetect/status-file.md" format="markdown"/>
+    <topicref href="runningdetect/proxies.md" format="markdown"/>
+    <topicref href="runningdetect/concurrent.md" format="markdown"/>
+    <topicref href="runningdetect/runincontainer.md" format="markdown"/>
+  </topicref>
+
+ 
+  <topicref href="components/overview.md" format="markdown">
+    <topicref href="components/tools.md" format="markdown"/>
+    <topicref href="components/detectors.md" format="markdown"/>
+    <topicref href="components/inspectors.md" format="markdown"/>
+  </topicref>
+  
+  <topicref href="packagemgrs/overview.md" format="markdown">
+    <topicref href="packagemgrs/bazel.md" format="markdown"/>
+    <topicref href="packagemgrs/bitbake.md" format="markdown"/>
+    <topicref href="packagemgrs/cargo.md" format="markdown"/>
+    <topicref href="packagemgrs/carthage.md" format="markdown"/>
+    <topicref href="packagemgrs/clang.md" format="markdown"/>
+    <topicref href="packagemgrs/conan.md" format="markdown"/>
+    <topicref href="packagemgrs/conda.md" format="markdown"/>
+    <topicref href="packagemgrs/dart.md" format="markdown"/>
+	
+    <topicref href="packagemgrs/docker/intro.md" format="markdown">
+      <topicref href="packagemgrs/docker/formats.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/workflow.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/filepermissions.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/scantarget.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/isolatingapplication.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/windowsimages.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/runningonwindows.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/architecture.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/advanced.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/advanced-properties.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/deployment.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/troubleshooting.md" format="markdown"/>
+      <topicref href="packagemgrs/docker/releasenotes.md" format="markdown"/>
+    </topicref>
+    <topicref href="packagemgrs/git.md" format="markdown"/>
+    <topicref href="packagemgrs/golang.md" format="markdown"/>
+    <topicref href="packagemgrs/gradle.md" format="markdown"/>
+    <topicref href="packagemgrs/hex.md" format="markdown"/>
+    <topicref href="packagemgrs/ivy.md" format="markdown"/>
+    <topicref href="packagemgrs/lerna.md" format="markdown"/>
+    <topicref href="packagemgrs/maven.md" format="markdown"/>
+    <topicref href="packagemgrs/npm.md" format="markdown"/>
+    <topicref href="packagemgrs/nuget.md" format="markdown"/>
+    <topicref href="packagemgrs/pnpm.md" format="markdown"/>
+    <topicref href="packagemgrs/python.md" format="markdown"/>
+    <topicref href="packagemgrs/sbt.md" format="markdown"/>
+    <topicref href="packagemgrs/swift.md" format="markdown"/>
+    <topicref href="packagemgrs/yarn.md" format="markdown"/>
+  </topicref>
+  
 
   <topicref href="properties/configuration/properties.md" format="markdown">
     <topicref href="properties/basic-properties.md" format="markdown"/>
@@ -159,49 +210,6 @@
     <topicref href="results/reports.md" format="markdown"/>
   </topicref>
 
-  <topicref href="packagemgrs/overview.md" format="markdown">
-    <topicref href="packagemgrs/bazel.md" format="markdown"/>
-    <topicref href="packagemgrs/bitbake.md" format="markdown"/>
-    <topicref href="packagemgrs/cargo.md" format="markdown"/>
-    <topicref href="packagemgrs/carthage.md" format="markdown"/>
-    <topicref href="packagemgrs/clang.md" format="markdown"/>
-    <topicref href="packagemgrs/conan.md" format="markdown"/>
-    <topicref href="packagemgrs/conda.md" format="markdown"/>
-    <topicref href="packagemgrs/dart.md" format="markdown"/>
-
-    <topicref href="packagemgrs/docker/intro.md" format="markdown">
-      <topicref href="packagemgrs/docker/formats.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/workflow.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/filepermissions.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/scantarget.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/isolatingapplication.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/windowsimages.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/runningonwindows.md" format="markdown"/>
-
-      <topicref href="packagemgrs/docker/architecture.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/advanced.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/advanced-properties.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/deployment.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/troubleshooting.md" format="markdown"/>
-      <topicref href="packagemgrs/docker/releasenotes.md" format="markdown"/>
-    </topicref>
-
-    <topicref href="packagemgrs/git.md" format="markdown"/>
-    <topicref href="packagemgrs/golang.md" format="markdown"/>
-    <topicref href="packagemgrs/gradle.md" format="markdown"/>
-    <topicref href="packagemgrs/hex.md" format="markdown"/>
-    <topicref href="packagemgrs/ivy.md" format="markdown"/>
-    <topicref href="packagemgrs/lerna.md" format="markdown"/>
-    <topicref href="packagemgrs/maven.md" format="markdown"/>
-    <topicref href="packagemgrs/npm.md" format="markdown"/>
-    <topicref href="packagemgrs/nuget.md" format="markdown"/>
-    <topicref href="packagemgrs/pnpm.md" format="markdown"/>
-    <topicref href="packagemgrs/python.md" format="markdown"/>
-    <topicref href="packagemgrs/sbt.md" format="markdown"/>
-    <topicref href="packagemgrs/swift.md" format="markdown"/>
-    <topicref href="packagemgrs/yarn.md" format="markdown"/>
-  </topicref>
-  
    <topicref href="troubleshooting/intro.md" format="markdown">
     <topicref href="troubleshooting/gettinginfo.md" format="markdown"/>
     <topicref href="troubleshooting/commonproblems.md" format="markdown"/>

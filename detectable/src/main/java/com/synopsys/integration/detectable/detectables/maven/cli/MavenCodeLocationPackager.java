@@ -89,7 +89,9 @@ public class MavenCodeLocationPackager {
 
             int previousLevel = level;
             String cleanedLine = calculateCurrentLevelAndCleanLine(line);
-            ScopedDependency dependency = textToDependency(cleanedLine);
+            String cleanedLineWithoutParentheses = removeParenthesesForTransitiveDependencies(cleanedLine);
+            ScopedDependency dependency = textToDependency(cleanedLineWithoutParentheses);
+
             if (null == dependency) {
                 continue;
             }
@@ -416,5 +418,16 @@ public class MavenCodeLocationPackager {
             editableLine = editableLine.substring(index + segment.length());
         }
         return endOfSegments;
+    }
+
+    public String removeParenthesesForTransitiveDependencies(String cleanedLineWithParentheses) {
+        //command 'mvnw -Dverbose dependency:tree' returns  'Maven coordinates' that starts and ends with parentheses.
+        //In the BDIO file, external ID has "(" character as prefix for transitive dependencies. Therefore, "(" is causing matching issues in KB.
+        //This method checks for this pattern and removes the beginning and ending parentheses.
+
+        Pattern lineThatStartsAndEndsWithParentheses = Pattern.compile("^\\(.*\\)$");
+
+        return lineThatStartsAndEndsWithParentheses.matcher(cleanedLineWithParentheses).matches()
+                ? cleanedLineWithParentheses.substring(1, cleanedLineWithParentheses.length() - 1) : cleanedLineWithParentheses;
     }
 }

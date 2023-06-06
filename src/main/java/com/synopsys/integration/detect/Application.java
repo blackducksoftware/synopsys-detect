@@ -54,13 +54,15 @@ import com.synopsys.integration.detect.workflow.report.output.FormattedOutputMan
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
+import java.io.IOException;
+import java.util.logging.Level;
 
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
     private static boolean SHOULD_EXIT = true;
     
-    private static String STATUS_JSON_FILE_NAME = "status.json";
+    private static final String STATUS_JSON_FILE_NAME = "status.json";
 
     private final ConfigurableEnvironment environment;
 
@@ -81,7 +83,19 @@ public class Application implements ApplicationRunner {
     public static void main(String[] args) {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(Application.class);
         builder.logStartupInfo(false);
-        builder.run(args);
+        boolean selfUpdated = false;
+        ApplicationUpdaterUtility utility = new ApplicationUpdaterUtility();
+        try(ApplicationUpdater updater = new ApplicationUpdater(utility, args)) {
+            selfUpdated = updater.selfUpdate();
+            updater.closeUpdater();
+        } catch (IOException ex) {
+            Logger staticLogger = LoggerFactory.getLogger(Application.class);
+            staticLogger.warn("There was a problem running the Self-Update feature.");
+            staticLogger.debug("Reason: ", ex);
+        }
+        if (!selfUpdated) {
+            builder.run(args);
+        }
     }
 
     @Override

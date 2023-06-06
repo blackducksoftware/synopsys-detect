@@ -1,21 +1,18 @@
 # Stateless Scan LCA
 
-Stateless Scan, or Stateless Scan Mode, is a new way of running [solution_name] with [blackduck_product_name]. This mode is designed to be as fast as possible and does not persist any data on [blackduck_product_name]. Stateless Scan Mode has a unique set of restrictions, mode of configuration and set of results.  It is similar to Rapid Scan Mode however it differs in that it supports usage of the SIGNATURE_SCAN tool.  Stateless Scan allows non-persistent signature scans to be performed.
+Stateless Scan, or Stateless Scan Mode, is a way of running [solution_name] with [blackduck_product_name]. This mode is designed to be as fast as possible and does not persist any data on [blackduck_product_name]. Stateless Scan Mode has a unique set of restrictions, mode of configuration, and set of results.  It is similar to Rapid Scan Mode, however it differs in that it supports usage of the SIGNATURE_SCAN, BINARY_SCAN, and CONTAINER_SCAN tools.
 
 Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of Detect.
 
 ## Requirements and Limitations
 
+### General Requirements
  * Stateless scanning is available under [blackduck_product_name] “Limited Customer Availability (LCA)”.
- * Must be running [blackduck_product_name] 2022.10.0 or greater using the hosted KB.
  * Have Match as a Service (MaaS) enabled within [blackduck_product_name], a feature which will be available with the [blackduck_product_name] 2022.10.0 release.
  * A limited subset of Tools can be run.
-    * The currently supported tools are: DETECTOR, BAZEL, SIGNATURE_SCAN and DOCKER.
-    * The Stateless Signature Scan will not persist on Black Duck. 
+    * The currently supported tools are: DETECTOR, BAZEL, SIGNATURE_SCAN, DOCKER, BINARY_SCAN, and CONTAINER_SCAN.
+    * All Stateless Scans will not persist on Black Duck. 
     * All other tools are disabled when running in Stateless Scan mode.
- * Stateless Scan and non-persistent SIGNATURE_SCAN
-    * To perform a non-persistent Signature Scan in Stateless mode, SIGNATURE_SCAN must be included within --detect.tools.
-    * Permitted tools omitted from the detect.tools list will not be run.
  * Stateless Scan requires Black Duck policies. 
     * Stateless Scan only reports components that violate policies. 
     * If no policies are violated or there are no defined policies, then no components are returned.
@@ -25,12 +22,23 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
  * Stateless Scan does not support ```detect.policy.check.fail.on.names```
  * Stateless Scan cannot create a Risk or Notices report.
  * Stateless Scan will not create a Project or Version on Black Duck.
- * Stateless Scan when running SIGNATURE_SCAN requires communication with Black Duck.
+ * Stateless Scan when running SIGNATURE_SCAN, BINARY_SCAN, or CONTAINER_SCAN requires communication with Black Duck.
+ * Stateless Scan and non-persistent SIGNATURE_SCAN, BINARY_SCAN, or CONTAINER_SCAN
+    * To perform a non-persistent scan in Stateless mode, SIGNATURE_SCAN, BINARY_SCAN, or CONTAINER_SCAN must be included within --detect.tools.
+    * Permitted tools omitted from the detect.tools list will not be run.
+
+### Signature Scan Requirements
+ * Must be running [blackduck_product_name] 2022.10.0 or greater using the hosted KB.
+ 
+### Binary and Container Scan Requirements
+ * Must be running [blackduck_product_name] 2023.4.0 or greater using the hosted KB.
+ * It is necessary to have [solution_name] and [blackduck_product_name] running in the hosted SCAaaS environment to perform these scans. 
+ * To run binary or container Stateless Scan a Black Duck Binary Analysis (BDBA) license is required.
  
 ## Invocation
- * To invoke non-persistent (Rapid/Stateless) signature scan only
+ * To invoke a stateless signature scan only
     * --detect.tools=SIGNATURE_SCAN --detect.blackduck.scan.mode=STATELESS
- * To invoke Rapid/Stateless package manager scans
+ * To invoke a stateless package manager scan
     * --detect.tools=DETECTOR --detect.blackduck.scan.mode=STATELESS
     * --detect.tools=DETECTOR --detect.blackduck.scan.mode=RAPID
     * --detect.tools=BAZEL --detect.blackduck.scan.mode=RAPID
@@ -39,15 +47,19 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
     * --detect.tools=DOCKER --detect.blackduck.scan.mode=RAPID
     * --detect.target.type=IMAGE --detect.blackduck.scan.mode=RAPID
     * --detect.target.type=IMAGE --detect.blackduck.scan.mode=STATELESS
- * To invoke combined Rapid/Stateless scans (non-exhaustive list):
+ * To invoke a combined a stateless scan (non-exhaustive list):
     * --detect.tools=DETECTOR,SIGNATURE_SCAN --detect.blackduck.scan.mode=STATELESS
     * --detect.tools=DETECTOR,SIGNATURE_SCAN,DOCKER --detect.blackduck.scan.mode=STATELESS
     * --detect.tools=BAZEL,SIGNATURE_SCAN --detect.blackduck.scan.mode=STATELESS
     * --detect.tools=DETECTOR,DOCKER --detect.blackduck.scan.mode=RAPID
+ * To invoke a stateless binary scan
+    * --detect.tools=BINARY_SCAN --detect.blackduck.scan.mode=STATELESS --detect.scaaas.scan.path=file:///foo/bar.exe
+ * To invoke a stateless container scan
+    * --detect.tools=CONTAINER_SCAN --detect.blackduck.scan.mode=STATELESS --detect.scaaas.scan.path=file:///foo/docker-image.tar
 
 ## Results
 
-Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast, although the SIGNATURE_SCAN can take some time as communication with Black Duck is a requirement.
+Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast, although they can take some time as communication with Black Duck is a requirement.
 
 The results are saved to a json file named 'name_version_BlackDuck_DeveloperMode_Result.json' in the Scan Output directory, where name and version are the project's name and version.
 
@@ -99,5 +111,7 @@ For [solution_name] version 8.7.0 and later, with [blackduck_product_name] 2023.
 2023-03-09 13:01:56 EST INFO  [main] --- ===============================
 ```
 
-For further remediation and transitive dependency upgrade guidance, please consult the documentation provided by [blackduck_product_name] under the topic: <a href="https://community.synopsys.com/s/document-item?bundleId=bd-hub&topicId=Risk%2FRiskGuidance.html&_LANG=enus" target="_blank">Getting remediation guidance for components with security vulnerabilities.</a>
+For further remediation and transitive dependency upgrade guidance, please consult the documentation provided by [blackduck_product_name] under the topic:
+<xref href="RiskGuidance.dita" scope="peer">Getting remediation guidance for components with security vulnerabilities.
+<data name="facets" value="pubname=bd-hub"/>
 

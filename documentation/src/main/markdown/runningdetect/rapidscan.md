@@ -100,7 +100,8 @@ For [solution_name] version 8.7.0 and later, with [blackduck_product_name] 2023.
 2023-03-09 13:01:56 EST INFO  [main] --- ===============================
 ```
 
-For further remediation and transitive dependency upgrade guidance, please consult the documentation provided by [blackduck_product_name] under the topic: <a href="https://community.synopsys.com/s/document-item?bundleId=bd-hub&topicId=Risk%2FRiskGuidance.html&_LANG=enus" target="_blank">Getting remediation guidance for components with security vulnerabilities.</a>
+For further remediation and transitive dependency upgrade guidance, please consult the documentation provided by [blackduck_product_name] under the topic:<xref href="RiskGuidance.dita" scope="peer"> Getting remediation guidance for components with security vulnerabilities.
+<data name="facets" value="pubname=bd-hub"/>
 
 ## Rapid Scan Compare Mode
 

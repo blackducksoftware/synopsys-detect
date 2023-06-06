@@ -30,7 +30,7 @@ public class DetectToolFilter {
     private final List<DetectTool> defaultStatelessTools = Arrays.asList(DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN);
     
     // A list of all possible Stateless scan types.
-    private final List<DetectTool> allowedStatelessTools = Arrays.asList(DetectTool.BAZEL, DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN, DetectTool.DOCKER);    
+    private final List<DetectTool> allowedStatelessTools = Arrays.asList(DetectTool.BAZEL, DetectTool.DETECTOR, DetectTool.SIGNATURE_SCAN, DetectTool.DOCKER, DetectTool.BINARY_SCAN, DetectTool.CONTAINER_SCAN);    
 
     public DetectToolFilter(
         ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter,

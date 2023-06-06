@@ -20,8 +20,8 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
-@DetectableInfo(name = "Lerna CLI", language = "Node JS", forge = "npmjs", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "File: " + LernaDetectable.PACKAGE_JSON
-    + ", and one of the following: "
+@DetectableInfo(name = "Lerna CLI", language = "Node JS", forge = "npmjs", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "File: lerna.json, " + LernaDetectable.PACKAGE_JSON
+    + ", Executable: Lerna, and one of the following: "
     + LernaDetectable.PACKAGE_LOCK_JSON + ", " + LernaDetectable.SHRINKWRAP_JSON + ", "
     + LernaDetectable.YARN_LOCK + ".")
 public class LernaDetectable extends Detectable {

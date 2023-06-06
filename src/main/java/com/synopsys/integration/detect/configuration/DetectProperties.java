@@ -93,7 +93,10 @@ public class DetectProperties {
     public static final NullableStringProperty BLACKDUCK_PROXY_HOST =
         NullableStringProperty.newBuilder("blackduck.proxy.host")
             .setInfo("Proxy Host", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Hostname for proxy server.")
+            .setHelp(
+			"Hostname of the proxy server.",
+			"Schema/protocol is not accepted by this parameter.")
+			.setExample("--blackduck.proxy.host=<Proxy_IP/URL>:port")
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -137,7 +140,7 @@ public class DetectProperties {
     public static final NullableStringProperty BLACKDUCK_PROXY_PORT =
         NullableStringProperty.newBuilder("blackduck.proxy.port")
             .setInfo("Proxy Port", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Proxy port.")
+            .setHelp("Proxy port number.")
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -376,6 +379,17 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    public static final NullableStringProperty PROJECT_INSPECTOR_GLOBAL_ARGUMENTS =
+        NullableStringProperty.newBuilder("detect.project.inspector.global.arguments")
+        .setInfo("Project Inspector Global Arguments", DetectPropertyFromVersion.VERSION_8_8_0)
+        .setHelp(
+            "A space-separated list of global options to pass to all invocations of the project inspector."
+        )
+        .setExample("--help --quiet")
+        .setGroups(DetectGroup.PROJECT_INSPECTOR, DetectGroup.DEFAULT)
+        .setCategory(DetectCategory.Advanced)
+        .build();
+
     // TODO: JP don't like it
     public static final NullableStringProperty PROJECT_INSPECTOR_ARGUMENTS =
         NullableStringProperty.newBuilder("detect.project.inspector.arguments")
@@ -467,7 +481,7 @@ public class DetectProperties {
                 )
                 .setInfo("Reduced Persistence", DetectPropertyFromVersion.VERSION_8_3_0)
                 .setHelp(
-                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to <xref href=\"https://community.synopsys.com/s/document-item?bundleId=bd-hub&topicId=ComponentDiscovery%2Fabout_reduced_persistence_signature_scanning.html&_LANG=enus\" scope=\"external\" outputclass=\"external\" format=\"html\" target=\"_blank\">about reduced persistence signature scanning.</xref>")
+                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to <xref href=\"https://sig-product-docs.synopsys.com/bundle/bd-hub/page/ComponentDiscovery/about_reduced_persistence_signature_scanning.html\" scope=\"external\" outputclass=\"external\" format=\"html\" target=\"_blank\">about reduced persistence signature scanning.</xref>")
                 .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
                 .build();
 
@@ -940,7 +954,7 @@ public class DetectProperties {
     public static final NullablePathProperty DETECT_JAVA_PATH =
         NullablePathProperty.newBuilder("detect.java.path")
             .setInfo("Java Executable", DetectPropertyFromVersion.VERSION_5_0_0)
-            .setHelp("Path to the java executable.", "If set, Detect will use the given java executable instead of searching for one.")
+            .setHelp("Path to the Java executable used by Docker Inspector.", "If set, Detect will use the given Java executable instead of searching for one.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
@@ -1739,7 +1753,15 @@ public class DetectProperties {
                 "This property will force Detect in offline mode to generate a BDIO even if no code locations were identified.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
-
+    
+    public static final NullableStringProperty DETECT_SCAAAS_SCAN_PATH =
+            NullableStringProperty.newBuilder("detect.scaaas.scan.path")
+            .setInfo("SCAAAS Scan Target", DetectPropertyFromVersion.VERSION_8_8_0)
+            .setHelp(
+                "This file will be uploaded to the BDBA worker for scan analysis in an SCA as a service environment.")            
+            .setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH)
+            .build();
+    
     //#endregion Active Properties
 
     //#region Deprecated Properties

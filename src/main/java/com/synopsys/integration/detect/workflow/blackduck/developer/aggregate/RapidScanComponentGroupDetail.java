@@ -179,21 +179,9 @@ public class RapidScanComponentGroupDetail {
             DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation = violatingPolicies.get(i);
             
             if (violation.getPolicySeverity().equals(POLICY_SEVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SEVERITY_BLOCKER)) {
-                if (errorMessage.equals("")) {
-                    errorMessage = baseMessage;
-                } else {
-                    errorMessage += POLICY_SEPARATOR;
-                }
-                
-                errorMessage += violation.getPolicyName();
+                errorMessage = constructVulnerabilityMessageSegment(baseMessage, errorMessage, violation);
             } else {
-                if (warningMessage.equals("")) {
-                    warningMessage = baseMessage;
-                } else {
-                    warningMessage += POLICY_SEPARATOR;
-                }
-                
-                warningMessage += violation.getPolicyName();
+                warningMessage = constructVulnerabilityMessageSegment(baseMessage, warningMessage, violation);
             }
         }
         
@@ -221,6 +209,18 @@ public class RapidScanComponentGroupDetail {
         }
         
         addMessages(errorMessage, warningMessage);
+    }
+
+    private String constructVulnerabilityMessageSegment(String baseMessage, String overallMessage,
+            DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation) {
+        if (overallMessage.equals("")) {
+            overallMessage = baseMessage;
+        } else {
+            overallMessage += POLICY_SEPARATOR;
+        }
+        
+        overallMessage += violation.getPolicyName();
+        return overallMessage;
     }
     
     private String getBaseMessage(DeveloperScansScanView resultView) {
