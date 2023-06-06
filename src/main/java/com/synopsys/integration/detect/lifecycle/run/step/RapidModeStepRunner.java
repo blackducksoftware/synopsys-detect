@@ -96,7 +96,7 @@ public class RapidModeStepRunner {
                 logger.debug("Determining if configuration is valid to run a container scan.");
                 ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData);
                 if (containerScanStepRunner.shouldRunContainerScan()) {
-                    logger.debug("Invoking non-SCAaaS stateless container scan.");
+                    logger.debug("Invoking stateless container scan.");
                     UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
                     String statelessScanEndpoint = operationRunner.getScanServicePostEndpoint();
                     HttpUrl scanServiceUrlToPoll = new HttpUrl(blackDuckUrl + statelessScanEndpoint + "/" + scanId.toString());

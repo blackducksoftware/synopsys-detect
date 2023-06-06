@@ -63,8 +63,8 @@ public class ContainerScanStepRunner {
         File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(binaryRunDirectory);
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
         if (scanId == null) {
-            logger.debug("Scan ID not received in the response header.");
-            throw new IntegrationException("Scan ID not received in the response header.");
+            logger.warn("Scan ID was not found in the response from the server.");
+            throw new IntegrationException("Scan ID was not found in the response from the server.");
         }
         String scanIdString = scanId.toString();
         logger.debug("Scan initiated with scan service. Scan ID received: {}", scanIdString);
