@@ -13,7 +13,11 @@
 
 ### Dependency updates
 
-* Upgraded Spring Boot to version 2.7.12 to resolve [CVE-2023-20883](https://nvd.nist.gov/vuln/detail/CVE-2023-20883)
+* Upgraded Spring Boot to version 2.7.12 to resolve [CVE-2023-20883](https://nvd.nist.gov/vuln/detail/CVE-2023-20883) 
+* Upgraded jackson-databind to version 2.15.0 to resolve high severity [CVE-2022-42003](https://nvd.nist.gov/vuln/detail/CVE-2022-42003) and high severity [CVE-2022-42004](https://nvd.nist.gov/vuln/detail/CVE-2022-42004)
+* Upgraded jQuery to version 3.6 to resolve medium severity [CVE-2020-11022](https://nvd.nist.gov/vuln/detail/CVE-2020-11022), [CVE-2019-11358](https://nvd.nist.gov/vuln/detail/CVE-2019-11358) and [CVE-2020-11023](https://nvd.nist.gov/vuln/detail/CVE-2020-11023)
+* Upgraded SnakeYAML to version 2.0 to resolve critical severity [CVE-2022-1471](https://nvd.nist.gov/vuln/detail/CVE-2022-1471)
+* Upgraded json-smart to version 2.4.11 to resolve high severity [CVE-2023-1370](https://nvd.nist.gov/vuln/detail/CVE-2023-1370)
 
 ## Version 8.9.0
 
