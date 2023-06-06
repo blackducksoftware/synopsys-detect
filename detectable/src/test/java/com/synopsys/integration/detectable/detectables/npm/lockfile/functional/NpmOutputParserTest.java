@@ -18,6 +18,109 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class NpmOutputParserTest {
     @Test
+    public void npmCliWorkspaceDependencyFinder() {
+        String testIn = String.join(System.lineSeparator(), Arrays.asList(
+            "{",
+            "   \"version\": \"1.0.0\",",
+            "   \"name\": \"npmworkspace\",",
+            "   \"dependencies\": {",
+            "       \"express\": {",
+            "       \"version\": \"4.18.2\",",
+            "       \"resolved\": \"https://registry.npmjs.org/express/-/express-4.18.2.tgz\",",
+            "       \"overridden\": false",
+            "       },",
+            "       \"packagesa\": {",
+            "           \"version\": \"1.0.0\",",
+            "           \"resolved\": \"file:../packages/a\",",
+            "           \"overridden\": false,",
+            "           \"dependencies\": {",
+            "              \"abbrev\": {",
+            "                  \"version\": \"2.0.0\",",
+            "                  \"resolved\": \"https://registry.npmjs.org/abbrev/-/abbrev-2.0.0.tgz\",",
+            "                  \"overridden\": false",
+            "              },",
+            "              \"send\": {",
+            "                  \"version\": \"0.17.2\",",
+            "                  \"resolved\": \"https://registry.npmjs.org/send/-/send-0.17.2.tgz\",",
+            "                  \"overridden\": false",                          
+            "              },",
+            "              \"test\": {",
+            "                  \"version\": \"3.3.0\",",
+            "                  \"resolved\": \"https://registry.npmjs.org/test/-/test-3.3.0.tgz\",",
+            "                  \"overridden\": false",
+            "              }",
+            "           }",
+            "       },",
+            "       \"packagesb\": {",
+            "           \"version\": \"1.0.0\",",
+            "           \"resolved\": \"file:../packages/b\",",
+            "           \"overridden\": false,",
+            "           \"dependencies\": {",
+            "              \"karma\": {",
+            "                  \"version\": \"6.4.2\",",
+            "                  \"resolved\": \"https://registry.npmjs.org/karma/-/karma-6.4.2.tgz\",",
+            "                  \"overridden\": false",
+            "              }",
+            "           }",
+            "       },",
+            "       \"packagesc\": {",
+            "           \"version\": \"1.0.0\",",
+            "           \"resolved\": \"file:../packages/a/c\",",
+            "           \"overridden\": false,",
+            "           \"dependencies\": {",
+            "              \"lodash\": {",
+            "                  \"version\": \"4.17.21\",",
+            "                  \"resolved\": \"https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz\",",
+            "                  \"overridden\": false",
+            "              }",
+            "           }",
+            "       },",
+            "       \"send\": {",
+            "           \"version\": \"0.18.0\",",
+            "           \"resolved\": \"https://registry.npmjs.org/send/-/send-0.18.0.tgz\",",
+            "           \"overridden\": false",
+            "       }",
+            "   }",
+            "}"
+        ));
+        
+        NpmCliParser parser = new NpmCliParser(new ExternalIdFactory(), EnumListFilter.excludeNone());
+        NpmDependencyTypeFilter npmDependencyTypeFilter = new NpmDependencyTypeFilter(Collections.emptySet(), Collections.emptySet(), true, true);
+        CombinedPackageJson combinedPackageJson = new CombinedPackageJson();
+        NpmPackagerResult result = parser.convertNpmJsonFileToCodeLocation(testIn, combinedPackageJson);
+
+        Assertions.assertEquals("npmworkspace", result.getProjectName());
+        Assertions.assertEquals("1.0.0", result.getProjectVersion());
+
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
+
+        graphAssert.hasRootSize(5);
+        
+        graphAssert.hasRootDependency("send", "0.18.0");
+        graphAssert.hasRootDependency("express", "4.18.2");
+        graphAssert.hasRootDependency("packagesa", "1.0.0");
+        graphAssert.hasRootDependency("packagesb", "1.0.0");
+        graphAssert.hasRootDependency("packagesc", "1.0.0");
+        
+        graphAssert.hasDependency("packagesa", "1.0.0");
+        graphAssert.hasDependency("packagesb", "1.0.0");
+        graphAssert.hasDependency("packagesc", "1.0.0");
+        graphAssert.hasDependency("express", "4.18.2");
+        graphAssert.hasDependency("send", "0.18.0");
+        graphAssert.hasDependency("abbrev", "2.0.0");
+        graphAssert.hasDependency("send", "0.17.2");
+        graphAssert.hasDependency("test", "3.3.0");
+        graphAssert.hasDependency("karma", "6.4.2");
+        graphAssert.hasDependency("lodash", "4.17.21");
+        
+        graphAssert.hasParentChildRelationship("packagesa", "1.0.0", "abbrev", "2.0.0");
+        graphAssert.hasParentChildRelationship("packagesa", "1.0.0", "send", "0.17.2");
+        graphAssert.hasParentChildRelationship("packagesa", "1.0.0", "test", "3.3.0");
+        graphAssert.hasParentChildRelationship("packagesb", "1.0.0", "karma", "6.4.2");
+        graphAssert.hasParentChildRelationship("packagesc", "1.0.0", "lodash", "4.17.21");
+    }
+    
+    @Test
     public void npmCliDependencyFinder() {
         NpmCliParser parser = new NpmCliParser(new ExternalIdFactory(), EnumListFilter.excludeNone());
         String testIn = String.join(System.lineSeparator(), Arrays.asList(

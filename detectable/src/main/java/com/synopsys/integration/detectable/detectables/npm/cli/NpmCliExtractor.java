@@ -87,7 +87,6 @@ public class NpmCliExtractor {
     }
 
     private CombinedPackageJson parsePackageJson(File packageJson) throws IOException {
-        // TODO to handle wildcards probably need to walk and read everything
         String packageJsonText = FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8);
         
         CombinedPackageJsonExtractor extractor = new CombinedPackageJsonExtractor(gson);
