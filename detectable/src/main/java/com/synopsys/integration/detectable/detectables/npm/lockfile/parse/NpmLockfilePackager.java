@@ -67,7 +67,7 @@ public class NpmLockfilePackager {
         return new NpmPackagerResult(projectId.getName(), projectId.getVersion(), codeLocation);
     }
 
-    private String removePathInfoFromPackageName(String lockFileText) {
+    public String removePathInfoFromPackageName(String lockFileText) {
         List<String> searchList = new ArrayList<>(Arrays.asList("/node_modules/", "node_modules/"));
         List<String> replaceList = new ArrayList<>(Arrays.asList("*", ""));
 
