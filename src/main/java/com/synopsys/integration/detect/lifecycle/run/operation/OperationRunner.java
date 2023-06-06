@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.synopsys.integration.detect.workflow.componentlocationanalysis.ComponentLocationAnalysisReporter;
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
@@ -455,10 +455,10 @@ public class OperationRunner {
     //End Rapid
 
     public final File generateComponentsWithLocationsFile(List<DeveloperScansScanView> rapidFullResults) throws DetectUserFriendlyException {
-        return  ComponentLocationAnalysisReporter.generateFileForNonPersistentPkgMngrScan(rapidFullResults, directoryManager);
+        return  GenerateComponentLocationAnalysisOperation.generateFileForNonPersistentOnlinePkgMngrScan(rapidFullResults, directoryManager);
     }
     public final File generateComponentsWithLocationsFile(BdioResult bdio) throws DetectUserFriendlyException {
-        return  ComponentLocationAnalysisReporter.generateFileForOfflinePkgMngrScan(bdio, directoryManager);
+        return  GenerateComponentLocationAnalysisOperation.generateFileForOfflinePkgMngrScan(bdio, directoryManager);
     }
     public final void publishComponentsWithLocationsFile(File jsonFile) throws OperationException {
         auditLog.namedInternal("Publish Components with Locations File", () -> statusEventPublisher.publishDetectResult(new ReportDetectResult("Components with Locations", jsonFile.getCanonicalPath())));

@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ComponentLocationAnalysisReporterTest {
+public class GenerateComponentLocationAnalysisOperationTest {
 
     @Test
     void test(@TempDir Path tempPath) throws IOException, DetectUserFriendlyException {
@@ -41,7 +41,7 @@ public class ComponentLocationAnalysisReporterTest {
         String mockedResultsJsonString = "some json string";
         Mockito.when(gson.toJson(results)).thenReturn(mockedResultsJsonString);
 
-        File generatedFile = ComponentLocationAnalysisReporter.generateFileForNonPersistentPkgMngrScan(results, directoryManager);;
+        File generatedFile = GenerateComponentLocationAnalysisOperation.generateFileForNonPersistentOnlinePkgMngrScan(results, directoryManager);;
 
         String expectedFilename = String.format("components_with_locations.json", projectNameVersion.getName(), projectNameVersion.getVersion());
         String expectedPath = new File(scanDir, expectedFilename).getAbsolutePath();

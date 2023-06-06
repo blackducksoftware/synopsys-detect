@@ -15,18 +15,32 @@ import java.util.List;
  * This class is only a placeholder to represent the point at which Detect will call the Component Locator Library.
  * For now, it generates an empty components_with_locations.json file for testing purposes.
  */
-public class ComponentLocationAnalysisReporter {
+public class GenerateComponentLocationAnalysisOperation {
+    private final String CLL_INPUT_FILE_NAME = "components-source.json";
+    private final String CLL_OUTPUT_FILE_NAME = "components-with-locations.json";
+    private final BdioToComponentLocatorInputTransformer bdioTransformer;
+    private final ScanResultToComponentLocatorInputTransformer scanResultTransformer;
 
-    public static File generateFileForNonPersistentPkgMngrScan(List<DeveloperScansScanView> rapidFullResults, DirectoryManager dm) throws DetectUserFriendlyException {
+    public GenerateComponentLocationAnalysisOperation(BdioToComponentLocatorInputTransformer bdioTransformer, ScanResultToComponentLocatorInputTransformer scanResultTransformer) {
+        this.bdioTransformer = bdioTransformer;
+        this.scanResultTransformer = scanResultTransformer;
+    }
+
+    public static File generateFileForNonPersistentOnlinePkgMngrScan(List<DeveloperScansScanView> rapidFullResults, DirectoryManager dm) throws DetectUserFriendlyException {
+        // call rapid -> CLL input
+        // call library w/ that CLL input
         File componentsWithLocations =  new File (dm.getScanOutputDirectory(), "components_with_locations.json");
         return generatePlaceHolderJsonFile(componentsWithLocations);
     }
 
     public static File generateFileForOfflinePkgMngrScan(BdioResult bdioPkgMngrResults, DirectoryManager dm) throws DetectUserFriendlyException {
+        // call BDIO -> CLL input
         File componentsWithLocation = new File (dm.getScanOutputDirectory(), "components_with_locations.json");
         return generatePlaceHolderJsonFile(componentsWithLocation);
     }
 
+    // method that takes a CLL input and calls on the library
+    private void callComponentLocatorLib() {}
 
     private static File generatePlaceHolderJsonFile(File componentsWithLocations) throws DetectUserFriendlyException {
         try {
@@ -36,4 +50,6 @@ public class ComponentLocationAnalysisReporter {
         }
         return componentsWithLocations;
     }
+
+    // todo: method to clean up components-source.json file
 }

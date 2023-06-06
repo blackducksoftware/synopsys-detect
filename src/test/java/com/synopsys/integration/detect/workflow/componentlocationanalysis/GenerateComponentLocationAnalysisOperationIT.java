@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 @Tag("integration")
-public class ComponentLocationAnalysisReporterIT {
+public class GenerateComponentLocationAnalysisOperationIT {
     @Test
     void offlinePkgMngrScan_analysisEnabled() throws IOException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("component-location-analysis-test", "gradle-simple:1.0.0")) {

@@ -1,0 +1,13 @@
+package com.synopsys.integration.detect.workflow.componentlocationanalysis;
+
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsLongTermUpgradeGuidanceView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsShortTermUpgradeGuidanceView;
+
+import java.util.List;
+
+public class CLLMetadata {
+    List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> policyViolationVulnerabilities,
+    DeveloperScansScanItemsShortTermUpgradeGuidanceView shortTermUpgradeGuidance,
+    DeveloperScansScanItemsLongTermUpgradeGuidanceView longTermUpgradeGuidance
+}
