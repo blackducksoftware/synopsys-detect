@@ -3,7 +3,7 @@ package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 
 /**
- * Transforms {@link BdioResult} to {@link ComponentLocatorInput}
+ * Transforms {@link BdioResult} to {@link ComponentLocatorLibInput}
  */
 public class BdioToComponentLocatorInputTransformer {
 

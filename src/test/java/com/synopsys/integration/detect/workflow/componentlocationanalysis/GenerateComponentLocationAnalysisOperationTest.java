@@ -41,7 +41,7 @@ public class GenerateComponentLocationAnalysisOperationTest {
         String mockedResultsJsonString = "some json string";
         Mockito.when(gson.toJson(results)).thenReturn(mockedResultsJsonString);
 
-        File generatedFile = GenerateComponentLocationAnalysisOperation.generateFileForNonPersistentOnlinePkgMngrScan(results, directoryManager);;
+        File generatedFile = GenerateComponentLocationAnalysisOperation.forNonPersistentOnlinePkgMngrScan(results, directoryManager.getScanOutputDirectory());;
 
         String expectedFilename = String.format("components_with_locations.json", projectNameVersion.getName(), projectNameVersion.getVersion());
         String expectedPath = new File(scanDir, expectedFilename).getAbsolutePath();

@@ -8,7 +8,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import java.util.List;
 
 /**
- * Transforms a list of {@link DeveloperScansScanView} to {@link ComponentLocatorInput}
+ * Transforms a list of {@link DeveloperScansScanView} to {@link ComponentLocatorLibInput}
  */
 public class ScanResultToComponentLocatorInputTransformer {
 

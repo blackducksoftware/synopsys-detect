@@ -455,10 +455,10 @@ public class OperationRunner {
     //End Rapid
 
     public final File generateComponentsWithLocationsFile(List<DeveloperScansScanView> rapidFullResults) throws DetectUserFriendlyException {
-        return  GenerateComponentLocationAnalysisOperation.generateFileForNonPersistentOnlinePkgMngrScan(rapidFullResults, directoryManager);
+        return  GenerateComponentLocationAnalysisOperation.forNonPersistentOnlinePkgMngrScan(rapidFullResults, directoryManager.getScanOutputDirectory());
     }
     public final File generateComponentsWithLocationsFile(BdioResult bdio) throws DetectUserFriendlyException {
-        return  GenerateComponentLocationAnalysisOperation.generateFileForOfflinePkgMngrScan(bdio, directoryManager);
+        return  GenerateComponentLocationAnalysisOperation.forOfflinePkgMngrScan(bdio, directoryManager.getScanOutputDirectory());
     }
     public final void publishComponentsWithLocationsFile(File jsonFile) throws OperationException {
         auditLog.namedInternal("Publish Components with Locations File", () -> statusEventPublisher.publishDetectResult(new ReportDetectResult("Components with Locations", jsonFile.getCanonicalPath())));

@@ -14,4 +14,7 @@ public class CLLComponent {
         this.version = externalId.getVersion();
         this.metadata = metadata;
     }
+
+    // function to split an external ID into g, a and v (and maybe other types in the future?)
+
 }

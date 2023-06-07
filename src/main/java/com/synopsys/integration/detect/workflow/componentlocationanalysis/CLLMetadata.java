@@ -1,13 +1,10 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsLongTermUpgradeGuidanceView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsShortTermUpgradeGuidanceView;
-
-import java.util.List;
-
 public class CLLMetadata {
-    List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> policyViolationVulnerabilities,
-    DeveloperScansScanItemsShortTermUpgradeGuidanceView shortTermUpgradeGuidance,
-    DeveloperScansScanItemsLongTermUpgradeGuidanceView longTermUpgradeGuidance
+    // can put anthing in here ... can be component level or global meta
+
+    // For component level we want:
+    //    List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> policyViolationVulnerabilities,
+    //    DeveloperScansScanItemsShortTermUpgradeGuidanceView shortTermUpgradeGuidance,
+    //    DeveloperScansScanItemsLongTermUpgradeGuidanceView longTermUpgradeGuidance
 }
