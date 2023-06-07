@@ -31,7 +31,8 @@ public class ContainerScanStepRunner {
     private final File binaryRunDirectory;
     private final File containerImage;
 
-    public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData, Gson gson) throws IntegrationException {
+    public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData, Gson gson)
+        throws IntegrationException, DetectUserFriendlyException, IOException {
         this.operationRunner = operationRunner;
         this.projectNameVersion = projectNameVersion;
         this.blackDuckRunData = blackDuckRunData;
@@ -41,10 +42,10 @@ public class ContainerScanStepRunner {
         }
         projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
         this.gson = gson;
-        containerImage = operationRunner.getContainerScanImage();
+        containerImage = operationRunner.getContainerScanImage(gson, binaryRunDirectory);
     }
 
-    public UUID invokeContainerScanningWorkflow() throws IntegrationException, IOException, DetectUserFriendlyException {
+    public UUID invokeContainerScanningWorkflow() throws IntegrationException, IOException {
         initiateScan();
         uploadImageToStorageService();
         uploadImageMetadataToStorageService();

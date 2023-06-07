@@ -95,7 +95,7 @@ public class RapidModeStepRunner {
             } else {
                 logger.debug("Determining if configuration is valid to run a container scan.");
                 ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData, gson);
-                if (containerScanStepRunner.shouldRunContainerScan()) {
+                if (Boolean.TRUE.equals(containerScanStepRunner.shouldRunContainerScan())) {
                     logger.debug("Invoking stateless container scan.");
                     UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
                     String statelessScanEndpoint = operationRunner.getScanServicePostEndpoint();
