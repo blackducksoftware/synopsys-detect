@@ -13,6 +13,7 @@ import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class will generate the appropriate input file for Component Locator, invoke the library's JAR and then

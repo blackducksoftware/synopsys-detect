@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * This class adheres to Component Locator Library's input schema.
