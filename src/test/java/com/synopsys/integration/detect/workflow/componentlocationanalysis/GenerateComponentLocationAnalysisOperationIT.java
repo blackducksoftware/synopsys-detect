@@ -13,7 +13,7 @@ import java.io.IOException;
 @Tag("integration")
 public class GenerateComponentLocationAnalysisOperationIT {
     @Test
-    void offlinePkgMngrScan_analysisEnabled() throws IOException {
+    void testOfflinePkgMngrScan_analysisEnabled() throws IOException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("component-location-analysis-test", "gradle-simple:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle.dockerfile"));
 
@@ -25,7 +25,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulOperation("Publish Components with Locations File");
+            dockerAssertions.successfulOperation("Publish Component Location Analysis File");
         }
     }
     @Test
@@ -35,13 +35,11 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
-            commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
-            commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO, "true");
             commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, "RAPID");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulOperation("Publish Components with Locations File");
+            dockerAssertions.successfulOperation("Publish Component Location Analysis File");
         }
     }
 }

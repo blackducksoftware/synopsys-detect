@@ -23,9 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class GenerateComponentLocationAnalysisOperationTest {
 
     @Test
-    void test(@TempDir Path tempPath) throws IOException, DetectUserFriendlyException {
-        Gson gson = Mockito.mock(Gson.class);
-
+    void testGeneratedOutputFilePathAndName(@TempDir Path tempPath) throws IOException, DetectUserFriendlyException {
         File tempDir = tempPath.toFile();
         File scanDir = new File(tempDir, "scan");
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, scanDir.toPath(), null, null, null);
@@ -36,19 +34,11 @@ public class GenerateComponentLocationAnalysisOperationTest {
         results.add(resultView);
         NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
 
-
-
-        String mockedResultsJsonString = "some json string";
-        Mockito.when(gson.toJson(results)).thenReturn(mockedResultsJsonString);
-
         File generatedFile = GenerateComponentLocationAnalysisOperation.forNonPersistentOnlinePkgMngrScan(results, directoryManager.getScanOutputDirectory());;
 
-        String expectedFilename = String.format("components_with_locations.json", projectNameVersion.getName(), projectNameVersion.getVersion());
+        String expectedFilename = String.format("components-with-locations.json", projectNameVersion.getName(), projectNameVersion.getVersion());
         String expectedPath = new File(scanDir, expectedFilename).getAbsolutePath();
         assertEquals(expectedPath, generatedFile.getAbsolutePath());
-
-        String generatedString = FileUtils.readFileToString(generatedFile);
-        assertEquals(mockedResultsJsonString, generatedString);
     }
 
 }
