@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,6 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDep
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmProject;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.util.NameVersion;
 
 public class NpmLockfileGraphTransformer {
@@ -88,7 +88,7 @@ public class NpmLockfileGraphTransformer {
         }
         
         // add workspaces as direct dependencies
-        if (workspaces != null && !npmDependency.getName().isBlank() &&
+        if (workspaces != null && !StringUtils.isBlank(npmDependency.getName()) &&
                 workspaces.stream().anyMatch(x -> x.contains(npmDependency.getName()))) {
             dependencyGraph.addDirectDependency(npmDependency);
             
