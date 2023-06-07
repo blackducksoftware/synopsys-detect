@@ -12,6 +12,7 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
@@ -28,6 +29,7 @@ public class ContainerScanStepRunner {
     private final String projectGroupName;
     private final BlackDuckRunData blackDuckRunData;
     private final File binaryRunDirectory;
+    private final File containerImage;
 
     public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData, Gson gson) throws IntegrationException {
         this.operationRunner = operationRunner;
@@ -39,6 +41,7 @@ public class ContainerScanStepRunner {
         }
         projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
         this.gson = gson;
+        containerImage = operationRunner.getContainerScanImage();
     }
 
     public UUID invokeContainerScanningWorkflow() throws IntegrationException, IOException, DetectUserFriendlyException {
@@ -48,16 +51,33 @@ public class ContainerScanStepRunner {
         return scanId;
     }
 
+    public Boolean shouldRunContainerScan() {
+        return containerImage != null && containerImage.exists();
+    }
+
+    private String getContainerScanCodeLocationName() {
+        CodeLocationNameManager codeLocationNameManager = operationRunner.getCodeLocationNameManager();
+        return codeLocationNameManager.createContainerScanCodeLocationName(containerImage, projectNameVersion.getName(), projectNameVersion.getVersion());
+    }
+
     public void initiateScan() throws IOException, IntegrationException {
-        DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(UUID.randomUUID().toString(), "CONTAINER", projectNameVersion, projectGroupName);
+        DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(
+            UUID.randomUUID().toString(),
+            "CONTAINER",
+            projectNameVersion,
+            projectGroupName,
+            getContainerScanCodeLocationName());
         File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(binaryRunDirectory);
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile);
+        if (scanId == null) {
+            logger.warn("Scan ID was not found in the response from the server.");
+            throw new IntegrationException("Scan ID was not found in the response from the server.");
+        }
         String scanIdString = scanId.toString();
         logger.debug("Scan initiated with scan service. Scan ID received: {}", scanIdString);
     }
 
-    public void uploadImageToStorageService() throws IntegrationException, DetectUserFriendlyException, IOException {
-        File containerImage = operationRunner.getContainerScanImage(gson, binaryRunDirectory);
+    public void uploadImageToStorageService() throws IntegrationException {
         String storageServiceEndpoint = String.join("", "/api/storage/containers/", scanId.toString());
         String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
         logger.debug("Uploading container image artifact to storage endpoint: {}", storageServiceEndpoint);

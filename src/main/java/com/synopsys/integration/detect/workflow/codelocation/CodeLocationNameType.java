@@ -5,6 +5,7 @@ public enum CodeLocationNameType {
     IMPACT_ANALYSIS("impact"),
     SIGNATURE("signature"),
     BINARY("binary"),
+    CONTAINER("container"),
     IAC("iac");
 
     private final String name;

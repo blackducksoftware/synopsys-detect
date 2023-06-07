@@ -53,6 +53,17 @@ public class CodeLocationNameManager {
         return scanCodeLocationName;
     }
 
+    public String createContainerScanCodeLocationName(File targetFile, String projectName, String projectVersionName) {
+        String scanCodeLocationName;
+
+        if (codeLocationNameGenerator.useCodeLocationOverride()) {
+            scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.CONTAINER);
+        } else {
+            scanCodeLocationName = codeLocationNameGenerator.createContainerScanCodeLocationName(targetFile, projectName, projectVersionName);
+        }
+        return scanCodeLocationName;
+    }
+
     public String createImpactAnalysisCodeLocationName(File sourceDirectory, String projectName, String projectVersionName) {
         String scanCodeLocationName;
 

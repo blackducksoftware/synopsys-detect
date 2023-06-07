@@ -258,6 +258,10 @@ public class OperationRunner {
         this.auditLog = new OperationAuditLog(utilitySingletons.getOperationWrapper(), operationSystem);
     }
 
+    public CodeLocationNameManager getCodeLocationNameManager() {
+        return codeLocationNameManager;
+    }
+
     public final Optional<DetectableTool> checkForDocker() throws OperationException {//TODO: refactor bazel+docker out of detectable
         return auditLog.namedInternal("Check For Docker", () -> {
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,

@@ -134,6 +134,16 @@ public class IntelligentModeStepRunner {
             ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData, gson);
             UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
             scanIdsToWaitFor.add(scanId.toString());
+            logger.debug("Determining if configuration is valid to run a container scan.");
+            ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData);
+            if (containerScanStepRunner.shouldRunContainerScan()) {
+                logger.debug("Invoking stateless container scan.");
+                UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+                scanIdsToWaitFor.add(scanId.toString());
+            } else {
+                logger.debug("Container image file not provided or could not be downloaded. Container scan will not run.");
+            }
+
         });
 
         stepHelper.runToolIfIncludedWithCallbacks(
