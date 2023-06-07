@@ -42,7 +42,7 @@ public class GenerateComponentLocationAnalysisOperation {
             DetectFileUtils.writeToFile(componentsWithLocations, "{}");
             return componentsWithLocations;
         } catch (IOException ex) {
-            throw new DetectUserFriendlyException("Cannot create components location analysis output file", ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
+            throw new DetectUserFriendlyException("Failed to create component location analysis output file", ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
     }
 

@@ -1,10 +1,11 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
 public class CLLMetadata {
-    // can put anthing in here ... can be component level or global meta
+    // can be component level or global meta
 
-    // For component level we want:
+    // For component level we will want:
     //    List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> policyViolationVulnerabilities,
     //    DeveloperScansScanItemsShortTermUpgradeGuidanceView shortTermUpgradeGuidance,
     //    DeveloperScansScanItemsLongTermUpgradeGuidanceView longTermUpgradeGuidance
+    //    DeveloperScansScanItemsTransitiveUpgradeGuidanceView
 }

@@ -461,7 +461,7 @@ public class OperationRunner {
         return  GenerateComponentLocationAnalysisOperation.forOfflinePkgMngrScan(bdio, directoryManager.getScanOutputDirectory());
     }
     public final void publishComponentsWithLocationsFile(File jsonFile) throws OperationException {
-        auditLog.namedInternal("Publish Components with Locations File", () -> statusEventPublisher.publishDetectResult(new ReportDetectResult("Components with Locations", jsonFile.getCanonicalPath())));
+        auditLog.namedInternal("Publish Component Location Analysis File", () -> statusEventPublisher.publishDetectResult(new ReportDetectResult("Components with Locations", jsonFile.getCanonicalPath())));
     }
 
     //Post actions
