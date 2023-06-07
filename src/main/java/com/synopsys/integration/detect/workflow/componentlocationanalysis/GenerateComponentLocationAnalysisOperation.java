@@ -5,7 +5,6 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
-import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +13,10 @@ import java.util.List;
 public class GenerateComponentLocationAnalysisOperation {
     private static final String CLL_INPUT_FILE_NAME = "components-source.json";
     private static final String CLL_OUTPUT_FILE_NAME = "components-with-locations.json";
-    private final BdioToComponentLocatorInputTransformer bdioTransformer;
-    private final ScanResultToComponentLocatorInputTransformer scanResultTransformer;
+    private final BdioToCLLComponentTransformer bdioTransformer;
+    private final ScanResultToCLLComponentTransformer scanResultTransformer;
 
-    public GenerateComponentLocationAnalysisOperation(BdioToComponentLocatorInputTransformer bdioTransformer, ScanResultToComponentLocatorInputTransformer scanResultTransformer) {
+    public GenerateComponentLocationAnalysisOperation(BdioToCLLComponentTransformer bdioTransformer, ScanResultToCLLComponentTransformer scanResultTransformer) {
         this.bdioTransformer = bdioTransformer;
         this.scanResultTransformer = scanResultTransformer;
     }
