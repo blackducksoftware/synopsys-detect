@@ -1,6 +1,10 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class adheres to Component Locator Library's input schema.
@@ -15,8 +19,7 @@ public class ComponentLocatorInput {
 
     public ComponentLocatorInput(String sourcePath, Metadata globalMetadata, List<Component> componentList) {
         this.sourcePath = sourcePath;
-        this.globalMetadata = globalMetadata;
+        this.globalMetadata = globalMetadata; //Objects.requireNonNullElse(globalMetadata, new CLLMetadata());
         this.componentList = componentList;
     }
-
 }

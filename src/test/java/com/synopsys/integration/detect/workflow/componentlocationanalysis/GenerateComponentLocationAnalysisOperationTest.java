@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.DetectRunId;
@@ -9,6 +10,7 @@ import com.synopsys.integration.util.NameVersion;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
+import org.zeroturnaround.zip.commons.FileUtils;
 
 import java.io.File;
 import java.io.IOException;

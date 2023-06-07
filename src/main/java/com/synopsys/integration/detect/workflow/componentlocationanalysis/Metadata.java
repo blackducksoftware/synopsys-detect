@@ -7,8 +7,10 @@ public class Metadata {
     // can be component level or global metadata
 
     // For component level we will want:
-    //    List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> policyViolationVulnerabilities,
-    //    DeveloperScansScanItemsShortTermUpgradeGuidanceView shortTermUpgradeGuidance,
-    //    DeveloperScansScanItemsLongTermUpgradeGuidanceView longTermUpgradeGuidance
-    //    DeveloperScansScanItemsTransitiveUpgradeGuidanceView
+    //    set List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> policyViolationVulnerabilities,
+    //    set DeveloperScansScanItemsShortTermUpgradeGuidanceView shortTermUpgradeGuidance,
+    //    set DeveloperScansScanItemsLongTermUpgradeGuidanceView longTermUpgradeGuidance
+    //    set DeveloperScansScanItemsTransitiveUpgradeGuidanceView
+
+//    private void replaceWithEmpty
 }

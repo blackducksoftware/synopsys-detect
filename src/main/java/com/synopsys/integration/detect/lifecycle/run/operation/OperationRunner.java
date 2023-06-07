@@ -462,6 +462,11 @@ public class OperationRunner {
      * @throws DetectUserFriendlyException if there was a problem generating the file.
      */
     public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws DetectUserFriendlyException, OperationException {
+//        // tome versus internal ..
+//        return auditLog.namedPublic("Generate Component Location Analysis File for Vulnerable/Violating Dependencies?", () -> {
+//            GenerateComponentLocationAnalysisOperation generateComponentLocationAnalysis = new GenerateComponentLocationAnalysisOperation();
+//            return generateComponentLocationAnalysis.forNonPersistentOnlinePkgMngrScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory());
+//        });
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
             File componentsWithLocationsFile = GenerateComponentLocationAnalysisOperation.locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory());
             publishComponentsWithLocationsFile(componentsWithLocationsFile);
