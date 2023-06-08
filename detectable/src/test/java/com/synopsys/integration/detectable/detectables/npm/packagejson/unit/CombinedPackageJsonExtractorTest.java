@@ -16,16 +16,48 @@ import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
 public class CombinedPackageJsonExtractorTest {
     @Test
-    public void testConstructCombinedPackageJson() throws IOException {
+    public void testConstructCombinedPackageJsonWithWildcards() throws IOException {
         Gson gson = new Gson();
         CombinedPackageJsonExtractor combinedPackageJsonExtractor = new CombinedPackageJsonExtractor(gson);
                
-        String packageJsonText = FunctionalTestFiles.asString("/npm/workspace-test/package.json");
+        String packageJsonText = FunctionalTestFiles.asString("/npm/workspace-test/package-wildcard.json");
         String projectRoot = System.getProperty("user.dir") + "/src/test/resources/detectables/functional/npm/workspace-test/";
         
         CombinedPackageJson combinedPackageJson = 
-                combinedPackageJsonExtractor.constructCombinedPackageJson(projectRoot + "package.json", packageJsonText);
+                combinedPackageJsonExtractor.constructCombinedPackageJson(projectRoot + "package-wildcard.json", packageJsonText);
         
+        validateDiscoveredWorkspaceInformation(projectRoot, combinedPackageJson);     
+    }
+    
+    @Test
+    public void testConstructCombinedPackageJsonWithWildcardsAndRelative() throws IOException {
+        Gson gson = new Gson();
+        CombinedPackageJsonExtractor combinedPackageJsonExtractor = new CombinedPackageJsonExtractor(gson);
+               
+        String packageJsonText = FunctionalTestFiles.asString("/npm/workspace-test/package-wildcard-and-relative.json");
+        String projectRoot = System.getProperty("user.dir") + "/src/test/resources/detectables/functional/npm/workspace-test/";
+        
+        CombinedPackageJson combinedPackageJson = 
+                combinedPackageJsonExtractor.constructCombinedPackageJson(projectRoot + "package-wildcard-and-relative.json", packageJsonText);
+        
+        validateDiscoveredWorkspaceInformation(projectRoot, combinedPackageJson);     
+    }
+    
+    @Test
+    public void testConstructCombinedPackageJsonWithRelative() throws IOException {
+        Gson gson = new Gson();
+        CombinedPackageJsonExtractor combinedPackageJsonExtractor = new CombinedPackageJsonExtractor(gson);
+               
+        String packageJsonText = FunctionalTestFiles.asString("/npm/workspace-test/package-relative.json");
+        String projectRoot = System.getProperty("user.dir") + "/src/test/resources/detectables/functional/npm/workspace-test/";
+        
+        CombinedPackageJson combinedPackageJson = 
+                combinedPackageJsonExtractor.constructCombinedPackageJson(projectRoot + "package-relative.json", packageJsonText);
+        
+        validateDiscoveredWorkspaceInformation(projectRoot, combinedPackageJson);     
+    }
+
+    private void validateDiscoveredWorkspaceInformation(String projectRoot, CombinedPackageJson combinedPackageJson) {
         // Test basic information
         Assertions.assertTrue(combinedPackageJson.getName().equals("npmworkspace"));
         Assertions.assertTrue(combinedPackageJson.getVersion().equals("1.0.0"));
@@ -43,7 +75,7 @@ public class CombinedPackageJsonExtractorTest {
         Assertions.assertTrue(combinedPackageJson.getConvertedWorkspaces().contains(projectRoot + "packages/a"));
         Assertions.assertTrue(combinedPackageJson.getConvertedWorkspaces().contains(projectRoot + "packages/b"));
         Assertions.assertTrue(combinedPackageJson.getConvertedWorkspaces().contains(projectRoot + "packages/a/c"));
-        Assertions.assertTrue(combinedPackageJson.getConvertedWorkspaces().contains(projectRoot + "packages/b/d"));     
+        Assertions.assertTrue(combinedPackageJson.getConvertedWorkspaces().contains(projectRoot + "packages/b/d"));
     }
     
     private boolean assertMapsEqual(MultiValuedMap<String, String> expectedMap, MultiValuedMap<String, String> actualMap) {

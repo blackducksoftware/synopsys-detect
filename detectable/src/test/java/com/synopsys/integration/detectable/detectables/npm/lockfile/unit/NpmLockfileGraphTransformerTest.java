@@ -2,10 +2,10 @@ package com.synopsys.integration.detectable.detectables.npm.lockfile.unit;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
@@ -22,19 +22,46 @@ import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 public class NpmLockfileGraphTransformerTest {
+    
+    private Gson gson;
+    private ExternalIdFactory externalIdFactory;
+    private NpmLockfilePackager packager;
+    
+    @BeforeEach
+    public void setup() {
+        gson = new Gson();
+        externalIdFactory = new ExternalIdFactory();
+        packager = new NpmLockfilePackager(gson, externalIdFactory, null, null);
+    }
+    
     @Test
+    public void testWorkspaceDependenciesTransformedAsDirectDependenciesWithWildcards() {
+        // Prepare the package-lock.json.
+        String lockFileText = FunctionalTestFiles.asString("/npm/packages-linkage-test/package-lock-wildcards.json");
+        validateDirectDependencies(lockFileText);
+    }
+    
+    @Test
+    public void testWorkspaceDependenciesTransformedAsDirectDependenciesWithRelativePaths() {
+        // Prepare the package-lock.json.
+        String lockFileText = FunctionalTestFiles.asString("/npm/packages-linkage-test/package-lock-relative.json");
+        validateDirectDependencies(lockFileText);
+    }
+    
+    @Test
+    public void testWorkspaceDependenciesTransformedAsDirectDependenciesWithRelativeAndWildcards() {
+        // Prepare the package-lock.json.
+        String lockFileText = FunctionalTestFiles.asString("/npm/packages-linkage-test/package-lock-wildcards-and-relative.json");
+        validateDirectDependencies(lockFileText);
+    }
+    
     /**
-     * This test attempts to validate that the NpmLockfileGraphTransformer.transformTreeToGraph function
+     * This method attempts to validate that the NpmLockfileGraphTransformer.transformTreeToGraph function
      * correctly turns open source packages directly associated with workspaces into direct dependencies
      * in the project. They are not transitive dependencies simply because the workspace is an intermediary 
      * between them and the project.
      */
-    public void testWorkspaceDependenciesTransformedAsDirectDependencies() {
-        // Prepare the package-lock.json.
-        Gson gson = new Gson();
-        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        NpmLockfilePackager packager = new NpmLockfilePackager(gson, externalIdFactory, null, null);
-        String lockFileText = FunctionalTestFiles.asString("/npm/packages-linkage-test/package-lock.json");
+    private void validateDirectDependencies(String lockFileText) {
         lockFileText = packager.removePathInfoFromPackageName(lockFileText);   
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);  
 
