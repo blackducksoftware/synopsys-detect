@@ -110,6 +110,13 @@ public class NpmDependencyConverter {
 
     public void linkPackagesDependencies(PackageLock packageLock) {        
         Set<String> packagesToRemove = new HashSet<>();
+        
+        if (packageLock.packages == null) {
+            // This shouldn't happen if the repo is using an appropriately versioned 
+            // lock or shrinkwrap file (version 2 or later). Still, guard against this 
+            // in case users run Detect on older not updated projects.
+            return;
+        }
                 
         for(String packageName : packageLock.packages.keySet()) { 
             

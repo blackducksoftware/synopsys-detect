@@ -20,6 +20,7 @@ public enum DetectorStatusCode {
     NOT_NESTABLE("Not nestable and a detector already applied in parent directory."),
     NOT_NESTABLE_BENEATH("Nestable but another detector prevented nesting."),
     NPM_NODE_MODULES_NOT_FOUND("A package.json was located in the target project, but the node_modules folder was NOT located."),
+    NPM_PACKAGES_OBJECT_NOT_FOUND("A package-lock.json or npm-shrinkwrap.json file was found in the target project but there was no packages object contained in the file."),
     PASSED("Detector passed."),
     PIPFILE_LOCK_NOT_FOUND("A Pipfile was located in the target project, but a Pipfile.lock was NOT located."),
     POETRY_LOCKFILE_NOT_FOUND("A pyproject.toml was located in the target project, but the Poetry.lock file was NOT located."),

@@ -18,6 +18,7 @@ import com.synopsys.integration.detectable.detectable.result.GivenFileNotFoundDe
 import com.synopsys.integration.detectable.detectable.result.GoPkgLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.NpmPackagesObjectNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PackageResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PipfileLockNotFoundDetectableResult;
@@ -71,6 +72,7 @@ public class DetectorResultStatusCodeLookup {
         map.put(NotNestableBeneathDetectorResult.class, DetectorStatusCode.NOT_NESTABLE_BENEATH);
         map.put(NotNestableBeneathDetectableDetectorResult.class, DetectorStatusCode.NOT_NESTABLE_BENEATH);
         map.put(NpmNodeModulesNotFoundDetectableResult.class, DetectorStatusCode.NPM_NODE_MODULES_NOT_FOUND);
+        map.put(NpmPackagesObjectNotFoundDetectableResult.class, DetectorStatusCode.NPM_PACKAGES_OBJECT_NOT_FOUND);
         map.put(PassedDetectorResult.class, DetectorStatusCode.PASSED);
         map.put(PassedDetectableResult.class, DetectorStatusCode.PASSED);
         map.put(PipfileLockNotFoundDetectableResult.class, DetectorStatusCode.PIPFILE_LOCK_NOT_FOUND);
