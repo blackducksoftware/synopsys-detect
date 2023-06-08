@@ -24,6 +24,7 @@ public enum DetectorStatusCode {
     PASSED("Detector passed."),
     PIPFILE_LOCK_NOT_FOUND("A Pipfile was located in the target project, but a Pipfile.lock was NOT located."),
     POETRY_LOCKFILE_NOT_FOUND("A pyproject.toml was located in the target project, but the Poetry.lock file was NOT located."),
+    POORLY_FORMATTED_JSON("Attempted to parse a JSON file but the contents did not conform to the JSON specification."),
     PROPERTY_INSUFFICIENT("The properties are insufficient to run."),
     PUBSPEC_LOCK_NOT_FOUND("A pubspec.yaml file was found, but a pubspec.lock file was NOT found."),
     SECTION_NOT_FOUND("A necessary section was not found within a file within the target project."),
