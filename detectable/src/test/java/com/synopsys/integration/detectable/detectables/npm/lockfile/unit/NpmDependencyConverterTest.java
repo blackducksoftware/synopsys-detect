@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile.unit;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
@@ -12,15 +13,39 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLoc
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
 public class NpmDependencyConverterTest {
-
+    
+    private Gson gson;
+    private ExternalIdFactory externalIdFactory;
+    private NpmDependencyConverter converter;
+    private NpmLockfilePackager packager;
+    
+    @BeforeEach
+    public void setup() {
+        gson = new Gson();
+        externalIdFactory = new ExternalIdFactory();
+        converter = new NpmDependencyConverter(externalIdFactory);
+        packager = new NpmLockfilePackager(gson, externalIdFactory, null, null);        
+    }
+    
     @Test
-    public void testLinkPackagesDependencies() {
-        Gson gson = new Gson();
-        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        NpmDependencyConverter converter = new NpmDependencyConverter(externalIdFactory);
-        NpmLockfilePackager packager = new NpmLockfilePackager(gson, externalIdFactory, null, null);
-        
-        String lockFileText = FunctionalTestFiles.asString("/npm/packages-linkage-test/package-lock.json");
+    public void testLinkPackagesDependenciesWithWildcards() {        
+        String lockFileText = FunctionalTestFiles.asString("/npm/packages-linkage-test/package-lock-wildcards.json");
+        validatePackageLinkage(lockFileText);
+    }
+    
+    @Test
+    public void testLinkPackagesDependenciesWithRelativePaths() {
+        String lockFileText = FunctionalTestFiles.asString("/npm/packages-linkage-test/package-lock-relative.json");
+        validatePackageLinkage(lockFileText);
+    }
+    
+    @Test
+    public void testLinkPackagesDependenciesWithWildcardsAndRelativePaths() {
+        String lockFileText = FunctionalTestFiles.asString("/npm/packages-linkage-test/package-lock-wildcards-and-relative.json");
+        validatePackageLinkage(lockFileText);
+    }
+    
+    private void validatePackageLinkage(String lockFileText) {
         lockFileText = packager.removePathInfoFromPackageName(lockFileText);   
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);  
         
