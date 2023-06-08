@@ -14,7 +14,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 
 public class PubDepsParser {
-    public DependencyGraph parse(List<String> pubDepsOutput) {
+    public DependencyGraph parse(String pubDepsOutput) {
         JsonArray dependencies = getDependencies(pubDepsOutput);
 
         Map<String, DartPubDep> dependencyMap = new HashMap<>();
@@ -62,9 +62,8 @@ public class PubDepsParser {
         return rootDep.get();
     }
 
-    private JsonArray getDependencies(List<String> pubDepsOutput) {
-        String joined = String.join(" ", pubDepsOutput);
-        JsonObject jsonObject = JsonParser.parseString(joined).getAsJsonObject();
+    private JsonArray getDependencies(String pubDepsOutput) {
+        JsonObject jsonObject = JsonParser.parseString(pubDepsOutput).getAsJsonObject();
         JsonElement elem = jsonObject.get("packages");
         return elem.getAsJsonArray();
     }
