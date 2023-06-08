@@ -68,7 +68,7 @@ public class ProjectInspectorParser {
         while (reader.hasNext()) {
             String moduleId = reader.nextName();
             if (moduleId != null) {
-                JsonObject module = new JsonParser().parse(reader).getAsJsonObject();
+                JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
                 ProjectInspectorModule projectInspectorModule = gson.fromJson(module, ProjectInspectorModule.class);
                 CodeLocation codeLocation = codeLocationFromModule(projectInspectorModule);
                 codeLocations.add(codeLocation);

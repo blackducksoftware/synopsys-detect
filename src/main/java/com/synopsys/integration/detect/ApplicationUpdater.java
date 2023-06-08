@@ -135,7 +135,7 @@ public class ApplicationUpdater extends URLClassLoader {
                         LOG_PREFIX, ex);
             }
         }
-        return Collections.EMPTY_MAP;
+        return Collections.emptyMap();
     }
     
     protected boolean selfUpdate() {
@@ -278,11 +278,16 @@ public class ApplicationUpdater extends URLClassLoader {
             final Object jarLauncher = jarLauncherConstructor.newInstance(jarFileArchive);
             checkEnvironmentProperties();
             args = parseArguments(args);
-            launchMethod.invoke(jarLauncher, new Object[]{args});
+            launchMethod(jarLauncher, launchMethod);
         } finally {
             close();
         }
         return true;
+    }
+    
+    @java.lang.SuppressWarnings("java:S3878")
+    private void launchMethod(Object jarLauncher, Method launchMethod) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        launchMethod.invoke(jarLauncher, new Object[]{args});
     }
     
     @java.lang.SuppressWarnings("java:S3011")
@@ -466,7 +471,7 @@ public class ApplicationUpdater extends URLClassLoader {
             return Arrays.stream(delimitedValues.split("\\,"))
                 .collect(Collectors.toSet());
         }
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
     
     private void addConditionalLogMessageForSysEnvProp(List<String> logMessages, String envProperty, String envValue) {

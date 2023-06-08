@@ -29,7 +29,7 @@ public class ProjectInspectorExtractor {
         File targetDirectory,
         File outputDirectory,
         ExecutableTarget inspector
-    ) throws ExecutableFailedException, IOException {
+    ) throws ExecutableFailedException {
         File outputFile = new File(outputDirectory, "inspection.json");
 
         // TODO: Could use a command runner

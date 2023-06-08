@@ -6,7 +6,7 @@ import com.synopsys.integration.log.IntLogger;
 
 public class RapidScanAggregateResult {
     
-    private final static String DOUBLE_TAB = "\t\t%s";
+    private static final String DOUBLE_TAB = "\t\t%s";
     
     private final RapidScanResultSummary summary;
     private final RapidScanComponentGroupDetail componentDetails;
