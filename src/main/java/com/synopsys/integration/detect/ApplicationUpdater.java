@@ -278,11 +278,16 @@ public class ApplicationUpdater extends URLClassLoader {
             final Object jarLauncher = jarLauncherConstructor.newInstance(jarFileArchive);
             checkEnvironmentProperties();
             args = parseArguments(args);
-            launchMethod.invoke(jarLauncher, (Object[]) new Object[]{args});
+            launchMethod(jarLauncher, launchMethod);
         } finally {
             close();
         }
         return true;
+    }
+    
+    @java.lang.SuppressWarnings("java:S3878")
+    private void launchMethod(Object jarLauncher, Method launchMethod) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        launchMethod.invoke(jarLauncher, (Object[]) args);
     }
     
     @java.lang.SuppressWarnings("java:S3011")
