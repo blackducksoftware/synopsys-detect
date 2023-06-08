@@ -52,7 +52,7 @@ public class ContainerScanStepRunner {
         return scanId;
     }
 
-    public Boolean shouldRunContainerScan() {
+    public boolean shouldRunContainerScan() {
         return containerImage != null && containerImage.exists();
     }
 

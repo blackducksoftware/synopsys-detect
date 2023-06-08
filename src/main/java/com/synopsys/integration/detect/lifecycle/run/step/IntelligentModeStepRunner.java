@@ -133,7 +133,7 @@ public class IntelligentModeStepRunner {
         stepHelper.runToolIfIncluded(DetectTool.CONTAINER_SCAN, "Container Scanner", () -> {
             logger.debug("Determining if configuration is valid to run a container scan.");
             ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData, gson);
-            if (Boolean.TRUE.equals(containerScanStepRunner.shouldRunContainerScan())) {
+            if (containerScanStepRunner.shouldRunContainerScan()) {
                 logger.debug("Invoking stateless container scan.");
                 UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
                 scanIdsToWaitFor.add(scanId.toString());
