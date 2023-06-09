@@ -96,7 +96,7 @@ public class DetectProperties {
             .setHelp(
 			"Hostname of the proxy server.",
 			"Schema/protocol is not accepted by this parameter.")
-			.setExample("--blackduck.proxy.host=<Proxy_IP/URL>:port")
+			.setExample("--blackduck.proxy.host=<Proxy_IP/URL>")
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
             .build();
