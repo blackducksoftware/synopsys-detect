@@ -4,7 +4,7 @@
 
 ### Changed features
 
-* Leading/trailing spaces specified within quotes for `detect.project.name` or `detect.project.version.name` properties will now be trimmed.
+* Leading and trailing spaces specified within quotes for `detect.project.name` or `detect.project.version.name` properties will now be trimmed.
 
 ### Resolved issues
 
