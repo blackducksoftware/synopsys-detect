@@ -6,7 +6,7 @@ Container Scanning, is a way of running [solution_name] against Docker contain
 
 Container scanning supports both persistent (Intelligent) and Stateless scan modes in [blackduck_product_name].
 
-Execute Container Scanning by adding the following [--detect.container.scan.file.path=<Path to local or URL for remote container>]<<!-- TBD properties page link
+Execute Container Scanning by adding the following [--detect.container.scan.file.path=<Path to local or URL for remote container>]<!-- TBD properties page link
 (../properties/configuration/containerscanning.md#container-scanning) to a run of [solution_name].
 -->
 
