@@ -94,7 +94,7 @@ public class RapidModeStepRunner {
                 invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, true, scaaasFilePath.get());
             } else {
                 logger.debug("Determining if configuration is valid to run a container scan.");
-                ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData);
+                ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData, gson);
                 if (containerScanStepRunner.shouldRunContainerScan()) {
                     logger.debug("Invoking stateless container scan.");
                     UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();

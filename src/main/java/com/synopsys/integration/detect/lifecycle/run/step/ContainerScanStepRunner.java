@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
@@ -21,6 +23,7 @@ public class ContainerScanStepRunner {
 
     private final OperationRunner operationRunner;
     private UUID scanId;
+    private final Gson gson;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final NameVersion projectNameVersion;
     private final String projectGroupName;
@@ -28,13 +31,18 @@ public class ContainerScanStepRunner {
     private final File binaryRunDirectory;
     private final File containerImage;
 
-    public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) {
+    public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData, Gson gson)
+        throws IntegrationException, DetectUserFriendlyException, IOException {
         this.operationRunner = operationRunner;
         this.projectNameVersion = projectNameVersion;
         this.blackDuckRunData = blackDuckRunData;
         binaryRunDirectory = operationRunner.getDirectoryManager().getBinaryOutputDirectory();
+        if (binaryRunDirectory == null || !binaryRunDirectory.exists()) {
+            throw new IntegrationException("Binary run directory does not exist.");
+        }
         projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
-        containerImage = operationRunner.getContainerScanImage();
+        this.gson = gson;
+        containerImage = operationRunner.getContainerScanImage(gson, binaryRunDirectory);
     }
 
     public UUID invokeContainerScanningWorkflow() throws IntegrationException, IOException {
@@ -44,7 +52,7 @@ public class ContainerScanStepRunner {
         return scanId;
     }
 
-    public Boolean shouldRunContainerScan() {
+    public boolean shouldRunContainerScan() {
         return containerImage != null && containerImage.exists();
     }
 
