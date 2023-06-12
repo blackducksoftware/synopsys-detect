@@ -373,7 +373,7 @@ public class OperationRunner {
     }
 
     public File downloadContainerImage(Gson gson, File downloadDirectory, String containerImageUri) throws DetectUserFriendlyException, IntegrationException, IOException {
-        String targetPathName = String.join("", downloadDirectory.toString(), "/targetImage");
+        String targetPathName = downloadDirectory.toString().concat("/targetImage");
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
         return artifactResolver.downloadArtifact(new File(targetPathName), containerImageUri);
