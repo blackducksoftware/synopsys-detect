@@ -19,6 +19,7 @@
 * Upgraded Spring Boot to version 2.7.12 to resolve high severity [CVE-2023-20883](https://nvd.nist.gov/vuln/detail/CVE-2023-20883)
 * Upgraded SnakeYAML to version 2.0 for [solution_name] air gap package to resolve critical severity [CVE-2022-1471](https://nvd.nist.gov/vuln/detail/CVE-2022-1471)
 * Upgraded Jackson Databind to version 2.15.0 for [solution_name] air gap package to resolve high severity [CVE-2022-42003](https://nvd.nist.gov/vuln/detail/CVE-2022-42003) and [CVE-2022-42004](https://nvd.nist.gov/vuln/detail/CVE-2022-42004)
+* Upgraded Project Inspector to version 2021.9.9
 
 
 ## Version 8.9.0
