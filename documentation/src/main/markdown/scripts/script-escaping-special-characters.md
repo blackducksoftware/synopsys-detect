@@ -99,18 +99,15 @@ For example:
 [Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect "--detect.project.name=Project Test"
 ```
 
-When an argument contains a comma, you can wrap the argument in single quotes, and escape the special character with a backtick (`). In the case of a name with a comma and a space, you would use a backtick in front of both the comma and space.
+When an argument contains a comma, you must wrap the argument in single quotes, and escape the special character with a backtick (`). In the case of a name with a comma and a space, you would use a backtick in front of both the comma and space.
 
 For example:
 ```
-# name: Project, Test   
-Powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm  https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect --blackduck.url=<url> --detect.project.name='Project,Test'"   
+# name: Project,Test
+[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect --detect.project.name='Project`,Test'
 
-# name: Project, Test   
-Powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm  https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect --blackduck.url=<url> '--detect.project.name=Project,Test'"   
-
-# name: Project, Test   
-Powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm  https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect --blackduck.url=<url> --detect.project.name=Project`,` Test"   
+# name: Project,Test
+[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect --detect.project.name=`Project`,` Test'
 ```
 
 You can include a double quote using this sequence: backslash, backtick, double quote:
