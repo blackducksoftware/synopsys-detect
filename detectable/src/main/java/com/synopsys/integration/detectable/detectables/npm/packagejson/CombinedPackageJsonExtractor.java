@@ -81,8 +81,14 @@ public class CombinedPackageJsonExtractor {
         return combinedPackageJson;
     }
 
-    // TODO seems to allow directory/*/* but will only read dirs that follow that pattern
-    // so c in my example and root, no a or b, only reads leaf in other words
+    /**
+     * This method searches the filesystem and replaces any * in the package.json's workspace object with
+     * actual paths.
+     * 
+     * @param projectRoot The path to the root of the npm project
+     * @param workspaces The contents of the package.json's workspace object
+     * @return
+     */
     private List<String> convertWorkspaceWildcards(String projectRoot, List<String> workspaces) {
         List<String> convertedWorkspaces = new ArrayList<>();
         
