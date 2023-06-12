@@ -1,8 +1,6 @@
-# Requirements
+# Requirements and release information
 
 ## General requirements
-
-Requirements for [solution_name]
 
 * Normally, access to the internet is required to download and run [solution_name] and components from GitHub and other locations. For running without internet access,
 refer to [Air Gap Mode](../downloadingandinstalling/airgap.md).
@@ -13,12 +11,12 @@ refer to [Air Gap Mode](../downloadingandinstalling/airgap.md).
 * If using [powershell_script_name]: PowerShell versions 4.0 or higher.
 * The tools required to build your project source code.
 
-## [blackduck_product_name] requirements
-
-For connecting to [blackduck_product_name]:
+## [blackduck_product_name] integration requirements
 
 * Licensed installation of the current version of [blackduck_product_name] with access credentials.
 Visit the [Black Duck release page](https://github.com/blackducksoftware/hub/releases) to determine the current version of [blackduck_product_name].
+* For information about additional compatible versions of [blackduck_product_name], consult the
+<xref href="Black-Duck-Release-Compatibility.dita" scope="peer"> Black Duck Release Compatibility matrix.<data name="facets" value="pubname=blackduck-compatibility"/>
 * The [blackduck_product_name] notifications module must be enabled.
 * A [blackduck_product_name] user with the [required roles](usersandroles.md).
 * On Alpine Linux you will also need to override the Java installation used by the [blackduck_signature_scanner_name] as
@@ -40,3 +38,7 @@ The risk report requires that the following fonts are installed:
 * Helvetica
 * Helvetica bold
 
+## Supported [solution_name] versions and Service duration
+
+* For information about support and service durations for [solution_name] versions, consult the
+<xref href="Support-and-Service-Schedule.dita" scope="peer"> Support and Service Schedule.<data name="facets" value="pubname=blackduck-compatibility"/>

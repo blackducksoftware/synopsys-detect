@@ -1,9 +1,7 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -96,7 +94,7 @@ public class GoModCliExtractor {
         List<String> whyModuleList = goModCommandRunner.runGoModWhy(directory, goExe, false);
         
         GoModuleDependencyHelper goModDependencyHelper = new GoModuleDependencyHelper();
-        List<String> actualDependencyList = goModDependencyHelper.computeDependencies(mainMod, directs, whyModuleList, modGraphOutput);
+        Set<String> actualDependencyList = goModDependencyHelper.computeDependencies(mainMod, directs, whyModuleList, modGraphOutput);
 
         return goGraphParser.parseRelationshipsFromGoModGraph(actualDependencyList);
     }

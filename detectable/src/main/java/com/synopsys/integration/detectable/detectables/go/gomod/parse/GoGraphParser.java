@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.go.gomod.parse;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ import com.synopsys.integration.util.NameVersion;
 public class GoGraphParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public List<GoGraphRelationship> parseRelationshipsFromGoModGraph(List<String> goModGraphOutput) {
+    public List<GoGraphRelationship> parseRelationshipsFromGoModGraph(Set<String> goModGraphOutput) {
         List<GoGraphRelationship> goGraphRelationships = new LinkedList<>();
         for (String line : goModGraphOutput) {
             //example: github.com/gomods/athens cloud.google.com/go@v0.26.0

@@ -2,21 +2,29 @@
 
 When running behind a proxy:
 
-1. The one-liner cannot be used to download the scripts, they do not know about proxy. The scripts must be already downloaded.
+1. The one-liner cannot be used to download the scripts, they are not proxy aware. The scripts must already be downloaded.
 2. The script ([bash_script_name] or [powershell_script_name]) requires proxy details to do a version
 check on, and/or download the [solution_name] .jar file.
-3. [solution_name]; in other words, the code in the .jar file, requires proxy details to download inspectors and
+3. [solution_name]; the code in the .jar file, requires proxy details to download inspectors and
 connect to [blackduck_product_name].
 
 ## Providing proxy details to [solution_name]
 
-[solution_name] looks for proxy details in the properties whose names start with blackduck.proxy,
+[solution_name] looks for proxy details in the properties whose names start with `blackduck.proxy`,
 including:
 
-* blackduck.proxy.host (proxy host)
-* blackduck.proxy.port (proxy port)
-* blackduck.proxy.username (proxy username)
-* blackduck.proxy.password (proxy password)
+* `blackduck.proxy.host` (proxy hostname)
+* `blackduck.proxy.port` (proxy port number)
+* `blackduck.proxy.username` (proxy username)
+* `blackduck.proxy.password` (proxy password)
+
+When setting the blackduck.proxy.host (proxy hostname), property the schema/protocol is not accepted.   
+
+For example:  
+ 
+	Correct: `--blackduck.proxy.host=<Proxy_IP/URL>`   
+	Incorrect: `--blackduck.proxy.host=<https‎ ://(IP/Server_URL)>`   
+	
 
 Refer to [properties](../properties/configuration/proxy.md) for more information.
 

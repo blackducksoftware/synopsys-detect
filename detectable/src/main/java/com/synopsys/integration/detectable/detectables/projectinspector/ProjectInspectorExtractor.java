@@ -2,13 +2,10 @@ package com.synopsys.integration.detectable.detectables.projectinspector;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
-import org.apache.commons.io.FileUtils;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
@@ -32,7 +29,7 @@ public class ProjectInspectorExtractor {
         File targetDirectory,
         File outputDirectory,
         ExecutableTarget inspector
-    ) throws ExecutableFailedException, IOException {
+    ) throws ExecutableFailedException {
         File outputFile = new File(outputDirectory, "inspection.json");
 
         // TODO: Could use a command runner
@@ -53,8 +50,8 @@ public class ProjectInspectorExtractor {
 
         executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(targetDirectory, inspector, arguments));
 
-        String outputContents = FileUtils.readFileToString(outputFile, StandardCharsets.UTF_8);
-        List<CodeLocation> codeLocations = projectInspectorParser.parse(outputContents);
+        List<CodeLocation> codeLocations = projectInspectorParser.parse(outputFile);
+
         return new Extraction.Builder().success(codeLocations).build();
     }
 }

@@ -7,7 +7,7 @@
         <prodinfo>
             <prodname>Synopsys Detect</prodname>
             <vrmlist>
-                <vrm version="8.9.0"/>
+                <vrm version="8.10.0"/>
             </vrmlist>
         </prodinfo>
 
@@ -30,6 +30,7 @@
 	<topicref href="downloadingandinstalling/intro.md" format="markdown">
 		<topicref href="downloadingandinstalling/downloadlocations.md" format="markdown"/>
 		<topicref href="downloadingandinstalling/upgradingdetect.md" format="markdown"/>
+		<topicref href="downloadingandinstalling/selfupdatingdetect.md" format="markdown"/>
 		<topicref href="downloadingandinstalling/verification.md" format="markdown"/>
 		<topicref href="downloadingandinstalling/airgap.md" format="markdown"/>
 	</topicref>
@@ -102,6 +103,7 @@
 	<topicref href="runningdetect/statelessscan.md" format="markdown"/>
     <topicref href="runningdetect/rapidscan.md" format="markdown"/>
     <topicref href="runningdetect/iacscan.md" format="markdown"/>
+	<topicref href="runningdetect/runningairgap.md" format="markdown"/>
     <topicref href="runningdetect/status-file.md" format="markdown"/>
     <topicref href="runningdetect/proxies.md" format="markdown"/>
     <topicref href="runningdetect/concurrent.md" format="markdown"/>

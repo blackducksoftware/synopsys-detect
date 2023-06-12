@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.lifecycle.boot.product.version;
 
 import java.util.function.Predicate;
+import com.synopsys.integration.blackduck.version.BlackDuckVersion;
 
 public class BlackDuckMinimumVersionCheck {
     private final String description;

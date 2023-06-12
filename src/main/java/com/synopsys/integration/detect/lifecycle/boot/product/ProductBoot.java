@@ -11,11 +11,11 @@ import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.blackduck.version.BlackDuckVersion;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
-import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersion;
 import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionCheckerResult;
 import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionParser;
@@ -52,7 +52,7 @@ public class ProductBoot {
     public ProductRunData boot(BlackDuckDecision blackDuckDecision, DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         if (!blackDuckDecision.shouldRun()) {
             throw new DetectUserFriendlyException(
-                "Your environment was not sufficiently configured to run Black Duck.  See online help at: https://detect.synopsys.com/doc/",
+                "Your environment was not sufficiently configured to run Black Duck.  See online help at: https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/introduction.html",
                 ExitCodeType.FAILURE_CONFIGURATION
             );
 
@@ -105,7 +105,9 @@ public class ProductBoot {
                     ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED
                 );
             }
+            
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
+            setBlackDuckVersionLevel(blackDuckServicesFactory, blackDuckConnectivityResult);
             BlackDuckRunData bdRunData = null;
             
             boolean waitAtScanLevel = shouldWaitAtScanLevel(blackDuckConnectivityResult);
@@ -139,6 +141,16 @@ public class ProductBoot {
                 );
             }
         }
+    }
+
+    private void setBlackDuckVersionLevel(BlackDuckServicesFactory blackDuckServicesFactory,
+            BlackDuckConnectivityResult blackDuckConnectivityResult) {
+        BlackDuckVersionParser parser = new BlackDuckVersionParser();
+        Optional<BlackDuckVersion> blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
+        
+        if (blackDuckServerVersion.isPresent()) {
+            blackDuckServicesFactory.getBlackDuckApiClient().setBlackDuckVersion(blackDuckServerVersion.get());
+        }  
     }
 
     private boolean shouldUsePhoneHome(AnalyticsConfigurationService analyticsConfigurationService, ApiDiscovery apiDiscovery, BlackDuckApiClient blackDuckService) {
