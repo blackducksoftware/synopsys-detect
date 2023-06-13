@@ -31,7 +31,7 @@ public class LinuxDistro {
     public boolean isOracleLinux(File etcDirFile) {
         for (File etcFile : etcDirFile.listFiles()) {
             if ("oracle-release".equals(etcFile.getName())) {
-                logger.trace("Found os-release");
+                logger.trace("Found oracle-release");
                 return true;
             }
         }
