@@ -153,6 +153,8 @@ public class OperationRunnerContainerScanTest {
         expectedImageMetadataObject.addProperty("projectVersionName", TEST_PROJECT_VERSION);
         expectedImageMetadataObject.addProperty("projectGroupName", TEST_PROJECT_GROUP);
 
+        Assertions.assertFalse(expectedImageMetadataObject.isJsonNull());
+        Assertions.assertTrue(expectedImageMetadataObject.isJsonObject());
         Assertions.assertEquals(expectedImageMetadataObject, operationRunner.createContainerScanImageMetadata(TEST_SCAN_ID, projectNameVersion));
     }
 
@@ -169,6 +171,8 @@ public class OperationRunnerContainerScanTest {
         expectedImageMetadataObject.addProperty("projectVersionName", TEST_PROJECT_VERSION);
         expectedImageMetadataObject.addProperty("projectGroupName", TEST_PROJECT_GROUP);
 
+        Assertions.assertFalse(expectedImageMetadataObject.isJsonNull());
+        Assertions.assertTrue(expectedImageMetadataObject.isJsonObject());
         Assertions.assertEquals(expectedImageMetadataObject, operationRunner.createContainerScanImageMetadata(TEST_SCAN_ID, projectNameVersion));
     }
 
