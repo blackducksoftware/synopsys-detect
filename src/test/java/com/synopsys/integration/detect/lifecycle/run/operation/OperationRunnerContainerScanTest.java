@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.run.DetectFontLoaderFactory;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
@@ -29,26 +30,14 @@ public class OperationRunnerContainerScanTest {
     private static final String TEST_IMAGE_URL = "https://www.container.artifactory.com/testImage.tar";
     private static final File TEST_IMAGE_LOCAL_FILE = new File("src/test/resources/tool/container.scan/testImage.tar");
     private static final File TEST_IMAGE_DOWNLOADED_FILE = new File("src/test/resources/tool/container.scan/testImageDownloaded.tar");
+    private static final String RAPID_SCAN_ENDPOINT = "/api/developer-scans";
+    private static final String RAPID_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
+    private static final String INTELLIGENT_SCAN_ENDPOINT = "/api/intelligent-persistence-scans";
+    private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
 
     private File updateDetectConfigAndGetContainerImage(String imageFilePath) throws IntegrationException, IOException, DetectUserFriendlyException {
         File downloadDirectory = new File("src/test/resources/tool/container.scan");
-
-        // Creates a custom mocked instance of Detect's configuration factory for given image file path
-        DetectConfigurationFactory detectConfigurationFactory = factoryOf(
-            Pair.of(DetectProperties.DETECT_TOOLS, DetectTool.CONTAINER_SCAN.toString()),
-            Pair.of(DetectProperties.DETECT_CONTAINER_SCAN_FILE, imageFilePath));
-
-        BootSingletons bootSingletonsMock = Mockito.mock(BootSingletons.class);
-        Mockito.when(bootSingletonsMock.getDetectConfigurationFactory()).thenReturn(detectConfigurationFactory);
-
-        OperationRunner operationRunner = new OperationRunner(
-            Mockito.mock(DetectDetectableFactory.class),
-            Mockito.mock(DetectFontLoaderFactory.class),
-            bootSingletonsMock,
-            Mockito.mock(UtilitySingletons.class),
-            Mockito.mock(EventSingletons.class)
-        );
-
+        OperationRunner operationRunner = setUpDetectConfig(BlackduckScanMode.INTELLIGENT, imageFilePath);
         OperationRunner operationRunnerSpy = Mockito.spy(operationRunner);
         Mockito.doReturn(OperationRunnerContainerScanTest.TEST_IMAGE_DOWNLOADED_FILE).when(operationRunnerSpy).downloadContainerImage(gson, downloadDirectory, imageFilePath);
         return operationRunnerSpy.getContainerScanImage(gson, downloadDirectory);
@@ -68,5 +57,55 @@ public class OperationRunnerContainerScanTest {
         Assertions.assertTrue(containerImageRetrieved != null && containerImageRetrieved.exists());
         Assertions.assertEquals(TEST_IMAGE_DOWNLOADED_FILE, containerImageRetrieved);
         Assertions.assertNotEquals(TEST_IMAGE_LOCAL_FILE, containerImageRetrieved);
+    }
+
+    private DetectConfigurationFactory makeContainerScanFactory(BlackduckScanMode blackduckScanMode, String imageFilePath) {
+        return factoryOf(
+            Pair.of(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, blackduckScanMode.toString()),
+            Pair.of(DetectProperties.DETECT_TOOLS, DetectTool.CONTAINER_SCAN.toString()),
+            Pair.of(DetectProperties.DETECT_CONTAINER_SCAN_FILE, imageFilePath));
+    }
+
+    private OperationRunner setUpDetectConfig(BlackduckScanMode blackduckScanMode, String imageFilePath){
+        DetectConfigurationFactory detectConfigurationFactory = makeContainerScanFactory(blackduckScanMode, imageFilePath);
+        BootSingletons bootSingletonsMock = Mockito.mock(BootSingletons.class);
+        Mockito.when(bootSingletonsMock.getDetectConfigurationFactory()).thenReturn(detectConfigurationFactory);
+        return new OperationRunner(
+            Mockito.mock(DetectDetectableFactory.class),
+            Mockito.mock(DetectFontLoaderFactory.class),
+            bootSingletonsMock,
+            Mockito.mock(UtilitySingletons.class),
+            Mockito.mock(EventSingletons.class)
+        );
+    }
+
+    @Test
+    public void testGetScanServiceDetailsForIntelligent() {
+        OperationRunner operationRunner = setUpDetectConfig(BlackduckScanMode.INTELLIGENT, TEST_IMAGE_LOCAL_FILE_PATH);
+
+        // Test if the correct endpoint is returned for INTELLIGENT scans
+        Assertions.assertFalse(operationRunner.getScanServicePostEndpoint().isEmpty());
+        Assertions.assertEquals(INTELLIGENT_SCAN_ENDPOINT, operationRunner.getScanServicePostEndpoint());
+        Assertions.assertNotEquals(RAPID_SCAN_ENDPOINT, operationRunner.getScanServicePostEndpoint());
+
+        // Test if the correct content type is returned for INTELLIGENT scans
+        Assertions.assertFalse(operationRunner.getScanServicePostContentType().isEmpty());
+        Assertions.assertEquals(INTELLIGENT_SCAN_CONTENT_TYPE, operationRunner.getScanServicePostContentType());
+        Assertions.assertNotEquals(RAPID_SCAN_CONTENT_TYPE, operationRunner.getScanServicePostContentType());
+    }
+
+    @Test
+    public void testGetScanServiceDetailsForStateless() {
+        OperationRunner operationRunner = setUpDetectConfig(BlackduckScanMode.STATELESS, TEST_IMAGE_LOCAL_FILE_PATH);
+
+        // Test if the correct endpoint is returned for INTELLIGENT scans
+        Assertions.assertFalse(operationRunner.getScanServicePostEndpoint().isEmpty());
+        Assertions.assertEquals(RAPID_SCAN_ENDPOINT, operationRunner.getScanServicePostEndpoint());
+        Assertions.assertNotEquals(INTELLIGENT_SCAN_ENDPOINT, operationRunner.getScanServicePostEndpoint());
+
+        // Test if the correct content type is returned for INTELLIGENT scans
+        Assertions.assertFalse(operationRunner.getScanServicePostContentType().isEmpty());
+        Assertions.assertEquals(RAPID_SCAN_CONTENT_TYPE, operationRunner.getScanServicePostContentType());
+        Assertions.assertNotEquals(INTELLIGENT_SCAN_CONTENT_TYPE, operationRunner.getScanServicePostContentType());
     }
 }
