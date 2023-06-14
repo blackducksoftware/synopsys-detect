@@ -10,7 +10,6 @@ configurations {
 
 dependencies {
     airGap 'com.synopsys.integration:integration-common:26.0.6'
-    airGap 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
 }
 
 task installDependencies(type: Copy) {
