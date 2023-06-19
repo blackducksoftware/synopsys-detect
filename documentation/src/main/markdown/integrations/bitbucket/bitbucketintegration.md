@@ -121,7 +121,7 @@ pipelines:
     - step:
         name: synopsys-detect
         script:
-          - bash <(curl -s https://detect.synopsys.com/detect8.sh) --blackduck.url="${BLACKDUCK_URL}" --blackduck.username="${BLACKDUCK_USERNAME}" --blackduck.password="${BLACKDUCK_PASSWORD}" --blackduck.hub.trust.cert=true --detect.policy.check.fail.on.severities=ALL
+          - bash <(curl -s https://detect.synopsys.com/detect8.sh) --blackduck.url="${BLACKDUCK_URL}" --blackduck.username="${BLACKDUCK_USERNAME}" --blackduck.password="${BLACKDUCK_PASSWORD}" --blackduck.hub.trust.cert=true 
 ```
 	
 When you commit the modified YAML file, the build is triggered. After the pipeline build with [solution_name] completes, you can view the complete scan results in your [blackduck_product_name] instance. For additional information and properties for [solution_name], refer to [Detect properties](../../properties/all-properties.md) for more details.
