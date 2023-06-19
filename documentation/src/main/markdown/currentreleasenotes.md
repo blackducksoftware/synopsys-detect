@@ -1,5 +1,17 @@
 # Current Release notes
 
+## Version 8.11.0
+
+### Changed features
+
+* Added integration instructions for Bitbucket to the documentation.
+
+### Resolved issues
+
+
+### Dependency updates
+
+
 ## Version 8.10.0
 
 ### Changed features

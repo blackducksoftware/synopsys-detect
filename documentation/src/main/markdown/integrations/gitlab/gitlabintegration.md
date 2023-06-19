@@ -63,7 +63,7 @@ For improved security, Synopsys recommends a revocable API token, as described i
 	<figure>
     <img src="../gitlab/images/pipelineconfig2.png"
          alt="Configuring pipeline secret variables">
-    <figcaption>Configuring the pipeline secret variables/figcaption>
+    <figcaption>Configuring the pipeline secret variables</figcaption>
     </figure>
 
 3. Create three environment variables:
