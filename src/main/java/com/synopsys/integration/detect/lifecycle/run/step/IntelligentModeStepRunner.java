@@ -36,6 +36,7 @@ import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
+import com.synopsys.integration.detect.workflow.status.FormattedCodeLocation;
 import com.synopsys.integration.detect.workflow.status.OperationType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
@@ -206,8 +207,15 @@ public class IntelligentModeStepRunner {
 
         Set<String> allCodeLocationNames = new HashSet<>(codeLocationAccumulator.getNonWaitableCodeLocations());
         CodeLocationWaitData waitData = operationRunner.calculateCodeLocationWaitData(codeLocationAccumulator.getWaitableCodeLocations());
+        
+        Set<FormattedCodeLocation> allCodeLocationData = new HashSet<>();
+        for (String codeLocationName : waitData.getCodeLocationNames()) {
+            FormattedCodeLocation codeLocation = new FormattedCodeLocation(codeLocationName, null, null);
+            allCodeLocationData.add(codeLocation);
+        }
+        
         allCodeLocationNames.addAll(waitData.getCodeLocationNames());
-        operationRunner.publishCodeLocationNames(allCodeLocationNames);
+        operationRunner.publishCodeLocationData(allCodeLocationData);
         return new CodeLocationResults(allCodeLocationNames, waitData);
     }
 

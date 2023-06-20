@@ -163,6 +163,7 @@ import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecide
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
+import com.synopsys.integration.detect.workflow.status.FormattedCodeLocation;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
@@ -470,10 +471,10 @@ public class OperationRunner {
         return auditLog.namedInternal("Calculate Code Location Wait Data", () -> new CodeLocationWaitCalculator().calculateWaitData(codeLocationCreationDatas));
     }
 
-    public final void publishCodeLocationNames(Set<String> codeLocationNames) throws OperationException {
+    public final void publishCodeLocationData(Set<FormattedCodeLocation> codeLocationData) throws OperationException {
         auditLog.namedInternal(
             "Publish CodeLocationsCompleted Event",
-            () -> codeLocationEventPublisher.publishCodeLocationsCompleted(codeLocationNames)
+            () -> codeLocationEventPublisher.publishCodeLocationsCompleted(codeLocationData)
         );
     }
 

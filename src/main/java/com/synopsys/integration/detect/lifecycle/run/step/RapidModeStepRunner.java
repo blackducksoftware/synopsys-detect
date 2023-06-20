@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,6 +31,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.Signature
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.status.FormattedCodeLocation;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
@@ -57,11 +59,19 @@ public class RapidModeStepRunner {
 
         String blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString();
         List<HttpUrl> parsedUrls = new ArrayList<>();
+        Set<FormattedCodeLocation> formattedCodeLocations = new HashSet<>();
         
         List<HttpUrl> uploadResultsUrls = operationRunner.performRapidUpload(blackDuckRunData, bdioResult, rapidScanConfig.orElse(null));
         
         if (uploadResultsUrls != null && uploadResultsUrls.size() > 0) {
             parsedUrls.addAll(uploadResultsUrls);
+            
+            for (HttpUrl httpUrl : uploadResultsUrls) {
+                String url = httpUrl.toString();
+                String scanId = url.substring(url.lastIndexOf("/") + 1);
+                FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, "PACKAGE_MANAGER");
+                formattedCodeLocations.add(codeLocationData);
+            }  
         }
 
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
@@ -70,8 +80,17 @@ public class RapidModeStepRunner {
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationRunner);
             SignatureScanOuputResult signatureScanOutputResult = signatureScanStepRunner
                     .runRapidSignatureScannerOnline(blackDuckRunData, projectVersion, dockerTargetData);
+            
+            List<HttpUrl> parseScanUrls = parseScanUrls(scanMode, signatureScanOutputResult, blackDuckUrl);
 
-            parsedUrls.addAll(parseScanUrls(scanMode, signatureScanOutputResult, blackDuckUrl));
+            parsedUrls.addAll(parseScanUrls);
+            
+            for (HttpUrl httpUrl : parseScanUrls) {
+                String url = httpUrl.toString();
+                String scanId = url.substring(url.lastIndexOf("/") + 1);
+                FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, "SIGNATURE_SCAN");
+                formattedCodeLocations.add(codeLocationData);
+            }
         });
         
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
@@ -79,7 +98,18 @@ public class RapidModeStepRunner {
             
             // Check if this is an SCA environment. Stateless Binary Scans are only supported there.
             if (scaaasFilePath.isPresent()) {
-                invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, false, scaaasFilePath.get());
+                List<HttpUrl> bdbaResultUrls = new ArrayList<>();
+                
+                invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, bdbaResultUrls, false, scaaasFilePath.get());
+                
+                parsedUrls.addAll(bdbaResultUrls);
+                
+                for (HttpUrl httpUrl : bdbaResultUrls) {
+                    String url = httpUrl.toString();
+                    String scanId = url.substring(url.lastIndexOf("/") + 1);
+                    FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, "BINARY_SCAN");
+                    formattedCodeLocations.add(codeLocationData);
+                }
             } else {
                 logger.debug("Stateless binary scan detected but no detect.scaaas.scan.path specified, skipping.");
             }
@@ -90,7 +120,18 @@ public class RapidModeStepRunner {
             
             // Check if this is an SCA environment. Stateless Container Scans are only supported there.
             if (scaaasFilePath.isPresent()) {
-                invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, parsedUrls, true, scaaasFilePath.get());
+                List<HttpUrl> containerResultUrls = new ArrayList<>();
+                
+                invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, containerResultUrls, true, scaaasFilePath.get());
+                
+                parsedUrls.addAll(containerResultUrls);
+                
+                for (HttpUrl httpUrl : containerResultUrls) {
+                    String url = httpUrl.toString();
+                    String scanId = url.substring(url.lastIndexOf("/") + 1);
+                    FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, "CONTAINER_SCAN");
+                    formattedCodeLocations.add(codeLocationData);
+                }
             } else {
                 logger.debug("Stateless container scan detected but no detect.scaaas.scan.path specified, skipping.");
             }
@@ -105,6 +146,7 @@ public class RapidModeStepRunner {
         RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
 
         operationRunner.publishRapidResults(jsonFile, summary, mode);
+        operationRunner.publishCodeLocationData(formattedCodeLocations);
     }
 
     private void invokeBdbaRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl,
