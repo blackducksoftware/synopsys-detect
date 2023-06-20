@@ -4,7 +4,7 @@
 
 ### New features
 
-* For Stateless and Rapid scans, the scanID and detector tool being run, are now stored in the codeLocations section of the status.json file.
+* For Stateless and Rapid scans, the scanId and Detector tool being run, are now stored in the codeLocations section of the status.json file containing the run summary.
 
 ## Version 8.10.0
 
