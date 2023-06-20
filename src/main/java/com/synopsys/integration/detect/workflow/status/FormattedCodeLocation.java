@@ -1,7 +1,7 @@
 package com.synopsys.integration.detect.workflow.status;
 
 /**
- * This class captures the data needed to populate the codeLocation's array in the status.json 
+ * This class captures the data needed to populate the codeLocation array in the status.json file.
  */
 public class FormattedCodeLocation {
 

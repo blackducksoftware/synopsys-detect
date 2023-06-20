@@ -64,14 +64,7 @@ public class RapidModeStepRunner {
         List<HttpUrl> uploadResultsUrls = operationRunner.performRapidUpload(blackDuckRunData, bdioResult, rapidScanConfig.orElse(null));
         
         if (uploadResultsUrls != null && uploadResultsUrls.size() > 0) {
-            parsedUrls.addAll(uploadResultsUrls);
-            
-            for (HttpUrl httpUrl : uploadResultsUrls) {
-                String url = httpUrl.toString();
-                String scanId = url.substring(url.lastIndexOf("/") + 1);
-                FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, "PACKAGE_MANAGER");
-                formattedCodeLocations.add(codeLocationData);
-            }  
+            processScanResults(uploadResultsUrls, parsedUrls, formattedCodeLocations, DetectTool.DETECTOR.name());  
         }
 
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
@@ -82,15 +75,7 @@ public class RapidModeStepRunner {
                     .runRapidSignatureScannerOnline(blackDuckRunData, projectVersion, dockerTargetData);
             
             List<HttpUrl> parseScanUrls = parseScanUrls(scanMode, signatureScanOutputResult, blackDuckUrl);
-
-            parsedUrls.addAll(parseScanUrls);
-            
-            for (HttpUrl httpUrl : parseScanUrls) {
-                String url = httpUrl.toString();
-                String scanId = url.substring(url.lastIndexOf("/") + 1);
-                FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, "SIGNATURE_SCAN");
-                formattedCodeLocations.add(codeLocationData);
-            }
+            processScanResults(parseScanUrls, parsedUrls, formattedCodeLocations, DetectTool.SIGNATURE_SCAN.name());  
         });
         
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
@@ -99,17 +84,8 @@ public class RapidModeStepRunner {
             // Check if this is an SCA environment. Stateless Binary Scans are only supported there.
             if (scaaasFilePath.isPresent()) {
                 List<HttpUrl> bdbaResultUrls = new ArrayList<>();
-                
                 invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, bdbaResultUrls, false, scaaasFilePath.get());
-                
-                parsedUrls.addAll(bdbaResultUrls);
-                
-                for (HttpUrl httpUrl : bdbaResultUrls) {
-                    String url = httpUrl.toString();
-                    String scanId = url.substring(url.lastIndexOf("/") + 1);
-                    FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, "BINARY_SCAN");
-                    formattedCodeLocations.add(codeLocationData);
-                }
+                processScanResults(bdbaResultUrls, parsedUrls, formattedCodeLocations, DetectTool.BINARY_SCAN.name());  
             } else {
                 logger.debug("Stateless binary scan detected but no detect.scaaas.scan.path specified, skipping.");
             }
@@ -121,17 +97,8 @@ public class RapidModeStepRunner {
             // Check if this is an SCA environment. Stateless Container Scans are only supported there.
             if (scaaasFilePath.isPresent()) {
                 List<HttpUrl> containerResultUrls = new ArrayList<>();
-                
                 invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, containerResultUrls, true, scaaasFilePath.get());
-                
-                parsedUrls.addAll(containerResultUrls);
-                
-                for (HttpUrl httpUrl : containerResultUrls) {
-                    String url = httpUrl.toString();
-                    String scanId = url.substring(url.lastIndexOf("/") + 1);
-                    FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, "CONTAINER_SCAN");
-                    formattedCodeLocations.add(codeLocationData);
-                }
+                processScanResults(containerResultUrls, parsedUrls, formattedCodeLocations, DetectTool.CONTAINER_SCAN.name()); 
             } else {
                 logger.debug("Stateless container scan detected but no detect.scaaas.scan.path specified, skipping.");
             }
@@ -147,6 +114,23 @@ public class RapidModeStepRunner {
 
         operationRunner.publishRapidResults(jsonFile, summary, mode);
         operationRunner.publishCodeLocationData(formattedCodeLocations);
+    }
+
+    /**
+     * This method takes a list of URLs for a given scan type and adds them to the parsedUrls structure so 
+     * results can be retrieved from BD after all scans are done. It also stores information for the status.json
+     * file in formattedCodeLocations so scanId and type can be reported.
+     */
+    private void processScanResults(List<HttpUrl> scanResultUrls, List<HttpUrl> parsedUrls,
+            Set<FormattedCodeLocation> formattedCodeLocations, String scanType) {
+        parsedUrls.addAll(scanResultUrls);
+        
+        for (HttpUrl httpUrl : scanResultUrls) {
+            String url = httpUrl.toString();
+            String scanId = url.substring(url.lastIndexOf("/") + 1);
+            FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, scanType);
+            formattedCodeLocations.add(codeLocationData);
+        }
     }
 
     private void invokeBdbaRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl,
@@ -165,21 +149,6 @@ public class RapidModeStepRunner {
 
         // add this scan to the URLs to wait for
         parsedUrls.add(new HttpUrl(blackDuckUrl + "/api/developer-scans/" + bdScanId.toString()));
-    }
-    
-    private void fullResultUrls(List<HttpUrl> parsedUrls) {
-        // this may have to go somewhere else but it's here for now.
-        ArrayList<HttpUrl> ack = new ArrayList<HttpUrl>();
-        for (HttpUrl url : parsedUrls) {
-            try {
-                url = url.appendRelativeUrl("/full-result");
-                ack.add(url);
-            } catch (IntegrationException e) {
-                logger.error(e.getMessage());
-            }
-        }
-        parsedUrls.clear();
-        parsedUrls.addAll(ack);
     }
 
     /**
