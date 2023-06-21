@@ -176,8 +176,8 @@ public class ApplicationUpdater extends URLClassLoader {
     private File installOrUpdateScanner(String dirPath) throws IOException, IntegrationException {
         final File installDirectory = new File(dirPath);
         
-        if (!installDirectory.exists()) {
-            installDirectory.mkdir();
+        if (!installDirectory.exists() && !installDirectory.mkdir()) {
+            return null;
         } else if (!checkInstallationDir(installDirectory.toPath())) {
             return null;
         }
