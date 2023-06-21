@@ -185,6 +185,7 @@ import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 public class OperationRunner {
@@ -454,12 +455,26 @@ public class OperationRunner {
     }
     //End Rapid
 
+    /**
+     * @param rapidFullResults
+     * @return JSON file containing every policy violating component's {@link ExternalId} along with its declaration
+     * location and upgrade guidance information when applicable.
+     * @throws DetectUserFriendlyException if there was a problem generating the file.
+     */
     public final File generateComponentsWithLocationsFile(List<DeveloperScansScanView> rapidFullResults) throws DetectUserFriendlyException {
         return  GenerateComponentLocationAnalysisOperation.forNonPersistentOnlinePkgMngrScan(rapidFullResults, directoryManager.getScanOutputDirectory());
     }
+
+    /**
+     * @param bdio
+     * @return JSON file containing every detected component's {@link ExternalId} along with its declaration
+     * location and upgrade guidance information when applicable.
+     * @throws DetectUserFriendlyException if there was a problem generating the file.
+     */
     public final File generateComponentsWithLocationsFile(BdioResult bdio) throws DetectUserFriendlyException {
         return  GenerateComponentLocationAnalysisOperation.forOfflinePkgMngrScan(bdio, directoryManager.getScanOutputDirectory());
     }
+
     public final void publishComponentsWithLocationsFile(File jsonFile) throws OperationException {
         auditLog.namedInternal("Publish Component Location Analysis File", () -> statusEventPublisher.publishDetectResult(new ReportDetectResult("Components with Locations", jsonFile.getCanonicalPath())));
     }

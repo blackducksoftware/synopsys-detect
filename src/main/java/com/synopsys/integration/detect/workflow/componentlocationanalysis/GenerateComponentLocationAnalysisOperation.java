@@ -10,6 +10,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * This class will generate the appropriate input file for Component Locator, invoke the library's JAR and then
+ * save the resulting output file in the appropriate output subdirectory.
+ *
+ * Will be fully implemented in a subsequent pull request to the Fix PR feature branch.
+ */
 public class GenerateComponentLocationAnalysisOperation {
     private static final String CLL_INPUT_FILE_NAME = "components-source.json";
     private static final String CLL_OUTPUT_FILE_NAME = "components-with-locations.json";
@@ -21,20 +27,34 @@ public class GenerateComponentLocationAnalysisOperation {
         this.scanResultTransformer = scanResultTransformer;
     }
 
+    /**
+     * @param rapidFullResults
+     * @param scanOutputFolder
+     * @return
+     * @throws DetectUserFriendlyException
+     */
     public static File forNonPersistentOnlinePkgMngrScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder) throws DetectUserFriendlyException {
         // In Part II:
-            // transform rapid scan results -> CLL input
+            // given a rapid scan full result response, call ScanResultToCLLComponentTransformer to get CLL input file (components-source.json)
             // call library w/ CLL input
+            // return the resulting file (not anticipating any post-processing except saving it in the correct directory)
         return generatePlaceHolderJsonFileForNow(scanOutputFolder);
     }
 
     public static File forOfflinePkgMngrScan(BdioResult bdio, File scanOutputFolder) throws DetectUserFriendlyException {
         // In Part II:
-            // transform BDIO -> CLL input
+            // given a BDIO, call BdioToCLLComponentTransformer to get CLL input file (components-source.json)
             // call library w/ CLL input
+            // return the resulting file (not anticipating any post-processing except saving it in the correct directory)
         return generatePlaceHolderJsonFileForNow(scanOutputFolder);
     }
 
+    /**
+     * Placeholder file for testing purposes, saves a JSON file in the appropriate directory with the appropriate name.
+     * @param scanOutputFolder
+     * @return
+     * @throws DetectUserFriendlyException
+     */
     private static File generatePlaceHolderJsonFileForNow(File scanOutputFolder) throws DetectUserFriendlyException {
         try {
             File componentsWithLocations =  new File (scanOutputFolder, CLL_OUTPUT_FILE_NAME);

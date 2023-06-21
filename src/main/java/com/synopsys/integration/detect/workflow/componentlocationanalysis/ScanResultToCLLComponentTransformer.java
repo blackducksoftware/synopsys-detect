@@ -5,6 +5,8 @@ import java.util.List;
 
 /**
  * Transforms a list of {@link DeveloperScansScanView} to {@link CLLComponent}
+ *
+ * Will be fully implemented in a subsequent pull request to the Fix PR feature branch.
  */
 public class ScanResultToCLLComponentTransformer {
     public ComponentLocatorLibraryInput transformToComponentLocatorInput(List<DeveloperScansScanView> rapidScanFullResults) {
