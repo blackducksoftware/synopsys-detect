@@ -10,10 +10,10 @@ import java.util.List;
  */
 public class ComponentLocatorLibraryInput {
     private final String sourcePath;
-    private final CLLMetadata globalMetadata;
-    private final List<CLLComponent> componentList;
+    private final Metadata globalMetadata;
+    private final List<Component> componentList;
 
-    public ComponentLocatorLibraryInput(String sourcePath, CLLMetadata globalMetadata, List<CLLComponent> componentList) {
+    public ComponentLocatorLibraryInput(String sourcePath, Metadata globalMetadata, List<Component> componentList) {
         this.sourcePath = sourcePath;
         this.globalMetadata = globalMetadata;
         this.componentList = componentList;

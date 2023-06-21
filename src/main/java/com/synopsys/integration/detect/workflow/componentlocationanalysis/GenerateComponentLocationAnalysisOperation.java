@@ -19,10 +19,10 @@ import java.util.List;
 public class GenerateComponentLocationAnalysisOperation {
     private static final String CLL_INPUT_FILE_NAME = "components-source.json";
     private static final String CLL_OUTPUT_FILE_NAME = "components-with-locations.json";
-    private final BdioToCLLComponentTransformer bdioTransformer;
-    private final ScanResultToCLLComponentTransformer scanResultTransformer;
+    private final BdioToComponentTransformer bdioTransformer;
+    private final ScanResultToComponentTransformer scanResultTransformer;
 
-    public GenerateComponentLocationAnalysisOperation(BdioToCLLComponentTransformer bdioTransformer, ScanResultToCLLComponentTransformer scanResultTransformer) {
+    public GenerateComponentLocationAnalysisOperation(BdioToComponentTransformer bdioTransformer, ScanResultToComponentTransformer scanResultTransformer) {
         this.bdioTransformer = bdioTransformer;
         this.scanResultTransformer = scanResultTransformer;
     }
@@ -33,7 +33,7 @@ public class GenerateComponentLocationAnalysisOperation {
      * @return
      * @throws DetectUserFriendlyException
      */
-    public static File forNonPersistentOnlinePkgMngrScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder) throws DetectUserFriendlyException {
+    public static File forNonPersistentOnlineDetectorScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder) throws DetectUserFriendlyException {
         // In Part II:
             // given a rapid scan full result response, call ScanResultToCLLComponentTransformer to get CLL input file (components-source.json)
             // call library w/ CLL input
@@ -41,7 +41,7 @@ public class GenerateComponentLocationAnalysisOperation {
         return generatePlaceHolderJsonFileForNow(scanOutputFolder);
     }
 
-    public static File forOfflinePkgMngrScan(BdioResult bdio, File scanOutputFolder) throws DetectUserFriendlyException {
+    public static File forOfflineDetectorScan(BdioResult bdio, File scanOutputFolder) throws DetectUserFriendlyException {
         // In Part II:
             // given a BDIO, call BdioToCLLComponentTransformer to get CLL input file (components-source.json)
             // call library w/ CLL input
