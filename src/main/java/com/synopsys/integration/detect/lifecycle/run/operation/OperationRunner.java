@@ -456,23 +456,29 @@ public class OperationRunner {
     //End Rapid
 
     /**
+     * @param bdio
+     * @return JSON file containing every detected component's {@link ExternalId} along with its declaration
+     * location when applicable.
+     * @throws DetectUserFriendlyException if there was a problem generating the file.
+     */
+    public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws DetectUserFriendlyException, OperationException {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+            File componentsWithLocationsFile = GenerateComponentLocationAnalysisOperation.forOfflinePkgMngrScan(bdio, directoryManager.getScanOutputDirectory());
+            publishComponentsWithLocationsFile(componentsWithLocationsFile);
+        }
+    }
+
+    /**
      * @param rapidFullResults
      * @return JSON file containing every policy violating component's {@link ExternalId} along with its declaration
      * location and upgrade guidance information when applicable.
      * @throws DetectUserFriendlyException if there was a problem generating the file.
      */
-    public final File generateComponentsWithLocationsFile(List<DeveloperScansScanView> rapidFullResults) throws DetectUserFriendlyException {
-        return  GenerateComponentLocationAnalysisOperation.forNonPersistentOnlinePkgMngrScan(rapidFullResults, directoryManager.getScanOutputDirectory());
-    }
-
-    /**
-     * @param bdio
-     * @return JSON file containing every detected component's {@link ExternalId} along with its declaration
-     * location and upgrade guidance information when applicable.
-     * @throws DetectUserFriendlyException if there was a problem generating the file.
-     */
-    public final File generateComponentsWithLocationsFile(BdioResult bdio) throws DetectUserFriendlyException {
-        return  GenerateComponentLocationAnalysisOperation.forOfflinePkgMngrScan(bdio, directoryManager.getScanOutputDirectory());
+    public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults) throws DetectUserFriendlyException, OperationException {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+            File componentsWithLocationsFile = GenerateComponentLocationAnalysisOperation.forNonPersistentOnlinePkgMngrScan(rapidFullResults, directoryManager.getScanOutputDirectory());
+            publishComponentsWithLocationsFile(componentsWithLocationsFile);
+        }
     }
 
     public final void publishComponentsWithLocationsFile(File jsonFile) throws OperationException {

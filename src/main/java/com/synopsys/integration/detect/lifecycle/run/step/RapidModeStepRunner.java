@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.Set;
 
-import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,18 +40,16 @@ public class RapidModeStepRunner {
     private final StepHelper stepHelper;
     private final Gson gson;
     private final DirectoryManager directoryManager;
-    private final DetectConfigurationFactory configurationFactory;
 
-    public RapidModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson, DirectoryManager directoryManager, DetectConfigurationFactory configurationFactory) {
+    public RapidModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson, DirectoryManager directoryManager) {
         this.operationRunner = operationRunner;
         this.stepHelper = stepHelper;
         this.gson = gson;
         this.directoryManager = directoryManager;
-        this.configurationFactory = configurationFactory;
     }
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult,
-            DockerTargetData dockerTargetData) throws OperationException, DetectUserFriendlyException {
+            DockerTargetData dockerTargetData, Optional<String> scaaasFilePath) throws OperationException, DetectUserFriendlyException {
         operationRunner.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationRunner.findRapidScanConfig();
         String scanMode = blackDuckRunData.getScanMode().displayName();
@@ -77,7 +74,6 @@ public class RapidModeStepRunner {
             parsedUrls.addAll(parseScanUrls(scanMode, signatureScanOutputResult, blackDuckUrl));
         });
 
-        Optional<String> scaaasFilePath = configurationFactory.getScaaasFilePath();
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             logger.debug("Stateless binary scan detected.");
             
@@ -104,16 +100,13 @@ public class RapidModeStepRunner {
         BlackduckScanMode mode = blackDuckRunData.getScanMode();
         List<DeveloperScansScanView> rapidFullResults = operationRunner.waitForFullRapidResults(blackDuckRunData, parsedUrls, mode);
 
+        operationRunner.generateComponentLocationAnalysisIfEnabled(rapidFullResults);
+
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
         File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
         RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
 
-        if (configurationFactory.componentLocationAnalysisEnabled()) {
-            File componentsWithLocationsFile = operationRunner.generateComponentsWithLocationsFile(rapidFullResults);
-            operationRunner.publishComponentsWithLocationsFile(componentsWithLocationsFile);
-        } else {
         operationRunner.publishRapidResults(jsonFile, summary, mode);
-        }
     }
 
     private void invokeBdbaRapidScan(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, String blackDuckUrl,

@@ -49,13 +49,11 @@ public class IntelligentModeStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StepHelper stepHelper;
     private final Gson gson;
-    private final DetectConfigurationFactory configurationFactory;
 
-    public IntelligentModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson, DetectConfigurationFactory configurationFactory) {
+    public IntelligentModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson) {
         this.operationRunner = operationRunner;
         this.stepHelper = stepHelper;
         this.gson = gson;
-        this.configurationFactory = configurationFactory;
     }
 
     public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData, BdioResult bdio) throws OperationException, DetectUserFriendlyException {
@@ -74,10 +72,8 @@ public class IntelligentModeStepRunner {
             IacScanStepRunner iacScanStepRunner = new IacScanStepRunner(operationRunner);
             iacScanStepRunner.runIacScanOffline();
         });
-        if (configurationFactory.componentLocationAnalysisEnabled()) {
-            File componentsWithLocationsFile = operationRunner.generateComponentsWithLocationsFile(bdio);
-            operationRunner.publishComponentsWithLocationsFile(componentsWithLocationsFile);
-        }
+
+        operationRunner.generateComponentLocationAnalysisIfEnabled(bdio);
     }
 
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
