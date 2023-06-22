@@ -32,7 +32,7 @@ public class GenerateComponentLocationAnalysisOperationTest {
         results.add(resultView);
         NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
 
-        File generatedFile = GenerateComponentLocationAnalysisOperation.forNonPersistentOnlineDetectorScan(results, directoryManager.getScanOutputDirectory());;
+        File generatedFile = GenerateComponentLocationAnalysisOperation.locateComponentsforNonPersistentOnlineDetectorScan(results, directoryManager.getScanOutputDirectory());;
 
         String expectedFilename = String.format("components-with-locations.json", projectNameVersion.getName(), projectNameVersion.getVersion());
         String expectedPath = new File(scanDir, expectedFilename).getAbsolutePath();

@@ -8,12 +8,12 @@ import java.util.List;
  *
  * Will be fully implemented in a subsequent pull request to the Fix PR feature branch.
  */
-public class ComponentLocatorLibraryInput {
+public class ComponentLocatorInput {
     private final String sourcePath;
     private final Metadata globalMetadata;
     private final List<Component> componentList;
 
-    public ComponentLocatorLibraryInput(String sourcePath, Metadata globalMetadata, List<Component> componentList) {
+    public ComponentLocatorInput(String sourcePath, Metadata globalMetadata, List<Component> componentList) {
         this.sourcePath = sourcePath;
         this.globalMetadata = globalMetadata;
         this.componentList = componentList;

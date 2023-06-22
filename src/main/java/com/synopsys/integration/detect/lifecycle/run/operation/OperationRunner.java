@@ -463,7 +463,7 @@ public class OperationRunner {
      */
     public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws DetectUserFriendlyException, OperationException {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
-            File componentsWithLocationsFile = GenerateComponentLocationAnalysisOperation.forOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory());
+            File componentsWithLocationsFile = GenerateComponentLocationAnalysisOperation.locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory());
             publishComponentsWithLocationsFile(componentsWithLocationsFile);
         }
     }
@@ -476,7 +476,7 @@ public class OperationRunner {
      */
     public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults) throws DetectUserFriendlyException, OperationException {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
-            File componentsWithLocationsFile = GenerateComponentLocationAnalysisOperation.forNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory());
+            File componentsWithLocationsFile = GenerateComponentLocationAnalysisOperation.locateComponentsforNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory());
             publishComponentsWithLocationsFile(componentsWithLocationsFile);
         }
     }
