@@ -16,6 +16,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
@@ -184,6 +185,7 @@ import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 public class OperationRunner {
@@ -452,6 +454,36 @@ public class OperationRunner {
         auditLog.namedInternal("Publish Rapid Results", () -> statusEventPublisher.publishDetectResult(new RapidScanDetectResult(jsonFile.getCanonicalPath(), summary, mode)));
     }
     //End Rapid
+
+    /**
+     * @param bdio
+     * @return JSON file containing every detected component's {@link ExternalId} along with its declaration
+     * location when applicable.
+     * @throws DetectUserFriendlyException if there was a problem generating the file.
+     */
+    public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws DetectUserFriendlyException, OperationException {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+            File componentsWithLocationsFile = GenerateComponentLocationAnalysisOperation.locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory());
+            publishComponentsWithLocationsFile(componentsWithLocationsFile);
+        }
+    }
+
+    /**
+     * @param rapidFullResults
+     * @return JSON file containing every policy violating component's {@link ExternalId} along with its declaration
+     * location and upgrade guidance information when applicable.
+     * @throws DetectUserFriendlyException if there was a problem generating the file.
+     */
+    public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults) throws DetectUserFriendlyException, OperationException {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+            File componentsWithLocationsFile = GenerateComponentLocationAnalysisOperation.locateComponentsforNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory());
+            publishComponentsWithLocationsFile(componentsWithLocationsFile);
+        }
+    }
+
+    public final void publishComponentsWithLocationsFile(File jsonFile) throws OperationException {
+        auditLog.namedInternal("Publish Component Location Analysis File", () -> statusEventPublisher.publishDetectResult(new ReportDetectResult("Components with Locations", jsonFile.getCanonicalPath())));
+    }
 
     //Post actions
     //End post actions
