@@ -1,72 +1,127 @@
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
-import static com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.factoryOf;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 import org.mockito.Mockito;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.google.gson.JsonObject;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detect.lifecycle.run.DetectFontLoaderFactory;
-import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
-import com.synopsys.integration.detect.lifecycle.run.singleton.EventSingletons;
-import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
-import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
+import com.synopsys.integration.detect.testutils.ContainerScanTestUtils;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.NameVersion;
 
 public class OperationRunnerContainerScanTest {
     private static final Gson gson = new Gson();
-    private static final String TEST_IMAGE_LOCAL_FILE_PATH = "src/test/resources/tool/container.scan/testImage.tar";
-    private static final String TEST_IMAGE_URL = "https://www.container.artifactory.com/testImage.tar";
-    private static final File TEST_IMAGE_LOCAL_FILE = new File("src/test/resources/tool/container.scan/testImage.tar");
-    private static final File TEST_IMAGE_DOWNLOADED_FILE = new File("src/test/resources/tool/container.scan/testImageDownloaded.tar");
+    private static final ContainerScanTestUtils containerScanTestUtils = new ContainerScanTestUtils();
 
-    private File updateDetectConfigAndGetContainerImage(String imageFilePath) throws IntegrationException, IOException, DetectUserFriendlyException {
-        File downloadDirectory = new File("src/test/resources/tool/container.scan");
-
-        // Creates a custom mocked instance of Detect's configuration factory for given image file path
-        DetectConfigurationFactory detectConfigurationFactory = factoryOf(
-            Pair.of(DetectProperties.DETECT_TOOLS, DetectTool.CONTAINER_SCAN.toString()),
-            Pair.of(DetectProperties.DETECT_CONTAINER_SCAN_FILE, imageFilePath));
-
-        BootSingletons bootSingletonsMock = Mockito.mock(BootSingletons.class);
-        Mockito.when(bootSingletonsMock.getDetectConfigurationFactory()).thenReturn(detectConfigurationFactory);
-
-        OperationRunner operationRunner = new OperationRunner(
-            Mockito.mock(DetectDetectableFactory.class),
-            Mockito.mock(DetectFontLoaderFactory.class),
-            bootSingletonsMock,
-            Mockito.mock(UtilitySingletons.class),
-            Mockito.mock(EventSingletons.class)
-        );
-
+    private File updateDetectConfigAndGetContainerImage(BlackduckScanMode blackduckScanMode, String imageFilePath) throws IntegrationException, IOException, DetectUserFriendlyException {
+        OperationRunner operationRunner = containerScanTestUtils.setUpDetectConfig(blackduckScanMode, imageFilePath);
         OperationRunner operationRunnerSpy = Mockito.spy(operationRunner);
-        Mockito.doReturn(OperationRunnerContainerScanTest.TEST_IMAGE_DOWNLOADED_FILE).when(operationRunnerSpy).downloadContainerImage(gson, downloadDirectory, imageFilePath);
-        return operationRunnerSpy.getContainerScanImage(gson, downloadDirectory);
+        Mockito.doReturn(ContainerScanTestUtils.TEST_IMAGE_DOWNLOADED_FILE).when(operationRunnerSpy).downloadContainerImage(gson, ContainerScanTestUtils.TEST_DOWNLOAD_DIRECTORY, imageFilePath);
+        return operationRunnerSpy.getContainerScanImage(gson, ContainerScanTestUtils.TEST_DOWNLOAD_DIRECTORY);
     }
 
     @Test
     public void testGetContainerScanImageForLocalFilePath() throws DetectUserFriendlyException, IntegrationException, IOException {
-        File containerImageRetrieved = updateDetectConfigAndGetContainerImage(TEST_IMAGE_LOCAL_FILE_PATH);
+        // Intelligent
+        File containerImageRetrieved = updateDetectConfigAndGetContainerImage(BlackduckScanMode.INTELLIGENT, ContainerScanTestUtils.TEST_IMAGE_LOCAL_FILE_PATH);
         Assertions.assertTrue(containerImageRetrieved != null && containerImageRetrieved.exists());
-        Assertions.assertEquals(TEST_IMAGE_LOCAL_FILE, containerImageRetrieved);
-        Assertions.assertNotEquals(TEST_IMAGE_DOWNLOADED_FILE, containerImageRetrieved);
+        Assertions.assertEquals(ContainerScanTestUtils.TEST_IMAGE_LOCAL_FILE, containerImageRetrieved);
+        Assertions.assertNotEquals(ContainerScanTestUtils.TEST_IMAGE_DOWNLOADED_FILE, containerImageRetrieved);
+
+        // Stateless
+        containerImageRetrieved = updateDetectConfigAndGetContainerImage(BlackduckScanMode.STATELESS, ContainerScanTestUtils.TEST_IMAGE_LOCAL_FILE_PATH);
+        Assertions.assertTrue(containerImageRetrieved != null && containerImageRetrieved.exists());
+        Assertions.assertEquals(ContainerScanTestUtils.TEST_IMAGE_LOCAL_FILE, containerImageRetrieved);
+        Assertions.assertNotEquals(ContainerScanTestUtils.TEST_IMAGE_DOWNLOADED_FILE, containerImageRetrieved);
     }
 
     @Test
     public void testGetContainerScanImageForImageUrl() throws DetectUserFriendlyException, IntegrationException, IOException {
-        File containerImageRetrieved = updateDetectConfigAndGetContainerImage(TEST_IMAGE_URL);
+        // Intelligent
+        File containerImageRetrieved = updateDetectConfigAndGetContainerImage(BlackduckScanMode.INTELLIGENT, ContainerScanTestUtils.TEST_IMAGE_URL);
         Assertions.assertTrue(containerImageRetrieved != null && containerImageRetrieved.exists());
-        Assertions.assertEquals(TEST_IMAGE_DOWNLOADED_FILE, containerImageRetrieved);
-        Assertions.assertNotEquals(TEST_IMAGE_LOCAL_FILE, containerImageRetrieved);
+        Assertions.assertEquals(ContainerScanTestUtils.TEST_IMAGE_DOWNLOADED_FILE, containerImageRetrieved);
+        Assertions.assertNotEquals(ContainerScanTestUtils.TEST_IMAGE_LOCAL_FILE, containerImageRetrieved);
+
+        // Stateless
+        containerImageRetrieved = updateDetectConfigAndGetContainerImage(BlackduckScanMode.STATELESS, ContainerScanTestUtils.TEST_IMAGE_URL);
+        Assertions.assertTrue(containerImageRetrieved != null && containerImageRetrieved.exists());
+        Assertions.assertEquals(ContainerScanTestUtils.TEST_IMAGE_DOWNLOADED_FILE, containerImageRetrieved);
+        Assertions.assertNotEquals(ContainerScanTestUtils.TEST_IMAGE_LOCAL_FILE, containerImageRetrieved);
     }
+
+    @Test
+    public void testGetScanServiceDetailsForIntelligent() {
+        OperationRunner operationRunner = containerScanTestUtils.setUpDetectConfig(BlackduckScanMode.INTELLIGENT, ContainerScanTestUtils.TEST_IMAGE_LOCAL_FILE_PATH);
+
+        // Test if the correct endpoint is returned for INTELLIGENT scans
+        Assertions.assertFalse(operationRunner.getScanServicePostEndpoint().isEmpty());
+        Assertions.assertEquals(ContainerScanTestUtils.INTELLIGENT_SCAN_ENDPOINT, operationRunner.getScanServicePostEndpoint());
+        Assertions.assertNotEquals(ContainerScanTestUtils.RAPID_SCAN_ENDPOINT, operationRunner.getScanServicePostEndpoint());
+
+        // Test if the correct content type is returned for INTELLIGENT scans
+        Assertions.assertFalse(operationRunner.getScanServicePostContentType().isEmpty());
+        Assertions.assertEquals(ContainerScanTestUtils.INTELLIGENT_SCAN_CONTENT_TYPE, operationRunner.getScanServicePostContentType());
+        Assertions.assertNotEquals(ContainerScanTestUtils.RAPID_SCAN_CONTENT_TYPE, operationRunner.getScanServicePostContentType());
+    }
+
+    @Test
+    public void testGetScanServiceDetailsForStateless() {
+        OperationRunner operationRunner = containerScanTestUtils.setUpDetectConfig(BlackduckScanMode.STATELESS, ContainerScanTestUtils.TEST_IMAGE_LOCAL_FILE_PATH);
+
+        // Test if the correct endpoint is returned for INTELLIGENT scans
+        Assertions.assertFalse(operationRunner.getScanServicePostEndpoint().isEmpty());
+        Assertions.assertEquals(ContainerScanTestUtils.RAPID_SCAN_ENDPOINT, operationRunner.getScanServicePostEndpoint());
+        Assertions.assertNotEquals(ContainerScanTestUtils.INTELLIGENT_SCAN_ENDPOINT, operationRunner.getScanServicePostEndpoint());
+
+        // Test if the correct content type is returned for INTELLIGENT scans
+        Assertions.assertFalse(operationRunner.getScanServicePostContentType().isEmpty());
+        Assertions.assertEquals(ContainerScanTestUtils.RAPID_SCAN_CONTENT_TYPE, operationRunner.getScanServicePostContentType());
+        Assertions.assertNotEquals(ContainerScanTestUtils.INTELLIGENT_SCAN_CONTENT_TYPE, operationRunner.getScanServicePostContentType());
+    }
+
+    @Test void testCreateContainerScanMetadataForIntelligent() {
+        BlackduckScanMode blackduckScanMode = BlackduckScanMode.INTELLIGENT;
+        NameVersion projectNameVersion = new NameVersion(ContainerScanTestUtils.TEST_PROJECT_NAME, ContainerScanTestUtils.TEST_PROJECT_VERSION);
+        OperationRunner operationRunner = containerScanTestUtils.setUpDetectConfig(blackduckScanMode, ContainerScanTestUtils.TEST_IMAGE_LOCAL_FILE_PATH);
+
+        JsonObject expectedImageMetadataObject = new JsonObject();
+        expectedImageMetadataObject.addProperty("scanId", ContainerScanTestUtils.TEST_SCAN_ID.toString());
+        expectedImageMetadataObject.addProperty("scanType", ContainerScanTestUtils.SCAN_TYPE);
+        expectedImageMetadataObject.addProperty("scanPersistence", ContainerScanTestUtils.SCAN_PERSISTENCE_TYPE_FOR_INTELLIGENT);
+        expectedImageMetadataObject.addProperty("projectName", ContainerScanTestUtils.TEST_PROJECT_NAME);
+        expectedImageMetadataObject.addProperty("projectVersionName", ContainerScanTestUtils.TEST_PROJECT_VERSION);
+        expectedImageMetadataObject.addProperty("projectGroupName", ContainerScanTestUtils.TEST_PROJECT_GROUP);
+
+        Assertions.assertFalse(expectedImageMetadataObject.isJsonNull());
+        Assertions.assertTrue(expectedImageMetadataObject.isJsonObject());
+        Assertions.assertEquals(expectedImageMetadataObject, operationRunner.createContainerScanImageMetadata(ContainerScanTestUtils.TEST_SCAN_ID, projectNameVersion));
+    }
+
+    @Test void testCreateContainerScanMetadataForStateless() {
+        BlackduckScanMode blackduckScanMode = BlackduckScanMode.STATELESS;
+        NameVersion projectNameVersion = new NameVersion(ContainerScanTestUtils.TEST_PROJECT_NAME, ContainerScanTestUtils.TEST_PROJECT_VERSION);
+        OperationRunner operationRunner = containerScanTestUtils.setUpDetectConfig(blackduckScanMode, ContainerScanTestUtils.TEST_IMAGE_LOCAL_FILE_PATH);
+
+        JsonObject expectedImageMetadataObject = new JsonObject();
+        expectedImageMetadataObject.addProperty("scanId", ContainerScanTestUtils.TEST_SCAN_ID.toString());
+        expectedImageMetadataObject.addProperty("scanType", ContainerScanTestUtils.SCAN_TYPE);
+        expectedImageMetadataObject.addProperty("scanPersistence", ContainerScanTestUtils.SCAN_PERSISTENCE_TYPE_FOR_STATELESS);
+        expectedImageMetadataObject.addProperty("projectName", ContainerScanTestUtils.TEST_PROJECT_NAME);
+        expectedImageMetadataObject.addProperty("projectVersionName", ContainerScanTestUtils.TEST_PROJECT_VERSION);
+        expectedImageMetadataObject.addProperty("projectGroupName", ContainerScanTestUtils.TEST_PROJECT_GROUP);
+
+        Assertions.assertFalse(expectedImageMetadataObject.isJsonNull());
+        Assertions.assertTrue(expectedImageMetadataObject.isJsonObject());
+        Assertions.assertEquals(expectedImageMetadataObject, operationRunner.createContainerScanImageMetadata(ContainerScanTestUtils.TEST_SCAN_ID, projectNameVersion));
+    }
+
 }

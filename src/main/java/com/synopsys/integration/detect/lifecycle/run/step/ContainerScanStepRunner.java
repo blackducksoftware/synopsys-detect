@@ -23,7 +23,6 @@ public class ContainerScanStepRunner {
 
     private final OperationRunner operationRunner;
     private UUID scanId;
-    private final Gson gson;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final NameVersion projectNameVersion;
     private final String projectGroupName;
@@ -41,7 +40,6 @@ public class ContainerScanStepRunner {
             throw new IntegrationException("Binary run directory does not exist.");
         }
         projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
-        this.gson = gson;
         containerImage = operationRunner.getContainerScanImage(gson, binaryRunDirectory);
     }
 
