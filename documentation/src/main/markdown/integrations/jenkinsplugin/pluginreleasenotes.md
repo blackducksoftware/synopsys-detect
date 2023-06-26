@@ -1,5 +1,15 @@
 # Release Notes for Jenkins Plugin
 
+## **Version 8.0.1**
+**Resolved issues**
+
+* (IDTCTJNKNS-266) Resolved the following issues:
+	* Jenkins 2.410 fails to start/crashes during startup if using the 8.0.0 plugin. [JENKINS-71480](https://issues.jenkins.io/browse/JENKINS-71480)
+	* Inclusion of too many dependencies in version 8.0.0 [JENKINS-70671](https://issues.jenkins.io/browse/JENKINS-70671)
+	* 8.0.0 bundles pull-parser.jar by mistake. [JENKINS-71023](https://issues.jenkins.io/browse/JENKINS-71023)
+
+<note type="important">Customers running Jenkins version 2.410 and above should upgrade to [solution_name] Jenkins plugin 8.0.1</note>
+
 ## **Version 8.0.0**
 **New features**
 
@@ -14,17 +24,17 @@
  
 **Resolved issues**
 
-* (IDTCTJNKNS-258) CVE-2022-42889 for Synopsys Detect Jenkins plugin 7.0.0
-* (IDTCTJNKNS-261) Synopsys Detect v8 for Jenkins plugin
+* (IDTCTJNKNS-258) CVE-2022-42889 for [solution_name] Jenkins plugin 7.0.0
+* (IDTCTJNKNS-261) [solution_name] v8 for Jenkins plugin
 * (IDTCTJNKNS-255) Update dependency for Jenkins version, including optional plugin dependencies
-* (IDTCTJNKNS-254) Only escape Detect parameter values
+* (IDTCTJNKNS-254) Only escape [solution_name] parameter values
 * (IDTCTJNKNS-253) Improve clarity of messages logged when running plugin
 * (IDTCTJNKNS-252) Update internal dependencies to latest
 * (IDTCTJNKNS-247) Detect shell scripts are executed first and then downloaded in Pipeline execution in Linux and Windows slave nodes
 * (IDTCTJNKNS-239) Avoid leaking API token string in the console output
-* (IDTCTJNKNS-228) Unable to use java version specified in pipeline when running Detect in Air Gap mode
-* (IDTCTJNKNS-224) Improve clarity in the transition between the different stages of Detect for Jenkins
-* (IDTCTJNKNS-220) Jenkins Build is changed to Unstable for Invalid values in Synopsys Detect Installers
+* (IDTCTJNKNS-228) Unable to use java version specified in pipeline when running [solution_name] in Air Gap mode
+* (IDTCTJNKNS-224) Improve clarity in the transition between the different stages of [solution_name] for Jenkins
+* (IDTCTJNKNS-220) Jenkins Build is changed to Unstable for Invalid values in [solution_name] Installers
 * (IDTCTJNKNS-192) Size must be between 1 and 50 when --detect.project.tag is more than 50 characters
 
 ## **Version 7.0.0**
