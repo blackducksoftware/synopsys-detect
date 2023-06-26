@@ -4,7 +4,7 @@
 **Resolved issues**
 
 * (IDTCTJNKNS-266) Resolved the following issues:
-	* Jenkins 2.410 fails to start/crashes during startup if using the 8.0.0 plugin. [JENKINS-71480](https://issues.jenkins.io/browse/JENKINS-71480)
+	* Jenkins 2.410 fails to start/exits during startup if using the 8.0.0 plugin. [JENKINS-71480](https://issues.jenkins.io/browse/JENKINS-71480)
 	* Inclusion of too many dependencies in version 8.0.0 [JENKINS-70671](https://issues.jenkins.io/browse/JENKINS-70671)
 	* 8.0.0 bundles pull-parser.jar by mistake. [JENKINS-71023](https://issues.jenkins.io/browse/JENKINS-71023)
 
