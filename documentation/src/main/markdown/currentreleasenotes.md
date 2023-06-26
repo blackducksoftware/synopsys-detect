@@ -1,5 +1,13 @@
 # Current Release notes
 
+## Version 8.11.0
+
+### Changed features
+
+### Resolved issues
+
+* (IDETECT-3921) [solution_name] will now validate directory permissions prior to downloading the [solution_name] JAR file.
+
 ## Version 8.10.0
 
 ### Changed features
