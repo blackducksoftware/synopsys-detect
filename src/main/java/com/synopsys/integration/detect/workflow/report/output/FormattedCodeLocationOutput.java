@@ -1,5 +1,7 @@
 package com.synopsys.integration.detect.workflow.report.output;
 
+import java.util.UUID;
+
 import com.google.gson.annotations.SerializedName;
 import com.synopsys.integration.detect.workflow.status.FormattedCodeLocation;
 
@@ -8,7 +10,7 @@ public class FormattedCodeLocationOutput {
     public String codeLocationName;
     
     @SerializedName("scanId")
-    public String scanId;
+    public UUID scanId;
     
     @SerializedName("scanType")
     public String scanType;

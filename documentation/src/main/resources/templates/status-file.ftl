@@ -95,6 +95,8 @@ For those detectors that support it (currently, only CLANG), a list of file path
 ````
 {
 "codeLocationName": The name of a code location produced by this run of [solution_name].
+"scanType": The type of scan that was done, DETECTOR, BAZEL, SIGNATURE_SCAN, DOCKER, BINARY_SCAN, or CONTAINER_SCAN.
+"scanId": The UUID for the scan.
 }
 ````
 ## Property Values

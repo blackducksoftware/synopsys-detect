@@ -127,7 +127,7 @@ public class RapidModeStepRunner {
         
         for (HttpUrl httpUrl : scanResultUrls) {
             String url = httpUrl.toString();
-            String scanId = url.substring(url.lastIndexOf("/") + 1);
+            UUID scanId = UUID.fromString(url.substring(url.lastIndexOf("/") + 1));
             FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, scanType);
             formattedCodeLocations.add(codeLocationData);
         }

@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.workflow.report;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ public class FormattedOutputManagerTest {
         
         // Mock a completed scan to report on
         List<FormattedCodeLocation> codeLocationExpected = new ArrayList<>();
-        codeLocationExpected.add(new FormattedCodeLocation(null, "f4ffe78c-9c83-4f45-b66e-d60fd2fcce46", DetectTool.DETECTOR.name()));
+        codeLocationExpected.add(new FormattedCodeLocation(null, UUID.randomUUID(), DetectTool.DETECTOR.name()));
         
         // Publish the event
         eventSystem.publishEvent(Event.CodeLocationsCompleted, codeLocationExpected);
