@@ -2,9 +2,12 @@
 
 ## Version 8.10.0
 
+### Changed features
+
+* Leading and trailing spaces specified within quotes for `detect.project.name` or `detect.project.version.name` properties will now be trimmed.
+
 ### Resolved issues
 
-* (IDETECT-3641) Resolved scan failure caused by leading/trailing spaces specified within quotes for `detect.project.name` or `detect.project.version.name` properties.
 * (IDETECT-3657) Resolved an issue where Intelligent Scans would fail if a project or version name included non-ASCII characters. 
 * (IDETECT-3776) Resolved an issue with not detecting certain components in `go.mod` files as transitive dependencies when marked with `// indirect`, by improving identification of direct and indirect dependencies.
 * (IDETECT-3817) Improved handling of large inspection results to prevent OutOfMemory exceptions and optimize memory usage.
@@ -13,7 +16,11 @@
 
 ### Dependency updates
 
-* Upgraded Spring Boot to version 2.7.12 to resolve [CVE-2023-20883](https://nvd.nist.gov/vuln/detail/CVE-2023-20883)
+* Upgraded Spring Boot to version 2.7.12 to resolve high severity [CVE-2023-20883](https://nvd.nist.gov/vuln/detail/CVE-2023-20883)
+* Upgraded SnakeYAML to version 2.0 for [solution_name] air gap package to resolve critical severity [CVE-2022-1471](https://nvd.nist.gov/vuln/detail/CVE-2022-1471)
+* Upgraded Jackson Databind to version 2.15.0 for [solution_name] air gap package to resolve high severity [CVE-2022-42003](https://nvd.nist.gov/vuln/detail/CVE-2022-42003) and [CVE-2022-42004](https://nvd.nist.gov/vuln/detail/CVE-2022-42004)
+* Upgraded Project Inspector to version 2021.9.9
+
 
 ## Version 8.9.0
 
