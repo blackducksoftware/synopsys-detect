@@ -1137,4 +1137,11 @@ public class OperationRunner {
             );
         });
     }
+    
+    public UUID getScanIdFromScanUrl(HttpUrl blackDuckScanUrl) {
+        String url = blackDuckScanUrl.toString();
+        UUID scanId = UUID.fromString(url.substring(url.lastIndexOf("/") + 1));
+        
+        return scanId;
+    }
 }

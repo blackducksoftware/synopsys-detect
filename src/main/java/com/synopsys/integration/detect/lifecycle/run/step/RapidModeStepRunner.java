@@ -122,14 +122,17 @@ public class RapidModeStepRunner {
      * file in formattedCodeLocations so scanId and type can be reported.
      */
     private void processScanResults(List<HttpUrl> scanResultUrls, List<HttpUrl> parsedUrls,
-            Set<FormattedCodeLocation> formattedCodeLocations, String scanType) {
-        parsedUrls.addAll(scanResultUrls);
-        
+            Set<FormattedCodeLocation> formattedCodeLocations, String scanType) {        
         for (HttpUrl httpUrl : scanResultUrls) {
-            String url = httpUrl.toString();
-            UUID scanId = UUID.fromString(url.substring(url.lastIndexOf("/") + 1));
-            FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, scanType);
-            formattedCodeLocations.add(codeLocationData);
+            UUID scanId;
+            try {
+                scanId = operationRunner.getScanIdFromScanUrl(httpUrl);
+                parsedUrls.add(httpUrl);
+                FormattedCodeLocation codeLocationData = new FormattedCodeLocation(null, scanId, scanType);
+                formattedCodeLocations.add(codeLocationData);
+            } catch (IllegalArgumentException e) {
+                logger.info(String.format("Unable to parse scanId from URL %s", httpUrl));
+            }
         }
     }
 
