@@ -1,5 +1,11 @@
 # Current Release notes
 
+## Version 8.11.0
+
+### New features
+
+* For Stateless and Rapid scans, the scanId and Detector tool being run, are now stored in the codeLocations section of the status.json file containing the run summary.
+
 ## Version 8.10.0
 
 ### Changed features
