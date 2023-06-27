@@ -1,14 +1,14 @@
 # Container Scanning
 
-Container Scanning, is a way of running [solution_name] against Docker containers to create an aggregated BOM and component risk level. 
+Container Scanning is a way of running [solution_name] against any type of container image (including any non-Linux, non-Docker image) and providing component risk details for each layer of the image.
 
-[solution_name] will accept either a user provided local file path, or remote URL to fetch a container image for scanning.
+[solution_name] will accept either a user provided local file path, or remote HTTP/HTTPS URL to fetch a container image for scanning.
 
 Container scanning supports both persistent (Intelligent) and Stateless scan modes in [blackduck_product_name].
 
 Execute Container Scanning by adding the following:
 ````
---detect.container.scan.file.path=<Path to local or URL for remote container>
+--detect.container.scan.file.path=<Path to local or HTTP/HTTPS URL for remote image>
 ````
 <!-- TBD properties page link
 (../properties/configuration/containerscanning.md#container-scanning) to a run of [solution_name].
@@ -30,7 +30,7 @@ Execute Container Scanning by adding the following:
 ## Results
 
 Container scan findings will appear in the [blackduck_product_name] user interface, please consult the documentation provided by [blackduck_product_name] under the topic:
-<!-- TBD
+<!-- TBD Reference to BD Docs
 <xref href="ContainerScans.dita" scope="peer">Container scans
 <data name="facets" value="pubname=bd-hub"/>
 -->
