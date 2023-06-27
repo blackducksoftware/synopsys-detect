@@ -4,7 +4,7 @@
 
 ### Changed features
 
-* Added integration instructions for Bitbucket to the documentation.
+* Added integration instructions for Bitbucket to the documentation set.
 
 ### Resolved issues
 
