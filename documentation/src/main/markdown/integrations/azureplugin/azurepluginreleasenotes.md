@@ -1,5 +1,10 @@
 # Release Notes for Azure DevOps Plugin
 
+## Version 8.1.0
+**New features**
+
+* (DETECTADO-95) Plugin is now able to inherit the Azure agent 's proxy configuration.
+
 ## Version 8.0.0
 **New features**
 
