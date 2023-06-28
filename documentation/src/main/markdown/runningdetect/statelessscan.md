@@ -115,3 +115,8 @@ For further remediation and transitive dependency upgrade guidance, please consu
 <xref href="RiskGuidance.dita" scope="peer">Getting remediation guidance for components with security vulnerabilities.
 <data name="facets" value="pubname=bd-hub"/>
 
+## Stateless Scan Compare Mode
+
+You can configure Stateless Scan to return only the difference in policy violations between the current scan and previous Persistent Scans using the same configuration. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
+
+Setting the compare mode to ALL evaluates all RAPID or FULL policies. BOM_COMPARE_STRICT only shows policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of policy rule modes and behaves like ALL if the policy rule is only RAPID and like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for complete details.
