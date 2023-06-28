@@ -462,13 +462,12 @@ public class OperationRunner {
      * @throws DetectUserFriendlyException if there was a problem generating the file.
      */
     public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws DetectUserFriendlyException, OperationException {
-//        // tome versus internal ..
-//        return auditLog.namedPublic("Generate Component Location Analysis File for Vulnerable/Violating Dependencies?", () -> {
-//            GenerateComponentLocationAnalysisOperation generateComponentLocationAnalysis = new GenerateComponentLocationAnalysisOperation();
-//            return generateComponentLocationAnalysis.forNonPersistentOnlinePkgMngrScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory());
-//        });
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
-            File componentsWithLocationsFile = GenerateComponentLocationAnalysisOperation.locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory());
+            // TOME public vs internal here?
+            File componentsWithLocationsFile = auditLog.namedPublic(
+                    "Generate Component Location Analysis File for All Components",
+                    () -> new GenerateComponentLocationAnalysisOperation().locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+            );
             publishComponentsWithLocationsFile(componentsWithLocationsFile);
         }
     }
@@ -481,8 +480,8 @@ public class OperationRunner {
      */
     public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults) throws DetectUserFriendlyException, OperationException {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
-            File componentsWithLocationsFile = GenerateComponentLocationAnalysisOperation.locateComponentsforNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory());
-            publishComponentsWithLocationsFile(componentsWithLocationsFile);
+            File componentsWithLocationsFile = (new GenerateComponentLocationAnalysisOperation()).locateComponentsForNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory());
+            publishComponentsWithLocationsFile(componentsWithLocationsFile); // TODO add log to console that says where it was saved?
         }
     }
 

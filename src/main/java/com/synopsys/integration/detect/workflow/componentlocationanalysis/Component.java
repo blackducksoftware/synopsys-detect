@@ -21,6 +21,13 @@ public class Component {
         this.metadata = metadata;
     }
 
+    public Component(String groupID, String artifactID, String version, Metadata metadata) {
+        this.groupID = groupID;
+        this.artifactID = artifactID;
+        this.version = version;
+        this.metadata = metadata;
+    }
+
     // function to split an external ID into g, a and v (and maybe other types in the future?)
 
 }
