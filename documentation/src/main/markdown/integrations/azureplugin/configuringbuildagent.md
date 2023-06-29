@@ -27,6 +27,6 @@ For proxy configuration instructions see: [Get proxy configuration by using the 
 
 ### Proxy configuration scenarios
 
-1. If both an agent proxy and [blackduck_product_name] proxy url endpoint are set through ADO Plugin parameter, the [blackduck_product_name] proxy url endpoint takes precedence.
+1. If both an agent proxy and [blackduck_product_name] Poxy Service Endpoint are set through ADO Plugin parameter, the [blackduck_product_name] proxy url endpoint takes precedence.
 
-2. If agent proxy is configured, and the [blackduck_product_name] proxy url endpoint is not set through ADO Plugin parameter, the [solution_name] Azure Plugin utilizes the agent proxy.
+2. If agent proxy is configured, and the [blackduck_product_name] Poxy Service Endpoint is not set through ADO Plugin parameter, the [solution_name] Azure Plugin utilizes the agent proxy.
