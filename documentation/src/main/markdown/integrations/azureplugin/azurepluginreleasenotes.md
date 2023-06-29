@@ -4,6 +4,7 @@
 **New features**
 
 * (DETECTADO-95) Plugin is now able to inherit the Azure agent 's proxy configuration.
+	* Refer to [Configuring a Build Agent with a proxy](configuringbuildagent.md) for more information.
 
 ## Version 8.0.0
 **New features**
