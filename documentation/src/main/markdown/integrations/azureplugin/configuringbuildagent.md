@@ -23,5 +23,10 @@ The default option for the build agent is the Microsoft hosted agent. To be able
 
 To configure the build agent for [solution_name] Azure Plugin, you can either manually configure the proxy for each job OR to handle the configuration across multiple jobs, make use of the [azure pipelines task lib](https://github.com/Microsoft/azure-pipelines-task-lib) methods to retrieve proxy configuration.
 
-For proxy configuration instructions see: [Get proxy configuration by using AZURE DEVOPS TASK METHOD] (https://github.com/Microsoft/azure-pipelines-task-lib/blob/master/node/docs/proxy.md) 
+For proxy configuration instructions see: [Get proxy configuration by using the AZURE DEVOPS TASK METHOD](https://github.com/Microsoft/azure-pipelines-task-lib/blob/master/node/docs/proxy.md) 
 
+### Proxy configuration scenarios
+
+1. If both an agent proxy and [blackduck_product_name] proxy url endpoint are set through ADO Plugin parameter, the [blackduck_product_name] proxy url endpoint takes precedence.
+
+2. If agent proxy is configured, and the [blackduck_product_name] proxy url endpoint is not set through ADO Plugin parameter, the [solution_name] Azure Plugin utilizes the agent proxy.
