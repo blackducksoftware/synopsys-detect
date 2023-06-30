@@ -21,9 +21,7 @@ The default option for the build agent is the Microsoft hosted agent. To be able
 
 ## Configuring with a proxy
 
-To configure the build agent for [solution_name] Azure Plugin, you can either manually configure the proxy for each job OR to handle the configuration across multiple jobs, make use of the [azure pipelines task lib](https://github.com/Microsoft/azure-pipelines-task-lib) methods to retrieve proxy configuration.
-
-For proxy configuration instructions see: [Get proxy configuration by using the AZURE DEVOPS TASK METHOD](https://github.com/Microsoft/azure-pipelines-task-lib/blob/master/node/docs/proxy.md) 
+You can configure the build agent for [solution_name] Azure Plugin to use a proxy when running jobs.
 
 ### Proxy configuration scenarios
 
