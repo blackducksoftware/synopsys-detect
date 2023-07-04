@@ -1,5 +1,48 @@
-// TODO Jordan deleted this test. It would require a re-write
+package com.synopsys.integration.detect.workflow.report;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import com.synopsys.integration.detect.configuration.DetectInfo;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.report.output.FormattedCodeLocationOutput;
+import com.synopsys.integration.detect.workflow.report.output.FormattedOutput;
+import com.synopsys.integration.detect.workflow.report.output.FormattedOutputManager;
+import com.synopsys.integration.detect.workflow.status.FormattedCodeLocation;
+
+public class FormattedOutputManagerTest {
+    @Test
+    public void formattedCodeLocationTest() {
+        // Setup the reporting infrastructure
+        EventSystem eventSystem = new EventSystem();
+        FormattedOutputManager formattedOutputManager = new FormattedOutputManager(eventSystem);
+        
+        // Mock a completed scan to report on
+        List<FormattedCodeLocation> codeLocationExpected = new ArrayList<>();
+        codeLocationExpected.add(new FormattedCodeLocation(null, UUID.randomUUID(), DetectTool.DETECTOR.name()));
+        
+        // Publish the event
+        eventSystem.publishEvent(Event.CodeLocationsCompleted, codeLocationExpected);
+        
+        DetectInfo detectInfo = new DetectInfo("", null, "");
+        FormattedOutput formattedOutput = formattedOutputManager.createFormattedOutput(detectInfo, ExitCodeType.SUCCESS);
+        
+        List<FormattedCodeLocationOutput> codeLocationActual = formattedOutput.codeLocations;
+        Assertions.assertEquals(1, codeLocationActual.size());
+        Assertions.assertEquals(codeLocationExpected.get(0).getScanId(), codeLocationActual.get(0).scanId);
+        Assertions.assertEquals(codeLocationExpected.get(0).getScanType(), codeLocationActual.get(0).scanType);
+    }
+}
+
 /*
+// TODO Jordan deleted this test. It would require a re-write
 package com.synopsys.integration.detect.workflow.report;
 
 import java.io.File;
