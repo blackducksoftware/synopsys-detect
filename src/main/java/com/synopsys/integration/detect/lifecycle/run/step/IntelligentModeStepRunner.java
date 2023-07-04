@@ -207,14 +207,14 @@ public class IntelligentModeStepRunner {
 
         Set<String> allCodeLocationNames = new HashSet<>(codeLocationAccumulator.getNonWaitableCodeLocations());
         CodeLocationWaitData waitData = operationRunner.calculateCodeLocationWaitData(codeLocationAccumulator.getWaitableCodeLocations());
+        allCodeLocationNames.addAll(waitData.getCodeLocationNames());
         
         Set<FormattedCodeLocation> allCodeLocationData = new HashSet<>();
-        for (String codeLocationName : waitData.getCodeLocationNames()) {
+        for (String codeLocationName : allCodeLocationNames) {
             FormattedCodeLocation codeLocation = new FormattedCodeLocation(codeLocationName, null, null);
             allCodeLocationData.add(codeLocation);
         }
         
-        allCodeLocationNames.addAll(waitData.getCodeLocationNames());
         operationRunner.publishCodeLocationData(allCodeLocationData);
         return new CodeLocationResults(allCodeLocationNames, waitData);
     }
