@@ -150,7 +150,6 @@ public class BlackDuckSignatureScannerOptions {
         return Optional.ofNullable(reducedPersistence);
     }
 
-    // TODO write some tests around this piece
     public RapidCompareMode getBomCompareMode() {
         return bomCompareMode;
     }
