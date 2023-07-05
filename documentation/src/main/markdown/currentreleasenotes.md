@@ -2,6 +2,10 @@
 
 ## Version 8.11.0
 
+### Resolved issues
+
+* (IDETECT-3921) [solution_name] will now validate directory permissions prior to downloading the [solution_name] JAR file.
+=======
 ### New features
 
 * For Stateless and Rapid scans, the scanId and Detector tool being run, are now stored in the codeLocations section of the status.json file containing the run summary.
