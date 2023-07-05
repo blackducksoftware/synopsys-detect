@@ -464,11 +464,11 @@ public class OperationRunner {
     public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws DetectUserFriendlyException, OperationException {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
             // TOME public vs internal here?
-            File componentsWithLocationsFile = auditLog.namedPublic(
+            auditLog.namedPublic(
                     "Generate Component Location Analysis File for All Components",
                     () -> new GenerateComponentLocationAnalysisOperation().locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
             );
-            publishComponentsWithLocationsFile(componentsWithLocationsFile);
+//            publishComponentsWithLocationsFile(componentsWithLocationsFile);
         }
     }
 
@@ -480,8 +480,8 @@ public class OperationRunner {
      */
     public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults) throws DetectUserFriendlyException, OperationException {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
-            File componentsWithLocationsFile = (new GenerateComponentLocationAnalysisOperation()).locateComponentsForNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory());
-            publishComponentsWithLocationsFile(componentsWithLocationsFile); // TODO add log to console that says where it was saved?
+            (new GenerateComponentLocationAnalysisOperation()).locateComponentsForNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory());
+//            publishComponentsWithLocationsFile(componentsWithLocationsFile); // TODO add log to console that says where it was saved?
         }
     }
 

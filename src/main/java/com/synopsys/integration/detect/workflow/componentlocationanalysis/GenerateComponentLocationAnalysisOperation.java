@@ -7,6 +7,7 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
+import com.synopsys.integration.fixpr.generic.Application;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,20 +24,16 @@ public class GenerateComponentLocationAnalysisOperation {
     private final ScanResultToComponentListTransformer scanResultTransformer = new ScanResultToComponentListTransformer();
 
 
-    public File locateComponentsForNonPersistentOnlineDetectorScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder, File sourceDir) throws DetectUserFriendlyException {
-        // In Part II:
-            // given a rapid scan full result response, call ScanResultToCLLComponentTransformer to get CLL input file (components-source.json)
+    public void locateComponentsForNonPersistentOnlineDetectorScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder, File sourceDir) throws DetectUserFriendlyException {
         List<Component> componentsList = scanResultTransformer.transformScanResultToComponentList(rapidFullResults);
-
         File componentLocatorInput = generateComponentLocatorInput(componentsList, scanOutputFolder, sourceDir);
-        return callComponentLocator(componentLocatorInput, scanOutputFolder);
+        callComponentLocatorObfuscatedJar(componentLocatorInput, scanOutputFolder);
     }
 
-    public File locateComponentsForOfflineDetectorScan(BdioResult bdio, File scanOutputFolder, File sourceDir) throws DetectUserFriendlyException {
+    public void locateComponentsForOfflineDetectorScan(BdioResult bdio, File scanOutputFolder, File sourceDir) throws DetectUserFriendlyException {
         List<Component> componentsList = bdioTransformer.transformBdioToComponentList(bdio);
-        File componentLocatorInput = generateComponentLocatorInput(componentsList, scanOutputFolder, sourceDir); // TOME I guess we dont need the scan output folder here since the input file can be anywhere
-        return callComponentLocator(componentLocatorInput, scanOutputFolder);
-        // call library w/ CLL input file and return that, but for now just return the input file as is.
+        File componentLocatorInput = generateComponentLocatorInput(componentsList, scanOutputFolder, sourceDir);
+        callComponentLocatorObfuscatedJar(componentLocatorInput, scanOutputFolder);
     }
 
     private File generateComponentLocatorInput(List<Component> componentsList, File scanOutputFolder, File sourceDir) throws DetectUserFriendlyException {
@@ -44,11 +41,12 @@ public class GenerateComponentLocationAnalysisOperation {
         return serializeInputToJson(scanOutputFolder, componentLocatorInputObject);
     }
 
-    private File callComponentLocator(File inputFile, File scanOutputFolder) {
-        String[] args = {inputFile.getAbsolutePath(), scanOutputFolder.toString()}; // TOME one or the other
-        // TODO maybe we should call the lib with desired path where we want the file saved ? And then after checking success status we can return that expected file as is?
-        // get class from jar and call it with the args
-        return inputFile;
+    private void callComponentLocatorObfuscatedJar(File inputFile, File scanOutputFolder) {
+        String[] args = {inputFile.getAbsolutePath(), scanOutputFolder.toString()};
+        // TOME check success status
+        // TODO also remember to blackduck.offline.mode.force.bdio: true set conditional so customer doesn't have to set this
+        Application.main(args);
+        deleteInputFile(inputFile);
     }
 
     private File serializeInputToJson(File saveInputFileDir, ComponentLocatorInput libInput) throws DetectUserFriendlyException {
@@ -63,5 +61,18 @@ public class GenerateComponentLocationAnalysisOperation {
         }
     }
 
-    // todo: method to eventually clean up components-source.json file
+    private void deleteInputFile(File inputFile) {
+        inputFile.delete(); // handle t/f
+    }
+
+    private File pretendLibOutputFile(File scanOutputDir) {
+        try {
+            File componentsWithLocations =  new File (scanOutputDir, DETECT_OUTPUT_FILE_NAME);
+            DetectFileUtils.writeToFile(componentsWithLocations, "testing");
+            return componentsWithLocations;
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return new File(scanOutputDir, "testing and something went wrong");
+    }
 }

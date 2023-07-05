@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class ScanResultToComponentListTransformer {
     public List<Component> transformScanResultToComponentList(List<DeveloperScansScanView> rapidScanFullResults) {
-        Set<String> externalIds = new HashSet<>(); // TODO duplicates may make sense here?
+        Set<String> externalIds = new HashSet<>(); // TOME duplicates may make sense here?
         HashMap<String, Metadata> componentIdWithMetadata = new HashMap<>();
 
         for (DeveloperScansScanView component : rapidScanFullResults) {
@@ -26,7 +26,7 @@ public class ScanResultToComponentListTransformer {
     private List<Component> externalIDsToComponentList(HashMap<String, Metadata> componentIdWithMetadata) {
         List<Component> componentList = new ArrayList<>();
         for (String gav : componentIdWithMetadata.keySet()) {
-            String[] parts = gav.split(":"); // TODO get separator from forge for diff pkg mngrs
+            String[] parts = gav.split(":"); // TODO get separator based on forge for diff pkg mngrs
             componentList.add(new Component(parts[0], parts[1], parts[2], componentIdWithMetadata.get(gav)));
         }
         return componentList;

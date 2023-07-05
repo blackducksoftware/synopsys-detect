@@ -42,14 +42,16 @@ public class BdioToComponentListTransformer {
     }
 
     private Component dependencyToCLLComponent(Dependency dep) {
-        return new Component(dep.getExternalId(), null);
+        Metadata m = new Metadata();
+        m.setShortTermUpgradeGuidance(null);
+        return new Component(dep.getExternalId(), m);
     }
 
     // TODO move me to a util class
     private List<Component> externalIDsToComponentList(Set<ExternalId> gavs) {
         List<Component> componentList = new ArrayList<>();
         for (ExternalId gav : gavs) {
-            componentList.add(new Component(gav, null));
+            componentList.add(new Component(gav, new Metadata()));
         }
         return componentList;
     }

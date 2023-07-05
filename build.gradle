@@ -57,6 +57,8 @@ subprojects {
 
 allprojects {
     dependencies {
+        implementation files("./component-locator-1.0.0.jar") // Points to local work in progress, will be replaced with released version when ready
+
         implementation "com.google.guava:guava:31.1-jre"
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0'
 
