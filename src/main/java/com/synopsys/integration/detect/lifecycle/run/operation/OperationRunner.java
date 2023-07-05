@@ -468,7 +468,6 @@ public class OperationRunner {
                     "Generate Component Location Analysis File for All Components",
                     () -> new GenerateComponentLocationAnalysisOperation().locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
             );
-//            publishComponentsWithLocationsFile(componentsWithLocationsFile);
         }
     }
 
@@ -481,7 +480,6 @@ public class OperationRunner {
     public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults) throws DetectUserFriendlyException, OperationException {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
             (new GenerateComponentLocationAnalysisOperation()).locateComponentsForNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory());
-//            publishComponentsWithLocationsFile(componentsWithLocationsFile); // TODO add log to console that says where it was saved?
         }
     }
 

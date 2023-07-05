@@ -17,6 +17,12 @@ import java.util.stream.Collectors;
  *
  */
 public class BdioToComponentListTransformer {
+    /**
+     * Given a BDIO, creates a list containing each detected component's corresponding {@link Component} representation.
+     * Any duplicates are eliminated.
+     * @param bdio
+     * @return list of unique {@link Component}s
+     */
     public List<Component> transformBdioToComponentList(BdioResult bdio) {
         Set<ExternalId> externalIds = new HashSet<>();
 
@@ -30,7 +36,7 @@ public class BdioToComponentListTransformer {
                     .map(dependency -> dependency.getExternalId())
                     .collect(Collectors.toCollection(() -> externalIds));
 
-            // now for each dir dep, add its children to component list too
+            // now for each dir dep, add its children to the component list too
             for (Dependency dirDep : directDepsPerCodeLocation) {
                 cl.getDependencyGraph().getChildrenForParent(dirDep)
                         .stream()
@@ -57,8 +63,9 @@ public class BdioToComponentListTransformer {
     }
 
     /**
-     * Maybe a future enhancement where if enabled, we only look for direct dependencies (could be useful for Bridge
-     * since they only care for direct deps currently)
+     * Potential future/current(?) enhancement where if enabled through the component location analysis feature, only
+     * locations of direct dependencies will be searched for. (Useful for Bridge since they only care for direct deps
+     * currently + efficient when scanning large projects)
      * @param bdio
      * @return
      */

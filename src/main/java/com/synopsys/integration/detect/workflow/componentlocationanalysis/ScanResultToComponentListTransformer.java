@@ -11,9 +11,14 @@ import java.util.*;
  *
  */
 public class ScanResultToComponentListTransformer {
+    /**
+     * Given a list of reported components from a Rapid/Stateless Detector scan, transforms each element to its
+     * corresponding {@link Component} with appropriate metadata.
+     * @param rapidScanFullResults
+     * @return list of {@link Component}s
+     */
     public List<Component> transformScanResultToComponentList(List<DeveloperScansScanView> rapidScanFullResults) {
-        Set<String> externalIds = new HashSet<>(); // TOME duplicates may make sense here?
-        HashMap<String, Metadata> componentIdWithMetadata = new HashMap<>();
+        HashMap<String, Metadata> componentIdWithMetadata = new HashMap<>(); // TODO investigate if duplicates may make sense here?
 
         for (DeveloperScansScanView component : rapidScanFullResults) {
             componentIdWithMetadata.put(component.getExternalId(), populateMetadata(component));
@@ -26,7 +31,8 @@ public class ScanResultToComponentListTransformer {
     private List<Component> externalIDsToComponentList(HashMap<String, Metadata> componentIdWithMetadata) {
         List<Component> componentList = new ArrayList<>();
         for (String gav : componentIdWithMetadata.keySet()) {
-            String[] parts = gav.split(":"); // TODO get separator based on forge for diff pkg mngrs
+            // TODO get separator based on forge for diff pkg mngrs instead of hardcoding it here
+            String[] parts = gav.split(":");
             componentList.add(new Component(parts[0], parts[1], parts[2], componentIdWithMetadata.get(gav)));
         }
         return componentList;
@@ -34,6 +40,8 @@ public class ScanResultToComponentListTransformer {
 
     private Metadata populateMetadata(DeveloperScansScanView component) {
         Metadata remediationGuidance = new Metadata();
+        // TODO add parts of "allVulnerabilities" section once blackduck-common-api version is bumped up (API v6 is needed)
+        remediationGuidance.setComponentViolatingPolicies(component.getComponentViolatingPolicies());
         remediationGuidance.setPolicyViolationVulnerabilities(component.getPolicyViolationVulnerabilities());
         remediationGuidance.setLongTermUpgradeGuidance(component.getLongTermUpgradeGuidance());
         remediationGuidance.setShortTermUpgradeGuidance(component.getShortTermUpgradeGuidance());

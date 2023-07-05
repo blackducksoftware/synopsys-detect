@@ -1,20 +1,19 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsLongTermUpgradeGuidanceView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsShortTermUpgradeGuidanceView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsTransitiveUpgradeGuidanceView;
+import com.synopsys.integration.blackduck.api.generated.component.*;
 
 import java.util.List;
 
 /**
- * Represents the way Detect chooses to populate the optional metadata field of Component Locator's input file...
+ * Corresponds to the data Detect chooses to include from Rapid/Stateless Detector scan results when generating the
+ * component location analysis file to aid in vulnerability remediation.
  */
 public class Metadata {
     private List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> policyViolationVulnerabilities;
     private DeveloperScansScanItemsShortTermUpgradeGuidanceView shortTermUpgradeGuidance;
     private DeveloperScansScanItemsLongTermUpgradeGuidanceView longTermUpgradeGuidance;
     private List<DeveloperScansScanItemsTransitiveUpgradeGuidanceView> transitiveUpgradeGuidance;
+    private List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolatingPolicies;
 
     public void setPolicyViolationVulnerabilities(List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> policyViolationVulnerabilities) {
         this.policyViolationVulnerabilities = policyViolationVulnerabilities;
@@ -30,5 +29,9 @@ public class Metadata {
 
     public void setTransitiveUpgradeGuidance(List<DeveloperScansScanItemsTransitiveUpgradeGuidanceView> transitiveUpgradeGuidance) {
         this.transitiveUpgradeGuidance = transitiveUpgradeGuidance;
+    }
+
+    public void setComponentViolatingPolicies(List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolatingPolicies) {
+        this.componentViolatingPolicies = componentViolatingPolicies;
     }
 }
