@@ -17,7 +17,7 @@ The default option for the build agent is the Microsoft hosted agent. To be able
    
 <note type="tip">This is not an airgap option as internet connections are still required for downloading other tools and the script will still download new content if needed.</note>
 
-<note type="note">If the agent is behind a proxy you need to configure proxy settings in the [solution_name] plug-in.</note>
+<note type="note">If the agent is behind a proxy, [solution_name] Azure plug-in will utilize the agent proxy by default.</note>
 
 ## Configuring with a proxy
 
