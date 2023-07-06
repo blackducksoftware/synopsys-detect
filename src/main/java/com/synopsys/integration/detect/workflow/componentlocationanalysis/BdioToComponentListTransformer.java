@@ -1,15 +1,11 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
-import com.google.gson.Gson;
-import com.synopsys.integration.bdio.BdioNodeFactory;
-import com.synopsys.integration.bdio.BdioPropertyHelper;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.DependencyGraphTransformer;
-import com.synopsys.integration.bdio.model.*;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.fixpr.generic.beans.domain_objects.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -67,7 +63,7 @@ public class BdioToComponentListTransformer {
     private List<Component> externalIDsToComponentList(List<ExternalId> gavs) {
         List<Component> componentList = new ArrayList<>();
         for (ExternalId gav : gavs) {
-            componentList.add(new Component(gav, new Metadata()));
+            componentList.add(new Component(gav.getGroup(), gav.getName(), gav.getVersion(), new ScanMetadata()));
         }
         return componentList;
     }
@@ -92,8 +88,9 @@ public class BdioToComponentListTransformer {
     }
 
     private Component dependencyToCLLComponent(Dependency dep) {
-        Metadata m = new Metadata();
+        ScanMetadata m = new ScanMetadata();
         m.setShortTermUpgradeGuidance(null);
-        return new Component(dep.getExternalId(), m);
+        ExternalId externalId = dep.getExternalId();
+        return new Component(externalId.getGroup(), externalId.getName(), externalId.getVersion(), m);
     }
 }

@@ -1,7 +1,7 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.fixpr.generic.beans.domain_objects.Component;
 
 import java.util.*;
 
@@ -18,7 +18,7 @@ public class ScanResultToComponentListTransformer {
      * @return list of {@link Component}s
      */
     public List<Component> transformScanResultToComponentList(List<DeveloperScansScanView> rapidScanFullResults) {
-        HashMap<String, Metadata> componentIdWithMetadata = new HashMap<>(); // TODO investigate if duplicates may make sense here?
+        HashMap<String, ScanMetadata> componentIdWithMetadata = new HashMap<>(); // TODO investigate if duplicates may make sense here?
 
         for (DeveloperScansScanView component : rapidScanFullResults) {
             componentIdWithMetadata.put(component.getExternalId(), populateMetadata(component));
@@ -27,8 +27,7 @@ public class ScanResultToComponentListTransformer {
         return externalIDsToComponentList(componentIdWithMetadata);
     }
 
-    // TODO move me to a util class
-    private List<Component> externalIDsToComponentList(HashMap<String, Metadata> componentIdWithMetadata) {
+    private List<Component> externalIDsToComponentList(HashMap<String, ScanMetadata> componentIdWithMetadata) {
         List<Component> componentList = new ArrayList<>();
         for (String gav : componentIdWithMetadata.keySet()) {
             // TODO get separator based on forge for diff pkg mngrs instead of hardcoding it here
@@ -38,8 +37,8 @@ public class ScanResultToComponentListTransformer {
         return componentList;
     }
 
-    private Metadata populateMetadata(DeveloperScansScanView component) {
-        Metadata remediationGuidance = new Metadata();
+    private ScanMetadata populateMetadata(DeveloperScansScanView component) {
+        ScanMetadata remediationGuidance = new ScanMetadata();
         // TODO add parts of "allVulnerabilities" section once blackduck-common-api version is bumped up (API v6 is needed)
         remediationGuidance.setComponentViolatingPolicies(component.getComponentViolatingPolicies());
         remediationGuidance.setPolicyViolationVulnerabilities(component.getPolicyViolationVulnerabilities());
