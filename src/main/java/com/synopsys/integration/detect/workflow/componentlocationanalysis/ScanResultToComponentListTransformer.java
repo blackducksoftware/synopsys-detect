@@ -30,7 +30,7 @@ public class ScanResultToComponentListTransformer {
     private List<Component> externalIDsToComponentList(HashMap<String, ScanMetadata> componentIdWithMetadata) {
         List<Component> componentList = new ArrayList<>();
         for (String gav : componentIdWithMetadata.keySet()) {
-            // TODO get separator based on forge for diff pkg mngrs instead of hardcoding it here
+            // TODO get separator based on forge for diff pkg mngrs instead of hardcoding ":" here?
             String[] parts = gav.split(":");
             componentList.add(new Component(parts[0], parts[1], parts[2], componentIdWithMetadata.get(gav)));
         }
@@ -39,7 +39,7 @@ public class ScanResultToComponentListTransformer {
 
     private ScanMetadata populateMetadata(DeveloperScansScanView component) {
         ScanMetadata remediationGuidance = new ScanMetadata();
-        // TODO add parts of "allVulnerabilities" section once blackduck-common-api version is bumped up (API v6 is needed)
+        // TODO add parts of "allVulnerabilities" section once blackduck-common-api version is bumped up (API v6 needed)
         remediationGuidance.setComponentViolatingPolicies(component.getComponentViolatingPolicies());
         remediationGuidance.setPolicyViolationVulnerabilities(component.getPolicyViolationVulnerabilities());
         remediationGuidance.setLongTermUpgradeGuidance(component.getLongTermUpgradeGuidance());

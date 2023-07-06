@@ -42,6 +42,4 @@ public class GenerateComponentLocationAnalysisOperationIT {
             dockerAssertions.successfulOperation("Publish Component Location Analysis File");
         }
     }
-
-    // TODO test # of unique components in generated input file to locator lib matches total # of nique components (direct and transitive) when offline
 }
