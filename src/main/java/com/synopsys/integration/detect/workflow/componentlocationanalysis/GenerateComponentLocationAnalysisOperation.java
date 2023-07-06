@@ -11,6 +11,8 @@ import com.synopsys.integration.fixpr.generic.Application;
 import com.synopsys.integration.fixpr.generic.beans.domain_objects.Component;
 import com.synopsys.integration.fixpr.generic.beans.domain_objects.Metadata;
 import com.synopsys.integration.fixpr.generic.beans.io.Input;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +26,7 @@ public class GenerateComponentLocationAnalysisOperation {
     public static final String DETECT_OUTPUT_FILE_NAME = "components-with-locations.json";
     private final BdioToComponentListTransformer bdioTransformer = new BdioToComponentListTransformer();
     private final ScanResultToComponentListTransformer scanResultTransformer = new ScanResultToComponentListTransformer();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     /**
@@ -59,8 +62,14 @@ public class GenerateComponentLocationAnalysisOperation {
     }
 
     private void callComponentLocatorObfuscatedJar(Input componentLocatorInputObj, File scanOutputFolder) {
-        // TODO check success status, surround next line with try/catch
-        Application.locateComponents(componentLocatorInputObj, scanOutputFolder.toString() + DETECT_OUTPUT_FILE_NAME);
+        try {
+            int status = Application.locateComponents(componentLocatorInputObj, scanOutputFolder.toString() + DETECT_OUTPUT_FILE_NAME);
+            if (status != 0) {
+                logger.info("There was a problem during Component Locator execution. Failed to generate Component Location Analysis file.");
+            }
+        } catch (Exception e) {
+            logger.info("There was a problem during Component Locator execution. Failed to generate Component Location Analysis file.");
+        }
     }
 
     private File serializeInputToJson(File saveInputFileDir, Input libInput) throws DetectUserFriendlyException {
@@ -71,7 +80,6 @@ public class GenerateComponentLocationAnalysisOperation {
             DetectFileUtils.writeToFile(componentsWithLocations, serializedLibInput);
             return componentsWithLocations;
         } catch (IOException ex) {
-            // TODO change this to debug level log
             throw new DetectUserFriendlyException("Failed to create Component Locator input file", ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
     }
