@@ -1,14 +1,17 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
+import com.google.gson.Gson;
+import com.synopsys.integration.bdio.BdioNodeFactory;
+import com.synopsys.integration.bdio.BdioPropertyHelper;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraphTransformer;
+import com.synopsys.integration.bdio.model.*;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -19,42 +22,49 @@ import java.util.stream.Collectors;
 public class BdioToComponentListTransformer {
     /**
      * Given a BDIO, creates a list containing each detected component's corresponding {@link Component} representation.
-     * Any duplicates are eliminated.
+     * Each component is included once, duplicates are ignored.
      * @param bdio
      * @return list of unique {@link Component}s
      */
     public List<Component> transformBdioToComponentList(BdioResult bdio) {
-        Set<ExternalId> externalIds = new HashSet<>();
+        List<ExternalId> allExternalIds = new ArrayList<>();
 
         Set<DetectCodeLocation> codeLocations = bdio.getCodeLocationNamesResult().getCodeLocationNames().keySet();
         for (DetectCodeLocation cl : codeLocations) {
-            Set<Dependency> directDepsPerCodeLocation = cl.getDependencyGraph().getDirectDependencies();
+            List<ExternalId> allDepsForThisCodeLocation = processDependencyGraph(cl.getDependencyGraph(), cl.getDependencyGraph().getDirectDependencies(), new HashSet<>());
+            allExternalIds.addAll(allDepsForThisCodeLocation);
+        }
 
-            // add all direct deps to component list
-            cl.getDependencyGraph().getDirectDependencies()
-                    .stream()
-                    .map(dependency -> dependency.getExternalId())
-                    .collect(Collectors.toCollection(() -> externalIds));
+        return externalIDsToComponentList(allExternalIds);
+    }
 
-            // now for each dir dep, add its children to the component list too
-            for (Dependency dirDep : directDepsPerCodeLocation) {
-                cl.getDependencyGraph().getChildrenForParent(dirDep)
-                        .stream()
-                        .map(dependency -> dependency.getExternalId())
-                        .collect(Collectors.toCollection(() -> externalIds));
+    /**
+     * Starting with a list of the direct dependencies of a code location, recursively collects {@link ExternalId}s of
+     * all direct and transitive dependencies.
+     * @param graph
+     * @param dependencies
+     * @param alreadyProcessedDependencies
+     * @return list of all dependencies in the original dependency graph
+     */
+    private List<ExternalId> processDependencyGraph(
+            DependencyGraph graph,
+            Set<Dependency> dependencies,
+            HashSet<ExternalId> alreadyProcessedDependencies
+    ) {
+        List<ExternalId> addedDependencies = new ArrayList<>();
+        for (Dependency dependency : dependencies) {
+            if (!alreadyProcessedDependencies.contains(dependency.getExternalId())) {
+                addedDependencies.add(dependency.getExternalId());
+                alreadyProcessedDependencies.add(dependency.getExternalId());
+                Set<Dependency> transitiveDependencies = graph.getChildrenForParent(dependency);
+                List<ExternalId> addedChildren = processDependencyGraph(graph, transitiveDependencies, alreadyProcessedDependencies);
+                addedDependencies.addAll(addedChildren);
             }
         }
-        return externalIDsToComponentList(externalIds);
+        return addedDependencies;
     }
 
-    private Component dependencyToCLLComponent(Dependency dep) {
-        Metadata m = new Metadata();
-        m.setShortTermUpgradeGuidance(null);
-        return new Component(dep.getExternalId(), m);
-    }
-
-    // TODO move me to a util class
-    private List<Component> externalIDsToComponentList(Set<ExternalId> gavs) {
+    private List<Component> externalIDsToComponentList(List<ExternalId> gavs) {
         List<Component> componentList = new ArrayList<>();
         for (ExternalId gav : gavs) {
             componentList.add(new Component(gav, new Metadata()));
@@ -79,5 +89,11 @@ public class BdioToComponentListTransformer {
                     .collect(Collectors.toCollection(() -> componentList));
         }
         return componentList;
+    }
+
+    private Component dependencyToCLLComponent(Dependency dep) {
+        Metadata m = new Metadata();
+        m.setShortTermUpgradeGuidance(null);
+        return new Component(dep.getExternalId(), m);
     }
 }
