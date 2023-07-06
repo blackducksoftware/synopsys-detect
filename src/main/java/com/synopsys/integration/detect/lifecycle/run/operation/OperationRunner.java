@@ -17,12 +17,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation;
+import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.DETECT_OUTPUT_FILE_NAME;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.blackducksoftware.bdio2.Bdio;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -456,14 +456,13 @@ public class OperationRunner {
     //End Rapid
 
     /**
+     * Given a BDIO, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
+     * every detected component's {@link ExternalId} along with its declaration location when applicable.
      * @param bdio
-     * @return JSON file containing every detected component's {@link ExternalId} along with its declaration
-     * location when applicable.
-     * @throws DetectUserFriendlyException if there was a problem generating the file.
+     * @throws OperationException
      */
-    public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws DetectUserFriendlyException, OperationException {
+    public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws OperationException {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
-            // TOME public vs internal here?
             auditLog.namedPublic(
                     "Generate Component Location Analysis File for All Components",
                     () -> new GenerateComponentLocationAnalysisOperation().locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
@@ -472,19 +471,18 @@ public class OperationRunner {
     }
 
     /**
+     * Given a Rapid/Stateless Detector Scan result, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
+     * every reported component's {@link ExternalId} along with its declaration location and upgrade guidance information when applicable.
      * @param rapidFullResults
-     * @return JSON file containing every policy violating component's {@link ExternalId} along with its declaration
-     * location and upgrade guidance information when applicable.
-     * @throws DetectUserFriendlyException if there was a problem generating the file.
+     * @throws OperationException
      */
-    public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults) throws DetectUserFriendlyException, OperationException {
+    public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults) throws OperationException {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
-            (new GenerateComponentLocationAnalysisOperation()).locateComponentsForNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory());
+            auditLog.namedPublic(
+                    "Generate Component Location Analysis File for Reported Components",
+                    () -> (new GenerateComponentLocationAnalysisOperation()).locateComponentsForNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+            );
         }
-    }
-
-    public final void publishComponentsWithLocationsFile(File jsonFile) throws OperationException {
-        auditLog.namedInternal("Publish Component Location Analysis File", () -> statusEventPublisher.publishDetectResult(new ReportDetectResult("Components with Locations", jsonFile.getCanonicalPath())));
     }
 
     //Post actions

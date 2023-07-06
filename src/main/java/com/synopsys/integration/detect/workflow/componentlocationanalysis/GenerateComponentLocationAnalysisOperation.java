@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class GenerateComponentLocationAnalysisOperation {
     private static final String COMPONENT_LOCATOR_INPUT_FILE_NAME = "components-source.json"; // TODO input file name is irrelevant and temp, get rid of this
-    private static final String DETECT_OUTPUT_FILE_NAME = "components-with-locations.json"; // TODO this file name should be provided to the library, lib should have no knowledge of this
+    public static final String DETECT_OUTPUT_FILE_NAME = "components-with-locations.json"; // TODO this file name should be provided to the library, lib should have no knowledge of this
     private final BdioToComponentListTransformer bdioTransformer = new BdioToComponentListTransformer();
     private final ScanResultToComponentListTransformer scanResultTransformer = new ScanResultToComponentListTransformer();
 
