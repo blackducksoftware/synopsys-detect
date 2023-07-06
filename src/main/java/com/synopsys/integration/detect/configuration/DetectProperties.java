@@ -1723,7 +1723,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.RAPID_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .build().deprecateValue(BlackduckScanMode.EPHEMERAL, "Replace with STATELESS");
+            .build();
 
     public static final EnumProperty<RapidCompareMode> DETECT_BLACKDUCK_RAPID_COMPARE_MODE =
         EnumProperty.newBuilder("detect.blackduck.rapid.compare.mode", RapidCompareMode.ALL, RapidCompareMode.class)
@@ -1765,18 +1765,6 @@ public class DetectProperties {
     //#endregion Active Properties
 
     //#region Deprecated Properties
-
-    @Deprecated
-    public static final BooleanProperty DETECT_DIAGNOSTIC_EXTENDED =
-        BooleanProperty.newBuilder("detect.diagnostic.extended", false)
-            .setInfo("Diagnostic Mode Extended", DetectPropertyFromVersion.VERSION_6_5_0)
-            .setHelp("When enabled, Synopsys Detect performs the actions of --detect.diagnostic, but also includes relevant files such as lock files and build artifacts.")
-            .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
-            .setDeprecated(
-                "This property is being removed. Use property detect.diagnostic instead. There is no longer any distinction between extended and non-extended diagnostic zip files.",
-                DetectMajorVersion.NINE
-            )
-            .build();
 
     // Can't take in the DetectProperty<?> due to an illegal forward reference :(
     private static String createTypeFilterHelpText(String exclusionTypePlural) {
