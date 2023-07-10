@@ -255,9 +255,10 @@ public class DetectableOptionFactory {
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {
+        String globalArguments = detectConfiguration.getNullableValue(DetectProperties.PROJECT_INSPECTOR_GLOBAL_ARGUMENTS);
         String additionalArguments = detectConfiguration.getNullableValue(DetectProperties.PROJECT_INSPECTOR_ARGUMENTS);
         Path projectInspectorZipPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_PROJECT_INSPECTOR_PATH);
-        return new ProjectInspectorOptions(projectInspectorZipPath, additionalArguments);
+        return new ProjectInspectorOptions(projectInspectorZipPath, additionalArguments, globalArguments);
     }
 
     public GemspecParseDetectableOptions createGemspecParseDetectableOptions() {

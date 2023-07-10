@@ -12,9 +12,15 @@ public class ProjectInspectorOptions {
     @Nullable
     private final String additionalArguments;
 
-    public ProjectInspectorOptions(@Nullable Path projectInspectorZipPath, @Nullable String additionalArguments) {
+    @Nullable
+    private final String globalArguments;
+
+    public ProjectInspectorOptions(@Nullable Path projectInspectorZipPath,
+                                   @Nullable String additionalArguments,
+                                   @Nullable String globalArguments) {
         this.projectInspectorZipPath = projectInspectorZipPath;
         this.additionalArguments = additionalArguments;
+        this.globalArguments = globalArguments;
     }
 
     @Nullable
@@ -24,5 +30,10 @@ public class ProjectInspectorOptions {
 
     public Optional<Path> getProjectInspectorZipPath() {
         return Optional.ofNullable(projectInspectorZipPath);
+    }
+
+    @Nullable
+    public String getGlobalArguments() {
+        return globalArguments;
     }
 }

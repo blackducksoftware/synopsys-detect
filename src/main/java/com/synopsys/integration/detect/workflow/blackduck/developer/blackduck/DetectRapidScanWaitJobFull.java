@@ -19,7 +19,7 @@ import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.wait.ResilientJob;
 
-public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScansScanView>> {
+public class DetectRapidScanWaitJobFull implements ResilientJob<List<DeveloperScansScanView>> {
     private final BlackDuckApiClient blackDuckApiClient;
     private final List<HttpUrl> remainingUrls;
     private final List<HttpUrl> completedUrls;
@@ -29,7 +29,7 @@ public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScansS
 
     private boolean complete;
 
-    public DetectRapidScanWaitJob(BlackDuckApiClient blackDuckApiClient, List<HttpUrl> resultUrl, BlackduckScanMode mode) {
+    public DetectRapidScanWaitJobFull(BlackDuckApiClient blackDuckApiClient, List<HttpUrl> resultUrl, BlackduckScanMode mode) {
         this.blackDuckApiClient = blackDuckApiClient;
         this.remainingUrls = new ArrayList<>();
         remainingUrls.addAll(resultUrl);
@@ -92,7 +92,7 @@ public class DetectRapidScanWaitJob implements ResilientJob<List<DeveloperScansS
     private List<DeveloperScansScanView> getScanResultsForUrl(HttpUrl url) throws IntegrationException {
         BlackDuckMultipleRequest<DeveloperScansScanView> request =
             new DetectRapidScanRequestBuilder()
-                .createRequest(url);
+                .createFullRequest(url);
         return blackDuckApiClient.getAllResponses(request);
     }
 

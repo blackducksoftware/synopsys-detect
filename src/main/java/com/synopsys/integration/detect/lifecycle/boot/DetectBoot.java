@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import com.synopsys.integration.detect.configuration.help.yaml.HelpYamlWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,6 +102,12 @@ public class DetectBoot {
         if (detectArgumentState.isHelpJsonDocument()) {
             HelpJsonManager helpJsonManager = detectBootFactory.createHelpJsonManager();
             helpJsonManager.createHelpJsonDocument(String.format("synopsys-detect-%s-help.json", detectVersion));
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
+        }
+
+        if (detectArgumentState.isHelpYamlDocument()) {
+            HelpYamlWriter helpYamlWriter = new HelpYamlWriter();
+            helpYamlWriter.createHelpYamlDocument(String.format("synopsys-detect-%s-template-application.yml", detectVersion));
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 

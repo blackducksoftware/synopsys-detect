@@ -75,6 +75,14 @@ public class PolicyChecker {
             List<PolicyViolationInfo> fatalRulesViolated = collectFatalRulesViolated(projectVersionView, severitiesToFailPolicyCheck::contains);
             if (!fatalRulesViolated.isEmpty()) {
                 logViolationMessages(fatalRulesViolated);
+            }
+            
+            boolean policySeveritiesAreViolated = arePolicySeveritiesViolated(policyStatusDescription, severitiesToFailPolicyCheck);
+
+            // If Black Duck has reported policy violations in status description (policySeveritiesAreViolated),
+            // or we have noticed violations while examining components in the BOM (fatalRulesViolated),
+            // fail the scan.
+            if (policySeveritiesAreViolated || !fatalRulesViolated.isEmpty()) {
                 exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.getPolicyStatusMessage());
             }
         } else {
@@ -151,5 +159,11 @@ public class PolicyChecker {
             componentPolicyRulesView.getSeverity().prettyPrint(),
             policyRuleSuffix
         ));
+    }
+    
+    private boolean arePolicySeveritiesViolated(PolicyStatusDescription policyStatusDescription, List<PolicyRuleSeverityType> policySeverities) {
+        return policySeverities.stream()
+            .map(policyStatusDescription::getCountOfSeverity)
+            .anyMatch(severityCount -> severityCount > 0);
     }
 }

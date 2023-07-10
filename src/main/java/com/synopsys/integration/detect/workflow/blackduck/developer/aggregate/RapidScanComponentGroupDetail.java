@@ -16,8 +16,8 @@ import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanV
 public class RapidScanComponentGroupDetail {
     
     private static final String POLICY_SEPARATOR = "/";
-    private static final String POLICY_SERVERITY_BLOCKER = "BLOCKER";
-    private static final String POLICY_SERVERITY_CRITICAL = "CRITICAL";
+    private static final String POLICY_SEVERITY_BLOCKER = "BLOCKER";
+    private static final String POLICY_SEVERITY_CRITICAL = "CRITICAL";
     
     private final RapidScanDetailGroup group;
     private final Set<String> errorMessages = new LinkedHashSet<>();
@@ -95,7 +95,7 @@ public class RapidScanComponentGroupDetail {
 
         String errorMessage = "", warningMessage = "";
 
-            if (componentPolicyViolation.getPolicySeverity().equals(POLICY_SERVERITY_CRITICAL) || componentPolicyViolation.getPolicySeverity().equals(POLICY_SERVERITY_BLOCKER)) {
+            if (componentPolicyViolation.getPolicySeverity().equals(POLICY_SEVERITY_CRITICAL) || componentPolicyViolation.getPolicySeverity().equals(POLICY_SEVERITY_BLOCKER)) {
                 if (errorMessage.equals("")) {
                     errorMessage = baseMessage;
                 } else {
@@ -131,7 +131,7 @@ public class RapidScanComponentGroupDetail {
         for (int i = 0; i < violatingPolicies.size(); i++) {
             DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView violation = violatingPolicies.get(i);
                     
-            if (violation.getPolicySeverity().equals(POLICY_SERVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SERVERITY_BLOCKER)) {
+            if (violation.getPolicySeverity().equals(POLICY_SEVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SEVERITY_BLOCKER)) {
                 if (errorMessage.equals("")) {
                     errorMessage = baseMessage;
                 } else {
@@ -168,37 +168,25 @@ public class RapidScanComponentGroupDetail {
     // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
     // as this may be temporary code.
     public void addVulnerabilityMessages(DeveloperScansScanView resultView,
-            DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerability) {
+            DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerabilityPolicyViolation) {
         String baseMessage = getBaseMessage(resultView);
         
-        List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> violatingPolicies = vulnerability.getViolatingPolicies();
+        List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> violatingPolicies = vulnerabilityPolicyViolation.getViolatingPolicies();
         
         String errorMessage = "", warningMessage = "";
         
         for (int i = 0; i < violatingPolicies.size(); i++) {
             DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation = violatingPolicies.get(i);
             
-            if (violation.getPolicySeverity().equals(POLICY_SERVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SERVERITY_BLOCKER)) {
-                if (errorMessage.equals("")) {
-                    errorMessage = baseMessage;
-                } else {
-                    errorMessage += POLICY_SEPARATOR;
-                }
-                
-                errorMessage += violation.getPolicyName();
+            if (violation.getPolicySeverity().equals(POLICY_SEVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SEVERITY_BLOCKER)) {
+                errorMessage = constructVulnerabilityMessageSegment(baseMessage, errorMessage, violation);
             } else {
-                if (warningMessage.equals("")) {
-                    warningMessage = baseMessage;
-                } else {
-                    warningMessage += POLICY_SEPARATOR;
-                }
-                
-                warningMessage += violation.getPolicyName();
+                warningMessage = constructVulnerabilityMessageSegment(baseMessage, warningMessage, violation);
             }
         }
         
-        String summaryMessage = ": found vulnerability " + vulnerability.getName() + " with severity "
-                + vulnerability.getVulnSeverity() + " and CVSS score " + vulnerability.getOverallScore() + ".";
+        String summaryMessage = ": found vulnerability " + vulnerabilityPolicyViolation.getName() + " with severity "
+                + vulnerabilityPolicyViolation.getVulnSeverity() + " and CVSS score " + vulnerabilityPolicyViolation.getOverallScore() + ".";
         
         if (StringUtils.isNotBlank(errorMessage)) {
             errorMessage += summaryMessage;
@@ -221,6 +209,18 @@ public class RapidScanComponentGroupDetail {
         }
         
         addMessages(errorMessage, warningMessage);
+    }
+
+    private String constructVulnerabilityMessageSegment(String baseMessage, String overallMessage,
+            DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView violation) {
+        if (overallMessage.equals("")) {
+            overallMessage = baseMessage;
+        } else {
+            overallMessage += POLICY_SEPARATOR;
+        }
+        
+        overallMessage += violation.getPolicyName();
+        return overallMessage;
     }
     
     private String getBaseMessage(DeveloperScansScanView resultView) {

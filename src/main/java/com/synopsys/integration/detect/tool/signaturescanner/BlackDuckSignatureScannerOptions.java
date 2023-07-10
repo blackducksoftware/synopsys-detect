@@ -26,7 +26,8 @@ public class BlackDuckSignatureScannerOptions {
     @Nullable //Just to note that if you want server defaults this should be null.
     private final ReducedPersistence reducedPersistence;
 
-    private final boolean uploadSource;
+    @Nullable
+    private final Boolean uploadSource;
     @Nullable
     private final String additionalArguments;
     private final Integer maxDepth;

@@ -1,13 +1,10 @@
 ## Overview
 
-Synopsys Detect is Black Duck's intelligent scan client that scans code bases in your projects and folders to perform compositional analysis. Synopsys Detect sends scan results to Black Duck, which generates risk analysis when identifying open source components, licenses, and security vulnerabilities.
+Synopsys Detect scans code bases in your projects and folders to perform compositional analysis and functions as an intelligent scan client for Black Duck and other Synopsys SCA products. Synopsys Detect can send scan results to Black Duck, which generates risk analysis when identifying open source components, licenses, and security vulnerabilities.
 
 ## Build
 
-[![Build Status](https://travis-ci.org/blackducksoftware/hub-gradle-plugin.svg?branch=master)](https://travis-ci.org/blackducksoftware/synopsys-detect)
-[![Coverage Status](https://coveralls.io/repos/github/blackducksoftware/synopsys-detect/badge.svg?branch=master)](https://coveralls.io/github/blackducksoftware/synopsys-detect?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/repos/blackducksoftware/synopsys-detect/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/repos/blackducksoftware/synopsys-detect/branches/master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.synopsys.integration%3Asynopsys-detect&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.synopsys.integration%3Asynopsys-detect)
 
 ## Where can I get the latest release?
@@ -35,11 +32,11 @@ For AirGap, please use our [Artifactory](https://sig-repo.synopsys.com/webapp/#/
 
 ## Documentation
 
-The latest quickstart documentation is [here](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=gettingstarted%2Fquickstart.html&_LANG=enus).
+The latest quickstart documentation is [here](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/gettingstarted/quickstart.html).
 
-The latest full documentation is [here](https://community.synopsys.com/s/document-item?bundleId=integrations-detect&topicId=introduction.html&_LANG=enus).
+The latest full documentation is [here](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/introduction.html).
 
-Links to certain earlier versions can be found [here](https://detect.synopsys.com/docs).
+Links to certain earlier versions can be found [here](https://community.synopsys.com/s/user-guide-archive).
 
 ## Getting help
 

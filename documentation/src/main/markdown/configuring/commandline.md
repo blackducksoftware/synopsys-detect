@@ -10,7 +10,7 @@ To add one property setting to the command line, add the following at the end:
 There is a space before and between each complete property setting, but there are no spaces around the equals sign (=).
 
 For example,
-to set property *detect.project.value*:
+to set property *detect.project.name*:
 ```
 bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --detect.project.name=MyProject
 ```

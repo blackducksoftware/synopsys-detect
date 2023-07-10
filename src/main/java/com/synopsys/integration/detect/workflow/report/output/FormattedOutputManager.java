@@ -67,6 +67,15 @@ public class FormattedOutputManager {
             .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), removeTabsFromMessages(result.getResultSubMessages())))
             .toList();
 
+        // avoid doing this if trans. guidance list is empty because it will just print the
+        // same info as the "results" item above.
+        List<FormattedResultOutput> transitiveOutput = Bds.of(detectResults)
+        .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage(), removeTabsFromMessages(result.getTransitiveUpgradeGuidanceSubMessages())))
+        .toList();
+        if (!transitiveOutput.isEmpty() && !transitiveOutput.get(0).subMessages.isEmpty()) {
+            formattedOutput.transitiveGuidance = transitiveOutput;
+        }
+
         formattedOutput.status = Bds.of(statusSummaries)
             .map(status -> new FormattedStatusOutput(status.getDescriptionKey(), status.getStatusType().toString()))
             .toList();
@@ -162,6 +171,7 @@ public class FormattedOutputManager {
         detectorOutput.folder = directory.toString();
         detectorOutput.detectorName = attempted.getDetectable().getName();
         detectorOutput.detectorType = detectorType.toString();
+        detectorOutput.detectorAccuracy = attempted.getDetectable().getAccuracyType().toString();
 
         detectorOutput.extracted = false;
         detectorOutput.status = status;
@@ -176,6 +186,7 @@ public class FormattedOutputManager {
         detectorOutput.folder = directory.toString();
         detectorOutput.detectorName = extracted.getDetectable().getName();
         detectorOutput.detectorType = detectorType.toString();
+        detectorOutput.detectorAccuracy = extracted.getDetectable().getAccuracyType().toString();
 
         detectorOutput.extracted = true;
         detectorOutput.status = status;

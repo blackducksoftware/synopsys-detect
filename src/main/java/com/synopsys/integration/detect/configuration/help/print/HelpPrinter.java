@@ -201,6 +201,7 @@ public class HelpPrinter {
         writer.println("To set a Detect property on the command line: ");
         writer.println("\t--<property name>=<value>");
         writer.println();
+        writer.println("To set properties using a configuration file instead, you may request a template with '-hyaml'");
         writer.println("To see all properties, you may request verbose help log with '-hv'");
         writer.println("To see the hidden deprecated properties, you may request them with '-hd'");
         writer.println();
@@ -212,6 +213,8 @@ public class HelpPrinter {
         writer.println("To search options, you may specify a search term with '-h [term]'");
         writer.println();
         writer.println("To run in interactive mode (which prompts you for the values needed for common use cases), run Detect with the argument '--interactive'");
+		writer.println();
+		writer.println("Note that low accuracy Gradle, NuGet, and Maven Project Inspectors do not support package manager specific properties.");
         writer.println();
     }
 }

@@ -48,5 +48,8 @@ public class FormattedOutput {
     @SerializedName("operations")
     public List<FormattedOperationOutput> operations = new ArrayList();
 
+    @SerializedName("transitiveUpgradeGuidance")
+    public List<FormattedResultOutput> transitiveGuidance;
+
 }
 

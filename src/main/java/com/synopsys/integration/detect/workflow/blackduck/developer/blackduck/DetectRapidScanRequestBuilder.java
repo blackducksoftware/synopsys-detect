@@ -24,5 +24,8 @@ public class DetectRapidScanRequestBuilder {
     public BlackDuckMultipleRequest<DeveloperScansScanView> createRequest(HttpUrl httpUrl) {
         return blackDuckRequestBuilder.buildBlackDuckRequest(new UrlMultipleResponses<>(httpUrl, DeveloperScansScanView.class));
     }
+    public BlackDuckMultipleRequest<DeveloperScansScanView> createFullRequest(HttpUrl httpUrl) {
+        return blackDuckRequestBuilder.buildBlackDuckRequest(new UrlMultipleResponses<>(httpUrl, DeveloperScansScanView.class));
+    }
 
 }

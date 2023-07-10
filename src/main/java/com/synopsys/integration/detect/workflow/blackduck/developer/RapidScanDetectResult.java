@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.workflow.blackduck.developer;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanDetailGroup;
@@ -13,12 +14,25 @@ public class RapidScanDetectResult implements DetectResult {
     public static final String NONPERSISTENT_SCAN_RESULT_DETAILS_HEADING = " Scan Result Details";
     private final String jsonFilePath;
     private final List<String> subMessages;
+    private final List<String> transitiveGuidanceSubMessages;
     public static String scanMode;
 
     public RapidScanDetectResult(String jsonFilePath, RapidScanResultSummary resultSummary, BlackduckScanMode mode) {
         this.jsonFilePath = jsonFilePath;
         this.subMessages = createResultMessages(resultSummary);
+        this.transitiveGuidanceSubMessages = createTransitiveGuidanceMessages(resultSummary);
         scanMode = mode.displayName();
+    }
+
+    private List<String> createTransitiveGuidanceMessages(RapidScanResultSummary summary) {
+        String indentedMessageFormat = "\t\t%s";
+        List<String> resultMessages = new LinkedList<>();
+        if (summary.getTransitiveGuidances().size() > 0) {
+            resultMessages.add("");
+            resultMessages.add("\tTransitive upgrade guidance:");
+            summary.getTransitiveGuidances().stream().sorted().forEach(component -> resultMessages.add(String.format(indentedMessageFormat, component)));
+        }
+        return resultMessages;
     }
 
     @Override
@@ -35,6 +49,7 @@ public class RapidScanDetectResult implements DetectResult {
     public List<String> getResultSubMessages() {
         return subMessages;
     }
+    
 
     private List<String> createResultMessages(RapidScanResultSummary summary) {
         String policyGroupName = RapidScanDetailGroup.POLICY.getDisplayName();
@@ -69,6 +84,12 @@ public class RapidScanDetectResult implements DetectResult {
         summary.getComponentsViolatingPolicyWarnings().stream()
             .sorted()
             .forEach(component -> resultMessages.add(String.format(indentedMessageFormat, component)));
+
         return resultMessages;
+    }
+
+    @Override
+    public List<String> getTransitiveUpgradeGuidanceSubMessages() {
+        return this.transitiveGuidanceSubMessages;
     }
 }

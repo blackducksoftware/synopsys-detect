@@ -24,6 +24,8 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.cocoapods.model.Pod;
 import com.synopsys.integration.detectable.detectables.cocoapods.model.PodSource;
 import com.synopsys.integration.detectable.detectables.cocoapods.model.PodfileLock;
+import java.util.Collection;
+import java.util.stream.Stream;
 
 public class PodlockParser {
     private static final List<String> fuzzyVersionIdentifiers = new ArrayList<>(Arrays.asList(">", "<", "~>", "="));
@@ -44,16 +46,20 @@ public class PodlockParser {
         Map<LazyId, Forge> forgeOverrides = createForgeOverrideMap(podfileLock);
 
         List<String> knownPods = determineAllPodNames(podfileLock);
-        for (Pod pod : podfileLock.getPods()) {
-            logger.trace(String.format("Processing pod %s", pod.getName()));
-            processPod(pod, forgeOverrides, lazyBuilder, knownPods);
+        if (podfileLock.getPods() != null) {
+            for (Pod pod : podfileLock.getPods()) {
+                logger.trace(String.format("Processing pod %s", pod.getName()));
+                processPod(pod, forgeOverrides, lazyBuilder, knownPods);
+            }
         }
 
-        for (Pod dependency : podfileLock.getDependencies()) {
-            logger.trace(String.format("Processing pod dependency from pod lock file %s", dependency.getName()));
-            String podText = dependency.getName();
-            Optional<LazyId> dependencyId = parseDependencyId(podText);
-            dependencyId.ifPresent(lazyBuilder::addChildToRoot);
+        if (podfileLock.getDependencies() != null) {
+            for (Pod dependency : podfileLock.getDependencies()) {
+                logger.trace(String.format("Processing pod dependency from pod lock file %s", dependency.getName()));
+                String podText = dependency.getName();
+                Optional<LazyId> dependencyId = parseDependencyId(podText);
+                dependencyId.ifPresent(lazyBuilder::addChildToRoot);
+            }
         }
         logger.trace("Attempting to build the dependency graph.");
         DependencyGraph dependencyGraph = lazyBuilder.build();
@@ -92,7 +98,9 @@ public class PodlockParser {
     }
 
     private List<String> determineAllPodNames(PodfileLock podfileLock) {
-        return podfileLock.getPods().stream()
+        return Optional.ofNullable(podfileLock.getPods())
+            .map(Collection::stream)
+            .orElse(Stream.empty())
             .map(Pod::getName)
             .map(this::parseRawPodName)
             .filter(Optional::isPresent)

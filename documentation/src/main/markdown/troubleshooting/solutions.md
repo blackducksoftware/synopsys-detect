@@ -90,7 +90,7 @@ The [blackduck_product_name] server certificate is not in Java's keystore.
 ### Solution
 
 1. Acquire the certificate file for your [blackduck_product_name] server.
-1. Determine which *java* executable is being used to run [solution_name]. If you run [bash_script_name] or [bash_script_name], that is either $JAVA_HOME/bin/java (the default) or the first *java* found on your $PATH.
+1. Determine which *java* executable is being used to run [solution_name]. If you run [bash_script_name], that is either $JAVA_HOME/bin/java (the default) or the first *java* found on your $PATH.
 1. Determine the Java home directory for that *java* executable.
 1. Run [keytool](https://docs.oracle.com/en/java/javase/11/tools/keytool.html) to install the [blackduck_product_name] server certificate into the keystore in that Java home directory.
 

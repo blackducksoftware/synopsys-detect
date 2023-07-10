@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 public class DetectArgumentState {
     private final boolean isHelp;
     private final boolean isHelpJsonDocument;
+
+    private final boolean isHelpYamlDocument;
     private final boolean isInteractive;
 
     private final boolean isVerboseHelp;
@@ -19,6 +21,7 @@ public class DetectArgumentState {
     public DetectArgumentState(
         boolean isHelp,
         boolean isHelpJsonDocument,
+        boolean isHelpYamlDocument,
         boolean isInteractive,
         boolean isVerboseHelp,
         boolean isDeprecatedHelp,
@@ -28,6 +31,7 @@ public class DetectArgumentState {
     ) {
         this.isHelp = isHelp;
         this.isHelpJsonDocument = isHelpJsonDocument;
+        this.isHelpYamlDocument = isHelpYamlDocument;
         this.isInteractive = isInteractive;
         this.isVerboseHelp = isVerboseHelp;
         this.isDeprecatedHelp = isDeprecatedHelp;
@@ -42,6 +46,10 @@ public class DetectArgumentState {
 
     public boolean isHelpJsonDocument() {
         return isHelpJsonDocument;
+    }
+
+    public boolean isHelpYamlDocument() {
+        return isHelpYamlDocument;
     }
 
     public boolean isInteractive() {

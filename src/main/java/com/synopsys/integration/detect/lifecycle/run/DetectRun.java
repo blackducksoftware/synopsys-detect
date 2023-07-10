@@ -1,10 +1,13 @@
 package com.synopsys.integration.detect.lifecycle.run;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.configuration.property.types.path.PathValue;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -72,7 +75,7 @@ public class DetectRun {
             BdioResult bdio;
             Boolean forceBdio = bootSingletons.getDetectConfigurationFactory().forceBdio();
             if (!universalToolsResult.getDetectCodeLocations().isEmpty() 
-                    || (productRunData.shouldUseBlackDuckProduct() && !productRunData.getBlackDuckRunData().isOnline() && forceBdio)) {
+                    || (productRunData.shouldUseBlackDuckProduct() && !productRunData.getBlackDuckRunData().isOnline() && forceBdio && !universalToolsResult.didAnyFail() && exitCodeManager.getWinningExitCode().isSuccess())) {
                 bdio = stepRunner.generateBdio(bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId(), universalToolsResult, nameVersion);
             } else {
                 bdio = BdioResult.none();
@@ -80,9 +83,11 @@ public class DetectRun {
             if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
                 if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) {
-                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper,
-                        bootSingletons.getGson(), bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId());
-                    rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData());
+                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId(), bootSingletons.getDirectoryManager());
+                    
+                    Optional<String> scaaasFilePath = bootSingletons.getDetectConfigurationFactory().getScaaasFilePath();
+                    
+                    rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData(), scaaasFilePath);
                 } else if (blackDuckRunData.isNonPersistent()) {
                     logger.info("Rapid Scan is offline, nothing to do.");
                 } else if (blackDuckRunData.isOnline()) {

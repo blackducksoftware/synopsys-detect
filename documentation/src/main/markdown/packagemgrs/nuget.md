@@ -8,19 +8,23 @@
 
 The NuGet detectors can discover dependencies of NuGet projects.
 
-There are two NuGet detectors: the NuGet solution detector, and the NuGet project detector. Both detectors run the Detect NuGet Inspector, a platform dependent self-contained executable. The currently supported platforms are Windows, Linux and Mac.
+There are three NuGet detectors: the NuGet Solution Native Inspector, NuGet Project Native Inspector, and the NuGet Project Inspector. The detectors run a platform dependent self-contained executable that is currently supported on Windows, Linux and Mac platforms.
 
-The NuGet detectors do not work with mono.
+<note type="Note">
 
-### Detect NuGet Inspector
+* NuGet Project Inspector relies on Project Inspector thus does not accept NuGet specific configuration properties.   
+* The NuGet Detectors do not work with mono.
+</note>
+
+### [solution_name] NuGet Inspector
 
 Source: https://github.com/blackducksoftware/detect-nuget-inspector
 
 Binary: https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/detect-nuget-inspector/
 
-#### Detect NuGet Inspector on alpine
+#### [solution_name] NuGet Inspector on Alpine
 
-The Detect NuGet Inspector depends on packages not installed by default on alpine systems, such as the dynamic loader for DLLs.
+The [solution_name] NuGet Inspectors depend on packages not installed by default on Alpine systems, such as the dynamic loader for DLLs.
 
 When the dynamic loader is not present, an error message similar to the following appears in the log as a result of
 [solution_name]'s attempt to execute the NuGet Inspector:
@@ -28,18 +32,18 @@ When the dynamic loader is not present, an error message similar to the followin
 java.io.IOException: Cannot run program ".../tools/detect-nuget-inspector/detect-nuget-inspector-1.0.1-linux/detect-nuget-inspector" (in directory ...): error=2, No such file or directory
 ```
 
-To add these packages to an alpine system:
+To add these packages to an Alpine system:
 ```
 apk add libstdc++ gcompat icu
 ```
 
 ## Operation
 
-The inspector is fully self-contained and requires no installation. Each executable is platform dependent. The correct inspector is downloaded by detect at runtime.
+An inspector is fully self-contained and requires no installation. Each executable is platform dependent and the correct inspector is downloaded by [solution_name] at runtime.
 
-The NuGet solution detector derives packages (dependencies) from solution (.sln) files.
+The NuGet Solution Native Inspector derives packages (dependencies) from solution (.sln) files.
 
-The NuGet project detector derives packages (dependencies) from project (.csproj, .fsproj, etc.) files. The supported project files are:
+The NuGet Project Native Inspector derives packages (dependencies) from project (.csproj, .fsproj, etc.) files. The supported project files are:
 ````
 // C#
 "*.csproj",
@@ -87,9 +91,9 @@ The NuGet project detector derives packages (dependencies) from project (.csproj
 "*.rproj"
 ````
 
-The NuGet solution detector runs if one or more solution (.sln) files are found.
+The NuGet Solution Native Inspector runs if one or more solution (.sln) files are found.
 
-The NuGet Project detector runs if no solution files are found, and one or more project files are found.  Refer to the preceding list of project file types.
+The NuGet Project Native Inspector runs if no solution files are found, and one or more project files are found.  Refer to the preceding list of project file types.
 
 The NuGet inspectors derive dependency information from the first type of file in this order:
 1. packages.config
@@ -98,10 +102,8 @@ The NuGet inspectors derive dependency information from the first type of file i
 4. project.json
 5. XML of the project file
 
-After discovering dependencies, the inspector uses NuGet client libraries to collect further information about the dependencies and write it to a JSON file (`<projectname>_inspection.json`). [solution_name] then parses that file for the dependency information.
+After discovering dependencies, NuGet client libraries are used to collect further information about the dependencies and write it to a JSON file (`<projectname>_inspection.json`). [solution_name] then parses that file for the dependency information.
 
-# NuGet parse detector
+### NuGet detector buildless
 
-The buildless NuGet detector uses Project Inspector to find dependencies.
-
-It only supports ".csproj" and ".sln" files.
+In buildless mode, [solution_name] uses Project Inspector to find dependencies and only supports ".csproj" and ".sln" files.
