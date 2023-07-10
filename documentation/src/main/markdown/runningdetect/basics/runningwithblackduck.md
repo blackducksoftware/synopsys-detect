@@ -50,8 +50,8 @@ https://{blackduckserver}/download/scan.cli-macosx.zip
 
 Scanning [solution_name] Properties to specify:
 * --blackduck.offline.mode=true
-* --detect.scan.output.path= output of the signature scanner
-* --detect.output.path= output of the dependency scanner
+* --detect.scan.output.path= output of the Signature Scanner
+* --detect.output.path= output directory to store files that [solution_name] downloads or creates
 * --detect.blackduck.signature.scanner.local.path= location to the signature scanner scan.cli-202x.xx.x
 If using air-gap zip archive files, [see air gap mode](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/downloadingandrunning/airgap.html)
 
