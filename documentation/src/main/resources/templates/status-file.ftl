@@ -10,13 +10,13 @@ The file includes status codes, issues encountered and results produced. As addi
 ```
 {
 "formatVersion": The version of the status file format. Will change as new features are introduced.
-"detectVersion": The version of [solution_name] that created the status file.
+"detectVersion": The version of Synopsys Detect that created the status file.
 "projectName": The project name.
 "projectVersion": The project version.
 "detectors": [ List of Detectors, see details below. ]
 "status": [ List of Status, see details below. ]
 "issues": [ List of Issues, see details below. ]
-"overallStatus: [ List the overall exit status and detailed message on exit of Detect. ]
+"overallStatus: [ List the overall exit status and detailed message on exit of Synopsys Detect. ]
 "results": [ List of Results, see details below. ]
 "unrecognizedPaths": [ List of Unrecognized Paths, see details below. ]
 "codeLocations": [ List of code locations produced, see details below. ]
@@ -94,7 +94,7 @@ For those detectors that support it (currently, only CLANG), a list of file path
 ## Code Locations
 ````
 {
-"codeLocationName": The name of a code location produced by this run of [solution_name].
+"codeLocationName": The name of a code location produced by this run of Synopsys Detect.
 "scanType": The type of scan that was performed, DETECTOR, BAZEL, SIGNATURE_SCAN, DOCKER, BINARY_SCAN, or CONTAINER_SCAN.
 "scanId": The UUID for the scan.
 }
