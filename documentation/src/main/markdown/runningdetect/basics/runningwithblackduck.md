@@ -67,7 +67,7 @@ The scan files to upload to [blackduck_product_name] are found in the output [bl
 The following are the locations of the scan files if the following [solution_name] properties were used:
 
 * scan.output.path (ends in .json): {the path provided}\BlackDuckScanOutput\{date and time of scan}\data
-* output.path (ends in _bom.jsonld): {the path provided}\runs\{date and time of scan}\bdio
+* output.path (ends in *.bdio): {the path provided}\runs\{date and time of scan}\bdio
 
 [blackduck_product_name] UI upload
 
