@@ -86,7 +86,7 @@ public class DetectProperties {
         BooleanProperty.newBuilder("blackduck.offline.mode", false)
             .setInfo("Offline Mode", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
-                "This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
+                "This can disable Black Duck communication - if set to true, Synopsys Detect will not upload BDIO files, or check policies, and it will not download and install the signature scanner. Note that the path to a local instance of the scanner can be provided using the -detect.blackduck.signature.scanner.local.path parameter.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
 
