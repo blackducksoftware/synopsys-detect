@@ -178,7 +178,7 @@ public class ApplicationUpdater extends URLClassLoader {
         
         if (!installDirectory.exists() && !installDirectory.mkdir()) {
             throw new AccessDeniedException(dirPath, null, 
-                        "No write permissison to create the missing installation directory: "
+                        "No write permission to create the missing installation directory: "
                                 .concat(dirPath));
         } else if (!checkInstallationDir(installDirectory.toPath())) {
             return null;
@@ -311,7 +311,7 @@ public class ApplicationUpdater extends URLClassLoader {
                 return true;
             } else {
                 throw new AccessDeniedException(path.toString(), null, 
-                        "No write permissison to store downloaded Jar in the installation directory: "
+                        "No write permission to store downloaded Jar in the installation directory: "
                                 .concat(path.getFileName().toAbsolutePath().toString()));
             }
         }
