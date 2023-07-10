@@ -4,7 +4,7 @@
 
 ## Overview
 
-Running with [blackduck_product_name] and connection details are provided, [solution_name] executes
+When running with [blackduck_product_name] and connection details are provided, [solution_name] executes
 the following by default:
 
 * The [detector tool](../../components/detectors.md), which runs the appropriate package manager-specific detector; the Maven detector
