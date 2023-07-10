@@ -177,7 +177,9 @@ public class ApplicationUpdater extends URLClassLoader {
         final File installDirectory = new File(dirPath);
         
         if (!installDirectory.exists() && !installDirectory.mkdir()) {
-            return null;
+            throw new AccessDeniedException(dirPath, null, 
+                        "No write permisison to create the missing installation directory: "
+                                .concat(dirPath));
         } else if (!checkInstallationDir(installDirectory.toPath())) {
             return null;
         }
