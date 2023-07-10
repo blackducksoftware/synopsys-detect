@@ -9,6 +9,7 @@
 ### New features
 
 * For Stateless and Rapid scans, the scanId and Detector tool being run, are now stored in the codeLocations section of the status.json file containing the run summary.
+* Stateless Signature and Package Manager scans now support the <code>--detect.blackduck.rapid.compare.mode</code> flag. Values are ALL, BOM_COMPARE, or BOM_COMPARE_STRICT. See the [Stateless Scans page](runningdetect/statelessscan.md) for further details. 
 
 ## Version 8.10.0
 
