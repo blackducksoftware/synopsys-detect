@@ -1,7 +1,6 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
 import com.synopsys.integration.blackduck.api.generated.component.*;
-import com.synopsys.integration.fixpr.generic.beans.domain_objects.Metadata;
 
 import java.util.List;
 
@@ -9,7 +8,7 @@ import java.util.List;
  * Corresponds to the data Detect chooses to include from Rapid/Stateless Detector scan results when generating the
  * component location analysis file to aid in vulnerability remediation.
  */
-public class ScanMetadata extends Metadata {
+public class ScanMetadata {
     private List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> policyViolationVulnerabilities;
     private DeveloperScansScanItemsShortTermUpgradeGuidanceView shortTermUpgradeGuidance;
     private DeveloperScansScanItemsLongTermUpgradeGuidanceView longTermUpgradeGuidance;

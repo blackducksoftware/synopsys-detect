@@ -1,7 +1,11 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
-import com.synopsys.integration.fixpr.generic.beans.domain_objects.Component;
+import com.synopsys.integration.fixpr.generic.beans.Component;
 
 import java.util.*;
 
@@ -32,9 +36,16 @@ public class ScanResultToComponentListTransformer {
         for (String gav : componentIdWithMetadata.keySet()) {
             // TODO get separator based on forge for diff pkg mngrs instead of hardcoding ":" here?
             String[] parts = gav.split(":");
-            componentList.add(new Component(parts[0], parts[1], parts[2], componentIdWithMetadata.get(gav)));
+            componentList.add(new Component(parts[0], parts[1], parts[2], getJsonObjectFromScanMetadata(componentIdWithMetadata.get(gav))));
         }
         return componentList;
+    }
+
+    private JsonObject getJsonObjectFromScanMetadata(ScanMetadata scanMeta) {
+        Gson gson = new GsonBuilder().create();
+        JsonElement element = gson.toJsonTree(scanMeta);
+        JsonObject object = element.getAsJsonObject();
+        return object;
     }
 
     private ScanMetadata populateMetadata(DeveloperScansScanView component) {

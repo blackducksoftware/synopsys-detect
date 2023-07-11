@@ -2,15 +2,15 @@ package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.fixpr.generic.Application;
-import com.synopsys.integration.fixpr.generic.beans.domain_objects.Component;
-import com.synopsys.integration.fixpr.generic.beans.domain_objects.Metadata;
-import com.synopsys.integration.fixpr.generic.beans.io.Input;
+import com.synopsys.integration.fixpr.generic.beans.Component;
+import com.synopsys.integration.fixpr.generic.beans.Input;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +37,10 @@ public class GenerateComponentLocationAnalysisOperation {
      * @param sourceDir source directory of project being scanned
      * @throws DetectUserFriendlyException
      */
-    public void locateComponentsForNonPersistentOnlineDetectorScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder, File sourceDir) {
+    public void locateComponentsForNonPersistentOnlineDetectorScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder, File sourceDir) throws DetectUserFriendlyException {
         List<Component> componentsList = scanResultTransformer.transformScanResultToComponentList(rapidFullResults);
         Input componentLocatorInput = generateComponentLocatorInput(componentsList, sourceDir);
+        serializeInputToJson(scanOutputFolder, componentLocatorInput); // TODO remove me before merging to master
         callComponentLocatorObfuscatedJar(componentLocatorInput, scanOutputFolder);
     }
 
@@ -51,19 +52,20 @@ public class GenerateComponentLocationAnalysisOperation {
      * @param sourceDir source directory of project being scanned
      * @throws DetectUserFriendlyException
      */
-    public void locateComponentsForOfflineDetectorScan(BdioResult bdio, File scanOutputFolder, File sourceDir) {
+    public void locateComponentsForOfflineDetectorScan(BdioResult bdio, File scanOutputFolder, File sourceDir) throws DetectUserFriendlyException {
         List<Component> componentsList = bdioTransformer.transformBdioToComponentList(bdio);
         Input componentLocatorInput = generateComponentLocatorInput(componentsList, sourceDir);
+        serializeInputToJson(scanOutputFolder, componentLocatorInput); //TODO remove me before merging to master
         callComponentLocatorObfuscatedJar(componentLocatorInput, scanOutputFolder);
     }
 
     private Input generateComponentLocatorInput(List<Component> componentsList, File sourceDir) {
-        return new Input(sourceDir.getAbsolutePath(), new Metadata(), componentsList);
+        return new Input(sourceDir.getAbsolutePath(), new JsonObject(), componentsList);
     }
 
     private void callComponentLocatorObfuscatedJar(Input componentLocatorInputObj, File scanOutputFolder) {
         try {
-            int status = Application.locateComponents(componentLocatorInputObj, scanOutputFolder.toString() + DETECT_OUTPUT_FILE_NAME);
+            int status = Application.locateComponents(componentLocatorInputObj, scanOutputFolder.toString() + "/" + DETECT_OUTPUT_FILE_NAME);
             if (status != 0) {
                 logger.info("There was a problem during Component Locator execution. Failed to generate Component Location Analysis file.");
             }
