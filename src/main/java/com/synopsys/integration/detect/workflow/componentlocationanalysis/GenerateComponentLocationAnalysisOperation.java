@@ -34,14 +34,12 @@ public class GenerateComponentLocationAnalysisOperation {
      * components, their corresponding policy violations/vulnerabilities and declaration locations.
      * @param rapidFullResults
      * @param scanOutputFolder Detect's output subdirectory where this file will be saved
-     * @param sourceDir source directory of project being scanned
+     * @param projectSrcDir source directory of project being scanned
      * @throws DetectUserFriendlyException
      */
-    public void locateComponentsForNonPersistentOnlineDetectorScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder, File sourceDir) throws DetectUserFriendlyException {
+    public void locateComponentsForNonPersistentOnlineDetectorScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder, File projectSrcDir) {
         List<Component> componentsList = scanResultTransformer.transformScanResultToComponentList(rapidFullResults);
-        Input componentLocatorInput = generateComponentLocatorInput(componentsList, sourceDir);
-        serializeInputToJson(scanOutputFolder, componentLocatorInput); // TODO remove me before merging to master
-        callComponentLocatorObfuscatedJar(componentLocatorInput, scanOutputFolder);
+        invokeComponentLocator(componentsList, scanOutputFolder, projectSrcDir);
     }
 
     /**
@@ -49,21 +47,37 @@ public class GenerateComponentLocationAnalysisOperation {
      * locations.
      * @param bdio from running offline Detector scan
      * @param scanOutputFolder Detect's output subdirectory where this file will be saved
-     * @param sourceDir source directory of project being scanned
+     * @param projectSrcDir source directory of project being scanned
      * @throws DetectUserFriendlyException
      */
-    public void locateComponentsForOfflineDetectorScan(BdioResult bdio, File scanOutputFolder, File sourceDir) throws DetectUserFriendlyException {
+    public void locateComponentsForOfflineDetectorScan(BdioResult bdio, File scanOutputFolder, File projectSrcDir) {
         List<Component> componentsList = bdioTransformer.transformBdioToComponentList(bdio);
-        Input componentLocatorInput = generateComponentLocatorInput(componentsList, sourceDir);
-        serializeInputToJson(scanOutputFolder, componentLocatorInput); //TODO remove me before merging to master
-        callComponentLocatorObfuscatedJar(componentLocatorInput, scanOutputFolder);
+        invokeComponentLocator(componentsList, scanOutputFolder, projectSrcDir);
+    }
+
+    private void invokeComponentLocator(List<Component> componentsList, File scanOutputFolder, File projectSrcDir) {
+        Input componentLocatorInput = generateComponentLocatorInput(componentsList, projectSrcDir);
+        ///////////////////////////////////////TODO remove next 3 lines before merging to master//////////////////////////////////
+        try {
+            serializeInputToJson(scanOutputFolder, componentLocatorInput);
+        } catch (DetectUserFriendlyException e) { logger.debug("Failed to save input file to CLL");}
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        try {
+            int status = Application.locateComponents(componentLocatorInput, scanOutputFolder.toString() + "/" + DETECT_OUTPUT_FILE_NAME);
+            if (status != 0) {
+                logger.info("Component Locator execution was unsuccessful. Failed to generate Component Location Analysis file.");
+            }
+        } catch (Exception e) {
+            logger.info("There was a problem during Component Locator execution. Failed to generate Component Location Analysis file.");
+        }
+        callOnComponentLocatorToLocateComponents(componentLocatorInput, scanOutputFolder);
     }
 
     private Input generateComponentLocatorInput(List<Component> componentsList, File sourceDir) {
         return new Input(sourceDir.getAbsolutePath(), new JsonObject(), componentsList);
     }
 
-    private void callComponentLocatorObfuscatedJar(Input componentLocatorInputObj, File scanOutputFolder) {
+    private void callOnComponentLocatorToLocateComponents(Input componentLocatorInputObj, File scanOutputFolder) {
         try {
             int status = Application.locateComponents(componentLocatorInputObj, scanOutputFolder.toString() + "/" + DETECT_OUTPUT_FILE_NAME);
             if (status != 0) {
@@ -74,6 +88,9 @@ public class GenerateComponentLocationAnalysisOperation {
         }
     }
 
+    /**
+     * Temporary method to demonstrate the generated input to CLL -- will be removed before merging to master.
+     */
     private File serializeInputToJson(File saveInputFileDir, Input libInput) throws DetectUserFriendlyException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String serializedLibInput = gson.toJson(libInput);
