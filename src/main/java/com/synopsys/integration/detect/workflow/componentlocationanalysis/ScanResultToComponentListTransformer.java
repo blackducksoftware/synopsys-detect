@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
-import com.synopsys.integration.fixpr.generic.beans.Component;
+import com.synopsys.integration.componentlocator.beans.Component;
 
 import java.util.*;
 

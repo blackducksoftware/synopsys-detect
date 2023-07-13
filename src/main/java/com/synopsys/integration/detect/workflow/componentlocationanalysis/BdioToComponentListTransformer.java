@@ -6,7 +6,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.fixpr.generic.beans.Component;
+import com.synopsys.integration.componentlocator.beans.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
