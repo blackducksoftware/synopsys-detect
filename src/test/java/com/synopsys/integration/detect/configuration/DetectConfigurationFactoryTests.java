@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.configuration;
 import static com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.factoryOf;
 import static com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.spyFactoryOf;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
 import com.synopsys.integration.common.util.Bdo;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorSearchExcludedDirectories;
@@ -98,5 +100,38 @@ public class DetectConfigurationFactoryTests {
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = factory.createBlackDuckSignatureScannerOptions();
 
         Assertions.assertTrue(RapidCompareMode.BOM_COMPARE_STRICT.equals(blackDuckSignatureScannerOptions.getBomCompareMode()));
+    }
+    
+    @Test
+    public void testAllCloneCategories() {
+        DetectConfigurationFactory factory = factoryOf(Pair.of(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES, "ALL"));
+        
+        List<ProjectCloneCategoriesType> cloneCategories = factory.getCloneCategories();
+        
+        Assertions.assertTrue(cloneCategories == null);
+    }
+    
+    @Test
+    public void testNoCloneCategories() {
+        DetectConfigurationFactory factory = factoryOf(Pair.of(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES, "NONE"));
+        
+        List<ProjectCloneCategoriesType> cloneCategories = factory.getCloneCategories();
+        
+        Assertions.assertTrue(cloneCategories.isEmpty()); 
+    }
+    
+    @Test
+    public void testSpecificCloneCategories() {
+        DetectConfigurationFactory factory = factoryOf(
+                Pair.of(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES, 
+                        ProjectCloneCategoriesType.CUSTOM_FIELD_DATA.toString() 
+                        + "," 
+                        + ProjectCloneCategoriesType.DEEP_LICENSE.toString()
+                ));
+        
+        List<ProjectCloneCategoriesType> cloneCategories = factory.getCloneCategories();
+        
+        Assertions.assertTrue(cloneCategories.contains(ProjectCloneCategoriesType.CUSTOM_FIELD_DATA));
+        Assertions.assertTrue(cloneCategories.contains(ProjectCloneCategoriesType.DEEP_LICENSE));
     }
 }

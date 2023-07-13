@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.NotNull;
@@ -323,7 +324,7 @@ public class DetectConfigurationFactory {
         Integer projectTier = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_TIER);
         String projectDescription = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_DESCRIPTION);
         String projectVersionNotes = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES);
-        List<ProjectCloneCategoriesType> cloneCategories = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES).representedValues();
+        List<ProjectCloneCategoriesType> cloneCategories = getCloneCategories();
         Boolean projectLevelAdjustments = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_LEVEL_ADJUSTMENTS);
         Boolean forceProjectVersionUpdate = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_UPDATE);
         String projectVersionNickname = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME);
@@ -339,6 +340,22 @@ public class DetectConfigurationFactory {
             projectVersionNickname,
             projectLevelAdjustments
         );
+    }
+
+    public List<ProjectCloneCategoriesType> getCloneCategories() {
+        AllNoneEnumList<ProjectCloneCategoriesType> value = detectConfiguration
+                .getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES);
+
+        if (value.containsNone()) {
+            // NONE is achieved by sending the field but with an empty array value
+            return new ArrayList<>();
+        } else if (value.containsAll()) {
+            // ALL is achieved by sending the request with project category field missing or set to null
+            // This is the default if the property is not specified.
+            return null;
+        } else {
+            return value.toPresentValues();
+        }
     }
 
     public ProjectVersionLicenseOptions createProjectVersionLicenseOptions() {
