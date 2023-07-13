@@ -461,12 +461,12 @@ public class OperationRunner {
      * @throws OperationException
      */
     public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws OperationException {
-        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled() && !bdio.getCodeLocationNamesResult().getCodeLocationNames().isEmpty()) {
             auditLog.namedPublic(
                     "Generate Component Location Analysis File for All Components",
                     () -> new GenerateComponentLocationAnalysisOperation().locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
             );
-        }
+        } else logger.info("Component Location Analysis requires a non-empty BDIO. Skipping location analysis.");
     }
 
     /**
@@ -476,12 +476,12 @@ public class OperationRunner {
      * @throws OperationException
      */
     public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults) throws OperationException {
-        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled() && !rapidFullResults.isEmpty()) {
             auditLog.namedPublic(
                     "Generate Component Location Analysis File for Reported Components",
                     () -> (new GenerateComponentLocationAnalysisOperation()).locateComponentsForNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
             );
-        }
+        } else logger.info("Component Location Analysis requires non-empty Rapid Scan results. Skipping location analysis.");
     }
 
     //Post actions
