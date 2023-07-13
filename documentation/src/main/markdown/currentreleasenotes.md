@@ -2,14 +2,14 @@
 
 ## Version 8.11.0
 
+### New features
+
+* For Stateless and Rapid scans, the scanId and scan type being run are now stored in the codeLocations section of the status.json file. For a given scanId, the scan type can be DETECTOR, BINARY_SCAN, SIGNATURE_SCAN, or CONTAINER_SCAN.
+* Stateless Signature and Package Manager scans now support the <code>--detect.blackduck.rapid.compare.mode</code> flag. Values are ALL, BOM_COMPARE, or BOM_COMPARE_STRICT. See the [Stateless Scans page](runningdetect/statelessscan.md) for further details. 
+
 ### Resolved issues
 
 * (IDETECT-3921) [solution_name] will now validate directory permissions prior to downloading the [solution_name] JAR file.
-=======
-### New features
-
-* For Stateless and Rapid scans, the scanId and Detector tool being run, are now stored in the codeLocations section of the status.json file containing the run summary.
-* Stateless Signature and Package Manager scans now support the <code>--detect.blackduck.rapid.compare.mode</code> flag. Values are ALL, BOM_COMPARE, or BOM_COMPARE_STRICT. See the [Stateless Scans page](runningdetect/statelessscan.md) for further details. 
 
 ## Version 8.10.0
 
