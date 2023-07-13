@@ -49,7 +49,7 @@ public class RapidModeStepRunner {
     }
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult,
-            DockerTargetData dockerTargetData, Optional<String> scaaasFilePath) throws OperationException, DetectUserFriendlyException {
+            DockerTargetData dockerTargetData, Optional<String> scaaasFilePath) throws OperationException {
         operationRunner.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationRunner.findRapidScanConfig();
         String scanMode = blackDuckRunData.getScanMode().displayName();
