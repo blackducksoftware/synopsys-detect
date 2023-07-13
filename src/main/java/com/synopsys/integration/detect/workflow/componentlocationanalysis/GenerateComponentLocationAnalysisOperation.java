@@ -55,7 +55,7 @@ public class GenerateComponentLocationAnalysisOperation {
         Input componentLocatorInput = generateComponentLocatorInput(componentsList, projectSrcDir);
         logger.info(ReportConstants.RUN_SEPARATOR);
         logger.info("Running Component Locator.");
-        String outputFile = scanOutputFolder + "/" + DETECT_OUTPUT_FILE_NAME; // todo can remove toString i think
+        String outputFile = scanOutputFolder + "/" + DETECT_OUTPUT_FILE_NAME;
         int status = ComponentLocator.locateComponents(componentLocatorInput, outputFile);
         if (status != 0) {
             logger.warn("Component Locator execution was unsuccessful. Enable debug level logging for details.");

@@ -76,19 +76,19 @@ public class BdioToComponentListTransformer {
      * @param bdio
      * @return
      */
-    private List<Component> onlyExtractAndTransformDirectDependencies(BdioResult bdio) {
+    private List<Component> extractAndTransformDirectDependencies(BdioResult bdio) {
         List<Component> componentList = new ArrayList<>();
         Set<DetectCodeLocation> codeLocations = bdio.getCodeLocationNamesResult().getCodeLocationNames().keySet();
         for (DetectCodeLocation cl : codeLocations) {
             List<Component> dependenciesPerCodeLocation = cl.getDependencyGraph().getDirectDependencies()
                     .stream()
-                    .map(dependency -> dependencyToCLLComponent(dependency))
+                    .map(dependency -> createLocatorComponentFrom(dependency))
                     .collect(Collectors.toCollection(() -> componentList));
         }
         return componentList;
     }
 
-    private Component dependencyToCLLComponent(Dependency dep) {
+    private Component createLocatorComponentFrom(Dependency dep) {
         ExternalId externalId = dep.getExternalId();
         return new Component(externalId.getGroup(), externalId.getName(), externalId.getVersion(), new JsonObject());
     }

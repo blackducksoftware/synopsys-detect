@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation;
+import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
@@ -466,7 +467,11 @@ public class OperationRunner {
                     "Generate Component Location Analysis File for All Components",
                     () -> new GenerateComponentLocationAnalysisOperation().locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
             );
-        } else logger.info("Component Location Analysis requires a non-empty BDIO. Skipping location analysis.");
+        } else {
+            logger.info(ReportConstants.RUN_SEPARATOR);
+            logger.info("Component Location Analysis requires a non-empty BDIO. Skipping location analysis.");
+            logger.info(ReportConstants.RUN_SEPARATOR);
+        }
     }
 
     /**
@@ -481,7 +486,11 @@ public class OperationRunner {
                     "Generate Component Location Analysis File for Reported Components",
                     () -> (new GenerateComponentLocationAnalysisOperation()).locateComponentsForNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
             );
-        } else logger.info("Component Location Analysis requires non-empty Rapid Scan results. Skipping location analysis.");
+        } else {
+            logger.info(ReportConstants.RUN_SEPARATOR);
+            logger.info("Component Location Analysis requires non-empty Rapid Scan results. Skipping location analysis.");
+            logger.info(ReportConstants.RUN_SEPARATOR);
+        }
     }
 
     //Post actions

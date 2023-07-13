@@ -6,6 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.componentlocator.beans.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -15,6 +17,8 @@ import java.util.*;
  *
  */
 public class ScanResultToComponentListTransformer {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      * Given a list of reported components from a Rapid/Stateless Detector scan, transforms each element to its
      * corresponding {@link Component} with appropriate metadata.
@@ -22,21 +26,24 @@ public class ScanResultToComponentListTransformer {
      * @return list of {@link Component}s
      */
     public List<Component> transformScanResultToComponentList(List<DeveloperScansScanView> rapidScanFullResults) {
-        HashMap<String, ScanMetadata> componentIdWithMetadata = new HashMap<>(); // TODO investigate if duplicates may make sense here?
+        HashMap<String, ScanMetadata> componentIdWithMetadata = new HashMap<>();
 
         for (DeveloperScansScanView component : rapidScanFullResults) {
             componentIdWithMetadata.put(component.getExternalId(), populateMetadata(component));
         }
 
-        return externalIDsToComponentList(componentIdWithMetadata);
+        return convertExternalIDsToComponentList(componentIdWithMetadata);
     }
 
-    private List<Component> externalIDsToComponentList(HashMap<String, ScanMetadata> componentIdWithMetadata) {
+    private List<Component> convertExternalIDsToComponentList(HashMap<String, ScanMetadata> componentIdWithMetadata) {
         List<Component> componentList = new ArrayList<>();
-        for (String gav : componentIdWithMetadata.keySet()) {
-            // TODO get separator based on forge for diff pkg mngrs instead of hardcoding ":" here?
-            String[] parts = gav.split(":");
-            componentList.add(new Component(parts[0], parts[1], parts[2], getJsonObjectFromScanMetadata(componentIdWithMetadata.get(gav))));
+        try {
+            for (String gav : componentIdWithMetadata.keySet()) {
+                String[] parts = gav.split(":");
+                componentList.add(new Component(parts[0], parts[1], parts[2], getJsonObjectFromScanMetadata(componentIdWithMetadata.get(gav))));
+            }
+        } catch (Exception e) {
+            logger.debug("There was a problem processing component IDs from scan results during Component Location Analysis: {}", e);
         }
         return componentList;
     }
@@ -50,7 +57,6 @@ public class ScanResultToComponentListTransformer {
 
     private ScanMetadata populateMetadata(DeveloperScansScanView component) {
         ScanMetadata remediationGuidance = new ScanMetadata();
-        // TODO add parts of "allVulnerabilities" section once blackduck-common-api version is bumped up (API v6 needed)
         remediationGuidance.setComponentViolatingPolicies(component.getComponentViolatingPolicies());
         remediationGuidance.setPolicyViolationVulnerabilities(component.getPolicyViolationVulnerabilities());
         remediationGuidance.setLongTermUpgradeGuidance(component.getLongTermUpgradeGuidance());

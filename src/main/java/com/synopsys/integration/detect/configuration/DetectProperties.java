@@ -938,7 +938,7 @@ public class DetectProperties {
 
     public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED =
             BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
-                    .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_8_0) // TODO update Detect version before merging feature branch to master
+                    .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
                     .setHelp(
                             "If set to true, Detect will generate an output file detailing where dependencies are declared.",
                             "All dependencies will be included when using Synopsys Detect in offline mode. Only policy violating dependencies will be included for Rapid and Stateless Scan modes.")
