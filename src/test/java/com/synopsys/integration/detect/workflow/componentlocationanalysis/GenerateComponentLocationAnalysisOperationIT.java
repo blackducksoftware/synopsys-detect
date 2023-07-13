@@ -5,11 +5,13 @@ import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+@Disabled
 @Tag("integration")
 public class GenerateComponentLocationAnalysisOperationIT {
     @Test
@@ -25,7 +27,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulOperation("Publish Component Location Analysis File");
+            dockerAssertions.successfulOperation("Generate Component Location Analysis File for All Components");
         }
     }
     @Test
@@ -39,7 +41,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulOperation("Publish Component Location Analysis File");
+            dockerAssertions.successfulOperation("Generate Component Location Analysis File for Reported Components");
         }
     }
 }

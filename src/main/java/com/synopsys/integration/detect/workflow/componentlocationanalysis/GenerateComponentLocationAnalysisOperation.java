@@ -1,69 +1,71 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
+import com.google.gson.JsonObject;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
-import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
+import com.synopsys.integration.componentlocator.ComponentLocator;
+import com.synopsys.integration.componentlocator.beans.Component;
+import com.synopsys.integration.componentlocator.beans.Input;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**
- * This class will generate the appropriate input file for Component Locator, invoke the library's JAR and then
+ * This class will generate the appropriate input file for Component Locator, invoke the library's obfuscated JAR and
  * save the resulting output file in the appropriate output subdirectory.
- *
- * Will be fully implemented in a subsequent pull request to the Fix PR feature branch.
  */
 public class GenerateComponentLocationAnalysisOperation {
-    private static final String INPUT_FILE_NAME = "components-source.json";
-    private static final String OUTPUT_FILE_NAME = "components-with-locations.json";
-    private final BdioToComponentListTransformer bdioTransformer;
-    private final ScanResultToComponentListTransformer scanResultTransformer;
+    public static final String DETECT_OUTPUT_FILE_NAME = "components-with-locations.json";
+    private final BdioToComponentListTransformer bdioTransformer = new BdioToComponentListTransformer();
+    private final ScanResultToComponentListTransformer scanResultTransformer = new ScanResultToComponentListTransformer();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public GenerateComponentLocationAnalysisOperation(BdioToComponentListTransformer bdioTransformer, ScanResultToComponentListTransformer scanResultTransformer) {
-        this.bdioTransformer = bdioTransformer;
-        this.scanResultTransformer = scanResultTransformer;
-    }
 
     /**
+     * Given a Rapid/Stateless Detector scan result, generates an output file consisting of the list of reported
+     * components, their corresponding policy violations/vulnerabilities and declaration locations.
      * @param rapidFullResults
-     * @param scanOutputFolder
-     * @return
+     * @param scanOutputFolder Detect's output subdirectory where this file will be saved
+     * @param projectSrcDir source directory of project being scanned
      * @throws DetectUserFriendlyException
      */
-    public static File locateComponentsforNonPersistentOnlineDetectorScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder) throws DetectUserFriendlyException {
-        // In Part II:
-            // given a rapid scan full result response, call ScanResultToCLLComponentTransformer to get CLL input file (components-source.json)
-            // call library w/ CLL input
-            // return the resulting file (not anticipating any post-processing except saving it in the correct directory)
-        return generatePlaceHolderJsonFileForNow(scanOutputFolder);
-    }
-
-    public static File locateComponentsForOfflineDetectorScan(BdioResult bdio, File scanOutputFolder) throws DetectUserFriendlyException {
-        // In Part II:
-            // given a BDIO, call BdioToCLLComponentTransformer to get CLL input file (components-source.json)
-            // call library w/ CLL input
-            // return the resulting file (not anticipating any post-processing except saving it in the correct directory)
-        return generatePlaceHolderJsonFileForNow(scanOutputFolder);
+    public void locateComponentsForNonPersistentOnlineDetectorScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException {
+        List<Component> componentsList = scanResultTransformer.transformScanResultToComponentList(rapidFullResults);
+        runComponentLocator(componentsList, scanOutputFolder, projectSrcDir);
     }
 
     /**
-     * Placeholder file for testing purposes, saves a JSON file in the appropriate directory with the appropriate name.
-     * @param scanOutputFolder
-     * @return
+     * Given a BDIO, generates an output file consisting of the list of unique components detected and their declaration
+     * locations.
+     * @param bdio from running offline Detector scan
+     * @param scanOutputFolder Detect's output subdirectory where this file will be saved
+     * @param projectSrcDir source directory of project being scanned
      * @throws DetectUserFriendlyException
      */
-    private static File generatePlaceHolderJsonFileForNow(File scanOutputFolder) throws DetectUserFriendlyException {
-        try {
-            File componentsWithLocations =  new File (scanOutputFolder, OUTPUT_FILE_NAME);
-            DetectFileUtils.writeToFile(componentsWithLocations, "{}");
-            return componentsWithLocations;
-        } catch (IOException ex) {
-            throw new DetectUserFriendlyException("Failed to create component location analysis output file", ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
-        }
+    public void locateComponentsForOfflineDetectorScan(BdioResult bdio, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException {
+        List<Component> componentsList = bdioTransformer.transformBdioToComponentList(bdio);
+        runComponentLocator(componentsList, scanOutputFolder, projectSrcDir);
     }
 
-    // todo: method to eventually clean up components-source.json file
+    private void runComponentLocator(List<Component> componentsList, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException {
+        Input componentLocatorInput = generateComponentLocatorInput(componentsList, projectSrcDir);
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        logger.info("Running Component Locator.");
+        String outputFile = scanOutputFolder + "/" + DETECT_OUTPUT_FILE_NAME;
+        int status = ComponentLocator.locateComponents(componentLocatorInput, outputFile);
+        if (status != 0) {
+            logger.warn("Component Locator execution was unsuccessful. Enable debug level logging for details.");
+            logger.info(ReportConstants.RUN_SEPARATOR);
+            throw new ComponentLocatorException("Failed to generate Component Location Analysis file.");
+        }
+        logger.info("Component location analysis file saved at: {}", outputFile);
+    }
+
+    private Input generateComponentLocatorInput(List<Component> componentsList, File sourceDir) {
+        return new Input(sourceDir.getAbsolutePath(), new JsonObject(), componentsList);
+    }
 }
