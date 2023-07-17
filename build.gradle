@@ -53,15 +53,19 @@ final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
 repositories {
     println "Checking if environment property SNPS_INTERNAL_ARTIFACTORY is configured: ${internalRepoHost}"
     maven { 
+        url = uri("${internalRepoHost}/artifactory/bds-integrations-release")
+        content { includeModule(locatorGroup, locatorModule) }
+    }
+    maven { 
         url = uri("${internalRepoHost}/artifactory/bds-integrations-snapshot")
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven { 
-        url = uri("${internalRepoHost}/artifactory/integrations-gradle-prod-local")
+        url = uri("${internalRepoHost}/artifactory/bds-integration-placeholder-release")
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven { 
-        url = uri("${externalRepoHost}/artifactory/integrations-gradle-prod-local") 
+        url = uri("${externalRepoHost}/artifactory/bds-integration-placeholder-release") 
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven { 
