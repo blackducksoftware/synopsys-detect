@@ -51,7 +51,7 @@ public class RapidModeStepRunner {
     }
 
     public void runOnline(BlackDuckRunData blackDuckRunData, NameVersion projectVersion, BdioResult bdioResult,
-            DockerTargetData dockerTargetData, Optional<String> scaaasFilePath) throws OperationException, IOException {
+            DockerTargetData dockerTargetData, Optional<String> scaaasFilePath) throws OperationException {
         operationRunner.phoneHome(blackDuckRunData);
         Optional<File> rapidScanConfig = operationRunner.findRapidScanConfig();
         String scanMode = blackDuckRunData.getScanMode().displayName();
@@ -77,7 +77,7 @@ public class RapidModeStepRunner {
             List<HttpUrl> parseScanUrls = parseScanUrls(scanMode, signatureScanOutputResult, blackDuckUrl);
             processScanResults(parseScanUrls, parsedUrls, formattedCodeLocations, DetectTool.SIGNATURE_SCAN.name());  
         });
-        
+
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             logger.debug("Stateless binary scan detected.");
             
@@ -107,6 +107,8 @@ public class RapidModeStepRunner {
         // Get info about any scans that were done
         BlackduckScanMode mode = blackDuckRunData.getScanMode();
         List<DeveloperScansScanView> rapidFullResults = operationRunner.waitForFullRapidResults(blackDuckRunData, parsedUrls, mode);
+
+        operationRunner.generateComponentLocationAnalysisIfEnabled(rapidFullResults);
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
         File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);

@@ -939,6 +939,15 @@ public class DetectProperties {
             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
+    public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED =
+            BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
+                    .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
+                    .setHelp(
+                            "If set to true, Detect will generate an output file detailing where dependencies are declared.",
+                            "All dependencies will be included when using Synopsys Detect in offline mode. Only policy violating dependencies will be included for Rapid and Stateless Scan modes.")
+                    .setGroups(DetectGroup.GENERAL)
+                    .build();
+
     public static final AllEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
         AllEnumListProperty.newBuilder("detect.included.detector.types", AllEnum.ALL, DetectorType.class)
             .setInfo("Detector Types Included", DetectPropertyFromVersion.VERSION_3_0_0)
