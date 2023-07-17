@@ -470,9 +470,9 @@ public class OperationRunner {
                         () -> new GenerateComponentLocationAnalysisOperation().locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
                 );
             } else {
-                logger.info(ReportConstants.RUN_SEPARATOR);
-                logger.info("Component Location Analysis requires a non-empty BDIO. Skipping location analysis.");
-                logger.info(ReportConstants.RUN_SEPARATOR);
+//                logger.info(ReportConstants.RUN_SEPARATOR);
+//                logger.info("Component Location Analysis requires a non-empty BDIO. Skipping location analysis.");
+//                logger.info(ReportConstants.RUN_SEPARATOR);
             }
         }
     }
@@ -491,9 +491,9 @@ public class OperationRunner {
                         () -> (new GenerateComponentLocationAnalysisOperation()).locateComponentsForNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
                 );
             } else {
-                logger.info(ReportConstants.RUN_SEPARATOR);
-                logger.info("Component Location Analysis requires non-empty Rapid Scan results. Skipping location analysis.");
-                logger.info(ReportConstants.RUN_SEPARATOR);
+//                logger.info(ReportConstants.RUN_SEPARATOR);
+//                logger.info("Component Location Analysis requires non-empty Rapid Scan results. Skipping location analysis.");
+//                logger.info(ReportConstants.RUN_SEPARATOR);
             }
         }
     }
