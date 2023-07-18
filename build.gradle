@@ -75,13 +75,12 @@ repositories {
 }
 
 tasks.named("bootJar") {
-    from {
-        configurations.runtimeClasspath.collect { 
-            if(it.name.startsWith("component-locator")){
-                zipTree(it)
-            }
-        }
+    version = rootProject.version
+    manifest {
+        attributes 'Main-Class': "org.springframework.boot.loader.JarLauncher"
+        attributes 'Start-Class': "com.synopsys.integration.detect.Application"
     }
+    classpath sourceSets.main.runtimeClasspath
 }
 
 subprojects {
@@ -135,7 +134,7 @@ dependencies {
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.2.0'
-    implementation "${locatorGroup}:${locatorModule}:1.0.1"
+    implementation "${locatorGroup}:${locatorModule}:1.0.3"
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation "org.springframework.boot:spring-boot"
