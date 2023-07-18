@@ -46,7 +46,12 @@ def createBatteryPath() {
 }
 
 repositories {
-    maven { url "https://sig-repo.synopsys.com/bds-bdio-release" }
+    maven {
+        url "https://sig-repo.synopsys.com/bds-bdio-release"
+    }
+    maven {
+        url "https://sig-repo.synopsys.com/artifactory/bds-integration-placeholder-release"
+    }
 }
 
 subprojects {
@@ -57,7 +62,7 @@ subprojects {
 
 allprojects {
     dependencies {
-        implementation files("./component-locator-1.0.0.jar") // Points to local work in progress, will be replaced with released version when ready
+//        implementation files("./component-locator-1.0.1.jar") // Points to local work in progress, will be replaced with released version when ready
 
         implementation "com.google.guava:guava:31.1-jre"
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0'
