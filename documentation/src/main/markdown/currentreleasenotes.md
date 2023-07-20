@@ -11,6 +11,10 @@
 
 * (IDETECT-3921) [solution_name] will now validate directory permissions prior to downloading the [solution_name] JAR file.
 
+### Dependency updates
+
+Upgraded Docker Inspector to version 10.0.1.
+
 ## Version 8.10.0
 
 ### Changed features
