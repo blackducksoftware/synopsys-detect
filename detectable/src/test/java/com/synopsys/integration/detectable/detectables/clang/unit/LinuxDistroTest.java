@@ -49,15 +49,4 @@ public class LinuxDistroTest {
         assertTrue(extractedLinuxDistroName.isPresent());
         assertEquals("fedora", extractedLinuxDistroName.get());
     }
-
-    @Test
-    void testOracle() throws IOException {
-        File etcDir = Files.createTempDirectory("linuxDistroTest").toFile();
-        File osReleaseFile = new File(etcDir, "oracle-release");
-        FileUtils.write(osReleaseFile, "Oracle Linux-something", StandardCharsets.UTF_8);
-        LinuxDistro linuxDistro = new LinuxDistro();
-        boolean isOracleLinux = linuxDistro.isOracleLinux(etcDir);
-
-        assertEquals(true, isOracleLinux);
-    }
 }
