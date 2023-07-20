@@ -13,7 +13,7 @@
 
 ### Dependency updates
 
-Upgraded Docker Inspector to version 10.0.1.
+Upgraded Docker Inspector to version 10.1.0
 
 ## Version 8.10.0
 
