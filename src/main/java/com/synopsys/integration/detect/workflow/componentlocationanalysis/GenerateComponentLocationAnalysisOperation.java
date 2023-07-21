@@ -53,16 +53,17 @@ public class GenerateComponentLocationAnalysisOperation {
 
     private void runComponentLocator(List<Component> componentsList, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException {
         Input componentLocatorInput = generateComponentLocatorInput(componentsList, projectSrcDir);
+        String outputFilepath = scanOutputFolder + "/" + DETECT_OUTPUT_FILE_NAME;
+
         logger.info(ReportConstants.RUN_SEPARATOR);
-        logger.info("Running Component Locator.");
-        String outputFile = scanOutputFolder + "/" + DETECT_OUTPUT_FILE_NAME;
-        int status = ComponentLocator.locateComponents(componentLocatorInput, outputFile);
+        int status = ComponentLocator.locateComponents(componentLocatorInput, outputFilepath);
         if (status != 0) {
-            logger.warn("Component Locator execution was unsuccessful.");
+            logger.warn("Component Locator execution failed.");
             logger.info(ReportConstants.RUN_SEPARATOR);
             throw new ComponentLocatorException("Failed to generate Component Location Analysis file.");
         }
-        logger.info("Component location analysis file saved at: {}", outputFile);
+        logger.info("Component Location Analysis file saved at: {}", outputFilepath);
+        logger.info(ReportConstants.RUN_SEPARATOR);
     }
 
     private Input generateComponentLocatorInput(List<Component> componentsList, File sourceDir) {
