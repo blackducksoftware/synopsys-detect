@@ -943,8 +943,8 @@ public class DetectProperties {
             BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
                     .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
                     .setHelp(
-                            "If set to true, Detect will generate an output file detailing where dependencies are declared.",
-                            "All dependencies will be included when using Synopsys Detect in offline mode. Only policy violating dependencies will be included for Rapid and Stateless Scan modes.")
+                            "If set to true, Detect will save an output file named 'components-with-locations.json' in the Scan subdirectory detailing where in the project's source code OSS components are declared.",
+                            "All components will be included when using Synopsys Detect in offline mode. Only policy violating components will be included for Rapid and Stateless Scan modes.")
                     .setGroups(DetectGroup.GENERAL)
                     .build();
 
