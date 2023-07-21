@@ -498,6 +498,20 @@ public class OperationRunner {
         }
     }
 
+    /**
+     * Since component location analysis is not supported for online Intelligent scans in 8.11, an appropriate console
+     * msg is logged and status=FAILURE is recorded in the status.json file
+     * @throws OperationException
+     */
+    public void attemptToGenerateComponentLocationAnalysisIfEnabled() throws OperationException {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+            auditLog.namedPublic(
+                    "Generate Component Location Analysis File for All Components",
+                    () -> (new GenerateComponentLocationAnalysisOperation()).locateComponentsForOnlineIntelligentScan()
+            );
+        }
+    }
+
     //Post actions
     //End post actions
 

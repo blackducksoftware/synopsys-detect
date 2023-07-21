@@ -51,6 +51,12 @@ public class GenerateComponentLocationAnalysisOperation {
         runComponentLocator(componentsList, scanOutputFolder, projectSrcDir);
     }
 
+    public void locateComponentsForOnlineIntelligentScan() throws ComponentLocatorException {
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        logger.info("Intelligent Scan mode does not support Component Location Analysis.");
+        throw new ComponentLocatorException("Failed to generate Component Location Analysis file.");
+    }
+
     private void runComponentLocator(List<Component> componentsList, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException {
         Input componentLocatorInput = generateComponentLocatorInput(componentsList, projectSrcDir);
         String outputFilepath = scanOutputFolder + "/" + DETECT_OUTPUT_FILE_NAME;
