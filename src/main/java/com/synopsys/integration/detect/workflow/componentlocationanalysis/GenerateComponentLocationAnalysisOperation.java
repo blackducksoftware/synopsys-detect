@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -7,12 +8,14 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.componentlocator.ComponentLocator;
 import com.synopsys.integration.componentlocator.beans.Component;
 import com.synopsys.integration.componentlocator.beans.Input;
+import com.synopsys.integration.detector.base.DetectorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class will generate the appropriate input file for Component Locator, invoke the library's obfuscated JAR and
@@ -20,6 +23,7 @@ import java.util.List;
  */
 public class GenerateComponentLocationAnalysisOperation {
     public static final String DETECT_OUTPUT_FILE_NAME = "components-with-locations.json";
+    public static final Set<DetectorType> SUPPORTED_DETECTORS = ImmutableSet.of(DetectorType.NPM, DetectorType.MAVEN, DetectorType.GRADLE, DetectorType.NUGET);
     private final BdioToComponentListTransformer bdioTransformer = new BdioToComponentListTransformer();
     private final ScanResultToComponentListTransformer scanResultTransformer = new ScanResultToComponentListTransformer();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

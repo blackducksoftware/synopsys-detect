@@ -108,7 +108,7 @@ public class RapidModeStepRunner {
         BlackduckScanMode mode = blackDuckRunData.getScanMode();
         List<DeveloperScansScanView> rapidFullResults = operationRunner.waitForFullRapidResults(blackDuckRunData, parsedUrls, mode);
 
-        operationRunner.generateComponentLocationAnalysisIfEnabled(rapidFullResults);
+        operationRunner.generateComponentLocationAnalysisIfEnabled(rapidFullResults, bdioResult);
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
         File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
