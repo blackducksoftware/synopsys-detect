@@ -58,7 +58,7 @@ public class GenerateComponentLocationAnalysisOperation {
         String outputFile = scanOutputFolder + "/" + DETECT_OUTPUT_FILE_NAME;
         int status = ComponentLocator.locateComponents(componentLocatorInput, outputFile);
         if (status != 0) {
-            logger.warn("Component Locator execution was unsuccessful. Enable debug level logging for details.");
+            logger.warn("Component Locator execution was unsuccessful.");
             logger.info(ReportConstants.RUN_SEPARATOR);
             throw new ComponentLocatorException("Failed to generate Component Location Analysis file.");
         }
