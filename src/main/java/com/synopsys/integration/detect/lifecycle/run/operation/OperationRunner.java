@@ -6,10 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
@@ -190,7 +187,7 @@ import com.synopsys.integration.util.OperatingSystemType;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 
-import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.SUPPORTED_DETECTORS;
+import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectDetectableFactory detectDetectableFactory;
@@ -513,8 +510,17 @@ public class OperationRunner {
     }
 
     private boolean applicableDetectorsIncludeAtLeastOneSupportedDetector(Set<DetectorType> applicableDetectors) {
-        applicableDetectors.retainAll(SUPPORTED_DETECTORS);
-        return !applicableDetectors.isEmpty();
+        Set<String> applicableDetectorsAsStrings = getApplicableDetectorTypesAsStrings(applicableDetectors);
+        applicableDetectorsAsStrings.retainAll(SUPPORTED_DETECTORS);
+        return !applicableDetectorsAsStrings.isEmpty();
+    }
+
+    private Set<String> getApplicableDetectorTypesAsStrings(Set<DetectorType> applicableDetectors) {
+        Set<String> applicableDetectorsAsStrings = new HashSet<>();
+        for (DetectorType detectorType : applicableDetectors) {
+            applicableDetectorsAsStrings.add(detectorType.toString());
+        }
+        return applicableDetectorsAsStrings;
     }
 
     /**
