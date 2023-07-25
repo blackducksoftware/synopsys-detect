@@ -85,7 +85,7 @@ public class PubDepsExtractor {
                 nameVersion = nameVersionParser.parseNameVersion(pubSpecYamlLines);
             }
 
-            DependencyGraph dependencyGraph = pubDepsParser.parse(pubDepsOutput.getStandardOutput());
+            DependencyGraph dependencyGraph = pubDepsParser.parse(pubDepsOutput.getStandardOutputAsList());
 
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
