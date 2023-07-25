@@ -188,6 +188,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 
 import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
+import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.SUPPORTED_DETECTORS_LOG_MSG;
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectDetectableFactory detectDetectableFactory;
@@ -476,7 +477,7 @@ public class OperationRunner {
                 }
         } else {
                 logger.info(ReportConstants.RUN_SEPARATOR);
-                logger.info("Component Location Analysis only supports NPM, Maven, Gradle and NuGet detectors.");
+                logger.info(SUPPORTED_DETECTORS_LOG_MSG);
                 logger.info(ReportConstants.RUN_SEPARATOR);
             }
         }
@@ -503,7 +504,7 @@ public class OperationRunner {
                 }
         } else {
                 logger.info(ReportConstants.RUN_SEPARATOR);
-                logger.info("Component Location Analysis only supports NPM, Maven, Gradle and NuGet detectors.");
+                logger.info(SUPPORTED_DETECTORS_LOG_MSG;
                 logger.info(ReportConstants.RUN_SEPARATOR);
             }
         }

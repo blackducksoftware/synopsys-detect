@@ -20,6 +20,7 @@ import java.util.List;
  */
 public class GenerateComponentLocationAnalysisOperation {
     public static final String DETECT_OUTPUT_FILE_NAME = "components-with-locations.json";
+    public static final String SUPPORTED_DETECTORS_LOG_MSG = "Component Location Analysis supports NPM, Maven, Gradle and NuGet detectors only.";
     private final BdioToComponentListTransformer bdioTransformer = new BdioToComponentListTransformer();
     private final ScanResultToComponentListTransformer scanResultTransformer = new ScanResultToComponentListTransformer();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -64,7 +65,7 @@ public class GenerateComponentLocationAnalysisOperation {
         logger.info(ReportConstants.RUN_SEPARATOR);
         int status = ComponentLocator.locateComponents(componentLocatorInput, outputFilepath);
         if (status != 0) {
-            logger.warn("Component Locator execution failed.");
+            logger.warn("Component Locator execution has failed.");
             logger.info(ReportConstants.RUN_SEPARATOR);
             throw new ComponentLocatorException("Failed to generate Component Location Analysis file.");
         }
