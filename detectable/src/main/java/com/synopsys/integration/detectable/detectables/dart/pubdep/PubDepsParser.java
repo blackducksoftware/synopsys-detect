@@ -72,7 +72,7 @@ public class PubDepsParser {
         for (DartPubDep child: parent.dependencies) {
             Dependency dependency = Dependency.FACTORY.createNameVersionDependency(Forge.DART, child.name, child.version);
             if (parentDependency == null) {
-                dependencyGraph.addDirectDependency(dependency);
+                dependencyGraph.addChildToRoot(dependency);
             } else {
                 dependencyGraph.addChildWithParent(dependency, parentDependency);
             }
