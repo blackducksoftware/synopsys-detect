@@ -504,7 +504,7 @@ public class OperationRunner {
                 }
         } else {
                 logger.info(ReportConstants.RUN_SEPARATOR);
-                logger.info(SUPPORTED_DETECTORS_LOG_MSG;
+                logger.info(SUPPORTED_DETECTORS_LOG_MSG);
                 logger.info(ReportConstants.RUN_SEPARATOR);
             }
         }
