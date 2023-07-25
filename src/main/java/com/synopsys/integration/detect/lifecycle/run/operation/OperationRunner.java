@@ -511,6 +511,10 @@ public class OperationRunner {
     }
 
     private boolean applicableDetectorsIncludeAtLeastOneSupportedDetector(Set<DetectorType> applicableDetectors) {
+        if (SUPPORTED_DETECTORS.isEmpty()) {
+            // Idler CLL will always give an empty list
+            return true;
+        }
         Set<String> applicableDetectorsAsStrings = getApplicableDetectorTypesAsStrings(applicableDetectors);
         applicableDetectorsAsStrings.retainAll(SUPPORTED_DETECTORS);
         return !applicableDetectorsAsStrings.isEmpty();
