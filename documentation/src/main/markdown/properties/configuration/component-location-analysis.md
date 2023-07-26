@@ -1,96 +1,101 @@
 # component-location-analysis
 
-Enable this feature by adding --component.location.analysis.enabled=TRUE to a run of Detect.
+Enable this feature by adding --detect.component.location.analysis.enabled=TRUE to a run of Detect.
 
-When enabled, Synopsys Detect creates an output file in the scan subdirectory of the output directory with the name 'components-with-locations.json' which identifies the declaration locations (filepath, line number and column position) of open source components found in the source project.
+When enabled, Synopsys Detect creates an output file in the scan subdirectory of the output directory with the name 'components-with-locations.json' which identifies the declaration locations (filepath, line number and column position) of open source components found in the scanned project.
 
 * As Detect shuts down, by default, it performs cleanup operations which include deleting the component location analysis file. You can disable clean up by setting --detect.cleanup=false.
 
 ## Requirements and Limitations
 
-* A limited subset of Tools can be run.
-    * The currently supported tools are: DETECTOR.
-* The currently supported scan modes are: Rapid/Stateless and offline.
-    * Rapid Scan mode requires Black Duck policies.
+* A limited subset of Detector Types support this feature.
+    * The currently supported package managers as of 8.11 are: NPM, Maven, Gradle and NuGet.
+* The currently supported scan modes as of 8.11 are: Rapid/Stateless and offline.
+    * Rapid/Stateless Scan mode requires Black Duck policies.
         * Only components that violate policies will be included in the analysis. If no policies are violated or there are no defined policies, then component location analysis is skipped.
+    * Offline mode
+      * When enabled for a scan without Black Duck connectivity, all detected open source components will be included in the location analysis results.
 
-## Results
+## Offline Mode Results
 
-The location of each open source component found by the Detect run is searched and the location is included if found. When not found, no declaration location field will be present. Each component will have a name and version. Components may optionally have a higher-level grouping identifier, commonly referred to as a groupId, organization, or vendor. The metadata field is only populated in the case of a Rapid Scan, see below for details.
-
-Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast.
+Each component is uniquely identified by a name and version. Components may optionally have a higher-level grouping identifier, commonly referred to as a groupId, organization, or vendor. The declaration location of each component is included in the results if found. When not found, no declarationLocation field will be present for that component in the output file. The metadata field is only populated in the case of a Rapid Scan, see Rapid Scan Mode Results below for details.
 
 
 **BODY:**
-
-
-The results are also printed in the logs:
 ```
 {
       "sourcePath": "absolute/path/to/project/root",
       "globalMetadata": {},
       "componentList": [
            { 
-           "groupId": The groupId of the Component if it has one,
-           "artifactId": Component name,
-           "version": Component version,
-            "metadata": { Component relevant data populated only when running in Rapid Scan mode. }
+               "groupID": The groupId of the Component if it has one,
+               "artifactID": Component name,
+               "version": Component version,
+               "metadata": { Component relevant data populated only when running in Rapid Scan mode. }
             },
             .  
             .  
             .                   
             {
-            "groupId": The groupId of the Component if it has one,
-            "artifactId": Component name,
-            "version": Component version,
-            "metadata": { Component specific data populated only when in Rapid Scan mode. },
-            "declarationLocation": [{
-                "absolute/path/to/build/file": [{
-                    "lineLocation": [{
-                        "lineNumber": The line number where this Component's version was declared,
-                        "columnPosition": [{
-                            "colStart": The column start position where this Component's version was declared,
-                            "colEnd": The column end position where this Component's version was declared
-                        }]
-                    }]
-                }]
-            }]
+                "groupID": The groupId of the Component if it has one,
+                "artifactID": Component name,
+                "version": Component version,
+                "metadata": { Component specific data populated only when in Rapid Scan mode. },
+                "declarationLocation": {
+                    "fileLocations": [
+                      {
+                        "filePath": "absolute/path/to/build/file",
+                        "lineLocations": [
+                          {
+                            "lineNumber": The line number where this Component's version was declared,
+                            "columnLocations": [
+                              {
+                                "colStart": The column start position where this Component's version was declared,
+                                "colEnd": The column end position where this Component's version was declared
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                }
             }
-        }
-    ]
+      ]
 }
 ```
 
-## Component Location Analysis - Rapid Scan Mode
+## Rapid/Stateless Scan Mode Results
 
-Short and long term upgrade guidance, policy violations, etcWhen run in Rapid mode, the file looks like:
+When Detect runs a Rapid or Stateless scan, the output file includes policy violation vulnerabilities, component violating policies and remediation guidance (short term, long term and transitive upgrade guidance) when available. This information is contained within the metadata field of each component:
 ```
-                  
 {
       "sourcePath": "absolute/path/to/project/root",
       "globalMetadata": {},
       "componentList": [
-      {
-            "groupId": The groupId of the Component if it has one,
-            "artifactId": Component name,
+        {
+            "groupID": The groupId of the Component if it has one,
+            "artifactID": Component name,
             "version": Component version,
-            "metadata": { 
-            
-            <insert exact list>
-            
-            
+            "metadata": {
+                <TODO insert exact list of fields we grab from the Rapid scan results>
             },
-            "declarationLocation": [{
-                "absolute/path/to/build/file": [{
-                    "lineLocation": [{
+            "declarationLocation": {
+                "fileLocations": [
+                  {
+                    "filePath": "absolute/path/to/build/file",
+                    "lineLocations": [
+                      {
                         "lineNumber": The line number where this Component's version was declared,
-                        "columnPosition": [{
+                        "columnLocations": [
+                          {
                             "colStart": The column start position where this Component's version was declared,
                             "colEnd": The column end position where this Component's version was declared
-                        }]
-                    }]
-                }]
-            }]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
             }
         }
     ]
