@@ -1,22 +1,17 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.componentlocator.ComponentLocator;
 import com.synopsys.integration.componentlocator.beans.Component;
 import com.synopsys.integration.componentlocator.beans.Input;
-import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -74,11 +69,6 @@ public class GenerateComponentLocationAnalysisOperation {
 
     private void runComponentLocator(List<Component> componentsList, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException {
         Input componentLocatorInput = generateComponentLocatorInput(componentsList, projectSrcDir);
-
-        //
-        serializeInputToJson(scanOutputFolder, componentLocatorInput);
-        //
-
         String outputFilepath = scanOutputFolder + "/" + DETECT_OUTPUT_FILE_NAME;
 
         logger.info(ReportConstants.RUN_SEPARATOR);
@@ -94,18 +84,5 @@ public class GenerateComponentLocationAnalysisOperation {
 
     private Input generateComponentLocatorInput(List<Component> componentsList, File sourceDir) {
         return new Input(sourceDir.getAbsolutePath(), new JsonObject(), componentsList);
-    }
-
-
-    private void serializeInputToJson(File saveInputFileDir, Input libInput) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String serializedLibInput = gson.toJson(libInput);
-        try {
-            File componentsSourceInputFile =  new File (saveInputFileDir, "components-source.json");
-            DetectFileUtils.writeToFile(componentsSourceInputFile, serializedLibInput);
-        } catch (IOException ex) {
-            logger.info("UH OH SPAGHETTIOO");
-//            throw new DetectUserFriendlyException("Failed to create component location analysis output file", ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
-        }
     }
 }
