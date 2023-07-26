@@ -25,8 +25,9 @@ import java.util.List;
  */
 public class GenerateComponentLocationAnalysisOperation {
     
+    public static final String OPERATION_NAME = "Generating Component Location Analysis File for All Components";
     private static final String LOCATOR_INPUT_FILE_NAME = "components-source.json";
-    public static final String LOCATOR_OUTPUT_FILE_NAME = "components-with-locations.json";
+    private static final String LOCATOR_OUTPUT_FILE_NAME = "components-with-locations.json";
     public static final String SUPPORTED_DETECTORS_LOG_MSG = "Component Location Analysis supports NPM, Maven, Gradle and NuGet detectors only.";
     private final BdioToComponentListTransformer bdioTransformer = new BdioToComponentListTransformer();
     private final ScanResultToComponentListTransformer scanResultTransformer = new ScanResultToComponentListTransformer();
@@ -63,6 +64,15 @@ public class GenerateComponentLocationAnalysisOperation {
     public void locateComponentsForOnlineIntelligentScan() throws ComponentLocatorException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         logger.info("Intelligent Scan mode does not support Component Location Analysis.");
+        failComponentLocationAnalysisOperation();
+    }
+
+    /**
+     * A ComponentLocatorException should be thrown in all cases where the output file is not created so that the
+     * appropriate status can be logged for the requested {@link GenerateComponentLocationAnalysisOperation}.
+     * @throws com.synopsys.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException
+     */
+    public void failComponentLocationAnalysisOperation() throws ComponentLocatorException {
         throw new ComponentLocatorException("Failed to generate Component Location Analysis file.");
     }
     
@@ -90,7 +100,7 @@ public class GenerateComponentLocationAnalysisOperation {
         if (status != 0) {
             logger.warn("Component Locator execution has failed.");
             logger.info(ReportConstants.RUN_SEPARATOR);
-            throw new ComponentLocatorException("Failed to generate Component Location Analysis file.");
+            failComponentLocationAnalysisOperation();
         }
         logger.info("Component Location Analysis file saved at: {}", outputFilepath);
         logger.info(ReportConstants.RUN_SEPARATOR);
