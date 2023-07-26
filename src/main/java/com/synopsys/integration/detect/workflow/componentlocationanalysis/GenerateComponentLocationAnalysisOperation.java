@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.componentlocator.ComponentLocator;
 import com.synopsys.integration.componentlocator.beans.Component;
 import com.synopsys.integration.componentlocator.beans.Input;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import org.slf4j.Logger;
@@ -24,12 +24,13 @@ import java.util.List;
  * save the resulting output file in the appropriate output subdirectory.
  */
 public class GenerateComponentLocationAnalysisOperation {
-    public static final String DETECT_OUTPUT_FILE_NAME = "components-with-locations.json";
+    
+    private static final String LOCATOR_INPUT_FILE_NAME = "components-source.json";
+    public static final String LOCATOR_OUTPUT_FILE_NAME = "components-with-locations.json";
     public static final String SUPPORTED_DETECTORS_LOG_MSG = "Component Location Analysis supports NPM, Maven, Gradle and NuGet detectors only.";
     private final BdioToComponentListTransformer bdioTransformer = new BdioToComponentListTransformer();
     private final ScanResultToComponentListTransformer scanResultTransformer = new ScanResultToComponentListTransformer();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
 
     /**
      * Given a Rapid/Stateless Detector scan result, generates an output file consisting of the list of reported
@@ -69,8 +70,9 @@ public class GenerateComponentLocationAnalysisOperation {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String serializedLibInput = gson.toJson(libInput);
         try {
-            File componentsSourceInputFile =  new File (saveInputFileDir, "components-source.json");
+            File componentsSourceInputFile =  new File (saveInputFileDir, LOCATOR_INPUT_FILE_NAME);
             DetectFileUtils.writeToFile(componentsSourceInputFile, serializedLibInput);
+            logger.debug("Component Location Analysis input file written to {}", componentsSourceInputFile);
             return componentsSourceInputFile;
         } catch (IOException ex) {
             throw new DetectUserFriendlyException("Failed to create component location analysis output file", ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
@@ -79,8 +81,10 @@ public class GenerateComponentLocationAnalysisOperation {
 
     private void runComponentLocator(List<Component> componentsList, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
         Input componentLocatorInput = generateComponentLocatorInput(componentsList, projectSrcDir);
-        String outputFilepath = scanOutputFolder + "/" + DETECT_OUTPUT_FILE_NAME;
-        serializeInputToJson(scanOutputFolder, componentLocatorInput);
+        String outputFilepath = scanOutputFolder + "/" + LOCATOR_OUTPUT_FILE_NAME;
+        if (logger.isDebugEnabled()) {
+            serializeInputToJson(scanOutputFolder, componentLocatorInput);
+        }
         logger.info(ReportConstants.RUN_SEPARATOR);
         int status = ComponentLocator.locateComponents(componentLocatorInput, outputFilepath);
         if (status != 0) {
