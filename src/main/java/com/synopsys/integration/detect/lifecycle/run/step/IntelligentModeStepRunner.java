@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
