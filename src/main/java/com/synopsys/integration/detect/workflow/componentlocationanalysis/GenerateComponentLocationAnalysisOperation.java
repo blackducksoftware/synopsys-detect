@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class will generate the appropriate input file for Component Locator, invoke the library's obfuscated JAR and
@@ -43,8 +44,8 @@ public class GenerateComponentLocationAnalysisOperation {
      * @throws DetectUserFriendlyException
      */
     public void locateComponentsForNonPersistentOnlineDetectorScan(List<DeveloperScansScanView> rapidFullResults, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
-        List<Component> componentsList = scanResultTransformer.transformScanResultToComponentList(rapidFullResults);
-        runComponentLocator(componentsList, scanOutputFolder, projectSrcDir);
+        Set<Component> componentsSet = scanResultTransformer.transformScanResultToComponentList(rapidFullResults);
+        runComponentLocator(componentsSet, scanOutputFolder, projectSrcDir);
     }
 
     /**
@@ -57,8 +58,8 @@ public class GenerateComponentLocationAnalysisOperation {
      * @throws DetectUserFriendlyException
      */
     public void locateComponentsForOfflineDetectorScan(BdioResult bdio, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
-        List<Component> componentsList = bdioTransformer.transformBdioToComponentList(bdio);
-        runComponentLocator(componentsList, scanOutputFolder, projectSrcDir);
+        Set<Component> componentsSet = bdioTransformer.transformBdioToComponentSet(bdio);
+        runComponentLocator(componentsSet, scanOutputFolder, projectSrcDir);
     }
 
     public void locateComponentsForOnlineIntelligentScan() throws ComponentLocatorException {
@@ -89,8 +90,8 @@ public class GenerateComponentLocationAnalysisOperation {
         }
     }
 
-    private void runComponentLocator(List<Component> componentsList, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
-        Input componentLocatorInput = generateComponentLocatorInput(componentsList, projectSrcDir);
+    private void runComponentLocator(Set<Component> componentsSet, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
+        Input componentLocatorInput = generateComponentLocatorInput(componentsSet, projectSrcDir);
         String outputFilepath = scanOutputFolder + "/" + LOCATOR_OUTPUT_FILE_NAME;
         if (logger.isDebugEnabled()) {
             serializeInputToJson(scanOutputFolder, componentLocatorInput);
@@ -106,7 +107,7 @@ public class GenerateComponentLocationAnalysisOperation {
         logger.info(ReportConstants.RUN_SEPARATOR);
     }
 
-    private Input generateComponentLocatorInput(List<Component> componentsList, File sourceDir) {
-        return new Input(sourceDir.getAbsolutePath(), new JsonObject(), componentsList);
+    private Input generateComponentLocatorInput(Set<Component> componentsSet, File sourceDir) {
+        return new Input(sourceDir.getAbsolutePath(), new JsonObject(), componentsSet);
     }
 }

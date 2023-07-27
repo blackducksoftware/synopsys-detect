@@ -7,8 +7,10 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.componentlocator.beans.Component;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -17,13 +19,14 @@ import java.util.stream.Collectors;
  *
  */
 public class BdioToComponentListTransformer {
+    
     /**
      * Given a BDIO, creates a list containing each detected component's corresponding {@link Component} representation.
      * Each component is included once, duplicates are ignored.
      * @param bdio
      * @return list of unique {@link Component}s
      */
-    public List<Component> transformBdioToComponentList(BdioResult bdio) {
+    public Set<Component> transformBdioToComponentSet(BdioResult bdio) {
         List<ExternalId> allExternalIds = new ArrayList<>();
 
         Set<DetectCodeLocation> codeLocations = bdio.getCodeLocationNamesResult().getCodeLocationNames().keySet();
@@ -32,7 +35,7 @@ public class BdioToComponentListTransformer {
             allExternalIds.addAll(allDepsForThisCodeLocation);
         }
 
-        return externalIDsToComponentList(allExternalIds);
+        return externalIDsToComponentSet(allExternalIds);
     }
 
     /**
@@ -61,12 +64,12 @@ public class BdioToComponentListTransformer {
         return addedDependencies;
     }
 
-    private List<Component> externalIDsToComponentList(List<ExternalId> gavs) {
-        List<Component> componentList = new ArrayList<>();
+    private Set<Component> externalIDsToComponentSet(List<ExternalId> gavs) {
+        Set<Component> componentSet = new HashSet<>();
         for (ExternalId gav : gavs) {
-            componentList.add(new Component(gav.getGroup(), gav.getName(), gav.getVersion(), new JsonObject()));
+            componentSet.add(new Component(gav.getGroup(), gav.getName(), gav.getVersion(), new JsonObject()));
         }
-        return componentList;
+        return componentSet;
     }
 
     /**
@@ -76,16 +79,16 @@ public class BdioToComponentListTransformer {
      * @param bdio
      * @return
      */
-    private List<Component> extractAndTransformDirectDependencies(BdioResult bdio) {
-        List<Component> componentList = new ArrayList<>();
+    private Set<Component> extractAndTransformDirectDependencies(BdioResult bdio) {
+        Set<Component> componentSet = new HashSet<>();
         Set<DetectCodeLocation> codeLocations = bdio.getCodeLocationNamesResult().getCodeLocationNames().keySet();
         for (DetectCodeLocation cl : codeLocations) {
-            List<Component> dependenciesPerCodeLocation = cl.getDependencyGraph().getDirectDependencies()
+            cl.getDependencyGraph().getDirectDependencies()
                     .stream()
                     .map(dependency -> createLocatorComponentFrom(dependency))
-                    .collect(Collectors.toCollection(() -> componentList));
+                    .collect(Collectors.toCollection(() -> componentSet));
         }
-        return componentList;
+        return componentSet;
     }
 
     private Component createLocatorComponentFrom(Dependency dep) {
