@@ -135,7 +135,7 @@ public class ApplicationUpdater extends URLClassLoader {
                         LOG_PREFIX, ex);
             }
         }
-        return Collections.EMPTY_MAP;
+        return Collections.emptyMap();
     }
     
     protected boolean selfUpdate() {
@@ -176,8 +176,10 @@ public class ApplicationUpdater extends URLClassLoader {
     private File installOrUpdateScanner(String dirPath) throws IOException, IntegrationException {
         final File installDirectory = new File(dirPath);
         
-        if (!installDirectory.exists()) {
-            installDirectory.mkdir();
+        if (!installDirectory.exists() && !installDirectory.mkdir()) {
+            throw new AccessDeniedException(dirPath, null, 
+                        "No write permission to create the missing installation directory: "
+                                .concat(dirPath));
         } else if (!checkInstallationDir(installDirectory.toPath())) {
             return null;
         }
@@ -278,11 +280,16 @@ public class ApplicationUpdater extends URLClassLoader {
             final Object jarLauncher = jarLauncherConstructor.newInstance(jarFileArchive);
             checkEnvironmentProperties();
             args = parseArguments(args);
-            launchMethod.invoke(jarLauncher, new Object[]{args});
+            launchMethod(jarLauncher, launchMethod);
         } finally {
             close();
         }
         return true;
+    }
+    
+    @java.lang.SuppressWarnings("java:S3878")
+    private void launchMethod(Object jarLauncher, Method launchMethod) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        launchMethod.invoke(jarLauncher, new Object[]{args});
     }
     
     @java.lang.SuppressWarnings("java:S3011")
@@ -304,7 +311,7 @@ public class ApplicationUpdater extends URLClassLoader {
                 return true;
             } else {
                 throw new AccessDeniedException(path.toString(), null, 
-                        "No write permisison to store downloaded Jar in the installation directory: "
+                        "No write permission to store downloaded Jar in the installation directory: "
                                 .concat(path.getFileName().toAbsolutePath().toString()));
             }
         }
@@ -466,7 +473,7 @@ public class ApplicationUpdater extends URLClassLoader {
             return Arrays.stream(delimitedValues.split("\\,"))
                 .collect(Collectors.toSet());
         }
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
     
     private void addConditionalLogMessageForSysEnvProp(List<String> logMessages, String envProperty, String envValue) {

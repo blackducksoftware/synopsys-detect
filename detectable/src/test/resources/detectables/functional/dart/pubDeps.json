@@ -1,0 +1,102 @@
+{
+  "root": "sample_app",
+  "packages": [
+    {
+      "name": "sample_app",
+      "version": "1.0.0",
+      "kind": "root",
+      "source": "root",
+      "dependencies": [
+        "http",
+        "lints",
+        "test"
+      ]
+    },
+    {
+      "name": "test",
+      "version": "1.22.1",
+      "kind": "dev",
+      "source": "hosted",
+      "dependencies": [
+        "analyzer",
+        "source_span",
+        "js"
+      ]
+    },
+    {
+      "name": "path",
+      "version": "1.8.3",
+      "kind": "transitive",
+      "source": "hosted",
+      "dependencies": []
+    },
+    {
+      "name": "meta",
+      "version": "1.8.0",
+      "kind": "transitive",
+      "source": "hosted",
+      "dependencies": []
+    },
+    {
+      "name": "source_span",
+      "version": "1.9.1",
+      "kind": "transitive",
+      "source": "hosted",
+      "dependencies": [
+        "collection",
+        "path"
+      ]
+    },
+    {
+      "name": "collection",
+      "version": "1.17.0",
+      "kind": "transitive",
+      "source": "hosted",
+      "dependencies": []
+    },
+    {
+      "name": "analyzer",
+      "version": "5.4.0",
+      "kind": "transitive",
+      "source": "hosted",
+      "dependencies": [
+        "_fe_analyzer_shared"
+      ]
+    },
+    {
+      "name": "_fe_analyzer_shared",
+      "version": "52.0.0",
+      "kind": "transitive",
+      "source": "hosted",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "js",
+      "version": "0.6.5",
+      "kind": "transitive",
+      "source": "hosted",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "lints",
+      "version": "2.0.1",
+      "kind": "dev",
+      "source": "hosted",
+      "dependencies": []
+    },
+    {
+      "name": "http",
+      "version": "0.13.5",
+      "kind": "direct",
+      "source": "hosted",
+      "dependencies": [
+        "meta",
+        "path"
+      ]
+    }
+  ]
+}

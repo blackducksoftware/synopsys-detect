@@ -36,6 +36,7 @@ import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
+import com.synopsys.integration.detect.workflow.status.FormattedCodeLocation;
 import com.synopsys.integration.detect.workflow.status.OperationType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
@@ -53,8 +54,8 @@ public class IntelligentModeStepRunner {
         this.gson = gson;
     }
 
-    public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws OperationException {
-        stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> { //Internal: Sig scan publishes it's own status.
+    public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData, BdioResult bdio) throws OperationException {
+        stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> { //Internal: Sig scan publishes its own status.
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationRunner);
             signatureScanStepRunner.runSignatureScannerOffline(projectNameVersion, dockerTargetData);
         });
@@ -69,6 +70,8 @@ public class IntelligentModeStepRunner {
             IacScanStepRunner iacScanStepRunner = new IacScanStepRunner(operationRunner);
             iacScanStepRunner.runIacScanOffline();
         });
+
+        operationRunner.generateComponentLocationAnalysisIfEnabled(bdio);
     }
 
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
@@ -207,7 +210,14 @@ public class IntelligentModeStepRunner {
         Set<String> allCodeLocationNames = new HashSet<>(codeLocationAccumulator.getNonWaitableCodeLocations());
         CodeLocationWaitData waitData = operationRunner.calculateCodeLocationWaitData(codeLocationAccumulator.getWaitableCodeLocations());
         allCodeLocationNames.addAll(waitData.getCodeLocationNames());
-        operationRunner.publishCodeLocationNames(allCodeLocationNames);
+        
+        Set<FormattedCodeLocation> allCodeLocationData = new HashSet<>();
+        for (String codeLocationName : allCodeLocationNames) {
+            FormattedCodeLocation codeLocation = new FormattedCodeLocation(codeLocationName, null, null);
+            allCodeLocationData.add(codeLocation);
+        }
+        
+        operationRunner.publishCodeLocationData(allCodeLocationData);
         return new CodeLocationResults(allCodeLocationNames, waitData);
     }
 

@@ -11,7 +11,7 @@ As a Synopsys and Azure DevOps user, [solution_name] Extension for Azure DevOps 
 
 Using the [solution_name] Extension for Azure DevOps together with [blackduck_product_name] enables you to use Azure DevOps to automatically create [blackduck_product_name] projects from your Azure DevOps projects.
 
-**Note:** The Azure plugin currently supports [solution_name] \8.
+**Note:** The Azure plugin currently supports [solution_name] 8.X.
 
 ## Invoking [solution_name]
 Synopsys recommends invoking [solution_name] from the CI (build) pipeline.  Scanning during CI enables [solution_name] to break your application build, which is effective for enforcing policies like preventing the use of disallowed or vulnerable components.

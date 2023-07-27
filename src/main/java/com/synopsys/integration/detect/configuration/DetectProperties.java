@@ -86,7 +86,7 @@ public class DetectProperties {
         BooleanProperty.newBuilder("blackduck.offline.mode", false)
             .setInfo("Offline Mode", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
-                "This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
+                "This can disable Black Duck communication - if set to true, Synopsys Detect will not upload BDIO files, or check policies, and it will not download and install the signature scanner. Note that the path to a local instance of the scanner can be provided using the -detect.blackduck.signature.scanner.local.path parameter.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
 
@@ -96,7 +96,7 @@ public class DetectProperties {
             .setHelp(
 			"Hostname of the proxy server.",
 			"Schema/protocol is not accepted by this parameter.")
-			.setExample("--blackduck.proxy.host=<Proxy_IP/URL>:port")
+			.setExample("--blackduck.proxy.host=<Proxy_IP/URL>")
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
             .build();
@@ -938,6 +938,15 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
+
+    public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED =
+            BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
+                    .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
+                    .setHelp(
+                            "If set to true, Detect will generate an output file detailing where dependencies are declared.",
+                            "All dependencies will be included when using Synopsys Detect in offline mode. Only policy violating dependencies will be included for Rapid and Stateless Scan modes.")
+                    .setGroups(DetectGroup.GENERAL)
+                    .build();
 
     public static final AllEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
         AllEnumListProperty.newBuilder("detect.included.detector.types", AllEnum.ALL, DetectorType.class)

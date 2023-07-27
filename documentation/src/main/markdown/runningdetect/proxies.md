@@ -18,7 +18,7 @@ including:
 * `blackduck.proxy.username` (proxy username)
 * `blackduck.proxy.password` (proxy password)
 
-When setting the blackduck.proxy.host (proxy hostname), property the schema/protocol is not accepted.   
+When setting the blackduck.proxy.host (proxy hostname) property, the schema/protocol is not accepted.   
 
 For example:  
  

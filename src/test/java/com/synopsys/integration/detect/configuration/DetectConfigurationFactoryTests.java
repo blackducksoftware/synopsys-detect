@@ -15,6 +15,7 @@ import com.synopsys.integration.common.util.Bdo;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorSearchExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.rest.credentials.Credentials;
 
@@ -87,5 +88,15 @@ public class DetectConfigurationFactoryTests {
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = factory.createBlackDuckSignatureScannerOptions();
 
         Assertions.assertTrue(blackDuckSignatureScannerOptions.getIsStateless());
+    }
+    
+    @Test
+    public void testNoPersistenceModeSpecified() {
+        DetectConfigurationFactory factory = factoryOf(
+                Pair.of(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE, RapidCompareMode.BOM_COMPARE_STRICT.toString()));
+        
+        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = factory.createBlackDuckSignatureScannerOptions();
+
+        Assertions.assertTrue(RapidCompareMode.BOM_COMPARE_STRICT.equals(blackDuckSignatureScannerOptions.getBomCompareMode()));
     }
 }

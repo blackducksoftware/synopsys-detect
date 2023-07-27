@@ -56,6 +56,7 @@ public class PubDepsExtractor {
             List<String> pubDepsCommand = new ArrayList<>();
             pubDepsCommand.add("pub");
             pubDepsCommand.add("deps");
+            pubDepsCommand.add("--json");
 
             if (dartPubDepsDetectableOptions.getDependencyTypeFilter().shouldExclude(DartPubDependencyType.DEV)) {
                 pubDepsCommand.add("--no-dev");
@@ -84,7 +85,7 @@ public class PubDepsExtractor {
                 nameVersion = nameVersionParser.parseNameVersion(pubSpecYamlLines);
             }
 
-            DependencyGraph dependencyGraph = pubDepsParser.parse(pubDepsOutput.getStandardOutputAsList());
+            DependencyGraph dependencyGraph = pubDepsParser.parse(pubDepsOutput.getStandardOutput());
 
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 

@@ -16,12 +16,13 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation;
+import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.blackducksoftware.bdio2.Bdio;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -163,6 +164,7 @@ import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecide
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
+import com.synopsys.integration.detect.workflow.status.FormattedCodeLocation;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
@@ -184,6 +186,7 @@ import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 public class OperationRunner {
@@ -453,6 +456,48 @@ public class OperationRunner {
     }
     //End Rapid
 
+    /**
+     * Given a BDIO, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
+     * every detected component's {@link ExternalId} along with its declaration location when applicable.
+     * @param bdio
+     * @throws OperationException
+     */
+    public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws OperationException {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+            if (!bdio.getCodeLocationNamesResult().getCodeLocationNames().isEmpty()) {
+                auditLog.namedPublic(
+                        "Generate Component Location Analysis File for All Components",
+                        () -> new GenerateComponentLocationAnalysisOperation().locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                );
+            } else {
+                logger.info(ReportConstants.RUN_SEPARATOR);
+                logger.info("Component Location Analysis requires a non-empty BDIO. Skipping location analysis.");
+                logger.info(ReportConstants.RUN_SEPARATOR);
+            }
+        }
+    }
+
+    /**
+     * Given a Rapid/Stateless Detector Scan result, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
+     * every reported component's {@link ExternalId} along with its declaration location and upgrade guidance information when applicable.
+     * @param rapidFullResults
+     * @throws OperationException
+     */
+    public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults) throws OperationException {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+            if (!rapidFullResults.isEmpty()) {
+                auditLog.namedPublic(
+                        "Generate Component Location Analysis File for Reported Components",
+                        () -> (new GenerateComponentLocationAnalysisOperation()).locateComponentsForNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                );
+            } else {
+                logger.info(ReportConstants.RUN_SEPARATOR);
+                logger.info("Component Location Analysis requires non-empty Rapid Scan results. Skipping location analysis.");
+                logger.info(ReportConstants.RUN_SEPARATOR);
+            }
+        }
+    }
+
     //Post actions
     //End post actions
 
@@ -470,10 +515,10 @@ public class OperationRunner {
         return auditLog.namedInternal("Calculate Code Location Wait Data", () -> new CodeLocationWaitCalculator().calculateWaitData(codeLocationCreationDatas));
     }
 
-    public final void publishCodeLocationNames(Set<String> codeLocationNames) throws OperationException {
+    public final void publishCodeLocationData(Set<FormattedCodeLocation> codeLocationData) throws OperationException {
         auditLog.namedInternal(
             "Publish CodeLocationsCompleted Event",
-            () -> codeLocationEventPublisher.publishCodeLocationsCompleted(codeLocationNames)
+            () -> codeLocationEventPublisher.publishCodeLocationsCompleted(codeLocationData)
         );
     }
 
@@ -1135,5 +1180,12 @@ public class OperationRunner {
                 calculateMaxWaitInSeconds(fibonacciSequenceIndex)
             );
         });
+    }
+    
+    public UUID getScanIdFromScanUrl(HttpUrl blackDuckScanUrl) {
+        String url = blackDuckScanUrl.toString();
+        UUID scanId = UUID.fromString(url.substring(url.lastIndexOf("/") + 1));
+        
+        return scanId;
     }
 }
