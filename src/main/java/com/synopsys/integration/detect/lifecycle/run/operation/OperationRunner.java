@@ -190,6 +190,7 @@ import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
 import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.SUPPORTED_DETECTORS_LOG_MSG;
 import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.OPERATION_NAME;
+
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectDetectableFactory detectDetectableFactory;
