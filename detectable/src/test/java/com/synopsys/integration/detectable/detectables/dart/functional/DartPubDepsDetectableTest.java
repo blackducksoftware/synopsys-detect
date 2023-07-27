@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 
@@ -32,11 +31,16 @@ public class DartPubDepsDetectableTest extends DetectableFunctionalTest {
         addFile(Paths.get("pubspec.lock"));
 
         addFile(Paths.get("pubspec.yaml"));
-        String pubDepsLines = FunctionalTestFiles.asString("/dart/pubDeps.json");
+
         ExecutableOutput executableOutput = createStandardOutput(
-                pubDepsLines
+            "http_parser 3.1.5-dev",
+            "|-- pedantic 1.9.2",
+            "|   '-- meta...",
+            "|-- source_span 1.7.0",
+            "|   |-- meta 1.2.3",
+            "|   |-- path 1.7.0"
         );
-        addExecutableOutput(executableOutput, new File("dart").getAbsolutePath(), "pub", "deps", "--json");
+        addExecutableOutput(executableOutput, new File("dart").getAbsolutePath(), "pub", "deps");
     }
 
     @Override
@@ -65,10 +69,10 @@ public class DartPubDepsDetectableTest extends DetectableFunctionalTest {
         Assertions.assertNotEquals(0, extraction.getCodeLocations().size(), "A code location should have been generated.");
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.DART, extraction.getCodeLocations().get(0).getDependencyGraph());
-        graphAssert.hasRootSize(3);
-        graphAssert.hasRootDependency("http", "0.13.5");
-        graphAssert.hasRootDependency("lints", "2.0.1");
-        graphAssert.hasParentChildRelationship("source_span", "1.9.1", "collection", "1.17.0");
-        graphAssert.hasParentChildRelationship("source_span", "1.9.1", "path", "1.8.3");
+        graphAssert.hasRootSize(2);
+        graphAssert.hasRootDependency("pedantic", "1.9.2");
+        graphAssert.hasRootDependency("source_span", "1.7.0");
+        graphAssert.hasParentChildRelationship("source_span", "1.7.0", "meta", "1.2.3");
+        graphAssert.hasParentChildRelationship("source_span", "1.7.0", "path", "1.7.0");
     }
 }

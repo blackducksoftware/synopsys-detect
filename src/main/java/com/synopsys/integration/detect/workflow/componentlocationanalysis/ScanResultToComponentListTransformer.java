@@ -38,9 +38,15 @@ public class ScanResultToComponentListTransformer {
     private List<Component> convertExternalIDsToComponentList(HashMap<String, ScanMetadata> componentIdWithMetadata) {
         List<Component> componentList = new ArrayList<>();
         try {
-            for (String gav : componentIdWithMetadata.keySet()) {
-                String[] parts = gav.split(":");
-                componentList.add(new Component(parts[0], parts[1], parts[2], getJsonObjectFromScanMetadata(componentIdWithMetadata.get(gav))));
+            for (String componentIdString : componentIdWithMetadata.keySet()) {
+                String[] parts;
+                if ((parts = componentIdString.split(":")).length == 3) {
+                    // For Maven and Gradle, the componentId is of the form "g:a:v"
+                    componentList.add(new Component(parts[0], parts[1], parts[2], getJsonObjectFromScanMetadata(componentIdWithMetadata.get(componentIdString))));
+                } else if ((parts = componentIdString.split("/")).length == 2) {
+                    // For NPM and NuGet, the componentId looks is of the form "a/v"
+                    componentList.add(new Component(null, parts[0], parts[1], getJsonObjectFromScanMetadata(componentIdWithMetadata.get(componentIdString))));
+                }
             }
         } catch (Exception e) {
             logger.debug("There was a problem processing component IDs from scan results during Component Location Analysis: {}", e);
