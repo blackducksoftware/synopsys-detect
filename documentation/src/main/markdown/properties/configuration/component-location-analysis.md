@@ -2,7 +2,7 @@
 
 Enable this feature by adding --detect.component.location.analysis.enabled=TRUE to a run of Detect.
 
-When enabled, Synopsys Detect creates an output file in the scan subdirectory of the output directory with the name 'components-with-locations.json' which identifies the declaration locations (filepath, line number and column position) of open source components found in the scanned project.
+When enabled, [solution_name] creates an output file in the scan subdirectory of the output directory with the name 'components-with-locations.json' which identifies the declaration locations (filepath, line number and column position) of the version of open source components found in the scanned project.
 
 * As Detect shuts down, by default, it performs cleanup operations which include deleting the component location analysis file. You can disable clean up by setting --detect.cleanup=false.
 
@@ -26,7 +26,7 @@ Each component is uniquely identified by a name and version. Components may opti
 ```
 {
       "sourcePath": "absolute/path/to/project/root",
-      "globalMetadata": {},
+      "globalMetadata": { Optional project relevant data. },
       "componentList": [
            { 
                "groupID": The groupId of the Component if it has one,
