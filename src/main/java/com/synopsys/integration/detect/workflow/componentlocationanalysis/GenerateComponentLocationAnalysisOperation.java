@@ -58,7 +58,14 @@ public class GenerateComponentLocationAnalysisOperation {
      */
     public void locateComponentsForOfflineDetectorScan(BdioResult bdio, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
         List<Component> componentsList = bdioTransformer.transformBdioToComponentList(bdio);
-        runComponentLocator(componentsList, scanOutputFolder, projectSrcDir);
+        if(!componentsList.isEmpty())
+            runComponentLocator(componentsList, scanOutputFolder, projectSrcDir);
+        else {
+            logger.info(ReportConstants.RUN_SEPARATOR);
+            logger.info("Component Location Analysis requires a BDIO file with at least one component. Skipping location analysis.");
+            failComponentLocationAnalysisOperation();
+
+        }
     }
 
     public void locateComponentsForOnlineIntelligentScan() throws ComponentLocatorException {
@@ -90,6 +97,7 @@ public class GenerateComponentLocationAnalysisOperation {
     }
 
     private void runComponentLocator(List<Component> componentsList, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
+     
         Input componentLocatorInput = generateComponentLocatorInput(componentsList, projectSrcDir);
         String outputFilepath = scanOutputFolder + "/" + LOCATOR_OUTPUT_FILE_NAME;
         if (logger.isDebugEnabled()) {
