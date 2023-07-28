@@ -167,6 +167,7 @@
       <topicref href="properties/configuration/binary-scanner.md" format="markdown"/>
       <topicref href="properties/configuration/blackduck-server.md" format="markdown"/>
       <topicref href="properties/configuration/cleanup.md" format="markdown"/>
+      <topicref href="properties/configuration/component-location-analysis.md" format="markdown"/>
       <topicref href="properties/configuration/debug.md" format="markdown"/>
       <topicref href="properties/configuration/default.md" format="markdown"/>
       <topicref href="properties/configuration/detector.md" format="markdown"/>
