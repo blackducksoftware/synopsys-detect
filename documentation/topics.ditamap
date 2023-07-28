@@ -108,6 +108,7 @@
     <topicref href="runningdetect/proxies.md" format="markdown"/>
     <topicref href="runningdetect/concurrent.md" format="markdown"/>
     <topicref href="runningdetect/runincontainer.md" format="markdown"/>
+    <topicref href="runningdetect/component-location-analysis.md" format="markdown"/>
   </topicref>
 
  
@@ -167,7 +168,6 @@
       <topicref href="properties/configuration/binary-scanner.md" format="markdown"/>
       <topicref href="properties/configuration/blackduck-server.md" format="markdown"/>
       <topicref href="properties/configuration/cleanup.md" format="markdown"/>
-      <topicref href="properties/configuration/component-location-analysis.md" format="markdown"/>
       <topicref href="properties/configuration/debug.md" format="markdown"/>
       <topicref href="properties/configuration/default.md" format="markdown"/>
       <topicref href="properties/configuration/detector.md" format="markdown"/>
