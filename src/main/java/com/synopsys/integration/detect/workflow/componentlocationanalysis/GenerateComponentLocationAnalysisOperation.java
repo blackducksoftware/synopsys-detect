@@ -44,7 +44,7 @@ public class GenerateComponentLocationAnalysisOperation {
         if (logger.isDebugEnabled()) {
             serializeInputToJson(scanOutputFolder, componentLocatorInput);
         }
-        logger.info("No. of components to locate: {}", componentLocatorInput.getComponentSet().size());
+        logger.info("No. of components to locate: {}", componentLocatorInput.getComponentList().size());
         logger.info(ReportConstants.RUN_SEPARATOR);
         int status = ComponentLocator.locateComponents(componentLocatorInput, outputFilepath);
         if (status != 0) {
