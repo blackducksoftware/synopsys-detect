@@ -10,8 +10,8 @@ When enabled, Synopsys Detect creates an output file in the scan subdirectory of
 
 * Component Location Analysis is available under [solution_name] “Limited Customer Availability (LCA)”.
 * A limited subset of Detector Types support this feature.
-    * The currently supported package managers as of 8.11 are: NPM, Maven, Gradle and NuGet.
-* The currently supported scan modes as of 8.11 are: Rapid/Stateless and offline.
+    * The currently supported package managers as of 8.11.0 are: NPM, Maven, Gradle and NuGet.
+* The currently supported scan modes as of 8.11.0 are: Rapid/Stateless and offline.
     * Rapid/Stateless Scan mode requires Black Duck policies.
         * Only components that violate policies will be included in the analysis. If no policies are violated or there are no defined policies, then component location analysis is skipped.
     * Offline mode
