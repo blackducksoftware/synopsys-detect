@@ -78,7 +78,11 @@ When Detect runs a Rapid or Stateless scan, the output file includes policy viol
             "artifactID": Component name,
             "version": Component version,
             "metadata": {
-                <TODO insert exact list of fields we grab from the Rapid scan results>
+                "policyViolationVulnerabilities": [],
+                "shortTermUpgradeGuidance": {},
+                "longTermUpgradeGuidance": {},
+                "transitiveUpgradeGuidance": [],
+                "componentViolatingPolicies": []
             },
             "declarationLocation": {
                 "fileLocations": [
