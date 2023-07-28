@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 public class BdioToComponentListTransformer {
     
     /**
-     * Given a BDIO, creates a list containing each detected component's corresponding {@link Component} representation.
+     * Given a BDIO, creates a set containing each detected component's corresponding {@link Component} representation.
      * Each component is included once, duplicates are ignored.
      * @param bdio
-     * @return list of unique {@link Component}s
+     * @return set {@link Component}s
      */
     public Set<Component> transformBdioToComponentSet(BdioResult bdio) {
         List<ExternalId> allExternalIds = new ArrayList<>();

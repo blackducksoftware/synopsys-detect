@@ -25,7 +25,7 @@ public class ScanResultToComponentListTransformer {
      * Given a list of reported components from a Rapid/Stateless Detector scan, transforms each element to its
      * corresponding {@link Component} with appropriate metadata.
      * @param rapidScanFullResults
-     * @return list of {@link Component}s
+     * @return set of {@link Component}s
      */
     public Set<Component> transformScanResultToComponentList(List<DeveloperScansScanView> rapidScanFullResults) {
         HashMap<String, ScanMetadata> componentIdWithMetadata = new HashMap<>();
