@@ -1,4 +1,4 @@
-# component-location-analysis
+# Component Location Analysis LCA
 
 Enable this feature by adding --detect.component.location.analysis.enabled=TRUE to a run of Detect.
 
@@ -8,6 +8,7 @@ When enabled, Synopsys Detect creates an output file in the scan subdirectory of
 
 ## Requirements and Limitations
 
+* Component Location Analysis is available under [solution_name] “Limited Customer Availability (LCA)”.
 * A limited subset of Detector Types support this feature.
     * The currently supported package managers as of 8.11 are: NPM, Maven, Gradle and NuGet.
 * The currently supported scan modes as of 8.11 are: Rapid/Stateless and offline.
@@ -44,7 +45,7 @@ Each component is uniquely identified by a name and version. Components may opti
                 "declarationLocation": {
                     "fileLocations": [
                       {
-                        "filePath": "absolute/path/to/build/file",
+                        "filePath": "relative/path/to/build/file",
                         "lineLocations": [
                           {
                             "lineNumber": The line number where this Component's version was declared,
@@ -82,7 +83,7 @@ When Detect runs a Rapid or Stateless scan, the output file includes policy viol
             "declarationLocation": {
                 "fileLocations": [
                   {
-                    "filePath": "absolute/path/to/build/file",
+                    "filePath": "relative/path/to/build/file",
                     "lineLocations": [
                       {
                         "lineNumber": The line number where this Component's version was declared,

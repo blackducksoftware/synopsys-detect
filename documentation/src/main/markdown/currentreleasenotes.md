@@ -14,7 +14,7 @@
 
 ### Dependency updates
 
-* Upgraded Docker Inspector to version 10.1.0. See the [Docker Inspector Release notes](packagemgrs/docker/releasenotes.md) for furthur details.
+* Upgraded Docker Inspector to version 10.1.0. See the [Docker Inspector Release notes](packagemgrs/docker/releasenotes.md) for further details.
 
 ## Version 8.10.0
 
