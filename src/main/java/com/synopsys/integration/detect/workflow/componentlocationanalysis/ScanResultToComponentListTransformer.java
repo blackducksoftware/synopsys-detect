@@ -29,9 +29,16 @@ public class ScanResultToComponentListTransformer {
      */
     public Set<Component> transformScanResultToComponentList(List<DeveloperScansScanView> rapidScanFullResults) {
         HashMap<String, ScanMetadata> componentIdWithMetadata = new HashMap<>();
-
+        Set<String> componentNamesWithNullIds = new HashSet<>(rapidScanFullResults.size());
         for (DeveloperScansScanView component : rapidScanFullResults) {
-            componentIdWithMetadata.put(component.getExternalId(), populateMetadata(component));
+            if (component.getExternalId() == null) {
+                componentNamesWithNullIds.add(component.getComponentName());
+            } else {
+                componentIdWithMetadata.put(component.getExternalId(), populateMetadata(component));
+            }
+        }
+        for (String componentNameToWarnAbout : componentNamesWithNullIds) {
+            logger.warn("Component '{}' is skipped due to missing external ID in the scan result json.", componentNameToWarnAbout);
         }
 
         return convertExternalIDsToComponentList(componentIdWithMetadata);
