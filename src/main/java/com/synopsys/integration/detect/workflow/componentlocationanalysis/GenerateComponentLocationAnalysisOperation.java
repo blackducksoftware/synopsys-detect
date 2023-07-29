@@ -44,7 +44,6 @@ public class GenerateComponentLocationAnalysisOperation {
         if (logger.isDebugEnabled()) {
             serializeInputToJson(scanOutputFolder, componentLocatorInput);
         }
-        logger.info("No. of components to locate: {}", componentLocatorInput.getComponentSet().size());
         logger.info(ReportConstants.RUN_SEPARATOR);
         int status = ComponentLocator.locateComponents(componentLocatorInput, outputFilepath);
         if (status != 0) {
@@ -73,7 +72,7 @@ public class GenerateComponentLocationAnalysisOperation {
     
     private File serializeInputToJson(File saveInputFileDir, Input libInput) throws DetectUserFriendlyException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String serializedLibInput = gson.toJson(libInput);
+        String serializedLibInput = gson.toJson(libInput, Input.class);
         try {
             File componentsSourceInputFile =  new File (saveInputFileDir, LOCATOR_INPUT_FILE_NAME);
             DetectFileUtils.writeToFile(componentsSourceInputFile, serializedLibInput);
