@@ -512,7 +512,7 @@ public class OperationRunner {
             } else {
                 Set<Component> componentsSet = new ScanResultToComponentListTransformer().transformScanResultToComponentList(rapidFullResults);
                 if (componentsSet.isEmpty()) {
-                    failComponentLocationAnalysisOperationTask("Component Location Analysis requires at least one dependency in Rapid/Stateless Scan results. Skipping location analysis.");
+                    failComponentLocationAnalysisOperationTask("Component Location Analysis requires at least one dependency in Rapid/Stateless Detector Scan results. Skipping location analysis.");
                 } else {
                     auditLog.namedPublic(
                             OPERATION_NAME,
