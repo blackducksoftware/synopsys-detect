@@ -9,6 +9,7 @@ import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.componentlocator.beans.Component;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -65,7 +66,7 @@ public class BdioToComponentListTransformer {
     }
 
     private Set<Component> externalIDsToComponentSet(List<ExternalId> gavs) {
-        Set<Component> componentSet = new HashSet<>();
+        Set<Component> componentSet = new LinkedHashSet<>();
         for (ExternalId gav : gavs) {
             componentSet.add(new Component(gav.getGroup(), gav.getName(), gav.getVersion(), new JsonObject()));
         }
@@ -80,7 +81,7 @@ public class BdioToComponentListTransformer {
      * @return
      */
     private Set<Component> extractAndTransformDirectDependencies(BdioResult bdio) {
-        Set<Component> componentSet = new HashSet<>();
+        Set<Component> componentSet = new LinkedHashSet<>();
         Set<DetectCodeLocation> codeLocations = bdio.getCodeLocationNamesResult().getCodeLocationNames().keySet();
         for (DetectCodeLocation cl : codeLocations) {
             cl.getDependencyGraph().getDirectDependencies()

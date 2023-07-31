@@ -2,12 +2,11 @@ package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.componentlocator.beans.Component;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -29,32 +28,35 @@ public class ScanResultToComponentListTransformer {
      */
     public Set<Component> transformScanResultToComponentList(List<DeveloperScansScanView> rapidScanFullResults) {
         HashMap<String, ScanMetadata> componentIdWithMetadata = new HashMap<>();
-        Set<String> componentNamesWithNullIds = new HashSet<>(rapidScanFullResults.size());
+        Set<String> orderedComponentIDs = new LinkedHashSet<>();
+        Set<String> componentNamesWithNullIds = new LinkedHashSet<>(rapidScanFullResults.size());
         for (DeveloperScansScanView component : rapidScanFullResults) {
             if (component.getExternalId() == null) {
                 componentNamesWithNullIds.add(component.getComponentName());
             } else {
                 componentIdWithMetadata.put(component.getExternalId(), populateMetadata(component));
+                orderedComponentIDs.add(component.getExternalId());
             }
         }
         for (String componentNameToWarnAbout : componentNamesWithNullIds) {
             logger.warn("Component '{}' is skipped due to missing external ID in the scan result json.", componentNameToWarnAbout);
         }
 
-        return convertExternalIDsToComponentList(componentIdWithMetadata);
+        return convertExternalIDsToComponentList(componentIdWithMetadata, orderedComponentIDs);
     }
 
-    private Set<Component> convertExternalIDsToComponentList(HashMap<String, ScanMetadata> componentIdWithMetadata) {
-        Set<Component> componentSet = new HashSet<>();
+    private Set<Component> convertExternalIDsToComponentList(HashMap<String, ScanMetadata> componentIdWithMetadata, Set<String> orderedComponentIDs) {
+        Set<Component> componentSet = new LinkedHashSet<>();
         try {
-            for (String componentIdString : componentIdWithMetadata.keySet()) {
+            for (String componentIdString : orderedComponentIDs) {
+                JsonObject jsonObject = getJsonObjectFromScanMetadata(componentIdWithMetadata.get(componentIdString));
                 String[] parts;
                 if ((parts = componentIdString.split(":")).length == 3) {
                     // For Maven and Gradle, the componentId is of the form "g:a:v"
-                    componentSet.add(new Component(parts[0], parts[1], parts[2], getJsonObjectFromScanMetadata(componentIdWithMetadata.get(componentIdString))));
+                    componentSet.add(new Component(parts[0], parts[1], parts[2], jsonObject));
                 } else if ((parts = componentIdString.split("/")).length == 2) {
                     // For NPM and NuGet, the componentId looks is of the form "a/v"
-                    componentSet.add(new Component(null, parts[0], parts[1], getJsonObjectFromScanMetadata(componentIdWithMetadata.get(componentIdString))));
+                    componentSet.add(new Component(null, parts[0], parts[1], jsonObject));
                 }
             }
         } catch (Exception e) {
@@ -62,11 +64,10 @@ public class ScanResultToComponentListTransformer {
         }
         return componentSet;
     }
-
+    
     private JsonObject getJsonObjectFromScanMetadata(ScanMetadata scanMeta) {
         Gson gson = new GsonBuilder().create();
-        JsonElement element = gson.toJsonTree(scanMeta);
-        JsonObject object = element.getAsJsonObject();
+        JsonObject object = gson.fromJson(gson.toJson(scanMeta), JsonObject.class);
         return object;
     }
 
