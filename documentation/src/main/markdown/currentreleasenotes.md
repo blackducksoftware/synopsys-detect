@@ -2,15 +2,19 @@
 
 ## Version 8.11.0
 
-### Changed features
+### New features
 
-* Added integration instructions for Bitbucket to the documentation set.
+* For Stateless and Rapid scans, the scanId and scan type being run are now stored in the codeLocations section of the status.json file. For a given scanId, the scan type can be DETECTOR, BINARY_SCAN, SIGNATURE_SCAN, or CONTAINER_SCAN.
+* Stateless Signature and Package Manager scans now support the <code>--detect.blackduck.rapid.compare.mode</code> flag. Values are ALL, BOM_COMPARE, or BOM_COMPARE_STRICT. See the [Stateless Scans page](runningdetect/statelessscan.md) for further details. 
+* [Component Location Analysis](runningdetect/component-location-analysis.md) is now available for offline and Rapid/Stateless online scans of NPM, Maven, Gradle and NuGet projects.
 
 ### Resolved issues
 
+* (IDETECT-3921) [solution_name] will now validate directory permissions prior to downloading the [solution_name] JAR file.
 
 ### Dependency updates
 
+* Upgraded Docker Inspector to version 10.1.0. See the [Docker Inspector Release notes](packagemgrs/docker/releasenotes.md) for further details.
 
 ## Version 8.10.0
 

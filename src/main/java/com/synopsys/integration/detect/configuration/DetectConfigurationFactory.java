@@ -29,9 +29,7 @@ import com.synopsys.integration.configuration.property.types.enumallnone.list.Al
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
-import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
-import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
@@ -217,6 +215,9 @@ public class DetectConfigurationFactory {
         return hss;
     }
 
+    public Boolean isComponentLocationAnalysisEnabled() {
+        return detectConfiguration.getValue(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED);
+    }
     public DetectToolFilter createToolFilter(RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
         Optional<Boolean> impactEnabled = Optional.of(detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED));
 
@@ -392,6 +393,7 @@ public class DetectConfigurationFactory {
         Boolean treatSkippedScansAsSuccess = detectConfiguration.getValue(DetectProperties.DETECT_FORCE_SUCCESS_ON_SKIP);
         Boolean isStateless = BlackduckScanMode.STATELESS.equals(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE)) ||
                 BlackduckScanMode.EPHEMERAL.equals(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE));
+        RapidCompareMode compareMode = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE);
         
 
         return new BlackDuckSignatureScannerOptions(
@@ -411,7 +413,8 @@ public class DetectConfigurationFactory {
             followSymLinks,
             treatSkippedScansAsSuccess,
             isStateless,
-            findReducedPersistence()
+            findReducedPersistence(),
+            compareMode
         );
     }
 
