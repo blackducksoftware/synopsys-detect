@@ -1,6 +1,10 @@
 # Bitbucket integration
 [solution_name] consolidates several scanning utilities and tools and can be used to scan artifacts in a [Bitbucket pipeline](https://bitbucket.org/product/features/pipelines). The following procedures provide guidance on setting up [solution_name] with your Bitbucket continuous integration builds.
 
+## Prerequisites
+
+Integration with BitBucket requires a fully configured instance of [solution_name] and compatible instance of Java. For prerequisite information refer to [Requirements and release information](../../gettingstarted/requirements.md)
+
 ## Configuring with API tokens
 
 The recommended way of configuring [solution_name] with a Bitbucket pipeline is to use an API token.   
