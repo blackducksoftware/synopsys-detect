@@ -19,6 +19,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DefaultDetector
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
+import com.synopsys.integration.detect.workflow.blackduck.project.options.ProjectSyncOptions;
 import com.synopsys.integration.rest.credentials.Credentials;
 
 public class DetectConfigurationFactoryTests {
@@ -106,7 +107,9 @@ public class DetectConfigurationFactoryTests {
     public void testAllCloneCategories() {
         DetectConfigurationFactory factory = factoryOf(Pair.of(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES, "ALL"));
         
-        List<ProjectCloneCategoriesType> cloneCategories = factory.getCloneCategories();
+        ProjectSyncOptions projectSyncOptions = factory.createDetectProjectServiceOptions();
+
+        List<ProjectCloneCategoriesType> cloneCategories = projectSyncOptions.getCloneCategories();
         
         Assertions.assertTrue(cloneCategories == null);
     }
@@ -114,8 +117,9 @@ public class DetectConfigurationFactoryTests {
     @Test
     public void testNoCloneCategories() {
         DetectConfigurationFactory factory = factoryOf(Pair.of(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES, "NONE"));
-        
-        List<ProjectCloneCategoriesType> cloneCategories = factory.getCloneCategories();
+        ProjectSyncOptions projectSyncOptions = factory.createDetectProjectServiceOptions();
+
+        List<ProjectCloneCategoriesType> cloneCategories = projectSyncOptions.getCloneCategories();
         
         Assertions.assertTrue(cloneCategories.isEmpty()); 
     }
@@ -129,7 +133,9 @@ public class DetectConfigurationFactoryTests {
                         + ProjectCloneCategoriesType.DEEP_LICENSE.toString()
                 ));
         
-        List<ProjectCloneCategoriesType> cloneCategories = factory.getCloneCategories();
+        ProjectSyncOptions projectSyncOptions = factory.createDetectProjectServiceOptions();
+
+        List<ProjectCloneCategoriesType> cloneCategories = projectSyncOptions.getCloneCategories();
         
         Assertions.assertTrue(cloneCategories.contains(ProjectCloneCategoriesType.CUSTOM_FIELD_DATA));
         Assertions.assertTrue(cloneCategories.contains(ProjectCloneCategoriesType.DEEP_LICENSE));

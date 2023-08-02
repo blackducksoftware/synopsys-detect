@@ -341,22 +341,6 @@ public class DetectConfigurationFactory {
         );
     }
 
-    public List<ProjectCloneCategoriesType> getCloneCategories() {
-        AllNoneEnumList<ProjectCloneCategoriesType> value = detectConfiguration
-                .getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES);
-
-        if (value.containsNone()) {
-            // NONE is achieved by sending the field but with an empty array value
-            return new ArrayList<>();
-        } else if (value.containsAll()) {
-            // ALL is achieved by sending the request with project category field missing or set to null
-            // This is the default if the property is not specified.
-            return null;
-        } else {
-            return value.toPresentValues();
-        }
-    }
-
     public ProjectVersionLicenseOptions createProjectVersionLicenseOptions() {
         String licenseName = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_LICENSE);
         return new ProjectVersionLicenseOptions(licenseName);
