@@ -78,16 +78,15 @@ public class AllNoneEnumListBase<E extends Enum<E>, B extends Enum<B>> implement
     }
     
     /**
-     * This returns null if the properties' value is set to all values of the Enum.
+     * This returns null if the properties' value is set to ALL values of the Enum.
+     * It returns an empty array if the value is set to NONE.
      * This indicates all to Black Duck and streamlines things for newer endpoints.
+     * Older endpoints should use representedValues.
      */
     public List<B> representedValuesStreamlined() {
         if (containsNone()) {
-            // NONE is achieved by sending the field but with an empty array value
             return new ArrayList<>();
         } else if (containsAll()) {
-            // ALL is achieved by sending the request with the field set to null.
-            // This is the default if the property is not specified.
             return null;
         } else {
             return toPresentValues();
