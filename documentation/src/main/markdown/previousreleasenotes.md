@@ -2,6 +2,8 @@
 
 # Release notes for supported versions
 
+## Version 8.11.0
+
 ### New features
 
 * For Stateless and Rapid scans, the scanId and scan type being run are now stored in the codeLocations section of the status.json file. For a given scanId, the scan type can be DETECTOR, BINARY_SCAN, SIGNATURE_SCAN, or CONTAINER_SCAN.
