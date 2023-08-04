@@ -3,10 +3,8 @@ package com.synopsys.integration.detectable.detectables.clang.linux;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,27 +17,7 @@ public class LinuxDistro {
 
     public Optional<String> extractLinuxDistroNameFromEtcDir() {
         File etcDir = new File("/etc");
-
-        if (isOracleLinux(etcDir)) {
-            logger.trace("Target image Linux distro is an Oracle Linux");
-            return Optional.of("oracle_linux");
-        }
-
         return extractLinuxDistroNameFromEtcDir(etcDir);
-    }
-
-    public boolean isOracleLinux(File etcDirFile) {
-        for (File etcFile : etcDirFile.listFiles()) {
-            if ("oracle-release".equals(etcFile.getName())) {
-                logger.trace("Found oracle-release");
-                return true;
-            }
-        }
-
-        File releaseFile = new File(etcDirFile, "os-release");
-        Optional<String> distroName = getLinuxDistroNameFromStandardReleaseFile(releaseFile);
-
-        return distroName.isPresent() && "ol".equalsIgnoreCase(distroName.get());
     }
 
     public Optional<String> extractLinuxDistroNameFromEtcDir(File etcDir) {
