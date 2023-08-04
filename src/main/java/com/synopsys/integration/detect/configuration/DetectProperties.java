@@ -893,7 +893,7 @@ public class DetectProperties {
         StringListProperty.newBuilder("detect.excluded.directories", emptyList())
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
-                "A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.",
+                "A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude. Caution should be exercised when including this parameter on Windows, as the command length generated may exceed OS limitations.",
                 "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, will not be searched to find files for binary scanning when property detect.binary.scan.file.name.patterns is set, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
@@ -906,7 +906,7 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.excluded.directories.defaults.disabled", false)
             .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
-                "If false, Detect will exclude the default directory names. See the detailed help for more information.",
+                "If false, Detect will exclude the default directory names. See the detailed help for more information. Caution should be exercised when including this parameter on Windows, as the commmand length generated may exceed OS limitations.",
                 "If false, the following directories will be excluded by Detect when searching for detectors: __MACOX, bin, build, .git, .gradle, .yarn, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, node_modules, .synopsys."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
