@@ -36,7 +36,11 @@ public class DetectorStatusUtil {
         if (extraction.getError() instanceof ExecutableFailedException) {
             ExecutableFailedException failedException = (ExecutableFailedException) extraction.getError();
             if (failedException.hasReturnCode()) {
-                return "Failed to execute command, returned non-zero: " + failedException.getExecutableDescription();
+                return String.format(
+                    "Failed to execute command, returned non-zero (%d): %s",
+                    failedException.getReturnCode(),
+                    failedException.getExecutableDescription()
+                );
             } else if (failedException.getExecutableException() != null) {
                 return "Failed to execute command, " + failedException.getExecutableException().getMessage() + " : " + failedException.getExecutableDescription();
             } else {
