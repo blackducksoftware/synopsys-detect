@@ -4,6 +4,6 @@ public class NpmPackagesObjectNotFoundDetectableResult extends FailedDetectableR
 
     @Override
     public String toDescription() {
-        return "No packages object was found. This may be due to a package-lock.json or npm-shirnkwrap.json file created by an earlier version of npm. Please run 'npm install' with a supported version of npm and try again.";
+        return "No packages object was found. This may be due to a package-lock.json or npm-shrinkwrap.json file created by an earlier version of npm. Please run 'npm install' with a supported version of npm and try again.";
     }
 }
