@@ -34,6 +34,10 @@ public class CombinedPackageJsonExtractor {
             .map(content -> gson.fromJson(content, PackageJson.class))
             .orElse(null);
         
+        if (packageJson == null) {
+            return null;
+        }
+        
         CombinedPackageJson combinedPackageJson = new CombinedPackageJson();
         
         // Take fields that will be related to BD projects from the root project.json
@@ -72,9 +76,11 @@ public class CombinedPackageJsonExtractor {
                         .map(content -> gson.fromJson(content, PackageJson.class))
                         .orElse(null);
                 
-                combinedPackageJson.getDependencies().putAll(workspacePackageJson.dependencies);
-                combinedPackageJson.getDevDependencies().putAll(workspacePackageJson.devDependencies);
-                combinedPackageJson.getPeerDependencies().putAll(workspacePackageJson.peerDependencies);
+                if (workspacePackageJson != null) {
+                    combinedPackageJson.getDependencies().putAll(workspacePackageJson.dependencies);
+                    combinedPackageJson.getDevDependencies().putAll(workspacePackageJson.devDependencies);
+                    combinedPackageJson.getPeerDependencies().putAll(workspacePackageJson.peerDependencies);
+                }
             }
         }
         
