@@ -13,6 +13,6 @@ RUN apt-get update && apt-get install -y git
 RUN mkdir -p ${SRC_DIR}
 
 
-RUN git clone --depth 1 https://github.com/atiqzaman-dsi/simple-gradle.git ${SRC_DIR}
+RUN git clone --depth 1 https://github.com/jabedhasan21/java-hello-world-with-gradle ${SRC_DIR}
 
 RUN cd ${SRC_DIR} && gradle build
