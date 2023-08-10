@@ -1,5 +1,7 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile.functional;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,8 +48,8 @@ public class NpmDevExclusionTest {
     }
 
     @Test
-    public void testDevDependencyNotExists() {
-        NpmPackagerResult result = createPackager(NpmDependencyType.DEV, NpmDependencyType.PEER).parseAndTransform(packageJsonText, packageLockText);
+    public void testDevDependencyNotExists() throws IOException {
+        NpmPackagerResult result = createPackager(NpmDependencyType.DEV, NpmDependencyType.PEER).parseAndTransform(null, packageJsonText, packageLockText);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
         graphAssert.hasNoDependency(childDev);
         graphAssert.hasNoDependency(parentDev);
@@ -55,8 +57,8 @@ public class NpmDevExclusionTest {
     }
 
     @Test
-    public void testDevDependencyExists() {
-        NpmPackagerResult result = createPackager(NpmDependencyType.PEER).parseAndTransform(packageJsonText, packageLockText);
+    public void testDevDependencyExists() throws IOException {
+        NpmPackagerResult result = createPackager(NpmDependencyType.PEER).parseAndTransform(null, packageJsonText, packageLockText);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
         graphAssert.hasDependency(childDev);
         graphAssert.hasDependency(parentDev);

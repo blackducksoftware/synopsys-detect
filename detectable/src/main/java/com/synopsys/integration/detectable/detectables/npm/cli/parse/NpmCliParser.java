@@ -23,6 +23,7 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class NpmCliParser {
@@ -40,17 +41,17 @@ public class NpmCliParser {
         this.npmDependencyTypeFilter = npmDependencyTypeFilter;
     }
 
-    public NpmPackagerResult generateCodeLocation(String npmLsOutput, PackageJson packageJson) {
+    public NpmPackagerResult generateCodeLocation(String npmLsOutput, CombinedPackageJson combinedPackageJson) {
         if (StringUtils.isBlank(npmLsOutput)) {
             logger.error("Ran into an issue creating and writing to file");
             return null;
         }
 
         logger.debug("Generating results from npm ls -json");
-        return convertNpmJsonFileToCodeLocation(npmLsOutput, packageJson);
+        return convertNpmJsonFileToCodeLocation(npmLsOutput, combinedPackageJson);
     }
 
-    public NpmPackagerResult convertNpmJsonFileToCodeLocation(String npmLsOutput, PackageJson packageJson) {
+    public NpmPackagerResult convertNpmJsonFileToCodeLocation(String npmLsOutput, CombinedPackageJson combinedPackageJson) {
         JsonObject npmJson = JsonParser.parseString(npmLsOutput).getAsJsonObject();
         DependencyGraph graph = new BasicDependencyGraph();
 
@@ -65,7 +66,7 @@ public class NpmCliParser {
             projectVersion = projectVersionElement.getAsString();
         }
 
-        populateChildren(graph, null, npmJson.getAsJsonObject(JSON_DEPENDENCIES), true, packageJson);
+        populateChildren(graph, null, npmJson.getAsJsonObject(JSON_DEPENDENCIES), true, combinedPackageJson);
 
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, projectName, projectVersion);
 
@@ -75,7 +76,7 @@ public class NpmCliParser {
 
     }
 
-    private void populateChildren(DependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, boolean isRootDependency, PackageJson packageJson) {
+    private void populateChildren(DependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, boolean isRootDependency, CombinedPackageJson combinedPackageJson) {
         if (parentNodeChildren == null) {
             return;
         }
@@ -89,13 +90,13 @@ public class NpmCliParser {
                     // Transitives can be both application and dev/peer dependency graphs, but Detect shouldn't be walking a dev or peer dependency tree unless it passed the filter already.
                     return true;
                 }
-                boolean excludingBecauseDev = (npmDependencyTypeFilter.shouldExclude(NpmDependencyType.DEV, packageJson.devDependencies) && packageJson.devDependencies.containsKey(
+                boolean excludingBecauseDev = (npmDependencyTypeFilter.shouldExclude(NpmDependencyType.DEV, combinedPackageJson.getDevDependencies()) && combinedPackageJson.getDevDependencies().containsKey(
                     elementEntry.getKey()));
-                boolean excludingBecausePeer = (npmDependencyTypeFilter.shouldExclude(NpmDependencyType.PEER, packageJson.peerDependencies)
-                    && packageJson.peerDependencies.containsKey(elementEntry.getKey()));
+                boolean excludingBecausePeer = (npmDependencyTypeFilter.shouldExclude(NpmDependencyType.PEER, combinedPackageJson.getPeerDependencies())
+                    && combinedPackageJson.getPeerDependencies().containsKey(elementEntry.getKey()));
                 return !excludingBecauseDev && !excludingBecausePeer;
             })
-            .forEach(elementEntry -> processChild(elementEntry, graph, parentDependency, isRootDependency, packageJson));
+            .forEach(elementEntry -> processChild(elementEntry, graph, parentDependency, isRootDependency, combinedPackageJson));
     }
 
     private void processChild(
@@ -103,7 +104,7 @@ public class NpmCliParser {
         DependencyGraph graph,
         Dependency parentDependency,
         boolean isRootDependency,
-        PackageJson packageJson
+        CombinedPackageJson combinedPackageJson
     ) {
         JsonObject element = elementEntry.getValue().getAsJsonObject();
         String name = elementEntry.getKey();
@@ -117,9 +118,27 @@ public class NpmCliParser {
         if (name != null && version != null) {
             ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
             Dependency child = new Dependency(name, version, externalId);
+            
+            // Any workspace dependency is considered a direct dependency
+            boolean directWorkspaceDependency = false;
+            String possibleWorkspaceDependency = Optional.ofNullable(element.getAsJsonPrimitive("resolved"))
+                    .filter(JsonPrimitive::isString)
+                    .map(JsonPrimitive::getAsString)
+                    .orElse(null);
+            
+            if (combinedPackageJson.getConvertedWorkspaces() != null && possibleWorkspaceDependency != null) {
+                // workspaces under the root resolve as file../<path to workspace> 
+                // remove that and see if any absolute workspace paths have this subpath
+                String convertedPossibleWorkspaceDependency =
+                        possibleWorkspaceDependency.replace("file:..", "");
+                
+                directWorkspaceDependency = 
+                        combinedPackageJson.getConvertedWorkspaces().stream().anyMatch(workspace -> workspace.contains(convertedPossibleWorkspaceDependency));
+            }
 
-            populateChildren(graph, child, children, false, packageJson);
-            if (isRootDependency) {
+            populateChildren(graph, child, children, directWorkspaceDependency, combinedPackageJson);
+
+            if (isRootDependency || directWorkspaceDependency) {
                 graph.addChildToRoot(child);
             } else {
                 graph.addParentWithChild(parentDependency, child);
