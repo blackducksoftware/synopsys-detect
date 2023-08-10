@@ -137,8 +137,8 @@ public class NpmDependencyConverter {
                 }
                 
                 // Link the child back to the parent. The child will be the leaf of the overall packageName.
-                parentPackage.packages.put(packageName.substring(packageName.lastIndexOf("*") + 1, packageName.length()), 
-                        packageLock.packages.get(packageName));
+                String childPackageName = packageName.substring(packageName.lastIndexOf("*") + 1, packageName.length());
+                parentPackage.packages.put(childPackageName, packageLock.packages.get(packageName));
                 
                 packagesToRemove.add(packageName);
             }
