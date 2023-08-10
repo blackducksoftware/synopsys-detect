@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.blackduck.codelocation.Result;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
@@ -108,7 +111,7 @@ public class RapidModeStepRunner {
         BlackduckScanMode mode = blackDuckRunData.getScanMode();
         List<DeveloperScansScanView> rapidFullResults = operationRunner.waitForFullRapidResults(blackDuckRunData, parsedUrls, mode);
 
-        operationRunner.generateComponentLocationAnalysisIfEnabled(rapidFullResults);
+        operationRunner.generateComponentLocationAnalysisIfEnabled(rapidFullResults, bdioResult);
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
         File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
@@ -168,6 +171,11 @@ public class RapidModeStepRunner {
         List<HttpUrl> parsedUrls = new ArrayList<>(outputs.size());
         
         for (ScanCommandOutput output : outputs) {
+        	// Don't bother further processing scans that have failed. We have already reported errors on them.
+        	if (output.getResult().equals(Result.FAILURE)) {
+        		continue;
+        	}
+        	
             try {
                 File specificRunOutputDirectory = output.getSpecificRunOutputDirectory();
                 String scanOutputLocation = specificRunOutputDirectory.toString() + SignatureScanResult.OUTPUT_FILE_PATH;

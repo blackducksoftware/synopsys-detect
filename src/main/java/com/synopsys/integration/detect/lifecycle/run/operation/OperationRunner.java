@@ -6,10 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
@@ -18,6 +15,7 @@ import java.util.regex.Pattern;
 
 import com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detector.base.DetectorType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
@@ -187,8 +185,15 @@ import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
-
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
+
+import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
+import com.synopsys.integration.componentlocator.beans.Component;
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.BdioToComponentListTransformer;
+import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.SUPPORTED_DETECTORS_LOG_MSG;
+import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.OPERATION_NAME;
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.ScanResultToComponentListTransformer;
+
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectDetectableFactory detectDetectableFactory;
@@ -456,6 +461,16 @@ public class OperationRunner {
     }
     //End Rapid
 
+    private void failComponentLocationAnalysisOperationTask(String reason) throws OperationException {
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        logger.info(reason);
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        auditLog.namedPublic(
+                OPERATION_NAME,
+                () -> new GenerateComponentLocationAnalysisOperation().failComponentLocationAnalysisOperation()
+        );
+    }
+    
     /**
      * Given a BDIO, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
      * every detected component's {@link ExternalId} along with its declaration location when applicable.
@@ -464,37 +479,79 @@ public class OperationRunner {
      */
     public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws OperationException {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
-            if (!bdio.getCodeLocationNamesResult().getCodeLocationNames().isEmpty()) {
-                auditLog.namedPublic(
-                        "Generate Component Location Analysis File for All Components",
-                        () -> new GenerateComponentLocationAnalysisOperation().locateComponentsForOfflineDetectorScan(bdio, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
-                );
+            if (bdio.getCodeLocationNamesResult().getCodeLocationNames().isEmpty()) {
+                failComponentLocationAnalysisOperationTask("Component Location Analysis requires non-empty BDIO results. Skipping location analysis.");
+            } else if (!applicableDetectorsIncludeAtLeastOneSupportedDetector(bdio.getApplicableDetectorTypes())) {
+                failComponentLocationAnalysisOperationTask(SUPPORTED_DETECTORS_LOG_MSG);
             } else {
-                logger.info(ReportConstants.RUN_SEPARATOR);
-                logger.info("Component Location Analysis requires a non-empty BDIO. Skipping location analysis.");
-                logger.info(ReportConstants.RUN_SEPARATOR);
+                Set<Component> componentsSet = new BdioToComponentListTransformer().transformBdioToComponentSet(bdio);  
+                if (componentsSet.isEmpty()) {
+                    failComponentLocationAnalysisOperationTask("Component Location Analysis requires at least one dependency in BDIO results. Skipping location analysis.");
+                } else {
+                    auditLog.namedPublic(
+                            OPERATION_NAME,
+                            () -> new GenerateComponentLocationAnalysisOperation().locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                    );
+                }
             }
         }
     }
-
+    
     /**
      * Given a Rapid/Stateless Detector Scan result, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
      * every reported component's {@link ExternalId} along with its declaration location and upgrade guidance information when applicable.
      * @param rapidFullResults
      * @throws OperationException
      */
-    public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults) throws OperationException {
+    public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults, BdioResult bdio) throws OperationException {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
-            if (!rapidFullResults.isEmpty()) {
-                auditLog.namedPublic(
-                        "Generate Component Location Analysis File for Reported Components",
-                        () -> (new GenerateComponentLocationAnalysisOperation()).locateComponentsForNonPersistentOnlineDetectorScan(rapidFullResults, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
-                );
+            if (rapidFullResults.isEmpty()) {
+                failComponentLocationAnalysisOperationTask("Component Location Analysis requires non-empty Rapid/Stateless Scan results. Skipping location analysis.");
+            } else if (!applicableDetectorsIncludeAtLeastOneSupportedDetector(bdio.getApplicableDetectorTypes())) {
+                failComponentLocationAnalysisOperationTask(SUPPORTED_DETECTORS_LOG_MSG);
             } else {
-                logger.info(ReportConstants.RUN_SEPARATOR);
-                logger.info("Component Location Analysis requires non-empty Rapid Scan results. Skipping location analysis.");
-                logger.info(ReportConstants.RUN_SEPARATOR);
+                Set<Component> componentsSet = new ScanResultToComponentListTransformer().transformScanResultToComponentList(rapidFullResults);
+                if (componentsSet.isEmpty()) {
+                    failComponentLocationAnalysisOperationTask("Component Location Analysis requires at least one dependency in Rapid/Stateless Detector Scan results. Skipping location analysis.");
+                } else {
+                    auditLog.namedPublic(
+                            OPERATION_NAME,
+                            () -> (new GenerateComponentLocationAnalysisOperation()).locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                    );
+                }
             }
+        }
+    }
+
+    private boolean applicableDetectorsIncludeAtLeastOneSupportedDetector(Set<DetectorType> applicableDetectors) {
+        if (SUPPORTED_DETECTORS.isEmpty()) {
+            // Idler CLL will always give an empty list
+            return true;
+        }
+        Set<String> applicableDetectorsAsStrings = getApplicableDetectorTypesAsStrings(applicableDetectors);
+        applicableDetectorsAsStrings.retainAll(SUPPORTED_DETECTORS);
+        return !applicableDetectorsAsStrings.isEmpty();
+    }
+
+    private Set<String> getApplicableDetectorTypesAsStrings(Set<DetectorType> applicableDetectors) {
+        Set<String> applicableDetectorsAsStrings = new HashSet<>();
+        for (DetectorType detectorType : applicableDetectors) {
+            applicableDetectorsAsStrings.add(detectorType.toString());
+        }
+        return applicableDetectorsAsStrings;
+    }
+
+    /**
+     * Since component location analysis is not supported for online Intelligent scans in 8.11, an appropriate console
+     * msg is logged and status=FAILURE is recorded in the status.json file
+     * @throws OperationException
+     */
+    public void attemptToGenerateComponentLocationAnalysisIfEnabled() throws OperationException {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+            auditLog.namedPublic(
+                    OPERATION_NAME,
+                    () -> (new GenerateComponentLocationAnalysisOperation()).locateComponentsForOnlineIntelligentScan()
+            );
         }
     }
 

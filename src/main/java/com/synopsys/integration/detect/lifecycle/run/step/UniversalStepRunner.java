@@ -98,7 +98,7 @@ public class UniversalStepRunner {
 
         uploadTargets.add(UploadTarget.createDefault(projectNameVersion, aggregateCodeLocation.getCodeLocationName(), aggregateCodeLocation.getAggregateFile()));
 
-        return new BdioResult(uploadTargets, new DetectCodeLocationNamesResult(codeLocationNamesResult));
+        return new BdioResult(uploadTargets, new DetectCodeLocationNamesResult(codeLocationNamesResult), universalToolsResult.getApplicableDetectorTypes());
     }
 
     public NameVersion determineProjectInformation(UniversalToolsResult universalToolsResult) throws OperationException {

@@ -150,6 +150,8 @@ public class IntelligentModeStepRunner {
             mustWaitAtBomSummaryLevel.set(true);
         });
 
+        operationRunner.attemptToGenerateComponentLocationAnalysisIfEnabled();
+
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
             // Calculate code locations. We do this even if we don't wait as we want to report code location data 
             // in various reports.
