@@ -12,6 +12,8 @@ import com.synopsys.integration.detector.base.DetectorStatusCode;
 import com.synopsys.integration.detector.result.DetectorResult;
 
 public class DetectorStatusUtil {
+    private static final int SUBPROCESS_EXIT_CODE_OOM = 137;
+
     @Nullable
     public static DetectorStatusCode getStatusCode(DetectableResult detectableResult) {
         return DetectorResultStatusCodeLookup.standardLookup.getStatusCode(detectableResult.getClass());
@@ -25,6 +27,11 @@ public class DetectorStatusUtil {
     @Nullable
     public static DetectorStatusCode getFailedStatusCode(Extraction extraction) {
         if (extraction.getError() instanceof ExecutableFailedException) {
+            ExecutableFailedException failedException = (ExecutableFailedException) extraction.getError();
+            if (failedException.getReturnCode() == SUBPROCESS_EXIT_CODE_OOM) {
+                return DetectorStatusCode.EXECUTABLE_TERMINATED_LIKELY_OUT_OF_MEMORY;
+            }
+
             return DetectorStatusCode.EXECUTABLE_FAILED;
         } else {
             return DetectorStatusCode.EXTRACTION_FAILED;
@@ -36,6 +43,10 @@ public class DetectorStatusUtil {
         if (extraction.getError() instanceof ExecutableFailedException) {
             ExecutableFailedException failedException = (ExecutableFailedException) extraction.getError();
             if (failedException.hasReturnCode()) {
+                if (failedException.getReturnCode() == SUBPROCESS_EXIT_CODE_OOM) {
+                    return DetectorStatusCode.EXECUTABLE_TERMINATED_LIKELY_OUT_OF_MEMORY.getDescription();
+                }
+
                 return String.format(
                     "Failed to execute command, returned non-zero (%d): %s",
                     failedException.getReturnCode(),
@@ -54,4 +65,5 @@ public class DetectorStatusUtil {
             return "See logs for further explanation";
         }
     }
+
 }
