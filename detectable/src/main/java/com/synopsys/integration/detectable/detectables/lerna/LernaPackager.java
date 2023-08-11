@@ -148,6 +148,7 @@ public class LernaPackager {
         if (lockFile.getNpmLockContents().isPresent()) {
             try {
                 NpmPackagerResult npmPackagerResult = npmLockfilePackager.parseAndTransform(
+                    null,
                     packageJsonContents,
                     lockFile.getNpmLockContents().get(),
                     externalPackages

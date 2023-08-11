@@ -20,6 +20,8 @@ import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJsonExtractor;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
@@ -44,9 +46,9 @@ public class NpmCliExtractor {
 
     public Extraction extract(File directory, ExecutableTarget npmExe, @Nullable String npmArguments, File packageJsonFile) {
         toolVersionLogger.log(directory, npmExe);
-        PackageJson packageJson;
+        CombinedPackageJson combinedPackageJson;
         try {
-            packageJson = parsePackageJson(packageJsonFile);
+            combinedPackageJson = parsePackageJson(packageJsonFile);
         } catch (IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
@@ -74,9 +76,9 @@ public class NpmCliExtractor {
         } else if (StringUtils.isNotBlank(standardOutput)) {
             logger.debug("Parsing npm ls file.");
             logger.debug(standardOutput);
-            NpmPackagerResult result = npmCliParser.generateCodeLocation(standardOutput, packageJson);
-            String projectName = result.getProjectName() != null ? result.getProjectName() : packageJson.name;
-            String projectVersion = result.getProjectVersion() != null ? result.getProjectVersion() : packageJson.version;
+            NpmPackagerResult result = npmCliParser.generateCodeLocation(standardOutput, combinedPackageJson);
+            String projectName = result.getProjectName() != null ? result.getProjectName() : combinedPackageJson.getName();
+            String projectVersion = result.getProjectVersion() != null ? result.getProjectVersion() : combinedPackageJson.getVersion();
             return new Extraction.Builder().success(result.getCodeLocation()).projectName(projectName).projectVersion(projectVersion).build();
         } else {
             logger.error("Nothing returned from npm ls -json command");
@@ -84,8 +86,12 @@ public class NpmCliExtractor {
         }
     }
 
-    private PackageJson parsePackageJson(File packageJson) throws IOException {
+    private CombinedPackageJson parsePackageJson(File packageJson) throws IOException {
         String packageJsonText = FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8);
-        return gson.fromJson(packageJsonText, PackageJson.class);
+        
+        CombinedPackageJsonExtractor extractor = new CombinedPackageJsonExtractor(gson);
+        CombinedPackageJson combinedPackageJson = extractor.constructCombinedPackageJson(packageJson.getPath(), packageJsonText);
+
+        return combinedPackageJson;
     }
 }

@@ -22,7 +22,7 @@ public class NpmWithoutRequiresExcludesTest {
     @Test
     public void testDevDependencyExcluded() {
         PackageLock packageLock = new PackageLock();
-        packageLock.dependencies = new HashMap<>();
+        packageLock.packages = new HashMap<>();
 
         List<NpmDependency> resolvedDependencies = new ArrayList<>();
         resolvedDependencies.add(new NpmDependency("example", "1.0.0", true, true));
@@ -38,7 +38,7 @@ public class NpmWithoutRequiresExcludesTest {
         NpmLockfileGraphTransformer graphTransformer = new NpmLockfileGraphTransformer(
             EnumListFilter.fromExcluded(NpmDependencyType.DEV, NpmDependencyType.PEER)
         );
-        DependencyGraph graph = graphTransformer.transform(packageLock, npmProject, Collections.emptyList());
+        DependencyGraph graph = graphTransformer.transform(packageLock, npmProject, Collections.emptyList(), null);
 
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, graph);
         graphAssert.hasRootSize(0);

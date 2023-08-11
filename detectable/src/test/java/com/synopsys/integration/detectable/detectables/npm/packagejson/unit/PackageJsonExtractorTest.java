@@ -17,6 +17,7 @@ import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -46,7 +47,7 @@ class PackageJsonExtractorTest {
 
     @Test
     void extractWithNoDevOrPeerDependencies() {
-        PackageJson packageJson = createPackageJson();
+        CombinedPackageJson packageJson = createPackageJson();
         Extraction extraction = createExtractor(NpmDependencyType.DEV, NpmDependencyType.PEER).extract(packageJson);
         assertEquals(1, extraction.getCodeLocations().size());
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
@@ -62,7 +63,7 @@ class PackageJsonExtractorTest {
 
     @Test
     void extractWithDevNoPeerDependencies() {
-        PackageJson packageJson = createPackageJson();
+        CombinedPackageJson packageJson = createPackageJson();
         Extraction extraction = createExtractor(NpmDependencyType.PEER).extract(packageJson);
         assertEquals(1, extraction.getCodeLocations().size());
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
@@ -76,19 +77,17 @@ class PackageJsonExtractorTest {
         graphAssert.hasRootSize(4);
     }
 
-    private PackageJson createPackageJson() {
-        PackageJson packageJson = new PackageJson();
+    private CombinedPackageJson createPackageJson() {
+        CombinedPackageJson combinedPackageJson = new CombinedPackageJson();
 
-        packageJson.name = "test";
-        packageJson.version = "test-version";
-        packageJson.dependencies = new HashMap<>();
-        packageJson.devDependencies = new HashMap<>();
+        combinedPackageJson.setName("test");
+        combinedPackageJson.setVersion("test-version");
 
-        packageJson.dependencies.put(testDep1.getName(), testDep1.getVersion());
-        packageJson.dependencies.put(testDep2.getName(), testDep2.getVersion());
-        packageJson.devDependencies.put(testDevDep1.getName(), testDevDep1.getVersion());
-        packageJson.devDependencies.put(testDevDep2.getName(), testDevDep2.getVersion());
+        combinedPackageJson.getDependencies().put(testDep1.getName(), testDep1.getVersion());
+        combinedPackageJson.getDependencies().put(testDep2.getName(), testDep2.getVersion());
+        combinedPackageJson.getDevDependencies().put(testDevDep1.getName(), testDevDep1.getVersion());
+        combinedPackageJson.getDevDependencies().put(testDevDep2.getName(), testDevDep2.getVersion());
 
-        return packageJson;
+        return combinedPackageJson;
     }
 }
