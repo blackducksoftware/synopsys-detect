@@ -12,6 +12,7 @@ public class CombinedPackageJson {
     private String version;
     private List<String> workspaces = new ArrayList<>();
     private List<String> convertedWorkspaces = new ArrayList<>();
+    private List<String> relativeWorkspaces = new ArrayList<>();
     
     private MultiValuedMap<String, String> dependencies;
     private MultiValuedMap<String, String> devDependencies;
@@ -49,6 +50,24 @@ public class CombinedPackageJson {
 
     public void setConvertedWorkspaces(List<String> convertedWorkspaces) {
         this.convertedWorkspaces = convertedWorkspaces;
+    }
+    
+    public List<String> getRelativeWorkspaces() {        
+        return relativeWorkspaces;
+    }
+    
+    public void setRelativeWorkspaces(String rootJsonPath) {
+        String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf("/") + 1);
+
+        for (String absoluteWorkspacePath : convertedWorkspaces) {
+            int rootIndex = absoluteWorkspacePath.indexOf(projectRoot);
+            if (rootIndex != -1) {
+                int packageStartIndex = rootIndex + projectRoot.length();
+                if (packageStartIndex < absoluteWorkspacePath.length()) {
+                    relativeWorkspaces.add(absoluteWorkspacePath.substring(packageStartIndex));
+                }
+            }
+        }
     }
 
     public String getName() {

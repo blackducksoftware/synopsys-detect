@@ -1,5 +1,7 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +38,32 @@ public class NpmLockfileGraphTransformer {
 
             //First we will recreate the graph from the resolved npm dependencies
             for (NpmDependency resolved : project.getResolvedDependencies()) {
+                if (resolved.getName().contains("react-components")) {
+                    System.out.println("");
+                    
+                    // TODO debug
+                    
+                    for (NpmDependency dependency : resolved.getDependencies()) {
+                        //System.out.println(dependency.getName());
+                        // TODO go after child dependencies until run out of them then go after requires
+                        List<NpmDependency> dependencies = dependency.getDependencies();
+                        Collections.sort(dependencies, new DependencyComparator());
+                        for (NpmDependency childDependency1 : dependencies) {
+                           // System.out.println(childDependency1.getName());
+                            List<NpmDependency> child1Dependencies = childDependency1.getDependencies();
+                            Collections.sort(child1Dependencies, new DependencyComparator());
+                            for (NpmDependency childDependency2: child1Dependencies) {
+                                System.out.println(childDependency2.getName());
+                            }
+                        }
+                    }
+                    
+                    for (NpmRequires requires : resolved.getRequires()) {
+                        System.out.println(requires.getName() + ": " + requires.getFuzzyVersion());
+                    }
+                    
+                    
+                }
                 transformTreeToGraph(resolved, project, dependencyGraph, externalDependencies, workspaces);
             }
 
@@ -87,9 +115,10 @@ public class NpmLockfileGraphTransformer {
             return;
         }
         
+        // TODO check all code paths some callers still sending absolute
         // add workspaces as direct dependencies
         if (workspaces != null && !StringUtils.isBlank(npmDependency.getName()) &&
-                workspaces.stream().anyMatch(x -> x.contains(npmDependency.getName()))) {
+                workspaces.stream().anyMatch(x -> x.equals(npmDependency.getName()))) {
             dependencyGraph.addDirectDependency(npmDependency);
             
             // add workspace requires
@@ -100,6 +129,7 @@ public class NpmLockfileGraphTransformer {
             
         }
         
+        // TODO is it okay to do this again if the workspace triggered it above?
         npmDependency.getRequires().forEach(required -> {
             logger.trace(String.format("Required package: %s of version: %s", required.getName(), required.getFuzzyVersion()));
             Dependency resolved = lookupDependency(required.getName(), npmDependency, npmProject, externalDependencies);
@@ -152,5 +182,17 @@ public class NpmLockfileGraphTransformer {
         return (!packageLockDependency.isDevDependency() && !packageLockDependency.isPeerDependency()) // If the type is not dev or peer, we always want to include it.
             || (packageLockDependency.isDevDependency() && npmDependencyTypeFilter.shouldInclude(NpmDependencyType.DEV))
             || (packageLockDependency.isPeerDependency() && npmDependencyTypeFilter.shouldInclude(NpmDependencyType.PEER));
+    }
+    
+    class DependencyComparator implements Comparator<NpmDependency> {
+
+        @Override
+        public int compare(NpmDependency o1, NpmDependency o2) {
+                NpmDependency one = (NpmDependency) o1;
+                NpmDependency two = (NpmDependency) o2;
+                // TODO Auto-generated method stub
+                return one.getName().compareTo(two.getName());
+        }
+        
     }
 }

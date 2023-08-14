@@ -82,6 +82,8 @@ public class CombinedPackageJsonExtractor {
                     combinedPackageJson.getPeerDependencies().putAll(workspacePackageJson.peerDependencies);
                 }
             }
+            // TODO maybe just carry this and get rid of the absolute one but there are a few callers to check
+            combinedPackageJson.setRelativeWorkspaces(rootJsonPath);
         }
         
         return combinedPackageJson;
