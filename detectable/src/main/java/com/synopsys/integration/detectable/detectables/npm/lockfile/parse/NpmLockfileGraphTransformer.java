@@ -38,31 +38,31 @@ public class NpmLockfileGraphTransformer {
 
             //First we will recreate the graph from the resolved npm dependencies
             for (NpmDependency resolved : project.getResolvedDependencies()) {
-                if (resolved.getName().contains("react-components")) {
+                if (resolved.getName().contains("@jest/reporters")) {
                     System.out.println("");
                     
-                    // TODO debug
-                    
-                    for (NpmDependency dependency : resolved.getDependencies()) {
-                        //System.out.println(dependency.getName());
-                        // TODO go after child dependencies until run out of them then go after requires
-                        List<NpmDependency> dependencies = dependency.getDependencies();
-                        Collections.sort(dependencies, new DependencyComparator());
-                        for (NpmDependency childDependency1 : dependencies) {
-                           // System.out.println(childDependency1.getName());
-                            List<NpmDependency> child1Dependencies = childDependency1.getDependencies();
-                            Collections.sort(child1Dependencies, new DependencyComparator());
-                            for (NpmDependency childDependency2: child1Dependencies) {
-                                System.out.println(childDependency2.getName());
-                            }
-                        }
-                    }
-                    
-                    for (NpmRequires requires : resolved.getRequires()) {
-                        System.out.println(requires.getName() + ": " + requires.getFuzzyVersion());
-                    }
-                    
-                    
+//                    // TODO debug
+//                    
+//                    for (NpmDependency dependency : resolved.getDependencies()) {
+//                        //System.out.println(dependency.getName());
+//                        // TODO go after child dependencies until run out of them then go after requires
+//                        List<NpmDependency> dependencies = dependency.getDependencies();
+//                        Collections.sort(dependencies, new DependencyComparator());
+//                        for (NpmDependency childDependency1 : dependencies) {
+//                           // System.out.println(childDependency1.getName());
+//                            List<NpmDependency> child1Dependencies = childDependency1.getDependencies();
+//                            Collections.sort(child1Dependencies, new DependencyComparator());
+//                            for (NpmDependency childDependency2: child1Dependencies) {
+//                                System.out.println(childDependency2.getName());
+//                            }
+//                        }
+//                    }
+//                    
+//                    for (NpmRequires requires : resolved.getRequires()) {
+//                        System.out.println(requires.getName() + ": " + requires.getFuzzyVersion());
+//                    }
+//                    
+//                    
                 }
                 transformTreeToGraph(resolved, project, dependencyGraph, externalDependencies, workspaces);
             }
@@ -126,20 +126,26 @@ public class NpmLockfileGraphTransformer {
                 Dependency workspaceDependency = lookupDependency(required.getName(), npmDependency, npmProject, externalDependencies);
                 dependencyGraph.addChildrenToRoot(workspaceDependency);
             }
-            
-        }
+        } else {
         
-        // TODO is it okay to do this again if the workspace triggered it above?
-        npmDependency.getRequires().forEach(required -> {
-            logger.trace(String.format("Required package: %s of version: %s", required.getName(), required.getFuzzyVersion()));
-            Dependency resolved = lookupDependency(required.getName(), npmDependency, npmProject, externalDependencies);
-            if (resolved != null) {
-                logger.trace(String.format("Found package: %s with version: %s", resolved.getName(), resolved.getVersion()));
-                dependencyGraph.addChildWithParent(resolved, npmDependency);
-            } else {
-                logger.debug("No resolved dependency found for required package: {}", required.getName());
-            }
-        });
+            // TODO is it okay to do this again if the workspace triggered it above?
+            npmDependency.getRequires().forEach(required -> {
+                if (required.getName().equals("node-notifier")) {
+                    System.out.println("");
+                }
+                logger.trace(String.format("Required package: %s of version: %s", required.getName(),
+                        required.getFuzzyVersion()));
+                Dependency resolved = lookupDependency(required.getName(), npmDependency, npmProject,
+                        externalDependencies);
+                if (resolved != null) {
+                    logger.trace(String.format("Found package: %s with version: %s", resolved.getName(),
+                            resolved.getVersion()));
+                    dependencyGraph.addChildWithParent(resolved, npmDependency);
+                } else {
+                    logger.debug("No resolved dependency found for required package: {}", required.getName());
+                }
+            });
+        }
 
         npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, externalDependencies, workspaces));
     }
@@ -171,6 +177,9 @@ public class NpmLockfileGraphTransformer {
 
     private Dependency firstDependencyWithName(List<NpmDependency> dependencies, String name) {
         for (NpmDependency current : dependencies) {
+            if (name.equals("react-scripts")) {
+                System.out.println("");
+            }
             if (current.getName().equals(name)) {
                 return current;
             }

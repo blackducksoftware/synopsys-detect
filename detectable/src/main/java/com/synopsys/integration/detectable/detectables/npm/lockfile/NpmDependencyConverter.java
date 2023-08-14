@@ -138,6 +138,9 @@ public class NpmDependencyConverter {
                 if (packageLockPackage.peerDependencies != null) {
                     packageLockPackage.dependencies.putAll(packageLockPackage.peerDependencies);
                 }
+                if (packageLockPackage.optionalDependencies != null) {
+                    packageLockPackage.dependencies.putAll(packageLockPackage.optionalDependencies);
+                } 
             }
             
             // Look for any relationships previously nested in the dependencies object prior to

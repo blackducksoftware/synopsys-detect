@@ -18,6 +18,9 @@ public class PackageLockPackage {
     @SerializedName("peerDependencies")
     public Map<String, String> peerDependencies;
     
+    @SerializedName("optionalDependencies")
+    public Map<String, String> optionalDependencies;
+    
     @SerializedName("workspaces")
     public List<String> workspaces;
     

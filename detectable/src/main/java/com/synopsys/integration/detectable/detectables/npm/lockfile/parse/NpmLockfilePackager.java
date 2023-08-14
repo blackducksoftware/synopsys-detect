@@ -65,20 +65,20 @@ public class NpmLockfilePackager {
         
         NpmProject project = dependencyConverter.convertLockFile(packageLock, combinedPackageJson);
         
-        for (NpmDependency dependency : project.getResolvedDependencies()) {
-            //System.out.println(dependency.getName());
-            // TODO go after child dependencies until run out of them then go after requires
-            List<NpmDependency> dependencies = dependency.getDependencies();
-            Collections.sort(dependencies, new DependencyComparator());
-            for (NpmDependency childDependency1 : dependencies) {
-               // System.out.println(childDependency1.getName());
-                List<NpmDependency> child1Dependencies = childDependency1.getDependencies();
-                Collections.sort(child1Dependencies, new DependencyComparator());
-                for (NpmDependency childDependency2: child1Dependencies) {
-                    System.out.println(childDependency2.getName());
-                }
-            }
-        }
+//        for (NpmDependency dependency : project.getResolvedDependencies()) {
+//            //System.out.println(dependency.getName());
+//            // TODO go after child dependencies until run out of them then go after requires
+//            List<NpmDependency> dependencies = dependency.getDependencies();
+//            Collections.sort(dependencies, new DependencyComparator());
+//            for (NpmDependency childDependency1 : dependencies) {
+//               // System.out.println(childDependency1.getName());
+//                List<NpmDependency> child1Dependencies = childDependency1.getDependencies();
+//                Collections.sort(child1Dependencies, new DependencyComparator());
+//                for (NpmDependency childDependency2: child1Dependencies) {
+//                    System.out.println(childDependency2.getName());
+//                }
+//            }
+//        }
         
         DependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies, 
                 combinedPackageJson == null ? null : combinedPackageJson.getRelativeWorkspaces());
