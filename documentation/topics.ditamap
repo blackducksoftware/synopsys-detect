@@ -248,6 +248,9 @@
    <topicref href="integrations/gitlab/gitlabintegration.md" format="markdown">
    </topicref>
    
+   <topicref href="integrations/bitbucket/bitbucketintegration.md" format="markdown">
+   </topicref>
+   
    </topicref>
 </map>
 
