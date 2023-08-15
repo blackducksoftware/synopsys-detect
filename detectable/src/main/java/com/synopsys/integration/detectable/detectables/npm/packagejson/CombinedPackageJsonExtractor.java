@@ -65,7 +65,7 @@ public class CombinedPackageJsonExtractor {
                 if (!Files.exists(workspaceJsonPath)) {
                     continue;
                 } else {
-                    combinedPackageJson.getConvertedWorkspaces().add(convertedWorkspace);
+                    addRelativeWorkspace(combinedPackageJson, projectRoot, convertedWorkspace);
                 }
                 
                 String workspaceJsonString 
@@ -81,11 +81,30 @@ public class CombinedPackageJsonExtractor {
                     combinedPackageJson.getPeerDependencies().putAll(workspacePackageJson.peerDependencies);
                 }
             }
-            // TODO maybe just carry this and get rid of the absolute one but there are a few callers to check
-            combinedPackageJson.setRelativeWorkspaces(rootJsonPath);
         }
         
         return combinedPackageJson;
+    }
+
+
+    /**
+     * Takes an absolute path to a workspace and converts it to a relative one for
+     * future comparisons with contents of the package-lock.json file.
+     * 
+     * @param combinedPackageJson the combined package json we are constructing
+     * @param projectRoot         Path to the root of the project
+     * @param convertedWorkspace  An absolute path to a workspace with wildcards
+     *                            replaced
+     */
+    private void addRelativeWorkspace(CombinedPackageJson combinedPackageJson, String projectRoot,
+            String convertedWorkspace) {
+        int rootIndex = convertedWorkspace.indexOf(projectRoot);
+        if (rootIndex != -1) {
+            int packageStartIndex = rootIndex + projectRoot.length();
+            if (packageStartIndex < convertedWorkspace.length()) {
+                combinedPackageJson.getRelativeWorkspaces().add(convertedWorkspace.substring(packageStartIndex));
+            }
+        }
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 

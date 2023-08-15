@@ -1,18 +1,10 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,14 +14,11 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmDependencyConverter;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmProject;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJsonExtractor;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.util.NameVersion;
 
 public class NpmLockfilePackager {
