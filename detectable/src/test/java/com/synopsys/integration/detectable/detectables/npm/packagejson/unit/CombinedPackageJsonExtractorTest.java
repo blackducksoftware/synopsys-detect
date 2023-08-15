@@ -72,10 +72,10 @@ public class CombinedPackageJsonExtractorTest {
         Assertions.assertTrue(assertMapsEqual(expectedDependencies, combinedPackageJson.getDependencies()));
         
         // Test we correctly discovered all workspaces
-        Assertions.assertTrue(combinedPackageJson.getConvertedWorkspaces().contains(projectRoot + "packages/a"));
-        Assertions.assertTrue(combinedPackageJson.getConvertedWorkspaces().contains(projectRoot + "packages/b"));
-        Assertions.assertTrue(combinedPackageJson.getConvertedWorkspaces().contains(projectRoot + "packages/a/c"));
-        Assertions.assertTrue(combinedPackageJson.getConvertedWorkspaces().contains(projectRoot + "packages/b/d"));
+        Assertions.assertTrue(combinedPackageJson.getRelativeWorkspaces().contains("packages/a"));
+        Assertions.assertTrue(combinedPackageJson.getRelativeWorkspaces().contains("packages/b"));
+        Assertions.assertTrue(combinedPackageJson.getRelativeWorkspaces().contains("packages/a/c"));
+        Assertions.assertTrue(combinedPackageJson.getRelativeWorkspaces().contains("packages/b/d"));
     }
     
     private boolean assertMapsEqual(MultiValuedMap<String, String> expectedMap, MultiValuedMap<String, String> actualMap) {

@@ -1,14 +1,10 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,8 +19,6 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.model.Packag
 import com.synopsys.integration.detectable.detectables.npm.lockfile.result.NpmPackagerResult;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJsonExtractor;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.util.NameVersion;
 
 public class NpmLockfilePackager {
@@ -61,7 +55,7 @@ public class NpmLockfilePackager {
         NpmProject project = dependencyConverter.convertLockFile(packageLock, combinedPackageJson);
         
         DependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies, 
-                combinedPackageJson == null ? null : combinedPackageJson.getConvertedWorkspaces());
+                combinedPackageJson == null ? null : combinedPackageJson.getRelativeWorkspaces());
         ExternalId projectId = projectIdTransformer.transform(combinedPackageJson, packageLock);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
         return new NpmPackagerResult(projectId.getName(), projectId.getVersion(), codeLocation);

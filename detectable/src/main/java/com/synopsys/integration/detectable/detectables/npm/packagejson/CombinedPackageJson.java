@@ -10,8 +10,7 @@ public class CombinedPackageJson {
     
     private String name;
     private String version;
-    private List<String> workspaces = new ArrayList<>();
-    private List<String> convertedWorkspaces = new ArrayList<>();
+    private List<String> relativeWorkspaces = new ArrayList<>();
     
     private MultiValuedMap<String, String> dependencies;
     private MultiValuedMap<String, String> devDependencies;
@@ -34,21 +33,9 @@ public class CombinedPackageJson {
     public MultiValuedMap<String, String> getPeerDependencies() {
         return peerDependencies;
     }
-
-    public List<String> getWorkspaces() {
-        return workspaces;
-    }
-
-    public void setWorkspaces(List<String> workspaces) {
-        this.workspaces = workspaces;
-    }
     
-    public List<String> getConvertedWorkspaces() {
-        return convertedWorkspaces;
-    }
-
-    public void setConvertedWorkspaces(List<String> convertedWorkspaces) {
-        this.convertedWorkspaces = convertedWorkspaces;
+    public List<String> getRelativeWorkspaces() {        
+        return relativeWorkspaces;
     }
 
     public String getName() {
