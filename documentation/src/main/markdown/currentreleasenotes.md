@@ -11,6 +11,8 @@
 * (IDETECT-3879) The detectors\[N\].statusReason field of the status.json file will now contain the exit code of the detector subprocess command in cases when the code is non-zero.
 * In addition to node_modules, bin, build, .git, .gradle, out, packages, target, the Gradle wrapper directory `gradle` will be excluded from signature scan by default. Use
   [detect.excluded.directories.defaults.disabled](properties/configuration/paths.md#detect-excluded-directories-defaults-disabled-advanced) to disable these defaults.
+* (IDETECT-3626) The NuGet Inspector now resolves dependency versions according to NuGet's 'direct dependency wins' rule.
+
 
 ### Resolved issues
 
