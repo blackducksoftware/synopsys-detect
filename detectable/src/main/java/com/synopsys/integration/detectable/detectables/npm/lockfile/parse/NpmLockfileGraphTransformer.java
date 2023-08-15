@@ -38,32 +38,6 @@ public class NpmLockfileGraphTransformer {
 
             //First we will recreate the graph from the resolved npm dependencies
             for (NpmDependency resolved : project.getResolvedDependencies()) {
-                if (resolved.getName().contains("@jest/reporters")) {
-                    System.out.println("");
-                    
-//                    // TODO debug
-//                    
-//                    for (NpmDependency dependency : resolved.getDependencies()) {
-//                        //System.out.println(dependency.getName());
-//                        // TODO go after child dependencies until run out of them then go after requires
-//                        List<NpmDependency> dependencies = dependency.getDependencies();
-//                        Collections.sort(dependencies, new DependencyComparator());
-//                        for (NpmDependency childDependency1 : dependencies) {
-//                           // System.out.println(childDependency1.getName());
-//                            List<NpmDependency> child1Dependencies = childDependency1.getDependencies();
-//                            Collections.sort(child1Dependencies, new DependencyComparator());
-//                            for (NpmDependency childDependency2: child1Dependencies) {
-//                                System.out.println(childDependency2.getName());
-//                            }
-//                        }
-//                    }
-//                    
-//                    for (NpmRequires requires : resolved.getRequires()) {
-//                        System.out.println(requires.getName() + ": " + requires.getFuzzyVersion());
-//                    }
-//                    
-//                    
-                }
                 transformTreeToGraph(resolved, project, dependencyGraph, externalDependencies, workspaces);
             }
 

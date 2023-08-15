@@ -21,7 +21,6 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmReq
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLockPackage;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class NpmDependencyConverter {
     private final ExternalIdFactory externalIdFactory;
@@ -68,12 +67,6 @@ public class NpmDependencyConverter {
 
         for (Map.Entry<String, PackageLockPackage> packageEntry : packages.entrySet()) {
             String packageName = packageEntry.getKey();
-            // TODO debug
-            if (packageName.equals("packages/react-components")
-                    || packageName.equals("@mdx-js/mdx")
-                    || packageName.equals("@babel/core")) {
-                System.out.println("");
-            }
             PackageLockPackage packageLockDependency = packageEntry.getValue();
 
             NpmDependency dependency = createNpmDependency(packageName, packageLockDependency.version, packageLockDependency.dev, packageLockDependency.peer);
@@ -124,12 +117,11 @@ public class NpmDependencyConverter {
             return;
         }
                 
-        for(String packageName : packageLock.packages.keySet()) { 
-            
-            // TODO do for everything or just workspaces? 
-            // Fix up requires. In the dependencies object requires is just a dump of all dependencies +
-            // devDependencies + peerDependencies. This happens regardless of filtering. We need to reconstruct 
-            // this requires type which is now packages/dependencies instead of dependencies/requires
+        for(String packageName : packageLock.packages.keySet()) {  
+            // We need to reconstruct the new packages/dependencies setup to look like the old dependencies/requires 
+            // setup so the later graph construction works. This is just a dump of all dependencies + devDependencies 
+            // + peerDependencies + the new optionalDependences. This happens regardless of filtering with 
+            // detect.npm.dependency.types.excluded.
             PackageLockPackage packageLockPackage = packageLock.packages.get(packageName);
             if (packageLockPackage.dependencies != null) {
                 if (packageLockPackage.devDependencies != null) {
@@ -149,13 +141,6 @@ public class NpmDependencyConverter {
             // before loading data into packageLock. This character is not allowed in npm package names and
             // indicates we should link up this set of packages.
             if (packageName.contains("*")) { 
-                if (packageName.equals("packages/react-components*@mdx-js/mdx*@babel/core")) {
-                    String breakHere = "";
-                }
-                if (packageName.equals("packages/react-components*@mdx-js/mdx")) {
-                    String breakHere = "";
-                }
-                
                 // This packageName contains one or more *'s indicating a parent/child relationship.
                 // The parent will be the portion of the package name up to and not including the final *.
                 PackageLockPackage parentPackage = 
@@ -172,25 +157,10 @@ public class NpmDependencyConverter {
                 packagesToRemove.add(packageName);
             }
         }
-                
+            
         // Now that they are processed, get rid of any packages containing a parent/child relationship. 
         // This makes the final packages structure more like the previous dependencies structure so most of the
         // detector code does not need to be altered to support npm 9 and later.
         packageLock.packages.keySet().removeAll(packagesToRemove);
-        
-        // TODO debug code
-        for(String packageName : packageLock.packages.keySet()) { 
-            if (packageName.equals("packages/react-components")) {
-                PackageLockPackage parentPackage = 
-                        packageLock.packages.get(packageName);
-                for(String child1Name : parentPackage.packages.keySet()) { 
-                    if (child1Name.equals("@mdx-js/mdx")) {
-                        PackageLockPackage child1Package = 
-                                parentPackage.packages.get(child1Name); 
-                        System.out.println("");
-                    }
-                }
-            }
-        }
     }
 }
