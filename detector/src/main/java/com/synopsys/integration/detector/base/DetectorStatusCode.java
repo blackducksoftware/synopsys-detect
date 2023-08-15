@@ -8,7 +8,7 @@ public enum DetectorStatusCode {
     EXCLUDED("Detector type was excluded."),
     EXECUTABLE_FAILED("During extraction, one or more executables did not execute successfully."),
     EXTRACTION_FAILED("During extraction, one or more exceptions were encountered."),
-    EXECUTABLE_TERMINATED_LIKELY_OUT_OF_MEMORY("An executable was terminated likely by the runtime environment due to low memory."),
+    EXECUTABLE_TERMINATED_LIKELY_OUT_OF_MEMORY("An executable was terminated, potentially due to a runtime environment low memory condition."),
     EXECUTABLE_NOT_FOUND("The necessary executable was not found."),
     EXECUTABLES_NOT_FOUND("The necessary executables were not found."),
     FAILED("Detector failed."),
