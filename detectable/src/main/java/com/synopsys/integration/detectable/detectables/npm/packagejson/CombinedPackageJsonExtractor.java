@@ -43,7 +43,6 @@ public class CombinedPackageJsonExtractor {
         // Take fields that will be related to BD projects from the root project.json
         combinedPackageJson.setName(packageJson.name);
         combinedPackageJson.setVersion(packageJson.version);
-        combinedPackageJson.setWorkspaces(packageJson.workspaces);
         
         // Add dependencies from the root of the project
         combinedPackageJson.getDependencies().putAll(packageJson.dependencies);

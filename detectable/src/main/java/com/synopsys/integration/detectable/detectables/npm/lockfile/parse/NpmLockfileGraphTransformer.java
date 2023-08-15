@@ -1,6 +1,5 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -88,8 +87,7 @@ public class NpmLockfileGraphTransformer {
         if (!shouldIncludeDependency(npmDependency)) {
             return;
         }
-        
-        // TODO check all code paths some callers still sending absolute
+
         // add workspaces as direct dependencies
         if (workspaces != null && !StringUtils.isBlank(npmDependency.getName()) &&
                 workspaces.stream().anyMatch(x -> x.equals(npmDependency.getName()))) {
@@ -101,19 +99,11 @@ public class NpmLockfileGraphTransformer {
                 dependencyGraph.addChildrenToRoot(workspaceDependency);
             }
         } else {
-        
-            // TODO is it okay to do this again if the workspace triggered it above?
             npmDependency.getRequires().forEach(required -> {
-                if (required.getName().equals("node-notifier")) {
-                    System.out.println("");
-                }
-                logger.trace(String.format("Required package: %s of version: %s", required.getName(),
-                        required.getFuzzyVersion()));
-                Dependency resolved = lookupDependency(required.getName(), npmDependency, npmProject,
-                        externalDependencies);
+                logger.trace(String.format("Required package: %s of version: %s", required.getName(), required.getFuzzyVersion()));
+                Dependency resolved = lookupDependency(required.getName(), npmDependency, npmProject, externalDependencies);
                 if (resolved != null) {
-                    logger.trace(String.format("Found package: %s with version: %s", resolved.getName(),
-                            resolved.getVersion()));
+                    logger.trace(String.format("Found package: %s with version: %s", resolved.getName(), resolved.getVersion()));
                     dependencyGraph.addChildWithParent(resolved, npmDependency);
                 } else {
                     logger.debug("No resolved dependency found for required package: {}", required.getName());
@@ -151,9 +141,6 @@ public class NpmLockfileGraphTransformer {
 
     private Dependency firstDependencyWithName(List<NpmDependency> dependencies, String name) {
         for (NpmDependency current : dependencies) {
-            if (name.equals("react-scripts")) {
-                System.out.println("");
-            }
             if (current.getName().equals(name)) {
                 return current;
             }
@@ -165,17 +152,5 @@ public class NpmLockfileGraphTransformer {
         return (!packageLockDependency.isDevDependency() && !packageLockDependency.isPeerDependency()) // If the type is not dev or peer, we always want to include it.
             || (packageLockDependency.isDevDependency() && npmDependencyTypeFilter.shouldInclude(NpmDependencyType.DEV))
             || (packageLockDependency.isPeerDependency() && npmDependencyTypeFilter.shouldInclude(NpmDependencyType.PEER));
-    }
-    
-    class DependencyComparator implements Comparator<NpmDependency> {
-
-        @Override
-        public int compare(NpmDependency o1, NpmDependency o2) {
-                NpmDependency one = (NpmDependency) o1;
-                NpmDependency two = (NpmDependency) o2;
-                // TODO Auto-generated method stub
-                return one.getName().compareTo(two.getName());
-        }
-        
     }
 }

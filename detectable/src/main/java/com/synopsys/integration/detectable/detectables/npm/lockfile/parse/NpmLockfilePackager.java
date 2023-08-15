@@ -65,21 +65,6 @@ public class NpmLockfilePackager {
         
         NpmProject project = dependencyConverter.convertLockFile(packageLock, combinedPackageJson);
         
-//        for (NpmDependency dependency : project.getResolvedDependencies()) {
-//            //System.out.println(dependency.getName());
-//            // TODO go after child dependencies until run out of them then go after requires
-//            List<NpmDependency> dependencies = dependency.getDependencies();
-//            Collections.sort(dependencies, new DependencyComparator());
-//            for (NpmDependency childDependency1 : dependencies) {
-//               // System.out.println(childDependency1.getName());
-//                List<NpmDependency> child1Dependencies = childDependency1.getDependencies();
-//                Collections.sort(child1Dependencies, new DependencyComparator());
-//                for (NpmDependency childDependency2: child1Dependencies) {
-//                    System.out.println(childDependency2.getName());
-//                }
-//            }
-//        }
-        
         DependencyGraph dependencyGraph = graphTransformer.transform(packageLock, project, externalDependencies, 
                 combinedPackageJson == null ? null : combinedPackageJson.getRelativeWorkspaces());
         ExternalId projectId = projectIdTransformer.transform(combinedPackageJson, packageLock);
@@ -88,30 +73,8 @@ public class NpmLockfilePackager {
     }
 
     public String removePathInfoFromPackageName(String lockFileText) {
-        List<String> searchList = new LinkedList<>();
-        List<String> replaceList = new LinkedList<>();
-        
-        // If we have workspaces, make sure to strip those off as well
-        //"packages/react-components/node_modules/@mdx-js/mdx/node_modules/@babel/core"
-//        if (rootJsonPath != null && absoluteWorkpacePaths != null && absoluteWorkpacePaths.size() > 0) {
-//            String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf("/") + 1); 
-//            
-//            for (String absoluteWorkspacePath : absoluteWorkpacePaths) {
-//                int rootIndex = absoluteWorkspacePath.indexOf(projectRoot);
-//                if (rootIndex != -1) {
-//                    int packageStartIndex = rootIndex + projectRoot.length();
-//                    if (packageStartIndex < absoluteWorkspacePath.length()) {
-//                        searchList.add(absoluteWorkspacePath.substring(packageStartIndex) + "/node_modules/");
-//                        replaceList.add("");
-//                    }
-//                }
-//            }
-//        }
-        
-        searchList.add("node_modules/");
-        replaceList.add("");
-        searchList.add("/node_modules/");
-        replaceList.add("*");
+        List<String> searchList = new ArrayList<>(Arrays.asList("/node_modules/", "node_modules/"));
+        List<String> replaceList = new ArrayList<>(Arrays.asList("*", ""));
 
         // Flatten the lock file, removing node_modules from the package names. The code expects them in this
         // format as it aligns with the previous dependencies section of the lock file that was removed in npm9. 
@@ -121,17 +84,5 @@ public class NpmLockfilePackager {
                 searchList.toArray(new String[searchList.size()]), 
                 replaceList.toArray(new String[replaceList.size()]));
         return lockFileText;
-    }
-    
-    class DependencyComparator implements Comparator<NpmDependency> {
-
-        @Override
-        public int compare(NpmDependency o1, NpmDependency o2) {
-                NpmDependency one = (NpmDependency) o1;
-                NpmDependency two = (NpmDependency) o2;
-                // TODO Auto-generated method stub
-                return one.getName().compareTo(two.getName());
-        }
-        
     }
 }
