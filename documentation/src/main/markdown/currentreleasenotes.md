@@ -4,9 +4,8 @@
 
 ### Changed features
 
-* The `detect.diagnostic.extended` property, that was deprecated in [solution_name] 8.x, has been removed. `detect.diagnostic` can be used instead.
+* The `detect.diagnostic.extended` property and the -de command line option, that were deprecated in [solution_name] 8.x, have been removed. `detect.diagnostic`, and the command line option -d, can be used instead.
 * The Ephemeral Scan Mode, that was deprecated in [solution_name] 8.x, has been removed in favor of Stateless Scan Mode. See the [Stateless Scans page](runningdetect/statelessscan.md) for further details.
-* The -de command line option has been removed in favor of -d as the two options have been identical since [solution_name] 8.x. 
 * npm 6, which was deprecated in [solution_name] 8.x, is no longer supported.
 * [solution_name] 7.x has entered end of support. See the [Product Maintenance, Support, and Service Schedule page](https://sig-product-docs.synopsys.com/bundle/blackduck-compatibility/page/topics/Support-and-Service-Schedule.html) for further details.
 * (IDETECT-3879) The detectors\[N\].statusReason field of the status.json file will now contain the exit code of the detector subprocess command in cases when the code is non-zero.
