@@ -1,0 +1,22 @@
+{
+  "name": "npmworkspace",
+  "version": "1.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "node_modules/testpackage": {
+      "name": "testpackage",
+      "version": "1.0.0",
+      "license": "ISC",
+      "dependencies": {
+        "dep1": "1.0.0"
+      },
+      "devDependencies": {
+        "dev1": "1.0.0"
+      },
+      "peerDependencies": {
+        "peer1": "1.0.0"
+      }
+    }
+  }
+}
