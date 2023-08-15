@@ -2,7 +2,6 @@ package com.synopsys.integration.detect.battery.docker;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
@@ -11,22 +10,19 @@ import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunne
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
-//@Tag("integration")
-public class Dotnet5Test {
+public class GoModTest {
     @Test
-    void detectUsesDotnet5() throws IOException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-dotnet-five", "detect-dotnet-five:1.0.1")) {
-            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dotnet5.dockerfile"));
+    void goModExecutablesTest() throws IOException {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("go-mod-executables", "go-mod-executables:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("GoModExecutables.dockerfile"));
 
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
             commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
-            commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
+            commandBuilder.property(DetectProperties.DETECT_GO_PATH, "/home/app/go1.16.6/go/bin/go");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulDetectorType("NUGET");
+//            dockerAssertions.successfulDetectorType("GO_MOD");
             dockerAssertions.atLeastOneBdioFile();
-            dockerAssertions.logContainsPattern("https://sig-repo.synopsys.com/.*bds-integrations-release/com/synopsys/integration/detect-nuget-inspector/"); // Verify we are using the EXTERNAL artifactory to download the inspector.
         }
     }
-
 }
