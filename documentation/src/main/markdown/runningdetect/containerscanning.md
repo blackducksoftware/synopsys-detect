@@ -30,7 +30,7 @@ Execute Container Scanning by adding the following:
 ## Results
 
 Container scan findings will appear in the [blackduck_product_name] user interface, please consult the documentation provided by [blackduck_product_name] under the topic:
-<!-- TBD Reference to BD Docs
+<!-- TBD Reference to BD Docs once they are available
 <xref href="ContainerScans.dita" scope="peer">Container scans
 <data name="facets" value="pubname=bd-hub"/>
 -->
