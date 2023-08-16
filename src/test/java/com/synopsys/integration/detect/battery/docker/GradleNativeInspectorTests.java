@@ -24,7 +24,6 @@ public class GradleNativeInspectorTests {
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.GRADLE.toString());
-            commandBuilder.property(DetectProperties.DETECT_GRADLE_PATH, "/tmp"); // force cli failure
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.logContains("Gradle Native Inspector: SUCCESS");
