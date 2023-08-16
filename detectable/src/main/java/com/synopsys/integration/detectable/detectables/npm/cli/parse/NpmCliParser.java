@@ -126,14 +126,14 @@ public class NpmCliParser {
                     .map(JsonPrimitive::getAsString)
                     .orElse(null);
             
-            if (combinedPackageJson.getConvertedWorkspaces() != null && possibleWorkspaceDependency != null) {
+            if (combinedPackageJson.getRelativeWorkspaces() != null && possibleWorkspaceDependency != null) {
                 // workspaces under the root resolve as file../<path to workspace> 
                 // remove that and see if any absolute workspace paths have this subpath
                 String convertedPossibleWorkspaceDependency =
-                        possibleWorkspaceDependency.replace("file:..", "");
+                        possibleWorkspaceDependency.replace("file:../", "");
                 
                 directWorkspaceDependency = 
-                        combinedPackageJson.getConvertedWorkspaces().stream().anyMatch(workspace -> workspace.contains(convertedPossibleWorkspaceDependency));
+                        combinedPackageJson.getRelativeWorkspaces().stream().anyMatch(workspace -> workspace.equals(convertedPossibleWorkspaceDependency));
             }
 
             populateChildren(graph, child, children, directWorkspaceDependency, combinedPackageJson);

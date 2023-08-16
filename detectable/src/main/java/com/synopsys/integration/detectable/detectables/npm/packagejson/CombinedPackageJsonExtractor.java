@@ -43,7 +43,6 @@ public class CombinedPackageJsonExtractor {
         // Take fields that will be related to BD projects from the root project.json
         combinedPackageJson.setName(packageJson.name);
         combinedPackageJson.setVersion(packageJson.version);
-        combinedPackageJson.setWorkspaces(packageJson.workspaces);
         
         // Add dependencies from the root of the project
         combinedPackageJson.getDependencies().putAll(packageJson.dependencies);
@@ -66,7 +65,7 @@ public class CombinedPackageJsonExtractor {
                 if (!Files.exists(workspaceJsonPath)) {
                     continue;
                 } else {
-                    combinedPackageJson.getConvertedWorkspaces().add(convertedWorkspace);
+                    addRelativeWorkspace(combinedPackageJson, projectRoot, convertedWorkspace);
                 }
                 
                 String workspaceJsonString 
@@ -85,6 +84,27 @@ public class CombinedPackageJsonExtractor {
         }
         
         return combinedPackageJson;
+    }
+
+
+    /**
+     * Takes an absolute path to a workspace and converts it to a relative one for
+     * future comparisons with contents of the package-lock.json file.
+     * 
+     * @param combinedPackageJson the combined package json we are constructing
+     * @param projectRoot         Path to the root of the project
+     * @param convertedWorkspace  An absolute path to a workspace with wildcards
+     *                            replaced
+     */
+    private void addRelativeWorkspace(CombinedPackageJson combinedPackageJson, String projectRoot,
+            String convertedWorkspace) {
+        int rootIndex = convertedWorkspace.indexOf(projectRoot);
+        if (rootIndex != -1) {
+            int packageStartIndex = rootIndex + projectRoot.length();
+            if (packageStartIndex < convertedWorkspace.length()) {
+                combinedPackageJson.getRelativeWorkspaces().add(convertedWorkspace.substring(packageStartIndex));
+            }
+        }
     }
 
     /**

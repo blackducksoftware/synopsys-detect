@@ -45,6 +45,21 @@ public class NpmDependencyConverterTest {
         validatePackageLinkage(lockFileText);
     }
     
+    @Test
+    public void testAllDependenciesAddedToDependencies() {
+        String lockFileText = FunctionalTestFiles.asString("/npm/packages-linkage-test/package-lock-multiple-deps.json");
+        lockFileText = packager.removePathInfoFromPackageName(lockFileText);
+        PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
+        converter.linkPackagesDependencies(packageLock);
+        
+        PackageLockPackage testPackage = packageLock.packages.get("testpackage");
+        
+        Assertions.assertNotNull(testPackage);
+        Assertions.assertTrue(testPackage.dependencies.containsKey("dep1"));
+        Assertions.assertTrue(testPackage.dependencies.containsKey("dev1"));
+        Assertions.assertTrue(testPackage.dependencies.containsKey("peer1"));
+    }
+    
     private void validatePackageLinkage(String lockFileText) {
         lockFileText = packager.removePathInfoFromPackageName(lockFileText);   
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);  
