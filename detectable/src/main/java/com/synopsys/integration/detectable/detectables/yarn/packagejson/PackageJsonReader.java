@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.YarnPackageJson;
 
 public class PackageJsonReader {
     public static final String WORKSPACES_OBJECT_KEY = "workspaces";
@@ -20,7 +20,7 @@ public class PackageJsonReader {
     }
 
     public NullSafePackageJson read(String packageJsonText) {
-        PackageJson rawPackageJson = gson.fromJson(packageJsonText, PackageJson.class);
+        YarnPackageJson rawPackageJson = gson.fromJson(packageJsonText, YarnPackageJson.class);
         return new NullSafePackageJson(rawPackageJson);
     }
 

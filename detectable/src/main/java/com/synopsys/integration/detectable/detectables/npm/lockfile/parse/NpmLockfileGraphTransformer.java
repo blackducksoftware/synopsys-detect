@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,16 +27,16 @@ public class NpmLockfileGraphTransformer {
         this.npmDependencyTypeFilter = npmDependencyTypeFilter;
     }
 
-    public DependencyGraph transform(PackageLock packageLock, NpmProject project, List<NameVersion> externalDependencies) {
+    public DependencyGraph transform(PackageLock packageLock, NpmProject project, List<NameVersion> externalDependencies, List<String> workspaces) {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
 
         logger.debug("Processing project.");
-        if (packageLock.dependencies != null) {
-            logger.debug(String.format("Found %d dependencies in the lockfile.", packageLock.dependencies.size()));
+        if (packageLock.packages != null) {
+            logger.debug(String.format("Found %d packages in the lockfile.", packageLock.packages.size()));
 
             //First we will recreate the graph from the resolved npm dependencies
             for (NpmDependency resolved : project.getResolvedDependencies()) {
-                transformTreeToGraph(resolved, project, dependencyGraph, externalDependencies);
+                transformTreeToGraph(resolved, project, dependencyGraph, externalDependencies, workspaces);
             }
 
             //Then we will add relationships between the project (root) and the graph
@@ -59,7 +60,7 @@ public class NpmLockfileGraphTransformer {
 
             logger.debug(String.format("Found %d root dependencies.", dependencyGraph.getRootDependencies().size()));
         } else {
-            logger.debug("Lock file did not have a 'dependencies' section.");
+            logger.debug("Lock file did not have a 'packages' section.");
         }
 
         return dependencyGraph;
@@ -81,23 +82,35 @@ public class NpmLockfileGraphTransformer {
         }
     }
 
-    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, DependencyGraph dependencyGraph, List<NameVersion> externalDependencies) {
+    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, DependencyGraph dependencyGraph, List<NameVersion> externalDependencies, List<String> workspaces) {
         if (!shouldIncludeDependency(npmDependency)) {
             return;
         }
 
-        npmDependency.getRequires().forEach(required -> {
-            logger.trace(String.format("Required package: %s of version: %s", required.getName(), required.getFuzzyVersion()));
-            Dependency resolved = lookupDependency(required.getName(), npmDependency, npmProject, externalDependencies);
-            if (resolved != null) {
-                logger.trace(String.format("Found package: %s with version: %s", resolved.getName(), resolved.getVersion()));
-                dependencyGraph.addChildWithParent(resolved, npmDependency);
-            } else {
-                logger.debug("No resolved dependency found for required package: {}", required.getName());
+        // add workspaces as direct dependencies
+        if (workspaces != null && !StringUtils.isBlank(npmDependency.getName()) &&
+                workspaces.stream().anyMatch(x -> x.equals(npmDependency.getName()))) {
+            dependencyGraph.addDirectDependency(npmDependency);
+            
+            // add workspace requires
+            for (NpmRequires required : npmDependency.getRequires()) {
+                Dependency workspaceDependency = lookupDependency(required.getName(), npmDependency, npmProject, externalDependencies);
+                dependencyGraph.addChildrenToRoot(workspaceDependency);
             }
-        });
+        } else {
+            npmDependency.getRequires().forEach(required -> {
+                logger.trace(String.format("Required package: %s of version: %s", required.getName(), required.getFuzzyVersion()));
+                Dependency resolved = lookupDependency(required.getName(), npmDependency, npmProject, externalDependencies);
+                if (resolved != null) {
+                    logger.trace(String.format("Found package: %s with version: %s", resolved.getName(), resolved.getVersion()));
+                    dependencyGraph.addChildWithParent(resolved, npmDependency);
+                } else {
+                    logger.debug("No resolved dependency found for required package: {}", required.getName());
+                }
+            });
+        }
 
-        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, externalDependencies));
+        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, externalDependencies, workspaces));
     }
 
     private Dependency lookupProjectOrExternal(String name, List<NpmDependency> projectResolvedDependencies, List<NameVersion> externalDependencies) {

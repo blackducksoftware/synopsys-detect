@@ -86,7 +86,7 @@ public class DetectProperties {
         BooleanProperty.newBuilder("blackduck.offline.mode", false)
             .setInfo("Offline Mode", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
-                "This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
+                "This can disable Black Duck communication - if set to true, Synopsys Detect will not upload BDIO files, or check policies, and it will not download and install the signature scanner. Note that the path to a local instance of the scanner can be provided using the -detect.blackduck.signature.scanner.local.path parameter.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
 
@@ -893,7 +893,7 @@ public class DetectProperties {
         StringListProperty.newBuilder("detect.excluded.directories", emptyList())
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
-                "A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.",
+                "A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude. Caution should be exercised when including this parameter on Windows, as the command length generated may exceed OS limitations.",
                 "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, will not be searched to find files for binary scanning when property detect.binary.scan.file.name.patterns is set, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
@@ -906,8 +906,8 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.excluded.directories.defaults.disabled", false)
             .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
-                "If false, Detect will exclude the default directory names. See the detailed help for more information.",
-                "If false, the following directories will be excluded by Detect when searching for detectors: __MACOX, bin, build, .git, .gradle, .yarn, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, node_modules, .synopsys."
+                "If false, Detect will exclude the default directory names. See the detailed help for more information. Caution should be exercised when including this parameter on Windows, as the commmand length generated may exceed OS limitations.",
+                "If false, the following directories will be excluded by Detect when searching for detectors: __MACOX, bin, build, .git, .gradle, .yarn, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, gradle, node_modules, .synopsys."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -938,6 +938,15 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
+
+    public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED =
+            BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
+                    .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
+                    .setHelp(
+                            "If set to true, Detect will save an output file named 'components-with-locations.json' in the Scan subdirectory detailing where in the project's source code OSS components are declared.",
+                            "All components will be included when using Synopsys Detect in offline mode. Only policy violating components will be included for Rapid and Stateless Scan modes.")
+                    .setGroups(DetectGroup.GENERAL)
+                    .build();
 
     public static final AllEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
         AllEnumListProperty.newBuilder("detect.included.detector.types", AllEnum.ALL, DetectorType.class)
@@ -1723,7 +1732,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.RAPID_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .build().deprecateValue(BlackduckScanMode.EPHEMERAL, "Replace with STATELESS");
+            .build();
 
     public static final EnumProperty<RapidCompareMode> DETECT_BLACKDUCK_RAPID_COMPARE_MODE =
         EnumProperty.newBuilder("detect.blackduck.rapid.compare.mode", RapidCompareMode.ALL, RapidCompareMode.class)
@@ -1765,18 +1774,6 @@ public class DetectProperties {
     //#endregion Active Properties
 
     //#region Deprecated Properties
-
-    @Deprecated
-    public static final BooleanProperty DETECT_DIAGNOSTIC_EXTENDED =
-        BooleanProperty.newBuilder("detect.diagnostic.extended", false)
-            .setInfo("Diagnostic Mode Extended", DetectPropertyFromVersion.VERSION_6_5_0)
-            .setHelp("When enabled, Synopsys Detect performs the actions of --detect.diagnostic, but also includes relevant files such as lock files and build artifacts.")
-            .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
-            .setDeprecated(
-                "This property is being removed. Use property detect.diagnostic instead. There is no longer any distinction between extended and non-extended diagnostic zip files.",
-                DetectMajorVersion.NINE
-            )
-            .build();
 
     // Can't take in the DetectProperty<?> due to an illegal forward reference :(
     private static String createTypeFilterHelpText(String exclusionTypePlural) {
