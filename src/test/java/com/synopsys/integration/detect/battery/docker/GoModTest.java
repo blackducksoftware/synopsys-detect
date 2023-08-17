@@ -19,10 +19,10 @@ import com.synopsys.integration.exception.IntegrationException;
 public class GoModTest {
 
     @Test
-    public void goModTest1() throws IntegrationException, IOException {
+    public void goModTest() throws IntegrationException, IOException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("go-mod-executables-test", "go-mod-executables-test:1.16.6")) {
 
-            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("GoMod1.16.6.dockerfile"));
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("GoModExecutables.dockerfile"));
 
             // Set up blackduck connection and environment
             BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
