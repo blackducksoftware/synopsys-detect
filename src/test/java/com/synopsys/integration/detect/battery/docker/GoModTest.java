@@ -26,7 +26,7 @@ public class GoModTest {
 
             // Set up blackduck connection and environment
             BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-            BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions("go-mod-docker", "go-mod-docker-1.16.6");
+            BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions("go-mod-docker", "go-mod-docker-version");
             blackduckAssertions.emptyOnBlackDuck();
 
             // Build command with BlackDuck config
@@ -45,7 +45,7 @@ public class GoModTest {
             dockerAssertions.atLeastOneBdioFile();
 
             // Blackduck specific assertions
-            String codeLocationName = "go-mod-docker/go-mod-docker-1.16.6 bdio";
+            String codeLocationName = "go-mod-docker/go-mod-docker-version bdio";
             blackduckAssertions.hasCodeLocations(codeLocationName);
             validateComponentsForSampleGoProject(blackduckAssertions);
         }
