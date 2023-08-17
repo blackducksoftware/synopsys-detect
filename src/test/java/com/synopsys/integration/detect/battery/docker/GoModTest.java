@@ -35,19 +35,19 @@ public class GoModTest {
 
     private static final String PROJECT_NAME = "go-mod-docker";
 
-//    @Test
-//    void goModExecutablesTest() throws IOException, IntegrationException {
-//        for (String goVersion : GO_VERSIONS_TO_TEST) {
-//            goModSpecificExecutableTest(goVersion);
-//        }
-//    }
-//
-    private static Stream<String> provideGoVersionsToTest() {
-        return Arrays.stream(GO_VERSIONS_TO_TEST);
+    @Test
+    void goModExecutablesTest() throws IOException, IntegrationException {
+        for (String goVersion : GO_VERSIONS_TO_TEST) {
+            goModSpecificExecutableTest(goVersion);
+        }
     }
 
-    @ParameterizedTest
-    @MethodSource("provideGoVersionsToTest")
+//    private static Stream<String> provideGoVersionsToTest() {
+//        return Arrays.stream(GO_VERSIONS_TO_TEST);
+//    }
+//
+//    @ParameterizedTest
+//    @MethodSource("provideGoVersionsToTest")
     public void goModSpecificExecutableTest(String goVersion) throws IntegrationException, IOException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("go-mod-executables-test", "go-mod-executables-test:" + goVersion)) {
 
