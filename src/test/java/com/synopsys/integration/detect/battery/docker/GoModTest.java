@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.battery.docker;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckAssertions;
@@ -11,11 +12,9 @@ import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.exception.IntegrationException;
 
-//@Tag("integration")
+@Tag("integration")
 public class GoModTest {
 
     @Test
@@ -41,7 +40,7 @@ public class GoModTest {
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             // Detect specific assertions
-            dockerAssertions.successfulDetectorType(DetectorType.GO_MOD.toString());
+            dockerAssertions.successfulDetectorType("GO_MOD");
             dockerAssertions.atLeastOneBdioFile();
 
             // Blackduck specific assertions
