@@ -15,18 +15,12 @@ import com.synopsys.integration.detect.commontest.FileUtil;
 
 public class BuildDockerImageProvider implements DockerImageProvider {
     private final String dockerfileResourceName;
-    private Map<String, String> buildArgs = new HashMap<>();
-
     public BuildDockerImageProvider(String dockerfileResourceName) {
         this.dockerfileResourceName = dockerfileResourceName;
     }
 
     public static BuildDockerImageProvider forDockerfilResourceNamed(String dockerfileResourceName) {
         return new BuildDockerImageProvider(dockerfileResourceName);
-    }
-
-    public void setBuildArgs(Map<String, String> buildArgs) {
-        this.buildArgs = buildArgs;
     }
 
     @Override
@@ -38,12 +32,6 @@ public class BuildDockerImageProvider implements DockerImageProvider {
         );
 
         try (BuildImageCmd buildImageCmd = dockerClient.buildImageCmd(imageDockerFile)) {
-
-            // If the parent test has provided Dockerfile args, pass them to the image build command
-            for (Map.Entry<String, String> entry : buildArgs.entrySet()) {
-                buildImageCmd.withBuildArg(entry.getKey(), entry.getValue());
-            }
-
             buildImageCmd
                 .withTags(Bds.of(imageName).toSet())
                 .exec(new BuildImageResultCallback())

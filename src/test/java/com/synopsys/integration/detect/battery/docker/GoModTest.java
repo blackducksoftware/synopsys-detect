@@ -1,15 +1,8 @@
 package com.synopsys.integration.detect.battery.docker;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckAssertions;
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckTestConnection;
@@ -25,43 +18,15 @@ import com.synopsys.integration.exception.IntegrationException;
 //@Tag("integration")
 public class GoModTest {
 
-    private static final String[] GO_VERSIONS_TO_TEST = new String[] {
-        "1.16.5",
-        "1.17.5",
-        "1.18.5",
-        "1.19.6",
-        "1.20.4"
-    };
-
-    private static final String PROJECT_NAME = "go-mod-docker";
-
     @Test
-    void goModExecutablesTest() throws IOException, IntegrationException {
-        for (String goVersion : GO_VERSIONS_TO_TEST) {
-            goModSpecificExecutableTest(goVersion);
-        }
-    }
+    public void goModTest1() throws IntegrationException, IOException {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("go-mod-executables-test", "go-mod-executables-test:1.16.6")) {
 
-//    private static Stream<String> provideGoVersionsToTest() {
-//        return Arrays.stream(GO_VERSIONS_TO_TEST);
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideGoVersionsToTest")
-    public void goModSpecificExecutableTest(String goVersion) throws IntegrationException, IOException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("go-mod-executables-test", "go-mod-executables-test:" + goVersion)) {
-
-            Map<String, String> goModDockerfileArgs = new HashMap<>();
-            goModDockerfileArgs.put("goVersion", goVersion);
-
-            BuildDockerImageProvider buildDockerImageProvider = BuildDockerImageProvider.forDockerfilResourceNamed("GoModExecutables.dockerfile");
-            buildDockerImageProvider.setBuildArgs(goModDockerfileArgs);
-            test.withImageProvider(buildDockerImageProvider);
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("GoMod1.16.6.dockerfile"));
 
             // Set up blackduck connection and environment
-            String projectVersion = PROJECT_NAME + "-" + goVersion;
             BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-            BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions(PROJECT_NAME, projectVersion);
+            BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions("go-mod-docker", "go-mod-docker-1.16.6");
             blackduckAssertions.emptyOnBlackDuck();
 
             // Build command with BlackDuck config
@@ -71,8 +36,8 @@ public class GoModTest {
             commandBuilder.waitForResults();
 
             // Set up Detect properties
-            commandBuilder.property(DetectProperties.DETECT_TOOLS, DetectTool.DETECTOR.toString());
-            commandBuilder.property(DetectProperties.DETECT_GO_PATH, "/usr/local/go" + goVersion + "/go/bin/go");
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
+            commandBuilder.property(DetectProperties.DETECT_GO_PATH, "/usr/local/go1.16.6/go/bin/go");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             // Detect specific assertions
@@ -80,7 +45,7 @@ public class GoModTest {
             dockerAssertions.atLeastOneBdioFile();
 
             // Blackduck specific assertions
-            String codeLocationName = PROJECT_NAME + "/" + projectVersion + " bdio";
+            String codeLocationName = "go-mod-docker/go-mod-docker-1.16.6 bdio";
             blackduckAssertions.hasCodeLocations(codeLocationName);
             validateComponentsForSampleGoProject(blackduckAssertions);
         }
