@@ -56,7 +56,8 @@ public class NpmCliExtractor {
         List<String> exeArgs = new ArrayList<>();
         exeArgs.add("ls");
         exeArgs.add("-json");
-
+        exeArgs.add("--all");
+        
         Optional.ofNullable(npmArguments)
             .map(arg -> arg.split(" "))
             .ifPresent(additionalArguments -> exeArgs.addAll(Arrays.asList(additionalArguments)));
