@@ -847,7 +847,7 @@ public class DetectProperties {
             .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
                 createTypeFilterHelpText("Gradle configuration types"),
-                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
+                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/8.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
             )
             .setExample(GradleConfigurationType.UNRESOLVED.name())
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
