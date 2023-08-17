@@ -12,10 +12,10 @@ RUN apt-get install -y git bash
 
 # Install Go
 WORKDIR /usr/local
-RUN wget -q https://golang.org/dl/go${goVersion}.linux-amd64.tar.gz
-RUN mkdir go${goVersion}
-RUN tar -C go${goVersion} -xzf go${goVersion}.linux-amd64.tar.gz
-RUN rm go${goVersion}.linux-amd64.tar.gz
+RUN wget -q "https://golang.org/dl/go${goVersion}.linux-amd64.tar.gz"
+RUN mkdir "go${goVersion}"
+RUN tar -C "go${goVersion}" -xzf "go${goVersion}.linux-amd64.tar.gz"
+RUN rm "go${goVersion}.linux-amd64.tar.gz"
 
 # Set up the test project
 RUN mkdir -p ${SRC_DIR}

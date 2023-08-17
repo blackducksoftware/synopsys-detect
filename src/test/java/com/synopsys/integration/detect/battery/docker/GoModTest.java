@@ -27,8 +27,8 @@ public class GoModTest {
 
     private static final String[] GO_VERSIONS_TO_TEST = new String[] {
         "1.16.5",
-        "1.17.6",
-        "1.18.8",
+        "1.17.5",
+        "1.18.5",
         "1.19.6",
         "1.20.4"
     };
@@ -41,7 +41,7 @@ public class GoModTest {
 //            goModSpecificExecutableTest(goVersion);
 //        }
 //    }
-
+//
     private static Stream<String> provideGoVersionsToTest() {
         return Arrays.stream(GO_VERSIONS_TO_TEST);
     }
@@ -49,7 +49,7 @@ public class GoModTest {
     @ParameterizedTest
     @MethodSource("provideGoVersionsToTest")
     public void goModSpecificExecutableTest(String goVersion) throws IntegrationException, IOException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("go-mod-executables", "go-mod-executables:1.0.0")) {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("go-mod-executables-test", "go-mod-executables-test:" + goVersion)) {
 
             Map<String, String> goModDockerfileArgs = new HashMap<>();
             goModDockerfileArgs.put("goVersion", goVersion);
@@ -72,7 +72,7 @@ public class GoModTest {
 
             // Set up Detect properties
             commandBuilder.property(DetectProperties.DETECT_TOOLS, DetectTool.DETECTOR.toString());
-            commandBuilder.property(DetectProperties.DETECT_GO_PATH, "/usr/local/go1.16.6/go/bin/go");
+            commandBuilder.property(DetectProperties.DETECT_GO_PATH, "/usr/local/go" + goVersion + "/go/bin/go");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             // Detect specific assertions
