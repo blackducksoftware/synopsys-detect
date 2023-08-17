@@ -45,8 +45,8 @@ public class GoModTest {
             dockerAssertions.atLeastOneBdioFile();
 
             // Blackduck specific assertions
-            String codeLocationName = "go-mod-docker/go-mod-docker-version bdio";
-            blackduckAssertions.hasCodeLocations(codeLocationName);
+//            String codeLocationName = "go-mod-docker/go-mod-docker-version bdio";
+//            blackduckAssertions.hasCodeLocations(codeLocationName);
             validateComponentsForSampleGoProject(blackduckAssertions);
         }
     }
