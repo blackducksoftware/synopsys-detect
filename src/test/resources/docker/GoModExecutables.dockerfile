@@ -1,4 +1,4 @@
-FROM gradle:5.2.0-jdk8-slim
+FROM --platform=linux/amd64 gradle:5.2.0-jdk8-slim
 
 # Do not change SRC_DIR, value is expected by tests
 ENV SRC_DIR=/opt/project/src
@@ -8,7 +8,7 @@ ENV SRC_DIR=/opt/project/src
 #USER root
 
 # Install git
-RUN apt-get update
+RUN apt-get update -y
 RUN apt-get install -y git bash
 
 # Install Go

@@ -14,7 +14,7 @@ import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.exception.IntegrationException;
 
-@Tag("integration")
+//@Tag("integration")
 public class GoModTest {
 
     @Test
