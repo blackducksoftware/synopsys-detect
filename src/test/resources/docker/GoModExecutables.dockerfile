@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 gradle:5.2.0-jdk8-slim
+FROM gradle:5.2.0-jdk8-slim
 
 # Do not change SRC_DIR, value is expected by tests
 ENV SRC_DIR=/opt/project/src
