@@ -7,20 +7,18 @@ ENV SRC_DIR=/opt/project/src
 #ENV JAVA_TOOL_OPTIONS="-Dhttps.protocols=TLSv1.2"
 #USER root
 
-RUN echo "hello inside container"
-
 # Install git
-#RUN apt-get update -y
-#RUN apt-get install -y git bash
-#
+RUN apt-get update -y
+RUN apt-get install -y git bash
+
 ## Install Go
-#WORKDIR /usr/local
-#RUN wget -q https://golang.org/dl/go1.16.6.linux-amd64.tar.gz
-#RUN mkdir go1.16.6
-#RUN tar -C go1.16.6 -xzf go1.16.6.linux-amd64.tar.gz
-#RUN rm go1.16.6.linux-amd64.tar.gz
+WORKDIR /usr/local
+RUN wget -q https://golang.org/dl/go1.16.6.linux-amd64.tar.gz
+RUN mkdir go1.16.6
+RUN tar -C go1.16.6 -xzf go1.16.6.linux-amd64.tar.gz
+RUN rm go1.16.6.linux-amd64.tar.gz
 
 # Set up the test project
-#RUN mkdir -p ${SRC_DIR}
-#WORKDIR ${SRC_DIR}
-#RUN git clone -b v1.5.4 --depth 1 https://github.com/Masterminds/squirrel.git ${SRC_DIR}
+RUN mkdir -p ${SRC_DIR}
+WORKDIR ${SRC_DIR}
+RUN git clone -b v1.5.4 --depth 1 https://github.com/Masterminds/squirrel.git ${SRC_DIR}
