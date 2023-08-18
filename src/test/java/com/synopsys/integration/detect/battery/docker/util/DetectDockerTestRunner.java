@@ -37,6 +37,7 @@ public class DetectDockerTestRunner implements Closeable {
 
     private DockerDetectResult runContainer(DetectCommandBuilder detectCommandBuilder) {
         DetectDockerRunner detectDockerRunner = new DetectDockerRunner();
+        System.out.println("User name in runContainer: " + System.getProperty("user.name"));
         DockerClient dockerClient = null;
         try {
             dockerClient = detectDockerRunner.connectToDocker();
@@ -50,7 +51,11 @@ public class DetectDockerTestRunner implements Closeable {
                 dockerImageProvider.installImage(imageName, dockerClient);
                 Assertions.assertTrue(detectDockerRunner.imageExists(imageName, dockerClient), "Image provider was unable to install the image. Not sure how to help :(");
             }
-
+        }
+        catch (Exception e) {
+            Assertions.assertNull(e, "An exception occurred while building the docker file! User is: " + System.getProperty("user.name"));
+        }
+        try {
             File detectJar = DetectJar.findJar();
             String cmd = "java -jar /opt/detect/" + detectJar.getName() + detectCommandBuilder.buildCommand();
             this.dockerTestDirectories.withBinding(detectJar.getParentFile(), "/opt/detect/");
@@ -58,7 +63,7 @@ public class DetectDockerTestRunner implements Closeable {
             HostConfig hostConfig = new HostConfig().withBinds(this.dockerTestDirectories.getBindings());
             return detectDockerRunner.runContainer(imageName, cmd, workingDirectory, hostConfig, dockerClient);
         } catch (Exception e) {
-            Assertions.assertNull(e, "An exception occurred running a docker test! ");
+            Assertions.assertNull(e, "An exception occurred running a docker test scan! User is: " + System.getProperty("user.name"));
         }
 
         return null;

@@ -41,6 +41,7 @@ public class DetectDockerRunner {
         }
 
         String containerId = command.exec().getId();
+        Assertions.assertFalse(containerId.isEmpty(), "Container ID is empty. A problem occurred while Detect was trying to create the container. ");
 
         try {
             return runContainer(dockerClient, containerId);
