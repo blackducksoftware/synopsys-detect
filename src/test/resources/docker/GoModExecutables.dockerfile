@@ -4,6 +4,8 @@ FROM --platform=linux/amd64 gradle:5.2.0-jdk8-slim
 ENV SRC_DIR=/opt/project/src
 #RUN mkdir /opt/detect
 #COPY synopsys-detect-9.0.0-SIGQA10-SNAPSHOT.jar /opt/detect
+ENV JAVA_TOOL_OPTIONS="-Dhttps.protocols=TLSv1.2"
+USER root
 
 # Install git
 RUN apt-get update
