@@ -3,7 +3,7 @@ package com.synopsys.integration.detectable.detectables.npm.packagejson;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,7 +70,7 @@ public class PackageJsonExtractor {
 
     private List<Dependency> transformDependencies(MultiValuedMap<String, String> dependencies) {
         if (dependencies == null || dependencies.size() == 0) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
         return dependencies.entries().stream()
             .map(entry -> entryToDependency(entry.getKey(), entry.getValue()))
