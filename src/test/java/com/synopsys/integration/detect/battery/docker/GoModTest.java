@@ -14,12 +14,12 @@ import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.exception.IntegrationException;
 
-@Tag("integration")
+//@Tag("integration")
 public class GoModTest {
 
     @Test
     public void goModTest() throws IntegrationException, IOException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("go-mod-executables-test", "go-mod-executables-test:1.16.6")) {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("go-mod-executables-test", "go-mod-test:16")) {
 
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("GoModExecutables.dockerfile"));
 
@@ -44,8 +44,8 @@ public class GoModTest {
             dockerAssertions.atLeastOneBdioFile();
 
             // Blackduck specific assertions
-//            String codeLocationName = "go-mod-docker/go-mod-docker-version bdio";
-//            blackduckAssertions.hasCodeLocations(codeLocationName);
+            String codeLocationName = "go-mod-docker/go-mod-docker-version bdio";
+            blackduckAssertions.hasCodeLocations(codeLocationName);
             validateComponentsForSampleGoProject(blackduckAssertions);
         }
     }
