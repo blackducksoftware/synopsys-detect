@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -127,7 +128,7 @@ public class CombinedPackageJsonExtractor {
     
     private String replaceWildcards(String path, List<String> convertedWorkspaces) {        
         if (!path.contains("*")) {
-            convertedWorkspaces.add(Path.of(path).normalize().toString());
+            convertedWorkspaces.add(Paths.get(path).normalize().toString());
             return path;
         }
         
