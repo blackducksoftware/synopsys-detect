@@ -78,7 +78,7 @@ public class PackageJsonExtractor {
     }
 
     private Dependency entryToDependency(String key, String value) {
-        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, key, value);
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, key, value);
         return new Dependency(externalId);
     }
 
