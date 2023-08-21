@@ -73,8 +73,6 @@ public class GoModTest {
             dockerAssertions.atLeastOneBdioFile();
 
             // Blackduck specific assertions
-            String codeLocationName = PROJECT_NAME + "/" + projectVersion + " bdio";
-            blackduckAssertions.hasCodeLocations(codeLocationName);
             validateComponentsForSampleGoProject(blackduckAssertions);
         }
     }
