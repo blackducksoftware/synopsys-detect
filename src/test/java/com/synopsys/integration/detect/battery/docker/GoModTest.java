@@ -35,13 +35,6 @@ public class GoModTest {
 
     private static final String PROJECT_NAME = "go-mod-docker";
 
-//    @Test
-//    void goModExecutablesTest() throws IOException, IntegrationException {
-//        for (String goVersion : GO_VERSIONS_TO_TEST) {
-//            goModSpecificExecutableTest(goVersion);
-//        }
-//    }
-
     private static Stream<String> provideGoVersionsToTest() {
         return Arrays.stream(GO_VERSIONS_TO_TEST);
     }
@@ -80,8 +73,8 @@ public class GoModTest {
             dockerAssertions.atLeastOneBdioFile();
 
             // Blackduck specific assertions
-//            String codeLocationName = PROJECT_NAME + "/" + projectVersion + " bdio";
-//            blackduckAssertions.hasCodeLocations(codeLocationName);
+            String codeLocationName = PROJECT_NAME + "/" + projectVersion + " bdio";
+            blackduckAssertions.hasCodeLocations(codeLocationName);
             validateComponentsForSampleGoProject(blackduckAssertions);
         }
     }
