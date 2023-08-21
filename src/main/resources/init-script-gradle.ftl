@@ -28,8 +28,6 @@ initscript {
                 classpath name: fileName
             }
         }
-<#else>
-        classpath 'com.synopsys.integration:integration-common:26.0.4'
 </#if>
     }
 }
