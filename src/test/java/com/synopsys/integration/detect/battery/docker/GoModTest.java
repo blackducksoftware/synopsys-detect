@@ -22,7 +22,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.exception.IntegrationException;
 
-//@Tag("integration")
+@Tag("integration")
 public class GoModTest {
 
     private static final String[] GO_VERSIONS_TO_TEST = new String[] {
