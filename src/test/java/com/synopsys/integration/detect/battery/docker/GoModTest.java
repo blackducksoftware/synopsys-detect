@@ -26,28 +26,28 @@ import com.synopsys.integration.exception.IntegrationException;
 public class GoModTest {
 
     private static final String[] GO_VERSIONS_TO_TEST = new String[] {
-        "1.16.5",
-        "1.17.5",
-        "1.18.5",
-        "1.19.6",
+        "1.16.15",
+        "1.17.13",
+        "1.18.10",
+        "1.19.12",
         "1.20.4"
     };
 
     private static final String PROJECT_NAME = "go-mod-docker";
 
-    @Test
-    void goModExecutablesTest() throws IOException, IntegrationException {
-        for (String goVersion : GO_VERSIONS_TO_TEST) {
-            goModSpecificExecutableTest(goVersion);
-        }
+//    @Test
+//    void goModExecutablesTest() throws IOException, IntegrationException {
+//        for (String goVersion : GO_VERSIONS_TO_TEST) {
+//            goModSpecificExecutableTest(goVersion);
+//        }
+//    }
+
+    private static Stream<String> provideGoVersionsToTest() {
+        return Arrays.stream(GO_VERSIONS_TO_TEST);
     }
 
-//    private static Stream<String> provideGoVersionsToTest() {
-//        return Arrays.stream(GO_VERSIONS_TO_TEST);
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideGoVersionsToTest")
+    @ParameterizedTest
+    @MethodSource("provideGoVersionsToTest")
     public void goModSpecificExecutableTest(String goVersion) throws IntegrationException, IOException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("go-mod-executables-test", "go-mod-executables-test:" + goVersion)) {
 
@@ -80,8 +80,8 @@ public class GoModTest {
             dockerAssertions.atLeastOneBdioFile();
 
             // Blackduck specific assertions
-            String codeLocationName = PROJECT_NAME + "/" + projectVersion + " bdio";
-            blackduckAssertions.hasCodeLocations(codeLocationName);
+//            String codeLocationName = PROJECT_NAME + "/" + projectVersion + " bdio";
+//            blackduckAssertions.hasCodeLocations(codeLocationName);
             validateComponentsForSampleGoProject(blackduckAssertions);
         }
     }

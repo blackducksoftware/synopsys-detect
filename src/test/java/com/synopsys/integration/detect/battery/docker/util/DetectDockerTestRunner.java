@@ -50,17 +50,18 @@ public class DetectDockerTestRunner implements Closeable {
                 dockerImageProvider.installImage(imageName, dockerClient);
                 Assertions.assertTrue(detectDockerRunner.imageExists(imageName, dockerClient), "Image provider was unable to install the image. Not sure how to help :(");
             }
-
+        } catch (Exception e) {
+            Assertions.assertNull(e, "An exception occurred while building the docker file! ");
+        }
+        try {
             File detectJar = DetectJar.findJar();
             String cmd = "java -jar /opt/detect/" + detectJar.getName() + detectCommandBuilder.buildCommand();
             this.dockerTestDirectories.withBinding(detectJar.getParentFile(), "/opt/detect/");
-
             HostConfig hostConfig = new HostConfig().withBinds(this.dockerTestDirectories.getBindings());
             return detectDockerRunner.runContainer(imageName, cmd, workingDirectory, hostConfig, dockerClient);
         } catch (Exception e) {
-            Assertions.assertNull(e, "An exception occurred running a docker test! ");
+            Assertions.assertNull(e, "An exception occurred while running a Detect test scan inside the docker container! ");
         }
-
         return null;
     }
 

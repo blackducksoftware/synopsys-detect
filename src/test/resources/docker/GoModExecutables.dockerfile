@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 openjdk:8-jdk
+FROM openjdk:8-jdk
 
 # Default value of "goVersion" below is overridden by value passed as argument when building the image
 ARG goVersion=1.16.6
@@ -7,10 +7,10 @@ ARG goVersion=1.16.6
 ENV SRC_DIR=/opt/project/src
 
 # Install git
-RUN apt-get update
+RUN apt-get update -y
 RUN apt-get install -y git bash
 
-# Install Go
+## Install Go
 WORKDIR /usr/local
 RUN wget -q "https://golang.org/dl/go${goVersion}.linux-amd64.tar.gz"
 RUN mkdir "go${goVersion}"
@@ -19,4 +19,5 @@ RUN rm "go${goVersion}.linux-amd64.tar.gz"
 
 # Set up the test project
 RUN mkdir -p ${SRC_DIR}
+WORKDIR ${SRC_DIR}
 RUN git clone -b v1.5.4 --depth 1 https://github.com/Masterminds/squirrel.git ${SRC_DIR}
