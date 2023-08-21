@@ -12,7 +12,7 @@ import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 
-//@Tag("integration")
+@Tag("integration")
 public class SbtEncodingTest {
     @Test
     void sbtEncoding() throws IOException {
