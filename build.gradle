@@ -149,7 +149,7 @@ dependencies {
 
     testImplementation project(':configuration').sourceSets.test.output
     testImplementation project(':common-test')
-    testImplementation 'com.github.docker-java:docker-java-core:3.2.7'
+    testImplementation 'com.github.docker-java:docker-java-core:3.2.13'
     testImplementation 'com.github.docker-java:docker-java-transport-httpclient5:3.3.0'
 }
 
