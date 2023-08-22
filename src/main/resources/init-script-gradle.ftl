@@ -5,10 +5,6 @@ import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
 
-import com.synopsys.integration.util.ExcludedIncludedFilter
-import com.synopsys.integration.util.ExcludedIncludedWildcardFilter
-import com.synopsys.integration.util.IntegrationEscapeUtil
-
 initscript {
     repositories {
 <#if airGapLibsPath?has_content>
@@ -32,14 +28,14 @@ initscript {
                 classpath name: fileName
             }
         }
-<#else>
-        classpath 'com.synopsys.integration:integration-common:26.0.4'
 </#if>
     }
 }
 
-ExcludedIncludedFilter projectNameFilter = ExcludedIncludedWildcardFilter.fromCommaSeparatedStrings('${excludedProjectNames}', '${includedProjectNames}')
-ExcludedIncludedFilter projectPathFilter = ExcludedIncludedWildcardFilter.fromCommaSeparatedStrings('${excludedProjectPaths}', '${includedProjectPaths}')
+Set<String> projectNameExcludeFilter = convertStringToSet('${excludedProjectNames}')
+Set<String> projectNameIncludeFilter = convertStringToSet('${includedProjectNames}')
+Set<String> projectPathExcludeFilter = convertStringToSet('${excludedProjectPaths}')
+Set<String> projectPathIncludeFilter = convertStringToSet('${includedProjectPaths}')
 gradle.allprojects {
     // add a new task to each project to start the process of getting the dependencies
     task gatherDependencies(type: DefaultTask) {
@@ -60,7 +56,7 @@ gradle.allprojects {
             doFirst {
                 generateRootProjectMetaData(project, outputDirectoryPath)
 
-                if(projectNameFilter.shouldInclude(project.name) && projectPathFilter.shouldInclude(project.path)) {
+                if(shouldInclude(projectNameExcludeFilter, projectNameIncludeFilter, project.name) && shouldInclude(projectPathExcludeFilter, projectPathIncludeFilter, project.path)) {
                     def dependencyTask = project.tasks.getByName('dependencies')
                     File projectOutputFile = findProjectOutputFile(project, outputDirectoryPath)
                     File projectFile = createProjectOutputFile(projectOutputFile)
@@ -87,7 +83,7 @@ gradle.allprojects {
             }
 
             doLast {
-                if(projectNameFilter.shouldInclude(project.name) && projectPathFilter.shouldInclude(project.path)) {
+                if(shouldInclude(projectNameExcludeFilter, projectNameIncludeFilter, project.name) && shouldInclude(projectPathExcludeFilter, projectPathIncludeFilter, project.path)) {
                     File projectFile = findProjectOutputFile(project, outputDirectoryPath)
                     appendProjectMetadata(project, projectFile)
                 }
@@ -134,21 +130,22 @@ def findProjectOutputFile(Project project, String outputDirectoryPath) {
     File outputDirectory = createTaskOutputDirectory(outputDirectoryPath)
     String name = project.toString()
 
-    String nameForFile = new IntegrationEscapeUtil().replaceWithUnderscore(name)
+    String nameForFile = name?.replaceAll(/[^\p{IsAlphabetic}\p{Digit}]/, "_")
     File outputFile = new File(outputDirectory, "${nameForFile}_dependencyGraph.txt")
 
     outputFile
 }
 
 def filterConfigurations(Project project, String excludedConfigurationNames, String includedConfigurationNames) {
-    ExcludedIncludedFilter configurationFilter = ExcludedIncludedWildcardFilter.fromCommaSeparatedStrings(excludedConfigurationNames, includedConfigurationNames)
+    Set<String> configurationExcludeFilter = convertStringToSet(excludedConfigurationNames)
+    Set<String> configurationIncludeFilter = convertStringToSet(includedConfigurationNames)
     Set<Configuration> filteredConfigurationSet = new TreeSet<Configuration>(new Comparator<Configuration>() {
         public int compare(Configuration conf1, Configuration conf2) {
             return conf1.getName().compareTo(conf2.getName());
         }
     })
     for (Configuration configuration : project.configurations) {
-        if (configurationFilter.shouldInclude(configuration.name)) {
+        if (shouldInclude(configurationExcludeFilter, configurationIncludeFilter, configuration.name)) {
             filteredConfigurationSet.add(configuration)
         }
     }
@@ -200,6 +197,14 @@ def createTaskOutputDirectory(String outputDirectoryPath) {
     outputDirectory.mkdirs()
 
     outputDirectory
+}
+
+def shouldInclude(Set<String> excluded, Set<String> included, String value) {
+    return !excluded.contains(value) && (included.isEmpty() || included.contains(value))
+}
+
+def convertStringToSet(String value) {
+    return value.tokenize(',').toSet()
 }
 </#noparse>
 // ## END methods invoked by tasks above
