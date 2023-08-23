@@ -52,14 +52,14 @@ public class CombinedPackageJsonExtractor {
         
         if (packageJson.workspaces != null && rootJsonPath != null) {
             // If there are workspaces there are additional package.json's we need to parse
-            String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf("/") + 1);
+            String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf(File.separator) + 1);
             
             List<String> convertedWorkspaces = 
                     convertWorkspaceWildcards(projectRoot, packageJson.workspaces);
             
             for(String convertedWorkspace : convertedWorkspaces) {
                 Path workspaceJsonPath =
-                        Path.of(convertedWorkspace + "/package.json").normalize();
+                        Paths.get(convertedWorkspace + "/package.json").normalize();
                 
                 // We are looking for a package.json but they aren't always where we expect them.
                 // Don't try to read a file that doesn't exist.
