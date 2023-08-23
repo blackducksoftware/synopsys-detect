@@ -52,7 +52,7 @@ public class CombinedPackageJsonExtractor {
         
         if (packageJson.workspaces != null && rootJsonPath != null) {
             // If there are workspaces there are additional package.json's we need to parse
-            String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf("/") + 1);
+            String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf(File.separator) + 1);
             
             List<String> convertedWorkspaces = 
                     convertWorkspaceWildcards(projectRoot, packageJson.workspaces);
