@@ -59,7 +59,7 @@ public class CombinedPackageJsonExtractor {
             
             for(String convertedWorkspace : convertedWorkspaces) {
                 Path workspaceJsonPath =
-                        Path.of(convertedWorkspace + "/package.json").normalize();
+                        Paths.get(convertedWorkspace + "/package.json").normalize();
                 
                 // We are looking for a package.json but they aren't always where we expect them.
                 // Don't try to read a file that doesn't exist.
