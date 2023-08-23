@@ -1,6 +1,8 @@
 package com.synopsys.integration.detectable.detectables.npm.packagejson.unit;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map.Entry;
 
@@ -21,12 +23,12 @@ public class CombinedPackageJsonExtractorTest {
         CombinedPackageJsonExtractor combinedPackageJsonExtractor = new CombinedPackageJsonExtractor(gson);
                
         String packageJsonText = FunctionalTestFiles.asString("/npm/workspace-test/package-wildcard.json");
-        String projectRoot = System.getProperty("user.dir") + "/src/test/resources/detectables/functional/npm/workspace-test/";
-        
+        String rootPackageJson = System.getProperty("user.dir") + "/src/test/resources/detectables/functional/npm/workspace-test/package-wildcard.json";
+        rootPackageJson = Paths.get(rootPackageJson).toString();
         CombinedPackageJson combinedPackageJson = 
-                combinedPackageJsonExtractor.constructCombinedPackageJson(projectRoot + "package-wildcard.json", packageJsonText);
+                combinedPackageJsonExtractor.constructCombinedPackageJson(rootPackageJson, packageJsonText);
         
-        validateDiscoveredWorkspaceInformation(projectRoot, combinedPackageJson);     
+        validateDiscoveredWorkspaceInformation(combinedPackageJson);     
     }
     
     @Test
@@ -35,12 +37,12 @@ public class CombinedPackageJsonExtractorTest {
         CombinedPackageJsonExtractor combinedPackageJsonExtractor = new CombinedPackageJsonExtractor(gson);
                
         String packageJsonText = FunctionalTestFiles.asString("/npm/workspace-test/package-wildcard-and-relative.json");
-        String projectRoot = System.getProperty("user.dir") + "/src/test/resources/detectables/functional/npm/workspace-test/";
-        
+        String rootPackageJson = System.getProperty("user.dir") + "/src/test/resources/detectables/functional/npm/workspace-test/package-wildcard-and-relative.json";
+        rootPackageJson = Paths.get(rootPackageJson).toString();
         CombinedPackageJson combinedPackageJson = 
-                combinedPackageJsonExtractor.constructCombinedPackageJson(projectRoot + "package-wildcard-and-relative.json", packageJsonText);
+                combinedPackageJsonExtractor.constructCombinedPackageJson(rootPackageJson + "", packageJsonText);
         
-        validateDiscoveredWorkspaceInformation(projectRoot, combinedPackageJson);     
+        validateDiscoveredWorkspaceInformation(combinedPackageJson);     
     }
     
     @Test
@@ -49,15 +51,15 @@ public class CombinedPackageJsonExtractorTest {
         CombinedPackageJsonExtractor combinedPackageJsonExtractor = new CombinedPackageJsonExtractor(gson);
                
         String packageJsonText = FunctionalTestFiles.asString("/npm/workspace-test/package-relative.json");
-        String projectRoot = System.getProperty("user.dir") + "/src/test/resources/detectables/functional/npm/workspace-test/";
-        
+        String rootPackageJson = System.getProperty("user.dir") + "/src/test/resources/detectables/functional/npm/workspace-test/package-relative.json";
+        rootPackageJson = Paths.get(rootPackageJson).toString();
         CombinedPackageJson combinedPackageJson = 
-                combinedPackageJsonExtractor.constructCombinedPackageJson(projectRoot + "package-relative.json", packageJsonText);
+                combinedPackageJsonExtractor.constructCombinedPackageJson(rootPackageJson, packageJsonText);
         
-        validateDiscoveredWorkspaceInformation(projectRoot, combinedPackageJson);     
+        validateDiscoveredWorkspaceInformation(combinedPackageJson);     
     }
 
-    private void validateDiscoveredWorkspaceInformation(String projectRoot, CombinedPackageJson combinedPackageJson) {
+    private void validateDiscoveredWorkspaceInformation(CombinedPackageJson combinedPackageJson) {
         // Test basic information
         Assertions.assertTrue(combinedPackageJson.getName().equals("npmworkspace"));
         Assertions.assertTrue(combinedPackageJson.getVersion().equals("1.0.0"));
