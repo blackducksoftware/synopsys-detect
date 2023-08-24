@@ -29,6 +29,9 @@ public class ContainerScanStepRunner {
     private final BlackDuckRunData blackDuckRunData;
     private final File binaryRunDirectory;
     private final File containerImage;
+    private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
+    private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
+    private static final String STORAGE_IMAGE_METADATA_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-message-1+json";
 
     public ContainerScanStepRunner(OperationRunner operationRunner, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData, Gson gson)
         throws IntegrationException, DetectUserFriendlyException, IOException {
@@ -45,8 +48,10 @@ public class ContainerScanStepRunner {
 
     public UUID invokeContainerScanningWorkflow() throws IntegrationException, IOException {
         initiateScan();
+        logger.info("Container scan initiated.");
         uploadImageToStorageService();
         uploadImageMetadataToStorageService();
+        logger.info("Container scan image uploaded successfully.");
         return scanId;
     }
 
@@ -77,15 +82,15 @@ public class ContainerScanStepRunner {
     }
 
     public void uploadImageToStorageService() throws IntegrationException {
-        String storageServiceEndpoint = String.join("", "/api/storage/containers/", scanId.toString());
-        String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
+        String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString());
         logger.debug("Uploading container image artifact to storage endpoint: {}", storageServiceEndpoint);
 
         try (Response response = operationRunner.uploadFileToStorageService(
             blackDuckRunData,
             storageServiceEndpoint,
             containerImage,
-            storageServiceArtifactContentType)
+            STORAGE_IMAGE_CONTENT_TYPE
+        )
         ) {
             if (response.isStatusCodeSuccess()) {
                 logger.debug("Container scan image uploaded to storage service.");
@@ -99,8 +104,7 @@ public class ContainerScanStepRunner {
     }
 
     public void uploadImageMetadataToStorageService() throws IntegrationException {
-        String storageServiceEndpoint = String.join("", "/api/storage/containers/", scanId.toString(), "/message");
-        String storageServiceArtifactContentType = "application/vnd.blackducksoftware.container-scan-message-1+json";
+        String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString(), "/message");
         logger.debug("Uploading container image metadata to storage endpoint: {}", storageServiceEndpoint);
 
         JsonObject imageMetadataObject = operationRunner.createContainerScanImageMetadata(scanId, projectNameVersion);
@@ -109,7 +113,8 @@ public class ContainerScanStepRunner {
             blackDuckRunData,
             storageServiceEndpoint,
             imageMetadataObject.toString(),
-            storageServiceArtifactContentType)
+            STORAGE_IMAGE_METADATA_CONTENT_TYPE
+        )
         ) {
             if (response.isStatusCodeSuccess()) {
                 logger.debug("Container scan image metadata uploaded to storage service.");
