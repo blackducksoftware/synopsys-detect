@@ -217,9 +217,9 @@ public class OperationRunner {
     private final OperationAuditLog auditLog;
     private static final int[] LIMITED_FIBONACCI_SEQUENCE = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
     private static final int MIN_POLLING_INTERVAL_THRESHOLD_IN_SECONDS = 5;
-    private static final String RAPID_SCAN_ENDPOINT = "/api/developer-scans";
-    private static final String RAPID_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
-    private static final String INTELLIGENT_SCAN_ENDPOINT = "/api/intelligent-persistence-scans";
+    private static final String DEVELOPER_SCAN_ENDPOINT = ApiDiscovery.DEVELOPER_SCANS_PATH.getPath();
+    private static final String DEVELOPER_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
+    private static final String INTELLIGENT_SCAN_ENDPOINT = ApiDiscovery.INTELLIGENT_PERSISTENCE_SCANS_PATH.getPath();
     private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
 
     //Internal: Operation -> Action
@@ -362,14 +362,14 @@ public class OperationRunner {
         if (detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT) {
             return INTELLIGENT_SCAN_ENDPOINT;
         }
-        return RAPID_SCAN_ENDPOINT;
+        return DEVELOPER_SCAN_ENDPOINT;
     }
 
     public String getScanServicePostContentType() {
         if (detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT) {
             return INTELLIGENT_SCAN_CONTENT_TYPE;
         }
-        return RAPID_SCAN_CONTENT_TYPE;
+        return DEVELOPER_SCAN_CONTENT_TYPE;
     }
 
     public File downloadContainerImage(Gson gson, File downloadDirectory, String containerImageUri) throws DetectUserFriendlyException, IntegrationException, IOException {
@@ -477,7 +477,7 @@ public class OperationRunner {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        final String contentType = RAPID_SCAN_CONTENT_TYPE;
+        final String contentType = DEVELOPER_SCAN_CONTENT_TYPE;
         HttpUrl putUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString()
                 + "/api/developer-scans/" + bdScanId);
 
