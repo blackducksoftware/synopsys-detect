@@ -40,7 +40,7 @@ public class CombinedPackageJsonExtractorTest {
         String rootPackageJson = System.getProperty("user.dir") + "/src/test/resources/detectables/functional/npm/workspace-test/package-wildcard-and-relative.json";
         rootPackageJson = Paths.get(rootPackageJson).toString();
         CombinedPackageJson combinedPackageJson = 
-                combinedPackageJsonExtractor.constructCombinedPackageJson(rootPackageJson + "", packageJsonText);
+                combinedPackageJsonExtractor.constructCombinedPackageJson(rootPackageJson, packageJsonText);
         
         validateDiscoveredWorkspaceInformation(combinedPackageJson);     
     }
