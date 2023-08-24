@@ -93,14 +93,7 @@ public class NpmLockfileGraphTransformer {
             dependencyGraph.addDirectDependency(npmDependency);
             
             // add workspace requires
-            for (NpmRequires required : npmDependency.getRequires()) {
-                NpmDependency workspaceDependency = (NpmDependency) lookupDependency(required.getName(), npmDependency, npmProject, externalDependencies);
-                if (workspaceDependency.isDevDependency() && npmDependencyTypeFilter.shouldExclude(NpmDependencyType.DEV)
-                        || workspaceDependency.isPeerDependency() && npmDependencyTypeFilter.shouldExclude(NpmDependencyType.PEER)) {
-                    continue;
-                }
-                dependencyGraph.addChildrenToRoot(workspaceDependency);
-            }
+            addWorkspaceRequires(npmDependency, npmProject, dependencyGraph, externalDependencies);
         } else {
             npmDependency.getRequires().forEach(required -> {
                 logger.trace(String.format("Required package: %s of version: %s", required.getName(), required.getFuzzyVersion()));
@@ -115,6 +108,25 @@ public class NpmLockfileGraphTransformer {
         }
 
         npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, externalDependencies, workspaces));
+    }
+
+    /**
+     * This method adds any requires under npmDependency to the root of the project. This should only be called for npmDependency objects that are found
+     * at the workspace level. This makes all requires under that dependency direct dependencies in BlackDuck, which is what we want as they are specified
+     * directly in the workspace's package.json.
+     */
+    private void addWorkspaceRequires(NpmDependency npmDependency, NpmProject npmProject, DependencyGraph dependencyGraph, List<NameVersion> externalDependencies) {
+        for (NpmRequires required : npmDependency.getRequires()) {
+            NpmDependency workspaceDependency = (NpmDependency) lookupDependency(required.getName(), npmDependency, npmProject, externalDependencies);
+            
+            if (workspaceDependency != null) {
+                if (workspaceDependency.isDevDependency() && npmDependencyTypeFilter.shouldExclude(NpmDependencyType.DEV)
+                        || workspaceDependency.isPeerDependency() && npmDependencyTypeFilter.shouldExclude(NpmDependencyType.PEER)) {
+                    continue;
+                }
+                dependencyGraph.addChildrenToRoot(workspaceDependency);
+            }
+        }
     }
 
     private Dependency lookupProjectOrExternal(String name, List<NpmDependency> projectResolvedDependencies, List<NameVersion> externalDependencies) {
