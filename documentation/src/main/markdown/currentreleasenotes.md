@@ -15,6 +15,7 @@
 * Support for Gradle is now extended to Gradle 8.2.
 * Support for GoLang is now extended to Go 1.20.4.
 * Removed reliance on [solution_name] libraries for init-detect.gradle script to prevent them from being included in the Gradle dependency verification of target projects.
+* Support for Nuget package reference properties from Directory.Build.props and Project.csproj.nuget.g.props files.
 
 ### Resolved issues
 
