@@ -35,4 +35,53 @@ public class PubDepsParserTest {
         graphAssert.hasParentChildRelationship("typed_data", "1.2.0", "webkit_inspection_protocol", "0.7.3");
 
     }
+
+    @Test
+    public void test_3_1() {
+        List<String> pubDepsLines = FunctionalTestFiles.asListOfStrings("/dart/pubDeps_3_1.txt");
+
+        PubDepsParser pubDepsParser = new PubDepsParser();
+
+        DependencyGraph dependencyGraph = pubDepsParser.parse(pubDepsLines);
+
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.DART, dependencyGraph);
+
+        graphAssert.hasRootSize(4);
+        graphAssert.hasRootDependency("collection", "1.18.0");
+        graphAssert.hasRootDependency("source_span", "1.10.0");
+        graphAssert.hasRootDependency("string_scanner", "1.2.0");
+        graphAssert.hasRootDependency("typed_data", "1.3.2");
+
+        graphAssert.hasParentChildRelationship("source_span", "1.10.0", "collection", "1.18.0");
+        graphAssert.hasParentChildRelationship("source_span", "1.10.0", "path", "1.8.3");
+        graphAssert.hasParentChildRelationship("source_span", "1.10.0", "term_glyph", "1.2.1");
+        graphAssert.hasParentChildRelationship("string_scanner", "1.2.0", "source_span", "1.10.0");
+        graphAssert.hasParentChildRelationship("typed_data", "1.3.2", "collection", "1.18.0");
+
+    }
+
+    @Test
+    public void test_2_19() {
+        List<String> pubDepsLines = FunctionalTestFiles.asListOfStrings("/dart/pubDeps_2_19.txt");
+
+        PubDepsParser pubDepsParser = new PubDepsParser();
+
+        DependencyGraph dependencyGraph = pubDepsParser.parse(pubDepsLines);
+
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.DART, dependencyGraph);
+
+        graphAssert.hasRootSize(4);
+        graphAssert.hasRootDependency("http", "0.12.2");
+        graphAssert.hasRootDependency("markdown", "2.1.8");
+        graphAssert.hasRootDependency("mustache", "1.1.1");
+        graphAssert.hasRootDependency("tavern", "3.2.1+1");
+
+        graphAssert.hasParentChildRelationship("http", "0.12.2", "http_parser", "3.1.4");
+        graphAssert.hasParentChildRelationship("http", "0.12.2", "pedantic", "1.11.0");
+        graphAssert.hasParentChildRelationship("typed_data", "1.3.0", "collection", "1.15.0");
+        graphAssert.hasParentChildRelationship("source_span", "1.8.1", "collection", "1.15.0");
+        graphAssert.hasParentChildRelationship("string_scanner", "1.1.0", "source_span", "1.8.1");
+        graphAssert.hasParentChildRelationship("yaml", "2.2.1", "charcode", "1.2.0");
+
+    }
 }
