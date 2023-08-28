@@ -20,6 +20,9 @@ Execute Container Scanning by adding the following to a run of [solution_name]:
  
 ## Invocation
  * To invoke a container scan, which executes in "Intelligent" mode by default, the following must be provided at a minimum:
+    * --detect.container.scan.file.path=<Path to local or URL for remote container> 
+	
+* To invoke a stateless container scan the following must be provided at a minimum:
     * --detect.container.scan.file.path=<Path to local or URL for remote container> --detect.blackduck.scan.mode=STATELESS
 
 ## Results
