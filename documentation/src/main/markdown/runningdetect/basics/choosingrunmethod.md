@@ -14,7 +14,7 @@ Each script limits itself to a specific [solution_name] major version (for examp
 this default behavior.
 
 | [solution_name] version | Script Type | Script Name |
-|----| --- |-------------|
+|---| --- |-------------|
 | 9 | Bash | detect9.sh  |
 | 9 | PowerShell | detect9.ps1 |
 | 8 | Bash | detect8.sh  |
