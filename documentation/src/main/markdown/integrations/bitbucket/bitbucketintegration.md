@@ -41,7 +41,7 @@ This section describes how to run [solution_name] with Bitbucket pipelines using
 3.	Add the following snippet to the `bitbucket-pipelines.yml` file:
 
 ```
-bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --blackduck.url="${BLACKDUCK_URL}" 
+bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --blackduck.url="${BLACKDUCK_URL}" 
 --blackduck.api.token="${BLACKDUCK_TOKEN}" --blackduck.trust.cert=true --<any other flags>
 ```
 
@@ -68,7 +68,7 @@ pipelines:
     - step:
         name: synopsys-detect
         script:
-          - bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --blackduck.url="${BLACKDUCK_URL}" --blackduck.api.token="${BLACKDUCK_TOKEN} --blackduck.trust.cert=true"
+          - bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --blackduck.url="${BLACKDUCK_URL}" --blackduck.api.token="${BLACKDUCK_TOKEN} --blackduck.trust.cert=true"
 ```
 
 <note type="note">Configure [solution_name] as a command after the code-build step as it relies on access to the code tree and the build environment.</note>
@@ -97,7 +97,7 @@ When you commit the modified YAML file, the build is triggered. After the pipeli
 4.	Add the following snippet to the `bitbucket-pipelines.yml` file:
 
 ```
-bash <(curl -s https://detect.synopsys.com/detect8.sh) 
+bash <(curl -s https://detect.synopsys.com/detect9.sh) 
 --blackduck.url="${BLACKDUCK_URL}" --blackduck.username="${BLACKDUCK_USERNAME}" 
 --blackduck.password="${BLACKDUCK_PASSWORD}" --blackduck.trust.cert=true --<any other flags>
 ```	
@@ -125,7 +125,7 @@ pipelines:
     - step:
         name: synopsys-detect
         script:
-          - bash <(curl -s https://detect.synopsys.com/detect8.sh) --blackduck.url="${BLACKDUCK_URL}" --blackduck.username="${BLACKDUCK_USERNAME}" --blackduck.password="${BLACKDUCK_PASSWORD}" --blackduck.hub.trust.cert=true 
+          - bash <(curl -s https://detect.synopsys.com/detect9.sh) --blackduck.url="${BLACKDUCK_URL}" --blackduck.username="${BLACKDUCK_USERNAME}" --blackduck.password="${BLACKDUCK_PASSWORD}" --blackduck.hub.trust.cert=true 
 ```
 	
 When you commit the modified YAML file, the build is triggered. After the pipeline build with [solution_name] completes, you can view the complete scan results in your [blackduck_product_name] instance. For additional information and properties for [solution_name], refer to [Detect properties](../../properties/all-properties.md) for more details.
