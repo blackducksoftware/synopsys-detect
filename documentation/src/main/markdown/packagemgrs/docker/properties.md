@@ -6,7 +6,7 @@ For example, suppose you need to set Docker Inspector's `service.timeout` value 
 
 For example:
 ```
-./detect8.sh --detect.docker.image=ubuntu:latest --detect.docker.passthrough.service.timeout=480000
+./detect9.sh --detect.docker.image=ubuntu:latest --detect.docker.passthrough.service.timeout=480000
 ```
 
 You can set any Docker Inspector property using this method.

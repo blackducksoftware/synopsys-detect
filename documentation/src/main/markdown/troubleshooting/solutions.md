@@ -4,11 +4,11 @@
 
 ### Symptom
 
-detect8.sh fails with: DETECT_SOURCE was not set or computed correctly, please check your configuration and environment.
+detect9.sh fails with: DETECT_SOURCE was not set or computed correctly, please check your configuration and environment.
 
 ### Possible cause
 
-detect8.sh is trying to execute this command:
+detect9.sh is trying to execute this command:
 ````
 curl --silent --header \"X-Result-Detail: info\" https://sig-repo.synopsys.com/api/storage/bds-integrations-release/com/synopsys/integration/synopsys-detect?properties=DETECT_LATEST
 ````
@@ -21,7 +21,7 @@ The response to this command should be similar to the following:
 "uri" : "https://sig-repo.synopsys.com/api/storage/bds-integrations-release/com/synopsys/integration/synopsys-detect"
 }
 ```
-When that command does not successfully return a value for property DETECT_LATEST, detect8.sh reports:
+When that command does not successfully return a value for property DETECT_LATEST, detect9.sh reports:
 ````
 DETECT_SOURCE was not set or computed correctly, please check your configuration and environment.
 ````
