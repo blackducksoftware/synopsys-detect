@@ -1,4 +1,4 @@
-# [solution_name] tools
+# Tools
 
 [solution_name] tools are components that enable the scanning of your source code. [solution_name] uses several underlying tools to perform scanning including the Detector (for inspecting package manager dependencies), Signature Scanner (for inspecting the file system), and others. Optional properties can be specified to explicitly enable or disable these underlying tools, but by default [solution_name] will run both the Detector and Signature Scanner on the code being analyzed.
 

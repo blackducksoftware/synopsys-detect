@@ -1,4 +1,4 @@
-# [solution_name] Detectors
+# Detectors
 
 The [solution_name] Detector tool runs one or more detectors to find and extract dependencies from all supported package managers.
 

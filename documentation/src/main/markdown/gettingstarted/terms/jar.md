@@ -1,4 +1,4 @@
-# [solution_name] JAR
+# JAR
 
 A JAR file is a package file format aggregating Java files, resources and metadata into one file.
 

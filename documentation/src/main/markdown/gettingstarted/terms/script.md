@@ -1,4 +1,4 @@
-# [solution_name] script
+# Script
 
 The primary function of the [solution_name] script is to download and execute the [solution_name] JAR file, which enables the scan capability.
 

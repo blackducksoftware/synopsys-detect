@@ -1,4 +1,4 @@
-# [solution_name] Properties
+# Properties
 
 Properties in [solution_name] provide information used to determine how and what actions [solution_name] takes during a scanning run. A property to which you assign a value is like a flag or a parameter on the command line or in a script that provides instructions for the [solution_name] scan task.
 
