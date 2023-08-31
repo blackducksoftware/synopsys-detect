@@ -1,4 +1,6 @@
 import java.util.Optional
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -200,11 +202,37 @@ def createTaskOutputDirectory(String outputDirectoryPath) {
 }
 
 def shouldInclude(Set<String> excluded, Set<String> included, String value) {
-    return !excluded.contains(value) && (included.isEmpty() || included.contains(value))
+    return !containsWithWildcard(value, excluded) && (included.isEmpty() || containsWithWildcard(value, included))
 }
 
 def convertStringToSet(String value) {
     return value.tokenize(',').toSet()
+}
+
+def containsWithWildcard(String value, Set<String> tokenSet) {
+    for (String token : tokenSet) {
+        token = wildCardTokenToRegexToken(token)
+        if (value.matches(~/token/)) {
+            return true
+        }
+    }
+    return tokenSet.contains(value)
+}
+
+def wildCardTokenToRegexToken(String token) {
+    Matcher matcher = Pattern.compile(/[^*?]+|(\*)|(\?)/).matcher(token)
+    StringBuffer buffer= new StringBuffer()
+    while (matcher.find()) {
+        if(matcher.group(1) != null) {
+            matcher.appendReplacement(buffer, '.*')
+        } else if (matcher.group(2) != null) {
+            matcher.appendReplacement(buffer, "."); 
+        } else {
+            matcher.appendReplacement(buffer, '\\\\Q' + m.group(0) + '\\\\E')
+        }
+    }
+    matcher.appendTail(buffer)
+    return buffer.toString()
 }
 </#noparse>
 // ## END methods invoked by tasks above
