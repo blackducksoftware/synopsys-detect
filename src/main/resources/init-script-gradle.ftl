@@ -211,13 +211,16 @@ def convertStringToSet(String value) {
 
 def containsWithWildcard(String value, Set<String> tokenSet) {
     for (String token : tokenSet) {
-        token = wildCardTokenToRegexToken(token)
-        if (value.matches(~/token/)) {
-            
+        if (match(value, token) {
             return true
         }
     }
     return tokenSet.contains(value)
+}
+
+def match(String value, String token) {
+    def tokenRegex = wildCardTokenToRegexToken(token)
+    return value.matches(tokenRegex)
 }
 
 def wildCardTokenToRegexToken(String token) {
