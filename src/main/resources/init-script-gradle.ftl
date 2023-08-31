@@ -213,6 +213,7 @@ def containsWithWildcard(String value, Set<String> tokenSet) {
     for (String token : tokenSet) {
         token = wildCardTokenToRegexToken(token)
         if (value.matches(~/token/)) {
+            
             return true
         }
     }
@@ -228,7 +229,7 @@ def wildCardTokenToRegexToken(String token) {
         } else if (matcher.group(2) != null) {
             matcher.appendReplacement(buffer, "."); 
         } else {
-            matcher.appendReplacement(buffer, '\\\\Q' + m.group(0) + '\\\\E')
+            matcher.appendReplacement(buffer, '\\\\Q' + matcher.group(0) + '\\\\E')
         }
     }
     matcher.appendTail(buffer)
