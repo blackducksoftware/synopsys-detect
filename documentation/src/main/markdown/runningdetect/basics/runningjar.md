@@ -19,5 +19,5 @@ You can use the [solution_name] Bash script ([bash_script_name]) to download the
 
 ````
 export DETECT_DOWNLOAD_ONLY=1
-./detect8.sh
+./detect9.sh
 ````
