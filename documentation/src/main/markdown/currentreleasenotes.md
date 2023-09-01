@@ -14,6 +14,8 @@
   [detect.excluded.directories.defaults.disabled](properties/configuration/paths.md#detect-excluded-directories-defaults-disabled-advanced) to disable these defaults.
 * Support for Gradle is now extended to Gradle 8.2.
 * Support for GoLang is now extended to Go 1.20.4.
+* Support for npm is now extended to npm 9.8.1.
+  Support for npm workspaces.
 * Removed reliance on [solution_name] libraries for init-detect.gradle script to prevent them from being included in the Gradle dependency verification of target projects.
 * Support for Nuget package reference properties from Directory.Build.props and Project.csproj.nuget.g.props files.
 
@@ -22,3 +24,4 @@
 * (IDETECT-3821) Detect will now capture and record failures of the Signature Scanner due to command lengths exceeding Windows limits. This can happen with certain folder structures when using the `detect.excluded.directories` property.
 * (IDETECT-3820) Introduced an enhanced approach to NuGet Inspector for handling different formats of the `project.json` file, ensuring compatibility with both old and new structures.
 * (IDETECT-4027) Resolved a problem with the npm CLI detector for npm versions 7 and later, which was causing only direct dependencies to be reported.
+* (IDETECT-3997) Fix for npm package JSON parse detector classifying components as rubygems instead of npmjs.
