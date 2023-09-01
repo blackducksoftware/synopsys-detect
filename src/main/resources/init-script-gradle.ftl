@@ -211,7 +211,7 @@ def convertStringToSet(String value) {
 
 def containsWithWildcard(String value, Set<String> tokenSet) {
     for (String token : tokenSet) {
-        if (match(value, token) {
+        if (match(value, token)) {
             return true
         }
     }
