@@ -52,7 +52,7 @@ public class CpanCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException {
-        return cpanCliExtractor.extract(cpanExe, cpanmExe, extractionEnvironment.getOutputDirectory());
+        return cpanCliExtractor.extract(cpanExe, cpanmExe, environment.getDirectory());
     }
 
 }
