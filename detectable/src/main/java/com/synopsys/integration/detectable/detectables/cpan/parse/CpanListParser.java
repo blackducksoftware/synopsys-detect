@@ -39,7 +39,7 @@ public class CpanListParser {
                 Dependency dependency = new Dependency(name, version, externalId);
                 graph.addChildToRoot(dependency);
             } else {
-                logger.warn(String.format("Could node find resolved version for module: %s", moduleName));
+                logger.warn(String.format("Could not find resolved version for module: %s", moduleName));
             }
         }
 
