@@ -11,7 +11,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 
 public class NpmLockFileProjectIdTransformer {
     private final Logger logger = LoggerFactory.getLogger(NpmLockFileProjectIdTransformer.class);
@@ -23,9 +23,9 @@ public class NpmLockFileProjectIdTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public ExternalId transform(@Nullable PackageJson packageJson, PackageLock packageLock) {
-        return Optional.ofNullable(packageJson)
-            .map(it -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, it.name, it.version))
+    public ExternalId transform(@Nullable CombinedPackageJson combinedPackageJson, PackageLock packageLock) {
+        return Optional.ofNullable(combinedPackageJson)
+            .map(it -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, it.getName(), it.getVersion()))
             .orElse(externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageLock.name, packageLock.version));
     }
 

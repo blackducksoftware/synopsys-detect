@@ -12,18 +12,18 @@ Synopsys Detect scans code bases in your projects and folders to perform composi
 *Available from GitHub for Linux/MacOS by running:*
 
 ```bash
-bash <(curl -s -L https://detect.synopsys.com/detect8.sh)
+bash <(curl -s -L https://detect.synopsys.com/detect9.sh)
 ```
 
 *Available from GitHub for Windows by running in **command prompt**:*
 
 ```cmd
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect"
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect9.ps1?$(Get-Random) | iex; detect"
 ```
 
 *Available from GitHub for Windows/Linux by running in **powershell**:*
 ```powershell
-[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect8.ps1?$(Get-Random) | iex; detect
+[Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https://detect.synopsys.com/detect9.ps1?$(Get-Random) | iex; detect
 ```
 
 For scripts, please see [Detect Scripts](https://github.com/synopsys-sig/synopsys-detect-scripts).

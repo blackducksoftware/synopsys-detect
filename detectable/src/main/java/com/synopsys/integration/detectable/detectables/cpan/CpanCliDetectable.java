@@ -15,7 +15,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
-@DetectableInfo(name = "Cpan CLI", language = "Perl", forge = "CPAN", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "File: Makefile.PL. Executable: cpan.")
+@DetectableInfo(name = "Cpan CLI", language = "Perl", forge = "CPAN", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "File: Makefile.PL. Executables: cpan, and cpanm.")
 public class CpanCliDetectable extends Detectable {
     private static final String MAKEFILE = "Makefile.PL";
 
@@ -52,7 +52,7 @@ public class CpanCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException {
-        return cpanCliExtractor.extract(cpanExe, cpanmExe, extractionEnvironment.getOutputDirectory());
+        return cpanCliExtractor.extract(cpanExe, cpanmExe, environment.getDirectory());
     }
 
 }

@@ -15,8 +15,7 @@ import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 public class HelpPrinter {
     private static final String DIAGNOSTIC_HELP_TEXT = "\nDiagnostics mode:\n\n" +
         "In diagnostics mode, Detect will produce a diagnostics zip file that contains a collection of intermediate and output files\n" +
-        "that can be very useful for troubleshooting. Extended diagnostics mode writes additional files to the diagnostics zip file.\n" +
-        "Invoke diagnostics mode by adding -d (diagnostics mode) or -de (extended diagnostics mode) to the command line.\n" +
+        "that can be very useful for troubleshooting. Invoke diagnostics mode by adding -d to the command line.\n" +
         "The path to the generated diagnostics file can be found in the log (look for: \"Diagnostics file created at: ...\").\n" +
         "The diagnostics file can be large, so you may want to generate it only when you will actually use it.\n";
 

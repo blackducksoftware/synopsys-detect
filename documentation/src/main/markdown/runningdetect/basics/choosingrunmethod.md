@@ -14,15 +14,15 @@ Each script limits itself to a specific [solution_name] major version (for examp
 this default behavior.
 
 | [solution_name] version | Script Type | Script Name |
-| --- | --- | --- |
-| 8 | Bash | detect8.sh |
+|---| --- |-------------|
+| 9 | Bash | detect9.sh  |
+| 9 | PowerShell | detect9.ps1 |
+| 8 | Bash | detect8.sh  |
 | 8 | PowerShell | detect8.ps1 |
-| 7 | Bash | detect7.sh |
-| 7 | PowerShell | detect7.ps1 |
 
 Instuctions and examples in this documentation that reference the scripts assume you are running
-[solution_name] 8, so refer to detect8.sh or detect8.ps1. To run [solution_name] 7 instead,
-substitute detect7.sh for detect8.sh, or detect7.ps1 for detect8.ps1.
+[solution_name] 9, so refer to detect9.sh or detect9.ps1. To run [solution_name] 8 instead,
+substitute detect8.sh for detect9.sh, or detect8.ps1 for detect9.ps1.
 
 The primary reason to run the [solution_name] .jar directly is that this method provides
 direct control over the exact [solution_name] version;

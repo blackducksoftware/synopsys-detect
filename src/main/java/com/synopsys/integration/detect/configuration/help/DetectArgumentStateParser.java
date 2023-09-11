@@ -16,9 +16,6 @@ public class DetectArgumentStateParser {
         boolean isDeprecatedHelp = parser.isArgumentPresent("-hd", "--helpDeprecated");
 
         boolean isDiagnostic = parser.isArgumentPresent("-d", "--diagnostic");
-        if (!isDiagnostic) {
-            isDiagnostic = parser.isArgumentPresent("-de", "--diagnostic");
-        }
 
         boolean isGenerateAirGapZip = parser.isArgumentPresent("-z", "--zip");
 

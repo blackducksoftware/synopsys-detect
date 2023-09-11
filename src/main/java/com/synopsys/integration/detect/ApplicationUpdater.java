@@ -176,8 +176,10 @@ public class ApplicationUpdater extends URLClassLoader {
     private File installOrUpdateScanner(String dirPath) throws IOException, IntegrationException {
         final File installDirectory = new File(dirPath);
         
-        if (!installDirectory.exists()) {
-            installDirectory.mkdir();
+        if (!installDirectory.exists() && !installDirectory.mkdir()) {
+            throw new AccessDeniedException(dirPath, null, 
+                        "No write permission to create the missing installation directory: "
+                                .concat(dirPath));
         } else if (!checkInstallationDir(installDirectory.toPath())) {
             return null;
         }
@@ -309,7 +311,7 @@ public class ApplicationUpdater extends URLClassLoader {
                 return true;
             } else {
                 throw new AccessDeniedException(path.toString(), null, 
-                        "No write permisison to store downloaded Jar in the installation directory: "
+                        "No write permission to store downloaded Jar in the installation directory: "
                                 .concat(path.getFileName().toAbsolutePath().toString()));
             }
         }

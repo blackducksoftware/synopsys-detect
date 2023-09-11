@@ -28,7 +28,7 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
             "perl\t5.1",
             "Test::More\t1.3"
         );
-        addExecutableOutput(getOutputDirectory(), cpanListOutput, "cpan", "-l");
+        addExecutableOutput(getSourceDirectory(), cpanListOutput, "cpan", "-l");
 
         ExecutableOutput cpanmShowDepsOutput = createStandardOutput(
             "--> Working on .",
@@ -38,7 +38,7 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
             "perl~5.008001",
             "ExtUtils::MakeMaker"
         );
-        addExecutableOutput(getOutputDirectory(), cpanmShowDepsOutput, "cpanm", "--showdeps", ".");
+        addExecutableOutput(getSourceDirectory(), cpanmShowDepsOutput, "cpanm", "--showdeps", ".");
     }
 
     @NotNull

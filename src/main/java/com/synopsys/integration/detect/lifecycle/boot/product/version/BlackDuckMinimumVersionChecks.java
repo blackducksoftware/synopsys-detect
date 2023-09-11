@@ -21,12 +21,6 @@ public class BlackDuckMinimumVersionChecks {
         ));
 
         checks.add(new BlackDuckMinimumVersionCheck(
-            "Ephemeral mode",
-            o -> o.getBlackDuckScanMode() == BlackduckScanMode.EPHEMERAL,
-            new BlackDuckVersion(2021, 6, 0)
-        ));
-
-        checks.add(new BlackDuckMinimumVersionCheck(
                 "Stateless mode",
                 o -> o.getBlackDuckScanMode() == BlackduckScanMode.STATELESS,
                 new BlackDuckVersion(2021, 6, 0)
@@ -42,12 +36,6 @@ public class BlackDuckMinimumVersionChecks {
                 "Stateless signature scan",
                 o -> o.getDetectToolFilter().shouldInclude(DetectTool.SIGNATURE_SCAN) && o.getBlackDuckScanMode() == BlackduckScanMode.STATELESS,
                 new BlackDuckVersion(2022, 10, 0)
-        ));
-
-        checks.add(new BlackDuckMinimumVersionCheck(
-            "Ephemeral signature scan",
-            o -> o.getDetectToolFilter().shouldInclude(DetectTool.SIGNATURE_SCAN) && o.getBlackDuckScanMode() == BlackduckScanMode.EPHEMERAL,
-            new BlackDuckVersion(2022, 10, 0)
         ));
     }
 

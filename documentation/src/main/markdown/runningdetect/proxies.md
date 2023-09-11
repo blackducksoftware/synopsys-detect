@@ -18,7 +18,7 @@ including:
 * `blackduck.proxy.username` (proxy username)
 * `blackduck.proxy.password` (proxy password)
 
-When setting the blackduck.proxy.host (proxy hostname), property the schema/protocol is not accepted.   
+When setting the blackduck.proxy.host (proxy hostname) property, the schema/protocol is not accepted.   
 
 For example:  
  
@@ -57,7 +57,7 @@ For example:
     ${r"set BLACKDUCK_PROXY_PORT"}=$ProxyPort
     ${r"set BLACKDUCK_PROXY_PASSWORD"}=$ProxyUsername
     ${r"set BLACKDUCK_PROXY_USERNAME"}=$ProxyPassword
-    powershell "Import-Module FULL_PATH_TO_DOWNLOADED_SCRIPT/detect8.ps1; detect"
+    powershell "Import-Module FULL_PATH_TO_DOWNLOADED_SCRIPT/detect9.ps1; detect"
 
 For additional information on these properties, including alternate key formats, see the [Shell script configuration reference](../scripts/overview.md).
 

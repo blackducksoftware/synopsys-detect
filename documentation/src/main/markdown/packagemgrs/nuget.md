@@ -8,11 +8,11 @@
 
 The NuGet detectors can discover dependencies of NuGet projects.
 
-There are two NuGet detectors: the NuGet Solution Native Inspector, and the NuGet Project Native Inspector. The detectors run a platform dependent self-contained executable that is currently supported on Windows, Linux and Mac platforms.
+There are three NuGet detectors: the NuGet Solution Native Inspector, NuGet Project Native Inspector, and the NuGet Project Inspector. The detectors run a platform dependent self-contained executable that is currently supported on Windows, Linux and Mac platforms.
 
 <note type="Note">
 
-* NuGet Project Native Inspector relies on Project Inspector thus does not accept NuGet specific configuration properties.   
+* NuGet Project Inspector relies on Project Inspector thus does not accept NuGet specific configuration properties.   
 * The NuGet Detectors do not work with mono.
 </note>
 

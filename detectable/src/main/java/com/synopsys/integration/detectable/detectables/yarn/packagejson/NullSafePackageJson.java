@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.YarnPackageJson;
 
 public class NullSafePackageJson {
-    private final PackageJson rawPackageJson;
+    private final YarnPackageJson rawPackageJson;
 
-    public NullSafePackageJson(PackageJson rawPackageJson) {
+    public NullSafePackageJson(YarnPackageJson rawPackageJson) {
         this.rawPackageJson = rawPackageJson;
     }
 
