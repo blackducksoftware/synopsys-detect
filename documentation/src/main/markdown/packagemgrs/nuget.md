@@ -102,7 +102,7 @@ The NuGet inspectors derive dependency information from the first type of file i
 4. project.json
 5. XML of the project file
 
-In addition to the packages and the dependencues found from the above files, packages and dependencies will be included from a different project.assets.json if configured in the corresponding project's property file. (`<projectname>.<projectfiletype>.nuget.g.props`).
+In addition to the packages and dependencies found from the above files, packages and dependencies will be included from a different project.assets.json if configured in the corresponding project's property file. (`<projectname>.<projectfiletype>.nuget.g.props`).
 
 After discovering dependencies, NuGet client libraries are used to collect further information about the dependencies and write it to a JSON file (`<projectname>_inspection.json`). [solution_name] then parses that file for the dependency information.
 
