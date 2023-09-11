@@ -6,6 +6,7 @@
 
 * Support for npm is now extended to npm 9.8.1.
 * Support for npm workspaces.
+* Lerna projects leveraging npm now support npm up to version 9.8.1.
 * Support for Gradle is now extended to Gradle 8.2.
 * Support for GoLang is now extended to Go 1.20.4.
 * Support for Nuget package reference properties from Directory.Build.props and Project.csproj.nuget.g.props files.
