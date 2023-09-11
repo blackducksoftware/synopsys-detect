@@ -32,6 +32,6 @@
 
 ### Dependency updates
 
-* Upgraded Project Inspector to version 2021.9.10.
-* Upgraded Nuget Inspector to version 1.1.0.
+* Released and Upgraded Project Inspector to version 2021.9.10.
+* Released and Upgraded Nuget Inspector to version 1.1.0.
 * Fixed EsotericSoftware YAMlBeans library version to resolve critical severity [CVE-2023-24621](https://nvd.nist.gov/vuln/detail/CVE-2023-24621)
