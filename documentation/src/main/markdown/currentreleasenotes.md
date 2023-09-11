@@ -2,6 +2,14 @@
 
 ## Version 9.0.0
 
+### New features
+
+* Support for npm is now extended to npm 9.8.1.
+* Support for npm workspaces.
+* Support for Gradle is now extended to Gradle 8.2.
+* Support for GoLang is now extended to Go 1.20.4.
+* Support for Nuget package reference properties from Directory.Build.props and Project.csproj.nuget.g.props files.
+
 ### Changed features
 
 * The `detect.diagnostic.extended` property and the -de command line option, that were deprecated in [solution_name] 8.x, have been removed. Use `detect.diagnostic`, and the command line option -d, instead.
@@ -13,11 +21,6 @@
 * In addition to node_modules, bin, build, .git, .gradle, out, packages, target, the Gradle wrapper directory `gradle` will be excluded from signature scan by default. Use
   [detect.excluded.directories.defaults.disabled](properties/configuration/paths.md#detect-excluded-directories-defaults-disabled-advanced) to disable these defaults.
 * Removed reliance on [solution_name] libraries for init-detect.gradle script to prevent them from being included in the Gradle dependency verification of target projects.
-* Support for Gradle is now extended to Gradle 8.2.
-* Support for GoLang is now extended to Go 1.20.4.
-* Support for npm is now extended to npm 9.8.1.
-* Support for npm workspaces.
-* Support for Nuget package reference properties from Directory.Build.props and Project.csproj.nuget.g.props files.
 
 ### Resolved issues
 
@@ -25,3 +28,10 @@
 * (IDETECT-3820) Introduced an enhanced approach to NuGet Inspector for handling different formats of the `project.json` file, ensuring compatibility with both old and new structures.
 * (IDETECT-4027) Resolved a problem with the npm CLI detector for npm versions 7 and later, which was causing only direct dependencies to be reported.
 * (IDETECT-3997) Resolved npm package JSON parse detector issue of classifying components as RubyGems instead of npmjs.
+* (IDETECT-4023) Resolved the issue of Scan failure if Project level "Retain Unmatched File Data" not set for "System Default".
+
+### Dependency updates
+
+* Upgraded Project Inspector to version 2021.9.10.
+* Upgraded Nuget Inspector to version 1.1.0.
+* Fixed EsotericSoftware YAMlBeans library version to resolve critical severity [CVE-2023-24621](https://nvd.nist.gov/vuln/detail/CVE-2023-24621)
