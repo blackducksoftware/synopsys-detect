@@ -7,5 +7,5 @@
 * Support for Dart is now extended to Dart 3.1.
 
 ### Resolved issues
-* (IDETECT-4056) Resolved a problem with CPAN detector where no components were reported.
-  Additionally, if cpan command has not been run and configured on the system previously, Detect instructs cpan to accept default configurations.
+* (IDETECT-4056) Resolved an issue where no components were reported by CPAN detector.
+  If the cpan command has not been previously configured and run on the system, [solution_name] instructs CPAN to accept default configurations.
