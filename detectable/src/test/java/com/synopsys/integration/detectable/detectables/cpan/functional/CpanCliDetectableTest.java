@@ -1,6 +1,9 @@
 package com.synopsys.integration.detectable.detectables.cpan.functional;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
@@ -28,7 +31,9 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
             "perl\t5.1",
             "Test::More\t1.3"
         );
-        addExecutableOutput(getSourceDirectory(), cpanListOutput, "cpan", "-l");
+        Map<String, String> envVars = new HashMap<>();
+        envVars.put("PERL_MM_USE_DEFAULT", "true");
+        addExecutableOutput(getSourceDirectory(), cpanListOutput, envVars, "cpan", "-l");
 
         ExecutableOutput cpanmShowDepsOutput = createStandardOutput(
             "--> Working on .",
