@@ -8,4 +8,4 @@
 
 ### Resolved issues
 * (IDETECT-4056) Resolved a problem with CPAN detector where no components were reported.
-  Additionally, if cpan command has not been run and configured on the system previously, Detect instructs cpan to accept default configurations. This allows the command to finish executing successfully.
+  Additionally, if cpan command has not been run and configured on the system previously, Detect instructs cpan to accept default configurations.
