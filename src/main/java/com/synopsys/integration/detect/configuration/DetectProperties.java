@@ -317,7 +317,7 @@ public class DetectProperties {
 
     public static final NullableStringProperty DETECT_CONTAINER_SCAN_FILE =
         NullableStringProperty.newBuilder("detect.container.scan.file.path")
-            .setInfo("Container Scan Target", DetectPropertyFromVersion.VERSION_8_11_0)
+            .setInfo("Container Scan Target", DetectPropertyFromVersion.VERSION_9_1_0)
             .setHelp(
                 "If specified, this file and this file only will be uploaded for container scan analysis. The CONTAINER_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the CONTAINER_SCAN tool is invoked.")
             .setGroups(DetectGroup.CONTAINER_SCANNER, DetectGroup.SOURCE_PATH)
