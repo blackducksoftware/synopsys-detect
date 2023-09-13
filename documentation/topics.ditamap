@@ -107,6 +107,7 @@
     <topicref href="runningdetect/status-file.md" format="markdown"/>
     <topicref href="runningdetect/proxies.md" format="markdown"/>
     <topicref href="runningdetect/concurrent.md" format="markdown"/>
+	<topicref href="runningdetect/containerscanning.md" format="markdown"/>
     <topicref href="runningdetect/runincontainer.md" format="markdown"/>
     <topicref href="runningdetect/component-location-analysis.md" format="markdown"/>
   </topicref>
