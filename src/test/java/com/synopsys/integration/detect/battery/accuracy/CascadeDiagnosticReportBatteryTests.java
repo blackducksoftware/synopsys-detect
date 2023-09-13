@@ -23,7 +23,7 @@ class CascadeDiagnosticReportBatteryTests {
 
         OutputAssert detectorReport = diagnostics.getReport(DiagnosticReportHandler.ReportTypes.DETECTOR);
         detectorReport.assertContains("DETECTOR: NPM");
-        detectorReport.assertContainsBlock("ATTEMPTED: NPM Shrinkwrap", "REASON: JsonSyntaxException");
+        detectorReport.assertContainsBlock("ATTEMPTED: NPM Shrinkwrap", "REASON: Attempted to parse");
         detectorReport.assertContainsBlock("ATTEMPTED: NPM CLI", "REASON: A package.json was located");
         detectorReport.assertContainsBlock("ATTEMPTED: NPM Package Json Parse", "REASON: JsonSyntaxException");
 
@@ -34,7 +34,7 @@ class CascadeDiagnosticReportBatteryTests {
 
         searchDetailedReport.assertContains("ATTEMPTED: NPM - NPM CLI - NPM_NODE_MODULES_NOT_FOUND");
         searchDetailedReport.assertContains("ATTEMPTED: NPM - NPM Package Json Parse - EXTRACTION_FAILED");
-        searchDetailedReport.assertContains("ATTEMPTED: NPM - NPM Shrinkwrap - EXTRACTION_FAILED");
+        searchDetailedReport.assertContains("ATTEMPTED: NPM - NPM Shrinkwrap - POORLY_FORMATTED_JSON");
 
         searchDetailedReport.assertContains("NOT FOUND: GRADLE");
         searchDetailedReport.assertContains("Gradle Native Inspector: No files were found");
@@ -55,7 +55,7 @@ class CascadeDiagnosticReportBatteryTests {
         OutputAssert detectorReport = diagnostics.getReport(DiagnosticReportHandler.ReportTypes.DETECTOR);
         detectorReport.assertContains("DETECTOR: NPM");
         detectorReport.assertContainsBlock("EXTRACTED: NPM Package Json Parse", "EXTRACTION: 1 Code Locations", "Found file:");
-        detectorReport.assertContainsBlock("ATTEMPTED: NPM Shrinkwrap", "REASON: JsonSyntaxException");
+        detectorReport.assertContainsBlock("ATTEMPTED: NPM Shrinkwrap", "REASON: Attempted to parse");
         detectorReport.assertContainsBlock("ATTEMPTED: NPM CLI", "REASON: A package.json was located");
 
         OutputAssert searchReport = diagnostics.getReport(DiagnosticReportHandler.ReportTypes.SEARCH);
@@ -63,7 +63,7 @@ class CascadeDiagnosticReportBatteryTests {
 
         OutputAssert searchDetailedReport = diagnostics.getReport(DiagnosticReportHandler.ReportTypes.SEARCH_DETAILED);
         searchDetailedReport.assertContains("EXTRACTED: NPM - NPM Package Json Parse");
-        searchDetailedReport.assertContains("ATTEMPTED: NPM - NPM Shrinkwrap - EXTRACTION_FAILED");
+        searchDetailedReport.assertContains("ATTEMPTED: NPM - NPM Shrinkwrap - POORLY_FORMATTED_JSON");
         searchDetailedReport.assertContains("ATTEMPTED: NPM - NPM CLI - NPM_NODE_MODULES_NOT_FOUND");
         test.cleanup();
     }

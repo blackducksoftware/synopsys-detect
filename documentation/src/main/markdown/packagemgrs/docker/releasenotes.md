@@ -1,5 +1,17 @@
 # [docker_inspector_name] Release notes
 
+## Version 10.1.0
+
+### Changed features
+
+* (IDETECT-3818) Added support to identify the BDIO namespace and origin as “oracle_linux” correctly when scanning Oracle Linux images.
+
+### Dependency update
+
+* Updated internal build dependencies for Image inspector library to 14.2.0 and Image Inspector Web Service to 5.1.0
+* Upgraded Spring Boot to version 2.7.12 to resolve high severity [CVE-2023-20883](https://nvd.nist.gov/vuln/detail/CVE-2023-20883)
+* Upgraded SnakeYAML to version 2.0 to resolve critical severity [CVE-2022-1471](https://nvd.nist.gov/vuln/detail/CVE-2022-1471)
+
 ## Version 10.0.1
 
 ### Dependency update

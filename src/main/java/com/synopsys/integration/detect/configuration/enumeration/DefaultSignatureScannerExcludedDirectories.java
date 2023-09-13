@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum DefaultSignatureScannerExcludedDirectories {
+    GRADLE("gradle"),
     DOT_GRADLE(".gradle"),
     NODE_MODULES("node_modules"),
     GIT(".git"),

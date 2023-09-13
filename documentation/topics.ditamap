@@ -7,7 +7,7 @@
         <prodinfo>
             <prodname>Synopsys Detect</prodname>
             <vrmlist>
-                <vrm version="8.11.0"/>
+                <vrm version="9.0.0"/>
             </vrmlist>
         </prodinfo>
 
@@ -109,6 +109,7 @@
     <topicref href="runningdetect/concurrent.md" format="markdown"/>
 	<topicref href="runningdetect/containerscanning.md" format="markdown"/>
     <topicref href="runningdetect/runincontainer.md" format="markdown"/>
+    <topicref href="runningdetect/component-location-analysis.md" format="markdown"/>
   </topicref>
 
  
@@ -246,6 +247,9 @@
    </topicref>
    
    <topicref href="integrations/gitlab/gitlabintegration.md" format="markdown">
+   </topicref>
+   
+   <topicref href="integrations/bitbucket/bitbucketintegration.md" format="markdown">
    </topicref>
    
    </topicref>

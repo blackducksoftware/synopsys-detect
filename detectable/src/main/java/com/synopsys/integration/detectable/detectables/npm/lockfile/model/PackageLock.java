@@ -10,7 +10,7 @@ public class PackageLock {
 
     @SerializedName("version")
     public String version;
-
-    @SerializedName("dependencies")
-    public Map<String, PackageLockDependency> dependencies;
+    
+    @SerializedName("packages")
+    public Map<String, PackageLockPackage> packages;
 }
