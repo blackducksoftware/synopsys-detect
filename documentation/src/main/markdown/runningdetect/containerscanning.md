@@ -15,7 +15,7 @@ Execute Container Scanning by adding the following to a run of [solution_name]:
 
 ### General Requirements
  * A unique project version must be provided, or the scan service will respond with an error.
- * Must be running [blackduck_product_name] 2023.7.0 or greater.
+ * Must be running [blackduck_product_name] 2023.10.0 or greater.
  * URL provided for a remote container image must use the HTTP(S) protocol.
  
 ## Invocation
