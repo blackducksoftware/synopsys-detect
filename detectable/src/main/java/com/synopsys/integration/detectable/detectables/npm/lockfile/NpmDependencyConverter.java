@@ -117,7 +117,11 @@ public class NpmDependencyConverter {
             return;
         }
                 
-        for(String packageName : packageLock.packages.keySet()) {  
+        for(String packageName : packageLock.packages.keySet()) {
+            if (packageName.isEmpty()) {
+                packagesToRemove.add(packageName);
+            }
+
             gatherAllDependencies(packageLock, packageName);
             
             // Look for any relationships previously nested in the dependencies object prior to

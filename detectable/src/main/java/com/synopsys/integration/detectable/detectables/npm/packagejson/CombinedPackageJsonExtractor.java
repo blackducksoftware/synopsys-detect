@@ -103,10 +103,9 @@ public class CombinedPackageJsonExtractor {
         if (rootIndex != -1) {
             int packageStartIndex = rootIndex + projectRoot.length();
             if (packageStartIndex < convertedWorkspace.length()) {
-                // Replace any \'s with /'s so we can properly compare workspace names with what is in 
-                // the package-lock.json file. The \\\\ looks strange as replaceAll uses a regex and we
-                // need to escape the \ that escapes the \.
-                String relativeWorkspace = convertedWorkspace.substring(packageStartIndex).replaceAll("\\\\", "/");
+                // Replace any \'s with /'s, so we can properly compare workspace names with what is in
+                // the package-lock.json file.
+                String relativeWorkspace = convertedWorkspace.substring(packageStartIndex).replace("\\", "/");
                 combinedPackageJson.getRelativeWorkspaces().add(relativeWorkspace);
             }
         }

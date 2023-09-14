@@ -20,7 +20,8 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '9.1.0-SNAPSHOT'
+
+version = '9.1.0-SIGQA2-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -52,23 +53,23 @@ final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
 
 repositories {
     println "Checking if environment property SNPS_INTERNAL_ARTIFACTORY is configured: ${internalRepoHost}"
-    maven { 
+    maven {
         url = uri("${internalRepoHost}/artifactory/bds-integrations-release")
         content { includeModule(locatorGroup, locatorModule) }
     }
-    maven { 
+    maven {
         url = uri("${internalRepoHost}/artifactory/bds-integrations-snapshot")
         content { includeModule(locatorGroup, locatorModule) }
     }
-    maven { 
+    maven {
         url = uri("${internalRepoHost}/artifactory/bds-integration-placeholder-release")
         content { includeModule(locatorGroup, locatorModule) }
     }
-    maven { 
-        url = uri("${externalRepoHost}/artifactory/bds-integration-placeholder-release") 
+    maven {
+        url = uri("${externalRepoHost}/artifactory/bds-integration-placeholder-release")
         content { includeModule(locatorGroup, locatorModule) }
     }
-    maven { 
+    maven {
         url "${externalRepoHost}/bds-bdio-release"
         content { excludeModule(locatorGroup, locatorModule) }
     }
@@ -131,7 +132,7 @@ dependencies {
 
     implementation 'ch.qos.logback:logback-classic:1.2.11'
 
-    implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
+    implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.6'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.2.0'
     implementation "${locatorGroup}:${locatorModule}:1.0.16"

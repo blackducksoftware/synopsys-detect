@@ -46,7 +46,7 @@ The recommended way of configuring [solution_name] from a GitLab pipeline is to
 	test:
 		stage: test
 		script:
-		- bash <(curl -s -L https://detect.synopsys.com/detect8.sh) --blackduck.url="${HUB\_URL}" --blackduck.api.token={your Black Duck access token} --blackduck.trust.cert=true --<any other flags>
+		- bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --blackduck.url="${HUB\_URL}" --blackduck.api.token={your Black Duck access token} --blackduck.trust.cert=true --<any other flags>
     ~~~
 
 5.	Configure [solution_name] as a script build step. Otherwise, GitLab cannot enforce build changes influenced by [solution_name]. For example, checking for policy, failing builds according to policy, and others.
@@ -88,7 +88,7 @@ For improved security, Synopsys recommends a revocable API token, as described i
 	test:
 		stage: test
 		script:
-			- bash <(curl -s -L <https://detect.synopsys.com/detect8.sh>) --blackduck.url="${HUB\_URL}"  --blackduck.hub.username="${HUB\_USERNAME}" --blackduck.hub.password="${HUB\_PASSWORD}" --blackduck.api.token={your Black Duck access token} --blackduck.trust.cert=true --<any other flags>
+			- bash <(curl -s -L <https://detect.synopsys.com/detect9.sh>) --blackduck.url="${HUB\_URL}"  --blackduck.hub.username="${HUB\_USERNAME}" --blackduck.hub.password="${HUB\_PASSWORD}" --blackduck.api.token={your Black Duck access token} --blackduck.trust.cert=true --<any other flags>
     ~~~
 
 5.	Configure [solution_name] as a script build step. Otherwise, GitLab cannot enforce build changes influenced by [solution_name]. For example, checking for policy, failing builds according to policy, and others.
