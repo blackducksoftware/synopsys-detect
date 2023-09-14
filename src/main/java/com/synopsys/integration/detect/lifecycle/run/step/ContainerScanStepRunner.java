@@ -81,7 +81,7 @@ public class ContainerScanStepRunner {
         logger.debug("Scan initiated with scan service. Scan ID received: {}", scanIdString);
     }
 
-    public void uploadImageToStorageService() throws IntegrationException {
+    public void uploadImageToStorageService() throws IntegrationException, IOException {
         String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString());
         logger.debug("Uploading container image artifact to storage endpoint: {}", storageServiceEndpoint);
 
@@ -98,12 +98,10 @@ public class ContainerScanStepRunner {
                 logger.trace("Unable to upload container image. {} {}", response.getStatusCode(), response.getStatusMessage());
                 throw new IntegrationException(String.join(" ", "Unable to upload container image. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
             }
-        } catch (IOException | IntegrationException e) {
-            throw new IntegrationException(e);
         }
     }
 
-    public void uploadImageMetadataToStorageService() throws IntegrationException {
+    public void uploadImageMetadataToStorageService() throws IntegrationException, IOException {
         String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString(), "/message");
         logger.debug("Uploading container image metadata to storage endpoint: {}", storageServiceEndpoint);
 
@@ -123,8 +121,6 @@ public class ContainerScanStepRunner {
                 throw new IntegrationException(String.join(" ", "Unable to upload container image metadata. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
 
             }
-        } catch (IOException | IntegrationException e) {
-            throw new IntegrationException(e);
         }
     }
 }
