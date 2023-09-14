@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.bdio2.Bdio;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
@@ -52,6 +53,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectorToolOptions;
+import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -106,6 +108,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.PublishSi
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
+import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio2FileOperation;
@@ -221,6 +224,10 @@ public class OperationRunner {
     private final OperationAuditLog auditLog;
     private static final int[] LIMITED_FIBONACCI_SEQUENCE = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
     private static final int MIN_POLLING_INTERVAL_THRESHOLD_IN_SECONDS = 5;
+    private static final String DEVELOPER_SCAN_ENDPOINT = ApiDiscovery.DEVELOPER_SCANS_PATH.getPath();
+    private static final String DEVELOPER_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
+    private static final String INTELLIGENT_SCAN_ENDPOINT = ApiDiscovery.INTELLIGENT_PERSISTENCE_SCANS_PATH.getPath();
+    private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -256,6 +263,10 @@ public class OperationRunner {
         this.extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         this.rapidScanResultAggregator = new RapidScanResultAggregator();
         this.auditLog = new OperationAuditLog(utilitySingletons.getOperationWrapper(), operationSystem);
+    }
+
+    public CodeLocationNameManager getCodeLocationNameManager() {
+        return codeLocationNameManager;
     }
 
     public final Optional<DetectableTool> checkForDocker() throws OperationException {//TODO: refactor bazel+docker out of detectable
@@ -333,6 +344,10 @@ public class OperationRunner {
         auditLog.namedPublic("Phone Home", () -> blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome));
     }
 
+    public DirectoryManager getDirectoryManager() {
+        return directoryManager;
+    }
+
     //Rapid
     public UUID initiateStatelessBdbaScan(BlackDuckRunData blackDuckRunData) throws OperationException {
         return auditLog.namedInternal("Initial Stateless BDBA Scan", () -> {
@@ -345,20 +360,121 @@ public class OperationRunner {
                     );
             }
 
-            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
-
-            HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + "/api/developer-scans");
-
-            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-                    .postFile(bdioHeader, ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protobuf"))
-                    .buildBlackDuckResponseRequest(postUrl);
-
-            HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);
-            String path = responseUrl.uri().getPath();
-
-            return UUID.fromString(path.substring(path.lastIndexOf('/') + 1));
+            return uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeader);
         });
+    }
+
+
+    public String getScanServicePostEndpoint() {
+        if (detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT) {
+            return INTELLIGENT_SCAN_ENDPOINT;
+        }
+        return DEVELOPER_SCAN_ENDPOINT;
+    }
+
+    public String getScanServicePostContentType() {
+        if (detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT) {
+            return INTELLIGENT_SCAN_CONTENT_TYPE;
+        }
+        return DEVELOPER_SCAN_CONTENT_TYPE;
+    }
+
+    public File downloadContainerImage(Gson gson, File downloadDirectory, String containerImageUri) throws DetectUserFriendlyException, IntegrationException, IOException {
+        String targetPathName = downloadDirectory.toString().concat("/targetImage");
+        ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
+        ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
+        return artifactResolver.downloadArtifact(new File(targetPathName), containerImageUri);
+    }
+
+    public File getContainerScanImage(Gson gson, File downloadDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
+        Optional<String> containerImageFilePath = detectConfigurationFactory.getContainerScanFilePath();
+        File containerImageFile = null;
+        if (containerImageFilePath.isPresent()) {
+            String containerImageUri = containerImageFilePath.get();
+            if (containerImageUri.startsWith("http")) {
+                containerImageFile = downloadContainerImage(gson, downloadDirectory, containerImageUri);
+            } else {
+                containerImageFile = new File(containerImageUri);
+            }
+        }
+        return containerImageFile;
+    }
+
+    public JsonObject createContainerScanImageMetadata(UUID scanId, NameVersion projectNameVersion) {
+        String scanPersistence = detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT ? "STATEFUL" : "STATELESS";
+        String projectGroupName = detectConfigurationFactory.createProjectGroupOptions().getProjectGroup();
+
+        JsonObject imageMetadataObject = new JsonObject();
+        imageMetadataObject.addProperty("scanId", scanId.toString());
+        imageMetadataObject.addProperty("scanType", "CONTAINER");
+        imageMetadataObject.addProperty("scanPersistence", scanPersistence);
+        imageMetadataObject.addProperty("projectName", projectNameVersion.getName());
+        imageMetadataObject.addProperty("projectVersionName", projectNameVersion.getVersion());
+        imageMetadataObject.addProperty("projectGroupName", projectGroupName);
+
+        return imageMetadataObject;
+    }
+
+    public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType)
+        throws IntegrationException, IOException {
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
+        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+            .postFile(payloadFile, ContentType.create(postContentType))
+            .buildBlackDuckResponseRequest(postUrl);
+
+        try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+            return response;
+        } catch (IntegrationException e) {
+            logger.trace("Could not execute file upload request to storage service.");
+            throw new IntegrationException("Could not execute file upload request to storage service.", e);
+        } catch (IOException e) {
+            logger.trace("I/O error occurred during file upload request.");
+            throw new IOException("I/O error occurred during file upload request to storage service.", e);
+        }
+    }
+
+    public Response uploadJsonToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, String jsonPayload, String postContentType)
+        throws IntegrationException, IOException {
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
+
+        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+            .postString(jsonPayload, ContentType.create(postContentType))
+            .buildBlackDuckResponseRequest(postUrl);
+
+        try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+            return response;
+        } catch (IntegrationException e) {
+            logger.trace("Could not execute JSON upload request to storage service.");
+            throw new IntegrationException("Could not execute JSON upload request to storage service.", e);
+        } catch (IOException e) {
+            logger.trace("I/O error occurred during JSON upload request.");
+            throw new IOException("I/O error occurred during JSON upload request to storage service.", e);
+        }
+    }
+
+
+    public UUID uploadBdioHeaderToInitiateScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile) throws IntegrationException {
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+        String scanServicePostEndpoint = getScanServicePostEndpoint();
+        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(scanServicePostEndpoint);
+
+        String scanServicePostContentType = getScanServicePostContentType();
+        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+            .postFile(bdioHeaderFile, ContentType.create(scanServicePostContentType))
+            .buildBlackDuckResponseRequest(postUrl);
+
+        HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);
+        String path = responseUrl.uri().getPath();
+
+        return UUID.fromString(path.substring(path.lastIndexOf('/') + 1));
     }
 
     public void uploadBdioEntries(BlackDuckRunData blackDuckRunData, UUID bdScanId) throws IntegrationException, IOException {
@@ -368,7 +484,7 @@ public class OperationRunner {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        String contentType = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
+        final String contentType = DEVELOPER_SCAN_CONTENT_TYPE;
         HttpUrl putUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString()
                 + "/api/developer-scans/" + bdScanId);
 
@@ -470,7 +586,7 @@ public class OperationRunner {
                 () -> new GenerateComponentLocationAnalysisOperation().failComponentLocationAnalysisOperation()
         );
     }
-    
+
     /**
      * Given a BDIO, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
      * every detected component's {@link ExternalId} along with its declaration location when applicable.
@@ -484,7 +600,7 @@ public class OperationRunner {
             } else if (!applicableDetectorsIncludeAtLeastOneSupportedDetector(bdio.getApplicableDetectorTypes())) {
                 failComponentLocationAnalysisOperationTask(SUPPORTED_DETECTORS_LOG_MSG);
             } else {
-                Set<Component> componentsSet = new BdioToComponentListTransformer().transformBdioToComponentSet(bdio);  
+                Set<Component> componentsSet = new BdioToComponentListTransformer().transformBdioToComponentSet(bdio);
                 if (componentsSet.isEmpty()) {
                     failComponentLocationAnalysisOperationTask("Component Location Analysis requires at least one dependency in BDIO results. Skipping location analysis.");
                 } else {
@@ -496,7 +612,7 @@ public class OperationRunner {
             }
         }
     }
-    
+
     /**
      * Given a Rapid/Stateless Detector Scan result, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
      * every reported component's {@link ExternalId} along with its declaration location and upgrade guidance information when applicable.
@@ -985,6 +1101,16 @@ public class OperationRunner {
         exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
     }
 
+    public void publishContainerFailure(Exception e) {
+        logger.error("Container scan failure: {}", e.getMessage());
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.CONTAINER_SCAN, StatusType.FAILURE));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "CONTAINER_SCAN");
+    }
+
+    public void publishContainerSuccess() {
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.CONTAINER_SCAN, StatusType.SUCCESS));
+    }
+
     public void publishImpactFailure(Exception e) {
         logger.error("Impact analysis failure: {}", e.getMessage());
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.IMPACT_ANALYSIS, StatusType.FAILURE));
@@ -1238,11 +1364,11 @@ public class OperationRunner {
             );
         });
     }
-    
+
     public UUID getScanIdFromScanUrl(HttpUrl blackDuckScanUrl) {
         String url = blackDuckScanUrl.toString();
         UUID scanId = UUID.fromString(url.substring(url.lastIndexOf("/") + 1));
-        
+
         return scanId;
     }
 }

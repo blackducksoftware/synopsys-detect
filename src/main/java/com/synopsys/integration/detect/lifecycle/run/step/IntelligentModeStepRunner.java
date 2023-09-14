@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -131,6 +132,24 @@ public class IntelligentModeStepRunner {
                 mustWaitAtBomSummaryLevel.set(true);
             }
         });
+
+        stepHelper.runToolIfIncludedWithCallbacks(
+            DetectTool.CONTAINER_SCAN,
+            "Container Scanner",
+            () -> {
+                logger.debug("Determining if configuration is valid to run a container scan.");
+                ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData, gson);
+                if (containerScanStepRunner.shouldRunContainerScan()) {
+                    logger.debug("Invoking intelligent persistent container scan.");
+                    UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+                    scanIdsToWaitFor.add(scanId.toString());
+                } else {
+                    logger.debug("Container image file not provided or could not be downloaded. Container scan will not run.");
+                }
+            },
+            operationRunner::publishContainerSuccess,
+            operationRunner::publishContainerFailure
+        );
 
         stepHelper.runToolIfIncludedWithCallbacks(
             DetectTool.IMPACT_ANALYSIS,
