@@ -94,28 +94,32 @@ public class RapidModeStepRunner {
             }
         });
         
-        stepHelper.runToolIfIncluded(DetectTool.CONTAINER_SCAN, "Container Scanner", () -> {
-            logger.debug("Stateless container scan detected.");
-
-            // Check if this is an SCA environment.
-            if (scaaasFilePath.isPresent()) {
-                List<HttpUrl> containerResultUrls = new ArrayList<>();
-                invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, containerResultUrls, true, scaaasFilePath.get());
-                processScanResults(containerResultUrls, parsedUrls, formattedCodeLocations, DetectTool.CONTAINER_SCAN.name());
-            } else {
-                logger.debug("Determining if configuration is valid to run a container scan.");
-                ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData, gson);
-                if (containerScanStepRunner.shouldRunContainerScan()) {
-                    logger.debug("Invoking stateless container scan.");
-                    UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
-                    String statelessScanEndpoint = operationRunner.getScanServicePostEndpoint();
-                    HttpUrl scanServiceUrlToPoll = new HttpUrl(blackDuckUrl + statelessScanEndpoint + "/" + scanId.toString());
-                    parsedUrls.add(scanServiceUrlToPoll);
+        stepHelper.runToolIfIncludedWithCallbacks(
+            DetectTool.CONTAINER_SCAN, "Container Scanner",
+            () -> {
+                logger.debug("Stateless container scan detected.");
+                // Check if this is an SCA environment.
+                if (scaaasFilePath.isPresent()) {
+                    List<HttpUrl> containerResultUrls = new ArrayList<>();
+                    invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, containerResultUrls, true, scaaasFilePath.get());
+                    processScanResults(containerResultUrls, parsedUrls, formattedCodeLocations, DetectTool.CONTAINER_SCAN.name());
                 } else {
-                    logger.debug("Container image file not provided or could not be downloaded. Container scan will not run.");
+                    logger.debug("Determining if configuration is valid to run a container scan.");
+                    ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData, gson);
+                    if (containerScanStepRunner.shouldRunContainerScan()) {
+                        logger.debug("Invoking stateless container scan.");
+                        UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+                        String statelessScanEndpoint = operationRunner.getScanServicePostEndpoint();
+                        HttpUrl scanServiceUrlToPoll = new HttpUrl(blackDuckUrl + statelessScanEndpoint + "/" + scanId.toString());
+                        parsedUrls.add(scanServiceUrlToPoll);
+                    } else {
+                        logger.debug("Container image file not provided or could not be downloaded. Container scan will not run.");
+                    }
                 }
-            }
-        });
+            },
+            operationRunner::publishContainerSuccess,
+            operationRunner::publishContainerFailure
+        );
 
         // Get info about any scans that were done
         BlackduckScanMode mode = blackDuckRunData.getScanMode();
