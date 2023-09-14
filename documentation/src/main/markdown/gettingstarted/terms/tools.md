@@ -1,14 +1,14 @@
 # Tools
 
-[solution_name] tools are components that enable the scanning of your source code. [solution_name] uses several underlying tools to perform scanning including;   
-Detector (for inspecting package manager dependencies)   
-Signature Scanner (for inspecting the file system)   
-Docker Inspector (for inspecting Docker container content)   
-Bazel detector ( to discover dependencies in Bazel projects)   
-Binary Analysis (used to determine components within binary files)   
-Vulnerability Impact Analysis Tool (generates a Vulnerability Impact Analysis Report)   
+[solution_name] tools are components that enable the scanning of your source code. [solution_name] uses several underlying tools to perform scanning including:   
+* Detector (for inspecting package manager dependencies)   
+* Signature Scanner (for inspecting the file system)   
+* Docker Inspector (for inspecting Docker container content)   
+* Bazel detector ( to discover dependencies in Bazel projects)   
+* Binary Analysis (used to determine components within binary files)   
+* Vulnerability Impact Analysis Tool (generates a Vulnerability Impact Analysis Report)   
+* IaC Scanner (supports infrastructure as code scanning)   
 
-IaC Scanner (--detect.tools=IAC_SCAN)and others.   
 Optional properties can be specified to explicitly enable or disable these underlying tools, but by default [solution_name] will run both the Detector and Signature Scanner on the code being analyzed.
 
 The default tools that are run by [solution_name]:
