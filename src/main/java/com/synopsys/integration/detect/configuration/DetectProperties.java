@@ -315,6 +315,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_SCAN)
             .build();
 
+    public static final NullableStringProperty DETECT_CONTAINER_SCAN_FILE =
+        NullableStringProperty.newBuilder("detect.container.scan.file.path")
+            .setInfo("Container Scan Target", DetectPropertyFromVersion.VERSION_9_1_0)
+            .setHelp(
+                "If specified, this file and this file only will be uploaded for container scan analysis. The CONTAINER_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the CONTAINER_SCAN tool is invoked.")
+            .setGroups(DetectGroup.CONTAINER_SCANNER, DetectGroup.SOURCE_PATH)
+            .build();
+
     // TODO: Consider removing environment sourcing code in 9.0.0. IDETECT-3167
     public static final StringProperty DETECT_BITBAKE_BUILD_ENV_NAME =
         StringProperty.newBuilder("detect.bitbake.build.env.name", "oe-init-build-env")
@@ -847,7 +855,7 @@ public class DetectProperties {
             .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
                 createTypeFilterHelpText("Gradle configuration types"),
-                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
+                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/8.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
             )
             .setExample(GradleConfigurationType.UNRESOLVED.name())
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)

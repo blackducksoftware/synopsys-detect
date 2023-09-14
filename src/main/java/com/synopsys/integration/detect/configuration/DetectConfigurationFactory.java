@@ -326,7 +326,7 @@ public class DetectConfigurationFactory {
         Integer projectTier = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_TIER);
         String projectDescription = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_DESCRIPTION);
         String projectVersionNotes = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES);
-        List<ProjectCloneCategoriesType> cloneCategories = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES).representedValuesStreamlined();
+        List<ProjectCloneCategoriesType> cloneCategories = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES).representedValues();
         Boolean projectLevelAdjustments = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_LEVEL_ADJUSTMENTS);
         Boolean forceProjectVersionUpdate = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_UPDATE);
         String projectVersionNickname = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME);
@@ -525,5 +525,9 @@ public class DetectConfigurationFactory {
         }
 
         return directoryExclusionPatterns;
+    }
+
+    public Optional<String> getContainerScanFilePath() {
+        return Optional.ofNullable(detectConfiguration.getNullableValue(DetectProperties.DETECT_CONTAINER_SCAN_FILE));
     }
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,14 +52,14 @@ public class CombinedPackageJsonExtractor {
         
         if (packageJson.workspaces != null && rootJsonPath != null) {
             // If there are workspaces there are additional package.json's we need to parse
-            String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf("/") + 1);
+            String projectRoot = rootJsonPath.substring(0, rootJsonPath.lastIndexOf(File.separator) + 1);
             
             List<String> convertedWorkspaces = 
                     convertWorkspaceWildcards(projectRoot, packageJson.workspaces);
             
             for(String convertedWorkspace : convertedWorkspaces) {
                 Path workspaceJsonPath =
-                        Path.of(convertedWorkspace + "/package.json").normalize();
+                        Paths.get(convertedWorkspace + "/package.json").normalize();
                 
                 // We are looking for a package.json but they aren't always where we expect them.
                 // Don't try to read a file that doesn't exist.
@@ -102,7 +103,10 @@ public class CombinedPackageJsonExtractor {
         if (rootIndex != -1) {
             int packageStartIndex = rootIndex + projectRoot.length();
             if (packageStartIndex < convertedWorkspace.length()) {
-                combinedPackageJson.getRelativeWorkspaces().add(convertedWorkspace.substring(packageStartIndex));
+                // Replace any \'s with /'s, so we can properly compare workspace names with what is in
+                // the package-lock.json file.
+                String relativeWorkspace = convertedWorkspace.substring(packageStartIndex).replace("\\", "/");
+                combinedPackageJson.getRelativeWorkspaces().add(relativeWorkspace);
             }
         }
     }
@@ -127,7 +131,7 @@ public class CombinedPackageJsonExtractor {
     
     private String replaceWildcards(String path, List<String> convertedWorkspaces) {        
         if (!path.contains("*")) {
-            convertedWorkspaces.add(Path.of(path).normalize().toString());
+            convertedWorkspaces.add(Paths.get(path).normalize().toString());
             return path;
         }
         

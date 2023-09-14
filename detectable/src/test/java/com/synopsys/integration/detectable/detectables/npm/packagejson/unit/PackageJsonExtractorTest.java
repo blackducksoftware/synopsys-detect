@@ -33,10 +33,10 @@ class PackageJsonExtractorTest {
     @BeforeEach
     void setUp() {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        testDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name1", "version1");
-        testDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name2", "version2");
-        testDevDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "nameDev1", "versionDev1");
-        testDevDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "nameDev2", "versionDev2");
+        testDep1 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "name1", "version1");
+        testDep2 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "name2", "version2");
+        testDevDep1 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "nameDev1", "versionDev1");
+        testDevDep2 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "nameDev2", "versionDev2");
     }
 
     private PackageJsonExtractor createExtractor(NpmDependencyType... excludedTypes) {
@@ -53,7 +53,7 @@ class PackageJsonExtractorTest {
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
-        GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
+        GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
         graphAssert.hasRootDependency(testDep1);
         graphAssert.hasRootDependency(testDep2);
         graphAssert.hasNoDependency(testDevDep1);
@@ -69,7 +69,7 @@ class PackageJsonExtractorTest {
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
-        GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
+        GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
         graphAssert.hasRootDependency(testDep1);
         graphAssert.hasRootDependency(testDep2);
         graphAssert.hasRootDependency(testDevDep1);

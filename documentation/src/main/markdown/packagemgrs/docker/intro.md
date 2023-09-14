@@ -146,7 +146,7 @@ Suppose you need to set Docker Inspector's `service.timeout` value (the length o
 
 For example:
 ```
-./detect8.sh --detect.docker.image=ubuntu:latest --detect.docker.passthrough.service.timeout=480000
+./detect9.sh --detect.docker.image=ubuntu:latest --detect.docker.passthrough.service.timeout=480000
 ```
 
 You can set any [docker_inspector_name] property using this method.
@@ -160,7 +160,7 @@ If you have been running the Black Duck Docker Inspector directly, and need to t
 invoking [docker_inspector_name] from [solution_name], here are some recommendations likely to 
 help you make the transition:
 
-1. If you run Black Duck Docker Inspector with `blackduck-docker-inspector.sh`, replace `blackduck-docker-inspector.sh` in your command line with `detect8.sh` (adjust the [solution_name] major version as necessary).
+1. If you run Black Duck Docker Inspector with `blackduck-docker-inspector.sh`, replace `blackduck-docker-inspector.sh` in your command line with `detect9.sh` (adjust the [solution_name] major version as necessary).
 See the [solution_name] documentation for information on where to get the [solution_name] script.
 1. If you run Black Duck Docker Inspector with `java -jar blackduck-docker-inspector-{version}.jar`, replace `blackduck-docker-inspector-{version}.jar` in your command line with `synopsys-detect-{version}.jar`.
 See the [solution_name] documentation for information on where to get the [solution_name] .jar.

@@ -39,12 +39,12 @@ public class PackageJsonExtractorFunctionalTest {
     @BeforeEach
     void setUp() {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        testDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name1", "version1");
-        testDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name2", "version2");
-        testDevDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "nameDev1", "versionDev1");
-        testDevDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "nameDev2", "versionDev2");
-        testPeerDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "namePeer1", "versionPeer1");
-        testPeerDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "namePeer2", "versionPeer2");
+        testDep1 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "name1", "version1");
+        testDep2 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "name2", "version2");
+        testDevDep1 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "nameDev1", "versionDev1");
+        testDevDep2 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "nameDev2", "versionDev2");
+        testPeerDep1 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "namePeer1", "versionPeer1");
+        testPeerDep2 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "namePeer2", "versionPeer2");
 
         packageJsonFile = new File("src/test/resources/detectables/functional/npm/package.json");
     }
@@ -62,7 +62,7 @@ public class PackageJsonExtractorFunctionalTest {
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
-        GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
+        GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
         graphAssert.hasRootDependency(testDep1);
         graphAssert.hasRootDependency(testDep2);
         graphAssert.hasNoDependency(testDevDep1);
@@ -96,7 +96,7 @@ public class PackageJsonExtractorFunctionalTest {
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
-        GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
+        GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
         graphAssert.hasRootDependency(testDep1);
         graphAssert.hasRootDependency(testDep2);
         graphAssert.hasRootDependency(testPeerDep1);

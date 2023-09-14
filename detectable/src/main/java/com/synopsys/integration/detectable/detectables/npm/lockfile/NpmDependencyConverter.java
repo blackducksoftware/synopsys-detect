@@ -117,23 +117,12 @@ public class NpmDependencyConverter {
             return;
         }
                 
-        for(String packageName : packageLock.packages.keySet()) {  
-            // We need to reconstruct the new packages/dependencies setup to look like the old dependencies/requires 
-            // setup so the later graph construction works. This is just a dump of all dependencies + devDependencies 
-            // + peerDependencies + the new optionalDependences. This happens regardless of filtering with 
-            // detect.npm.dependency.types.excluded.
-            PackageLockPackage packageLockPackage = packageLock.packages.get(packageName);
-            if (packageLockPackage.dependencies != null) {
-                if (packageLockPackage.devDependencies != null) {
-                    packageLockPackage.dependencies.putAll(packageLockPackage.devDependencies);
-                }
-                if (packageLockPackage.peerDependencies != null) {
-                    packageLockPackage.dependencies.putAll(packageLockPackage.peerDependencies);
-                }
-                if (packageLockPackage.optionalDependencies != null) {
-                    packageLockPackage.dependencies.putAll(packageLockPackage.optionalDependencies);
-                } 
+        for(String packageName : packageLock.packages.keySet()) {
+            if (packageName.isEmpty()) {
+                packagesToRemove.add(packageName);
             }
+
+            gatherAllDependencies(packageLock, packageName);
             
             // Look for any relationships previously nested in the dependencies object prior to
             // npm 9. In the packages object these are stored at the root of the object in a parent/child and
@@ -162,5 +151,28 @@ public class NpmDependencyConverter {
         // This makes the final packages structure more like the previous dependencies structure so most of the
         // detector code does not need to be altered to support npm 9 and later.
         packageLock.packages.keySet().removeAll(packagesToRemove);
+    }
+
+    /**
+     * We need to reconstruct the new packages/dependencies setup to look like the old dependencies/requires 
+     * setup so the later graph construction works. This is just a dump of all dependencies + devDependencies 
+     * + peerDependencies + the new optionalDependences. This happens regardless of filtering with 
+     * detect.npm.dependency.types.excluded.
+     * @param packageLock
+     * @param packageName
+     */
+    private void gatherAllDependencies(PackageLock packageLock, String packageName) {
+        PackageLockPackage packageLockPackage = packageLock.packages.get(packageName);
+        if (packageLockPackage.dependencies != null) {
+            if (packageLockPackage.devDependencies != null) {
+                packageLockPackage.dependencies.putAll(packageLockPackage.devDependencies);
+            }
+            if (packageLockPackage.peerDependencies != null) {
+                packageLockPackage.dependencies.putAll(packageLockPackage.peerDependencies);
+            }
+            if (packageLockPackage.optionalDependencies != null) {
+                packageLockPackage.dependencies.putAll(packageLockPackage.optionalDependencies);
+            } 
+        }
     }
 }
