@@ -9,7 +9,7 @@
 * Vulnerability Impact Analysis Tool (generates a Vulnerability Impact Analysis Report)   
 * IaC Scanner (supports infrastructure as code scanning)   
 
-Optional properties can be specified to explicitly enable or disable these underlying tools, but by default [solution_name] will run both the Detector and Signature Scanner on the code being analyzed.
+Optional properties can be specified to explicitly enable or disable these underlying tools, but by default, [solution_name] will run both the Detector and Signature Scanner on the code being analyzed when a valid path with analyzable content is provided.
 
 The default tools that are run by [solution_name]:
 
