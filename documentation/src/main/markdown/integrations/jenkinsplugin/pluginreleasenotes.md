@@ -1,5 +1,22 @@
 # Release Notes for Jenkins Plugin
 
+## **Version 9.0.0**
+**New features**
+
+* Updated to be compatible with [solution_name] 9.x.x. (Downloading and using detect9.(sh/ps1)).
+
+**Changed features**
+
+* The Jenkins plugin has been upgraded to use [solution_name] 9.x.x for execution.
+* The plugin has been built against upgraded Jenkins/Jenkins plugin versions in order to mitigate known security risks.
+* The minimal Jenkins version required is 2.401.3.
+* Configuration and usage of the plugin is unchanged.
+
+**Resolved issues**
+
+* (IDTCTJNKNS-263) Updated [solution_name] Jenkins Plugin to have consistent behavior across Windows, Linux and Mac Agent when project names have leading or trailing spaces.
+* (IDTCTJNKNS-272) Updated [solution_name] Jenkins Plugin to be able to pass '&' in the DETECT_SOURCE_PATH property.
+
 ## **Version 8.0.1**
 **Resolved issues**
 
