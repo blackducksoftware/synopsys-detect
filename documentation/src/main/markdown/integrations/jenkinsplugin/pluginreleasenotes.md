@@ -9,7 +9,8 @@
 
 * Updated to use [solution_name] 9.x.x for execution.
 * The plugin has been built against upgraded Jenkins/Jenkins plugin versions in order to mitigate known security risks.
-* Jenkins version 2.401.3 or later is required.
+* Jenkins version 2.401.3 or later is required.   
+
 <note type="note">Configuration and usage of the plugin is unchanged.</note>
 
 **Resolved issues**
