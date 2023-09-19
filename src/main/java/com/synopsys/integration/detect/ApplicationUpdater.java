@@ -43,7 +43,6 @@ import com.synopsys.integration.log.LogLevel;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.rest.HttpMethod;
 import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.rest.credentials.Credentials;
 import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
@@ -599,7 +598,7 @@ public class ApplicationUpdater extends URLClassLoader {
         headers.put(DOWNLOAD_VERSION_HEADER, currentVersion);
         final Request request = new Request(downloadUrl, HttpMethod.GET, null, new HashMap<>(), headers, null);
         ProxyInfo proxyInfo = getProxyInfo();
-        final IntHttpClient intHttpClient = getIntHttpClient(proxyInfo);
+        final UpdaterHttpClient intHttpClient = getIntHttpClient(proxyInfo);
         try (final Response response = intHttpClient.execute(request)) {
             return handleResponse(response, currentVersion, installDirectory);
         }
@@ -649,12 +648,12 @@ public class ApplicationUpdater extends URLClassLoader {
         return null;
     }
     
-    private IntHttpClient getIntHttpClient(ProxyInfo proxyInfo) {
+    private UpdaterHttpClient getIntHttpClient(ProxyInfo proxyInfo) {
         final SilentIntLogger silentLogger = new SilentIntLogger();
         silentLogger.setLogLevel(LogLevel.WARN);
-        return new IntHttpClient(silentLogger,
+        return new UpdaterHttpClient(silentLogger,
                 BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create(),
-                IntHttpClient.DEFAULT_TIMEOUT, 
+                UpdaterHttpClient.DEFAULT_TIMEOUT, 
                 trustCertificate, 
                 proxyInfo
         );
