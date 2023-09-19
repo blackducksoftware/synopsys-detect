@@ -133,22 +133,15 @@ public class IntelligentModeStepRunner {
             }
         });
 
-        stepHelper.runToolIfIncludedWithCallbacks(
+        stepHelper.runToolIfIncluded(
             DetectTool.CONTAINER_SCAN,
             "Container Scanner",
             () -> {
-                logger.debug("Determining if configuration is valid to run a container scan.");
                 ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData, gson);
-                if (containerScanStepRunner.shouldRunContainerScan()) {
-                    logger.debug("Invoking intelligent persistent container scan.");
-                    UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
-                    scanIdsToWaitFor.add(scanId.toString());
-                } else {
-                    logger.debug("Container image file not provided or could not be downloaded. Container scan will not run.");
-                }
-            },
-            operationRunner::publishContainerSuccess,
-            operationRunner::publishContainerFailure
+                logger.debug("Invoking intelligent persistent container scan.");
+                Optional<UUID> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+                scanId.ifPresent(uuid -> scanIdsToWaitFor.add(uuid.toString()));
+            }
         );
 
         stepHelper.runToolIfIncludedWithCallbacks(

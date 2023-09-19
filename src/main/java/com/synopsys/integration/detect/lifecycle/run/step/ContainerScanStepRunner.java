@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -46,16 +47,26 @@ public class ContainerScanStepRunner {
         containerImage = operationRunner.getContainerScanImage(gson, binaryRunDirectory);
     }
 
-    public UUID invokeContainerScanningWorkflow() throws IntegrationException, IOException {
-        initiateScan();
-        logger.info("Container scan initiated.");
-        uploadImageToStorageService();
-        uploadImageMetadataToStorageService();
-        logger.info("Container scan image uploaded successfully.");
-        return scanId;
+    public Optional<UUID> invokeContainerScanningWorkflow() {
+        try {
+            logger.debug("Determining if configuration is valid to run a container scan.");
+            if (shouldRunContainerScan()) {
+                initiateScan();
+                logger.info("Container scan initiated.");
+                uploadImageToStorageService();
+                uploadImageMetadataToStorageService();
+                operationRunner.publishContainerSuccess();
+                logger.info("Container scan image uploaded successfully.");
+            } else {
+                logger.info("Container image file not provided or could not be downloaded. Container scan will not run.");
+            }
+        } catch (IntegrationException | IOException e) {
+            operationRunner.publishContainerFailure(e);
+        }
+        return Optional.ofNullable(scanId);
     }
 
-    public boolean shouldRunContainerScan() {
+    private boolean shouldRunContainerScan() {
         return containerImage != null && containerImage.exists();
     }
 
@@ -119,7 +130,6 @@ public class ContainerScanStepRunner {
             } else {
                 logger.trace("Unable to upload container image metadata." + response.getStatusCode() + " " + response.getStatusMessage());
                 throw new IntegrationException(String.join(" ", "Unable to upload container image metadata. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
-
             }
         }
     }

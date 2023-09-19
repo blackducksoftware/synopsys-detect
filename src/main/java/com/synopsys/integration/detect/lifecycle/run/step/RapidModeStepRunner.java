@@ -94,7 +94,7 @@ public class RapidModeStepRunner {
             }
         });
         
-        stepHelper.runToolIfIncludedWithCallbacks(
+        stepHelper.runToolIfIncluded(
             DetectTool.CONTAINER_SCAN, "Container Scanner",
             () -> {
                 logger.debug("Stateless container scan detected.");
@@ -104,21 +104,16 @@ public class RapidModeStepRunner {
                     invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, containerResultUrls, true, scaaasFilePath.get());
                     processScanResults(containerResultUrls, parsedUrls, formattedCodeLocations, DetectTool.CONTAINER_SCAN.name());
                 } else {
-                    logger.debug("Determining if configuration is valid to run a container scan.");
                     ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData, gson);
-                    if (containerScanStepRunner.shouldRunContainerScan()) {
-                        logger.debug("Invoking stateless container scan.");
-                        UUID scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+                    logger.debug("Invoking stateless container scan.");
+                    Optional<UUID> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+                    if (scanId.isPresent()) {
                         String statelessScanEndpoint = operationRunner.getScanServicePostEndpoint();
-                        HttpUrl scanServiceUrlToPoll = new HttpUrl(blackDuckUrl + statelessScanEndpoint + "/" + scanId.toString());
+                        HttpUrl scanServiceUrlToPoll = new HttpUrl(blackDuckUrl + statelessScanEndpoint + "/" + scanId.get());
                         parsedUrls.add(scanServiceUrlToPoll);
-                    } else {
-                        logger.debug("Container image file not provided or could not be downloaded. Container scan will not run.");
                     }
                 }
-            },
-            operationRunner::publishContainerSuccess,
-            operationRunner::publishContainerFailure
+            }
         );
 
         // Get info about any scans that were done
