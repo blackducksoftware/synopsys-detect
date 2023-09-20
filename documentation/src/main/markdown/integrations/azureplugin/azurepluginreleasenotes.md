@@ -3,11 +3,11 @@
 ## Version 9.0.0
 **New features**
 
-* Updated the plugin to use [solution_name] 9.
+* Updated the plugin to use [solution_name] 9. [[solution_name] 9 Release Notes](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/currentreleasenotes.html)
 
 **Resolved issues**
 
-*(DETECTADO-92) Resolved issue to make pipeline fail when invalid proxy details are provided.
+* (DETECTADO-92) Pipeline will now fail as expected when invalid proxy details are provided for Linux and Mac Agents.
 
 ## Version 8.1.0
 **New features**
@@ -21,7 +21,7 @@
 * Updated the plugin to use [solution_name] 8.
 
 ## Version 7.0.0
-**New features**
+**New features** 
 
 * Updated the plugin to use [solution_name]7.
 * Added the ability to run [solution_name] in AirGap mode.
