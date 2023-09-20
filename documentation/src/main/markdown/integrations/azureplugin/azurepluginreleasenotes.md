@@ -3,7 +3,7 @@
 ## Version 9.0.0
 **New features**
 
-* Updated the plugin to use [solution_name] 9. [[solution_name] 9 Release Notes](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/currentreleasenotes.html)
+* Updated the plugin to use [solution_name] 9. [solution_name] [Release Note](../../currentreleasenotes.md)
 
 **Resolved issues**
 
