@@ -1,5 +1,14 @@
 # Release Notes for Azure DevOps Plugin
 
+## Version 9.0.0
+**New features**
+
+* Updated the plugin to use [solution_name] 9.
+
+**Resolved issues**
+
+*(DETECTADO-92) Resolved issue to make pipeline fail when invalid proxy details are provided.
+
 ## Version 8.1.0
 **New features**
 
