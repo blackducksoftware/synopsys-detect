@@ -15,7 +15,7 @@
 
 **Resolved issues**
 
-* (IDTCTJNKNS-263) Updated [solution_name] Jenkins Plugin to provide consistent behavior across Windows, Linux, and Mac Agent when project names have leading or trailing spaces.
+* (IDTCTJNKNS-263) Updated [solution_name] Jenkins Plugin to provide consistent behavior for Linux, and Mac Agent when project names have leading or trailing spaces.
 * (IDTCTJNKNS-272) Updated [solution_name] Jenkins Plugin to support passing '&' in the DETECT_SOURCE_PATH property.
 
 ## **Version 8.0.1**
