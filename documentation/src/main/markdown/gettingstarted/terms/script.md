@@ -1,8 +1,8 @@
-# [solution_name] script
+# Script
 
-The primary function of the [solution_name] scripts is to download and execute the [solution_name] JAR file, which enables the scan.
+The primary function of the [solution_name] script is to download and execute the [solution_name] JAR file, which enables the scan capability.
 
-You download and run the latest version of [solution_name] using the following commands, and add properties to refine the instruction.
+Users download and run the latest version of [solution_name] by providing the following commands, and adding properties to refine the behaviour.
 
 Windows:
 ````
