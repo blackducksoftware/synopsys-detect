@@ -11,6 +11,7 @@ import com.synopsys.integration.blackduck.api.generated.component.DeveloperScans
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
+import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 
 public class RapidScanComponentGroupDetail {
@@ -90,8 +91,8 @@ public class RapidScanComponentGroupDetail {
     // While it may be possible to reduce the overall message generation code in this class by pushing 
     // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
     // as this may be temporary code.
-    public void addComponentMessages(DeveloperScansScanView resultView, DeveloperScansScanItemsComponentViolatingPoliciesView componentPolicyViolation) {
-        String baseMessage = getBaseMessage(resultView);
+    public void addComponentMessages(DeveloperScansScanItemsView resultItem, DeveloperScansScanItemsComponentViolatingPoliciesView componentPolicyViolation) {
+        String baseMessage = getBaseMessage(resultItem);
 
         String errorMessage = "", warningMessage = "";
 
@@ -121,8 +122,8 @@ public class RapidScanComponentGroupDetail {
     // While it may be possible to reduce the overall message generation code in this class by pushing 
     // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
     // as this may be temporary code.
-    public void addLicenseMessages(DeveloperScansScanView resultView, DeveloperScansScanItemsPolicyViolationLicensesView licensePolicyViolation) {
-        String baseMessage = getBaseMessage(resultView);
+    public void addLicenseMessages(DeveloperScansScanItemsView resultItem, DeveloperScansScanItemsPolicyViolationLicensesView licensePolicyViolation) {
+        String baseMessage = getBaseMessage(resultItem);
         
         List<DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView> violatingPolicies = licensePolicyViolation.getViolatingPolicies();
         
@@ -167,9 +168,9 @@ public class RapidScanComponentGroupDetail {
     // While it may be possible to reduce the overall message generation code in this class by pushing 
     // some common pieces into a parent class or interface, it is likely not worth altering the libraries 
     // as this may be temporary code.
-    public void addVulnerabilityMessages(DeveloperScansScanView resultView,
+    public void addVulnerabilityMessages(DeveloperScansScanItemsView resultItem,
             DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerabilityPolicyViolation) {
-        String baseMessage = getBaseMessage(resultView);
+        String baseMessage = getBaseMessage(resultItem);
         
         List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView> violatingPolicies = vulnerabilityPolicyViolation.getViolatingPolicies();
         
@@ -195,10 +196,10 @@ public class RapidScanComponentGroupDetail {
             warningMessage += summaryMessage;
         }
         
-        if (resultView.getLongTermUpgradeGuidance() != null && resultView.getShortTermUpgradeGuidance() != null) {
+        if (resultItem.getLongTermUpgradeGuidance() != null && resultItem.getShortTermUpgradeGuidance() != null) {
             String upgradeGuidance = " Long term upgrade guidance: "
-                    + resultView.getLongTermUpgradeGuidance().getVersionName() + ", short term upgrade guidance "
-                    + resultView.getShortTermUpgradeGuidance().getVersionName();
+                    + resultItem.getLongTermUpgradeGuidance().getVersionName() + ", short term upgrade guidance "
+                    + resultItem.getShortTermUpgradeGuidance().getVersionName();
 
             if (StringUtils.isNotBlank(errorMessage)) {
                 errorMessage += upgradeGuidance;
@@ -223,10 +224,10 @@ public class RapidScanComponentGroupDetail {
         return overallMessage;
     }
     
-    private String getBaseMessage(DeveloperScansScanView resultView) {
-        String baseMessage = "Component " + resultView.getComponentName() + " version " + resultView.getVersionName();
-        if (StringUtils.isNotBlank(resultView.getExternalId())) {
-            baseMessage += " with ID " + resultView.getExternalId();
+    private String getBaseMessage(DeveloperScansScanItemsView resultItem) {
+        String baseMessage = "Component " + resultItem.getComponentName() + " version " + resultItem.getVersionName();
+        if (StringUtils.isNotBlank(resultItem.getExternalId())) {
+            baseMessage += " with ID " + resultItem.getExternalId();
         }
         baseMessage += " violates policy ";
         return baseMessage;
