@@ -43,6 +43,7 @@ import com.synopsys.integration.log.LogLevel;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.rest.HttpMethod;
 import com.synopsys.integration.rest.HttpUrl;
+import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.rest.credentials.Credentials;
 import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
@@ -51,8 +52,10 @@ import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 
 import freemarker.template.Version;
+import java.util.Locale;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
+import org.apache.http.impl.EnglishReasonPhraseCatalog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -598,7 +601,7 @@ public class ApplicationUpdater extends URLClassLoader {
         headers.put(DOWNLOAD_VERSION_HEADER, currentVersion);
         final Request request = new Request(downloadUrl, HttpMethod.GET, null, new HashMap<>(), headers, null);
         ProxyInfo proxyInfo = getProxyInfo();
-        final UpdaterHttpClient intHttpClient = getIntHttpClient(proxyInfo);
+        final IntHttpClient intHttpClient = getIntHttpClient(proxyInfo);
         try (final Response response = intHttpClient.execute(request)) {
             return handleResponse(response, currentVersion, installDirectory);
         }
@@ -621,7 +624,8 @@ public class ApplicationUpdater extends URLClassLoader {
         } else if (response.getStatusCode() == HttpStatus.SC_NOT_MODIFIED) {
             logger.info("{} Present Detect installation is up to date - skipping download.", LOG_PREFIX);
         } else {
-            logger.warn("{} Unable to download artifact. Response code: {} {}", LOG_PREFIX, response.getStatusCode(), response.getStatusMessage());
+            String message = StringUtils.isNotBlank(response.getStatusMessage()) ? response.getStatusMessage() : EnglishReasonPhraseCatalog.INSTANCE.getReason(response.getStatusCode(), Locale.ENGLISH);
+            logger.warn("{} Unable to download artifact. Response code: {} {}", LOG_PREFIX, response.getStatusCode(), message);
         }
         return null;
     }
@@ -648,12 +652,12 @@ public class ApplicationUpdater extends URLClassLoader {
         return null;
     }
     
-    private UpdaterHttpClient getIntHttpClient(ProxyInfo proxyInfo) {
+    private IntHttpClient getIntHttpClient(ProxyInfo proxyInfo) {
         final SilentIntLogger silentLogger = new SilentIntLogger();
         silentLogger.setLogLevel(LogLevel.WARN);
-        return new UpdaterHttpClient(silentLogger,
+        return new IntHttpClient(silentLogger,
                 BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create(),
-                UpdaterHttpClient.DEFAULT_TIMEOUT, 
+                IntHttpClient.DEFAULT_TIMEOUT, 
                 trustCertificate, 
                 proxyInfo
         );
