@@ -1,6 +1,9 @@
 package com.synopsys.integration.detectable.util;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +26,20 @@ public class ToolVersionLogger {
     }
 
     public void log(File projectDir, ExecutableTarget executableTarget, String versionArgument) {
-        log(() -> executableRunner.execute(ExecutableUtils.createFromTarget(projectDir, executableTarget, versionArgument)));
+        log(projectDir, executableTarget, versionArgument, new HashMap<>());
+    }
+
+    public void log(File projectDir, ExecutableTarget executableTarget, String versionArgument, Map<String, String> environmentVars) {
+        log(() -> {
+            executableRunner.execute(
+                ExecutableUtils.createFromTarget(
+                    projectDir,
+                    environmentVars,
+                    executableTarget,
+                    Arrays.asList(versionArgument)
+                )
+            );
+        });
     }
 
     @FunctionalInterface
