@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.http.HttpStatus;
 
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.blackduck.api.manual.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.request.BlackDuckMultipleRequest;

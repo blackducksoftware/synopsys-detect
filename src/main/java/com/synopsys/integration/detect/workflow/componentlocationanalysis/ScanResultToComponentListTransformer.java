@@ -3,8 +3,7 @@ package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsView;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.blackduck.api.manual.view.DeveloperScansScanView;
 import com.synopsys.integration.componentlocator.beans.Component;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -32,13 +31,11 @@ public class ScanResultToComponentListTransformer {
         Set<String> orderedComponentIDs = new LinkedHashSet<>();
         Set<String> componentNamesWithNullIds = new LinkedHashSet<>(rapidScanFullResults.size());
         for (DeveloperScansScanView component : rapidScanFullResults) {
-            for (DeveloperScansScanItemsView componentItem : component.getItems()) {
-            if (componentItem.getExternalId() == null) {
-                componentNamesWithNullIds.add(componentItem.getComponentName());
+            if (component.getExternalId() == null) {
+                componentNamesWithNullIds.add(component.getComponentName());
             } else {
-                componentIdWithMetadata.put(componentItem.getExternalId(), populateMetadata(componentItem));
-                orderedComponentIDs.add(componentItem.getExternalId());
-            }
+                componentIdWithMetadata.put(component.getExternalId(), populateMetadata(component));
+                orderedComponentIDs.add(component.getExternalId());
             }
         }
         for (String componentNameToWarnAbout : componentNamesWithNullIds) {
@@ -74,13 +71,13 @@ public class ScanResultToComponentListTransformer {
         return object;
     }
 
-    private ScanMetadata populateMetadata(DeveloperScansScanItemsView componentItem) {
+    private ScanMetadata populateMetadata(DeveloperScansScanView component) {
         ScanMetadata remediationGuidance = new ScanMetadata();
-        remediationGuidance.setComponentViolatingPolicies(componentItem.getComponentViolatingPolicies());
-        remediationGuidance.setPolicyViolationVulnerabilities(componentItem.getPolicyViolationVulnerabilities());
-        remediationGuidance.setLongTermUpgradeGuidance(componentItem.getLongTermUpgradeGuidance());
-        remediationGuidance.setShortTermUpgradeGuidance(componentItem.getShortTermUpgradeGuidance());
-        remediationGuidance.setTransitiveUpgradeGuidance(componentItem.getTransitiveUpgradeGuidance());
+        remediationGuidance.setComponentViolatingPolicies(component.getComponentViolatingPolicies());
+        remediationGuidance.setPolicyViolationVulnerabilities(component.getPolicyViolationVulnerabilities());
+        remediationGuidance.setLongTermUpgradeGuidance(component.getLongTermUpgradeGuidance());
+        remediationGuidance.setShortTermUpgradeGuidance(component.getShortTermUpgradeGuidance());
+        remediationGuidance.setTransitiveUpgradeGuidance(component.getTransitiveUpgradeGuidance());
         return remediationGuidance;
     }
 }

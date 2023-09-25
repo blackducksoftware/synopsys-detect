@@ -22,8 +22,7 @@ import com.synopsys.integration.blackduck.api.generated.component.DeveloperScans
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsTransitiveUpgradeGuidanceLongTermUpgradeGuidanceView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsTransitiveUpgradeGuidanceShortTermUpgradeGuidanceView;
 import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsTransitiveUpgradeGuidanceView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsView;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.blackduck.api.manual.view.DeveloperScansScanView;
 
 public class RapidScanResultAggregator {
     
@@ -68,62 +67,49 @@ public class RapidScanResultAggregator {
     private List<RapidScanComponentDetail> aggregateComponentData(List<DeveloperScansScanView> results) {
         // the key is the component identifier
         List<RapidScanComponentDetail> componentDetails = new LinkedList<>();
-        
+
         for (DeveloperScansScanView resultView : results) {
-            processViewItems(componentDetails, resultView);
+            this.compileTransitiveGuidance(resultView);
+
+            RapidScanComponentDetail componentDetail = createDetail(resultView);
+            componentDetails.add(componentDetail);
+            RapidScanComponentGroupDetail componentGroupDetail = componentDetail.getComponentDetails();
+            RapidScanComponentGroupDetail securityGroupDetail = componentDetail.getSecurityDetails();
+            RapidScanComponentGroupDetail licenseGroupDetail = componentDetail.getLicenseDetails();
+                  
+            List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolations = 
+                    resultView.getComponentViolatingPolicies();
+            List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilityViolations = resultView
+                    .getPolicyViolationVulnerabilities();
+            List<DeveloperScansScanItemsPolicyViolationLicensesView> licenseViolations = resultView
+                    .getPolicyViolationLicenses();
+
+            Set<String> vulnerabilityPolicyNames = vulnerabilityViolations.stream()
+                    .map(DeveloperScansScanItemsPolicyViolationVulnerabilitiesView::getViolatingPolicies)
+                    .flatMap(Collection::stream)
+                    .map(DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView::getPolicyName)
+                    .collect(Collectors.toSet());
+
+            Set<String> licensePolicyNames = licenseViolations.stream()
+                    .map(DeveloperScansScanItemsPolicyViolationLicensesView::getViolatingPolicies)
+                    .flatMap(Collection::stream)
+                    .map(DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView::getPolicyName)
+                    .collect(Collectors.toSet());
+            
+            Set<String> componentPolicyNames = componentViolations.stream()
+                    .map(DeveloperScansScanItemsComponentViolatingPoliciesView::getPolicyName)
+                    .collect(Collectors.toSet());
+
+            componentGroupDetail.addPolicies(componentPolicyNames);
+            securityGroupDetail.addPolicies(vulnerabilityPolicyNames);
+            licenseGroupDetail.addPolicies(licensePolicyNames);
+
+            addComponentData(resultView, componentViolations, componentGroupDetail);
+            addVulnerabilityData(resultView, vulnerabilityViolations, securityGroupDetail);
+            addLicenseData(resultView, licenseViolations, licenseGroupDetail);
         }
         
         return componentDetails;
-    }
-
-    /**
-     * @param componentDetails
-     * @param resultView
-     */
-    private void processViewItems(List<RapidScanComponentDetail> componentDetails, DeveloperScansScanView highLevelView) {
-        
-        for (DeveloperScansScanItemsView resultItem : highLevelView.getItems()) {
-        
-        compileTransitiveGuidance(resultItem);
-
-        RapidScanComponentDetail componentDetail = createDetail(resultItem);
-        componentDetails.add(componentDetail);
-        RapidScanComponentGroupDetail componentGroupDetail = componentDetail.getComponentDetails();
-        RapidScanComponentGroupDetail securityGroupDetail = componentDetail.getSecurityDetails();
-        RapidScanComponentGroupDetail licenseGroupDetail = componentDetail.getLicenseDetails();
-              
-        List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolations = 
-                resultItem.getComponentViolatingPolicies();
-        List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilityViolations = resultItem
-                .getPolicyViolationVulnerabilities();
-        List<DeveloperScansScanItemsPolicyViolationLicensesView> licenseViolations = resultItem
-                .getPolicyViolationLicenses();
-
-        Set<String> vulnerabilityPolicyNames = vulnerabilityViolations.stream()
-                .map(DeveloperScansScanItemsPolicyViolationVulnerabilitiesView::getViolatingPolicies)
-                .flatMap(Collection::stream)
-                .map(DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView::getPolicyName)
-                .collect(Collectors.toSet());
-
-        Set<String> licensePolicyNames = licenseViolations.stream()
-                .map(DeveloperScansScanItemsPolicyViolationLicensesView::getViolatingPolicies)
-                .flatMap(Collection::stream)
-                .map(DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView::getPolicyName)
-                .collect(Collectors.toSet());
-        
-        Set<String> componentPolicyNames = componentViolations.stream()
-                .map(DeveloperScansScanItemsComponentViolatingPoliciesView::getPolicyName)
-                .collect(Collectors.toSet());
-
-        componentGroupDetail.addPolicies(componentPolicyNames);
-        securityGroupDetail.addPolicies(vulnerabilityPolicyNames);
-        licenseGroupDetail.addPolicies(licensePolicyNames);
-
-        addComponentData(resultItem, componentViolations, componentGroupDetail);
-        addVulnerabilityData(resultItem, vulnerabilityViolations, securityGroupDetail);
-        addLicenseData(resultItem, licenseViolations, licenseGroupDetail);
-        
-        }
     }
 
     /**
@@ -134,13 +120,13 @@ public class RapidScanResultAggregator {
      * can get a proper lookup of direct comp. -> child component(s).  Once this is completed,
      * we can put together the string messages needed.
      * 
-     * @param resultItem 
+     * @param resultView 
      * @param results
      */
-    private void compileTransitiveGuidance(DeveloperScansScanItemsView resultItem) {
-        List<DeveloperScansScanItemsTransitiveUpgradeGuidanceView> transitiveGuidance = resultItem.getTransitiveUpgradeGuidance();
+    private void compileTransitiveGuidance(DeveloperScansScanView resultView) {
+        List<DeveloperScansScanItemsTransitiveUpgradeGuidanceView> transitiveGuidance = resultView.getTransitiveUpgradeGuidance();
         if (transitiveGuidance != null && !transitiveGuidance.isEmpty()) {
-            String childExternalId = resultItem.getExternalId();
+            String childExternalId = resultView.getExternalId();
             for (DeveloperScansScanItemsTransitiveUpgradeGuidanceView guidance : transitiveGuidance) {
                 String parentId = guidance.getExternalId();
                 String[] versions = getversionsFromUpgradeGuidance(guidance);
@@ -177,15 +163,15 @@ public class RapidScanResultAggregator {
         return new String[] { shortTermVersion, longTermVersion };
     }  
 
-    private RapidScanComponentDetail createDetail(DeveloperScansScanItemsView resultItem) {
-        String componentName = resultItem.getComponentName();
-        String componentVersion = resultItem.getVersionName();
+    private RapidScanComponentDetail createDetail(DeveloperScansScanView resultView) {
+        String componentName = resultView.getComponentName();
+        String componentVersion = resultView.getVersionName();
         String componentIdentifier = "";
         
-        if (StringUtils.isNotBlank(resultItem.getComponentIdentifier())) {
-            componentIdentifier = resultItem.getComponentIdentifier();
-        } else if (StringUtils.isNotBlank(resultItem.getExternalId())) {
-            componentIdentifier = resultItem.getExternalId();
+        if (StringUtils.isNotBlank(resultView.getComponentIdentifier())) {
+            componentIdentifier = resultView.getComponentIdentifier();
+        } else if (StringUtils.isNotBlank(resultView.getExternalId())) {
+            componentIdentifier = resultView.getExternalId();
         }
         
         RapidScanComponentGroupDetail componentGroupDetail = new RapidScanComponentGroupDetail(RapidScanDetailGroup.POLICY);
@@ -196,21 +182,21 @@ public class RapidScanResultAggregator {
                 securityGroupDetail, licenseGroupDetail);
     }
 
-    private void addVulnerabilityData(DeveloperScansScanItemsView resultItem, List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilities, RapidScanComponentGroupDetail securityDetail) {
+    private void addVulnerabilityData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilities, RapidScanComponentGroupDetail securityDetail) {
         for (DeveloperScansScanItemsPolicyViolationVulnerabilitiesView vulnerabilityPolicyViolation : vulnerabilities) {
-            securityDetail.addVulnerabilityMessages(resultItem, vulnerabilityPolicyViolation);
+            securityDetail.addVulnerabilityMessages(resultView, vulnerabilityPolicyViolation);
         }
     }
 
-    private void addLicenseData(DeveloperScansScanItemsView resultItem, List<DeveloperScansScanItemsPolicyViolationLicensesView> licenseViolations, RapidScanComponentGroupDetail licenseDetail) {
+    private void addLicenseData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsPolicyViolationLicensesView> licenseViolations, RapidScanComponentGroupDetail licenseDetail) {
         for (DeveloperScansScanItemsPolicyViolationLicensesView licensePolicyViolation : licenseViolations) {
-            licenseDetail.addLicenseMessages(resultItem, licensePolicyViolation);
+            licenseDetail.addLicenseMessages(resultView, licensePolicyViolation);
         }
     }
     
-    private void addComponentData(DeveloperScansScanItemsView resultItem, List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolations, RapidScanComponentGroupDetail componentGroupDetail) {
+    private void addComponentData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolations, RapidScanComponentGroupDetail componentGroupDetail) {
         for (DeveloperScansScanItemsComponentViolatingPoliciesView componentPolicyViolation: componentViolations) {
-            componentGroupDetail.addComponentMessages(resultItem, componentPolicyViolation);
+            componentGroupDetail.addComponentMessages(resultView, componentPolicyViolation);
         }
     }
 
