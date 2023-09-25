@@ -260,13 +260,7 @@ public class DetectConfigurationFactory {
     }
 
     public List<String> collectSignatureScannerDirectoryExclusions() {
-        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
-
-        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
-            directoryExclusionPatterns.addAll(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
-        }
-
-        return directoryExclusionPatterns;
+        return new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
     }
 
     public List<String> collectDetectorSearchDirectoryExclusions() {
