@@ -1,6 +1,6 @@
 # Deprecated Properties
 
-This page lists [solution_name]'s deprecated properties; for both active and deprecated properties, refer to [all properties](all-properties.md).
+This page lists [solution_name]'s deprecated properties for software versions that are still supported. This page may be blank when there are no such deprecated properties. For both active and deprecated properties, refer to [all properties](all-properties.md) for usage details.
 
 <#list groups as group>
 
