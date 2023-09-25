@@ -912,7 +912,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
             .build();
-    
+
     // TODO: Rename to included signature scan? @Alex
     public static final IntegerProperty DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH =
         IntegerProperty.newBuilder("detect.excluded.directories.search.depth", 4)
