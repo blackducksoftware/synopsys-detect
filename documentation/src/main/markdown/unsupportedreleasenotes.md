@@ -195,7 +195,7 @@
 ### Changed features
 
 * The detect.project.clone.categories property now supports ALL and NONE as options.
-* The the default value for property detect.project.clone.categories has changed to ALL.
+* The default value for property detect.project.clone.categories has changed to ALL.
 * Deprecated detect.bom.aggregate.name, detect.bom.aggregate.remediation.mode, and blackduck.legacy.upload.enabled. In version 8, [solution_name] will only operate in SUBPROJECT
   aggregation mode to report the dependency graph with greater accuracy.
 * Maven defaults to the legacy buildless parser, Project Inspector must be enabled with detect.maven.buildless.legacy.mode. In version 8, it will default to Project Inspector.
@@ -461,8 +461,8 @@
 ### Changed features
 
 * Enabling diagnostic mode is now controlled through two new properties.
-* [--detect.diagnostic](properties/configuration/debug.md#diagnostic-mode)
-* [--detect.diagnostic.extended](properties/configuration/debug.md#diagnostic-mode-extended)
+	* [--detect.diagnostic](properties/configuration/debug.md#diagnostic-mode)
+	* [--detect.diagnostic.extended](properties/configuration/debug.md#diagnostic-mode-extended)
 * The *detect.bazel.dependency.type* property now accepts a comma-separated list of dependency types, or the value *NONE*, or the value *ALL*.
 
 ### Resolved issues
@@ -571,8 +571,7 @@
 * Resolved an issue where all transitive dependencies found by the Pip inspector were being reported as direct dependencies (IDETECT-1893).
 * Resolved an issue where using pip version 20+ with the Pip inspector caused a failure to import a
   dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
-* Resolved the following vulnerabilities (IDETECT-1872):
-* org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
+* Resolved the following vulnerabilities (IDETECT-1872): org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where [solution_name] had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).
 * Note: Yarn workspaces are not currently supported. See [yarn workspace support](packagemgrs/yarn.md#yarn-workspace-support).
 * Resolved an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats (IDETECT-1925).
@@ -585,17 +584,18 @@
 
 ### New features
 
-* Added the property [detect.bdio2.enabled](properties/configuration/paths.md#bdio-2-enabled).
-* Added the property [detect.pip.only.project.tree](properties/detectors/pip.md#pip-include-only-project-tree).
-* Added the property [detect.bitbake.search.depth](properties/detectors/bitbake.md#bitbake-search-depth).
-* Added the property [detect.bazel.cquery.options](properties/detectors/bazel.md#bazel-cquery-additional-options).
-* Added the property [detect.docker.image.id](properties/detectors/docker.md#docker-image-id).
-* Added the property [detect.docker.platform.top.layer.id](properties/detectors/docker.md#platform-top-layer-id-advanced).
-* Added the property [detect.bom.aggregate.remediation.mode](properties/configuration/project.md#bdio-aggregate-remediation-mode-advanced)
+* Added the following properties:   
+* [detect.bdio2.enabled](properties/configuration/paths.md#bdio-2-enabled).
+* [detect.pip.only.project.tree](properties/detectors/pip.md#pip-include-only-project-tree).
+* [detect.bitbake.search.depth](properties/detectors/bitbake.md#bitbake-search-depth).
+* [detect.bazel.cquery.options](properties/detectors/bazel.md#bazel-cquery-additional-options).
+* [detect.docker.image.id](properties/detectors/docker.md#docker-image-id).
+* [detect.docker.platform.top.layer.id](properties/detectors/docker.md#platform-top-layer-id-advanced).
+* [detect.bom.aggregate.remediation.mode](properties/configuration/project.md#bdio-aggregate-remediation-mode-advanced)
 
 ### Changed features
 
-* Deprecated all Polaris properties.
+* Deprecated all Polaris specific properties.
 * Added wildcard support for several include/exclude list properties.
 * Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json,
   instead of running the yarn command. Since the yarn command is no longer executed, the detect.yarn.path property has been removed.
@@ -622,8 +622,7 @@
 
 * Added the property detect.binary.scan.file.name.patterns.
 * Added the property detect.detector.search.exclusion.files which accepts a comma-separated list of file names to exclude from the Detector search.
-* Custom arguments for the source command can now be supplied to Detect through the property detect.bitbake.source.arguments which accepts a comma-separated list of arguments. (
-    1614)
+* Custom arguments for the source command can now be supplied to Detect through the property detect.bitbake.source.arguments which accepts a comma-separated list of arguments. (IDETECT-1614)
 * Added support for the Swift package manager.
 * Added support for GoGradle.
 * Added support for Go Modules.
@@ -652,13 +651,13 @@
 * Scripts no longer fail if the Artifactory server is unavailable.
 * Enhanced placement and formatting of deprecation logs.
 * Added support for Java version 11.
-* The following properties are removed in Detect version 6.0.0:
-* detect.go.dep.path
-* detect.npm.node.path
-* detect.perl.path
-* detect.go.run.dep.init
-* detect.maven.scope
-* detect.bazel.advanced.rules.path
+* The following properties are removed in Detect version 6.0.0:   
+	* detect.go.dep.path
+	* detect.npm.node.path
+	* detect.perl.path
+	* detect.go.run.dep.init
+	* detect.maven.scope
+	* detect.bazel.advanced.rules.path
 
 ### Resolved issues
 
