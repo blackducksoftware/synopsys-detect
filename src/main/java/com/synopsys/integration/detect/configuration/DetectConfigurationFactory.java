@@ -25,6 +25,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.version.BlackDuckVersion;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
@@ -41,7 +42,10 @@ import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
+import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityResult;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
+import com.synopsys.integration.detect.lifecycle.boot.product.version.BlackDuckVersionParser;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
 import com.synopsys.integration.detect.tool.iac.IacScanOptions;
@@ -320,13 +324,24 @@ public class DetectConfigurationFactory {
         return parser.parseCustomFieldDocument(detectConfiguration.getRaw());
     }
 
-    public ProjectSyncOptions createDetectProjectServiceOptions() {
+    public ProjectSyncOptions createDetectProjectServiceOptions(BlackDuckRunData blackDuckRunData) {
         ProjectVersionPhaseType projectVersionPhase = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_PHASE);
         ProjectVersionDistributionType projectVersionDistribution = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_DISTRIBUTION);
         Integer projectTier = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_TIER);
         String projectDescription = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_DESCRIPTION);
         String projectVersionNotes = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES);
-        List<ProjectCloneCategoriesType> cloneCategories = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES).representedValues();
+        
+        // TODO insert version check here, 10 and later use this
+        
+        List<ProjectCloneCategoriesType> cloneCategories;
+        AllNoneEnumList<ProjectCloneCategoriesType> categoriesEnum = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES);
+        
+        if (canSendSummaryData(null)) {
+            cloneCategories = categoriesEnum.representedValuesStreamlined();
+        } else {
+            cloneCategories = categoriesEnum.representedValues();
+        }
+        
         Boolean projectLevelAdjustments = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_LEVEL_ADJUSTMENTS);
         Boolean forceProjectVersionUpdate = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_UPDATE);
         String projectVersionNickname = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME);
@@ -525,6 +540,20 @@ public class DetectConfigurationFactory {
         }
 
         return directoryExclusionPatterns;
+    }
+    
+    private boolean canSendSummaryData(BlackDuckConnectivityResult blackDuckConnectivityResult) {
+        BlackDuckVersionParser parser = new BlackDuckVersionParser();
+        Optional<BlackDuckVersion> blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
+        BlackDuckVersion minVersion = new BlackDuckVersion(2023, 1, 1);
+        
+        boolean waitAtScanLevel = false;
+        
+        if (blackDuckServerVersion.isPresent() && blackDuckServerVersion.get().isAtLeast(minVersion)) {
+            waitAtScanLevel = true;
+        }
+        
+        return waitAtScanLevel;
     }
 
     public Optional<String> getContainerScanFilePath() {
