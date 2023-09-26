@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.synopsys.integration.blackduck.version.BlackDuckVersion;
 import com.synopsys.integration.common.util.Bdo;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorSearchExcludedDirectories;
@@ -123,8 +124,11 @@ public class DetectConfigurationFactoryTests {
     @Test
     public void testAllCloneCategories() {
         DetectConfigurationFactory factory = factoryOf(Pair.of(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES, "ALL"));
+        
+        BlackDuckVersion minVersion = new BlackDuckVersion(2023, 10, 0);
+        Optional<BlackDuckVersion> serverVersion = Optional.of(minVersion);
 
-        ProjectSyncOptions projectSyncOptions = factory.createDetectProjectServiceOptions();
+        ProjectSyncOptions projectSyncOptions = factory.createDetectProjectServiceOptions(serverVersion);
 
         List<ProjectCloneCategoriesType> cloneCategories = projectSyncOptions.getCloneCategories();
 
@@ -134,7 +138,11 @@ public class DetectConfigurationFactoryTests {
     @Test
     public void testNoCloneCategories() {
         DetectConfigurationFactory factory = factoryOf(Pair.of(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES, "NONE"));
-        ProjectSyncOptions projectSyncOptions = factory.createDetectProjectServiceOptions();
+        
+        BlackDuckVersion minVersion = new BlackDuckVersion(2023, 10, 0);
+        Optional<BlackDuckVersion> serverVersion = Optional.of(minVersion);
+        
+        ProjectSyncOptions projectSyncOptions = factory.createDetectProjectServiceOptions(serverVersion);
 
         List<ProjectCloneCategoriesType> cloneCategories = projectSyncOptions.getCloneCategories();
 
@@ -149,8 +157,11 @@ public class DetectConfigurationFactoryTests {
                         + "," 
                         + ProjectCloneCategoriesType.DEEP_LICENSE.toString()
                 ));
+        
+        BlackDuckVersion minVersion = new BlackDuckVersion(2023, 10, 0);
+        Optional<BlackDuckVersion> serverVersion = Optional.of(minVersion);
 
-        ProjectSyncOptions projectSyncOptions = factory.createDetectProjectServiceOptions();
+        ProjectSyncOptions projectSyncOptions = factory.createDetectProjectServiceOptions(serverVersion);
 
         List<ProjectCloneCategoriesType> cloneCategories = projectSyncOptions.getCloneCategories();
 

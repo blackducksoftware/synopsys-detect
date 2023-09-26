@@ -16,7 +16,7 @@ public class BlackDuckRunData {
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final BlackduckScanMode scanMode;
     private final boolean waitAtScanLevel;
-    private final BlackDuckVersion blackDuckServerVersion;
+    private final Optional<BlackDuckVersion> blackDuckServerVersion;
 
     protected BlackDuckRunData(
         PhoneHomeManager phoneHomeManager,
@@ -32,8 +32,7 @@ public class BlackDuckRunData {
         this.waitAtScanLevel = waitAtScanLevel;
         
         BlackDuckVersionParser parser = new BlackDuckVersionParser();
-        Optional<BlackDuckVersion> blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
-        this.blackDuckServerVersion = blackDuckServerVersion.isPresent() ? blackDuckServerVersion.get() : null;
+        this.blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
     }
 
     public boolean isOnline() {
@@ -82,7 +81,7 @@ public class BlackDuckRunData {
         return waitAtScanLevel;
     }
 
-    public BlackDuckVersion getBlackDuckServerVersion() {
+    public Optional<BlackDuckVersion> getBlackDuckServerVersion() {
         return blackDuckServerVersion;
     }
 }

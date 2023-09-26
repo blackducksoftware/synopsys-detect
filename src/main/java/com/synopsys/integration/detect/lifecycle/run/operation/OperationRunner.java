@@ -1144,7 +1144,7 @@ public class OperationRunner {
                     projectGroupFindResult,
                     cloneFindResult,
                     projectVersionLicensesFindResult,
-                    detectConfigurationFactory.createDetectProjectServiceOptions(blackDuckRunData)
+                    detectConfigurationFactory.createDetectProjectServiceOptions(blackDuckRunData.getBlackDuckServerVersion())
                 )
         );
     }

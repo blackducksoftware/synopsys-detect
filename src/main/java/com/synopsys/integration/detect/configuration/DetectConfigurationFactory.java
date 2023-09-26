@@ -324,7 +324,7 @@ public class DetectConfigurationFactory {
         return parser.parseCustomFieldDocument(detectConfiguration.getRaw());
     }
 
-    public ProjectSyncOptions createDetectProjectServiceOptions(BlackDuckRunData blackDuckRunData) {
+    public ProjectSyncOptions createDetectProjectServiceOptions(Optional<BlackDuckVersion> blackDuckServerVersion) {
         ProjectVersionPhaseType projectVersionPhase = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_PHASE);
         ProjectVersionDistributionType projectVersionDistribution = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_DISTRIBUTION);
         Integer projectTier = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_TIER);
@@ -334,7 +334,7 @@ public class DetectConfigurationFactory {
         List<ProjectCloneCategoriesType> cloneCategories;
         AllNoneEnumList<ProjectCloneCategoriesType> categoriesEnum = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES);
         
-        if (canSendSummaryData(blackDuckRunData.getBlackDuckServerVersion())) {
+        if (canSendSummaryData(blackDuckServerVersion)) {
             cloneCategories = categoriesEnum.representedValuesStreamlined();
         } else {
             cloneCategories = categoriesEnum.representedValues();
@@ -546,15 +546,15 @@ public class DetectConfigurationFactory {
      * about, for all, which can cause problems if we send a value Detect knows about but an older BlackDuck server does not.
      * Eventually we can pull this code once all servers we support are 2023.10.0 or higher.
      * 
-     * @param blackDuckVersion the version of the BlackDuck server specified in blackduck.url
+     * @param blackDuckServerVersion the version of the BlackDuck server specified in blackduck.url
      * @return true if we can optimize the categories argument, false otherwise
      */
-    private boolean canSendSummaryData(BlackDuckVersion blackDuckVersion) {
+    private boolean canSendSummaryData(Optional<BlackDuckVersion> blackDuckServerVersion) {
         boolean canSendSummaryData = false;
         
         BlackDuckVersion minVersion = new BlackDuckVersion(2023, 10, 0);
         
-        if (blackDuckVersion != null && blackDuckVersion.isAtLeast(minVersion)) {
+        if (blackDuckServerVersion.isPresent() && blackDuckServerVersion.get().isAtLeast(minVersion)) {
             canSendSummaryData = true;
         }
         
