@@ -118,12 +118,12 @@ public class ProductBoot {
                     blackDuckDecision.scanMode(),
                     blackDuckServicesFactory,
                     phoneHomeManager,
-                    blackDuckConnectivityResult.getBlackDuckServerConfig(),
+                    blackDuckConnectivityResult,
                     waitAtScanLevel
                 );
             } else {
                 logger.debug("Skipping phone home due to Black Duck global settings.");
-                bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig(), waitAtScanLevel);
+                bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult, waitAtScanLevel);
             }
             return bdRunData;
         } else {

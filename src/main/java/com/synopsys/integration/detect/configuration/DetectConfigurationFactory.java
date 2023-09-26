@@ -331,12 +331,10 @@ public class DetectConfigurationFactory {
         String projectDescription = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_DESCRIPTION);
         String projectVersionNotes = detectConfiguration.getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES);
         
-        // TODO insert version check here, 10 and later use this
-        
         List<ProjectCloneCategoriesType> cloneCategories;
         AllNoneEnumList<ProjectCloneCategoriesType> categoriesEnum = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES);
         
-        if (canSendSummaryData(null)) {
+        if (canSendSummaryData(blackDuckRunData.getBlackDuckServerVersion())) {
             cloneCategories = categoriesEnum.representedValuesStreamlined();
         } else {
             cloneCategories = categoriesEnum.representedValues();
@@ -542,18 +540,25 @@ public class DetectConfigurationFactory {
         return directoryExclusionPatterns;
     }
     
-    private boolean canSendSummaryData(BlackDuckConnectivityResult blackDuckConnectivityResult) {
-        BlackDuckVersionParser parser = new BlackDuckVersionParser();
-        Optional<BlackDuckVersion> blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
-        BlackDuckVersion minVersion = new BlackDuckVersion(2023, 1, 1);
+    /**
+     * Newer BlackDuck servers allow us to send ALL and null values for project categories. BlackDuck will then 
+     * determine the appropriate values to display in the UI. For older servers we have to send all the values that we know
+     * about, for all, which can cause problems if we send a value Detect knows about but an older BlackDuck server does not.
+     * Eventually we can pull this code once all servers we support are 2023.10.0 or higher.
+     * 
+     * @param blackDuckVersion the version of the BlackDuck server specified in blackduck.url
+     * @return true if we can optimize the categories argument, false otherwise
+     */
+    private boolean canSendSummaryData(BlackDuckVersion blackDuckVersion) {
+        boolean canSendSummaryData = false;
         
-        boolean waitAtScanLevel = false;
+        BlackDuckVersion minVersion = new BlackDuckVersion(2023, 10, 0);
         
-        if (blackDuckServerVersion.isPresent() && blackDuckServerVersion.get().isAtLeast(minVersion)) {
-            waitAtScanLevel = true;
+        if (blackDuckVersion != null && blackDuckVersion.isAtLeast(minVersion)) {
+            canSendSummaryData = true;
         }
         
-        return waitAtScanLevel;
+        return canSendSummaryData;
     }
 
     public Optional<String> getContainerScanFilePath() {
