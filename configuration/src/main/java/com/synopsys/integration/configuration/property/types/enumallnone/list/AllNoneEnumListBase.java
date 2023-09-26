@@ -84,7 +84,6 @@ public class AllNoneEnumListBase<E extends Enum<E>, B extends Enum<B>> implement
     public List<ExtendedEnumValue<E, B>> toProvidedValues() {
         return providedValues;
     }
-    
 
     /**
      * This returns null if the properties' value is set to ALL values of the Enum.

@@ -16,7 +16,7 @@ public class BlackDuckRunData {
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final BlackduckScanMode scanMode;
     private final boolean waitAtScanLevel;
-    private final Optional<BlackDuckVersion> blackDuckServerVersion;
+    private Optional<BlackDuckVersion> blackDuckServerVersion;
 
     protected BlackDuckRunData(
         PhoneHomeManager phoneHomeManager,
@@ -26,13 +26,13 @@ public class BlackDuckRunData {
         boolean waitAtScanLevel
     ) {
         this.phoneHomeManager = phoneHomeManager;
-        this.blackDuckServerConfig = blackDuckConnectivityResult.getBlackDuckServerConfig();
+        this.blackDuckServerConfig = 
+                blackDuckConnectivityResult != null ? blackDuckConnectivityResult.getBlackDuckServerConfig() : null;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.scanMode = scanMode;
         this.waitAtScanLevel = waitAtScanLevel;
         
-        BlackDuckVersionParser parser = new BlackDuckVersionParser();
-        this.blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
+        determineBlackDuckServerVersion(blackDuckConnectivityResult);
     }
 
     public boolean isOnline() {
@@ -83,5 +83,14 @@ public class BlackDuckRunData {
 
     public Optional<BlackDuckVersion> getBlackDuckServerVersion() {
         return blackDuckServerVersion;
+    }
+    
+    private void determineBlackDuckServerVersion(BlackDuckConnectivityResult blackDuckConnectivityResult) {
+        if (blackDuckConnectivityResult == null || blackDuckConnectivityResult.getContactedServerVersion() == null) {
+            blackDuckServerVersion = null;
+        } else {
+            BlackDuckVersionParser parser = new BlackDuckVersionParser();
+            blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
+        }
     }
 }
