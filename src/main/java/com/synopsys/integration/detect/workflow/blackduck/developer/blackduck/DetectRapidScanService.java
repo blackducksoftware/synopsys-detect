@@ -49,7 +49,7 @@ public class DetectRapidScanService {
         return new DetectRapidScanService(bdio2FileUploadService, directoryManager);
     }
 
-    public List<HttpUrl> performUpload(UploadBatch uploadBatch, RapidScanOptions rapidScanOptions, @Nullable File rapidScanConfig) throws IntegrationException, IOException {
+    public List<HttpUrl> performUpload(UploadBatch uploadBatch, RapidScanOptions rapidScanOptions, @Nullable File rapidScanConfig) throws IntegrationException, IOException, InterruptedException {
         List<HttpUrl> allScanUrls = new LinkedList<>();
 
         for (UploadTarget uploadTarget : uploadBatch.getUploadTargets()) {

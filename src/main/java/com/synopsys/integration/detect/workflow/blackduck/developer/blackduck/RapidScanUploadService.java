@@ -49,7 +49,7 @@ public class RapidScanUploadService extends DataService {
     }
 
     public HttpUrl uploadFile(File workingDirectory, UploadTarget uploadTarget, RapidScanOptions rapidScanOptions, @Nullable File rapidScanConfig)
-        throws IntegrationException, IOException {
+        throws IntegrationException, IOException, InterruptedException {
         logger.debug(String.format("Uploading BDIO file %s", uploadTarget.getUploadFile()));
         List<BdioFileContent> bdioFileContentList = bdio2Extractor.extractContent(uploadTarget.getUploadFile());
         NameVersion projectNameVersion = uploadTarget.getProjectAndVersion().orElse(null);
@@ -64,7 +64,7 @@ public class RapidScanUploadService extends DataService {
         @Nullable File rapidScanConfig,
         @Nullable File rapidScanWorkingDirectory
     )
-        throws IntegrationException, IOException {
+        throws IntegrationException, IOException, InterruptedException {
         if (bdioFiles.isEmpty()) {
             throw new IllegalArgumentException("BDIO files cannot be empty.");
         }
@@ -87,12 +87,12 @@ public class RapidScanUploadService extends DataService {
                     .addHeader(Bdio2StreamUploader.VERSION_NAME_HEADER, nameVersion.getVersion());
             }
         };
-
+        long detectTimeout = rapidScanOptions.getDetectTimeout();
         HttpUrl url;
         if (rapidScanConfig != null) {
-            url = bdio2Uploader.startWithConfig(zip(uploadTarget, rapidScanConfig, header, rapidScanWorkingDirectory), editor);
+            url = bdio2Uploader.startWithConfig(zip(uploadTarget, rapidScanConfig, header, rapidScanWorkingDirectory), editor, detectTimeout);
         } else {
-            url = bdio2Uploader.start(header, editor);
+            url = bdio2Uploader.start(header, editor, detectTimeout);
         }
         for (BdioFileContent content : remainingFiles) {
             bdio2Uploader.append(url, count, content, editor);
