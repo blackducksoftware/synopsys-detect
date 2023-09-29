@@ -4,7 +4,7 @@ In [solution_name] for Jenkins, several special parameters are automatically esc
 The workflows pertaining to quotation marks and spaces are as follows.
 
 - Detect properties must be separated by spaces or carriage returns/line feeds.
-- Values containing spaces must be surrounded by either single or double quotation marks ('single' or “double”).
+- Values containing spaces must be surrounded by either single or double quotation marks ('single' or “double”) for Linux and Mac agents while for Windows you must use single quotes ('single').
 - Values containing single quotes must be surrounded with double quotation marks.
 - Values containing double quotes must be surrounded with single quotation marks.
 
@@ -15,5 +15,7 @@ Jenkins enables you to set an environment variable at different levels, such as 
 
 **Note:** In [solution_name] plugin version 9, the above recommendations remain the same for agents on Windows systems.  For those agents running on 'NIX systems, *DETECT\_PLUGIN\_ESCAPING* should be set to false.  Ensure that you adhere to the quoting conventions described above. Any input with spaces in the Jenkins configuration should be enclosed in quotes.
 
-[solution_name] for Jenkins allows some special characters when *DETECT\_PLUGIN\_ESCAPING* is set to false, and spaces can be included without escape sequences provided that they are enclosed in single or double quotes. Therefore, instead of `My\ Test\ Project1`, you can pass it as `'My Test Project1'`, the project will created and uploaded to [blackduck_product_name] as `My Test Project1*.*`
+[solution_name] for Jenkins allows some special characters when *DETECT\_PLUGIN\_ESCAPING* is set to false, and spaces can be included without escape sequences provided that they are enclosed in single or double quotes as described above for different agents. Therefore, instead of `My\ Test\ Project1`, you can pass it as `'My Test Project1'`, the project will created and uploaded to [blackduck_product_name] as `My Test Project1*.*`
+
+If *DETECT\_PLUGIN\_ESCAPING* is set to true, then you can use backtick (\`) to escape spaces which are passed within argument values. Therefore, you can pass values as "Windows` Project" in the arguments.
 

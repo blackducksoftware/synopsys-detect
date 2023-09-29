@@ -1,0 +1,4 @@
+# Windows Intricacies
+
+* Windows does not support passing spaces in arguments which are enclosed within double quotes as it will consider space as a separator for arguments and discard all the values which would be within double quotes. Eg: If you pass --detect.project.name=" Windows Project ", then that is being interpreted as "--detect.project.name=" "Windows" "Project". So, if you want to pass spaces inside any argument in Windows OS, then you can either use single quotes ('single') or you can use backtick character (\`) to escape spaces.
+* For using windows with multi-byte characters for different languages such as Korean or Japenese, an user would have to configure their windows correctly by using chcp for changing the character code for cmd shell.
