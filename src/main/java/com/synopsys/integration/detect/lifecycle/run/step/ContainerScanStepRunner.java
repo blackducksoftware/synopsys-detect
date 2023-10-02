@@ -56,9 +56,6 @@ public class ContainerScanStepRunner {
                 logger.info("No container.scan.file.path property was provided. Skipping container scan.");
                 return Optional.ofNullable(scanId);
             }
-            if (!isContainerImageResolved()) {
-                throw new IOException("Container image file path not resolved or file could not be downloaded. Container scan could not be run.");
-            }
             if (!isBlackDuckVersionValid()) {
                 String minBlackDuckVersion = String.join(".",
                     Integer.toString(MIN_BLACK_DUCK_VERSION.getMajor()),
@@ -66,6 +63,9 @@ public class ContainerScanStepRunner {
                     Integer.toString(MIN_BLACK_DUCK_VERSION.getPatch())
                 );
                 throw new IntegrationException("Container scan is only supported with BlackDuck version " + minBlackDuckVersion + " or greater. Container scan could not be run.");
+            }
+            if (!isContainerImageResolved()) {
+                throw new IOException("Container image file path not resolved or file could not be downloaded. Container scan could not be run.");
             }
 
             initiateScan();
