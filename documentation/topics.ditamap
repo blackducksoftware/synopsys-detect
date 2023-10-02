@@ -195,6 +195,7 @@
 		<topicref href="troubleshooting/exit-codes.md" format="markdown"/>
 		<topicref href="troubleshooting/solutions.md" format="markdown"/>
 		<topicref href="troubleshooting/usage-metrics.md" format="markdown"/>
+		<topicref href="troubleshooting/windowsos.md" format="markdown"/>
 	</topicref>
 	<topicref href="integrations/integrations.md" format="markdown">
 		<topicref href="integrations/jenkinsplugin/jenkins.md" format="markdown">
