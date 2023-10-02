@@ -379,6 +379,10 @@ public class OperationRunner {
         return DEVELOPER_SCAN_CONTENT_TYPE;
     }
 
+    public Optional<String> getContainerScanFilePath() {
+        return detectConfigurationFactory.getContainerScanFilePath();
+    }
+
     public File downloadContainerImage(Gson gson, File downloadDirectory, String containerImageUri) throws DetectUserFriendlyException, IntegrationException, IOException {
         String targetPathName = downloadDirectory.toString().concat("/targetImage");
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
@@ -387,7 +391,7 @@ public class OperationRunner {
     }
 
     public File getContainerScanImage(Gson gson, File downloadDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
-        Optional<String> containerImageFilePath = detectConfigurationFactory.getContainerScanFilePath();
+        Optional<String> containerImageFilePath = getContainerScanFilePath();
         File containerImageFile = null;
         if (containerImageFilePath.isPresent()) {
             String containerImageUri = containerImageFilePath.get();

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.version.BlackDuckVersion;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
@@ -30,6 +31,7 @@ public class ContainerScanStepRunner {
     private final BlackDuckRunData blackDuckRunData;
     private final File binaryRunDirectory;
     private final File containerImage;
+    private static final BlackDuckVersion MIN_BLACK_DUCK_VERSION = new BlackDuckVersion(2023, 10, 0);
     private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
     private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
     private static final String STORAGE_IMAGE_METADATA_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-message-1+json";
@@ -50,24 +52,45 @@ public class ContainerScanStepRunner {
     public Optional<UUID> invokeContainerScanningWorkflow() {
         try {
             logger.debug("Determining if configuration is valid to run a container scan.");
-            if (shouldRunContainerScan()) {
-                initiateScan();
-                logger.info("Container scan initiated.");
-                uploadImageToStorageService();
-                uploadImageMetadataToStorageService();
-                operationRunner.publishContainerSuccess();
-                logger.info("Container scan image uploaded successfully.");
-            } else {
-                logger.info("Container image file not provided or could not be downloaded. Container scan will not run.");
+            if (!isContainerScanEligible()) {
+                logger.info("No container.scan.file.path property was provided. Skipping container scan.");
+                return Optional.ofNullable(scanId);
             }
+            if (!isBlackDuckVersionValid()) {
+                String minBlackDuckVersion = String.join(".",
+                    Integer.toString(MIN_BLACK_DUCK_VERSION.getMajor()),
+                    Integer.toString(MIN_BLACK_DUCK_VERSION.getMinor()),
+                    Integer.toString(MIN_BLACK_DUCK_VERSION.getPatch())
+                );
+                throw new IntegrationException("Container scan is only supported with BlackDuck version " + minBlackDuckVersion + " or greater. Container scan could not be run.");
+            }
+            if (!isContainerImageResolved()) {
+                throw new IOException("Container image file path not resolved or file could not be downloaded. Container scan could not be run.");
+            }
+
+            initiateScan();
+            logger.info("Container scan initiated.");
+            uploadImageToStorageService();
+            uploadImageMetadataToStorageService();
+            operationRunner.publishContainerSuccess();
+            logger.info("Container scan image uploaded successfully.");
         } catch (IntegrationException | IOException e) {
             operationRunner.publishContainerFailure(e);
         }
         return Optional.ofNullable(scanId);
     }
 
-    private boolean shouldRunContainerScan() {
+    private boolean isContainerImageResolved() {
         return containerImage != null && containerImage.exists();
+    }
+
+    private boolean isContainerScanEligible() {
+        return operationRunner.getContainerScanFilePath().isPresent();
+    }
+
+    private boolean isBlackDuckVersionValid() {
+        Optional<BlackDuckVersion> blackDuckVersion = blackDuckRunData.getBlackDuckServerVersion();
+        return blackDuckVersion.isPresent() && blackDuckVersion.get().isAtLeast(MIN_BLACK_DUCK_VERSION);
     }
 
     private String getContainerScanCodeLocationName() {
