@@ -88,10 +88,15 @@ public class RapidScanConfigBdio2StreamUploader {
         return response;
     }
     
-    private boolean isDetectTimeoutExceededBy(long waitInMillis, long detectTimeout) {
+    private boolean isDetectTimeoutExceededBy(long waitInMillis, long detectTimeout) throws BlackDuckIntegrationException {
         long startTime = Application.START_TIME;
         long currentTime = System.currentTimeMillis();
-        return (currentTime - startTime + waitInMillis) > (detectTimeout * 1000);
+        
+        throw new BlackDuckIntegrationException("current time: " + currentTime 
+                + " startTime: " + startTime 
+                + " waitTime: " + waitInMillis
+                + " detectTimeout: " + (detectTimeout * 1000));
+        //return (currentTime - startTime + waitInMillis) > (detectTimeout * 1000);
     }
 
     public HttpUrl startWithConfig(File zippedConfigAndHeader, BlackDuckRequestBuilderEditor editor, long detectTimeout) throws IntegrationException, InterruptedException {
