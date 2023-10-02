@@ -63,9 +63,9 @@ public class RapidScanConfigBdio2StreamUploader {
         return responseUrl;
     }
     
-    private Response recursiveExecute(BlackDuckResponseRequest request, long waitInMillis, int backoffRetryCount, long detectTimeout) throws InterruptedException, IntegrationException {
+    public Response recursiveExecute(BlackDuckResponseRequest request, long waitInMillis, int backoffRetryCount, long detectTimeout) throws InterruptedException, IntegrationException {
         Thread.sleep(waitInMillis);
-        Response response = blackDuckApiClient.execute(request);
+        Response response = blackDuckApiClient.executeAndRetrieveResponse(request);
         String retryAfterInSeconds = response.getHeaderValue("retry-after");
         if (OperationRunner.RETRYABLE_AFTER_WAIT_HTTP_EXCEPTIONS.contains(response.getStatusCode()) 
                 && null != retryAfterInSeconds 
@@ -91,7 +91,7 @@ public class RapidScanConfigBdio2StreamUploader {
     private boolean isDetectTimeoutExceededBy(long waitInMillis, long detectTimeout) {
         long startTime = Application.START_TIME;
         long currentTime = System.currentTimeMillis();
-        return (currentTime - startTime + waitInMillis) > detectTimeout;
+        return (currentTime - startTime + waitInMillis) > (detectTimeout * 1000);
     }
 
     public HttpUrl startWithConfig(File zippedConfigAndHeader, BlackDuckRequestBuilderEditor editor, long detectTimeout) throws IntegrationException, InterruptedException {
