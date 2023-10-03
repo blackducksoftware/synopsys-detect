@@ -77,6 +77,7 @@ public class ContainerScanStepRunner {
             logger.info("Container scan image uploaded successfully.");
         } catch (IntegrationException | IOException | OperationException e) {
             operationRunner.publishContainerFailure(e);
+            return Optional.empty();
         }
         return Optional.ofNullable(scanId);
     }
@@ -138,7 +139,7 @@ public class ContainerScanStepRunner {
         }
     }
 
-    public void uploadImageMetadataToStorageService() throws IntegrationException, IOException {
+    public void uploadImageMetadataToStorageService() throws IntegrationException, IOException, OperationException {
         String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString(), "/message");
         String operationName = "Upload Container Scan Image Metadata JSON";
         logger.debug("Uploading container image metadata to storage endpoint: {}", storageServiceEndpoint);
