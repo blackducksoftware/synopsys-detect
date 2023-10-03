@@ -14,6 +14,7 @@ import com.synopsys.integration.blackduck.bdio2.model.BdioFileContent;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
+import com.synopsys.integration.detect.Application;
 import com.synopsys.integration.detect.workflow.blackduck.developer.blackduck.RapidScanConfigBdio2StreamUploader;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
@@ -54,8 +55,18 @@ public class RapidScanConfigBdio2StreamUploaderTest {
         Mockito.when(response.getStatusCode())
             .thenReturn(429)
             .thenReturn(200);
+                
+        // Due to the way the start time essentially captures the time a long suite of tests began running,
+        // we can't simply pass in a basic detect timeout and let the code figure it out. We'll never retry.
+        // This line takes into account the current time, the start of the test suite, the retry-after header,
+        // and the detect timeout to send in a long detect timeout so the test will retry.
+        long detectTimeout = 300;
+        long largeTimeout = System.currentTimeMillis() 
+                - Application.START_TIME 
+                + 1000 // specified 1 second retry-header converted to milliseconds
+                + (detectTimeout * 1000);
         
-        uploader.recursiveExecute(request, 0, 0, 300);
+        uploader.recursiveExecute(request, 0, 0, largeTimeout);
         
         // Test that we made two calls, the 429 initial response, and the 200 success
         Mockito.verify(blackDuckApiClient, Mockito.times(2)).executeAndRetrieveResponse(request);
