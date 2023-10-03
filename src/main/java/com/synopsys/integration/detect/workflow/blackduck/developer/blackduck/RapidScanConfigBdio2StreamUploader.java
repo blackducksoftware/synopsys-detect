@@ -75,6 +75,7 @@ public class RapidScanConfigBdio2StreamUploader {
             if (isDetectTimeoutExceededBy(retryAfterInMillis, detectTimeout)) {
                 throw new BlackDuckIntegrationException("Detect timeout exceeded or will be exceeded due to server being busy.");
             }
+            logger.debug("Received code " + response.getStatusCode() + ". Retrying upload in " + retryAfterInSeconds + " seconds.");
             return recursiveExecute(request, retryAfterInMillis, 0, detectTimeout);
         } else if (OperationRunner.RETRYABLE_WITH_BACKOFF_HTTP_EXCEPTIONS.contains(response.getStatusCode())) {
             // Response code is 425 or 500.
@@ -82,6 +83,7 @@ public class RapidScanConfigBdio2StreamUploader {
             if (isDetectTimeoutExceededBy(fibonacciWaitInMillis, detectTimeout)) {
                 throw new BlackDuckIntegrationException("Detect timeout exceeded or will be exceeded due to a temporary unavailability of the server.");
             }
+            logger.debug("Received code " + response.getStatusCode() + ". Backing off and retrying upload in " + fibonacciWaitInMillis + " milliseconds.");
             backoffRetryCount++;
             return recursiveExecute(request, fibonacciWaitInMillis, backoffRetryCount, detectTimeout);
         }
