@@ -360,7 +360,8 @@ public class OperationRunner {
                     );
             }
 
-            return uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeader);
+            String uploadHeaderOperationName = "Upload BDIO Header to Initiate Scan";
+            return uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeader, uploadHeaderOperationName);
         });
     }
 
@@ -470,22 +471,24 @@ public class OperationRunner {
         });
     }
 
-    public UUID uploadBdioHeaderToInitiateScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile) throws IntegrationException {
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+    public UUID uploadBdioHeaderToInitiateScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile, String operationName) throws OperationException {
+        return auditLog.namedInternal(operationName, () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        String scanServicePostEndpoint = getScanServicePostEndpoint();
-        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(scanServicePostEndpoint);
+            String scanServicePostEndpoint = getScanServicePostEndpoint();
+            HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(scanServicePostEndpoint);
 
-        String scanServicePostContentType = getScanServicePostContentType();
-        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-            .postFile(bdioHeaderFile, ContentType.create(scanServicePostContentType))
-            .buildBlackDuckResponseRequest(postUrl);
+            String scanServicePostContentType = getScanServicePostContentType();
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                .postFile(bdioHeaderFile, ContentType.create(scanServicePostContentType))
+                .buildBlackDuckResponseRequest(postUrl);
 
-        HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);
-        String path = responseUrl.uri().getPath();
+            HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);
+            String path = responseUrl.uri().getPath();
 
-        return UUID.fromString(path.substring(path.lastIndexOf('/') + 1));
+            return UUID.fromString(path.substring(path.lastIndexOf('/') + 1));
+        });
     }
 
     public void uploadBdioEntries(BlackDuckRunData blackDuckRunData, UUID bdScanId) throws IntegrationException, IOException {
