@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
+import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.testutils.ContainerScanTestUtils;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -21,7 +22,8 @@ public class OperationRunnerContainerScanTest {
     private static final Gson gson = new Gson();
     private static final ContainerScanTestUtils containerScanTestUtils = new ContainerScanTestUtils();
 
-    private File updateDetectConfigAndGetContainerImage(BlackduckScanMode blackduckScanMode, String imageFilePath) throws IntegrationException, IOException, DetectUserFriendlyException {
+    private File updateDetectConfigAndGetContainerImage(BlackduckScanMode blackduckScanMode, String imageFilePath)
+        throws IntegrationException, IOException, DetectUserFriendlyException, OperationException {
         OperationRunner operationRunner = containerScanTestUtils.setUpDetectConfig(blackduckScanMode, imageFilePath);
         OperationRunner operationRunnerSpy = Mockito.spy(operationRunner);
         Mockito.doReturn(ContainerScanTestUtils.TEST_IMAGE_DOWNLOADED_FILE).when(operationRunnerSpy).downloadContainerImage(gson, ContainerScanTestUtils.TEST_DOWNLOAD_DIRECTORY, imageFilePath);
@@ -29,7 +31,7 @@ public class OperationRunnerContainerScanTest {
     }
 
     @Test
-    public void testGetContainerScanImageForLocalFilePath() throws DetectUserFriendlyException, IntegrationException, IOException {
+    public void testGetContainerScanImageForLocalFilePath() throws DetectUserFriendlyException, IntegrationException, IOException, OperationException {
         // Intelligent
         File containerImageRetrieved = updateDetectConfigAndGetContainerImage(BlackduckScanMode.INTELLIGENT, ContainerScanTestUtils.TEST_IMAGE_LOCAL_FILE_PATH);
         Assertions.assertTrue(containerImageRetrieved != null && containerImageRetrieved.exists());
@@ -44,7 +46,7 @@ public class OperationRunnerContainerScanTest {
     }
 
     @Test
-    public void testGetContainerScanImageForImageUrl() throws DetectUserFriendlyException, IntegrationException, IOException {
+    public void testGetContainerScanImageForImageUrl() throws DetectUserFriendlyException, IntegrationException, IOException, OperationException {
         // Intelligent
         File containerImageRetrieved = updateDetectConfigAndGetContainerImage(BlackduckScanMode.INTELLIGENT, ContainerScanTestUtils.TEST_IMAGE_URL);
         Assertions.assertTrue(containerImageRetrieved != null && containerImageRetrieved.exists());

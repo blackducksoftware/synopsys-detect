@@ -390,18 +390,20 @@ public class OperationRunner {
         return artifactResolver.downloadArtifact(new File(targetPathName), containerImageUri);
     }
 
-    public File getContainerScanImage(Gson gson, File downloadDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
-        Optional<String> containerImageFilePath = getContainerScanFilePath();
-        File containerImageFile = null;
-        if (containerImageFilePath.isPresent()) {
-            String containerImageUri = containerImageFilePath.get();
-            if (containerImageUri.startsWith("http")) {
-                containerImageFile = downloadContainerImage(gson, downloadDirectory, containerImageUri);
-            } else {
-                containerImageFile = new File(containerImageUri);
+    public File getContainerScanImage(Gson gson, File downloadDirectory) throws OperationException {
+        return auditLog.namedPublic("Retrieve Container Scan Image File", () -> {
+            Optional<String> containerImageFilePath = getContainerScanFilePath();
+            File containerImageFile = null;
+            if (containerImageFilePath.isPresent()) {
+                String containerImageUri = containerImageFilePath.get();
+                if (containerImageUri.startsWith("http")) {
+                    containerImageFile = downloadContainerImage(gson, downloadDirectory, containerImageUri);
+                } else {
+                    containerImageFile = new File(containerImageUri);
+                }
             }
-        }
-        return containerImageFile;
+            return containerImageFile;
+        });
     }
 
     public JsonObject createContainerScanImageMetadata(UUID scanId, NameVersion projectNameVersion) {
@@ -419,49 +421,54 @@ public class OperationRunner {
         return imageMetadataObject;
     }
 
-    public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType)
-        throws IntegrationException, IOException {
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+    // Generic method to POST a file to /api/storage/containers endpoint of storage service
+    public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType, String operationName)
+        throws OperationException {
+        return auditLog.namedPublic(operationName, () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
-        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-            .postFile(payloadFile, ContentType.create(postContentType))
-            .buildBlackDuckResponseRequest(postUrl);
+            HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                .postFile(payloadFile, ContentType.create(postContentType))
+                .buildBlackDuckResponseRequest(postUrl);
 
-        try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
-            return response;
-        } catch (IntegrationException e) {
-            logger.trace("Could not execute file upload request to storage service.");
-            throw new IntegrationException("Could not execute file upload request to storage service.", e);
-        } catch (IOException e) {
-            logger.trace("I/O error occurred during file upload request.");
-            throw new IOException("I/O error occurred during file upload request to storage service.", e);
-        }
+            try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+                return response;
+            } catch (IntegrationException e) {
+                logger.trace("Could not execute file upload request to storage service.");
+                throw new IntegrationException("Could not execute file upload request to storage service.", e);
+            } catch (IOException e) {
+                logger.trace("I/O error occurred during file upload request.");
+                throw new IOException("I/O error occurred during file upload request to storage service.", e);
+            }
+        });
     }
 
-    public Response uploadJsonToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, String jsonPayload, String postContentType)
-        throws IntegrationException, IOException {
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+    public Response uploadJsonToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, String jsonPayload, String postContentType, String operationName)
+        throws OperationException {
 
-        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
+        return auditLog.namedInternal(operationName, () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-            .postString(jsonPayload, ContentType.create(postContentType))
-            .buildBlackDuckResponseRequest(postUrl);
+            HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
 
-        try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
-            return response;
-        } catch (IntegrationException e) {
-            logger.trace("Could not execute JSON upload request to storage service.");
-            throw new IntegrationException("Could not execute JSON upload request to storage service.", e);
-        } catch (IOException e) {
-            logger.trace("I/O error occurred during JSON upload request.");
-            throw new IOException("I/O error occurred during JSON upload request to storage service.", e);
-        }
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                .postString(jsonPayload, ContentType.create(postContentType))
+                .buildBlackDuckResponseRequest(postUrl);
+
+            try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+                return response;
+            } catch (IntegrationException e) {
+                logger.trace("Could not execute JSON upload request to storage service.");
+                throw new IntegrationException("Could not execute JSON upload request to storage service.", e);
+            } catch (IOException e) {
+                logger.trace("I/O error occurred during JSON upload request.");
+                throw new IOException("I/O error occurred during JSON upload request to storage service.", e);
+            }
+        });
     }
-
 
     public UUID uploadBdioHeaderToInitiateScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile) throws IntegrationException {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
