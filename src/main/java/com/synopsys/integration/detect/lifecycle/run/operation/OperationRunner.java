@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.blackducksoftware.bdio2.Bdio;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -228,6 +229,8 @@ public class OperationRunner {
     private static final String DEVELOPER_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
     private static final String INTELLIGENT_SCAN_ENDPOINT = ApiDiscovery.INTELLIGENT_PERSISTENCE_SCANS_PATH.getPath();
     private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
+    public static final ImmutableList<Integer> RETRYABLE_AFTER_WAIT_HTTP_EXCEPTIONS = ImmutableList.of(408, 429, 502, 503, 504);
+    public static final ImmutableList<Integer> RETRYABLE_WITH_BACKOFF_HTTP_EXCEPTIONS = ImmutableList.of(425, 500);
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -1342,7 +1345,7 @@ public class OperationRunner {
         }
     }
 
-    public int calculateMaxWaitInSeconds(int fibonacciSequenceIndex) {
+    public static int calculateMaxWaitInSeconds(int fibonacciSequenceIndex) {
         int fibonacciSequenceLastIndex = LIMITED_FIBONACCI_SEQUENCE.length - 1;
         if (fibonacciSequenceIndex > fibonacciSequenceLastIndex) {
             return LIMITED_FIBONACCI_SEQUENCE[fibonacciSequenceLastIndex];
@@ -1374,5 +1377,9 @@ public class OperationRunner {
         UUID scanId = UUID.fromString(url.substring(url.lastIndexOf("/") + 1));
 
         return scanId;
+    }
+    
+    public DetectConfigurationFactory getDetectConfigurationFactory() {
+        return this.detectConfigurationFactory;
     }
 }

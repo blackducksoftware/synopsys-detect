@@ -232,7 +232,8 @@ public class DetectConfigurationFactory {
     public RapidScanOptions createRapidScanOptions() {
         RapidCompareMode rapidCompareMode = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE);
         BlackduckScanMode scanMode= detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
-        return new RapidScanOptions(rapidCompareMode, scanMode);
+        long detectTimeout = findTimeoutInSeconds();
+        return new RapidScanOptions(rapidCompareMode, scanMode, detectTimeout);
     }
 
     public BlackduckScanMode createScanMode() {

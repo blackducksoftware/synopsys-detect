@@ -6,10 +6,12 @@ import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMod
 public class RapidScanOptions {
     private final RapidCompareMode compareMode;
     private final BlackduckScanMode scanMode;
+    private final long detectTimeout;
 
-    public RapidScanOptions(RapidCompareMode compareMode, BlackduckScanMode scanMode) {
+    public RapidScanOptions(RapidCompareMode compareMode, BlackduckScanMode scanMode, long detectTimeout) {
         this.compareMode = compareMode;
         this.scanMode = scanMode;
+        this.detectTimeout = detectTimeout;
     }
 
     public RapidCompareMode getCompareMode() {
@@ -18,5 +20,9 @@ public class RapidScanOptions {
 
     public BlackduckScanMode getScanMode() {
         return scanMode;
+    }
+
+    public long getDetectTimeout() {
+        return detectTimeout;
     }
 }
