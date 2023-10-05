@@ -56,10 +56,12 @@ public class ContainerScanTestUtils {
         BootSingletons bootSingletonsMock = Mockito.mock(BootSingletons.class);
         Mockito.when(bootSingletonsMock.getDetectConfigurationFactory()).thenReturn(detectConfigurationFactory);
 
-        // Create mocked operation wrapper
+        // Mock utility singletons
         UtilitySingletons utilitySingletonsMock = Mockito.mock(UtilitySingletons.class);
+
+        // Create mocked operation wrapper
         OperationWrapper operationWrapper = new OperationWrapper();
-        Mockito.when(utilitySingletonsMock.getOperationWrapper()).thenReturn(new OperationWrapper());
+        Mockito.when(utilitySingletonsMock.getOperationWrapper()).thenReturn(operationWrapper);
 
         // Create mocked operation system
         EventSystem eventSystem = new EventSystem();
