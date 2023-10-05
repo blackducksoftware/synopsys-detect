@@ -2,6 +2,10 @@
 
 ## Version 9.1.0
 
+### New features
+
+* Container Scanning. Providing component risk detail analysis for each layer of a container image, (including non-Linux, non-Docker images). Please see [Container Scanning ](runningdetect/containerscanning.md) for details.”
+
 ### Changed features
 
 * Support for Dart is now extended to Dart 3.1.
