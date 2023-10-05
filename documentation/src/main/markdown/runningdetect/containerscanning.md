@@ -42,8 +42,8 @@ Container scan findings will appear in the [blackduck_product_name] user interfa
 <data name="facets" value="pubname=bd-hub"/>
 -->
 <figure>
-    <img src="../images/containerscan.png"
+    <img src="/images/containerscan.png"
          alt="Container Scan Results">
-    <figcaption>Container Scan results in [blackduck_product_name].</figcaption>
+    <figcaption>Container Scan results in Black Duck.</figcaption>
 </figure>
 
