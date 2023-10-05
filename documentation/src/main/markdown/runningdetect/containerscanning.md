@@ -1,12 +1,12 @@
-# [blackduck_product_name] Secure Container Scan
+# Container Scan
 
-[blackduck_product_name] Secure Container Scan is a way of running [solution_name] against any type of container image (including any non-Linux, non-Docker image) and providing component risk details for each layer of the image.
+Container Scan is a way of running [solution_name] against any type of container image (including any non-Linux, non-Docker image) and providing component risk details for each layer of the image.
 
 [solution_name] will accept either a user provided local file path, or remote HTTP/HTTPS URL to fetch a container image for scanning.
 
-Container scanning supports both persistent (Intelligent) and Stateless scan modes in [blackduck_product_name].
+Container scan supports both persistent (Intelligent) and Stateless scan modes in [blackduck_product_name].
 
-Execute Container Scanning by adding the following to a run of [solution_name]:
+Execute Container Scan by adding the following to a run of [solution_name]:
 ````
 --detect.container.scan.file.path=<Path to local or HTTP/HTTPS URL for remote image>
 ````

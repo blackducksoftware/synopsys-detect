@@ -4,7 +4,7 @@
 
 ### New features
 
-* Container Scanning. Providing component risk detail analysis for each layer of a container image, (including non-Linux, non-Docker images). Please see [Container Scanning ](runningdetect/containerscanning.md) for details.”
+* Container Scan. Providing component risk detail analysis for each layer of a container image, (including non-Linux, non-Docker images). Please see [Container Scan ](runningdetect/containerscanning.md) for details.
 
 ### Changed features
 
