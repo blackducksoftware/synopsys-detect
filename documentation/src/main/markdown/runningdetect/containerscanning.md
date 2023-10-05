@@ -4,33 +4,46 @@ Container Scan is a way of running [solution_name] against any type of containe
 
 [solution_name] will accept either a user provided local file path, or remote HTTP/HTTPS URL to fetch a container image for scanning.
 
-Container scan supports both persistent (Intelligent) and Stateless scan modes in [blackduck_product_name].
+Container scan supports both persistent (Intelligent) and Stateless scan modes in [blackduck_product_name], but must be run independently of other scan types.
 
 Execute Container Scan by adding the following to a run of [solution_name]:
 ````
+--detect.tools=CONTAINER_SCAN
 --detect.container.scan.file.path=<Path to local or HTTP/HTTPS URL for remote image>
 ````
 
 ## Requirements and Limitations
 
 ### General Requirements
+ * Your [blackduck_product_name] server must have [blackduck_product_name] Binary Analysis or [blackduck_product_name] Secure Container (BDSC) licensed and enabled.
  * A unique project version must be provided, or the scan service will respond with an error.
  * Must be running [blackduck_product_name] 2023.10.0 or greater.
  * URL provided for a remote container image must use the HTTP(S) protocol.
  
 ## Invocation
- * To invoke a container scan, which executes in "Intelligent" mode by default, the following must be provided at a minimum:
-    * --detect.container.scan.file.path=<Path to local or URL for remote container> 
+ * To invoke a container scan, which executes in "Intelligent" mode by default, the following must be provided at a minimum:   
+ ```
+	--detect.tools=CONTAINER_SCAN
+	--detect.container.scan.file.path=<Path to local or URL for remote container>
+```
 	
-* To invoke a stateless container scan the following must be provided at a minimum:
-    * --detect.container.scan.file.path=<Path to local or URL for remote container> --detect.blackduck.scan.mode=STATELESS
+* To invoke a stateless container scan the following must be provided at a minimum:   
+```
+--detect.tools=CONTAINER_SCAN
+--detect.container.scan.file.path=<Path to local or URL for remote container>
+--detect.blackduck.scan.mode=STATELESS
+```
 
 ## Results
 
-Container scan findings will appear in the [blackduck_product_name] user interface, please consult the documentation provided by [blackduck_product_name] under the topic:
-
+Container scan findings will appear in the [blackduck_product_name] user interface, please consult the documentation provided by [blackduck_product_name] under the topic: TBD
 <!-- TBD Reference link directly to [blackduck_product_name] Docs once they are available
 <xref href="ContainerScans.dita" scope="peer">Container scans
 <data name="facets" value="pubname=bd-hub"/>
 -->
+<figure>
+    <img src="../images/containerscan.png"
+         alt="Container Scan Results">
+    <figcaption>Container Scan results in [blackduck_product_name].</figcaption>
+</figure>
 
