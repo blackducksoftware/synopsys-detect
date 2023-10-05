@@ -23,8 +23,8 @@ Execute Container Scan by adding the following to a run of [solution_name]:
 ## Invocation
  * To invoke a container scan, which executes in "Intelligent" mode by default, the following must be provided at a minimum:   
  ```
-	--detect.tools=CONTAINER_SCAN
-	--detect.container.scan.file.path=<Path to local or URL for remote container>
+--detect.tools=CONTAINER_SCAN
+--detect.container.scan.file.path=<Path to local or URL for remote container>
 ```
 	
 * To invoke a stateless container scan the following must be provided at a minimum:   
@@ -42,8 +42,7 @@ Container scan findings will appear in the [blackduck_product_name] user interfa
 <data name="facets" value="pubname=bd-hub"/>
 -->
 <figure>
-    <img src="/images/containerscan.png"
+    <img src="images/containerscan.png"
          alt="Container Scan Results">
     <figcaption>Container Scan results in Black Duck.</figcaption>
 </figure>
-
