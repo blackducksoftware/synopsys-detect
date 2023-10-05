@@ -141,6 +141,9 @@ public class IntelligentModeStepRunner {
                 logger.debug("Invoking intelligent persistent container scan.");
                 Optional<UUID> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
                 scanId.ifPresent(uuid -> scanIdsToWaitFor.add(uuid.toString()));
+                Set<String> containerScanCodeLocations = new HashSet<>();
+                containerScanCodeLocations.add(containerScanStepRunner.getCodeLocationName());
+                codeLocationAccumulator.addNonWaitableCodeLocation(containerScanCodeLocations);
             }
         );
 
