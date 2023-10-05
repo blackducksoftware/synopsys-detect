@@ -86,7 +86,7 @@ public class BlackDuckRunData {
 
     private void determineBlackDuckServerVersion(BlackDuckConnectivityResult blackDuckConnectivityResult) {
         if (blackDuckConnectivityResult == null || blackDuckConnectivityResult.getContactedServerVersion() == null) {
-            blackDuckServerVersion = null;
+            blackDuckServerVersion = Optional.empty();
         } else {
             BlackDuckVersionParser parser = new BlackDuckVersionParser();
             blackDuckServerVersion = parser.parse(blackDuckConnectivityResult.getContactedServerVersion());
