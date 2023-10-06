@@ -15,7 +15,7 @@ Execute Container Scan by adding the following to a run of [solution_name]:
 ## Requirements and Limitations
 
 ### General Requirements
- * Your [blackduck_product_name] server must have [blackduck_product_name] Binary Analysis or [blackduck_product_name] Secure Container (BDSC) licensed and enabled.
+ * Your [blackduck_product_name] server must have [blackduck_product_name] Binary Analysis (BDBA) or [blackduck_product_name] Secure Container (BDSC) licensed and enabled.
  * A unique project version must be provided, or the scan service will respond with an error.
  * Must be running [blackduck_product_name] 2023.10.0 or greater.
  * URL provided for a remote container image must use the HTTP(S) protocol.
@@ -36,7 +36,7 @@ Execute Container Scan by adding the following to a run of [solution_name]:
 
 ## Results
 
-Container scan findings will appear in the [blackduck_product_name] user interface, please consult the documentation provided by [blackduck_product_name] under the topic: TBD
+Container scan findings will appear in the [blackduck_product_name] user interface unless the scan is executed in Stateless mode, please consult the documentation provided by [blackduck_product_name] under the topic: TBD
 <!-- TBD Reference link directly to [blackduck_product_name] Docs once they are available
 <xref href="ContainerScans.dita" scope="peer">Container scans
 <data name="facets" value="pubname=bd-hub"/>
@@ -46,3 +46,7 @@ Container scan findings will appear in the [blackduck_product_name] user interfa
          alt="Container Scan Results">
     <figcaption>Container Scan results in Black Duck.</figcaption>
 </figure>
+
+## Stateless mode results
+
+In Stateless mode, Container Scan results are saved to a json file named `name_version_BlackDuck_DeveloperMode_Result.json` in the Scan Output directory, where name and version are the project's name and version.
