@@ -49,4 +49,4 @@ Container scan findings will appear in the [blackduck_product_name] user interfa
 
 ## Stateless mode results
 
-In Stateless mode, Container Scan results are saved to a json file named `name_version_BlackDuck_DeveloperMode_Result.json` in the Scan Output directory, where name and version are the project's name and version.
+In Stateless mode, Container Scan results are saved to a json file named `name_version_BlackDuck_DeveloperMode_Result.json` in the Scan Output directory, where `name` and `version` are the project's name and version.
