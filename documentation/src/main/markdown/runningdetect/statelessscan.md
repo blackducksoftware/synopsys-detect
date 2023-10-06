@@ -54,7 +54,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
     * --detect.tools=DETECTOR,DOCKER --detect.blackduck.scan.mode=RAPID
  * To invoke a stateless binary scan
     * --detect.tools=BINARY_SCAN --detect.blackduck.scan.mode=STATELESS --detect.scaaas.scan.path=file:///foo/bar.exe
- * To invoke a stateless container scan
+ * To invoke a stateless SCAaaS container scan
     * --detect.tools=CONTAINER_SCAN --detect.blackduck.scan.mode=STATELESS --detect.scaaas.scan.path=file:///foo/docker-image.tar
 
 ## Results
