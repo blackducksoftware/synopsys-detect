@@ -5,7 +5,7 @@
 ### New features
 
 * Container Scan. Providing component risk detail analysis for each layer of a container image, (including non-Linux, non-Docker images). Please see [Container Scan ](runningdetect/containerscanning.md) for details.
-	<note type="restriction">Your [blackduck_product_name] server must have [blackduck_product_name] Binary Analysis or [blackduck_product_name] Secure Container (BDSC) licensed and enabled.</note>
+	<note type="restriction">Your [blackduck_product_name] server must have [blackduck_product_name] Binary Analysis (BDBA) or [blackduck_product_name] Secure Container (BDSC) licensed and enabled.</note>
 
 ### Changed features
 
