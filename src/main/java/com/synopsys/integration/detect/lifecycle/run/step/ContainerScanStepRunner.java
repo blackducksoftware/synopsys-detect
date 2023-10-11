@@ -34,7 +34,7 @@ public class ContainerScanStepRunner {
     private final BlackDuckRunData blackDuckRunData;
     private final File binaryRunDirectory;
     private final File containerImage;
-    private final String codeLocationName;
+    private String codeLocationName;
     private static final BlackDuckVersion MIN_BLACK_DUCK_VERSION = new BlackDuckVersion(2023, 10, 0);
     private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
     private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
@@ -51,7 +51,6 @@ public class ContainerScanStepRunner {
         }
         projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
         containerImage = operationRunner.getContainerScanImage(gson, binaryRunDirectory);
-        codeLocationName = createContainerScanCodeLocationName();
     }
 
     public Optional<UUID> invokeContainerScanningWorkflow() {
@@ -79,6 +78,7 @@ public class ContainerScanStepRunner {
             uploadImageMetadataToStorageService();
             operationRunner.publishContainerSuccess();
             logger.info("Container scan image uploaded successfully.");
+            codeLocationName = createContainerScanCodeLocationName();
         } catch (IntegrationException | IOException | OperationException e) {
             operationRunner.publishContainerFailure(e);
             return Optional.empty();
