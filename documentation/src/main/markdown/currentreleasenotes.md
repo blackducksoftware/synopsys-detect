@@ -5,7 +5,7 @@
 ### Changed features
 
 * Support for Dart is now extended to Dart 3.1.2 and Flutter 3.13.4.
-* [solution_name] will now wait for a number of seconds specified by [blackduck_product_name] before attempting to retry creating a new scan when [blackduck_product_name] is busy.
+* When [blackduck_product_name] is busy, [solution_name] will now wait the number of seconds specified by [blackduck_product_name] before attempting to retry scan creation.
 
 ### Resolved issues
 * (IDETECT-4056) Resolved an issue where no components were reported by CPAN detector.
