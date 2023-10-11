@@ -644,7 +644,8 @@ public class ApplicationUpdater extends URLClassLoader {
         } else {
             String problemUrl = captureProblemDetectUrl(downloadUrl);
             String message = StringUtils.isNotBlank(response.getStatusMessage()) ? response.getStatusMessage() : EnglishReasonPhraseCatalog.INSTANCE.getReason(response.getStatusCode(), Locale.ENGLISH);
-            logger.warn("{} Unable to download artifact from {}. Response code: {} {}", LOG_PREFIX, problemUrl, response.getStatusCode(), message);
+            logger.warn("{} Unable to download artifact from {}.", LOG_PREFIX, problemUrl);
+            logger.warn("{} Response code from {} was: {} {}", LOG_PREFIX, problemUrl, response.getStatusCode(), message);
         }
         return null;
     }
