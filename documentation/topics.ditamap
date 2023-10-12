@@ -110,6 +110,7 @@
 		<topicref href="packagemgrs/clang.md" format="markdown"/>
 		<topicref href="packagemgrs/conan.md" format="markdown"/>
 		<topicref href="packagemgrs/conda.md" format="markdown"/>
+		<topicref href="packagemgrs/cpan.md" format="markdown"/>
 		<topicref href="packagemgrs/dart.md" format="markdown"/>
 		<topicref href="packagemgrs/docker/intro.md" format="markdown">
 			<topicref href="packagemgrs/docker/formats.md" format="markdown"/>
@@ -195,6 +196,7 @@
 		<topicref href="troubleshooting/exit-codes.md" format="markdown"/>
 		<topicref href="troubleshooting/solutions.md" format="markdown"/>
 		<topicref href="troubleshooting/usage-metrics.md" format="markdown"/>
+		<topicref href="troubleshooting/windowsos.md" format="markdown"/>
 	</topicref>
 	<topicref href="integrations/integrations.md" format="markdown">
 		<topicref href="integrations/jenkinsplugin/jenkins.md" format="markdown">

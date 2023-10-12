@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.blackducksoftware.bdio2.Bdio;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -228,6 +229,8 @@ public class OperationRunner {
     private static final String DEVELOPER_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
     private static final String INTELLIGENT_SCAN_ENDPOINT = ApiDiscovery.INTELLIGENT_PERSISTENCE_SCANS_PATH.getPath();
     private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
+    public static final ImmutableList<Integer> RETRYABLE_AFTER_WAIT_HTTP_EXCEPTIONS = ImmutableList.of(408, 429, 502, 503, 504);
+    public static final ImmutableList<Integer> RETRYABLE_WITH_BACKOFF_HTTP_EXCEPTIONS = ImmutableList.of(425, 500);
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -360,7 +363,8 @@ public class OperationRunner {
                     );
             }
 
-            return uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeader);
+            String uploadHeaderOperationName = "Upload BDIO Header to Initiate Scan";
+            return uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeader, uploadHeaderOperationName);
         });
     }
 
@@ -379,6 +383,10 @@ public class OperationRunner {
         return DEVELOPER_SCAN_CONTENT_TYPE;
     }
 
+    public Optional<String> getContainerScanFilePath() {
+        return detectConfigurationFactory.getContainerScanFilePath();
+    }
+
     public File downloadContainerImage(Gson gson, File downloadDirectory, String containerImageUri) throws DetectUserFriendlyException, IntegrationException, IOException {
         String targetPathName = downloadDirectory.toString().concat("/targetImage");
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
@@ -386,18 +394,20 @@ public class OperationRunner {
         return artifactResolver.downloadArtifact(new File(targetPathName), containerImageUri);
     }
 
-    public File getContainerScanImage(Gson gson, File downloadDirectory) throws IntegrationException, IOException, DetectUserFriendlyException {
-        Optional<String> containerImageFilePath = detectConfigurationFactory.getContainerScanFilePath();
-        File containerImageFile = null;
-        if (containerImageFilePath.isPresent()) {
-            String containerImageUri = containerImageFilePath.get();
-            if (containerImageUri.startsWith("http")) {
-                containerImageFile = downloadContainerImage(gson, downloadDirectory, containerImageUri);
-            } else {
-                containerImageFile = new File(containerImageUri);
+    public File getContainerScanImage(Gson gson, File downloadDirectory) throws OperationException {
+        return auditLog.namedPublic("Retrieve Container Scan Image File", () -> {
+            Optional<String> containerImageFilePath = getContainerScanFilePath();
+            File containerImageFile = null;
+            if (containerImageFilePath.isPresent()) {
+                String containerImageUri = containerImageFilePath.get();
+                if (containerImageUri.startsWith("http")) {
+                    containerImageFile = downloadContainerImage(gson, downloadDirectory, containerImageUri);
+                } else {
+                    containerImageFile = new File(containerImageUri);
+                }
             }
-        }
-        return containerImageFile;
+            return containerImageFile;
+        });
     }
 
     public JsonObject createContainerScanImageMetadata(UUID scanId, NameVersion projectNameVersion) {
@@ -415,66 +425,73 @@ public class OperationRunner {
         return imageMetadataObject;
     }
 
-    public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType)
-        throws IntegrationException, IOException {
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+    // Generic method to POST a file to /api/storage/containers endpoint of storage service
+    public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType, String operationName)
+        throws OperationException {
+        return auditLog.namedPublic(operationName, () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
-        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-            .postFile(payloadFile, ContentType.create(postContentType))
-            .buildBlackDuckResponseRequest(postUrl);
+            HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                .postFile(payloadFile, ContentType.create(postContentType))
+                .buildBlackDuckResponseRequest(postUrl);
 
-        try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
-            return response;
-        } catch (IntegrationException e) {
-            logger.trace("Could not execute file upload request to storage service.");
-            throw new IntegrationException("Could not execute file upload request to storage service.", e);
-        } catch (IOException e) {
-            logger.trace("I/O error occurred during file upload request.");
-            throw new IOException("I/O error occurred during file upload request to storage service.", e);
-        }
+            try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+                return response;
+            } catch (IntegrationException e) {
+                logger.trace("Could not execute file upload request to storage service.");
+                throw new IntegrationException("Could not execute file upload request to storage service.", e);
+            } catch (IOException e) {
+                logger.trace("I/O error occurred during file upload request.");
+                throw new IOException("I/O error occurred during file upload request to storage service.", e);
+            }
+        });
     }
 
-    public Response uploadJsonToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, String jsonPayload, String postContentType)
-        throws IntegrationException, IOException {
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+    public Response uploadJsonToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, String jsonPayload, String postContentType, String operationName)
+        throws OperationException {
 
-        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
+        return auditLog.namedInternal(operationName, () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-            .postString(jsonPayload, ContentType.create(postContentType))
-            .buildBlackDuckResponseRequest(postUrl);
+            HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
 
-        try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
-            return response;
-        } catch (IntegrationException e) {
-            logger.trace("Could not execute JSON upload request to storage service.");
-            throw new IntegrationException("Could not execute JSON upload request to storage service.", e);
-        } catch (IOException e) {
-            logger.trace("I/O error occurred during JSON upload request.");
-            throw new IOException("I/O error occurred during JSON upload request to storage service.", e);
-        }
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                .postString(jsonPayload, ContentType.create(postContentType))
+                .buildBlackDuckResponseRequest(postUrl);
+
+            try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+                return response;
+            } catch (IntegrationException e) {
+                logger.trace("Could not execute JSON upload request to storage service.");
+                throw new IntegrationException("Could not execute JSON upload request to storage service.", e);
+            } catch (IOException e) {
+                logger.trace("I/O error occurred during JSON upload request.");
+                throw new IOException("I/O error occurred during JSON upload request to storage service.", e);
+            }
+        });
     }
 
+    public UUID uploadBdioHeaderToInitiateScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile, String operationName) throws OperationException {
+        return auditLog.namedInternal(operationName, () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-    public UUID uploadBdioHeaderToInitiateScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile) throws IntegrationException {
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+            String scanServicePostEndpoint = getScanServicePostEndpoint();
+            HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(scanServicePostEndpoint);
 
-        String scanServicePostEndpoint = getScanServicePostEndpoint();
-        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(scanServicePostEndpoint);
+            String scanServicePostContentType = getScanServicePostContentType();
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                .postFile(bdioHeaderFile, ContentType.create(scanServicePostContentType))
+                .buildBlackDuckResponseRequest(postUrl);
 
-        String scanServicePostContentType = getScanServicePostContentType();
-        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-            .postFile(bdioHeaderFile, ContentType.create(scanServicePostContentType))
-            .buildBlackDuckResponseRequest(postUrl);
+            HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);
+            String path = responseUrl.uri().getPath();
 
-        HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);
-        String path = responseUrl.uri().getPath();
-
-        return UUID.fromString(path.substring(path.lastIndexOf('/') + 1));
+            return UUID.fromString(path.substring(path.lastIndexOf('/') + 1));
+        });
     }
 
     public void uploadBdioEntries(BlackDuckRunData blackDuckRunData, UUID bdScanId) throws IntegrationException, IOException {
@@ -1338,7 +1355,7 @@ public class OperationRunner {
         }
     }
 
-    public int calculateMaxWaitInSeconds(int fibonacciSequenceIndex) {
+    public static int calculateMaxWaitInSeconds(int fibonacciSequenceIndex) {
         int fibonacciSequenceLastIndex = LIMITED_FIBONACCI_SEQUENCE.length - 1;
         if (fibonacciSequenceIndex > fibonacciSequenceLastIndex) {
             return LIMITED_FIBONACCI_SEQUENCE[fibonacciSequenceLastIndex];
@@ -1370,5 +1387,9 @@ public class OperationRunner {
         UUID scanId = UUID.fromString(url.substring(url.lastIndexOf("/") + 1));
 
         return scanId;
+    }
+    
+    public DetectConfigurationFactory getDetectConfigurationFactory() {
+        return this.detectConfigurationFactory;
     }
 }

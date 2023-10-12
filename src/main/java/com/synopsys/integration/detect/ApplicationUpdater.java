@@ -15,6 +15,9 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -30,6 +33,10 @@ import java.util.Optional;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+
 import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,8 +59,21 @@ import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 
 import freemarker.template.Version;
+import java.util.Locale;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.http.impl.EnglishReasonPhraseCatalog;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -601,11 +621,11 @@ public class ApplicationUpdater extends URLClassLoader {
         ProxyInfo proxyInfo = getProxyInfo();
         final IntHttpClient intHttpClient = getIntHttpClient(proxyInfo);
         try (final Response response = intHttpClient.execute(request)) {
-            return handleResponse(response, currentVersion, installDirectory);
+            return handleResponse(response, currentVersion, installDirectory, downloadUrl);
         }
     }
     
-    private File handleResponse(Response response, String currentInstalledVersion, File installDirectory) throws IOException, IntegrationException {
+    private File handleResponse(Response response, String currentInstalledVersion, File installDirectory, HttpUrl downloadUrl) throws IOException, IntegrationException {
         String newVersionString = response.getHeaderValue(DOWNLOAD_VERSION_HEADER);
         String newFileName;
         if (newVersionString == null && (newFileName = response.getHeaderValue(DOWNLOADED_FILE_NAME)) != null) {
@@ -622,11 +642,63 @@ public class ApplicationUpdater extends URLClassLoader {
         } else if (response.getStatusCode() == HttpStatus.SC_NOT_MODIFIED) {
             logger.info("{} Present Detect installation is up to date - skipping download.", LOG_PREFIX);
         } else {
-            logger.warn("{} Unable to download artifact. Response code: {} {}", LOG_PREFIX, response.getStatusCode(), response.getStatusMessage());
+            String problemUrl = captureProblemDetectUrl(downloadUrl);
+            String message = StringUtils.isNotBlank(response.getStatusMessage()) ? response.getStatusMessage() : EnglishReasonPhraseCatalog.INSTANCE.getReason(response.getStatusCode(), Locale.ENGLISH);
+            logger.warn("{} Unable to download artifact from {}.", LOG_PREFIX, problemUrl);
+            logger.warn("{} Response code from {} was: {} {}", LOG_PREFIX, problemUrl, response.getStatusCode(), message);
         }
         return null;
     }
     
+    /**
+     * This method attempts to determine the true URL that is hosting Detect as we
+     * are often redirected from the BlackDuck hosted URL.
+     * 
+     * @param downloadUrl the BlackDuck hosted URL to download detect from, ie:
+     *                    https://localhost/api/tools/detect
+     * @return the true URL that is hosting the Detect jar after following the 302
+     *         redirect from /api/tools/detect
+     * @throws IOException
+     */
+    private String captureProblemDetectUrl(HttpUrl downloadUrl) throws IOException {
+        String problemUrl = downloadUrl.toString(); 
+        
+        // We need to build a new client to communicate with BlackDuck. This is because the main client we use to
+        // talk to BlackDuck will follow 302 redirects and we will be unable to determine and report on where the download
+        // actually failed from.
+        try {
+            HostnameVerifier hostnameVerifier;
+            SSLContext sslContext;
+
+            if (trustCertificate) {
+                sslContext = SSLContextBuilder.create().loadTrustMaterial(new TrustAllStrategy()).build();
+                hostnameVerifier = new NoopHostnameVerifier();
+            } else {
+                sslContext = SSLContexts.createDefault();
+                hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+            }
+            SSLConnectionSocketFactory connectionFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
+
+            CloseableHttpClient instance = HttpClients.custom().setSSLSocketFactory(connectionFactory)
+                    .disableRedirectHandling().build();
+
+            HttpGet httpGet = new HttpGet(downloadUrl.uri());
+            CloseableHttpResponse response = instance.execute(httpGet);
+
+            Header locationHeader = response.getFirstHeader("location");
+            
+            if (locationHeader != null) {
+                problemUrl = locationHeader.getValue();
+            }
+        } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException | ClientProtocolException e) {
+            // We are only calling this method to provide troubleshooting information for the user. If something goes wrong
+            // here don't further complicate things by throwing additional exceptions.
+            logger.debug(e.getMessage(), e);
+        }
+        
+        return problemUrl;
+    }
+
     private File handleSuccessResponse(Response response, String installDirAbsolutePath, String newVersionString) throws IOException, IntegrationException {
         final Path targetFilePath = Paths.get(installDirAbsolutePath, "/", response.getHeaderValue(DOWNLOADED_FILE_NAME));
         if (targetFilePath != null) {

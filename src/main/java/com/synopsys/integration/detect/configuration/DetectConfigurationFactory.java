@@ -35,7 +35,6 @@ import com.synopsys.integration.detect.configuration.connection.BlackDuckConnect
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorSearchExcludedDirectories;
-import com.synopsys.integration.detect.configuration.enumeration.DefaultSignatureScannerExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -237,7 +236,8 @@ public class DetectConfigurationFactory {
     public RapidScanOptions createRapidScanOptions() {
         RapidCompareMode rapidCompareMode = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE);
         BlackduckScanMode scanMode= detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
-        return new RapidScanOptions(rapidCompareMode, scanMode);
+        long detectTimeout = findTimeoutInSeconds();
+        return new RapidScanOptions(rapidCompareMode, scanMode, detectTimeout);
     }
 
     public BlackduckScanMode createScanMode() {
@@ -264,13 +264,7 @@ public class DetectConfigurationFactory {
     }
 
     public List<String> collectSignatureScannerDirectoryExclusions() {
-        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
-
-        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
-            directoryExclusionPatterns.addAll(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
-        }
-
-        return directoryExclusionPatterns;
+        return new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
     }
 
     public List<String> collectDetectorSearchDirectoryExclusions() {
