@@ -3,7 +3,6 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -11,12 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.version.BlackDuckVersion;
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.response.Response;
@@ -72,13 +69,13 @@ public class ContainerScanStepRunner {
                 throw new IOException("Container image file path not resolved or file could not be downloaded. Container scan could not be run.");
             }
 
+            codeLocationName = createContainerScanCodeLocationName();
             initiateScan();
-            logger.info("Container scan initiated.");
+            logger.info("Container scan initiated. Uploading container scan image.");
             uploadImageToStorageService();
             uploadImageMetadataToStorageService();
             operationRunner.publishContainerSuccess();
             logger.info("Container scan image uploaded successfully.");
-            codeLocationName = createContainerScanCodeLocationName();
         } catch (IntegrationException | IOException | OperationException e) {
             operationRunner.publishContainerFailure(e);
             return Optional.empty();
@@ -107,8 +104,6 @@ public class ContainerScanStepRunner {
         CodeLocationNameManager codeLocationNameManager = operationRunner.getCodeLocationNameManager();
         return codeLocationNameManager.createContainerScanCodeLocationName(containerImage, projectNameVersion.getName(), projectNameVersion.getVersion());
     }
-
-
 
     private void initiateScan() throws IOException, IntegrationException, OperationException {
         DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(
