@@ -8,32 +8,29 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
 
 ### General Requirements
  * Stateless scanning is available under [blackduck_product_name] “Limited Customer Availability (LCA)”.
- * Have Match as a Service (MaaS) enabled within [blackduck_product_name], a feature which will be available with the [blackduck_product_name] 2022.10.0 release.
- * A limited subset of Tools can be run.
-    * The currently supported tools are: DETECTOR, BAZEL, SIGNATURE_SCAN, DOCKER, BINARY_SCAN, and CONTAINER_SCAN.
-    * All Stateless Scans will not persist on Black Duck. 
-    * All other tools are disabled when running in Stateless Scan mode.
- * Stateless Scan requires Black Duck policies. 
-    * Stateless Scan only reports components that violate policies. 
-    * If no policies are violated or there are no defined policies, then no components are returned.
- * Stateless Scan does not support ```detect.policy.check.fail.on.severities```
-    * [solution_name] will fail with FAILURE_POLICY_VIOLATION if any component violates Black Duck polices with a CRITICAL or BLOCKER severity. 
-    * See the Black Duck documentation for a list of policy conditions that are supported by Stateless Scan. 
- * Stateless Scan does not support ```detect.policy.check.fail.on.names```
- * Stateless Scan cannot create a Risk or Notices report.
- * Stateless Scan will not create a Project or Version on Black Duck.
- * Stateless Scan when running SIGNATURE_SCAN, BINARY_SCAN, or CONTAINER_SCAN requires communication with Black Duck.
- * Stateless Scan and non-persistent SIGNATURE_SCAN, BINARY_SCAN, or CONTAINER_SCAN
-    * To perform a non-persistent scan in Stateless mode, SIGNATURE_SCAN, BINARY_SCAN, or CONTAINER_SCAN must be included within --detect.tools.
-    * Permitted tools omitted from the detect.tools list will not be run.
+ * Must have Match as a Service (MaaS) enabled within [blackduck_product_name], a feature available as of the [blackduck_product_name] 2022.10.0 release.
+ * Stateless Scan requires Black Duck policies retrieved via communication with Black Duck. 
 
 ### Signature Scan Requirements
  * Must be running [blackduck_product_name] 2022.10.0 or greater using the hosted KB.
  
-### Binary and Container Scan Requirements
+### Binary Scan Requirements
  * Must be running [blackduck_product_name] 2023.4.0 or greater using the hosted KB.
- * It is necessary to have [solution_name] and [blackduck_product_name] running in the hosted SCAaaS environment to perform these scans. 
- * To run binary or container Stateless Scan a Black Duck Binary Analysis (BDBA) license is required.
+ * It is necessary to have [solution_name] and [blackduck_product_name] running in the hosted environment to perform these scans. 
+ * To run binary scan a Black Duck Binary Analysis (BDBA) license is required.
+ 
+ ### Container Scan Requirements
+ * Must be running [blackduck_product_name] 2023.10.0 or greater.
+ * It is necessary to have [solution_name] and [blackduck_product_name] running in the hosted environment to perform these scans. 
+ * To run a Container Stateless Scan your [blackduck_product_name] server must have [blackduck_product_name] Binary Analysis (BDBA) or [blackduck_product_name] Secure Container (BDSC) licensed and enabled.
+ 
+### Limitations
+ * A limited subset of Tools can be run.
+    * The currently supported tools are: DETECTOR, BAZEL, SIGNATURE_SCAN, DOCKER, BINARY_SCAN, and CONTAINER_SCAN. All other tools are disabled when running in Stateless Scan mode.
+ * Stateless Scan does not support ```detect.policy.check.fail.on.severities``` or ```detect.policy.check.fail.on.names```
+ * [solution_name] will fail with FAILURE_POLICY_VIOLATION if any component violates Black Duck polices with a CRITICAL or BLOCKER severity. 
+    * See the Black Duck documentation for a list of policy conditions that are supported by Stateless Scan. 
+ * Stateless Scan will not create a Project or Version on Black Duck.
  
 ## Invocation
  * To invoke a stateless signature scan only
@@ -59,12 +56,16 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
 
 ## Results
 
-Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast, although they can take some time as communication with Black Duck is a requirement.
+Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast, although they can take some time as communication with Black Duck is a requirement as it is reliant on [blackduck_product_name] policies.
 
 The results are saved to a json file named 'name_version_BlackDuck_DeveloperMode_Result.json' in the Scan Output directory, where name and version are the project's name and version.
 
-**NOTE:**
- * The format of this results file is dependent on Black Duck and in the future, different versions of Black Duck may produce a different file format.
+Stateless Scan only reports components that violate policies. If no policies are violated or there are no defined policies, then no components are returned.   
+
+<note type="note">
+The format of the results file is dependent on Black Duck and in the future, newer versions of Black Duck may produce a different file format.   
+Stateless Scan cannot create a Risk or Notices report.
+</note>
 
 The results are also printed in the logs:
 ```
