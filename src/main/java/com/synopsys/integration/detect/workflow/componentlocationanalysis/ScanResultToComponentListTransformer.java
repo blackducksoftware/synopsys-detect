@@ -3,7 +3,7 @@ package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.blackduck.api.manual.view.DeveloperScansScanView;
 import com.synopsys.integration.componentlocator.beans.Component;
 import java.util.HashMap;
 import java.util.LinkedHashSet;

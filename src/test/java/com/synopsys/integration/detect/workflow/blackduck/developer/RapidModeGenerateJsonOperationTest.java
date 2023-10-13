@@ -14,7 +14,7 @@ import org.mockito.Mockito;
 import org.zeroturnaround.zip.commons.FileUtils;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.blackduck.api.manual.view.DeveloperScansScanView;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.DetectRunId;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;

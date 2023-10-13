@@ -30,7 +30,7 @@ import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.view.BomStatusScanView;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.synopsys.integration.blackduck.api.manual.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
@@ -1161,7 +1161,7 @@ public class OperationRunner {
                     projectGroupFindResult,
                     cloneFindResult,
                     projectVersionLicensesFindResult,
-                    detectConfigurationFactory.createDetectProjectServiceOptions()
+                    detectConfigurationFactory.createDetectProjectServiceOptions(blackDuckRunData.getBlackDuckServerVersion())
                 )
         );
     }

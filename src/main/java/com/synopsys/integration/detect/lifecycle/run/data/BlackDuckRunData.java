@@ -30,7 +30,6 @@ public class BlackDuckRunData {
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.scanMode = scanMode;
         this.waitAtScanLevel = waitAtScanLevel;
-
         determineBlackDuckServerVersion(blackDuckConnectivityResult);
     }
 
