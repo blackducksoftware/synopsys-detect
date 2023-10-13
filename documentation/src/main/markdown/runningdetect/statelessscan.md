@@ -31,6 +31,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
  * [solution_name] will fail with FAILURE_POLICY_VIOLATION if any component violates Black Duck polices with a CRITICAL or BLOCKER severity. 
     * See the Black Duck documentation for a list of policy conditions that are supported by Stateless Scan. 
  * Stateless Scan will not create a Project or Version on Black Duck.
+ * Stateless Scan cannot create a Risk or Notices report.
  
 ## Invocation
  * To invoke a stateless signature scan only
@@ -63,9 +64,7 @@ The results are saved to a json file named 'name_version_BlackDuck_DeveloperMode
 Stateless Scan only reports components that violate policies. If no policies are violated or there are no defined policies, then no components are returned.   
 
 <note type="note">
-The format of the results file is dependent on Black Duck and in the future, newer versions of Black Duck may produce a different file format.   
-Stateless Scan cannot create a Risk or Notices report.
-</note>
+The format of the results file is dependent on Black Duck and in the future, newer versions of Black Duck may produce a different file format.</note>
 
 The results are also printed in the logs:
 ```
