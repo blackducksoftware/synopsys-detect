@@ -66,7 +66,7 @@ Stateless Scan only reports components that violate policies. If no policies are
 <note type="note">
 The format of the results file is dependent on Black Duck and in the future, newer versions of Black Duck may produce a different file format.</note>
 
-The results are also printed in the logs:
+The results of a Stateless Scan are also printed in the logs:
 ```
 2021-07-20 13:25:18 EDT INFO  [main] --- Stateless Scan Result: (for more detail look in the log for Stateless Scan Result Details)
 2021-07-20 13:25:18 EDT INFO  [main] ---
