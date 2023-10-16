@@ -110,6 +110,7 @@ public class RapidModeStepRunner {
                     if (scanId.isPresent()) {
                         String statelessScanEndpoint = operationRunner.getScanServicePostEndpoint();
                         HttpUrl scanServiceUrlToPoll = new HttpUrl(blackDuckUrl + statelessScanEndpoint + "/" + scanId.get());
+                        logger.info("Stateless mode container scan URL: {}", scanServiceUrlToPoll);
                         parsedUrls.add(scanServiceUrlToPoll);
                         formattedCodeLocations.add(new FormattedCodeLocation(containerScanStepRunner.getCodeLocationName(), scanId.get(), DetectTool.CONTAINER_SCAN.name()));
                     }
