@@ -49,8 +49,7 @@ def createBatteryPath() {
 def final locatorGroup = "com.synopsys.integration"
 def final locatorModule = "component-locator"
 final def externalRepoHost = "https://sig-repo.synopsys.com"
-final def internalRepoHost = "https://artifactory.internal.synopsys.com"
-//System.getenv('SNPS_INTERNAL_ARTIFACTORY')
+final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
 
 repositories {
     println "Checking if environment property SNPS_INTERNAL_ARTIFACTORY is configured: ${internalRepoHost}"
