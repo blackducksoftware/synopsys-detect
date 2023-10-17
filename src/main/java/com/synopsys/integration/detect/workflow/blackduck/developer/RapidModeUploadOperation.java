@@ -24,7 +24,7 @@ public class RapidModeUploadOperation {
     }
 
     public List<HttpUrl> run(BdioResult bdioResult, RapidScanOptions rapidScanOptions, @Nullable File rapidScanConfig)
-        throws IntegrationException, IOException {
+        throws IntegrationException, IOException, InterruptedException {
         String scanModeString = rapidScanOptions.getScanMode().displayName();
         logger.info("Begin " + scanModeString + " Mode Scan");
         UploadBatch uploadBatch = new UploadBatch();

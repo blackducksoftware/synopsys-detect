@@ -17,7 +17,11 @@ import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.EventSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
+import com.synopsys.integration.detect.lifecycle.run.step.utility.OperationWrapper;
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.status.OperationSystem;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 
 public class ContainerScanTestUtils {
     public static final String SCAN_TYPE = "CONTAINER";
@@ -51,11 +55,25 @@ public class ContainerScanTestUtils {
         DetectConfigurationFactory detectConfigurationFactory = makeContainerScanFactory(blackduckScanMode, imageFilePath);
         BootSingletons bootSingletonsMock = Mockito.mock(BootSingletons.class);
         Mockito.when(bootSingletonsMock.getDetectConfigurationFactory()).thenReturn(detectConfigurationFactory);
+
+        // Mock utility singletons
+        UtilitySingletons utilitySingletonsMock = Mockito.mock(UtilitySingletons.class);
+
+        // Create mocked operation wrapper
+        OperationWrapper operationWrapper = new OperationWrapper();
+        Mockito.when(utilitySingletonsMock.getOperationWrapper()).thenReturn(operationWrapper);
+
+        // Create mocked operation system
+        EventSystem eventSystem = new EventSystem();
+        StatusEventPublisher statusEventPublisher = new StatusEventPublisher(eventSystem);
+        OperationSystem operationSystem = new OperationSystem(statusEventPublisher);
+        Mockito.when(utilitySingletonsMock.getOperationSystem()).thenReturn(operationSystem);
+
         return new OperationRunner(
             Mockito.mock(DetectDetectableFactory.class),
             Mockito.mock(DetectFontLoaderFactory.class),
             bootSingletonsMock,
-            Mockito.mock(UtilitySingletons.class),
+            utilitySingletonsMock,
             Mockito.mock(EventSingletons.class)
         );
     }

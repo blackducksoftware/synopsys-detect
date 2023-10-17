@@ -29,8 +29,6 @@ public class CpanCliExtractor {
     }
 
     public Extraction extract(ExecutableTarget cpanExe, ExecutableTarget cpanmExe, File workingDirectory) throws ExecutableRunnerException {
-        toolVersionLogger.log(workingDirectory, cpanExe);
-
         List<String> listText = generateCpanListOutput(workingDirectory, cpanExe);
 
         ExecutableOutput showdepsOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, cpanmExe, "--showdeps", "."));
@@ -47,6 +45,8 @@ public class CpanCliExtractor {
         // When cpan is run on a system for the first time, the user is presented with a number of prompts; this can cause Detect to wait indefinitely.
         // The following line causes the execution to accept defaults and does not block on any prompts so that Detect can complete its execution:
         environmentVariables.put("PERL_MM_USE_DEFAULT", "true");
+
+        toolVersionLogger.log(workingDirectory, cpanExe, "-v", environmentVariables);
 
         List<String> args = new ArrayList<String>();
         args.add("-l");
