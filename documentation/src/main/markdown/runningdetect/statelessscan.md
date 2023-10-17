@@ -28,8 +28,6 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
  * A limited subset of Tools can be run.
     * The currently supported tools are: DETECTOR, BAZEL, SIGNATURE_SCAN, DOCKER, BINARY_SCAN, and CONTAINER_SCAN. All other tools are disabled when running in Stateless Scan mode.
  * Stateless Scan does not support ```detect.policy.check.fail.on.severities``` or ```detect.policy.check.fail.on.names```
- * [solution_name] will fail with FAILURE_POLICY_VIOLATION if any component violates [blackduck_product_name] polices with a CRITICAL or BLOCKER severity. 
-    * See the [blackduck_product_name] documentation for a list of policy conditions that are supported by Stateless Scan. 
  * Stateless Scan will not create a Project or Version on [blackduck_product_name].
  * Stateless Scan cannot create a Risk or Notices report.
  
@@ -50,16 +48,15 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
     * --detect.tools=DETECTOR,SIGNATURE_SCAN,DOCKER --detect.blackduck.scan.mode=STATELESS
     * --detect.tools=BAZEL,SIGNATURE_SCAN --detect.blackduck.scan.mode=STATELESS
     * --detect.tools=DETECTOR,DOCKER --detect.blackduck.scan.mode=RAPID
- * To invoke a stateless binary scan:
-    * --detect.tools=BINARY_SCAN --detect.blackduck.scan.mode=STATELESS --detect.scaaas.scan.path=file:///foo/bar.exe
- * To invoke a stateless Software Composition Analysis as a Service (SCAaaS) container scan:
-    * --detect.tools=CONTAINER_SCAN --detect.blackduck.scan.mode=STATELESS --detect.scaaas.scan.path=file:///foo/docker-image.tar
  * To invoke a stateless container scan that analyzes all container layers:
     * --detect.tools=CONTAINER_SCAN --detect.blackduck.scan.mode=STATELESS --detect.container.scan.file.path=\<Path to local or URL for remote container\>
 
 ## Results
 
 Unlike persistent scans, no data is stored on [blackduck_product_name] and all scans are done transiently. These scans are primarily intended to be fast, although they can take some time as communication with [blackduck_product_name] is a requirement as it is reliant on [blackduck_product_name] policies.
+
+[solution_name] intentionally fails with FAILURE_POLICY_VIOLATION if any component violates [blackduck_product_name] polices with a CRITICAL or BLOCKER severity. See the [blackduck_product_name] documentation on <a href="https://sig-product-docs.synopsys.com/bundle/bd-hub/page/Policies/Overview.html" target="_blank">Policy Managment</a>
+ for a list of policy conditions that are supported by Stateless Scan. 
 
 The results are saved to a json file named `name_version_BlackDuck_DeveloperMode_Result.json` in the Scan Output directory, where name and version are the project's name and version.
 
@@ -118,6 +115,6 @@ For further remediation and transitive dependency upgrade guidance, please consu
 
 ## Stateless Scan Compare Mode
 
-You can configure Package Manager and Signature Stateless Scans to return only the difference in policy violations between the current scan and previous Persistent Scans using the same configuration. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
+You can configure Package Manager, Signature, and Container Stateless Scans to return only the difference in identified policy violations between the current scan and previous Persistent Scans, using the same scan configuration. To return only the difference in policy violations, configure `detect.blackduck.rapid.compare.mode` to `BOM_COMPARE` or `BOM_COMPARE_STRICT`.
 
-Setting the compare mode to ALL evaluates all RAPID or FULL policies. BOM_COMPARE_STRICT only shows policy violations not present in an existing project version BOM. BOM_COMPARE depends on the type of policy rule modes and behaves like ALL if the policy rule is only RAPID and like BOM_COMPARE_STRICT when the policy rule is RAPID and FULL. See the Black Duck documentation for complete details.
+BOM compare mode settings determine which policies are considered and how they behave when violations are present. See the [blackduck_product_name] documentation for futher details <a href="https://sig-product-docs.synopsys.com/bundle/bd-hub/page/ComponentDiscovery/BestPracticesScanning/RapidScanOverview.html" target="_blank">on BOM comparison.</a>

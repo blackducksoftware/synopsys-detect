@@ -1,6 +1,6 @@
 # Container Scan
 
-Container Scan is a way of running [solution_name] against any type of container image (including any non-Linux, non-Docker image) and providing component risk details for the image as a whole, or for each layer of the image.
+Container Scan is a way of running [solution_name] against any type of container image (including any non-Linux, non-Docker image) and providing component risk details for each layer of the image.
 
 [solution_name] will accept either a user provided local file path, or remote HTTP/HTTPS URL to fetch a container image for scanning.
 
@@ -33,7 +33,7 @@ Execute Container Scan by adding the following to a run of [solution_name]:
 --detect.container.scan.file.path=<Path to local or URL for remote container>
 --detect.blackduck.scan.mode=STATELESS
 ```
-<note type="note">[solution_name] also supports Software Composition Analysis as a Service (SCAaaS), container scans that do not report on a layer by layer basis. These are executed by replacing `--detect.container.scan.file.path=<Path to local or URL for remote container>` with `--detect.scaaas.scan.path=<Path to image file>`</note>
+<note type="note">[solution_name] also supports Software Composition Analysis as a Service (SCAaaS), container scans that do not report on a layer by layer basis, however this is configured by Synopsys.</note>
 ## Results
 
 Container scan findings will appear in the [blackduck_product_name] user interface unless the scan is executed in Stateless mode, please consult the documentation provided by [blackduck_product_name].

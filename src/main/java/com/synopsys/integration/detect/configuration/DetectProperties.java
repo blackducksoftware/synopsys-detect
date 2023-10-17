@@ -1775,7 +1775,7 @@ public class DetectProperties {
             NullableStringProperty.newBuilder("detect.scaaas.scan.path")
             .setInfo("SCAAAS Scan Target", DetectPropertyFromVersion.VERSION_8_8_0)
             .setHelp(
-                "This file will be uploaded to the BDBA worker for scan analysis in an SCA as a service environment.")            
+                "Internal use only. Specified file will be uploaded to the BDBA worker for scan analysis in an SCA as a service environment.")            
             .setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH)
             .build();
     
