@@ -71,7 +71,7 @@ pipelines:
           - bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --blackduck.url="${BLACKDUCK_URL}" --blackduck.api.token="${BLACKDUCK_TOKEN} --blackduck.trust.cert=true"
 ```
 
-<note type="note">Configure [solution_name] as a command after the code-build step as it relies on access to the code tree and the build environment.</note>
+<note type="important">Configure [solution_name] as a command after the code-build step as it relies on access to the code tree and the build environment.</note>
 
 When you commit the modified YAML file, the build is triggered. After the pipeline build with [solution_name] completes, you can view the complete scan results in your [blackduck_product_name] instance. For additional information and properties for [solution_name], refer to [Detect properties](../../properties/all-properties.md) for more details.
  	
