@@ -6,7 +6,7 @@
 refer to [Air Gap Mode](../downloadingandinstalling/airgap.md).
 * Minimum 8GB RAM.
 * Java: OpenJDK 64-bit version 8, 11, 13, 14, 15, 16, or 17. If using Java 11: 11.0.5 or higher is required.
-* curl versions 7.34.0 or later.
+* Minimum curl version 7.34.0, recommended 8.4.0 or later.
 * Bash.
 * If using [powershell_script_name]: PowerShell versions 4.0 or higher.
 * The tools required to build your project source code.
