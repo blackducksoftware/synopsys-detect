@@ -664,10 +664,8 @@ public class ApplicationUpdater extends URLClassLoader {
         String problemUrl = downloadUrl.toString();
 
         // We need to build a new client to communicate with BlackDuck. This is because
-        // the main client we use to
-        // talk to BlackDuck will follow 302 redirects and we will be unable to
-        // determine and report on where the download
-        // actually failed from.
+        // the main client we use to talk to BlackDuck will follow 302 redirects and we will be unable to
+        // determine and report on where the download actually failed from.
         try {
             HostnameVerifier hostnameVerifier;
             SSLContext sslContext;
