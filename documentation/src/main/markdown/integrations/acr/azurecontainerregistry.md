@@ -2,7 +2,7 @@
 
 [solution_name] supports scanning images stored in the Azure Container Registry (ACR). Image scan results are sent to your dedicated [blackduck_product_name] instance providing vulnerability, license, and operational risk results on the open source software components identified in the ECR image.
 
-There are two ways that you can use [solution_name] to scan container images in ECR:
+There are two ways that you can use [solution_name] to scan container images in ACR:
 
 - Using an Azure DevOps Pipeline, see [Azure DevOps (ADO) Plugin](../../integrations/azureplugin/azure.md)
 - Using [solution_name] on a local workstation
