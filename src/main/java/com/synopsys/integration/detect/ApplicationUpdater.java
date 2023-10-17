@@ -661,10 +661,12 @@ public class ApplicationUpdater extends URLClassLoader {
      * @throws IOException
      */
     private String captureProblemDetectUrl(HttpUrl downloadUrl) throws IOException {
-        String problemUrl = downloadUrl.toString(); 
-        
-        // We need to build a new client to communicate with BlackDuck. This is because the main client we use to
-        // talk to BlackDuck will follow 302 redirects and we will be unable to determine and report on where the download
+        String problemUrl = downloadUrl.toString();
+
+        // We need to build a new client to communicate with BlackDuck. This is because
+        // the main client we use to
+        // talk to BlackDuck will follow 302 redirects and we will be unable to
+        // determine and report on where the download
         // actually failed from.
         try {
             HostnameVerifier hostnameVerifier;
@@ -679,23 +681,29 @@ public class ApplicationUpdater extends URLClassLoader {
             }
             SSLConnectionSocketFactory connectionFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
 
-            CloseableHttpClient instance = HttpClients.custom().setSSLSocketFactory(connectionFactory)
-                    .disableRedirectHandling().build();
+            try (CloseableHttpClient instance = HttpClients.custom().setSSLSocketFactory(connectionFactory)
+                    .disableRedirectHandling().build()) {
 
-            HttpGet httpGet = new HttpGet(downloadUrl.uri());
-            CloseableHttpResponse response = instance.execute(httpGet);
+                HttpGet httpGet = new HttpGet(downloadUrl.uri());
 
-            Header locationHeader = response.getFirstHeader("location");
-            
-            if (locationHeader != null) {
-                problemUrl = locationHeader.getValue();
+                try (CloseableHttpResponse response = instance.execute(httpGet)) {
+
+                    Header locationHeader = response.getFirstHeader("location");
+
+                    if (locationHeader != null) {
+                        problemUrl = locationHeader.getValue();
+                    }
+
+                    response.close();
+                }
             }
         } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException | ClientProtocolException e) {
-            // We are only calling this method to provide troubleshooting information for the user. If something goes wrong
+            // We are only calling this method to provide troubleshooting information for
+            // the user. If something goes wrong
             // here don't further complicate things by throwing additional exceptions.
             logger.debug(e.getMessage(), e);
         }
-        
+
         return problemUrl;
     }
 
