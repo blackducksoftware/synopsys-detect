@@ -33,7 +33,7 @@ Execute Container Scan by adding the following to a run of [solution_name]:
 --detect.container.scan.file.path=<Path to local or URL for remote container>
 --detect.blackduck.scan.mode=STATELESS
 ```
-<note type="note">[solution_name] also supports Software Composition Analysis as a Service (SCAaaS), container scans that do not report on a layer by layer basis, however this is configured by Synopsys.</note>
+
 ## Results
 
 Container scan findings will appear in the [blackduck_product_name] user interface unless the scan is executed in Stateless mode, please consult the documentation provided by [blackduck_product_name].
