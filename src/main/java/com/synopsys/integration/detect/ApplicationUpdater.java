@@ -693,8 +693,6 @@ public class ApplicationUpdater extends URLClassLoader {
                     if (locationHeader != null) {
                         problemUrl = locationHeader.getValue();
                     }
-
-                    response.close();
                 }
             }
         } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException | ClientProtocolException e) {
