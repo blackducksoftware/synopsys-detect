@@ -223,4 +223,7 @@
 		<topicref href="integrations/bitbucket/bitbucketintegration.md" format="markdown">
 	</topicref>
 	</topicref>
+		<topicref href="integrations/acr/azurecontainerregistry.md" format="markdown">
+	</topicref>
+	</topicref>
 </map>
