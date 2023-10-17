@@ -65,8 +65,7 @@ The results are saved to a json file named `name_version_BlackDuck_DeveloperMode
 
 Stateless Scan only reports components that violate policies. If no policies are violated or there are no defined policies, then no components are returned.   
 
-<note type="note">
-The format of the results file is dependent on [blackduck_product_name] and in the future, newer versions may produce a different file format.</note>
+<note type="note">[blackduck_product_name] determines the format of the results file and in the future, newer versions may produce a different file format.</note>
 
 The results of a Stateless Scan are also printed in the logs:
 ```
