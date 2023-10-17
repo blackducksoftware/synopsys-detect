@@ -97,7 +97,9 @@ docker login <registryname>.azurecr.io -u $(acr.username) -p $(acr.password)
 #Call [solution_name], passing the Docker Image location
 bash <(curl -s -L https:‎ //detect.synopsys.com/detect9.sh) \
 --blackduck.url=$(blackduck.url) \
---blackduck.api.token=$(blackduck.api.token) \ --detect.docker.image=<registryname>.azurecr.io/<containername>:$(Build.BuildId) \ --detect.project.name=$(Build.DefinitionName) \ 
+--blackduck.api.token=$(blackduck.api.token) \ 
+--detect.docker.image=<registryname>.azurecr.io/<containername>:$(Build.BuildId) \ 
+--detect.project.name=$(Build.DefinitionName) \ 
 --detect.project.version.name=$(Build.BuildNumber)
 ```
 9\. Save and Queue the Pipeline, and then view the Pipeline Run Results.  
