@@ -71,7 +71,7 @@ public class RapidScanConfigBdio2StreamUploader {
                 && null != retryAfterInSeconds 
                 && !retryAfterInSeconds.equals("0")) {
             // Response code is one of 408, 429, 502, 503, 504.
-            long retryAfterInMillis = Integer.parseInt(retryAfterInSeconds) * 1000;
+            long retryAfterInMillis = Long.parseLong(retryAfterInSeconds) * 1000;
             if (isDetectTimeoutExceededBy(retryAfterInMillis, detectTimeout)) {
                 throw new BlackDuckIntegrationException("Detect timeout exceeded or will be exceeded due to server being busy.");
             }
@@ -79,7 +79,7 @@ public class RapidScanConfigBdio2StreamUploader {
             return recursiveExecute(request, retryAfterInMillis, 0, detectTimeout);
         } else if (OperationRunner.RETRYABLE_WITH_BACKOFF_HTTP_EXCEPTIONS.contains(response.getStatusCode())) {
             // Response code is 425 or 500.
-            long fibonacciWaitInMillis = OperationRunner.calculateMaxWaitInSeconds(backoffRetryCount) * 1000;
+            long fibonacciWaitInMillis = (long) OperationRunner.calculateMaxWaitInSeconds(backoffRetryCount) * 1000;
             if (isDetectTimeoutExceededBy(fibonacciWaitInMillis, detectTimeout)) {
                 throw new BlackDuckIntegrationException("Detect timeout exceeded or will be exceeded due to a temporary unavailability of the server.");
             }
