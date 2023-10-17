@@ -141,6 +141,9 @@ public class IntelligentModeStepRunner {
                 logger.debug("Invoking intelligent persistent container scan.");
                 Optional<UUID> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
                 scanId.ifPresent(uuid -> scanIdsToWaitFor.add(uuid.toString()));
+                Set<String> containerScanCodeLocations = new HashSet<>();
+                containerScanCodeLocations.add(containerScanStepRunner.getCodeLocationName());
+                codeLocationAccumulator.addNonWaitableCodeLocation(containerScanCodeLocations);
             }
         );
 
@@ -235,8 +238,14 @@ public class IntelligentModeStepRunner {
         return new CodeLocationResults(allCodeLocationNames, waitData);
     }
 
+    private boolean shouldPublishBomLinkForTool(DetectToolFilter detectToolFilter) {
+        return detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN) ||
+            detectToolFilter.shouldInclude(DetectTool.CONTAINER_SCAN) ||
+            detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN);
+    }
+
     private void publishPostResults(BdioResult bdioResult, ProjectVersionWrapper projectVersionWrapper, DetectToolFilter detectToolFilter) {
-        if ((!bdioResult.getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
+        if ((!bdioResult.getUploadTargets().isEmpty() || shouldPublishBomLinkForTool(detectToolFilter))) {
             Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)
                 .map(ProjectVersionWrapper::getProjectVersionView)
                 .flatMap(projectVersionView -> projectVersionView.getFirstLinkSafely(ProjectVersionView.COMPONENTS_LINK))

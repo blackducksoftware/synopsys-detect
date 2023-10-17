@@ -64,7 +64,7 @@ public class PubDepsExtractor {
             ExecutableOutput pubDepsOutput = null;
 
             if (dartExe != null) {
-                pubDepsOutput = runPubDepsCommand(directory, dartExe, pubDepsCommand);
+                pubDepsOutput = executableRunner.execute(ExecutableUtils.createFromTarget(directory, dartExe, pubDepsCommand));
             }
 
             if (pubDepsOutput == null || pubDepsOutput.getReturnCode() != 0) {
@@ -74,7 +74,7 @@ public class PubDepsExtractor {
                     // If command does not work with Dart, it could be because at least one of the packages requires Flutter
                     logger.debug("Running dart pub deps was not successful.  Going to try running flutter pub deps.");
                     pubDepsCommand.add(0, "--no-version-check");
-                    pubDepsOutput = runPubDepsCommand(directory, flutterExe, pubDepsCommand);
+                    pubDepsOutput = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, flutterExe, pubDepsCommand));
                 }
             }
 
@@ -92,9 +92,5 @@ public class PubDepsExtractor {
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
-    }
-
-    private ExecutableOutput runPubDepsCommand(File directory, ExecutableTarget exe, List<String> commandArgs) throws ExecutableRunnerException {
-        return executableRunner.execute(ExecutableUtils.createFromTarget(directory, exe, commandArgs));
     }
 }
