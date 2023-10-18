@@ -7,7 +7,7 @@
 		<prodinfo>
 			<prodname>Synopsys Detect</prodname>
 			<vrmlist>
-				<vrm version="9.0.0"/>
+				<vrm version="9.1.0"/>
 			</vrmlist>
 		</prodinfo>
 		<!-- zoomin bundle name -->
@@ -224,6 +224,7 @@
 	</topicref>
 		<topicref href="integrations/bitbucket/bitbucketintegration.md" format="markdown">
 	</topicref>
+		<topicref href="integrations/acr/azurecontainerregistry.md" format="markdown">
+	</topicref>
 	</topicref>
 </map>
-
