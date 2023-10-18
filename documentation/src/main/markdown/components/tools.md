@@ -12,6 +12,6 @@ value specified in parentheses are:
 * [Black Duck - Binary Analysis](../runningdetect/basics/runningwithblackduck.md) (--detect.tools=BINARY_SCAN)
 * [Vulnerability Impact Analysis Tool](../runningdetect/basics/runningwithblackduck.md) (--detect.tools=IMPACT_ANALYSIS)
 * [IaC Scanner](../runningdetect/basics/runningwithblackduck.md) (--detect.tools=IAC_SCAN)
-* [Container Scanning](../runningdetect/containerscanning.md) (--detect.container.scan.file.path=<Path to local or HTTP/HTTPS URL for remote image>)
+* [Container Scan](../runningdetect/containerscanning.md) (--detect.tools=CONTAINER_SCAN)
 
 The detector tool runs any applicable [detectors](detectors.md).
