@@ -22,7 +22,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
  ### Container Scan Requirements
  * Must be running [blackduck_product_name] 2023.10.0 or greater to execute container scans that provide container layer findings.
  * It is necessary to have [solution_name] and [blackduck_product_name] running in the hosted environment to perform these scans. 
- * To run a Container Stateless Scan your [blackduck_product_name] server must have [blackduck_product_name] Binary Analysis (BDBA) or [blackduck_product_name] Secure Container (BDSC) licensed and enabled.
+ * To run a Container Stateless Scan your [blackduck_product_name] server must have [blackduck_product_name] Secure Container (BDSC) licensed and enabled.
  
 ### Limitations
  * A limited subset of Tools can be run.
