@@ -60,11 +60,13 @@ public class RapidScanConfigBdio2StreamUploader {
         Response response = recursiveExecute(request, 0L, 0, detectTimeout);
         String location = response.getHeaderValue("location");
         
-        HttpUrl responseUrl = null;
-        if (location != null) {
-            responseUrl = new HttpUrl(location);
-            logger.debug(String.format("Starting upload to %s", responseUrl.toString()));
+        if (location == null) {
+            throw new IntegrationException("Attempted to create a scan by uploading to " + url.toString()
+                    + " but failed with " + response.getStatusCode() + " response code.");
         }
+        
+        HttpUrl responseUrl = new HttpUrl(location);
+        logger.debug(String.format("Starting upload to %s", responseUrl.toString()));
         return responseUrl;
     }
     
