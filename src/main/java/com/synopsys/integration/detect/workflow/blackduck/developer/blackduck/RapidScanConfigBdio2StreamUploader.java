@@ -62,7 +62,7 @@ public class RapidScanConfigBdio2StreamUploader {
         
         if (location == null) {
             throw new IntegrationException("Attempted to create a scan by uploading to " + url.toString()
-                    + " but failed with " + response.getStatusCode() + " response code.");
+                    + " but failed with " + response.getStatusCode() + " response code from the Black Duck server.");
         }
         
         HttpUrl responseUrl = new HttpUrl(location);
