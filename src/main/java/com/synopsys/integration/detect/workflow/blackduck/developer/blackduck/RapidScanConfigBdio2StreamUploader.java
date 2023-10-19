@@ -58,7 +58,14 @@ public class RapidScanConfigBdio2StreamUploader {
             .apply(editor)
             .buildBlackDuckResponseRequest(url);
         Response response = recursiveExecute(request, 0L, 0, detectTimeout);
-        HttpUrl responseUrl = new HttpUrl(response.getHeaderValue("location"));
+        String location = response.getHeaderValue("location");
+        
+        if (location == null) {
+            throw new IntegrationException("Attempted to create a scan by uploading to " + url.toString()
+                    + " but failed with " + response.getStatusCode() + " response code from the Black Duck server.");
+        }
+        
+        HttpUrl responseUrl = new HttpUrl(location);
         logger.debug(String.format("Starting upload to %s", responseUrl.toString()));
         return responseUrl;
     }
