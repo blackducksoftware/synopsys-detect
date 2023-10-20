@@ -9,6 +9,7 @@
 
 ### Changed features
 
+* For Signature Scans, the directory exclusion argument is no longer passed by default, thus allowing the examination of directory content for matches. Directories can still be excluded from matching by using the '–detect.blackduck.signature.scanner.arguments' property. Please see the [Signature Scanner](properties/configuration/signature-scanner.md#signature-scanner-arguments) property documentation for information on how to specify directories for exclusion.
 * Support for Dart is now extended to Dart 3.1.2 and Flutter 3.13.4.
 * When [blackduck_product_name] is busy, [solution_name] will now wait the number of seconds specified by [blackduck_product_name] before attempting to retry scan creation.
 
