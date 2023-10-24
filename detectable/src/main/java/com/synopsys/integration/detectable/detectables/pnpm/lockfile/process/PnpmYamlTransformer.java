@@ -100,7 +100,7 @@ public class PnpmYamlTransformer {
             if (!packageInfo.getDependencyType().isPresent() || dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType().get())) {
                 for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
                     String dependencyPackageId = convertRawEntryToPackageId(packageDependency, linkedPackageResolver, reportingProjectPackagePath);
-                    Optional<Dependency> child = buildDependencyFromPackageId(dependencyPackageId);
+                    Optional<Dependency> child = buildDependencyFromPackageIdWithSlash(dependencyPackageId);
                     child.ifPresent(c -> graphBuilder.addChildWithParent(child.get(), pnpmPackage.get()));
                 }
             }
@@ -110,7 +110,7 @@ public class PnpmYamlTransformer {
     private PnpmProjectPackagev6 convertPnpmLockYamlToPnpmProjectPackage(PnpmLockYamlv6 pnpmLockYaml) {
         PnpmProjectPackagev6 pnpmProjectPackage = new PnpmProjectPackagev6();
 
-          // TODO these don't seem to populate even in the original code
+          // TODO these don't seem to populate even in the original code but look like they might come from root
 //        pnpmProjectPackage.dependencies = pnpmLockYaml.dependencies;
 //        pnpmProjectPackage.devDependencies = pnpmLockYaml.devDependencies;
 //        pnpmProjectPackage.optionalDependencies = pnpmLockYaml.optionalDependencies;
@@ -168,6 +168,19 @@ public class PnpmYamlTransformer {
             return Optional.empty();
         }
     }
+    
+    private Optional<NameVersion> parseNameVersionFromIdWithSlash(String id) {
+        // ids follow format: /name/version, where name often contains slashes
+        try {
+            int indexOfLastSlash = id.lastIndexOf("/");
+            String name = id.substring(1, indexOfLastSlash);
+            String version = id.substring(indexOfLastSlash + 1);
+            return Optional.of(new NameVersion(name, version));
+        } catch (Exception e) {
+            logger.debug(String.format("There was an issue parsing package id: %s.  This is likely an unsupported format.", id));
+            return Optional.empty();
+        }
+    }
 
     private Optional<Dependency> buildDependencyFromPackageEntry(Map.Entry<String, PnpmPackageInfo> packageEntry) {
         PnpmPackageInfo packageInfo = packageEntry.getValue();
@@ -179,6 +192,11 @@ public class PnpmYamlTransformer {
 
     private Optional<Dependency> buildDependencyFromPackageId(String packageId) {
         return parseNameVersionFromId(packageId)
+            .map(nameVersion -> Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
+    }
+    
+    private Optional<Dependency> buildDependencyFromPackageIdWithSlash(String packageId) {
+        return parseNameVersionFromIdWithSlash(packageId)
             .map(nameVersion -> Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
     }
 
