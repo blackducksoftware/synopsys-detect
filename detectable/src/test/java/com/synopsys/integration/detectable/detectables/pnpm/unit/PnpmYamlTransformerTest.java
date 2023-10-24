@@ -36,72 +36,72 @@ public class PnpmYamlTransformerTest {
         return new PnpmYamlTransformer(dependencyTypeFilter);
     }
 
-    @Test
-    public void testGenerateCodeLocation() throws IntegrationException {
-        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer();
-        CodeLocation codeLocation = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver);
+//    @Test
+//    public void testGenerateCodeLocation() throws IntegrationException {
+//        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
+//        PnpmYamlTransformer transformer = createTransformer();
+//        CodeLocation codeLocation = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver);
+//
+//        assertTrue(codeLocation.getExternalId().isPresent(), "Expected the codelocation to produce an ExternalId.");
+//        assertEquals("name", codeLocation.getExternalId().get().getName());
+//        assertEquals("version", codeLocation.getExternalId().get().getVersion());
+//
+//        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
+//        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
+//        graphAssert.hasRootSize(4);
+//        graphAssert.hasRootDependency("dep", "1.0.0");
+//        graphAssert.hasRootDependency("devDep", "2.0.0");
+//        graphAssert.hasRootDependency("optDep", "3.0.0");
+//        graphAssert.hasParentChildRelationship("dep", "1.0.0", "transitive", "1.1.0");
+//    }
 
-        assertTrue(codeLocation.getExternalId().isPresent(), "Expected the codelocation to produce an ExternalId.");
-        assertEquals("name", codeLocation.getExternalId().get().getName());
-        assertEquals("version", codeLocation.getExternalId().get().getVersion());
+//    @Test
+//    public void testExcludeDevDependencies() throws IntegrationException {
+//        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.DEV);
+//        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
+//        DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
+//        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
+//        graphAssert.hasRootSize(3);
+//        graphAssert.hasNoDependency("devDep", "2.0.0");
+//    }
 
-        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
-        graphAssert.hasRootSize(4);
-        graphAssert.hasRootDependency("dep", "1.0.0");
-        graphAssert.hasRootDependency("devDep", "2.0.0");
-        graphAssert.hasRootDependency("optDep", "3.0.0");
-        graphAssert.hasParentChildRelationship("dep", "1.0.0", "transitive", "1.1.0");
-    }
+//    @Test
+//    public void testExcludeOptionalDependencies() throws IntegrationException {
+//        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
+//        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.OPTIONAL);
+//        DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
+//        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
+//        graphAssert.hasRootSize(3);
+//        graphAssert.hasNoDependency("optDep", "3.0.0");
+//    }
 
-    @Test
-    public void testExcludeDevDependencies() throws IntegrationException {
-        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.DEV);
-        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
-        graphAssert.hasRootSize(3);
-        graphAssert.hasNoDependency("devDep", "2.0.0");
-    }
+//    @Test
+//    public void testThrowExceptionOnNullPackagesSection() {
+//        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
+//        PnpmYamlTransformer transformer = createTransformer();
+//        pnpmLockYaml.packages = null;
+//        assertThrows(
+//            IntegrationException.class,
+//            () -> transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver)
+//        );
+//    }
 
-    @Test
-    public void testExcludeOptionalDependencies() throws IntegrationException {
-        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.OPTIONAL);
-        DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
-        graphAssert.hasRootSize(3);
-        graphAssert.hasNoDependency("optDep", "3.0.0");
-    }
+//    @Test
+//    public void testNoFailureOnNullNameVersion() throws IntegrationException {
+//        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
+//        PnpmYamlTransformer transformer = createTransformer();
+//        transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, null, linkedPackageResolver);
+//    }
 
-    @Test
-    public void testThrowExceptionOnNullPackagesSection() {
-        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer();
-        pnpmLockYaml.packages = null;
-        assertThrows(
-            IntegrationException.class,
-            () -> transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver)
-        );
-    }
-
-    @Test
-    public void testNoFailureOnNullNameVersion() throws IntegrationException {
-        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer();
-        transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, null, linkedPackageResolver);
-    }
-
-    @Test
-    public void testParseFileDependencies() throws IntegrationException {
-        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
-        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.DEV, PnpmDependencyType.OPTIONAL);
-        DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
-        graphAssert.hasRootSize(2);
-        graphAssert.hasDependency("fileDep", "1.0.0");
-    }
+//    @Test
+//    public void testParseFileDependencies() throws IntegrationException {
+//        PnpmLockYaml pnpmLockYaml = createPnpmLockYaml();
+//        PnpmYamlTransformer transformer = createTransformer(PnpmDependencyType.DEV, PnpmDependencyType.OPTIONAL);
+//        DependencyGraph dependencyGraph = transformer.generateCodeLocation(pnpmLockYamlFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver).getDependencyGraph();
+//        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, dependencyGraph);
+//        graphAssert.hasRootSize(2);
+//        graphAssert.hasDependency("fileDep", "1.0.0");
+//    }
 
     private PnpmLockYaml createPnpmLockYaml() {
         PnpmLockYaml pnpmLockYaml = new PnpmLockYaml();

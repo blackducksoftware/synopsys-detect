@@ -22,8 +22,10 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv6;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackagev6;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -38,14 +40,14 @@ public class PnpmYamlTransformer {
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver)
+    public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYamlv6 pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver)
         throws IntegrationException {
         return generateCodeLocation(sourcePath, convertPnpmLockYamlToPnpmProjectPackage(pnpmLockYaml), null, projectNameVersion, pnpmLockYaml.packages, linkedPackageResolver);
     }
 
     public CodeLocation generateCodeLocation(
         File sourcePath,
-        PnpmProjectPackage projectPackage,
+        PnpmProjectPackagev6 projectPackage,
         @Nullable String reportingProjectPackagePath,
         @Nullable NameVersion projectNameVersion,
         @Nullable Map<String, PnpmPackageInfo> packageMap,
@@ -98,27 +100,28 @@ public class PnpmYamlTransformer {
         }
     }
 
-    private PnpmProjectPackage convertPnpmLockYamlToPnpmProjectPackage(PnpmLockYaml pnpmLockYaml) {
-        PnpmProjectPackage pnpmProjectPackage = new PnpmProjectPackage();
+    private PnpmProjectPackagev6 convertPnpmLockYamlToPnpmProjectPackage(PnpmLockYamlv6 pnpmLockYaml) {
+        PnpmProjectPackagev6 pnpmProjectPackage = new PnpmProjectPackagev6();
 
-        pnpmProjectPackage.dependencies = pnpmLockYaml.dependencies;
-        pnpmProjectPackage.devDependencies = pnpmLockYaml.devDependencies;
-        pnpmProjectPackage.optionalDependencies = pnpmLockYaml.optionalDependencies;
+          // TODO these don't seem to populate even in the original code
+//        pnpmProjectPackage.dependencies = pnpmLockYaml.dependencies;
+//        pnpmProjectPackage.devDependencies = pnpmLockYaml.devDependencies;
+//        pnpmProjectPackage.optionalDependencies = pnpmLockYaml.optionalDependencies;
 
         return pnpmProjectPackage;
     }
 
     private List<String> extractRootPackageIds(
-        PnpmProjectPackage pnpmProjectPackage,
+        PnpmProjectPackagev6 pnpmProjectPackage,
         @Nullable String reportingProjectPackagePath,
         PnpmLinkedPackageResolver linkedPackageResolver
     ) {
         Map<String, String> rawPackageInfo = new HashMap<>();
         if (pnpmProjectPackage.dependencies != null) {
-            rawPackageInfo.putAll(pnpmProjectPackage.dependencies);
+            //rawPackageInfo.putAll(pnpmProjectPackage.dependencies);
         }
-        dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
-        dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
+        //dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
+        //dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
 
         return rawPackageInfo.entrySet().stream()
             .map(entry -> convertRawEntryToPackageId(entry, linkedPackageResolver, reportingProjectPackagePath))

@@ -21,7 +21,9 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv6;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackagev6;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -36,7 +38,7 @@ public class PnpmLockYamlParser {
 
     public List<CodeLocation> parse(File pnpmLockYamlFile, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver)
         throws IOException, IntegrationException {
-        PnpmLockYaml pnpmLockYaml = parseYamlFile(pnpmLockYamlFile);
+        PnpmLockYamlv6 pnpmLockYaml = parseYamlFile(pnpmLockYamlFile);
         List<CodeLocation> codeLocationsFromImports = createCodeLocationsFromImports(pnpmLockYamlFile.getParentFile(), pnpmLockYaml, linkedPackageResolver, projectNameVersion);
         if (codeLocationsFromImports.isEmpty()) {
             return createCodeLocationsFromRoot(pnpmLockYamlFile.getParentFile(), pnpmLockYaml, projectNameVersion, linkedPackageResolver);
@@ -46,7 +48,7 @@ public class PnpmLockYamlParser {
 
     private List<CodeLocation> createCodeLocationsFromRoot(
         File sourcePath,
-        PnpmLockYaml pnpmLockYaml,
+        PnpmLockYamlv6 pnpmLockYaml,
         @Nullable NameVersion projectNameVersion,
         PnpmLinkedPackageResolver linkedPackageResolver
     ) throws IntegrationException {
@@ -56,7 +58,7 @@ public class PnpmLockYamlParser {
 
     private List<CodeLocation> createCodeLocationsFromImports(
         File sourcePath,
-        PnpmLockYaml pnpmLockYaml,
+        PnpmLockYamlv6 pnpmLockYaml,
         PnpmLinkedPackageResolver linkedPackageResolver,
         @Nullable NameVersion projectNameVersion
     ) throws IntegrationException {
@@ -65,9 +67,9 @@ public class PnpmLockYamlParser {
         }
 
         List<CodeLocation> codeLocations = new LinkedList<>();
-        for (Map.Entry<String, PnpmProjectPackage> projectPackageInfo : pnpmLockYaml.importers.entrySet()) {
+        for (Map.Entry<String, PnpmProjectPackagev6> projectPackageInfo : pnpmLockYaml.importers.entrySet()) {
             String projectKey = projectPackageInfo.getKey();
-            PnpmProjectPackage projectPackage = projectPackageInfo.getValue();
+            PnpmProjectPackagev6 projectPackage = projectPackageInfo.getValue();
             NameVersion extractedNameVersion = extractProjectInfo(projectPackageInfo, linkedPackageResolver, projectNameVersion);
 
             String reportingProjectPackagePath = null;
@@ -90,7 +92,7 @@ public class PnpmLockYamlParser {
     }
 
     private NameVersion extractProjectInfo(
-        Map.Entry<String, PnpmProjectPackage> projectPackageInfo,
+        Map.Entry<String, PnpmProjectPackagev6> projectPackageInfo,
         PnpmLinkedPackageResolver linkedPackageResolver,
         @Nullable NameVersion projectNameVersion
     ) {
@@ -104,13 +106,13 @@ public class PnpmLockYamlParser {
         return new NameVersion(projectPackageName, projectPackageVersion);
     }
 
-    private PnpmLockYaml parseYamlFile(File pnpmLockYamlFile) throws FileNotFoundException {
+    private PnpmLockYamlv6 parseYamlFile(File pnpmLockYamlFile) throws FileNotFoundException {
         DumperOptions dumperOptions = new DumperOptions();
         Representer representer = new Representer(dumperOptions);
         representer.getPropertyUtils().setSkipMissingProperties(true);
 
         LoaderOptions loaderOptions = new LoaderOptions();
-        Yaml yaml = new Yaml(new Constructor(PnpmLockYaml.class, loaderOptions), representer);
+        Yaml yaml = new Yaml(new Constructor(PnpmLockYamlv6.class, loaderOptions), representer);
         return yaml.load(new FileReader(pnpmLockYamlFile));
     }
 
