@@ -20,6 +20,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyInfo;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv6;
@@ -78,7 +79,13 @@ public class PnpmYamlTransformer {
             throw new DetectableException("Could not parse 'packages' section of the pnpm-lock.yaml file.");
         }
         for (Map.Entry<String, PnpmPackageInfo> packageEntry : packageMap.entrySet()) {
-            String packageId = packageEntry.getKey();
+            String packageEntryKey = packageEntry.getKey();
+            int indexOfLastAt = packageEntryKey.lastIndexOf("@");
+            String name = packageEntryKey.substring(0, indexOfLastAt);
+            String version = packageEntryKey.substring(indexOfLastAt + 1);
+            String packageId = name + "/" + version;  
+            
+            //String packageId = packageEntry.getKey();
             Optional<Dependency> pnpmPackage = buildDependencyFromPackageEntry(packageEntry);
             if (!pnpmPackage.isPresent()) {
                 logger.debug(String.format("Could not add package %s to the graph.", packageId));
@@ -116,18 +123,28 @@ public class PnpmYamlTransformer {
         @Nullable String reportingProjectPackagePath,
         PnpmLinkedPackageResolver linkedPackageResolver
     ) {
-        Map<String, String> rawPackageInfo = new HashMap<>();
+        Map<String, PnpmDependencyInfo> rawPackageInfo = new HashMap<>();
         if (pnpmProjectPackage.dependencies != null) {
-            //rawPackageInfo.putAll(pnpmProjectPackage.dependencies);
+            rawPackageInfo.putAll(pnpmProjectPackage.dependencies);
         }
-        //dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
-        //dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
+        dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
 
         return rawPackageInfo.entrySet().stream()
-            .map(entry -> convertRawEntryToPackageId(entry, linkedPackageResolver, reportingProjectPackagePath))
+            .map(entry -> convertPnpmDependencyEntryToPackageId(entry, linkedPackageResolver, reportingProjectPackagePath))
             .collect(Collectors.toList());
     }
 
+    private String convertPnpmDependencyEntryToPackageId(Map.Entry<String, PnpmDependencyInfo> entry, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable String reportingProjectPackagePath) {
+        String name = StringUtils.strip(entry.getKey(), "'");
+        String version = entry.getValue().version;
+        if (version.startsWith(LINKED_PACKAGE_PREFIX)) {
+            // a linked project package's version will be referenced in the format: <linkPrefix><pathToLinkedPackageRelativeToReportingProjectPackage>
+            version = linkedPackageResolver.resolveVersionOfLinkedPackage(reportingProjectPackagePath, version.replace(LINKED_PACKAGE_PREFIX, ""));
+        }
+        return String.format("/%s/%s", name, version);
+    }
+    
     private String convertRawEntryToPackageId(Map.Entry<String, String> entry, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable String reportingProjectPackagePath) {
         String name = StringUtils.strip(entry.getKey(), "'");
         String version = entry.getValue();
@@ -141,7 +158,8 @@ public class PnpmYamlTransformer {
     private Optional<NameVersion> parseNameVersionFromId(String id) {
         // ids follow format: /name/version, where name often contains slashes
         try {
-            int indexOfLastSlash = id.lastIndexOf("/");
+            // TODO have to keep both code paths
+            int indexOfLastSlash = id.lastIndexOf("@");
             String name = id.substring(1, indexOfLastSlash);
             String version = id.substring(indexOfLastSlash + 1);
             return Optional.of(new NameVersion(name, version));
