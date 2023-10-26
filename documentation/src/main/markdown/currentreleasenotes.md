@@ -19,5 +19,5 @@
 * (IDETECT-3843) Additional information is now provided when [solution_name] fails to update and [solution_name] is internally hosted.
 
 ### Dependency updates
-* Upgraded [solution_name] Alpine Docker image to 3.18 to pull the latest curl version with no known vulnerabilities.
+* Upgraded [solution_name] Alpine Docker images (standard and buildless) to 3.18 to pull the latest curl version with no known vulnerabilities.
 * Removed curl as a dependency from [solution_name] Ubuntu Docker image by using wget instead of curl.
