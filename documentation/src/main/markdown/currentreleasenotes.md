@@ -17,3 +17,7 @@
 * (IDETECT-4056) Resolved an issue where no components were reported by CPAN detector.
   If the cpan command has not been previously configured and run on the system, [solution_name] instructs CPAN to accept default configurations.
 * (IDETECT-3843) Additional information is now provided when [solution_name] fails to update and [solution_name] is internally hosted.
+
+### Dependency updates
+* Upgraded Alpine version of Detect's Docker image to 3.18 to allow pulling the latest curl version with no known vulnerabilities.
+* Updated Detect's Ubuntu Docker image to use wget instead of curl to remove curl as a dependency.
