@@ -20,4 +20,3 @@
 * (IDETECT-4056) Resolved an issue where no components were reported by CPAN detector.
   If the cpan command has not been previously configured and run on the system, [solution_name] instructs CPAN to accept default configurations.
 * (IDETECT-4005) Resolved an issue where the location is not identified for a Maven component version when defined as a property.
-* (IDETECT-4074) Resolved Widows project creation issue where leading or trailing spaces in a project name was creating a project with default name instead of the desired name.
