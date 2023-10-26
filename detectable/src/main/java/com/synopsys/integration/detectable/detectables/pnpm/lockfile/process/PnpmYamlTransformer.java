@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +24,6 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyInfo;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv6;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
@@ -79,13 +80,14 @@ public class PnpmYamlTransformer {
             throw new DetectableException("Could not parse 'packages' section of the pnpm-lock.yaml file.");
         }
         for (Map.Entry<String, PnpmPackageInfo> packageEntry : packageMap.entrySet()) {
-            String packageEntryKey = packageEntry.getKey();
-            int indexOfLastAt = packageEntryKey.lastIndexOf("@");
-            String name = packageEntryKey.substring(0, indexOfLastAt);
-            String version = packageEntryKey.substring(indexOfLastAt + 1);
-            String packageId = name + "/" + version;  
-            
+//            String packageEntryKey = packageEntry.getKey();
+//            int indexOfLastAt = packageEntryKey.lastIndexOf("@");
+//            String name = packageEntryKey.substring(0, indexOfLastAt);
+//            String version = packageEntryKey.substring(indexOfLastAt + 1);
+//            String packageId = name + "/" + version;  
+
             //String packageId = packageEntry.getKey();
+            String packageId = packageEntry.getKey();
             Optional<Dependency> pnpmPackage = buildDependencyFromPackageEntry(packageEntry);
             if (!pnpmPackage.isPresent()) {
                 logger.debug(String.format("Could not add package %s to the graph.", packageId));
@@ -96,21 +98,21 @@ public class PnpmYamlTransformer {
                 graphBuilder.addChildToRoot(pnpmPackage.get());
             }
 
-            PnpmPackageInfo packageInfo = packageEntry.getValue();
-            if (!packageInfo.getDependencyType().isPresent() || dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType().get())) {
-                for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
-                    String dependencyPackageId = convertRawEntryToPackageId(packageDependency, linkedPackageResolver, reportingProjectPackagePath);
-                    Optional<Dependency> child = buildDependencyFromPackageIdWithSlash(dependencyPackageId);
-                    child.ifPresent(c -> graphBuilder.addChildWithParent(child.get(), pnpmPackage.get()));
-                }
-            }
+//            PnpmPackageInfo packageInfo = packageEntry.getValue();
+//            if (!packageInfo.getDependencyType().isPresent() || dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType().get())) {
+//                for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
+//                    String dependencyPackageId = convertRawEntryToPackageId(packageDependency, linkedPackageResolver, reportingProjectPackagePath);
+//                    Optional<Dependency> child = buildDependencyFromPackageId(dependencyPackageId);
+//                    child.ifPresent(c -> graphBuilder.addChildWithParent(child.get(), pnpmPackage.get()));
+//                }
+//            }
         }
     }
 
     private PnpmProjectPackagev6 convertPnpmLockYamlToPnpmProjectPackage(PnpmLockYamlv6 pnpmLockYaml) {
         PnpmProjectPackagev6 pnpmProjectPackage = new PnpmProjectPackagev6();
 
-          // TODO these don't seem to populate even in the original code but look like they might come from root
+        // TODO seems possible to have these at the root of the lock, need to update the POJOs
 //        pnpmProjectPackage.dependencies = pnpmLockYaml.dependencies;
 //        pnpmProjectPackage.devDependencies = pnpmLockYaml.devDependencies;
 //        pnpmProjectPackage.optionalDependencies = pnpmLockYaml.optionalDependencies;
@@ -135,9 +137,9 @@ public class PnpmYamlTransformer {
             .collect(Collectors.toList());
     }
 
-    private String convertPnpmDependencyEntryToPackageId(Map.Entry<String, PnpmDependencyInfo> entry, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable String reportingProjectPackagePath) {
+    private String convertRawEntryToPackageId(Map.Entry<String, String> entry, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable String reportingProjectPackagePath) {
         String name = StringUtils.strip(entry.getKey(), "'");
-        String version = entry.getValue().version;
+        String version = entry.getValue();
         if (version.startsWith(LINKED_PACKAGE_PREFIX)) {
             // a linked project package's version will be referenced in the format: <linkPrefix><pathToLinkedPackageRelativeToReportingProjectPackage>
             version = linkedPackageResolver.resolveVersionOfLinkedPackage(reportingProjectPackagePath, version.replace(LINKED_PACKAGE_PREFIX, ""));
@@ -145,9 +147,9 @@ public class PnpmYamlTransformer {
         return String.format("/%s/%s", name, version);
     }
     
-    private String convertRawEntryToPackageId(Map.Entry<String, String> entry, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable String reportingProjectPackagePath) {
+    private String convertPnpmDependencyEntryToPackageId(Map.Entry<String, PnpmDependencyInfo> entry, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable String reportingProjectPackagePath) {
         String name = StringUtils.strip(entry.getKey(), "'");
-        String version = entry.getValue();
+        String version = entry.getValue().version;
         if (version.startsWith(LINKED_PACKAGE_PREFIX)) {
             // a linked project package's version will be referenced in the format: <linkPrefix><pathToLinkedPackageRelativeToReportingProjectPackage>
             version = linkedPackageResolver.resolveVersionOfLinkedPackage(reportingProjectPackagePath, version.replace(LINKED_PACKAGE_PREFIX, ""));
@@ -158,20 +160,34 @@ public class PnpmYamlTransformer {
     private Optional<NameVersion> parseNameVersionFromId(String id) {
         // ids follow format: /name/version, where name often contains slashes
         try {
-            // TODO have to keep both code paths
-            int indexOfLastSlash = id.lastIndexOf("@");
-            String name = id.substring(1, indexOfLastSlash);
-            String version = id.substring(indexOfLastSlash + 1);
-            return Optional.of(new NameVersion(name, version));
+         // TODO have to keep both code paths
+         if (id.contains("(")) {
+             // TODO nasty one
+             // @algolia/autocomplete-preset-algolia@1.7.1(@algolia/client-search@4.14.2)(algoliasearch@4.14.2)
+             id = id.split("\\(")[0];
+         }
+          
+//             Pattern pattern = Pattern.compile("\\@(.*?)\\(");
+//             Matcher matcher = pattern.matcher(id);
+//             matcher.find();
+//             String version = matcher.group(1);
+//             return Optional.of(new NameVersion("name", version));
+//         } else {
+             int indexOfLastSlash = id.lastIndexOf("@");
+             String name = id.substring(1, indexOfLastSlash);
+             String version = id.substring(indexOfLastSlash + 1);
+             return Optional.of(new NameVersion(name, version));
+//         }
         } catch (Exception e) {
             logger.debug(String.format("There was an issue parsing package id: %s.  This is likely an unsupported format.", id));
             return Optional.empty();
         }
     }
     
-    private Optional<NameVersion> parseNameVersionFromIdWithSlash(String id) {
+    private Optional<NameVersion> parseNameVersionFromIdForRoot(String id) {
         // ids follow format: /name/version, where name often contains slashes
         try {
+            // TODO if this works could send in the separator I want
             int indexOfLastSlash = id.lastIndexOf("/");
             String name = id.substring(1, indexOfLastSlash);
             String version = id.substring(indexOfLastSlash + 1);
@@ -194,20 +210,25 @@ public class PnpmYamlTransformer {
         return parseNameVersionFromId(packageId)
             .map(nameVersion -> Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
     }
-    
-    private Optional<Dependency> buildDependencyFromPackageIdWithSlash(String packageId) {
-        return parseNameVersionFromIdWithSlash(packageId)
-            .map(nameVersion -> Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
-    }
 
     private boolean isRootPackage(String id, List<String> rootIds) {
-        return rootIds.contains(id) ||
+        return compareIgnoringSeparator(id, rootIds) ||
             rootIds.stream()
-                .map(this::parseNameVersionFromId)
+                .map(this::parseNameVersionFromIdForRoot)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(NameVersion::getVersion)
                 .anyMatch(id::equals); // for file dependencies, they are declared as <name> : <fileIdAsReportedInPackagesSection>
     }
 
+    private boolean compareIgnoringSeparator(String s1, List<String> stringsToCheck) {
+        for (String s2 : stringsToCheck) {
+            if (s1.replace("@", "/").equals(s2.replace("@", "/"))) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
 }
