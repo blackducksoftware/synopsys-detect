@@ -20,3 +20,7 @@
 * (IDETECT-4056) Resolved an issue where no components were reported by CPAN detector.
   If the cpan command has not been previously configured and run on the system, [solution_name] instructs CPAN to accept default configurations.
 * (IDETECT-4005) Resolved an issue where the location is not identified for a Maven component version when defined as a property.
+
+### Dependency updates
+* Upgraded [solution_name] Alpine Docker images (standard and buildless) to 3.18 to pull the latest curl version with no known vulnerabilities.
+* Removed curl as a dependency from [solution_name] Ubuntu Docker image by using wget instead of curl.
