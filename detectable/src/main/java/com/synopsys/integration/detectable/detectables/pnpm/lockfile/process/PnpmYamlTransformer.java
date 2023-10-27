@@ -132,6 +132,7 @@ public class PnpmYamlTransformer {
         dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.DEV, pnpmProjectPackage.devDependencies, rawPackageInfo::putAll);
         dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
 
+        // TODO major key area, make sure this parses correctly compared to v5
         return rawPackageInfo.entrySet().stream()
             .map(entry -> convertPnpmDependencyEntryToPackageId(entry, linkedPackageResolver, reportingProjectPackagePath))
             .collect(Collectors.toList());
@@ -154,6 +155,8 @@ public class PnpmYamlTransformer {
             // a linked project package's version will be referenced in the format: <linkPrefix><pathToLinkedPackageRelativeToReportingProjectPackage>
             version = linkedPackageResolver.resolveVersionOfLinkedPackage(reportingProjectPackagePath, version.replace(LINKED_PACKAGE_PREFIX, ""));
         }
+        // TODO could I just put @ between these values and have an easier time?
+        // seems like yes but maybe not fo duel code path
         return String.format("/%s/%s", name, version);
     }
 
@@ -222,6 +225,7 @@ public class PnpmYamlTransformer {
     }
 
     private boolean compareIgnoringSeparator(String s1, List<String> stringsToCheck) {
+        // TODO if I build with @ instead of / do I need this?
         for (String s2 : stringsToCheck) {
             if (s1.replace("@", "/").equals(s2.replace("@", "/"))) {
                 return true;
