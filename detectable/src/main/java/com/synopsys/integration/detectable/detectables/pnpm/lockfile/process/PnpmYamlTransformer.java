@@ -94,18 +94,20 @@ public class PnpmYamlTransformer {
                 continue;
             }
 
+            // TODO there seems to be parsing, potentially here, as well as in parseNameVersionFromIdForRoot
+            // where I need to align the two different formats from the v6 lockfile.
             if (isRootPackage(packageId, rootPackageIds)) {
                 graphBuilder.addChildToRoot(pnpmPackage.get());
             }
 
-//            PnpmPackageInfo packageInfo = packageEntry.getValue();
-//            if (!packageInfo.getDependencyType().isPresent() || dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType().get())) {
-//                for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
-//                    String dependencyPackageId = convertRawEntryToPackageId(packageDependency, linkedPackageResolver, reportingProjectPackagePath);
-//                    Optional<Dependency> child = buildDependencyFromPackageId(dependencyPackageId);
-//                    child.ifPresent(c -> graphBuilder.addChildWithParent(child.get(), pnpmPackage.get()));
-//                }
-//            }
+            PnpmPackageInfo packageInfo = packageEntry.getValue();
+            if (!packageInfo.getDependencyType().isPresent() || dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType().get())) {
+                for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
+                    String dependencyPackageId = convertRawEntryToPackageId(packageDependency, linkedPackageResolver, reportingProjectPackagePath);
+                    Optional<Dependency> child = buildDependencyFromPackageIdWithSlash(dependencyPackageId);
+                    child.ifPresent(c -> graphBuilder.addChildWithParent(child.get(), pnpmPackage.get()));
+                }
+            }
         }
     }
 
@@ -163,7 +165,8 @@ public class PnpmYamlTransformer {
     private Optional<NameVersion> parseNameVersionFromId(String id) {
         // ids follow format: /name/version, where name often contains slashes
         try {
-         // TODO have to keep both code paths
+         // TODO have to keep both code paths, it seems critical not to send this extra _ in v5 or () in v6
+            // stuff or the kb has a tough time matching it.
          if (id.contains("(")) {
              // TODO nasty one
              // @algolia/autocomplete-preset-algolia@1.7.1(@algolia/client-search@4.14.2)(algoliasearch@4.14.2)
@@ -187,8 +190,16 @@ public class PnpmYamlTransformer {
         }
     }
     
-    private Optional<NameVersion> parseNameVersionFromIdForRoot(String id) {
+    private Optional<NameVersion> parseNameVersionFromIdWithSlash(String id) {
         // ids follow format: /name/version, where name often contains slashes
+        // TODO This seems to be used when we are dealing with root ids and when dealing with 
+        // transitive child IDs        
+        if (id.contains("(")) {
+            // TODO we seemt get extra data inside ()'s in v6, it appears we don't need it as it 
+            // seems to confuse the KB
+            id = id.split("\\(")[0];
+        }
+        
         try {
             // TODO if this works could send in the separator I want
             int indexOfLastSlash = id.lastIndexOf("/");
@@ -213,11 +224,16 @@ public class PnpmYamlTransformer {
         return parseNameVersionFromId(packageId)
             .map(nameVersion -> Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
     }
+    
+    private Optional<Dependency> buildDependencyFromPackageIdWithSlash(String packageId) {
+        return parseNameVersionFromIdWithSlash(packageId)
+            .map(nameVersion -> Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
+    }
 
     private boolean isRootPackage(String id, List<String> rootIds) {
         return compareIgnoringSeparator(id, rootIds) ||
             rootIds.stream()
-                .map(this::parseNameVersionFromIdForRoot)
+                .map(this::parseNameVersionFromIdWithSlash)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(NameVersion::getVersion)
