@@ -20,9 +20,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv6;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackagev6;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;

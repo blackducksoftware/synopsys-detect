@@ -146,6 +146,7 @@ public class PnpmYamlTransformer {
         return String.format("/%s/%s", name, version);
     }
     
+    // TODO can combine this code with the above if just always pass in name and version instead of entry
     private String convertPnpmDependencyEntryToPackageId(Map.Entry<String, PnpmDependencyInfo> entry, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable String reportingProjectPackagePath) {
         String name = StringUtils.strip(entry.getKey(), "'");
         String version = entry.getValue().version;
@@ -164,8 +165,6 @@ public class PnpmYamlTransformer {
          // TODO have to keep both code paths, it seems critical not to send this extra _ in v5 or () in v6
             // stuff or the kb has a tough time matching it.
          if (id.contains("(")) {
-             // TODO nasty one
-             // @algolia/autocomplete-preset-algolia@1.7.1(@algolia/client-search@4.14.2)(algoliasearch@4.14.2)
              id = id.split("\\(")[0];
          }
           
