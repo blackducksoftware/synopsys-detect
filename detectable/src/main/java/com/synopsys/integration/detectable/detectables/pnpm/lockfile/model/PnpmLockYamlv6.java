@@ -9,6 +9,15 @@ public class PnpmLockYamlv6 {
     public Map<String, PnpmProjectPackagev6> importers;
     
     @Nullable
-    // TODO can hopefully reuse
+    public Map<String, PnpmDependencyInfo> dependencies;
+
+    @Nullable
+    public Map<String, PnpmDependencyInfo> devDependencies;
+
+    @Nullable
+    public Map<String, PnpmDependencyInfo> optionalDependencies;
+    
+    @Nullable
     public Map<String, PnpmPackageInfo> packages;
+    
 }

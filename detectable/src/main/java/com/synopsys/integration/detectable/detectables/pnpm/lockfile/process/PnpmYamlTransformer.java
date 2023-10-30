@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +24,6 @@ import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmD
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv6;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackagev6;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -114,10 +111,9 @@ public class PnpmYamlTransformer {
     private PnpmProjectPackagev6 convertPnpmLockYamlToPnpmProjectPackage(PnpmLockYamlv6 pnpmLockYaml) {
         PnpmProjectPackagev6 pnpmProjectPackage = new PnpmProjectPackagev6();
 
-        // TODO seems possible to have these at the root of the lock, need to update the POJOs
-//        pnpmProjectPackage.dependencies = pnpmLockYaml.dependencies;
-//        pnpmProjectPackage.devDependencies = pnpmLockYaml.devDependencies;
-//        pnpmProjectPackage.optionalDependencies = pnpmLockYaml.optionalDependencies;
+        pnpmProjectPackage.dependencies = pnpmLockYaml.dependencies;
+        pnpmProjectPackage.devDependencies = pnpmLockYaml.devDependencies;
+        pnpmProjectPackage.optionalDependencies = pnpmLockYaml.optionalDependencies;
 
         return pnpmProjectPackage;
     }
