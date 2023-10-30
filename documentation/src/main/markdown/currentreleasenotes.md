@@ -11,16 +11,18 @@
 
 ### Changed features
 
-* For Signature Scans, the directory exclusion argument is no longer passed by default, thus allowing the examination of directory content for matches. Directories can still be excluded from matching by using the '–detect.blackduck.signature.scanner.arguments' property. Please see the [Signature Scanner](properties/configuration/signature-scanner.md#signature-scanner-arguments) property documentation for information on how to specify directories for exclusion.
 * When [blackduck_product_name] version 2023.10.0 or later is busy and includes a retry-after value greater than 0 in the header, [solution_name] will now wait the number of seconds specified by [blackduck_product_name] before attempting to retry scan creation. 
 	* [solution_name] 9.1.0 will not retry scan creation with versions of [blackduck_product_name] prior to 2023.10.0
 
 ### Resolved issues
+
 * (IDETECT-3843) Additional information is now provided when [solution_name] fails to update and [solution_name] is internally hosted.
 * (IDETECT-4056) Resolved an issue where no components were reported by CPAN detector.
   If the cpan command has not been previously configured and run on the system, [solution_name] instructs CPAN to accept default configurations.
 * (IDETECT-4005) Resolved an issue where the location is not identified for a Maven component version when defined as a property.
+* (IDETECT-4066) Resolved an issue of incorrect TAB width calculation in Component Locator.
 
 ### Dependency updates
+
 * Upgraded [solution_name] Alpine Docker images (standard and buildless) to 3.18 to pull the latest curl version with no known vulnerabilities.
 * Removed curl as a dependency from [solution_name] Ubuntu Docker image by using wget instead of curl.
