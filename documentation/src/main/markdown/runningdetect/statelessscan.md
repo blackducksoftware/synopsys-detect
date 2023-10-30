@@ -18,6 +18,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
  * Must be running [blackduck_product_name] 2023.4.0 or greater using the hosted KB.
  * It is necessary to have [solution_name] and [blackduck_product_name] running in the hosted environment to perform these scans. 
  * To run binary scan a Black Duck Binary Analysis (BDBA) license is required.
+ * [solution_name] and [blackduck_product_name] must be running in the hosted Software Composition Analysis as a Service(SCAaaS) environment.
  
  ### Container Scan Requirements
  * Must be running [blackduck_product_name] 2023.10.0 or greater to execute container scans that provide container layer findings.
