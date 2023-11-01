@@ -16,6 +16,7 @@ Execute Container Scan by adding the following to a run of [solution_name]:
 
 ### General Requirements
  * Your [blackduck_product_name] server must have [blackduck_product_name] Secure Container (BDSC) licensed and enabled.
+ * Must have Match as a Service (MaaS) licensed, and enabled within [blackduck_product_name].
  * A unique project version must be provided, or the scan service will respond with an error.
  * Must be running [blackduck_product_name] 2023.10.0 or greater.
  * URL provided for a remote container image must use the HTTP(S) protocol.
