@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-public class PnpmLockYamlv6 {
+public class PnpmLockYamlv6 extends PnpmLockYaml {    
     @Nullable
     public Map<String, PnpmProjectPackagev6> importers;
     
@@ -15,9 +15,5 @@ public class PnpmLockYamlv6 {
     public Map<String, PnpmDependencyInfo> devDependencies;
 
     @Nullable
-    public Map<String, PnpmDependencyInfo> optionalDependencies;
-    
-    @Nullable
-    public Map<String, PnpmPackageInfo> packages;
-    
+    public Map<String, PnpmDependencyInfo> optionalDependencies;  
 }

@@ -20,34 +20,32 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyInfo;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv6;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv5;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackagev6;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackagev5;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-// TODO have to keep both code paths so potentially need two transformers
-public class PnpmYamlTransformer {
+public class PnpmYamlTransformerv5 {
     private static final String LINKED_PACKAGE_PREFIX = "link:";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final EnumListFilter<PnpmDependencyType> dependencyTypeFilter;
 
-    public PnpmYamlTransformer(EnumListFilter<PnpmDependencyType> dependencyTypeFilter) {
+    public PnpmYamlTransformerv5(EnumListFilter<PnpmDependencyType> dependencyTypeFilter) {
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYamlv6 pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver)
+    public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYamlv5 pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver)
         throws IntegrationException {
         return generateCodeLocation(sourcePath, convertPnpmLockYamlToPnpmProjectPackage(pnpmLockYaml), null, projectNameVersion, pnpmLockYaml.packages, linkedPackageResolver);
     }
 
     public CodeLocation generateCodeLocation(
         File sourcePath,
-        PnpmProjectPackagev6 projectPackage,
+        PnpmProjectPackagev5 projectPackage,
         @Nullable String reportingProjectPackagePath,
         @Nullable NameVersion projectNameVersion,
         @Nullable Map<String, PnpmPackageInfo> packageMap,
@@ -84,7 +82,7 @@ public class PnpmYamlTransformer {
                 logger.debug(String.format("Could not add package %s to the graph.", packageId));
                 continue;
             }
-            
+
             if (isRootPackage(packageId, rootPackageIds)) {
                 graphBuilder.addChildToRoot(pnpmPackage.get());
             }
@@ -92,7 +90,7 @@ public class PnpmYamlTransformer {
             PnpmPackageInfo packageInfo = packageEntry.getValue();
             if (!packageInfo.getDependencyType().isPresent() || dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType().get())) {
                 for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
-                    String dependencyPackageId = convertRawEntryToPackageId(packageDependency.getKey(), packageDependency.getValue(), linkedPackageResolver, reportingProjectPackagePath);
+                    String dependencyPackageId = convertRawEntryToPackageId(packageDependency, linkedPackageResolver, reportingProjectPackagePath);
                     Optional<Dependency> child = buildDependencyFromPackageId(dependencyPackageId);
                     child.ifPresent(c -> graphBuilder.addChildWithParent(child.get(), pnpmPackage.get()));
                 }
@@ -100,8 +98,8 @@ public class PnpmYamlTransformer {
         }
     }
 
-    private PnpmProjectPackagev6 convertPnpmLockYamlToPnpmProjectPackage(PnpmLockYamlv6 pnpmLockYaml) {
-        PnpmProjectPackagev6 pnpmProjectPackage = new PnpmProjectPackagev6();
+    private PnpmProjectPackagev5 convertPnpmLockYamlToPnpmProjectPackage(PnpmLockYamlv5 pnpmLockYaml) {
+        PnpmProjectPackagev5 pnpmProjectPackage = new PnpmProjectPackagev5();
 
         pnpmProjectPackage.dependencies = pnpmLockYaml.dependencies;
         pnpmProjectPackage.devDependencies = pnpmLockYaml.devDependencies;
@@ -111,11 +109,11 @@ public class PnpmYamlTransformer {
     }
 
     private List<String> extractRootPackageIds(
-        PnpmProjectPackagev6 pnpmProjectPackage,
+        PnpmProjectPackagev5 pnpmProjectPackage,
         @Nullable String reportingProjectPackagePath,
         PnpmLinkedPackageResolver linkedPackageResolver
     ) {
-        Map<String, PnpmDependencyInfo> rawPackageInfo = new HashMap<>();
+        Map<String, String> rawPackageInfo = new HashMap<>();
         if (pnpmProjectPackage.dependencies != null) {
             rawPackageInfo.putAll(pnpmProjectPackage.dependencies);
         }
@@ -123,32 +121,24 @@ public class PnpmYamlTransformer {
         dependencyTypeFilter.ifShouldInclude(PnpmDependencyType.OPTIONAL, pnpmProjectPackage.optionalDependencies, rawPackageInfo::putAll);
 
         return rawPackageInfo.entrySet().stream()
-            .map(entry -> convertRawEntryToPackageId(entry.getKey(), entry.getValue().version, linkedPackageResolver, reportingProjectPackagePath))
+            .map(entry -> convertRawEntryToPackageId(entry, linkedPackageResolver, reportingProjectPackagePath))
             .collect(Collectors.toList());
     }
 
-    private String convertRawEntryToPackageId(String name, String version, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable String reportingProjectPackagePath) {
-        name = StringUtils.strip(name, "'");
+    private String convertRawEntryToPackageId(Map.Entry<String, String> entry, PnpmLinkedPackageResolver linkedPackageResolver, @Nullable String reportingProjectPackagePath) {
+        String name = StringUtils.strip(entry.getKey(), "'");
+        String version = entry.getValue();
         if (version.startsWith(LINKED_PACKAGE_PREFIX)) {
             // a linked project package's version will be referenced in the format: <linkPrefix><pathToLinkedPackageRelativeToReportingProjectPackage>
             version = linkedPackageResolver.resolveVersionOfLinkedPackage(reportingProjectPackagePath, version.replace(LINKED_PACKAGE_PREFIX, ""));
         }
-        return String.format("/%s@%s", name, version);
+        return String.format("/%s/%s", name, version);
     }
 
     private Optional<NameVersion> parseNameVersionFromId(String id) {
-        // ids follow format: /name/version for v5 and /name@version for v6
+        // ids follow format: /name/version, where name often contains slashes
         try {
-            // It seems critical not to send this extra information in () for v6
-            // or the kb will fail matching it. This is a problem for _ in v5 but we don't
-            // want to cause regressions in current behavior there.
-            if (id.contains("(")) {
-                id = id.split("\\(")[0];
-            }
-
-            // TODO for v6 need @ but could potentially send in separator (/ for v5) as an
-            // argument
-            int indexOfLastSlash = id.lastIndexOf("@");
+            int indexOfLastSlash = id.lastIndexOf("/");
             String name = id.substring(1, indexOfLastSlash);
             String version = id.substring(indexOfLastSlash + 1);
             return Optional.of(new NameVersion(name, version));
@@ -180,5 +170,5 @@ public class PnpmYamlTransformer {
                 .map(NameVersion::getVersion)
                 .anyMatch(id::equals); // for file dependencies, they are declared as <name> : <fileIdAsReportedInPackagesSection>
     }
- 
+
 }

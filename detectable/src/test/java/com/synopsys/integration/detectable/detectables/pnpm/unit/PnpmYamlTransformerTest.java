@@ -19,7 +19,7 @@ import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmD
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformer;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformerv6;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -31,9 +31,9 @@ public class PnpmYamlTransformerTest {
     PnpmLinkedPackageResolver linkedPackageResolver = new PnpmLinkedPackageResolver(new File(""), new PackageJsonFiles(new PackageJsonReader(new Gson())));
     File pnpmLockYamlFile = new File("something");
 
-    private PnpmYamlTransformer createTransformer(PnpmDependencyType... excludedDependencyTypes) {
+    private PnpmYamlTransformerv6 createTransformer(PnpmDependencyType... excludedDependencyTypes) {
         EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
-        return new PnpmYamlTransformer(dependencyTypeFilter);
+        return new PnpmYamlTransformerv6(dependencyTypeFilter);
     }
 
 //    @Test
@@ -103,48 +103,48 @@ public class PnpmYamlTransformerTest {
 //        graphAssert.hasDependency("fileDep", "1.0.0");
 //    }
 
-    private PnpmLockYaml createPnpmLockYaml() {
-        PnpmLockYaml pnpmLockYaml = new PnpmLockYaml();
-
-        Map<String, String> dependencies = new HashMap<>();
-        dependencies.put("dep", "1.0.0");
-        dependencies.put("fileDep", "file:fileDep-1.0.0.tgz");
-        pnpmLockYaml.dependencies = dependencies;
-
-        Map<String, String> devDependencies = new HashMap<>();
-        devDependencies.put("devDep", "2.0.0");
-        pnpmLockYaml.devDependencies = devDependencies;
-
-        Map<String, String> optionalDependencies = new HashMap<>();
-        optionalDependencies.put("optDep", "3.0.0");
-        pnpmLockYaml.optionalDependencies = optionalDependencies;
-
-        Map<String, PnpmPackageInfo> packages = new HashMap<>();
-
-        PnpmPackageInfo dep = new PnpmPackageInfo();
-        Map<String, String> depDependencies = new HashMap<>();
-        depDependencies.put("transitive", "1.1.0");
-        dep.dependencies = depDependencies;
-        packages.put("/dep/1.0.0", dep);
-
-        PnpmPackageInfo devDep = new PnpmPackageInfo();
-        devDep.dev = true;
-        packages.put("/devDep/2.0.0", devDep);
-
-        PnpmPackageInfo optDep = new PnpmPackageInfo();
-        optDep.optional = true;
-        packages.put("/optDep/3.0.0", optDep);
-
-        PnpmPackageInfo transitive = new PnpmPackageInfo();
-        packages.put("/transitive/1.1.0", transitive);
-
-        PnpmPackageInfo fileDep = new PnpmPackageInfo();
-        fileDep.name = "fileDep";
-        fileDep.version = "1.0.0";
-        packages.put("file:fileDep-1.0.0.tgz", fileDep);
-
-        pnpmLockYaml.packages = packages;
-
-        return pnpmLockYaml;
-    }
+//    private PnpmLockYaml createPnpmLockYaml() {
+//        PnpmLockYaml pnpmLockYaml = new PnpmLockYaml();
+//
+//        Map<String, String> dependencies = new HashMap<>();
+//        dependencies.put("dep", "1.0.0");
+//        dependencies.put("fileDep", "file:fileDep-1.0.0.tgz");
+//        pnpmLockYaml.dependencies = dependencies;
+//
+//        Map<String, String> devDependencies = new HashMap<>();
+//        devDependencies.put("devDep", "2.0.0");
+//        pnpmLockYaml.devDependencies = devDependencies;
+//
+//        Map<String, String> optionalDependencies = new HashMap<>();
+//        optionalDependencies.put("optDep", "3.0.0");
+//        pnpmLockYaml.optionalDependencies = optionalDependencies;
+//
+//        Map<String, PnpmPackageInfo> packages = new HashMap<>();
+//
+//        PnpmPackageInfo dep = new PnpmPackageInfo();
+//        Map<String, String> depDependencies = new HashMap<>();
+//        depDependencies.put("transitive", "1.1.0");
+//        dep.dependencies = depDependencies;
+//        packages.put("/dep/1.0.0", dep);
+//
+//        PnpmPackageInfo devDep = new PnpmPackageInfo();
+//        devDep.dev = true;
+//        packages.put("/devDep/2.0.0", devDep);
+//
+//        PnpmPackageInfo optDep = new PnpmPackageInfo();
+//        optDep.optional = true;
+//        packages.put("/optDep/3.0.0", optDep);
+//
+//        PnpmPackageInfo transitive = new PnpmPackageInfo();
+//        packages.put("/transitive/1.1.0", transitive);
+//
+//        PnpmPackageInfo fileDep = new PnpmPackageInfo();
+//        fileDep.name = "fileDep";
+//        fileDep.version = "1.0.0";
+//        packages.put("file:fileDep-1.0.0.tgz", fileDep);
+//
+//        pnpmLockYaml.packages = packages;
+//
+//        return pnpmLockYaml;
+//    }
 }
