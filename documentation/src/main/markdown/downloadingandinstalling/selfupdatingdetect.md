@@ -1,12 +1,22 @@
 # [solution_name] Version Management
 
-[solution_name] self updating feature will allow customers who choose to enable Centralized [solution_name] Version Management in [blackduck_product_name] to automate the update of [solution_name] across their pipelines.
+[solution_name] self-updating feature will allow customers who choose to enable Centralized [solution_name] Version Management in [blackduck_product_name] to automate the update of [solution_name] across their pipelines.
 
 ## Self updating [solution_name] scenarios
 
-The Self Update feature will call the `/api/tools/detect` API to check for the existence of a mapped [solution_name] version in [blackduck_product_name]. If a version that is eligible for upgrade or downgrade has been mapped, the API will redirect the request to download that version and the current execution of [solution_name] will invoke the downloaded version to execute the requested scan. 
+The Self Update feature will call the `/api/tools/detect` API end point to check for the existence of a mapped [solution_name] version in [blackduck_product_name] under "Admin > System Settings > [solution_name]". If a version that is eligible for upgrade or downgrade has been mapped, the API will redirect the request to download that version and the current execution of [solution_name] will invoke the downloaded version to execute the requested scan. 
 
 [solution_name] will download the required version from sig-repo or from a custom URL as configured in [blackduck_product_name]. Centralized [solution_name] Version Management feature support in [blackduck_product_name] is available from [blackduck_product_name] version 2023.4.0 onwards.
+
+<note type="information">
+<ul>
+<li>
+If the Black Duck “Internally Hosted” option has been configured, Synopsys Detect will be downloaded on the client side from the URL specified.
+<li>
+If the Black Duck “Synopsys Hosted” option has been configued, Synopsys Detect will be downloaded on the client side from Synopsys sig-repo.
+</li>
+</ul>
+</note>
 
 ## Scenarios where [solution_name] self update will not execute
 
@@ -47,7 +57,7 @@ Current version of [solution_name] matches the mapped version or there is no map
 
 2023-05-05 12:33:53 EDT INFO  \[main] - Detect-Self-Updater:  Present Detect installation is up to date - skipping download.
 ```
-
+<!-- Variables do not resolve when in a note format hence the hardcoding below -->
 <note type="important">
 <ul>
 <li>
