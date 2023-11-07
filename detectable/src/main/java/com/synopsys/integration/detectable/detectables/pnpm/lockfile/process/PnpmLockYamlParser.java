@@ -39,14 +39,11 @@ public class PnpmLockYamlParser {
             PnpmYamlTransformerv6 pnpmYamlTransformer = new PnpmYamlTransformerv6(dependencyFilter);
             PnpmLockYamlParserv6 pnpmYamlParser = new PnpmLockYamlParserv6(pnpmYamlTransformer);
             return pnpmYamlParser.parse(pnpmLockYamlFile.getParentFile(), (PnpmLockYamlv6) pnpmLockYaml, linkedPackageResolver, projectNameVersion);
-        } else if (pnpmLockYaml instanceof PnpmLockYamlv5) {
+        } else {
             PnpmYamlTransformerv5 pnpmYamlTransformer = new PnpmYamlTransformerv5(dependencyFilter);
             PnpmLockYamlParserv5 pnpmYamlParser = new PnpmLockYamlParserv5(pnpmYamlTransformer);
             return pnpmYamlParser.parse(pnpmLockYamlFile.getParentFile(), (PnpmLockYamlv5) pnpmLockYaml, linkedPackageResolver, projectNameVersion);
-        } 
-        
-        // TODO error
-        throw new IntegrationException("oh no");
+        }
     }
 
     /**

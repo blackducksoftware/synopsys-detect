@@ -29,7 +29,6 @@ public class PnpmLockYamlParserv6 {
     public List<CodeLocation> parse(File parentFile, PnpmLockYamlv6 pnpmLockYaml,
             PnpmLinkedPackageResolver linkedPackageResolver, @Nullable NameVersion projectNameVersion)
             throws IntegrationException {
-
         List<CodeLocation> codeLocationsFromImports = createCodeLocationsFromImports(parentFile, pnpmLockYaml,
                 linkedPackageResolver, projectNameVersion);
         if (codeLocationsFromImports.isEmpty()) {
