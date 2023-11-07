@@ -18,7 +18,7 @@ import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyInfo;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv6;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfov6;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformerv6;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
@@ -128,26 +128,26 @@ public class PnpmYamlTransformerTestv6 {
         optionalDependencies.put("optDep", optDependency1);
         pnpmLockYaml.optionalDependencies = optionalDependencies;
 
-        Map<String, PnpmPackageInfo> packages = new HashMap<>();
+        Map<String, PnpmPackageInfov6> packages = new HashMap<>();
 
-        PnpmPackageInfo dep = new PnpmPackageInfo();
+        PnpmPackageInfov6 dep = new PnpmPackageInfov6();
         Map<String, String> depDependencies = new HashMap<>();
         depDependencies.put("transitive", "1.1.0");
         dep.dependencies = depDependencies;
         packages.put("/dep@1.0.0", dep);
 
-        PnpmPackageInfo devDep = new PnpmPackageInfo();
+        PnpmPackageInfov6 devDep = new PnpmPackageInfov6();
         devDep.dev = true;
         packages.put("/devDep@2.0.0", devDep);
 
-        PnpmPackageInfo optDep = new PnpmPackageInfo();
+        PnpmPackageInfov6 optDep = new PnpmPackageInfov6();
         optDep.optional = true;
         packages.put("/optDep@3.0.0", optDep);
 
-        PnpmPackageInfo transitive = new PnpmPackageInfo();
+        PnpmPackageInfov6 transitive = new PnpmPackageInfov6();
         packages.put("/transitive@1.1.0", transitive);
 
-        PnpmPackageInfo fileDep = new PnpmPackageInfo();
+        PnpmPackageInfov6 fileDep = new PnpmPackageInfov6();
         fileDep.name = "fileDep";
         fileDep.version = "1.0.0";
         packages.put("file:fileDep-1.0.0.tgz", fileDep);

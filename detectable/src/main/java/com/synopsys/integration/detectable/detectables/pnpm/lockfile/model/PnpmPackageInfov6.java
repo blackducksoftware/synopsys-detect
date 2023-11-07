@@ -6,13 +6,17 @@ import java.util.Optional;
 import org.apache.commons.collections4.MapUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class PnpmPackageInfo {
+public class PnpmPackageInfov6 {
     @Nullable
     public Boolean dev;
     @Nullable
     public Boolean optional;
     @Nullable
     public Map<String, String> dependencies;
+    @Nullable
+    public Map<String, String> optionalDependencies;
+    @Nullable
+    public Map<String, String> devDependencies;
     @Nullable
     public String name;
     @Nullable
@@ -26,6 +30,14 @@ public class PnpmPackageInfo {
         return optional != null && optional;
     }
 
+    public Map<String, String> getDevDependencies() {
+        return MapUtils.emptyIfNull(devDependencies);
+    }
+    
+    public Map<String, String> getOptionalDependencies() {
+        return MapUtils.emptyIfNull(optionalDependencies);
+    }
+    
     public Map<String, String> getDependencies() {
         return MapUtils.emptyIfNull(dependencies);
     }
