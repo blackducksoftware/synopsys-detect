@@ -8,6 +8,7 @@ The Self Update feature will call the `/api/tools/detect` API end point to check
 
 [solution_name] will download the required version from sig-repo or from a custom URL as configured in [blackduck_product_name]. Centralized [solution_name] Version Management feature support in [blackduck_product_name] is available from [blackduck_product_name] version 2023.4.0 onwards.
 
+<!-- Variables do not resolve when in a note format hence the hardcoding below -->
 <note type="information">
 <ul>
 <li>
