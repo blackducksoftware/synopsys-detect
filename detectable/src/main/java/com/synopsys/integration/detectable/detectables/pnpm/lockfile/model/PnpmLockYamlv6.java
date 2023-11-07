@@ -4,7 +4,10 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-public class PnpmLockYamlv6 extends PnpmLockYaml {    
+public class PnpmLockYamlv6 extends PnpmLockYaml {
+    @Nullable
+    public Map<String, PnpmPackageInfov6> packages;
+    
     @Nullable
     public Map<String, PnpmProjectPackagev6> importers;
     
