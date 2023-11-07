@@ -20,8 +20,8 @@ import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 @DisabledOnOs(WINDOWS) //TODO: Can't cleanup the temp file on windows. May need to close resources?
-public class PnpmLockDetectableTest extends DetectableFunctionalTest {
-    public PnpmLockDetectableTest() throws IOException {
+public class PnpmLockDetectableTestv6 extends DetectableFunctionalTest {
+    public PnpmLockDetectableTestv6() throws IOException {
         super("Pnpm");
     }
 
@@ -37,29 +37,33 @@ public class PnpmLockDetectableTest extends DetectableFunctionalTest {
 
         addFile(
             Paths.get("pnpm-lock.yaml"),
-            "lockfileVersion: 5.4",
+            "lockfileVersion: 6.0",
             "",
             "dependencies:",
-            "  material-design-icons: 3.0.1",
+            "  material-design-icons:",
+            "    specifier: 3.0.1",
+            "    version: 3.0.1",
             "",
             "devDependencies:",
-            "  autoprefixer: 9.8.6",
+            "  autoprefixer:",
+            "    specifier: 9.8.6",
+            "    version: 9.8.6",
             "",
             "packages:",
             "",
-            "  /material-design-icons/3.0.1:",
+            "  /material-design-icons@3.0.1:",
             "    resolution: {integrity: sha512-eGmwYQn3gxo4r7jdQnkrrN6bY478C3P+a/y72IJukF8LjB6ZHeB3c+Ehacj3sYeSmUXGlnA67/PmbM9CVwL7Dw==}",
             "    engines: {node: '>= 8'}",
             "    dependencies:",
             "      '@nodelib/fs.stat': 2.0.3",
             "    dev: false",
             "",
-            "  /@nodelib/fs.stat/2.0.3:",
+            "  /@nodelib/fs.stat@2.0.3:",
             "    resolution: {integrity: sha512-bQBFruR2TAwoevBEd/NWMoAAtNGzTRgdrqnYCc7dhzfoNvqPzLyqlEQnzZ3kVnNrSp25iyxE00/3h2fqGAGArA==}",
             "    engines: {node: '>= 8'}",
             "    dev: true",
             "",
-            "  /autoprefixer/9.8.6:",
+            "  /autoprefixer@9.8.6:",
             "    resolution: {integrity: sha512-XrvP4VVHdRBCdX1S3WXVD8+RyG9qeb1D5Sn1DeLiG2xfSpzellk5k54xbUERJ3M5DggQxes39UGOTP8CFrEGbg==}",
             "    hasBin: true",
             "    dev: true"
