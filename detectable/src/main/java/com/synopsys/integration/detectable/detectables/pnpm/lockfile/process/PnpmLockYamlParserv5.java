@@ -10,6 +10,8 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv5;
@@ -18,6 +20,8 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class PnpmLockYamlParserv5 {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     private static final Predicate<String> isNodeRoot = "."::equals;
 
     private PnpmYamlTransformerv5 pnpmTransformer;
@@ -28,6 +32,7 @@ public class PnpmLockYamlParserv5 {
 
     public List<CodeLocation> parse(File parentFile, PnpmLockYamlv5 pnpmLockYaml,
             PnpmLinkedPackageResolver linkedPackageResolver, @Nullable NameVersion projectNameVersion) throws IntegrationException {
+        logger.warn("Please update your pnpm-lock.yaml file by running pnpm install using a newer version of pnpm. Support for the v5 file will be removed in the next major release.");
         List<CodeLocation> codeLocationsFromImports = createCodeLocationsFromImports(parentFile, pnpmLockYaml, linkedPackageResolver, projectNameVersion);
         if (codeLocationsFromImports.isEmpty()) {
             return createCodeLocationsFromRoot(parentFile, pnpmLockYaml, projectNameVersion, linkedPackageResolver);
