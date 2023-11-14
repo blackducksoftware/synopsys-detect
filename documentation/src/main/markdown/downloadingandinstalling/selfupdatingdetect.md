@@ -4,17 +4,17 @@
 
 ## Self updating [solution_name] scenarios
 
-The Self Update feature will call the `/api/tools/detect` API end point to check for the existence of a mapped [solution_name] version in [blackduck_product_name] under "Admin > System Settings > [solution_name]". If a version that is eligible for upgrade or downgrade has been mapped, the API will redirect the request to download that version and the current execution of [solution_name] will invoke the downloaded version to execute the requested scan. 
+The Self Update feature will call the `/api/tools/detect` API end point to check for the existence of a specified [solution_name] version in [blackduck_product_name] under the "Admin > System Settings > [solution_name] > [solution_name] Version drop-down". If a version that is eligible for upgrade or downgrade has been specified, the request to download that version will run and the current execution of [solution_name] will invoke it for the requested scan. 
 
-[solution_name] will download the required version from sig-repo or from a custom URL as configured in [blackduck_product_name]. Centralized [solution_name] Version Management feature support in [blackduck_product_name] is available from [blackduck_product_name] version 2023.4.0 onwards.
+[solution_name] will download the required version from Synopsys "sig-repo" repository or from a custom URL as configured in [blackduck_product_name]. Centralized [solution_name] Version Management feature support in [blackduck_product_name] is available from [blackduck_product_name] version 2023.4.0 onwards.
 
 <!-- Variables do not resolve when in a note format hence the hardcoding below -->
 <note type="information">
 <ul>
 <li>
-If the Black Duck “Internally Hosted” option has been configured, Synopsys Detect will be downloaded on the client side from the URL specified.
+If the Black Duck “Internally Hosted” option has been configured, Synopsys Detect will be downloaded on the client side from the URL specified under the "Hosting Location for Synopsys Detect" setting.
 <li>
-If the Black Duck “Synopsys Hosted” option has been configued, Synopsys Detect will be downloaded on the client side from Synopsys sig-repo.
+If the Black Duck “Synopsys Hosted” option has been configued, Synopsys Detect will be downloaded on the client side from the Synopsys "sig-repo" repository.
 </li>
 </ul>
 </note>
