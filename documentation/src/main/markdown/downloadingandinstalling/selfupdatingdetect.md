@@ -4,7 +4,7 @@
 
 ## Self updating [solution_name] scenarios
 
-The Self Update feature will call the `/api/tools/detect` API end point to check for the existence of a specified [solution_name] version in [blackduck_product_name] under the "Admin > System Settings > [solution_name] > [solution_name] Version drop-down". If a version that is eligible for upgrade or downgrade has been specified, the request to download that version will run and the current execution of [solution_name] will invoke it for the requested scan. 
+The Self Update feature will call the `/api/tools/detect` API end point to check for the existence of a specified [solution_name] version in [blackduck_product_name] under the "Admin > System Settings > [solution_name] > [solution_name] Version" drop-down. If a version that is eligible for upgrade or downgrade has been specified, the request to download that version will run and the current execution of [solution_name] will invoke it for the requested scan. 
 
 [solution_name] will download the required version from Synopsys "sig-repo" repository or from a custom URL as configured in [blackduck_product_name]. Centralized [solution_name] Version Management feature support in [blackduck_product_name] is available from [blackduck_product_name] version 2023.4.0 onwards.
 
