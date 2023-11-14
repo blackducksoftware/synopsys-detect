@@ -13,7 +13,7 @@ Centralized [solution_name] Version Management feature support in [blackduck_pro
 <note type="information">
 <ul>
 <li>
-If the Black Duck **Internally Hosted** option has been configured, Synopsys Detect will be downloaded via https on the client side from the URL specified under the "Hosting Location for Synopsys Detect" setting.
+If the Black Duck **Internally Hosted** option has been configured, Synopsys Detect will be downloaded via https on the client side from the fully formatted URL specified under the "Hosting Location for Synopsys Detect" setting.
 <li>
 If the Black Duck **Synopsys Hosted** option has been configued, Synopsys Detect will be downloaded on the client side from the Synopsys "sig-repo" repository.
 </li>
