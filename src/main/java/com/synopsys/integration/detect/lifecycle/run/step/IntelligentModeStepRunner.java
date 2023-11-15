@@ -164,6 +164,10 @@ public class IntelligentModeStepRunner {
             codeLocationAccumulator.addNonWaitableCodeLocation(iacScanCodeLocationData.getCodeLocationNames());
             mustWaitAtBomSummaryLevel.set(true);
         });
+        
+        stepHelper.runToolIfIncluded(DetectTool.RL_SCAN, "ReversingLabs Scan", () -> {
+            
+        });
 
         operationRunner.attemptToGenerateComponentLocationAnalysisIfEnabled();
 

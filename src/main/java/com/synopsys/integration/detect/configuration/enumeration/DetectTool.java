@@ -8,5 +8,6 @@ public enum DetectTool {
     DOCKER,
     BAZEL,
     IAC_SCAN,
-    CONTAINER_SCAN
+    CONTAINER_SCAN,
+    RL_SCAN
 }
