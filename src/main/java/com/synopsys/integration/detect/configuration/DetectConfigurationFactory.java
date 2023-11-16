@@ -34,6 +34,7 @@ import com.synopsys.integration.detect.configuration.connection.BlackDuckConnect
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorSearchExcludedDirectories;
+import com.synopsys.integration.detect.configuration.enumeration.DefaultSignatureScannerExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -260,7 +261,13 @@ public class DetectConfigurationFactory {
     }
 
     public List<String> collectSignatureScannerDirectoryExclusions() {
-        return new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
+        List<String> directoryExclusionPatterns = new ArrayList<>(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES));
+
+        if (Boolean.FALSE.equals(detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED))) {
+            directoryExclusionPatterns.addAll(DefaultSignatureScannerExcludedDirectories.getDirectoryNames());
+        }
+
+        return directoryExclusionPatterns;
     }
 
     public List<String> collectDetectorSearchDirectoryExclusions() {
