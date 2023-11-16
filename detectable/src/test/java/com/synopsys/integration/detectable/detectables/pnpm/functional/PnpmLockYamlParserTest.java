@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.MultipleFailuresError;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -17,7 +18,8 @@ import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParser;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformer;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformerv5;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformerv6;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
@@ -27,10 +29,26 @@ import com.synopsys.integration.util.NameVersion;
 public class PnpmLockYamlParserTest {
 
     @Test
-    public void testParse() throws IOException, IntegrationException {
-        File pnpmLockYaml = FunctionalTestFiles.asFile("/pnpm/pnpm-lock.yaml");
+    public void testParsev5() throws IOException, IntegrationException {
+        File pnpmLockYaml = FunctionalTestFiles.asFile("/pnpm/v5/pnpm-lock.yaml");
+        evaluatePnpmLockYamlParsing(pnpmLockYaml);
+    }
+    
+    @Test
+    public void testParsev6() throws IOException, IntegrationException {
+        File pnpmLockYaml = FunctionalTestFiles.asFile("/pnpm/v6/pnpm-lock.yaml");
+        evaluatePnpmLockYamlParsing(pnpmLockYaml);
+    }
+
+    /**
+     * At a high level the v5 and v6 yaml files contain the same information just in different
+     * formats. Validate that the parsing has removed these differences and that the same
+     * code location information is created.
+     */
+    private void evaluatePnpmLockYamlParsing(File pnpmLockYaml)
+            throws IOException, IntegrationException, MultipleFailuresError {
         EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
-        PnpmLockYamlParser pnpmLockYamlParser = new PnpmLockYamlParser(new PnpmYamlTransformer(dependencyTypeFilter));
+        PnpmLockYamlParser pnpmLockYamlParser = new PnpmLockYamlParser(dependencyTypeFilter);
         PnpmLinkedPackageResolver pnpmLinkedPackageResolver = new PnpmLinkedPackageResolver(
             FunctionalTestFiles.asFile("/pnpm"),
             new PackageJsonFiles(new PackageJsonReader(new Gson()))
