@@ -20,8 +20,8 @@ import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 @DisabledOnOs(WINDOWS) //TODO: Can't cleanup the temp file on windows. May need to close resources?
-public class PnpmLockDetectableTest extends DetectableFunctionalTest {
-    public PnpmLockDetectableTest() throws IOException {
+public class PnpmLockDetectableTestv5 extends DetectableFunctionalTest {
+    public PnpmLockDetectableTestv5() throws IOException {
         super("Pnpm");
     }
 
