@@ -26,6 +26,7 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
+import com.synopsys.integration.detectable.detectables.conan.Constants;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.model.ConanLockfileData;
@@ -85,9 +86,7 @@ public class ConanLockfileParser {
                 ref = ref.replace("#", "@_/_#");
             }
 
-            ExternalId id = externalIdFactory.createNameVersionExternalId(
-                conanCodeLocationGenerator.getConanForge(), ref
-            );
+            ExternalId id = externalIdFactory.createNameVersionExternalId(Constants.conanForge, ref);
 
             String[] nameVersionParts = ref.split("@")[0].split("/");
             
