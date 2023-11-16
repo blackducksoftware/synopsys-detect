@@ -1,5 +1,15 @@
 # Current Release notes
 
+## Version 9.2.0
+
+### New features
+
+* Support for pnpm is now extended to 8.9.2.
+
+### Changed features
+
+* pnpm 6, and pnpm 7 using the default v5 pnpm-lock.yaml file, are being deprecated. Support will be removed in [solution_name] 10.
+
 ## Version 9.1.0
 
 ### New features
