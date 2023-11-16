@@ -387,6 +387,10 @@ public class OperationRunner {
         return detectConfigurationFactory.getContainerScanFilePath();
     }
 
+    public Optional<String> getRlScanFilePath() {
+        return detectConfigurationFactory.getRlScanFilePath();
+    }
+    
     public File downloadContainerImage(Gson gson, File downloadDirectory, String containerImageUri) throws DetectUserFriendlyException, IntegrationException, IOException {
         String targetPathName = downloadDirectory.toString().concat("/targetImage");
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());

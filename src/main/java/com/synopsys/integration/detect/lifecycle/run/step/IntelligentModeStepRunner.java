@@ -166,7 +166,12 @@ public class IntelligentModeStepRunner {
         });
         
         stepHelper.runToolIfIncluded(DetectTool.RL_SCAN, "ReversingLabs Scan", () -> {
-            
+            RlScanStepRunner rlScanStepRunner = new RlScanStepRunner(operationRunner);
+            Optional<UUID> scanId = rlScanStepRunner.invokeRlWorkflow();
+//            scanId.ifPresent(uuid -> scanIdsToWaitFor.add(uuid.toString()));
+//            Set<String> containerScanCodeLocations = new HashSet<>();
+//            containerScanCodeLocations.add(containerScanStepRunner.getCodeLocationName());
+//            codeLocationAccumulator.addNonWaitableCodeLocation(containerScanCodeLocations);
         });
 
         operationRunner.attemptToGenerateComponentLocationAnalysisIfEnabled();
@@ -245,7 +250,8 @@ public class IntelligentModeStepRunner {
     private boolean shouldPublishBomLinkForTool(DetectToolFilter detectToolFilter) {
         return detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN) ||
             detectToolFilter.shouldInclude(DetectTool.CONTAINER_SCAN) ||
-            detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN);
+            detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN) ||
+            detectToolFilter.shouldInclude(DetectTool.RL_SCAN);
     }
 
     private void publishPostResults(BdioResult bdioResult, ProjectVersionWrapper projectVersionWrapper, DetectToolFilter detectToolFilter) {

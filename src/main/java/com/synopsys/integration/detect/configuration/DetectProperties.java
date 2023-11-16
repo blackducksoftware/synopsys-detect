@@ -324,8 +324,8 @@ public class DetectProperties {
             .build();
     
     // TODO need to update since property
-    public static final NullablePathProperty DETECT_RL_SCAN_FILE =
-            NullablePathProperty.newBuilder("detect.rl.scan.file.path")
+    public static final NullableStringProperty DETECT_RL_SCAN_FILE =
+            NullableStringProperty.newBuilder("detect.rl.scan.file.path")
                 .setInfo("ReversingLabs Scan Target", DetectPropertyFromVersion.VERSION_9_1_0)
                 .setHelp(
                     "If specified, this file and this file only will be uploaded for ReversingLabs analysis.  The RL_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the RL_SCAN tool is invoked.")
