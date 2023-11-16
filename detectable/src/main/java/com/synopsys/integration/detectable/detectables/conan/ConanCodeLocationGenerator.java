@@ -93,7 +93,7 @@ public class ConanCodeLocationGenerator {
     ) throws DetectableException {
         Consumer<Dependency> childAdder;
         if (depth == 0) {
-            childAdder = dependencyGraph::addChildToRoot;
+            childAdder = dependencyGraph::addDirectDependency;
         } else {
             childAdder = childDep -> dependencyGraph.addChildWithParent(childDep, currentDep);
         }
@@ -117,7 +117,8 @@ public class ConanCodeLocationGenerator {
             graphNode.getConanNode().getVersion().orElseThrow(
                 () -> new DetectableException(String.format("Missing dependency version: %s", graphNode.getConanNode()))
             ),
-            externalId
+            externalId,
+            null
         );
     }
 
