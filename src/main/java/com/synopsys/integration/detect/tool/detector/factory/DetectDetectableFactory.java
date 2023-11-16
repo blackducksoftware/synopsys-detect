@@ -13,6 +13,7 @@ import com.synopsys.integration.detectable.detectables.cargo.CargoLockDetectable
 import com.synopsys.integration.detectable.detectables.carthage.CarthageLockDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
+import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
@@ -201,6 +202,10 @@ public class DetectDetectableFactory {
 
     public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment) {
         return detectableFactory.createConanCliDetectable(environment, detectExecutableResolver, detectableOptionFactory.createConanCliOptions());
+    }
+
+    public Conan2CliDetectable createConan2CliDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createConan2CliDetectable(environment, detectExecutableResolver, detectableOptionFactory.createConanCliOptions());
     }
 
     public ConanLockfileDetectable createConanLockfileDetectable(DetectableEnvironment environment) {
