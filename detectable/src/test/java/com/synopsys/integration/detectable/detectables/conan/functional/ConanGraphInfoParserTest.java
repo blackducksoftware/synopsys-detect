@@ -1,6 +1,8 @@
 package com.synopsys.integration.detectable.detectables.conan.functional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +33,7 @@ public class ConanGraphInfoParserTest {
         ConanGraphInfoParser parser = new ConanGraphInfoParser(new Gson(), cliOptions, new ExternalIdFactory());
         Extraction extraction = parser.parse(conanGraphInfoOutput);
 
+        assertTrue(extraction.isSuccess());
         assertEquals("project-name", extraction.getProjectName());
         assertEquals("0.17", extraction.getProjectVersion());
 
@@ -47,6 +50,7 @@ public class ConanGraphInfoParserTest {
         ConanGraphInfoParser parser = new ConanGraphInfoParser(new Gson(), cliOptions, new ExternalIdFactory());
         Extraction extraction = parser.parse(conanGraphInfoOutput);
 
+        assertTrue(extraction.isSuccess());
         assertEquals("project-name", extraction.getProjectName());
         assertEquals("0.17", extraction.getProjectVersion());
 
@@ -63,10 +67,35 @@ public class ConanGraphInfoParserTest {
         ConanGraphInfoParser parser = new ConanGraphInfoParser(new Gson(), cliOptions, new ExternalIdFactory());
         Extraction extraction = parser.parse(conanGraphInfoOutput);
 
+        assertTrue(extraction.isSuccess());
         assertEquals("project-name", extraction.getProjectName());
         assertEquals("0.17", extraction.getProjectVersion());
 
         DependencyGraph actualDependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
         GraphCompare.assertEqualsResource("/conan/cli/conan2_graph_excludeBuild_result.json", actualDependencyGraph);
+    }
+
+    @Test
+    public void testExtractParseException() throws IOException, DetectableException {
+        String conanGraphInfoOutput = "invalid JSON";
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(ConanDependencyType.BUILD);
+        ConanCliOptions cliOptions = new ConanCliOptions(null, "", dependencyTypeFilter, false);
+        ConanGraphInfoParser parser = new ConanGraphInfoParser(new Gson(), cliOptions, new ExternalIdFactory());
+        Extraction extraction = parser.parse(conanGraphInfoOutput);
+
+        assertFalse(extraction.isSuccess());
+        assertEquals("Unable to parse conan graph info", extraction.getDescription());
+    }
+
+    @Test
+    public void testExtractNoRootNode() throws IOException, DetectableException {
+        String conanGraphInfoOutput = "{\"graph\": {\"nodes\": {}}}";
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(ConanDependencyType.BUILD);
+        ConanCliOptions cliOptions = new ConanCliOptions(null, "", dependencyTypeFilter, false);
+        ConanGraphInfoParser parser = new ConanGraphInfoParser(new Gson(), cliOptions, new ExternalIdFactory());
+        Extraction extraction = parser.parse(conanGraphInfoOutput);
+
+        assertFalse(extraction.isSuccess());
+        assertEquals("No root node was found in the conan graph info", extraction.getDescription());
     }
 }

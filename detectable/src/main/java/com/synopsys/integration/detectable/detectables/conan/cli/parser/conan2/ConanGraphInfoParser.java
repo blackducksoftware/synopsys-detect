@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
@@ -12,6 +13,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectables.conan.Constants;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliOptions;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.conan2.model.ConanGraphInfo;
@@ -19,7 +21,6 @@ import com.synopsys.integration.detectable.detectables.conan.cli.parser.conan2.m
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class ConanGraphInfoParser {
-    private final Forge conanForge = new Forge("/", "conan");
     private final int ROOT_NODE_INDEX = 0;
     private final Gson gson;
     private final ConanCliOptions conanCliOptions;
@@ -32,13 +33,19 @@ public class ConanGraphInfoParser {
     }
 
     public Extraction parse(String jsonString) throws DetectableException {
-        ConanGraphInfo graphInfo = gson.fromJson(jsonString, ConanGraphInfo.class);
+        ConanGraphInfo graphInfo;
+
+        try {
+            graphInfo = gson.fromJson(jsonString, ConanGraphInfo.class);
+        } catch (JsonSyntaxException e) {
+            return new Extraction.Builder().failure("Unable to parse conan graph info").build();
+        }
 
         Map<Integer, ConanGraphInfoGraphNode> nodeMap = graphInfo.getGraph().getNodeMap();
 
         ConanGraphInfoGraphNode root = nodeMap.get(ROOT_NODE_INDEX);
         if (root == null) {
-            throw new DetectableException("No root node was found in the graph");
+            return new Extraction.Builder().failure("No root node was found in the conan graph info").build();
         }
 
         DependencyGraph graph = new BasicDependencyGraph();
@@ -84,9 +91,9 @@ public class ConanGraphInfoParser {
 
     private Dependency nodeToDependency(ConanGraphInfoGraphNode node) {
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(
-            conanForge,
+            Constants.conanForge,
             node.getName(),
-            node.generateExternalIdNameVersion(conanCliOptions.preferLongFormExternalIds())
+            node.generateExternalIdVersion(conanCliOptions.preferLongFormExternalIds())
         );
         return new Dependency(node.getName(), node.getVersion(), externalId, null);
     }

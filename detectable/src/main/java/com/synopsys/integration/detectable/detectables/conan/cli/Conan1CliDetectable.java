@@ -8,12 +8,12 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(
-    name = "Conan CLI", language = "C/C++", forge = "conan", accuracy = DetectableAccuracyType.HIGH,
+    name = "Conan 1 CLI", language = "C/C++", forge = "conan", accuracy = DetectableAccuracyType.HIGH,
     requirementsMarkdown = "Files: conanfile.txt or conanfile.py. Executable: conan (version 1.x)."
 )
-public class ConanCliDetectable extends ConanBaseCliDetectable {
+public class Conan1CliDetectable extends ConanBaseCliDetectable {
 
-    public ConanCliDetectable(
+    public Conan1CliDetectable(
         DetectableEnvironment environment,
         FileFinder fileFinder,
         ConanResolver conanResolver,

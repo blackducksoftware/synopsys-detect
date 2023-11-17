@@ -56,10 +56,9 @@ public class ConanGraphInfoGraphNode extends Stringable {
         return version;
     }
 
-    public String generateExternalIdNameVersion(boolean preferLongFormExternalIds) {
+    public String generateExternalIdVersion(boolean preferLongFormExternalIds) {
         String nameVersion = String.format(
-            "%s/%s@%s/%s#%s",
-            name,
+            "%s@%s/%s#%s",
             version,
             (channel == null ? "_" : channel),
             (user == null ? "_" : user),

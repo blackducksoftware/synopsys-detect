@@ -14,7 +14,7 @@ import com.synopsys.integration.detectable.detectables.conan.cli.parser.conan2.m
 
 public class ConanGraphInfoGraphNodeTest {
     @Test
-    public void testGenerateExternalIdNameVersion() {
+    public void testGenerateExternalIdVersion() {
         ConanGraphInfoGraphNode node = new ConanGraphInfoGraphNode(
             "name1",
             "version1",
@@ -27,13 +27,13 @@ public class ConanGraphInfoGraphNodeTest {
         );
 
         assertEquals(
-            "name1/version1@_/_#recipeRevision1",
-            node.generateExternalIdNameVersion(false)
+            "version1@_/_#recipeRevision1",
+            node.generateExternalIdVersion(false)
         );
     }
 
     @Test
-    public void testGenerateExternalIdNameVersion_channelAndUserAreSet() {
+    public void testGenerateExternalIdVersion_channelAndUserAreSet() {
         ConanGraphInfoGraphNode node = new ConanGraphInfoGraphNode(
             "name1",
             "version1",
@@ -46,13 +46,13 @@ public class ConanGraphInfoGraphNodeTest {
         );
 
         assertEquals(
-            "name1/version1@channel1/user1#recipeRevision1",
-            node.generateExternalIdNameVersion(false)
+            "version1@channel1/user1#recipeRevision1",
+            node.generateExternalIdVersion(false)
         );
     }
 
     @Test
-    public void testGenerateExternalIdNameVersion_preferLong() {
+    public void testGenerateExternalIdVersion_preferLong() {
         ConanGraphInfoGraphNode node = new ConanGraphInfoGraphNode(
             "name1",
             "version1",
@@ -65,13 +65,13 @@ public class ConanGraphInfoGraphNodeTest {
         );
 
         assertEquals(
-            "name1/version1@_/_#recipeRevision1:packageId1#packageRevision1",
-            node.generateExternalIdNameVersion(true)
+            "version1@_/_#recipeRevision1:packageId1#packageRevision1",
+            node.generateExternalIdVersion(true)
         );
     }
 
     @Test
-    public void testGenerateExternalIdNameVersion_preferLong_packageIdIsNull() {
+    public void testGenerateExternalIdVersion_preferLong_packageIdIsNull() {
         ConanGraphInfoGraphNode node = new ConanGraphInfoGraphNode(
             "name1",
             "version1",
@@ -84,8 +84,8 @@ public class ConanGraphInfoGraphNodeTest {
         );
 
         assertEquals(
-            "name1/version1@_/_#recipeRevision1:0#packageRevision1",
-            node.generateExternalIdNameVersion(true)
+            "version1@_/_#recipeRevision1:0#packageRevision1",
+            node.generateExternalIdVersion(true)
         );
     }
 
