@@ -9,10 +9,10 @@ import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.WrongConanExecutableVersionResult;
-import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public abstract class ConanBaseCliDetectable extends Detectable {
     public static final String CONANFILETXT = "conanfile.txt";
@@ -57,8 +57,8 @@ public abstract class ConanBaseCliDetectable extends Detectable {
 
         try {
             actualVersion = conanCliExtractor.extractConanMajorVersion(environment.getDirectory(), conanExe);
-        } catch (ExecutableRunnerException e) {
-            throw new DetectableException(e);
+        } catch (Exception e) {
+            return new ExceptionDetectableResult(e);
         }
 
         if (!expectedVersion.equals(actualVersion)) {

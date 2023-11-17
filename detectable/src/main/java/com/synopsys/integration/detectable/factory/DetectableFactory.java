@@ -89,7 +89,7 @@ import com.synopsys.integration.detectable.detectables.cocoapods.PodlockExtracto
 import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockParser;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
-import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
+import com.synopsys.integration.detectable.detectables.conan.cli.Conan1CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractor;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliOptions;
@@ -501,8 +501,8 @@ public class DetectableFactory {
         return new ConanLockfileDetectable(environment, fileFinder, conanLockfileExtractor(conanLockfileExtractorOptions), conanLockfileExtractorOptions);
     }
 
-    public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment, ConanResolver conanResolver, ConanCliOptions conanCliOptions) {
-        return new ConanCliDetectable(environment, fileFinder, conanResolver, conanCliExtractor(conanCliOptions));
+    public Conan1CliDetectable createConanCliDetectable(DetectableEnvironment environment, ConanResolver conanResolver, ConanCliOptions conanCliOptions) {
+        return new Conan1CliDetectable(environment, fileFinder, conanResolver, conanCliExtractor(conanCliOptions));
     }
 
     public Conan2CliDetectable createConan2CliDetectable(DetectableEnvironment environment, ConanResolver conanResolver, ConanCliOptions conanCliOptions) {
