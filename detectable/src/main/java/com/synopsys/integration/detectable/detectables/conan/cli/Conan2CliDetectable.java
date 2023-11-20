@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(
     name = "Conan 2 CLI", language = "C/C++", forge = "conan", accuracy = DetectableAccuracyType.HIGH,
-    requirementsMarkdown = "Files: conanfile.txt or conanfile.py. Executable: conan."
+    requirementsMarkdown = "Files: conanfile.txt or conanfile.py. Executable: conan (version 2.x)"
 )
 public class Conan2CliDetectable extends ConanBaseCliDetectable {
     private final ConanGraphInfoParser conanGraphInfoParser;
