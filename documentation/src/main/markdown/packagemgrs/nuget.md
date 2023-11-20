@@ -91,16 +91,17 @@ The NuGet Project Native Inspector derives packages (dependencies) from project 
 "*.rproj"
 ````
 
-The NuGet Solution Native Inspector runs if one or more solution (.sln) files are found. Any package references and versions in the solution's Directory.Build.props will be included for each project under the solution.
+The NuGet Solution Native Inspector runs if one or more solution (.sln) files are found. It will now support Central Package Management and include any package versions and global package references mentioned under Directory.Packages.props files mentioned in .sln file. Any package references and versions in the solution's Directory.Build.props will be included for each project under the solution.
 
 The NuGet Project Native Inspector runs if no solution files are found, and one or more project files are found.  Refer to the preceding list of project file types.
 
 The NuGet inspectors derive dependency information from the first type of file in this order:
-1. packages.config
-2. project.lock.json
-3. project.assets.json
-4. project.json
-5. XML of the project file
+1. Directory.Packages.props
+2. packages.config
+3. project.lock.json
+4. project.assets.json
+5. project.json
+6. XML of the project file
 
 In addition to the packages and dependencies found from the above files, packages and dependencies will be included from a different project.assets.json if configured in the corresponding project's property file. (`<projectname>.<projectfiletype>.nuget.g.props`).
 
