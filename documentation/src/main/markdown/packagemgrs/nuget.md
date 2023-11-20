@@ -91,7 +91,7 @@ The NuGet Project Native Inspector derives packages (dependencies) from project 
 "*.rproj"
 ````
 
-The NuGet Solution Native Inspector runs if one or more solution (.sln) files are found. It will now support Central Package Management and include any package versions and global package references mentioned under Directory.Packages.props files mentioned in .sln file. Any package references and versions in the solution's Directory.Build.props will be included for each project under the solution.
+The NuGet Solution Native Inspector runs if one or more solution (.sln) files are found. Central Package Management is supported to include any package versions and global package references mentioned under Directory.Packages.props files indicated the (.sln) file for each project under the solution. Any package references and versions in the solution's Directory.Build.props will be included for each project under the solution.
 
 The NuGet Project Native Inspector runs if no solution files are found, and one or more project files are found.  Refer to the preceding list of project file types.
 

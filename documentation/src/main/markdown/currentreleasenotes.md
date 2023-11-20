@@ -5,7 +5,7 @@
 ### New features
 
 * Support for pnpm is now extended to 8.9.2.
-* Support for Nuget is now extended to 6.2 and Central Package Management in Nuget will now be supported for projects and solutions.
+* Nuget support extended to version 6.2 with Central Package Management now supported for projects and solutions.
 
 ### Changed features
 
