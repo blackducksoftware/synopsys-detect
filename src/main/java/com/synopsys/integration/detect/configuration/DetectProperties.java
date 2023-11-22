@@ -44,7 +44,6 @@ import com.synopsys.integration.configuration.property.types.string.StringProper
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
-import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVersion;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
@@ -257,7 +256,9 @@ public class DetectProperties {
         NullablePathProperty.newBuilder("detect.conan.lockfile.path")
             .setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp(
-                "The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
+                "The path to the conan lockfile to apply when running 'conan info' to get the dependency graph.",
+                "If set, the value will be used by CLI and lockfile detectors to determine the component versions and/or relationships.'"
+            )
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
 
