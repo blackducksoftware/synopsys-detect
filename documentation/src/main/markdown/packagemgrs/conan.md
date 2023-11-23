@@ -6,18 +6,17 @@
 
 ## Overview
 
-[solution_name] has three detectors for Conan:
+[solution_name] has two strategies for identifying components in Conan projects:
 
-* Conan 2 CLI detector
-* Conan Lockfile detector
-* Conan 1 CLI detector
+* Conan CLI output parsing
+* Conan Lockfile parsing
 
 ## Conan detector requirements
 
 [solution_name] will run a Conan Detector if either of the following is true:
 
 * [solution_name] finds or is provided (via the *detect.conan.lockfile.path* property) a Conan lockfile. (If no lockfile is provided, [solution_name] looks for a file named conan.lock.) In this case, the Conan Lockfile detector runs and discovers dependency details using the contents of the Conan lockfile. In the case of Conan version 1.x, the Conan Lockfile detector is preferred due to the additional information (package revisions) that may be provided by lockfiles. For Conan version 2.x, the opposite is true, as a Conan 2.x lockfile is a flat list of all components rather than a graph.
-* [solution_name] finds a file named *conanfile.txt* or *conanfile.py*. In this case, one of the Conan CLI detectors runs and discovers dependency details by running the *conan info* or *conan graph info* command on the Conan project and parsing the output.
+* [solution_name] finds a file named *conanfile.txt* or *conanfile.py*. In this case, a Conan CLI detector runs and discovers dependency details by running the *conan info* or *conan graph info* command on the Conan project and parsing the output.
 
 For Conan 1.x, in order for [solution_name] to generate dependency details that will reliably match components
 in the [blackduck_kb], the Conan revisions feature must be enabled on the Conan project.
@@ -26,7 +25,7 @@ The Conan command *conan config get general.revisions_enabled* must produce a va
 
 ## Conan detector usage
 
-When using one of the Conan CLI detectors, be sure to use the *detect.conan.arguments* property to provide any additional arguments (profile settings, etc.) that the *conan info* command needs to produce accurate results.
+When using a Conan CLI detector, be sure to use the *detect.conan.arguments* property to provide any additional arguments (profile settings, etc.) that the *conan info* or *conan graph info* commands need to produce accurate results.
 
 ## [blackduck_kb] external ID generation
 
@@ -49,7 +48,7 @@ For example, here is a Conan 1.x conan.lock file entry for a component (zlib):
    },
 ```
 
-If you are using one of the Conan CLI detectors instead of the Conan Lockfile detector, this data is found in the output of the `conan info` command
+If you are using a Conan CLI detector instead of the Conan Lockfile detector, this data is found in the output of the `conan info` or `conan graph info` command
 instead of the conan.lock file.
 
 The format of the Conan "ref" field is: `<name>/<version>@<user>/<channel>#<recipe_revision>`
@@ -69,11 +68,11 @@ In the zlib example:
 
 ## Conan Detector Precedence
 
-If a conanfile.txt or conanfile.py is found and Conan 2.x is in use, the Conan 2 CLI detector will run.
+If a conanfile.txt or conanfile.py is found and Conan 2.x is in use, a Conan CLI detector will run.
 
 As a following attempt, if a Conan lockfile (conan.lock) is found or provided, the Conan Lockfile detector will run.
 
-Finally, if a conanfile.txt or conanfile.py is found and Conan 1.x is in use, the Conan 1 CLI detector will run.
+Finally, if a conanfile.txt or conanfile.py is found and Conan 1.x is in use, a Conan CLI detector will run.
 
 ## Customized user/channel values
 
