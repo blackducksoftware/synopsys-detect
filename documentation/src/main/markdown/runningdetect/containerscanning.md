@@ -1,6 +1,6 @@
 # Container Scan
 
-Container Scan is a way of running [solution_name] against any type of container image (including any non-Linux, non-Docker image) and providing component risk details for each layer of the image.
+Container Scan is a way of running [solution_name] against any type of container image (including any non-Linux, non-Docker image) and providing component risk details for each layer of the image.
 
 [solution_name] will accept either a user provided local file path, or remote HTTP/HTTPS URL to fetch a container image for scanning.
 
@@ -20,6 +20,9 @@ Execute Container Scan by adding the following to a run of [solution_name]:
  * A unique project version must be provided, or the scan service will respond with an error.
  * Must be running [blackduck_product_name] 2023.10.0 or greater.
  * URL provided for a remote container image must use the HTTP(S) protocol.
+ 
+### Limitations
+ * Container scanning is limited to images of 5GB or less.
  
 ## Invocation
  * To invoke a container scan, which executes in "Intelligent" mode by default, the following must be provided at a minimum:   
