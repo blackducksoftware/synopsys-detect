@@ -25,7 +25,7 @@ The detectors run a platform dependent self-contained executable that is current
 
 [solution_name] jar execution will automatically download any required binaries not located in the cache.
 
-For direct access to the binaries or sourse code see [download locations](../downloadingandinstalling/downloadlocations.md).
+For direct access to the binaries or source code see [download locations](../downloadingandinstalling/downloadlocations.md).
 
 ## Inspector Operation
 
