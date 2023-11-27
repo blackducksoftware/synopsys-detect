@@ -85,4 +85,15 @@ public class CodeLocationNameManager {
             return codeLocationNameGenerator.createIacScanCodeLocationName(targetFile, projectName, projectVersionName, prefix, suffix);
         }
     }
+
+    public String createReversingLabsScanCodeLocationName(File targetFile, String projectName, String projectVersionName) {
+        String scanCodeLocationName;
+
+        if (codeLocationNameGenerator.useCodeLocationOverride()) {
+            scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.REVERSING_LABS);
+        } else {
+            scanCodeLocationName = codeLocationNameGenerator.createReversingLabsCodeLocationName(targetFile, projectName, projectVersionName);
+        }
+        return scanCodeLocationName;
+    }
 }
