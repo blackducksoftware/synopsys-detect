@@ -27,7 +27,7 @@ The detectors run a platform dependent self-contained executable that is current
 
 For direct access to the binaries or source code see [download locations](../downloadingandinstalling/downloadlocations.md).
 
-## Inspector Operation
+### Inspector Operation
 
 An inspector is self-contained and requires no installation. Each executable is platform dependent and the correct inspector is downloaded by [solution_name] at runtime.
 
@@ -48,58 +48,24 @@ In addition to the packages and dependencies found from the above files, package
 After discovering dependencies, NuGet client libraries are used to collect further information about the dependencies and write them to a JSON file (`<projectname>_inspection.json`). [solution_name] then parses that file for the dependency information.
 
 ### NuGet Project Native Inspector supported project files
-````
-// C#
-"*.csproj",
-// F#
-"*.fsproj",
-// VB
-"*.vbproj",
-// Azure Stream Analytics
-"*.asaproj",
-// Docker Compose
-"*.dcproj",
-// Shared Projects
-"*.shproj",
-// Cloud Computing
-"*.ccproj",
-// Fabric Application
-"*.sfproj",
-// Node.js
-"*.njsproj",
-// VC++
-"*.vcxproj",
-// VC++
-"*.vcproj",
-// .NET Core
-"*.xproj",
-// Python
-"*.pyproj",
-// Hive
-"*.hiveproj",
-// Pig
-"*.pigproj",
-// JavaScript
-"*.jsproj",
-// U-SQL
-"*.usqlproj",
-// Deployment
-"*.deployproj",
-// Common Project System Files
-"*.msbuildproj",
-// SQL
-"*.sqlproj",
-// SQL Project Files
-"*.dbproj",
-// RStudio
-"*.rproj"
-````
+
+| Azure Stream Analytics | Cloud Computing | Common Project System Files | C# | Deployment | Docker Compose | F# |
+|---|---|---|---|---|---|---|
+| *.asaproj | *.ccproj | *.msbuildproj | *.csproj | *.deployproj | *.dcproj | *.fsproj |
+
+| Fabric Application | Hive | JavaScript | .NET Core | Node.js | Pig | Python |
+|---|---|---|---|---|---|---|
+| *.sfproj | *.hiveproj | *.jsproj | *.xproj | *.njsproj | *.pigproj | *.pyproj |
+
+| RStudio | Shared Projects | SQL | SQL Project Files | U-SQL | VB | VC++ |
+|---|---|---|---|---|---|---|
+| *.rproj | *.shproj | *.sqlproj | *.dbproj | *.usqlproj | *.vbproj | *.vcxproj *.vcproj |
 
 ### NuGet Detector buildless mode
 
 In buildless mode, [solution_name] uses Project Inspector to find dependencies and only supports `.csproj` and `.sln` files.
 
-#### [solution_name] NuGet Inspector on Alpine
+### [solution_name] NuGet Inspector on Alpine
 
 The [solution_name] NuGet Inspectors depend on packages not installed by default on Alpine systems, such as the dynamic loader for DLLs.
 
