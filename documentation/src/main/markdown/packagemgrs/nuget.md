@@ -23,30 +23,15 @@ The detectors run a platform dependent self-contained executable that is current
 
 ### [solution_name] NuGet Inspector downloads
 
-[Binary files](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/detect-nuget-inspector/)
+[solution_name] jar execution will automatically download any required binaries not located in the cache.
 
-[Source code](https://github.com/blackducksoftware/detect-nuget-inspector)
-
-#### [solution_name] NuGet Inspector on Alpine
-
-The [solution_name] NuGet Inspectors depend on packages not installed by default on Alpine systems, such as the dynamic loader for DLLs.
-
-When the dynamic loader is not present, an error message similar to the following appears in the log as a result of
-[solution_name]'s attempt to execute the NuGet Inspector:
-```
-java.io.IOException: Cannot run program ".../tools/detect-nuget-inspector/detect-nuget-inspector-1.0.1-linux/detect-nuget-inspector" (in directory ...): error=2, No such file or directory
-```
-
-To add these packages to an Alpine system:
-```
-apk add libstdc++ gcompat icu
-```
+For direct access to the binaries or sourse code see [download locations](../downloadingandinstalling/downloadlocations.md).
 
 ## Inspector Operation
 
 An inspector is self-contained and requires no installation. Each executable is platform dependent and the correct inspector is downloaded by [solution_name] at runtime.
 
-NuGet Solution Native Inspector runs if one or more solution (.sln) files are found and derives packages (dependencies) via analysis of solution files. Central Package Management is supported to include any package versions and global package references mentioned under Directory.Packages.props files indicated the (.sln) file for each project under the solution. Any package references and versions in the solution's Directory.Build.props will be included for each project under the solution.
+NuGet Solution Native Inspector runs if one or more solution (.sln) files are found and derives packages (dependencies) via analysis of solution files. Central Package Management is supported to include any package versions and global package references mentioned under `Directory.Packages.props` files indicated the (.sln) file for each project under the solution. Any package references and versions in the solution's `Directory.Build.props` will be included for each project under the solution.
 
 NuGet Project Native Inspector runs if no solution (.sln) files are found, and one or more project files are found. NuGet Project Native Inspector derives packages (dependencies) from project (.csproj, .fsproj, etc.) file content.
 
@@ -113,3 +98,18 @@ After discovering dependencies, NuGet client libraries are used to collect furth
 ### NuGet Detector buildless mode
 
 In buildless mode, [solution_name] uses Project Inspector to find dependencies and only supports `.csproj` and `.sln` files.
+
+#### [solution_name] NuGet Inspector on Alpine
+
+The [solution_name] NuGet Inspectors depend on packages not installed by default on Alpine systems, such as the dynamic loader for DLLs.
+
+When the dynamic loader is not present, an error message similar to the following appears in the log as a result of
+[solution_name]'s attempt to execute the NuGet Inspector:
+```
+java.io.IOException: Cannot run program ".../tools/detect-nuget-inspector/detect-nuget-inspector-1.0.1-linux/detect-nuget-inspector" (in directory ...): error=2, No such file or directory
+```
+
+To add these packages to an Alpine system:
+```
+apk add libstdc++ gcompat icu
+```
