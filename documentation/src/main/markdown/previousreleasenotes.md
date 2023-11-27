@@ -1,4 +1,5 @@
 <!-- Check the support matrix to determine supported, non-current major version releases -->
+# Release notes for previous supported versions
 
 ## Version 9.1.0
 
@@ -63,9 +64,6 @@
 * Released and Upgraded Project Inspector to version 2021.9.10.
 * Released and Upgraded Nuget Inspector to version 1.1.0.
 * Fixed EsotericSoftware YAMLBeans library version to resolve critical severity [CVE-2023-24621](https://nvd.nist.gov/vuln/detail/CVE-2023-24621)
-
-
-# Release notes for supported versions
 
 ## Version 8.11.0
 

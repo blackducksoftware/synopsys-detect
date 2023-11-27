@@ -6,7 +6,7 @@
 
 ## Overview
 
-The NuGet detectors can discover dependencies of NuGet projects.
+The NuGet detectors are used to discover dependencies of NuGet projects.
 
 There are three NuGet detectors: the NuGet Solution Native Inspector, NuGet Project Native Inspector, and the NuGet Project Inspector. The detectors run a platform dependent self-contained executable that is currently supported on Windows, Linux and Mac platforms.
 
