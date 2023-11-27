@@ -21,11 +21,11 @@ The detectors run a platform dependent self-contained executable that is current
 * The NuGet Detectors do not work with mono.
 </note>
 
-### [solution_name] NuGet Inspector
+### [solution_name] NuGet Inspector downloads
 
-Source: https://github.com/blackducksoftware/detect-nuget-inspector
+[Binary files](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/detect-nuget-inspector/)
 
-Binary: https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/detect-nuget-inspector/
+[Source code](https://github.com/blackducksoftware/detect-nuget-inspector)
 
 #### [solution_name] NuGet Inspector on Alpine
 
