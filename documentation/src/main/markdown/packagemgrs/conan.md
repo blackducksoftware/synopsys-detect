@@ -15,7 +15,7 @@
 
 [solution_name] will run a Conan Detector if either of the following is true:
 
-* [solution_name] finds or is provided via the *detect.conan.lockfile.path* property, a Conan lockfile. If no lockfile is provided, [solution_name] looks for a file named *conan.lock*. In this case, the Conan Lockfile detector runs and discovers dependency details using the contents of the Conan lockfile. For Conan version 1.x, the Conan Lockfile detector is preferred due to the additional information (package revisions) that may be provided by lockfiles. For Conan version 2.x, Conan CLI detector is preferred as a Conan 2.x lockfile is a flat list of all components rather than a graph.
+* [solution_name] finds or is provided via the *detect.conan.lockfile.path* property, a Conan lockfile. If no lockfile is provided, [solution_name] looks for a file named *conan.lock*. In this case, the Conan Lockfile detector runs and discovers dependency details using the contents of the Conan lockfile. For Conan version 1.x, the Conan Lockfile detector is attempted first due to the additional information (package revisions) that may be provided by lockfiles. For Conan version 2.x, Conan CLI detector is attempted first as a Conan 2.x lockfile is a flat list of all components rather than a graph.
 * [solution_name] finds a file named *conanfile.txt* or *conanfile.py*. In this case, a Conan CLI detector runs and discovers dependency details by running the *conan info* or *conan graph info* command on the Conan project and parsing the output.
 
 For Conan 1.x, in order for [solution_name] to generate dependency details that will reliably match components
@@ -65,6 +65,26 @@ In the zlib example:
 ```
 <name>/<version>@<user>/<channel>#<recipe_revision>
 ```
+
+## Package revision matching
+
+For situations when package ID and package revision information is available
+[solution_name] has an alternative mode, package revision matching, that includes
+the package ID and package revision in the [blackduck_kb] external IDs that it constructs (in addition to the fields described above).
+(Package revision is provided by Conan 1.x lockfiles when the Conan revisions feature is enabled and by Conan 2.x *conan graph info* command,
+but it is never provided by the Conan 2.x *conan info* command, so this only affects the Conan Lockfile detector.)
+To enable package revision matching, set property *detect.conan.attempt.package.revision.match* to true.
+
+
+In this scenario, [solution_name] constructs a [blackduck_kb] external ID for namespace "conan" as follows:
+```
+<name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
+```
+
+For the zlib example above the two additional fields used in the KB external ID would be:
+
+* package_id=d50a0d523d98c15bb147b18fa7d203887c38be8b
+* package_revision=da65bb160c07195dba18afb91259050d
 
 ## Conan Detector Precedence
 
