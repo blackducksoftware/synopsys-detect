@@ -10,6 +10,7 @@ import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.WrongConanExecutableVersionResult;
@@ -51,6 +52,9 @@ public abstract class ConanBaseCliDetectable extends Detectable {
     @Override
     public DetectableResult extractable() throws DetectableException {
         conanExe = conanResolver.resolveConan(environment);
+        if (conanExe == null) {
+            return new ExecutableNotFoundDetectableResult("conan");
+        }
 
         String expectedVersion = getExpectedMajorConanVersion();
         String actualVersion;
