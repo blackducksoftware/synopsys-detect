@@ -51,9 +51,14 @@ public class ScanResultToComponentListTransformer {
             for (String componentIdString : orderedComponentIDs) {
                 JsonObject jsonObject = getJsonObjectFromScanMetadata(componentIdWithMetadata.get(componentIdString));
                 String[] parts;
-                if ((parts = componentIdString.split(":")).length == 3) {
-                    // For Maven and Gradle, the componentId is of the form "g:a:v"
-                    componentSet.add(new Component(parts[0], parts[1], parts[2], jsonObject));
+                if ((parts = componentIdString.split(":")).length > 1) {
+                    if (parts.length == 2) {
+                        // The componentId is of the form "a:v"
+                        componentSet.add(new Component(null, parts[0], parts[1], jsonObject));
+                    } else if (parts.length == 3) {
+                        // For Maven and Gradle, the componentId is of the form "g:a:v"
+                        componentSet.add(new Component(parts[0], parts[1], parts[2], jsonObject));
+                    }
                 } else if ((parts = componentIdString.split("/")).length == 2) {
                     // For NPM and NuGet, the componentId looks is of the form "a/v"
                     componentSet.add(new Component(null, parts[0], parts[1], jsonObject));
