@@ -13,20 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
-import com.synopsys.integration.detectable.detectables.conan.Constants;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.model.ConanLockfileData;
@@ -37,7 +27,6 @@ public class ConanLockfileParser {
     private final Gson gson;
     private final ConanCodeLocationGenerator conanCodeLocationGenerator;
     private final ExternalIdFactory externalIdFactory;
-    private final String CONAN2_LOCKFILE_VERSION = "0.5";
 
     public ConanLockfileParser(Gson gson, ConanCodeLocationGenerator conanCodeLocationGenerator, ExternalIdFactory externalIdFactory) {
         this.gson = gson;
@@ -47,60 +36,13 @@ public class ConanLockfileParser {
 
     public ConanDetectableResult generateCodeLocationFromConanLockfileContents(String conanLockfileContents) throws DetectableException {
         logger.trace("Parsing conan lockfile contents:\n{}", conanLockfileContents);
-
-        JsonElement jsonElement = gson.fromJson(conanLockfileContents, JsonElement.class);
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-        JsonPrimitive versionPrimitive = (JsonPrimitive) jsonObject.get("version");
-        String version = versionPrimitive.getAsString();
-
-        logger.trace("Conan lockfile version {} detected", version);
-
-        if (version.equals(CONAN2_LOCKFILE_VERSION)) {
-            DependencyGraph graph = new BasicDependencyGraph();
-
-            addDependenciesFromConan2JsonArray(graph, (JsonArray) jsonObject.get("requires"));
-            if (conanCodeLocationGenerator.shouldIncludeBuildDependencies()) {
-                addDependenciesFromConan2JsonArray(graph, (JsonArray) jsonObject.get("build_requires"));
-            }
-
-            CodeLocation codeLocation = new CodeLocation(graph);
-            return new ConanDetectableResult(null, null, codeLocation);
-        }
-
-        Map<Integer, ConanNode<Integer>> indexedNodeMap = generateIndexedNodeMap(jsonElement);
+        Map<Integer, ConanNode<Integer>> indexedNodeMap = generateIndexedNodeMap(conanLockfileContents);
         // The lockfile references nodes by (integer) index; generator needs nodes referenced by names (component references)
         Map<String, ConanNode<String>> namedNodeMap = convertToNamedNodeMap(indexedNodeMap);
         return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, namedNodeMap);
     }
 
-    private void addDependenciesFromConan2JsonArray(DependencyGraph graph, JsonArray requiresArray) {
-        for (JsonElement refElement : requiresArray) {
-            JsonPrimitive refPrimitive = (JsonPrimitive) refElement;
-            String ref = refPrimitive.getAsString();
-
-            int percentIndex = ref.lastIndexOf('%');
-            if (percentIndex != -1) {
-                ref = ref.substring(0, percentIndex);
-            }
-            if (ref.lastIndexOf('@') == -1) {
-                ref = ref.replace("#", "@_/_#");
-            }
-
-            ExternalId id = externalIdFactory.createNameVersionExternalId(Constants.conanForge, ref);
-
-            String[] nameVersionParts = ref.split("@")[0].split("/");
-            
-            Dependency dependency;
-            if (nameVersionParts.length > 1) {
-                dependency = new Dependency(nameVersionParts[0], nameVersionParts[1], id, null);
-            } else {
-                dependency = new Dependency(nameVersionParts[0], id, null);
-            }
-            graph.addDirectDependency(dependency);
-        }
-    }
-
-    private Map<Integer, ConanNode<Integer>> generateIndexedNodeMap(JsonElement conanLockfileContents) {
+    private Map<Integer, ConanNode<Integer>> generateIndexedNodeMap(String conanLockfileContents) {
         Map<Integer, ConanNode<Integer>> graphNodes = new HashMap<>();
         ConanLockfileData conanLockfileData = gson.fromJson(conanLockfileContents, ConanLockfileData.class);
         logger.trace("conanLockfileData: {}", conanLockfileData);

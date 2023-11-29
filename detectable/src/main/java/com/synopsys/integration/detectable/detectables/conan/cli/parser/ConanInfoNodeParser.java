@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.conan.cli.parser.conan1;
+package com.synopsys.integration.detectable.detectables.conan.cli.parser;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.conan.cli.parser.conan1.element.NodeElementParser;
+import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.NodeElementParser;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 

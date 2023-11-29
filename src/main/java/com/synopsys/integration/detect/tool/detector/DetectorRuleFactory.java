@@ -6,8 +6,7 @@ import com.synopsys.integration.detectable.detectables.cargo.CargoLockDetectable
 import com.synopsys.integration.detectable.detectables.carthage.CarthageLockDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
-import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
-import com.synopsys.integration.detectable.detectables.conan.cli.Conan1CliDetectable;
+import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
@@ -100,11 +99,9 @@ public class DetectorRuleFactory {
         }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.CONAN, detector -> {
-            detector.entryPoint(Conan2CliDetectable.class)
-                .search().defaults();
             detector.entryPoint(ConanLockfileDetectable.class)
                 .search().defaults();
-            detector.entryPoint(Conan1CliDetectable.class)
+            detector.entryPoint(ConanCliDetectable.class)
                 .search().defaults();
         }).allEntryPointsFallbackToNext();
 
