@@ -6,7 +6,6 @@
 
 * Support for pnpm is now extended to 8.9.2.
 * Nuget support extended to version 6.2 with Central Package Management now supported for projects and solutions.
-* Support for Conan is now extended to 2.0.14.
 
 ### Changed features
 
