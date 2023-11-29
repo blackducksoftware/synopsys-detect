@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.conan.cli.parser;
+package com.synopsys.integration.detectable.detectables.conan.cli.parser.conan1;
 
 import java.util.StringTokenizer;
 

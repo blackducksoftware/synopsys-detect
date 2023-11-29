@@ -6,27 +6,26 @@ import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
-import com.synopsys.integration.detectable.detectable.Requirements;
-import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.WrongConanExecutableVersionResult;
 
-@DetectableInfo(name = "Conan CLI", language = "C/C++", forge = "conan", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "Files: conanfile.txt or conanfile.py. Executable: conan.")
-public class ConanCliDetectable extends Detectable {
+public abstract class ConanBaseCliDetectable extends Detectable {
     public static final String CONANFILETXT = "conanfile.txt";
     public static final String CONANFILEPY = "conanfile.py";
+
+    protected ExecutableTarget conanExe;
+    protected final ConanCliExtractor conanCliExtractor;
+
     private final FileFinder fileFinder;
     private final ConanResolver conanResolver;
-    private final ConanCliExtractor conanCliExtractor;
 
-    private ExecutableTarget conanExe;
-
-    public ConanCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, ConanResolver conanResolver, ConanCliExtractor conanCliExtractor) {
+    public ConanBaseCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, ConanResolver conanResolver, ConanCliExtractor conanCliExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.conanResolver = conanResolver;
@@ -52,13 +51,25 @@ public class ConanCliDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        Requirements requirements = new Requirements(fileFinder, environment);
-        conanExe = requirements.executable(() -> conanResolver.resolveConan(environment), "conan");
-        return requirements.result();
+        conanExe = conanResolver.resolveConan(environment);
+        if (conanExe == null) {
+            return new ExecutableNotFoundDetectableResult("conan");
+        }
+
+        String expectedVersion = getExpectedMajorConanVersion();
+        String actualVersion;
+
+        try {
+            actualVersion = conanCliExtractor.extractConanMajorVersion(environment.getDirectory(), conanExe);
+        } catch (Exception e) {
+            return new ExceptionDetectableResult(e);
+        }
+
+        if (!expectedVersion.equals(actualVersion)) {
+            return new WrongConanExecutableVersionResult(expectedVersion, actualVersion);
+        }
+        return new PassedDetectableResult();
     }
 
-    @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return conanCliExtractor.extract(environment.getDirectory(), conanExe);
-    }
+    abstract protected String getExpectedMajorConanVersion();
 }

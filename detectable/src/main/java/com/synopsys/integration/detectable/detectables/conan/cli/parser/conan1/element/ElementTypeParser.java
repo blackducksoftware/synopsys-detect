@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.conan.cli.parser.element;
+package com.synopsys.integration.detectable.detectables.conan.cli.parser.conan1.element;
 
 import java.util.List;
 
