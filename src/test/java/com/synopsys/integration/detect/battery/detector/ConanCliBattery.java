@@ -8,7 +8,6 @@ import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
-@Disabled("disabling to see if this is the only issue")
 public class ConanCliBattery {
 
     // TODO add test(s) for test.property("detect.conan.require.prev.match", "false");
@@ -45,6 +44,7 @@ public class ConanCliBattery {
         test.run();
     }
 
+    @Disabled("disabling to see if this is the only issue")
     @Test
     void conanWithRevisions() {
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("conan-withrevisions", "conan-cli/withrevisions");
