@@ -1,10 +1,10 @@
-package com.synopsys.integration.detectable.detectables.conan.cli.parser.element;
+package com.synopsys.integration.detectable.detectables.conan.cli.parser.conan1.element;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
+import com.synopsys.integration.detectable.detectables.conan.cli.parser.conan1.ConanInfoLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
 public class NodeElementParser {
