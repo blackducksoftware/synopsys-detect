@@ -42,6 +42,7 @@ public class DirectoryManager {
         RAPID("rapid"),
         RELEVANT("relevant"),
         REPORT("reports"),
+        REVERSING_LABS("reversing-labs"),
         SCAN("scan"),
         SHARED("shared"),
         STATUS("status"),
@@ -173,6 +174,10 @@ public class DirectoryManager {
 
     public File getImpactAnalysisOutputDirectory() {
         return getRunDirectory(RunDirectory.IMPACT_ANALYSIS);
+    }
+    
+    public File getReversingLabsOutputDirectory() {
+        return getRunDirectory(RunDirectory.REVERSING_LABS);
     }
 
     public File getRelevantOutputDirectory() {

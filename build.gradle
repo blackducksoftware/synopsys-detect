@@ -132,7 +132,7 @@ dependencies {
 
     implementation 'ch.qos.logback:logback-classic:1.2.11'
 
-    implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.6'
+    implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.10-SNAPSHOT'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.2.0'
     implementation "${locatorGroup}:${locatorModule}:1.0.21"
