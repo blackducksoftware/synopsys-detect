@@ -84,30 +84,38 @@ public class PnpmYamlTransformerv6 {
                 continue;
             }
             
+            // Process direct dependencies
             if (isRootPackage(packageId, rootPackageIds)) {
                 graphBuilder.addChildToRoot(pnpmPackage.get());
             }
 
             PnpmPackageInfov6 packageInfo = packageEntry.getValue();            
             
-            if (!packageInfo.getDependencyType().isPresent() || dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType().get())) {
-                for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
+            processTransitiveDependencies(graphBuilder, linkedPackageResolver, reportingProjectPackagePath, pnpmPackage,
+                    packageInfo);
+        }
+    }
+
+    private void processTransitiveDependencies(DependencyGraph graphBuilder,
+            PnpmLinkedPackageResolver linkedPackageResolver, String reportingProjectPackagePath,
+            Optional<Dependency> pnpmPackage, PnpmPackageInfov6 packageInfo) {
+        if (!packageInfo.getDependencyType().isPresent() || dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType().get())) {
+            for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
+                addTransitiveDependencyToGraph(graphBuilder, linkedPackageResolver, reportingProjectPackagePath,
+                        pnpmPackage, packageDependency);
+            }
+            
+            if (dependencyTypeFilter.shouldInclude(PnpmDependencyType.DEV)) {
+                for (Map.Entry<String, String> packageDependency : packageInfo.getDevDependencies().entrySet()) {
                     addTransitiveDependencyToGraph(graphBuilder, linkedPackageResolver, reportingProjectPackagePath,
                             pnpmPackage, packageDependency);
                 }
-                
-                if (dependencyTypeFilter.shouldInclude(PnpmDependencyType.DEV)) {
-                    for (Map.Entry<String, String> packageDependency : packageInfo.getDevDependencies().entrySet()) {
-                        addTransitiveDependencyToGraph(graphBuilder, linkedPackageResolver, reportingProjectPackagePath,
-                                pnpmPackage, packageDependency);
-                    }
-                }
-                
-                if (dependencyTypeFilter.shouldInclude(PnpmDependencyType.OPTIONAL)) {
-                    for (Map.Entry<String, String> packageDependency : packageInfo.getOptionalDependencies().entrySet()) {
-                        addTransitiveDependencyToGraph(graphBuilder, linkedPackageResolver, reportingProjectPackagePath,
-                                pnpmPackage, packageDependency);
-                    }
+            }
+            
+            if (dependencyTypeFilter.shouldInclude(PnpmDependencyType.OPTIONAL)) {
+                for (Map.Entry<String, String> packageDependency : packageInfo.getOptionalDependencies().entrySet()) {
+                    addTransitiveDependencyToGraph(graphBuilder, linkedPackageResolver, reportingProjectPackagePath,
+                            pnpmPackage, packageDependency);
                 }
             }
         }
