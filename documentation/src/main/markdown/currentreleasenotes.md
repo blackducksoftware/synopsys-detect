@@ -16,3 +16,4 @@
 ### Resolved Issues
 
 * (IDETECT-3515) Resolved an issue where the Nuget Inspector was not supporting "\<Version\>" tags for "\<PackageReference\>" on the second line and was not cascading to Project Inspector in case of failure.
+
