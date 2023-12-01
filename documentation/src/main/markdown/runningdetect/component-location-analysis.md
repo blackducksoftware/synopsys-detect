@@ -1,6 +1,6 @@
 # Component Location Analysis LCA
 
-Enable this feature by adding --detect.component.location.analysis.enabled=TRUE to a run of Detect.
+Enable this feature by adding --detect.component.location.analysis.enabled=TRUE to a run of [solution_name].
 
 When enabled, [solution_name] creates an output file in the scan subdirectory of the output directory with the name 'components-with-locations.json' which identifies the declaration locations (filepath, line number and column position) of the version of open source components found in the scanned project.
 
@@ -10,12 +10,12 @@ When enabled, [solution_name] creates an output file in the scan subdirectory of
 
 * Component Location Analysis is available under [solution_name] “Limited Customer Availability (LCA)”.
 * A limited subset of Detector Types support this feature.
-    * The currently supported detectors as of 9.2.0 are: NPM, MAVEN, GRADLE, NUGET, GO_MOD, GO_DEP, GO_GRADLE, GO_VENDOR, GO_VNDR, PIP, POETRY and CONDA.
+    * The currently supported Detectors as of 9.2.0 are: NPM, MAVEN, GRADLE, NUGET, GO_MOD, GO_DEP, GO_GRADLE, GO_VENDOR, GO_VNDR, PIP, POETRY, and CONDA.
 * The currently supported scan modes as of 8.11.0 are: Rapid/Stateless and offline.
-    * Rapid/Stateless Scan mode requires Black Duck policies.
+    * Rapid/Stateless Scan mode requires [blackduck_product_name] policies.
         * Only components that violate policies will be included in the analysis. If no policies are violated or there are no defined policies, then component location analysis is skipped.
     * Offline mode
-      * When enabled for a scan without Black Duck connectivity, all detected open source components will be included in the location analysis results.
+      * When enabled for a scan without [blackduck_product_name] connectivity, all detected open source components will be included in the location analysis results.
 
 ## Offline Mode Results
 
@@ -67,7 +67,7 @@ Each component is uniquely identified by a name and version. Components may opti
 
 ## Rapid/Stateless Scan Mode Results
 
-When Detect runs a Rapid or Stateless scan, the output file includes policy violation vulnerabilities, component violating policies and remediation guidance (short term, long term and transitive upgrade guidance) when available. This information is contained within the metadata field of each component:
+When [solution_name] runs a Rapid or Stateless scan, the output file includes policy violation vulnerabilities, component violating policies and remediation guidance (short term, long term and transitive upgrade guidance) when available. This information is contained within the metadata field of each component:
 ```
 {
       "sourcePath": "absolute/path/to/project/root",
