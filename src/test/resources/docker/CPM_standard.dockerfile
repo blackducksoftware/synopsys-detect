@@ -1,4 +1,4 @@
-FROM --platform=linux/x86_64 mcr.microsoft.com/dotnet/sdk:7.0
+FROM mcr.microsoft.com/dotnet/sdk:7.0
 
 ENV SRC_DIR=/opt/project/src
 
