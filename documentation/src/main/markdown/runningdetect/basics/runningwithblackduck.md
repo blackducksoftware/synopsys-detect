@@ -34,7 +34,7 @@ You can run [solution_name] in offline mode using the [offline mode property](..
 ### Running in offline mode
 
 Download the latest [solution_name] version:
- [See download locations](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/downloadingandinstalling/downloadlocations.html)   
+ [See download locations](../../downloadingandinstalling/downloadlocations.md)
  
 *Choose one of the following to download.*
 
@@ -52,7 +52,7 @@ Scanning [solution_name] Properties to specify:
 * --detect.scan.output.path= output of the Signature Scanner
 * --detect.output.path= output directory to store files that [solution_name] downloads or creates
 * --detect.blackduck.signature.scanner.local.path= location to the signature scanner scan.cli-202x.xx.x
-If using air-gap zip archive files, [see air gap mode](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/downloadingandrunning/airgap.html)
+If using air-gap zip archive files, [see air gap mode](../../downloadingandinstalling/airgap.md)
 
 [solution_name] Scan Command example:
 ```
