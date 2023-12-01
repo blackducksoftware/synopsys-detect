@@ -30,8 +30,8 @@ public class ConanLockfileBattery {
 
     @Test
     void conan2Lock() {
-        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("conan2-lock", "conan-lock/conan2");
-        test.sourceDirectoryNamed("conan-lock");
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("conan2-lock-simple", "conan2-lock/simple");
+        test.sourceDirectoryNamed("conan2-lock");
         test.sourceFileFromResource("conan.lock");
         test.property("detect.conan.attempt.package.revision.match", "false");
         test.expectBdioResources();
