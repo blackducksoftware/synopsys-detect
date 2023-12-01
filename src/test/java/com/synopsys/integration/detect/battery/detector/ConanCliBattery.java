@@ -9,6 +9,7 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 @Tag("battery")
 public class ConanCliBattery {
     private static final String CONAN1_VERSION_OUTPUT_RESOURCE = "../conan1-version.xout";
+    private static final String CONAN2_VERSION_OUTPUT_RESOURCE = "../conan2-version.xout";
 
     @Test
     void conanMinimal() {
@@ -64,11 +65,41 @@ public class ConanCliBattery {
         test.run();
     }
 
+    @Test
+    void conan2Minimal() {
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("conan2-minimal", "conan-cli/conan2minimal");
+        setTestExecutableOutputForConan2(test, "conan-graph-info-minimal.xout");
+        test.sourceDirectoryNamed("md5");
+        test.sourceFileNamed("conanfile.txt");
+        test.property("detect.conan.attempt.package.revision.match", "false");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void conan2RevisionMatch() {
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("conan2-revisionmatch", "conan-cli/conan2revisionmatch");
+        setTestExecutableOutputForConan2(test, "conan-graph-info-minimal.xout");
+        test.sourceDirectoryNamed("md5");
+        test.sourceFileNamed("conanfile.txt");
+        test.property("detect.conan.attempt.package.revision.match", "true");
+        test.expectBdioResources();
+        test.run();
+    }
+
     private void setTestExecutableOutputForConan1(DetectorBatteryTestRunner test, String resource) {
         test.executableFromResourceFiles(
             DetectProperties.DETECT_CONAN_PATH,
             CONAN1_VERSION_OUTPUT_RESOURCE,
             CONAN1_VERSION_OUTPUT_RESOURCE, // version output is checked twice: once by Conan 2 detectable and once by Conan 1
+            resource
+        );
+    }
+
+    private void setTestExecutableOutputForConan2(DetectorBatteryTestRunner test, String resource) {
+        test.executableFromResourceFiles(
+            DetectProperties.DETECT_CONAN_PATH,
+            CONAN2_VERSION_OUTPUT_RESOURCE,
             resource
         );
     }
