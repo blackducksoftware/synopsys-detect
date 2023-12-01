@@ -27,17 +27,20 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
+import com.synopsys.integration.blackduck.api.core.response.UrlSingleResponse;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.view.BomStatusScanView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.manual.response.BlackDuckStringResponse;
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationWaitResult;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
@@ -183,6 +186,7 @@ import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.body.FileBodyContent;
+import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
@@ -450,6 +454,33 @@ public class OperationRunner {
                 logger.trace("I/O error occurred during file upload request.");
                 throw new IOException("I/O error occurred during file upload request to storage service.", e);
             }
+        });
+    }
+    
+    // Generic method to POST a file to /api/uploads endpoint of storage service
+    public Response uploadRlFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String operationName, NameVersion projectNameVersion, String codeLocationName)
+        throws OperationException {
+        return auditLog.namedPublic(operationName, () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+            try {
+                Map<String, String> textParts = new HashMap<>();
+                textParts.put("projectName", projectNameVersion.getName());
+                textParts.put("version", projectNameVersion.getVersion());
+                textParts.put("codeLocationName", codeLocationName);
+
+                Map<String, File> binaryParts = new HashMap<>();
+                binaryParts.put("fileupload", payloadFile);
+
+                UrlSingleResponse<BlackDuckStringResponse> stringResponse = blackDuckServicesFactory.getApiDiscovery().metaUploadsLink();
+                BlackDuckResponseRequest request = new BlackDuckRequestBuilder().postMultipart(binaryParts, textParts)
+                        .buildBlackDuckResponseRequest(stringResponse.getUrl());
+                return blackDuckApiClient.execute(request);
+            } catch (IntegrationException e) {
+                logger.trace("Could not execute file upload request to storage service.");
+                throw new IntegrationException("Could not execute file upload request to storage service.", e);
+            }        
         });
     }
 

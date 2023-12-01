@@ -29,7 +29,7 @@ public class RlScanStepRunner {
     private final File rlRunDirectory;
     private final BlackDuckRunData blackDuckRunData;
     private String codeLocationName;
-    private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
+    private static final String STORAGE_ENDPOINT = "/api/uploads";
     private static final BlackDuckVersion MIN_BLACK_DUCK_VERSION = new BlackDuckVersion(2023, 10, 0);
             // TODO true version but no servers with this right now, new BlackDuckVersion(2024, 4, 0);
     
@@ -74,27 +74,25 @@ public class RlScanStepRunner {
         return Optional.ofNullable(scanId);
     }
     
-    private void uploadFileToStorageService() {
-        String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString());
+    private void uploadFileToStorageService() throws IOException, OperationException, IntegrationException {
         String operationName = "Upload ReversingLabs File";
-        logger.debug("Uploading ReversingLabs target file to storage endpoint: {}", storageServiceEndpoint);
 
         File fileToUpload = new File(operationRunner.getRlScanFilePath().get());
         
-        try (Response response = operationRunner.uploadFileToStorageService(
+        try (Response response = operationRunner.uploadRlFileToStorageService(
             blackDuckRunData,
-            storageServiceEndpoint,
+            STORAGE_ENDPOINT,
             fileToUpload,
-            STORAGE_IMAGE_CONTENT_TYPE,
-//            operationName
-        )
-        ) {
-//            if (response.isStatusCodeSuccess()) {
-//                logger.debug("Container scan image uploaded to storage service.");
-//            } else {
-//                logger.trace("Unable to upload container image. {} {}", response.getStatusCode(), response.getStatusMessage());
-//                throw new IntegrationException(String.join(" ", "Unable to upload container image. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
-//            }
+            operationName,
+            projectNameVersion,
+            codeLocationName
+        )) {
+            if (response.isStatusCodeSuccess()) {
+                logger.debug("ReversingLabs file uploaded to storage service.");
+            } else {
+                logger.trace("Unable to upload ReversingLabs file. {} {}", response.getStatusCode(), response.getStatusMessage());
+                throw new IntegrationException(String.join(" ", "Unable to upload ReversingLabs file. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
+            }
         }
     }
 
