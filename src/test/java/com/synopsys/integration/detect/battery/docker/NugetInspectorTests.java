@@ -16,7 +16,7 @@ import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detector.base.DetectorType;
 
-//@Tag("integration")
+@Tag("integration")
 public class NugetInspectorTests {
 
     private static final String PROJECT_NAME = "nuget-CPM-docker";
