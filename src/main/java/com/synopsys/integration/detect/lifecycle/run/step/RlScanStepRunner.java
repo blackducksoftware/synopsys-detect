@@ -18,6 +18,7 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 import com.blackducksoftware.bdio.proto.domain.ScanType;
+import com.google.gson.JsonObject;
 
 public class RlScanStepRunner {
     
@@ -29,7 +30,10 @@ public class RlScanStepRunner {
     private final File rlRunDirectory;
     private final BlackDuckRunData blackDuckRunData;
     private String codeLocationName;
-    private static final String STORAGE_ENDPOINT = "/api/uploads";
+    //private static final String STORAGE_ENDPOINT = "/api/uploads";
+    private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
+    private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
+    private static final String STORAGE_IMAGE_METADATA_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-message-1+json";
     private static final BlackDuckVersion MIN_BLACK_DUCK_VERSION = new BlackDuckVersion(2023, 10, 0);
             // TODO true version but no servers with this right now, new BlackDuckVersion(2024, 4, 0);
     
@@ -65,6 +69,11 @@ public class RlScanStepRunner {
             
             logger.info("ReversingLabs scan initiated. Uploading file to scan.");
             uploadFileToStorageService();
+            
+            // TODO this is likely not necessary once we have a true RL path
+            uploadImageMetadataToStorageService();
+            
+            // TODO perhaps publish an event
 
         } catch (IntegrationException | IOException | OperationException e) {
             operationRunner.publishContainerFailure(e);
@@ -74,18 +83,56 @@ public class RlScanStepRunner {
         return Optional.ofNullable(scanId);
     }
     
+    // TODO getting very similar to container scanning, this is probably temporary as RL probably won't do this
+    // but if so we might want to have a storage service class
+    private void uploadImageMetadataToStorageService() throws IOException, OperationException, IntegrationException {
+        String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString(), "/message");
+        String operationName = "Upload ReversingLab Metadata JSON";
+        logger.debug("Uploading ReversingLabs metadata to storage endpoint: {}", storageServiceEndpoint);
+
+        JsonObject imageMetadataObject = operationRunner.createContainerScanImageMetadata(scanId, projectNameVersion);
+
+        try (Response response = operationRunner.uploadJsonToStorageService(
+            blackDuckRunData,
+            storageServiceEndpoint,
+            imageMetadataObject.toString(),
+            STORAGE_IMAGE_METADATA_CONTENT_TYPE,
+            operationName
+        )
+        ) {
+            if (response.isStatusCodeSuccess()) {
+                logger.debug("ReversingLabs metadata uploaded to storage service.");
+            } else {
+                logger.trace("Unable to upload ReversingLabs metadata." + response.getStatusCode() + " " + response.getStatusMessage());
+                throw new IntegrationException(String.join(" ", "Unable to upload ReversingLabs metadata. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
+            }
+        }    
+    }
+
     private void uploadFileToStorageService() throws IOException, OperationException, IntegrationException {
         String operationName = "Upload ReversingLabs File";
 
         File fileToUpload = new File(operationRunner.getRlScanFilePath().get());
         
-        try (Response response = operationRunner.uploadRlFileToStorageService(
-            blackDuckRunData,
-            STORAGE_ENDPOINT,
-            fileToUpload,
-            operationName,
-            projectNameVersion,
-            codeLocationName
+        // binary approach
+//        try (Response response = operationRunner.uploadRlFileToStorageService(
+//            blackDuckRunData,
+//            STORAGE_ENDPOINT,
+//            fileToUpload,
+//            operationName,
+//            projectNameVersion,
+//            codeLocationName
+//        )) {
+        
+        String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString());
+        logger.debug("Uploading ReversingLabs file to storage endpoint: {}", storageServiceEndpoint);
+        
+        try (Response response = operationRunner.uploadFileToStorageService(
+                blackDuckRunData,
+                storageServiceEndpoint,
+                fileToUpload,
+                STORAGE_IMAGE_CONTENT_TYPE,
+                operationName
         )) {
             if (response.isStatusCodeSuccess()) {
                 logger.debug("ReversingLabs file uploaded to storage service.");
@@ -102,7 +149,7 @@ public class RlScanStepRunner {
             UUID.randomUUID().toString(),
             // TODO this will need to be changed to a REVERSINGLABS scan when the scan container
             // can account for this.
-            ScanType.BINARY.name(),
+            ScanType.CONTAINER.name(),
             projectNameVersion,
             projectGroupName,
             codeLocationName);
