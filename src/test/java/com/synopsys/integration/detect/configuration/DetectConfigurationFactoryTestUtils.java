@@ -14,7 +14,7 @@ import com.synopsys.integration.configuration.property.types.path.SimplePathReso
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 
-class DetectConfigurationFactoryTestUtils {
+public class DetectConfigurationFactoryTestUtils {
     @SafeVarargs
     public static DetectConfigurationFactory spyFactoryOf(Pair<Property, String>... properties) {
         return Mockito.spy(factoryOf(properties));

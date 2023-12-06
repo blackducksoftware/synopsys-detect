@@ -30,6 +30,7 @@ import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.YarnPackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.YarnDependencyType;
 import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
@@ -119,7 +120,7 @@ class YarnTransformerTest {
     void doesntThrowOnMissingExternalId() throws MissingExternalIdException {
         // Ensure components not defined in the graph doesn't cause an exception to be thrown. See IDETECT-1974.
 
-        PackageJson rawPackageJson = new PackageJson();
+        YarnPackageJson rawPackageJson = new YarnPackageJson();
         rawPackageJson.dependencies = new HashMap<>();
         rawPackageJson.dependencies.put("foo", "fooFuzzyVersion-1.0");
         NullSafePackageJson packageJson = new NullSafePackageJson(rawPackageJson);
@@ -193,7 +194,7 @@ class YarnTransformerTest {
 
     @NotNull
     private YarnLockResult buildTestYarnLockResult(List<NameVersion> workspacesThatAreDependencies, List<NameVersion> workspacesThatAreNotDependencies, boolean yarn1project) {
-        PackageJson rawPackageJson = new PackageJson();
+        YarnPackageJson rawPackageJson = new YarnPackageJson();
         rawPackageJson.dependencies = new HashMap<>();
         rawPackageJson.dependencies.put("foo", "fooFuzzyVersion-1.0");
         for (NameVersion workspace : workspacesThatAreDependencies) {
@@ -259,7 +260,7 @@ class YarnTransformerTest {
     }
 
     private void addWorkspacePackageJson(Collection<YarnWorkspace> workspacesByName, NameVersion workspaceNameVersion, String workspaceDepName, String workspaceDevDepName) {
-        PackageJson rawWorkspacePackageJson = new PackageJson();
+        YarnPackageJson rawWorkspacePackageJson = new YarnPackageJson();
         rawWorkspacePackageJson.name = workspaceNameVersion.getName();
         rawWorkspacePackageJson.version = workspaceNameVersion.getVersion();
         rawWorkspacePackageJson.dependencies = new HashMap<>();

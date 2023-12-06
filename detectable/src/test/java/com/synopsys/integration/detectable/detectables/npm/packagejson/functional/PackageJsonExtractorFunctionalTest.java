@@ -2,6 +2,7 @@ package com.synopsys.integration.detectable.detectables.npm.packagejson.function
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,7 +27,7 @@ import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 @FunctionalTest
 public class PackageJsonExtractorFunctionalTest {
-    private InputStream packageJsonInputStream;
+    private File packageJsonFile;
 
     private ExternalId testDep1;
     private ExternalId testDep2;
@@ -38,14 +39,14 @@ public class PackageJsonExtractorFunctionalTest {
     @BeforeEach
     void setUp() {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        testDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name1", "version1");
-        testDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name2", "version2");
-        testDevDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "nameDev1", "versionDev1");
-        testDevDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "nameDev2", "versionDev2");
-        testPeerDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "namePeer1", "versionPeer1");
-        testPeerDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "namePeer2", "versionPeer2");
+        testDep1 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "name1", "version1");
+        testDep2 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "name2", "version2");
+        testDevDep1 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "nameDev1", "versionDev1");
+        testDevDep2 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "nameDev2", "versionDev2");
+        testPeerDep1 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "namePeer1", "versionPeer1");
+        testPeerDep2 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "namePeer2", "versionPeer2");
 
-        packageJsonInputStream = FunctionalTestFiles.asInputStream("/npm/package.json");
+        packageJsonFile = new File("src/test/resources/detectables/functional/npm/package.json");
     }
 
     private PackageJsonExtractor createExtractor(NpmDependencyType... excludedTypes) {
@@ -55,13 +56,13 @@ public class PackageJsonExtractorFunctionalTest {
     }
 
     @Test
-    void extractWithNoDevDependencies() {
-        Extraction extraction = createExtractor(NpmDependencyType.PEER, NpmDependencyType.DEV).extract(packageJsonInputStream);
+    void extractWithNoDevDependencies() throws IOException {
+        Extraction extraction = createExtractor(NpmDependencyType.PEER, NpmDependencyType.DEV).extract(packageJsonFile);
         assertEquals(1, extraction.getCodeLocations().size());
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
-        GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
+        GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
         graphAssert.hasRootDependency(testDep1);
         graphAssert.hasRootDependency(testDep2);
         graphAssert.hasNoDependency(testDevDep1);
@@ -72,8 +73,8 @@ public class PackageJsonExtractorFunctionalTest {
     }
 
     @Test
-    void extractWithDevDependencies() {
-        Extraction extraction = createExtractor(NpmDependencyType.PEER).extract(packageJsonInputStream);
+    void extractWithDevDependencies() throws IOException {
+        Extraction extraction = createExtractor(NpmDependencyType.PEER).extract(packageJsonFile);
         assertEquals(1, extraction.getCodeLocations().size());
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
@@ -89,13 +90,13 @@ public class PackageJsonExtractorFunctionalTest {
     }
 
     @Test
-    void extractWithPeerDependencies() {
-        Extraction extraction = createExtractor(NpmDependencyType.DEV).extract(packageJsonInputStream);
+    void extractWithPeerDependencies() throws IOException {
+        Extraction extraction = createExtractor(NpmDependencyType.DEV).extract(packageJsonFile);
         assertEquals(1, extraction.getCodeLocations().size());
         CodeLocation codeLocation = extraction.getCodeLocations().get(0);
         DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
-        GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
+        GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
         graphAssert.hasRootDependency(testDep1);
         graphAssert.hasRootDependency(testDep2);
         graphAssert.hasRootDependency(testPeerDep1);
@@ -103,10 +104,5 @@ public class PackageJsonExtractorFunctionalTest {
         graphAssert.hasNoDependency(testDevDep1);
         graphAssert.hasNoDependency(testDevDep2);
         graphAssert.hasRootSize(4);
-    }
-
-    @AfterEach
-    void tearDown() throws IOException {
-        packageJsonInputStream.close();
     }
 }

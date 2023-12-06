@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.lifecycle.run.step.utility;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
@@ -36,6 +37,11 @@ public class OperationWrapper {
             operation.success();
             successConsumer.run();
             return value;
+        } catch (ComponentLocatorException e) {
+            // Set operation status to failure but let Detect exit successfully
+            operation.error(e);
+            errorConsumer.accept(e);
+            return null;
         } catch (InterruptedException e) {
             operation.error(e);
             // Restore interrupted state...
@@ -90,11 +96,11 @@ public class OperationWrapper {
 
     @FunctionalInterface
     public interface OperationSupplier<T> {
-        T execute() throws OperationException, DetectUserFriendlyException, IntegrationException, InterruptedException, IOException; //basically all known detect exceptions.
+        T execute() throws OperationException, DetectUserFriendlyException, IntegrationException, InterruptedException, IOException, ComponentLocatorException; //basically all known detect exceptions.
     }
 
     @FunctionalInterface
     public interface OperationFunction {
-        void execute() throws OperationException, DetectUserFriendlyException, IntegrationException, InterruptedException, IOException; //basically all known detect exceptions.
+        void execute() throws OperationException, DetectUserFriendlyException, IntegrationException, InterruptedException, IOException, ComponentLocatorException; //basically all known detect exceptions.
     }
 }

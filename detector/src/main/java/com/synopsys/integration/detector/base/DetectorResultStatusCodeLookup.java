@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.detectable.detectable.result.CargoLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.CartfileResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
@@ -18,14 +19,17 @@ import com.synopsys.integration.detectable.detectable.result.GivenFileNotFoundDe
 import com.synopsys.integration.detectable.detectable.result.GoPkgLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.NpmPackagesObjectNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PackageResolvedNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PipfileLockNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PoetryLockfileNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PoorlyFormattedJson;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.SbtMissingPluginDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.SectionNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.WrongConanExecutableVersionResult;
 import com.synopsys.integration.detectable.detectable.result.WrongOperatingSystemResult;
 import com.synopsys.integration.detector.result.ExcludedDetectorResult;
 import com.synopsys.integration.detector.result.FailedDetectorResult;
@@ -71,15 +75,18 @@ public class DetectorResultStatusCodeLookup {
         map.put(NotNestableBeneathDetectorResult.class, DetectorStatusCode.NOT_NESTABLE_BENEATH);
         map.put(NotNestableBeneathDetectableDetectorResult.class, DetectorStatusCode.NOT_NESTABLE_BENEATH);
         map.put(NpmNodeModulesNotFoundDetectableResult.class, DetectorStatusCode.NPM_NODE_MODULES_NOT_FOUND);
+        map.put(NpmPackagesObjectNotFoundDetectableResult.class, DetectorStatusCode.NPM_PACKAGES_OBJECT_NOT_FOUND);
         map.put(PassedDetectorResult.class, DetectorStatusCode.PASSED);
         map.put(PassedDetectableResult.class, DetectorStatusCode.PASSED);
         map.put(PipfileLockNotFoundDetectableResult.class, DetectorStatusCode.PIPFILE_LOCK_NOT_FOUND);
         map.put(PoetryLockfileNotFoundDetectableResult.class, DetectorStatusCode.POETRY_LOCKFILE_NOT_FOUND);
+        map.put(PoorlyFormattedJson.class, DetectorStatusCode.POORLY_FORMATTED_JSON);
         map.put(PropertyInsufficientDetectableResult.class, DetectorStatusCode.PROPERTY_INSUFFICIENT);
         map.put(PubSpecLockNotFoundDetectableResult.class, DetectorStatusCode.PUBSPEC_LOCK_NOT_FOUND);
         map.put(SectionNotFoundDetectableResult.class, DetectorStatusCode.SECTION_NOT_FOUND);
         map.put(SbtMissingPluginDetectableResult.class, DetectorStatusCode.SBT_PLUGIN_MISSING);
         map.put(WrongOperatingSystemResult.class, DetectorStatusCode.WRONG_OPERATING_SYSTEM_RESULT);
+        map.put(WrongConanExecutableVersionResult.class, DetectorStatusCode.EXECUTABLE_VERSION_MISMATCH);
         map.put(YieldedDetectorResult.class, DetectorStatusCode.YIELDED);
         map.put(PackageResolvedNotFoundDetectableResult.class, DetectorStatusCode.EXCLUDED);
 

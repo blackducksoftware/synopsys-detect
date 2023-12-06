@@ -62,6 +62,7 @@ public class Application implements ApplicationRunner {
     private static boolean SHOULD_EXIT = true;
     
     private static final String STATUS_JSON_FILE_NAME = "status.json";
+    public static final Long START_TIME = System.currentTimeMillis();
 
     private final ConfigurableEnvironment environment;
 
@@ -99,7 +100,7 @@ public class Application implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments applicationArguments) {
-        long startTime = System.currentTimeMillis();
+        long startTime = START_TIME;
 
         //Events, Status and Exit Codes are required even if boot fails.
         EventSystem eventSystem = new EventSystem();

@@ -44,8 +44,8 @@ public class NpmPackageJsonParseDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        try (InputStream packageJsonInputStream = new FileInputStream(packageJsonFile)) {
-            return packageJsonExtractor.extract(packageJsonInputStream);
+        try {
+            return packageJsonExtractor.extract(packageJsonFile);
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).failure(String.format("Failed to parse %s", PACKAGE_JSON)).build();
         }

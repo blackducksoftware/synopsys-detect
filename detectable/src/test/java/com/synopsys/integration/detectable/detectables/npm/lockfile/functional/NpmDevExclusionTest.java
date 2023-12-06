@@ -1,11 +1,17 @@
 package com.synopsys.integration.detectable.detectables.npm.lockfile.functional;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
@@ -46,8 +52,8 @@ public class NpmDevExclusionTest {
     }
 
     @Test
-    public void testDevDependencyNotExists() {
-        NpmPackagerResult result = createPackager(NpmDependencyType.DEV, NpmDependencyType.PEER).parseAndTransform(packageJsonText, packageLockText);
+    public void testDevDependencyNotExists() throws IOException {
+        NpmPackagerResult result = createPackager(NpmDependencyType.DEV, NpmDependencyType.PEER).parseAndTransform(null, packageJsonText, packageLockText);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
         graphAssert.hasNoDependency(childDev);
         graphAssert.hasNoDependency(parentDev);
@@ -55,11 +61,27 @@ public class NpmDevExclusionTest {
     }
 
     @Test
-    public void testDevDependencyExists() {
-        NpmPackagerResult result = createPackager(NpmDependencyType.PEER).parseAndTransform(packageJsonText, packageLockText);
+    public void testDevDependencyExists() throws IOException {
+        NpmPackagerResult result = createPackager(NpmDependencyType.PEER).parseAndTransform(null, packageJsonText, packageLockText);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
         graphAssert.hasDependency(childDev);
         graphAssert.hasDependency(parentDev);
         graphAssert.hasRootSize(1);
+    }
+    
+    @Test
+    public void testWorkspaceDevDependencyNotExists() throws IOException {        
+        String rootPackagePath = System.getProperty("user.dir") + "/src/test/resources/detectables/functional/npm/dev-exclusion-workspace-test/package.json";
+        String packageJsonText = FunctionalTestFiles.asString("/npm/dev-exclusion-workspace-test/package.json");
+        String packageLockText = FunctionalTestFiles.asString("/npm/dev-exclusion-workspace-test/package-lock.json");
+        
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        ExternalId workspaceDev = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "chai", "1.10.0");
+        
+        NpmPackagerResult result = createPackager(NpmDependencyType.DEV).parseAndTransform(rootPackagePath, packageJsonText, packageLockText);
+        boolean hasRootDependency = result.getCodeLocation().getDependencyGraph().getRootDependencies().stream()
+                .map(Dependency::getExternalId)
+                .anyMatch(workspaceDev::equals);
+        Assertions.assertFalse(hasRootDependency);
     }
 }

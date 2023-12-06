@@ -10,4 +10,5 @@ The following are download locations for the current version of [solution_name]:
 
 **Note:** For certain types of projects, [solution_name] automatically downloads one or more [inspectors](../components/inspectors.md) as needed.
 * In air-gap environments you may need to download the Sigma scanner via artifactory at the following location: [Sigma](${binary_repo_url_sigma})
+* Downloads of binaries and source code for NuGet Inspector are available at the following repo locations: [Binary files](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/detect-nuget-inspector/) and [Source code](https://github.com/blackducksoftware/detect-nuget-inspector)
 

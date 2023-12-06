@@ -29,9 +29,7 @@ import com.synopsys.integration.configuration.property.types.enumallnone.list.Al
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
-import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
-import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
@@ -217,6 +215,9 @@ public class DetectConfigurationFactory {
         return hss;
     }
 
+    public Boolean isComponentLocationAnalysisEnabled() {
+        return detectConfiguration.getValue(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED);
+    }
     public DetectToolFilter createToolFilter(RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
         Optional<Boolean> impactEnabled = Optional.of(detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED));
 
@@ -232,7 +233,8 @@ public class DetectConfigurationFactory {
     public RapidScanOptions createRapidScanOptions() {
         RapidCompareMode rapidCompareMode = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE);
         BlackduckScanMode scanMode= detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
-        return new RapidScanOptions(rapidCompareMode, scanMode);
+        long detectTimeout = findTimeoutInSeconds();
+        return new RapidScanOptions(rapidCompareMode, scanMode, detectTimeout);
     }
 
     public BlackduckScanMode createScanMode() {
@@ -390,9 +392,10 @@ public class DetectConfigurationFactory {
         Path localScannerInstallPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH);
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH);
         Boolean treatSkippedScansAsSuccess = detectConfiguration.getValue(DetectProperties.DETECT_FORCE_SUCCESS_ON_SKIP);
-        Boolean isStateless = BlackduckScanMode.STATELESS.equals(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE)) ||
-                BlackduckScanMode.EPHEMERAL.equals(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE));
+        Boolean isStateless = BlackduckScanMode.STATELESS.equals(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE));
         Boolean integratedMatchingEnabled = detectConfiguration.getValue(DetectProperties.DETECT_INTEGRATED_MATCHING_ENABLED);
+        RapidCompareMode compareMode = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE);
+        
 
         return new BlackDuckSignatureScannerOptions(
             signatureScannerPaths,
@@ -412,7 +415,8 @@ public class DetectConfigurationFactory {
             treatSkippedScansAsSuccess,
             isStateless,
             findReducedPersistence(),
-            integratedMatchingEnabled
+            integratedMatchingEnabled,
+            compareMode
         );
     }
 
@@ -526,5 +530,9 @@ public class DetectConfigurationFactory {
         }
 
         return directoryExclusionPatterns;
+    }
+
+    public Optional<String> getContainerScanFilePath() {
+        return Optional.ofNullable(detectConfiguration.getNullableValue(DetectProperties.DETECT_CONTAINER_SCAN_FILE));
     }
 }

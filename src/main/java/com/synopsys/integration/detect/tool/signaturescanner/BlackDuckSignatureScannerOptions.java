@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
+import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 
 public class BlackDuckSignatureScannerOptions {
     private final List<Path> signatureScannerPaths;
@@ -39,6 +40,7 @@ public class BlackDuckSignatureScannerOptions {
     private final Boolean treatSkippedScansAsSuccess;
     private final Boolean isStateless;
     private final Boolean integratedMatchingEnabled;
+    private final RapidCompareMode bomCompareMode;
 
     public BlackDuckSignatureScannerOptions(
         List<Path> signatureScannerPaths,
@@ -58,7 +60,8 @@ public class BlackDuckSignatureScannerOptions {
         Boolean treatSkippedScansAsSuccess,
         Boolean isStateless, 
         ReducedPersistence reducedPersistence,
-        Boolean integratedMatchingEnabled
+        Boolean integratedMatchingEnabled,
+        RapidCompareMode bomCompareMode
     ) {
 
         this.signatureScannerPaths = signatureScannerPaths;
@@ -79,6 +82,7 @@ public class BlackDuckSignatureScannerOptions {
         this.isStateless = isStateless;
         this.reducedPersistence = reducedPersistence;
         this.integratedMatchingEnabled = integratedMatchingEnabled;
+        this.bomCompareMode = bomCompareMode;
     }
 
     public List<Path> getSignatureScannerPaths() {
@@ -151,5 +155,9 @@ public class BlackDuckSignatureScannerOptions {
 
     public Boolean isIntegratedMatchingEnabled() {
         return integratedMatchingEnabled;
+    }
+    
+    public RapidCompareMode getBomCompareMode() {
+        return bomCompareMode;
     }
 }

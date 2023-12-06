@@ -1,14 +1,30 @@
 # Release Notes for Azure DevOps Plugin
 
+## Version 9.0.0
+**New features**
+
+* Updated the plugin to use [solution_name] 9.   
+	* [solution_name] [Release Note](../../currentreleasenotes.md)
+
+**Resolved issues**
+
+* (DETECTADO-92) Pipeline will now fail as expected when invalid proxy details are provided for Linux and Mac Agents.
+
+## Version 8.1.0
+**New features**
+
+* (DETECTADO-95) Plugin is now able to inherit the Azure agent's proxy configuration.
+	* Refer to [Configuring a Build Agent with a proxy](configuringbuildagent.md) for more information.
+
 ## Version 8.0.0
 **New features**
 
 * Updated the plugin to use [solution_name] 8.
 
 ## Version 7.0.0
-**New features**
+**New features** 
 
-* Updated the plugin to use [solution_name]7.
+* Updated the plugin to use [solution_name] 7.
 * Added the ability to run [solution_name] in AirGap mode.
 
 ## Version 6.0.0

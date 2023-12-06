@@ -73,6 +73,8 @@ public class CreateScanBatchOperation {
         signatureScannerOptions.getAdditionalArguments().ifPresent(scanJobBuilder::additionalScanArguments);
         
         scanJobBuilder.rapid(signatureScannerOptions.getIsStateless());
+        
+        scanJobBuilder.bomCompareMode(signatureScannerOptions.getBomCompareMode().toString());
 
         String projectName = projectNameVersion.getName();
         String projectVersionName = projectNameVersion.getVersion();

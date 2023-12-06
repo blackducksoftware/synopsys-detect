@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
+import com.synopsys.integration.detect.workflow.status.FormattedCodeLocation;
 import com.synopsys.integration.detect.workflow.status.OperationType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
@@ -62,8 +64,8 @@ public class IntelligentModeStepRunner {
         this.detectRunUuid = detectRunUuid;
     }
 
-    public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws OperationException {
-        stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> { //Internal: Sig scan publishes it's own status.
+    public void runOffline(NameVersion projectNameVersion, DockerTargetData dockerTargetData, BdioResult bdio) throws OperationException {
+        stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> { //Internal: Sig scan publishes its own status.
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationRunner);
             signatureScanStepRunner.runSignatureScannerOffline(detectRunUuid, projectNameVersion, dockerTargetData);
         });
@@ -78,6 +80,8 @@ public class IntelligentModeStepRunner {
             IacScanStepRunner iacScanStepRunner = new IacScanStepRunner(operationRunner);
             iacScanStepRunner.runIacScanOffline();
         });
+
+        operationRunner.generateComponentLocationAnalysisIfEnabled(bdio);
     }
 
     //TODO: Change black duck post options to a decision and stick it in Run Data somewhere.
@@ -142,6 +146,20 @@ public class IntelligentModeStepRunner {
             }
         });
 
+        stepHelper.runToolIfIncluded(
+            DetectTool.CONTAINER_SCAN,
+            "Container Scanner",
+            () -> {
+                ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData, gson);
+                logger.debug("Invoking intelligent persistent container scan.");
+                Optional<UUID> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+                scanId.ifPresent(uuid -> scanIdsToWaitFor.add(uuid.toString()));
+                Set<String> containerScanCodeLocations = new HashSet<>();
+                containerScanCodeLocations.add(containerScanStepRunner.getCodeLocationName());
+                codeLocationAccumulator.addNonWaitableCodeLocation(containerScanCodeLocations);
+            }
+        );
+
         stepHelper.runToolIfIncludedWithCallbacks(
             DetectTool.IMPACT_ANALYSIS,
             "Vulnerability Impact Analysis",
@@ -165,6 +183,7 @@ public class IntelligentModeStepRunner {
                 uploadCorrelatedScanCounts(blackDuckRunData, codeLocationAccumulator, detectRunUuid);
             });
         }
+        operationRunner.attemptToGenerateComponentLocationAnalysisIfEnabled();
 
         stepHelper.runAsGroup("Wait for Results", OperationType.INTERNAL, () -> {
             // Calculate code locations. We do this even if we don't wait as we want to report code location data 
@@ -235,12 +254,25 @@ public class IntelligentModeStepRunner {
         Set<String> allCodeLocationNames = new HashSet<>(codeLocationAccumulator.getNonWaitableCodeLocations());
         CodeLocationWaitData waitData = operationRunner.calculateCodeLocationWaitData(codeLocationAccumulator.getWaitableCodeLocations());
         allCodeLocationNames.addAll(waitData.getCodeLocationNames());
-        operationRunner.publishCodeLocationNames(allCodeLocationNames);
+        
+        Set<FormattedCodeLocation> allCodeLocationData = new HashSet<>();
+        for (String codeLocationName : allCodeLocationNames) {
+            FormattedCodeLocation codeLocation = new FormattedCodeLocation(codeLocationName, null, null);
+            allCodeLocationData.add(codeLocation);
+        }
+        
+        operationRunner.publishCodeLocationData(allCodeLocationData);
         return new CodeLocationResults(allCodeLocationNames, waitData);
     }
 
+    private boolean shouldPublishBomLinkForTool(DetectToolFilter detectToolFilter) {
+        return detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN) ||
+            detectToolFilter.shouldInclude(DetectTool.CONTAINER_SCAN) ||
+            detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN);
+    }
+
     private void publishPostResults(BdioResult bdioResult, ProjectVersionWrapper projectVersionWrapper, DetectToolFilter detectToolFilter) {
-        if ((!bdioResult.getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
+        if ((!bdioResult.getUploadTargets().isEmpty() || shouldPublishBomLinkForTool(detectToolFilter))) {
             Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)
                 .map(ProjectVersionWrapper::getProjectVersionView)
                 .flatMap(projectVersionView -> projectVersionView.getFirstLinkSafely(ProjectVersionView.COMPONENTS_LINK))

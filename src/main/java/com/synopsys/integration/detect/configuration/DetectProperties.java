@@ -44,7 +44,6 @@ import com.synopsys.integration.configuration.property.types.string.StringProper
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
-import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVersion;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
@@ -86,7 +85,7 @@ public class DetectProperties {
         BooleanProperty.newBuilder("blackduck.offline.mode", false)
             .setInfo("Offline Mode", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
-                "This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
+                "This can disable Black Duck communication - if set to true, Synopsys Detect will not upload BDIO files, or check policies, and it will not download and install the signature scanner. Note that the path to a local instance of the scanner can be provided using the -detect.blackduck.signature.scanner.local.path parameter.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
 
@@ -257,7 +256,9 @@ public class DetectProperties {
         NullablePathProperty.newBuilder("detect.conan.lockfile.path")
             .setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp(
-                "The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
+                "The path to the conan lockfile to apply when running 'conan info' to get the dependency graph.",
+                "If set, the value will be used by CLI and lockfile detectors to determine the component versions and/or relationships.'"
+            )
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -313,6 +314,14 @@ public class DetectProperties {
             .setHelp(
                 "When binary scan filename patterns are being used to search for binary files to scan, this property sets the depth at which Detect will search for files (that match those patterns) to upload for binary scan analysis.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_SCAN)
+            .build();
+
+    public static final NullableStringProperty DETECT_CONTAINER_SCAN_FILE =
+        NullableStringProperty.newBuilder("detect.container.scan.file.path")
+            .setInfo("Container Scan Target", DetectPropertyFromVersion.VERSION_9_1_0)
+            .setHelp(
+                "If specified, this file and this file only will be uploaded for container scan analysis. The CONTAINER_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the CONTAINER_SCAN tool is invoked.")
+            .setGroups(DetectGroup.CONTAINER_SCANNER, DetectGroup.SOURCE_PATH)
             .build();
 
     // TODO: Consider removing environment sourcing code in 9.0.0. IDETECT-3167
@@ -847,7 +856,7 @@ public class DetectProperties {
             .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
                 createTypeFilterHelpText("Gradle configuration types"),
-                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
+                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/8.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
             )
             .setExample(GradleConfigurationType.UNRESOLVED.name())
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
@@ -893,7 +902,7 @@ public class DetectProperties {
         StringListProperty.newBuilder("detect.excluded.directories", emptyList())
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
-                "A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude.",
+                "A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude. Caution should be exercised when including this parameter on Windows, as the command length generated may exceed OS limitations.",
                 "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, will not be searched to find files for binary scanning when property detect.binary.scan.file.name.patterns is set, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
@@ -906,8 +915,8 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.excluded.directories.defaults.disabled", false)
             .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
-                "If false, Detect will exclude the default directory names. See the detailed help for more information.",
-                "If false, the following directories will be excluded by Detect when searching for detectors: __MACOX, bin, build, .git, .gradle, .yarn, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, node_modules, .synopsys."
+                "If false, Detect will exclude the default directory names. See the detailed help for more information. Caution should be exercised when including this parameter on Windows, as the commmand length generated may exceed OS limitations.",
+                "If false, the following directories will be excluded by Detect when searching for detectors: __MACOX, bin, build, .git, .gradle, .yarn, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, gradle, node_modules, .synopsys."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -938,6 +947,15 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
+
+    public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED =
+            BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
+                    .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
+                    .setHelp(
+                            "If set to true, Detect will save an output file named 'components-with-locations.json' in the Scan subdirectory detailing where in the project's source code OSS components are declared.",
+                            "All components will be included when using Synopsys Detect in offline mode. Only policy violating components will be included for Rapid and Stateless Scan modes.")
+                    .setGroups(DetectGroup.GENERAL)
+                    .build();
 
     public static final AllEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
         AllEnumListProperty.newBuilder("detect.included.detector.types", AllEnum.ALL, DetectorType.class)
@@ -1723,7 +1741,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.RAPID_SCAN)
             .setCategory(DetectCategory.Advanced)
-            .build().deprecateValue(BlackduckScanMode.EPHEMERAL, "Replace with STATELESS");
+            .build();
 
     // TODO check/adjust from version once we know
     public static final BooleanProperty DETECT_INTEGRATED_MATCHING_ENABLED =
@@ -1769,25 +1787,13 @@ public class DetectProperties {
             NullableStringProperty.newBuilder("detect.scaaas.scan.path")
             .setInfo("SCAAAS Scan Target", DetectPropertyFromVersion.VERSION_8_8_0)
             .setHelp(
-                "This file will be uploaded to the BDBA worker for scan analysis in an SCA as a service environment.")            
+                "Internal use only. Specified file will be uploaded to the BDBA worker for scan analysis in an SCA as a service environment.")            
             .setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH)
             .build();
     
     //#endregion Active Properties
 
     //#region Deprecated Properties
-
-    @Deprecated
-    public static final BooleanProperty DETECT_DIAGNOSTIC_EXTENDED =
-        BooleanProperty.newBuilder("detect.diagnostic.extended", false)
-            .setInfo("Diagnostic Mode Extended", DetectPropertyFromVersion.VERSION_6_5_0)
-            .setHelp("When enabled, Synopsys Detect performs the actions of --detect.diagnostic, but also includes relevant files such as lock files and build artifacts.")
-            .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
-            .setDeprecated(
-                "This property is being removed. Use property detect.diagnostic instead. There is no longer any distinction between extended and non-extended diagnostic zip files.",
-                DetectMajorVersion.NINE
-            )
-            .build();
 
     // Can't take in the DetectProperty<?> due to an illegal forward reference :(
     private static String createTypeFilterHelpText(String exclusionTypePlural) {

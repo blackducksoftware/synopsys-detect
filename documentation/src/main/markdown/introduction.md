@@ -1,6 +1,6 @@
-# Introduction to Detect
+# Introduction to Synopsys Detect
 
-[solution_name] is [blackduck_product_name]'s intelligent scan client that scans code bases in your projects and folders to perform compositional analysis. [solution_name] sends scan results to [blackduck_product_name], which generates risk analysis when identifying open-source components, licenses, and security vulnerabilities.
+[solution_name] is an intelligent scan client that analyzes code in your projects and associated folders to perform compositional analysis. [solution_name] can be configured to send scan results to [blackduck_product_name], which generates risk analysis when identifying open-source components, licenses, and security vulnerabilities.
 
 [solution_name] can be used in both connected and air gap modes.  
 
@@ -8,15 +8,15 @@
 
 * [solution_name] integrates with development tools used throughout the SDLC (software development life cycle) and automatically detects resources to optimize its scan methodology.
 
-* [solution_name] provides scanning capabilities to [blackduck_product_name] to help identify open-source components, licenses, and security vulnerabilities. This is achieved through a variety of detection methods such as package manager inspection, file system based signature scanning of source directories and files, Docker image inspection, and binary analysis.
+* [solution_name] provides scanning capabilities for [blackduck_product_name] to help identify open-source components, licenses, and security vulnerabilities. This is achieved through a variety of detection methods such as package manager inspection, file system based signature scanning of source directories and files, Docker image inspection, and binary analysis.
 
 * [solution_name] provides the source of information for [blackduck_product_name] to analyze open-source components and find vulnerabilities in open-source components and containers. Using this type of analysis, you can minimize security, compliance, and code quality risks; you can monitor for new vulnerabilities throughout your development cycle, and you can set and enforce open-source use and security policies.
 
-* Runs on Windows, Linux, and macOS. It is available through GitHub, under the permissive Apache License, Version 2.0 and does not require pre-installation or configuration.
+* Runs on Windows, Linux, and macOS. It is available through GitHub, under the permissive Apache License, Version 2.0 and does not require pre-installation or extensive configuration.
 
 * Supports scanning Docker images by identifying open-source libraries and code within the images, using both signature scanning and the package manager analysis techniques.  
 
-## [solution_name] functionality consolidation.  
+## [solution_name] functionality consolidation.   
 
 [solution_name] consolidates the functionality of [blackduck_product_name], package managers, and continuous integration plugin tools to perform the following tasks:  
 

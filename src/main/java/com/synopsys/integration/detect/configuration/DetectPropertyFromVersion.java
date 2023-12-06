@@ -42,7 +42,9 @@ public enum DetectPropertyFromVersion implements PropertyVersion {
     VERSION_8_2_0("8.2.0"),
     VERSION_8_3_0("8.3.0"),
     VERSION_8_5_0("8.5.0"),
-    VERSION_8_8_0("8.8.0");
+    VERSION_8_8_0("8.8.0"),
+    VERSION_8_11_0("8.11.0"),
+    VERSION_9_1_0("9.1.0");
 
     private final String version;
 

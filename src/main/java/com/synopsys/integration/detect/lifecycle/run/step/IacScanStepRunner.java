@@ -14,6 +14,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.bdio2.Bdio2FileUploadService;
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
+import com.synopsys.integration.detect.Application;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
@@ -134,7 +135,7 @@ public class IacScanStepRunner {
         );
         operationRunner.createAggregateBdio2File(detectRunUuid, codeLocation, Bdio.ScanType.INFRASTRUCTURE_AS_CODE);
         UploadTarget uploadTarget = UploadTarget.createDefault(codeLocation.getProjectNameVersion(), codeLocation.getCodeLocationName(), codeLocation.getAggregateFile());
-        return bdio2FileUploadService.uploadFile(uploadTarget, operationRunner.calculateDetectTimeout(), false, false).getScanId();
+        return bdio2FileUploadService.uploadFile(uploadTarget, operationRunner.calculateDetectTimeout(), false, false, Application.START_TIME).getScanId();
     }
 
     private AggregateCodeLocation overrideAggregateCodeLocationName(String codeLocationNameOverride, AggregateCodeLocation original) {

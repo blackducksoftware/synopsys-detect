@@ -1,6 +1,6 @@
 # Azure DevOps (ADO) Plugin
 
-The [solution_name] for Azure DevOps plugin, formerly known as Black Duck Detect plugin for TFS/VSTS, is architected to seamlessly integrate [solution_name] with Azure DevOps build and release pipelines. [solution_name] makes it easier to set up and scan code bases using a variety of languages and package managers.
+The [solution_name] for Azure DevOps plugin is architected to seamlessly integrate [solution_name] with Azure DevOps build and release pipelines. [solution_name] makes it easier to set up and scan code bases using a variety of languages and package managers.
 
 The [solution_name] plugin for Azure DevOps supports native scanning in your Azure DevOps environment to run Software Composition Analysis (SCA) on your code.
 
@@ -11,7 +11,7 @@ As a Synopsys and Azure DevOps user, [solution_name] Extension for Azure DevOps 
 
 Using the [solution_name] Extension for Azure DevOps together with [blackduck_product_name] enables you to use Azure DevOps to automatically create [blackduck_product_name] projects from your Azure DevOps projects.
 
-**Note:** The Azure plugin currently supports [solution_name] \8.
+**Note:** The Azure plugin currently supports [solution_name] 9.X.
 
 ## Invoking [solution_name]
 Synopsys recommends invoking [solution_name] from the CI (build) pipeline.  Scanning during CI enables [solution_name] to break your application build, which is effective for enforcing policies like preventing the use of disallowed or vulnerable components.

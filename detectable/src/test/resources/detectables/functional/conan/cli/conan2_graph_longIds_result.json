@@ -1,0 +1,48 @@
+{
+  "rootExternalDataIds": [
+    "http:conan/poco/1.9.4%40_%2F_%23f7cfa1f609e6ddef0166efae9d7a479f%3Af4f3123eb80280372fcceb42428acd7ec3cbdebf%23eeaf2ba5d2d2457a0ad75c745aa847db"
+  ],
+  "externalDataIdRelationships": {
+    "http:conan/pcre/8.45%40_%2F_%2364cdfd792761c32817cd31d7967c3709%3Ad0b69e3560697da6b2fa1cddb773f70af354ccca%236b15e908057c2f771d37fe011a5b640d": [
+      "http:conan/zlib/1.2.13%40_%2F_%2397d5730b529b4224045fe7090592d4c1%3A76f7d863f21b130b4e6527af3b1d430f7f8edbea%236be82fa9a9fc05271dded3cecf850146",
+      "http:conan/bzip2/1.0.8%40_%2F_%23411fc05e80d47a89045edc1ee6f23c1d%3A0b4c8358bc672fa0c1938091160adbac30ea0114%23f6927336f9bb990382201b148e6a2d3f"
+    ],
+    "http:conan/poco/1.9.4%40_%2F_%23f7cfa1f609e6ddef0166efae9d7a479f%3Af4f3123eb80280372fcceb42428acd7ec3cbdebf%23eeaf2ba5d2d2457a0ad75c745aa847db": [
+      "http:conan/pcre/8.45%40_%2F_%2364cdfd792761c32817cd31d7967c3709%3Ad0b69e3560697da6b2fa1cddb773f70af354ccca%236b15e908057c2f771d37fe011a5b640d",
+      "http:conan/zlib/1.2.13%40_%2F_%2397d5730b529b4224045fe7090592d4c1%3A76f7d863f21b130b4e6527af3b1d430f7f8edbea%236be82fa9a9fc05271dded3cecf850146",
+      "http:conan/sqlite3/3.40.1%40_%2F_%2342e44d48d880b6520ae0fea7dc51b3da%3Ae44b731f001528f1486a0617762703ff7e27ce03%231b7632e2ea384b9f4ecf9fb41705ba14",
+      "http:conan/expat/2.5.0%40_%2F_%2391e43e4544923e4c934bfad1fa4306f9%3A1fac5465a8d26126ceb6fdaa3fa619f83d95efd2%23d7731ed32fed3a48500d4e200dd88c27",
+      "http:conan/openssl/1.1.1t%40_%2F_%2355e398751ff5310a8525645c99c81495%3Ac7aae788dadfdbcd87aa5fe0742eab770c0811cd%23a63ef7c23626b03339b190cc370223d9"
+    ]
+  },
+  "dependencySummaries": {
+    "http:conan/pcre/8.45%40_%2F_%2364cdfd792761c32817cd31d7967c3709%3Ad0b69e3560697da6b2fa1cddb773f70af354ccca%236b15e908057c2f771d37fe011a5b640d": {
+      "name": "pcre",
+      "version": "8.45"
+    },
+    "http:conan/poco/1.9.4%40_%2F_%23f7cfa1f609e6ddef0166efae9d7a479f%3Af4f3123eb80280372fcceb42428acd7ec3cbdebf%23eeaf2ba5d2d2457a0ad75c745aa847db": {
+      "name": "poco",
+      "version": "1.9.4"
+    },
+    "http:conan/zlib/1.2.13%40_%2F_%2397d5730b529b4224045fe7090592d4c1%3A76f7d863f21b130b4e6527af3b1d430f7f8edbea%236be82fa9a9fc05271dded3cecf850146": {
+      "name": "zlib",
+      "version": "1.2.13"
+    },
+    "http:conan/sqlite3/3.40.1%40_%2F_%2342e44d48d880b6520ae0fea7dc51b3da%3Ae44b731f001528f1486a0617762703ff7e27ce03%231b7632e2ea384b9f4ecf9fb41705ba14": {
+      "name": "sqlite3",
+      "version": "3.40.1"
+    },
+    "http:conan/bzip2/1.0.8%40_%2F_%23411fc05e80d47a89045edc1ee6f23c1d%3A0b4c8358bc672fa0c1938091160adbac30ea0114%23f6927336f9bb990382201b148e6a2d3f": {
+      "name": "bzip2",
+      "version": "1.0.8"
+    },
+    "http:conan/expat/2.5.0%40_%2F_%2391e43e4544923e4c934bfad1fa4306f9%3A1fac5465a8d26126ceb6fdaa3fa619f83d95efd2%23d7731ed32fed3a48500d4e200dd88c27": {
+      "name": "expat",
+      "version": "2.5.0"
+    },
+    "http:conan/openssl/1.1.1t%40_%2F_%2355e398751ff5310a8525645c99c81495%3Ac7aae788dadfdbcd87aa5fe0742eab770c0811cd%23a63ef7c23626b03339b190cc370223d9": {
+      "name": "openssl",
+      "version": "1.1.1t"
+    }
+  }
+}

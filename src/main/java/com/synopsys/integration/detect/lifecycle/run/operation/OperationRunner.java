@@ -6,25 +6,26 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation;
+import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detector.base.DetectorType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.blackducksoftware.bdio2.Bdio;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
@@ -53,6 +54,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectorToolOptions;
+import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -107,6 +109,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.operation.PublishSi
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOperation;
 import com.synopsys.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
+import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio2FileOperation;
@@ -165,6 +168,7 @@ import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecide
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
+import com.synopsys.integration.detect.workflow.status.FormattedCodeLocation;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
@@ -186,8 +190,16 @@ import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
-
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
+
+import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
+import com.synopsys.integration.componentlocator.beans.Component;
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.BdioToComponentListTransformer;
+import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.SUPPORTED_DETECTORS_LOG_MSG;
+import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.OPERATION_NAME;
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.ScanResultToComponentListTransformer;
+
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectDetectableFactory detectDetectableFactory;
@@ -215,6 +227,12 @@ public class OperationRunner {
     private final OperationAuditLog auditLog;
     private static final int[] LIMITED_FIBONACCI_SEQUENCE = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
     private static final int MIN_POLLING_INTERVAL_THRESHOLD_IN_SECONDS = 5;
+    private static final String DEVELOPER_SCAN_ENDPOINT = ApiDiscovery.DEVELOPER_SCANS_PATH.getPath();
+    private static final String DEVELOPER_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
+    private static final String INTELLIGENT_SCAN_ENDPOINT = ApiDiscovery.INTELLIGENT_PERSISTENCE_SCANS_PATH.getPath();
+    private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
+    public static final ImmutableList<Integer> RETRYABLE_AFTER_WAIT_HTTP_EXCEPTIONS = ImmutableList.of(408, 429, 502, 503, 504);
+    public static final ImmutableList<Integer> RETRYABLE_WITH_BACKOFF_HTTP_EXCEPTIONS = ImmutableList.of(425, 500);
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -250,6 +268,10 @@ public class OperationRunner {
         this.extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         this.rapidScanResultAggregator = new RapidScanResultAggregator();
         this.auditLog = new OperationAuditLog(utilitySingletons.getOperationWrapper(), operationSystem);
+    }
+
+    public CodeLocationNameManager getCodeLocationNameManager() {
+        return codeLocationNameManager;
     }
 
     public final Optional<DetectableTool> checkForDocker() throws OperationException {//TODO: refactor bazel+docker out of detectable
@@ -327,6 +349,10 @@ public class OperationRunner {
         auditLog.namedPublic("Phone Home", () -> blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome));
     }
 
+    public DirectoryManager getDirectoryManager() {
+        return directoryManager;
+    }
+
     //Rapid
     public UUID initiateStatelessBdbaScan(BlackDuckRunData blackDuckRunData) throws OperationException {
         return auditLog.namedInternal("Initial Stateless BDBA Scan", () -> {
@@ -339,14 +365,129 @@ public class OperationRunner {
                     );
             }
 
+            String uploadHeaderOperationName = "Upload BDIO Header to Initiate Scan";
+            return uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeader, uploadHeaderOperationName);
+        });
+    }
+
+
+    public String getScanServicePostEndpoint() {
+        if (detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT) {
+            return INTELLIGENT_SCAN_ENDPOINT;
+        }
+        return DEVELOPER_SCAN_ENDPOINT;
+    }
+
+    public String getScanServicePostContentType() {
+        if (detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT) {
+            return INTELLIGENT_SCAN_CONTENT_TYPE;
+        }
+        return DEVELOPER_SCAN_CONTENT_TYPE;
+    }
+
+    public Optional<String> getContainerScanFilePath() {
+        return detectConfigurationFactory.getContainerScanFilePath();
+    }
+
+    public File downloadContainerImage(Gson gson, File downloadDirectory, String containerImageUri) throws DetectUserFriendlyException, IntegrationException, IOException {
+        String targetPathName = downloadDirectory.toString().concat("/targetImage");
+        ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
+        ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
+        return artifactResolver.downloadArtifact(new File(targetPathName), containerImageUri);
+    }
+
+    public File getContainerScanImage(Gson gson, File downloadDirectory) throws OperationException {
+        return auditLog.namedPublic("Retrieve Container Scan Image File", () -> {
+            Optional<String> containerImageFilePath = getContainerScanFilePath();
+            File containerImageFile = null;
+            if (containerImageFilePath.isPresent()) {
+                String containerImageUri = containerImageFilePath.get();
+                if (containerImageUri.startsWith("http")) {
+                    containerImageFile = downloadContainerImage(gson, downloadDirectory, containerImageUri);
+                } else {
+                    containerImageFile = new File(containerImageUri);
+                }
+            }
+            return containerImageFile;
+        });
+    }
+
+    public JsonObject createContainerScanImageMetadata(UUID scanId, NameVersion projectNameVersion) {
+        String scanPersistence = detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT ? "STATEFUL" : "STATELESS";
+        String projectGroupName = detectConfigurationFactory.createProjectGroupOptions().getProjectGroup();
+
+        JsonObject imageMetadataObject = new JsonObject();
+        imageMetadataObject.addProperty("scanId", scanId.toString());
+        imageMetadataObject.addProperty("scanType", "CONTAINER");
+        imageMetadataObject.addProperty("scanPersistence", scanPersistence);
+        imageMetadataObject.addProperty("projectName", projectNameVersion.getName());
+        imageMetadataObject.addProperty("projectVersionName", projectNameVersion.getVersion());
+        imageMetadataObject.addProperty("projectGroupName", projectGroupName);
+
+        return imageMetadataObject;
+    }
+
+    // Generic method to POST a file to /api/storage/containers endpoint of storage service
+    public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType, String operationName)
+        throws OperationException {
+        return auditLog.namedPublic(operationName, () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-            HttpUrl postUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString() + "/api/developer-scans");
+            HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                .postFile(payloadFile, ContentType.create(postContentType))
+                .buildBlackDuckResponseRequest(postUrl);
+
+            try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+                return response;
+            } catch (IntegrationException e) {
+                logger.trace("Could not execute file upload request to storage service.");
+                throw new IntegrationException("Could not execute file upload request to storage service.", e);
+            } catch (IOException e) {
+                logger.trace("I/O error occurred during file upload request.");
+                throw new IOException("I/O error occurred during file upload request to storage service.", e);
+            }
+        });
+    }
+
+    public Response uploadJsonToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, String jsonPayload, String postContentType, String operationName)
+        throws OperationException {
+
+        return auditLog.namedInternal(operationName, () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+            HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
 
             BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-                    .postFile(bdioHeader, ContentType.create("application/vnd.blackducksoftware.scan-evidence-1+protobuf"))
-                    .buildBlackDuckResponseRequest(postUrl);
+                .postString(jsonPayload, ContentType.create(postContentType))
+                .buildBlackDuckResponseRequest(postUrl);
+
+            try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+                return response;
+            } catch (IntegrationException e) {
+                logger.trace("Could not execute JSON upload request to storage service.");
+                throw new IntegrationException("Could not execute JSON upload request to storage service.", e);
+            } catch (IOException e) {
+                logger.trace("I/O error occurred during JSON upload request.");
+                throw new IOException("I/O error occurred during JSON upload request to storage service.", e);
+            }
+        });
+    }
+
+    public UUID uploadBdioHeaderToInitiateScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile, String operationName) throws OperationException {
+        return auditLog.namedInternal(operationName, () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+            String scanServicePostEndpoint = getScanServicePostEndpoint();
+            HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(scanServicePostEndpoint);
+
+            String scanServicePostContentType = getScanServicePostContentType();
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                .postFile(bdioHeaderFile, ContentType.create(scanServicePostContentType))
+                .buildBlackDuckResponseRequest(postUrl);
 
             HttpUrl responseUrl = blackDuckApiClient.executePostRequestAndRetrieveURL(buildBlackDuckResponseRequest);
             String path = responseUrl.uri().getPath();
@@ -362,7 +503,7 @@ public class OperationRunner {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
-        String contentType = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
+        final String contentType = DEVELOPER_SCAN_CONTENT_TYPE;
         HttpUrl putUrl = new HttpUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().toString()
                 + "/api/developer-scans/" + bdScanId);
 
@@ -455,6 +596,100 @@ public class OperationRunner {
     }
     //End Rapid
 
+    private void failComponentLocationAnalysisOperationTask(String reason) throws OperationException {
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        logger.info(reason);
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        auditLog.namedPublic(
+                OPERATION_NAME,
+                () -> new GenerateComponentLocationAnalysisOperation().failComponentLocationAnalysisOperation()
+        );
+    }
+
+    /**
+     * Given a BDIO, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
+     * every detected component's {@link ExternalId} along with its declaration location when applicable.
+     * @param bdio
+     * @throws OperationException
+     */
+    public void generateComponentLocationAnalysisIfEnabled(BdioResult bdio) throws OperationException {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+            if (bdio.getCodeLocationNamesResult().getCodeLocationNames().isEmpty()) {
+                failComponentLocationAnalysisOperationTask("Component Location Analysis requires non-empty BDIO results. Skipping location analysis.");
+            } else if (!applicableDetectorsIncludeAtLeastOneSupportedDetector(bdio.getApplicableDetectorTypes())) {
+                failComponentLocationAnalysisOperationTask(SUPPORTED_DETECTORS_LOG_MSG);
+            } else {
+                Set<Component> componentsSet = new BdioToComponentListTransformer().transformBdioToComponentSet(bdio);
+                if (componentsSet.isEmpty()) {
+                    failComponentLocationAnalysisOperationTask("Component Location Analysis requires at least one dependency in BDIO results. Skipping location analysis.");
+                } else {
+                    auditLog.namedPublic(
+                            OPERATION_NAME,
+                            () -> new GenerateComponentLocationAnalysisOperation().locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Given a Rapid/Stateless Detector Scan result, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
+     * every reported component's {@link ExternalId} along with its declaration location and upgrade guidance information when applicable.
+     * @param rapidFullResults
+     * @throws OperationException
+     */
+    public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults, BdioResult bdio) throws OperationException {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+            if (rapidFullResults.isEmpty()) {
+                failComponentLocationAnalysisOperationTask("Component Location Analysis requires non-empty Rapid/Stateless Scan results. Skipping location analysis.");
+            } else if (!applicableDetectorsIncludeAtLeastOneSupportedDetector(bdio.getApplicableDetectorTypes())) {
+                failComponentLocationAnalysisOperationTask(SUPPORTED_DETECTORS_LOG_MSG);
+            } else {
+                Set<Component> componentsSet = new ScanResultToComponentListTransformer().transformScanResultToComponentList(rapidFullResults);
+                if (componentsSet.isEmpty()) {
+                    failComponentLocationAnalysisOperationTask("Component Location Analysis requires at least one dependency in Rapid/Stateless Detector Scan results. Skipping location analysis.");
+                } else {
+                    auditLog.namedPublic(
+                            OPERATION_NAME,
+                            () -> (new GenerateComponentLocationAnalysisOperation()).locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                    );
+                }
+            }
+        }
+    }
+
+    private boolean applicableDetectorsIncludeAtLeastOneSupportedDetector(Set<DetectorType> applicableDetectors) {
+        if (SUPPORTED_DETECTORS.isEmpty()) {
+            // Idler CLL will always give an empty list
+            return true;
+        }
+        Set<String> applicableDetectorsAsStrings = getApplicableDetectorTypesAsStrings(applicableDetectors);
+        applicableDetectorsAsStrings.retainAll(SUPPORTED_DETECTORS);
+        return !applicableDetectorsAsStrings.isEmpty();
+    }
+
+    private Set<String> getApplicableDetectorTypesAsStrings(Set<DetectorType> applicableDetectors) {
+        Set<String> applicableDetectorsAsStrings = new HashSet<>();
+        for (DetectorType detectorType : applicableDetectors) {
+            applicableDetectorsAsStrings.add(detectorType.toString());
+        }
+        return applicableDetectorsAsStrings;
+    }
+
+    /**
+     * Since component location analysis is not supported for online Intelligent scans in 8.11, an appropriate console
+     * msg is logged and status=FAILURE is recorded in the status.json file
+     * @throws OperationException
+     */
+    public void attemptToGenerateComponentLocationAnalysisIfEnabled() throws OperationException {
+        if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
+            auditLog.namedPublic(
+                    OPERATION_NAME,
+                    () -> (new GenerateComponentLocationAnalysisOperation()).locateComponentsForOnlineIntelligentScan()
+            );
+        }
+    }
+
     //Post actions
     //End post actions
 
@@ -472,10 +707,10 @@ public class OperationRunner {
         return auditLog.namedInternal("Calculate Code Location Wait Data", () -> new CodeLocationWaitCalculator().calculateWaitData(codeLocationCreationDatas));
     }
 
-    public final void publishCodeLocationNames(Set<String> codeLocationNames) throws OperationException {
+    public final void publishCodeLocationData(Set<FormattedCodeLocation> codeLocationData) throws OperationException {
         auditLog.namedInternal(
             "Publish CodeLocationsCompleted Event",
-            () -> codeLocationEventPublisher.publishCodeLocationsCompleted(codeLocationNames)
+            () -> codeLocationEventPublisher.publishCodeLocationsCompleted(codeLocationData)
         );
     }
 
@@ -912,6 +1147,16 @@ public class OperationRunner {
         exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
     }
 
+    public void publishContainerFailure(Exception e) {
+        logger.error("Container scan failure: {}", e.getMessage());
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.CONTAINER_SCAN, StatusType.FAILURE));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "CONTAINER_SCAN");
+    }
+
+    public void publishContainerSuccess() {
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.CONTAINER_SCAN, StatusType.SUCCESS));
+    }
+
     public void publishImpactFailure(Exception e) {
         logger.error("Impact analysis failure: {}", e.getMessage());
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.IMPACT_ANALYSIS, StatusType.FAILURE));
@@ -1139,7 +1384,7 @@ public class OperationRunner {
         }
     }
 
-    public int calculateMaxWaitInSeconds(int fibonacciSequenceIndex) {
+    public static int calculateMaxWaitInSeconds(int fibonacciSequenceIndex) {
         int fibonacciSequenceLastIndex = LIMITED_FIBONACCI_SEQUENCE.length - 1;
         if (fibonacciSequenceIndex > fibonacciSequenceLastIndex) {
             return LIMITED_FIBONACCI_SEQUENCE[fibonacciSequenceLastIndex];
@@ -1164,5 +1409,16 @@ public class OperationRunner {
                 calculateMaxWaitInSeconds(fibonacciSequenceIndex)
             );
         });
+    }
+
+    public UUID getScanIdFromScanUrl(HttpUrl blackDuckScanUrl) {
+        String url = blackDuckScanUrl.toString();
+        UUID scanId = UUID.fromString(url.substring(url.lastIndexOf("/") + 1));
+
+        return scanId;
+    }
+    
+    public DetectConfigurationFactory getDetectConfigurationFactory() {
+        return this.detectConfigurationFactory;
     }
 }

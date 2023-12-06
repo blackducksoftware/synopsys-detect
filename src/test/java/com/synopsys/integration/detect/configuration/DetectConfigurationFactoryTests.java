@@ -15,6 +15,7 @@ import com.synopsys.integration.common.util.Bdo;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorSearchExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.rest.credentials.Credentials;
 
@@ -77,15 +78,43 @@ public class DetectConfigurationFactoryTests {
 
         Assertions.assertTrue(blackDuckSignatureScannerOptions.getIsStateless());
     }
-
+    
     @Test
-    public void testIsEphemeralIsEnabled() {
+    public void testNoPersistenceModeSpecified() {
         DetectConfigurationFactory factory = factoryOf(
-                Pair.of(DetectProperties.DETECT_TOOLS, DetectTool.SIGNATURE_SCAN.toString()),
-                Pair.of(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, BlackduckScanMode.EPHEMERAL.toString()));
+                Pair.of(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE, RapidCompareMode.BOM_COMPARE_STRICT.toString()));
         
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = factory.createBlackDuckSignatureScannerOptions();
 
-        Assertions.assertTrue(blackDuckSignatureScannerOptions.getIsStateless());
+        Assertions.assertTrue(RapidCompareMode.BOM_COMPARE_STRICT.equals(blackDuckSignatureScannerOptions.getBomCompareMode()));
+    }
+
+    @Test
+    public void testGetContainerScanFilePathIfUrlProvided() {
+        String imageUrl = "https://artifactory.container.com/image.tar";
+        DetectConfigurationFactory factory = factoryOf(
+            Pair.of(DetectProperties.DETECT_TOOLS, DetectTool.CONTAINER_SCAN.toString()),
+            Pair.of(DetectProperties.DETECT_CONTAINER_SCAN_FILE, imageUrl));
+        Optional<String> containerScanFilePath = factory.getContainerScanFilePath();
+
+        Assertions.assertTrue(containerScanFilePath.isPresent());
+        containerScanFilePath.ifPresent(s -> Assertions.assertEquals(s, imageUrl));
+        Assertions.assertFalse(containerScanFilePath.toString().startsWith("/"));
+        Assertions.assertFalse(containerScanFilePath.toString().endsWith("/"));
+    }
+
+    @Test
+    public void testGetContainerScanFilePathIfLocalPathProvided() {
+        String imageFilePath = "src/test/resources/tool/container.scan/testImage.tar";
+        DetectConfigurationFactory factory = factoryOf(
+            Pair.of(DetectProperties.DETECT_TOOLS, DetectTool.CONTAINER_SCAN.toString()),
+            Pair.of(DetectProperties.DETECT_CONTAINER_SCAN_FILE, imageFilePath));
+        Optional<String> containerScanFilePath = factory.getContainerScanFilePath();
+
+        Assertions.assertTrue(containerScanFilePath.isPresent());
+        containerScanFilePath.ifPresent(s -> Assertions.assertEquals(s, imageFilePath));
+        Assertions.assertFalse(containerScanFilePath.toString().startsWith("http"));
+        Assertions.assertFalse(containerScanFilePath.toString().startsWith("/"));
+        Assertions.assertFalse(containerScanFilePath.toString().endsWith("/"));
     }
 }
