@@ -3,7 +3,6 @@ package com.synopsys.integration.detectable.detectables.maven.cli;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,15 +35,9 @@ public class MavenCliExtractor {
         this.toolVersionLogger = toolVersionLogger;
     }
 
-    //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
     public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
         toolVersionLogger.log(directory, mavenExe);
-        List<String> commandArguments = commandParser.parseCommandString(mavenCliExtractorOptions.getMavenBuildCommand().orElse("")).stream()
-            .filter(arg -> !arg.equals("dependency:tree"))
-            .collect(Collectors.toList());
-
-        commandArguments.add("dependency:tree");
-        commandArguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
+        List<String> commandArguments = mavenCliExtractorOptions.buildCliArguments(commandParser);
 
         ExecutableOutput mvnExecutableResult = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, mavenExe, commandArguments));
 
@@ -76,5 +69,4 @@ public class MavenCliExtractor {
         }
         return builder.build();
     }
-
 }
