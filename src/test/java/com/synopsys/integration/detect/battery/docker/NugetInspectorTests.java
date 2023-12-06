@@ -77,6 +77,7 @@ public class NugetInspectorTests {
             blackduckAssertions.hasComponents("Xamarin.UITest");
             blackduckAssertions.hasComponents("Microsoft.NET.Test.Sdk");
             blackduckAssertions.hasComponents("Microsoft.WindowsAppSDK");
+            blackduckAssertions.hasComponents("Microsoft.UI.Xaml");
         }
     }
 }
