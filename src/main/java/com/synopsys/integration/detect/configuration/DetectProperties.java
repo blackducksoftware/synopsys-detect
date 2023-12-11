@@ -1018,7 +1018,7 @@ public class DetectProperties {
             .setInfo("Maven Build Command", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "Maven command line arguments to add to the mvn/mvnw command line.",
-                "By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'"
+                "By default, Detect runs the mvn (or mvnw) command with two arguments: dependency:tree and -T1. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'. Please note that Detect will omit any thread-specifying arguments in order to ensure the accuracy of the dependency tree."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
