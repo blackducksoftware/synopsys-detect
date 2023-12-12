@@ -71,7 +71,7 @@ public class MavenCliExtractorOptions {
         }
 
         if (foundThreadArguments)
-            logger.info("Thread-specifying Maven arguments provided by the user will be omitted to ensure that the dependency tree is generated accurately using a single thread");
+            logger.info("To ensure that the dependency tree is generated with precision, user-supplied Maven thread-specifying arguments are omitted.");
 
         arguments.add("dependency:tree");
 
