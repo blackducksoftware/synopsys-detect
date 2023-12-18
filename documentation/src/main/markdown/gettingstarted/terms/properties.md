@@ -13,3 +13,5 @@ Example using properties to specify project name and [blackduck_product_name] UR
 ````
 bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --detect.project.name=MyProject --blackduck.url=https://blackduck.yourdomain.com
 ````
+
+<note type="note">When configuring [solution_name] via environment variables or configuration file, specific property handling applies. See [Using environment variables](../../configuring/envvars.md) or [Using a configuration file](../../configuring/configfile.md).</note>
