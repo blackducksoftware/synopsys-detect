@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.3.0-SIGQA1-kb_feature_branch_test'
+version = '9.3.0-SIGQA2-kb_feature_branch_test-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
