@@ -9,6 +9,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDepend
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 
 public class YarnWorkspaces {
+    public static final String WORKSPACE_VERSION_PREFIX = "workspace:";
     private final Collection<YarnWorkspace> workspaces;
     public static final YarnWorkspaces EMPTY = new YarnWorkspaces(new ArrayList<>(0));
 
@@ -25,7 +26,7 @@ public class YarnWorkspaces {
     }
 
     public Optional<YarnWorkspace> lookup(YarnLockEntry yarnLockEntry) {
-        return lookup(w -> w.matches(yarnLockEntry));
+        return lookup(w -> yarnLockEntry.matches(w.getName().orElse(""), w.getVersion().orElse(null)));
     }
 
     public Optional<YarnWorkspace> lookup(String name, String version) {

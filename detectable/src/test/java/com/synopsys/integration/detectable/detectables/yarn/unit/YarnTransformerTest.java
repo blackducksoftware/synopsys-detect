@@ -44,6 +44,7 @@ import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorksp
 import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
+import java.util.Map;
 
 @UnitTest
 class YarnTransformerTest {
@@ -126,8 +127,9 @@ class YarnTransformerTest {
         NullSafePackageJson packageJson = new NullSafePackageJson(rawPackageJson);
 
         List<YarnLockEntryId> validYarnLockEntryIds = Collections.singletonList(new YarnLockEntryId("foo", "fooFuzzyVersion-1.0"));
+        Map<String, YarnLockEntryId> idMap = new HashMap<>();
         List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
-        List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(false, validYarnLockEntryIds, "1.0", validYarnLockDependencies));
+        List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(false, validYarnLockEntryIds, idMap, "1.0", validYarnLockDependencies));
         YarnLock yarnLock = new YarnLock(null, true, yarnLockEntries);
         YarnLockResult yarnLockResult = new YarnLockResult(packageJson, YarnWorkspaces.EMPTY, yarnLock);
 
@@ -205,20 +207,24 @@ class YarnTransformerTest {
 
         // yarn.lock: foo and bar both depend on yarn
         List<YarnLockEntryId> yarnLockEntryIdsFoo = Collections.singletonList(new YarnLockEntryId("foo", "fooFuzzyVersion-1.0"));
+        Map<String, YarnLockEntryId> idMapFoo = new HashMap<>();
         List<YarnLockEntryId> yarnLockEntryIdsBar = Collections.singletonList(new YarnLockEntryId("bar", "barFuzzyVersion-1.0"));
+        Map<String, YarnLockEntryId> idMapBar = new HashMap<>();
         List<YarnLockEntryId> yarnLockEntryIdsYarn = Collections.singletonList(new YarnLockEntryId("yarn", "^1.22.4"));
+        Map<String, YarnLockEntryId> idMapYarn = new HashMap<>();
         List<YarnLockDependency> dependencyRefToYarn = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
         List<YarnLockEntry> yarnLockEntries = new LinkedList<>();
 
         if (!yarn1project) {
             List<YarnLockEntryId> projectEntryIds = Collections.singletonList(new YarnLockEntryId("project", "1.0.0"));
+            Map<String, YarnLockEntryId> idMap = new HashMap<>();
             List<YarnLockDependency> projectDependencies = new LinkedList<>();
             projectDependencies.add(new YarnLockDependency("foo", "fooFuzzyVersion-1.0", false));
             projectDependencies.add(new YarnLockDependency("bar", "barFuzzyVersion-1.0", false));
             for (NameVersion workspaceThatIsDependency : workspacesThatAreDependencies) {
                 projectDependencies.add(new YarnLockDependency(workspaceThatIsDependency.getName(), workspaceThatIsDependency.getVersion(), false));
             }
-            yarnLockEntries.add(new YarnLockEntry(false, projectEntryIds, "1.0.0", projectDependencies));
+            yarnLockEntries.add(new YarnLockEntry(false, projectEntryIds, idMap, "1.0.0", projectDependencies));
         }
         Collection<YarnWorkspace> workspacesByName = new LinkedList<>();
         List<NameVersion> allWorkspaces = new LinkedList<>(workspacesThatAreDependencies);
@@ -233,9 +239,9 @@ class YarnTransformerTest {
             addDependencyOfWorkspaceToYarnLockEntries(yarnLockEntries, workspace, workspaceDepName);
             addDependencyOfWorkspaceToYarnLockEntries(yarnLockEntries, workspace, workspaceDevDepName);
         }
-        yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsFoo, "1.0", dependencyRefToYarn));
-        yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsBar, "1.0", dependencyRefToYarn));
-        yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsYarn, "1.22.5", new LinkedList<>()));
+        yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsFoo, idMapFoo, "1.0", dependencyRefToYarn));
+        yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsBar, idMapBar, "1.0", dependencyRefToYarn));
+        yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsYarn, idMapYarn, "1.22.5", new LinkedList<>()));
         String yarnLockVersion = null;
         if (!yarn1project) {
             yarnLockVersion = "4";
@@ -251,12 +257,14 @@ class YarnTransformerTest {
             new YarnLockEntryId(workspace.getName(), workspace.getVersion()),
             new YarnLockEntryId(workspace.getName(), "workspace:packages/" + workspace.getName())
         );
-        yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsWkspEntryIds, workspace.getVersion(), dependencyRefsToWkspDeps));
+        Map<String, YarnLockEntryId> idMap = new HashMap<>();
+        yarnLockEntries.add(new YarnLockEntry(false, yarnLockEntryIdsWkspEntryIds, idMap, workspace.getVersion(), dependencyRefsToWkspDeps));
     }
 
     private void addDependencyOfWorkspaceToYarnLockEntries(List<YarnLockEntry> yarnLockEntries, NameVersion workspace, String workspaceDepName) {
         List<YarnLockEntryId> wkspDepIds = Collections.singletonList(new YarnLockEntryId(workspaceDepName, workspace.getVersion()));
-        yarnLockEntries.add(new YarnLockEntry(false, wkspDepIds, workspace.getVersion(), new LinkedList<>()));
+        Map<String, YarnLockEntryId> idMap = new HashMap<>();
+        yarnLockEntries.add(new YarnLockEntry(false, wkspDepIds, idMap, workspace.getVersion(), new LinkedList<>()));
     }
 
     private void addWorkspacePackageJson(Collection<YarnWorkspace> workspacesByName, NameVersion workspaceNameVersion, String workspaceDepName, String workspaceDevDepName) {

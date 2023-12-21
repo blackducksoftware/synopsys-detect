@@ -15,7 +15,6 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLock
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
 public class YarnWorkspace {
-    private static final String WORKSPACE_VERSION_PREFIX = "workspace:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final WorkspacePackageJson workspacePackageJson;
 
@@ -51,7 +50,7 @@ public class YarnWorkspace {
         return LazyId.fromString(
             getName().orElse(null)
                 + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR
-                + WORKSPACE_VERSION_PREFIX
+                + YarnWorkspaces.WORKSPACE_VERSION_PREFIX
                 + workspacePackageJson.getDirRelativePath()
         );
     }
@@ -89,7 +88,7 @@ public class YarnWorkspace {
 
     public boolean matches(String name, String version) {
         if (getName().orElse("").equals(name)) {
-            if (!version.startsWith(WORKSPACE_VERSION_PREFIX) && !versionMatches(version)) {
+            if (!version.startsWith(YarnWorkspaces.WORKSPACE_VERSION_PREFIX) && !versionMatches(version)) {
                 logger.trace(
                     "yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
                     name,
