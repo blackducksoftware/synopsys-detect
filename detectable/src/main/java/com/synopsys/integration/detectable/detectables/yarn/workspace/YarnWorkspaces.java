@@ -14,9 +14,9 @@ public class YarnWorkspaces {
     public static final YarnWorkspaces EMPTY = new YarnWorkspaces(new ArrayList<>(0));
 
     public YarnWorkspaces(Collection<YarnWorkspace> workspaces) {
-        for (YarnWorkspace workspace : workspaces) {
+        workspaces.forEach(workspace -> {
             workspaceMap.put(workspace.getName().orElse(""), workspace);
-        }
+        });
     }
 
     public Collection<YarnWorkspace> getWorkspaces() {
@@ -24,11 +24,7 @@ public class YarnWorkspaces {
     }
 
     public Optional<YarnWorkspace> lookup(YarnLockDependency yarnLockDependency) {
-        YarnWorkspace workspace = workspaceMap.get(yarnLockDependency.getName());
-        if (workspace != null && workspace.matches(yarnLockDependency)) {
-            return Optional.of(workspace);
-        }
-        return Optional.empty();
+        return lookup(yarnLockDependency.getName(), yarnLockDependency.getVersion());
     }
     
     public Optional<YarnWorkspace> lookup(String name, String version) {
