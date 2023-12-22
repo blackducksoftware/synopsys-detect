@@ -11,8 +11,6 @@ import com.synopsys.integration.bdio.graph.builder.LazyId;
 import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.WorkspacePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
-import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
-import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
 public class YarnWorkspace {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -53,15 +51,6 @@ public class YarnWorkspace {
                 + YarnWorkspaces.WORKSPACE_VERSION_PREFIX
                 + workspacePackageJson.getDirRelativePath()
         );
-    }
-
-    public boolean matches(YarnLockEntry yarnLockEntry) {
-        for (YarnLockEntryId yarnLockEntryId : yarnLockEntry.getIds()) {
-            if (matches(yarnLockEntryId.getName(), yarnLockEntryId.getVersion())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean matches(YarnLockDependency yarnLockDependency) {
