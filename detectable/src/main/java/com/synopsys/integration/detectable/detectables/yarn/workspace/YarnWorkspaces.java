@@ -5,12 +5,12 @@ import java.util.Collection;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class YarnWorkspaces {
     public static final String WORKSPACE_VERSION_PREFIX = "workspace:";
-    private final Map<String, YarnWorkspace> workspaceMap = new HashMap<>();
+    private final Map<String, YarnWorkspace> workspaceMap = new ConcurrentHashMap<>();
     public static final YarnWorkspaces EMPTY = new YarnWorkspaces(new ArrayList<>(0));
 
     public YarnWorkspaces(Collection<YarnWorkspace> workspaces) {
