@@ -149,7 +149,7 @@ public class RlScanStepRunner {
             UUID.randomUUID().toString(),
             // TODO this will need to be changed to a REVERSINGLABS scan when the scan container
             // can account for this.
-            ScanType.CONTAINER.name(),
+            ScanType.RL.name(),
             projectNameVersion,
             projectGroupName,
             codeLocationName);
