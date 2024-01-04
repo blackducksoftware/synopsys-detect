@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyBuilderMissingExternalIdHandler;
-import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo;
 import com.synopsys.integration.bdio.graph.builder.LazyId;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
@@ -32,14 +32,12 @@ import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorksp
 import com.synopsys.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.NameVersion;
-import java.util.ArrayList;
 
 public class YarnTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String STRING_ID_NAME_VERSION_SEPARATOR = "@";
     private final ExternalIdFactory externalIdFactory;
     private final Set<LazyId> unMatchedDependencies = new HashSet<>();
-    
     private final EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter;
 
     public YarnTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter) {
@@ -51,62 +49,67 @@ public class YarnTransformer {
         throws MissingExternalIdException {
         List<CodeLocation> codeLocations = new LinkedList<>();
         logger.debug("Adding root dependencies for project: {}:{}", yarnLockResult.getRootPackageJson().getNameString(), yarnLockResult.getRootPackageJson().getVersionString());
-        LazyExternalIdDependencyGraphBuilder rootGraphBuilder = new LazyExternalIdDependencyGraphBuilder();
-        Set<LazyId> rootLazyIds = new HashSet<>();
-        addRootNodesToGraph(rootGraphBuilder, yarnLockResult.getRootPackageJson(), yarnLockResult.getWorkspaceData(), rootLazyIds);
-        List<Dependency> rootDirectDependencies = buildGraphForProjectOrWorkspace(yarnLockResult, rootGraphBuilder, externalDependencies, rootLazyIds);
-        BasicDependencyGraph rootGraph = new BasicDependencyGraph();
-        rootDirectDependencies.stream().forEach(child -> rootGraph.addDirectDependency(child));
+        LazyBuilderMissingExternalIdHandler lazyBuilderHandler = getLazyBuilderHandler(externalDependencies);
+        ExternalIdDependencyGraphBuilder rootGraphBuilder = new ExternalIdDependencyGraphBuilder();
+        addRootDependenciesForProjectOrWorkspace(yarnLockResult, yarnLockResult.getRootPackageJson(), rootGraphBuilder);
+        DependencyGraph rootGraph = buildGraphForProjectOrWorkspace(lazyBuilderHandler, rootGraphBuilder, yarnLockResult);
         codeLocations.add(new CodeLocation(rootGraph));
-        LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
-        Set<LazyId> workspaceRootLazyIds = new HashSet<>();
+        ExternalIdDependencyGraphBuilder graphBuilder = new ExternalIdDependencyGraphBuilder();
+        DependencyGraph workspaceGraph = buildGraphForProjectOrWorkspace(lazyBuilderHandler, graphBuilder, yarnLockResult);
         for (YarnWorkspace workspace : yarnLockResult.getWorkspaceData().getWorkspaces()) {
+            logger.info("Workspace: {}", workspace.getName());
             if ((workspaceFilter == null) || workspaceFilter.shouldInclude(workspace.getWorkspacePackageJson().getDirRelativePath())) {
-                BasicDependencyGraph workspaceGraph = new BasicDependencyGraph();
                 logger.debug("Adding root dependencies for workspace: {}", workspace.getWorkspacePackageJson().getDirRelativePath());
-                addDirectNodesToGraph(graphBuilder, workspace, yarnLockResult.getWorkspaceData(), workspaceRootLazyIds);
+                addRootDependenciesForProjectOrWorkspace(yarnLockResult, workspace.getWorkspacePackageJson().getPackageJson(), graphBuilder);
                 ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspace.getWorkspacePackageJson().getDirRelativePath(), "local");
                 codeLocations.add(new CodeLocation(workspaceGraph, workspaceExternalId));
             }
         }
-
         return codeLocations;
     }
-
-    private List<Dependency> buildGraphForProjectOrWorkspace(
-            YarnLockResult yarnLockResult,
-            LazyExternalIdDependencyGraphBuilder graphBuilder,
-            List<NameVersion> externalDependencies,
-            Set<LazyId> rootLazyIds
+    
+    private void addRootDependenciesForProjectOrWorkspace(
+        YarnLockResult yarnLockResult,
+        NullSafePackageJson projectOrWorkspacePackageJson,
+        ExternalIdDependencyGraphBuilder graphBuilder
     ) throws MissingExternalIdException {
-        List<Dependency> directDependencies = new ArrayList<>();
+        addRootDependenciesToGraph(graphBuilder, projectOrWorkspacePackageJson.getDependencies(), yarnLockResult.getWorkspaceData());
+        if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION)) {
+            addRootDependenciesToGraph(graphBuilder, projectOrWorkspacePackageJson.getDevDependencies(), yarnLockResult.getWorkspaceData());
+        }
+    }
+
+    private DependencyGraph buildGraphForProjectOrWorkspace(
+            LazyBuilderMissingExternalIdHandler lazyBuilderHandler,
+            ExternalIdDependencyGraphBuilder graphBuilder,
+            YarnLockResult yarnLockResult
+    ) throws MissingExternalIdException {
+        BasicDependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {
                 LazyId id = generateComponentDependencyId(entryId.getName(), entryId.getVersion());
                 graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), generateComponentExternalId(entryId.getName(), entry.getVersion()));
-                LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo parentInfo = graphBuilder.checkAndHandleMissingExternalId(getLazyBuilderHandler(externalDependencies), id);
+                ExternalIdDependencyGraphBuilder.LazyDependencyInfo parentInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, id);
                 Dependency parent = new Dependency(parentInfo.getName(), parentInfo.getVersion(), parentInfo.getExternalId(), null);
-                addYarnLockDependenciesToGraph(yarnLockResult, graphBuilder, entry, id);
-                if (rootLazyIds.contains(id) || rootLazyIds.contains(parentInfo.getAliasId())) {
-                    directDependencies.add(parent);
+                for (YarnLockDependency dependency : entry.getDependencies()) {
+                    if (!isWorkspace(yarnLockResult.getWorkspaceData(), dependency)) {
+                        LazyId stringDependencyId = generateComponentDependencyId(dependency.getName(), dependency.getVersion());
+                        if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION) || !dependency.isOptional()) {
+                            graphBuilder.addChildWithParent(stringDependencyId, id);
+                            LazyDependencyInfo childInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, stringDependencyId);
+                            Dependency child = new Dependency(childInfo.getName(), childInfo.getVersion(), childInfo.getExternalId(), null);
+                            mutableDependencyGraph.addChildWithParent(child, parent);
+                        } else {
+                            logger.trace("Excluding optional dependency: {}", stringDependencyId);
+                        }
+                    }
+                }
+                if (graphBuilder.getRootLazyIds().contains(id) || graphBuilder.getRootLazyIds().contains(parentInfo.getAliasId())) {
+                    mutableDependencyGraph.addDirectDependency(parent);
                 }
             }
         }
-        return directDependencies;
-    }
-
-    private void addYarnLockDependenciesToGraph(YarnLockResult yarnLockResult, LazyExternalIdDependencyGraphBuilder graphBuilder, YarnLockEntry entry, LazyId id) {
-        for (YarnLockDependency dependency : entry.getDependencies()) {
-            if (!isWorkspace(yarnLockResult.getWorkspaceData(), dependency)) {
-                LazyId stringDependencyId = generateComponentDependencyId(dependency.getName(), dependency.getVersion());
-
-                if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION) || !dependency.isOptional()) {
-                    graphBuilder.addChildWithParent(stringDependencyId, id);
-                } else {
-                    logger.trace("Excluding optional dependency: {}", stringDependencyId);
-                }
-            }
-        }
+        return mutableDependencyGraph;
     }
 
     private boolean isWorkspace(YarnWorkspaces yarnWorkspaces, YarnLockDependency dependency) {
@@ -132,21 +135,7 @@ public class YarnTransformer {
         };
     }
 
-    private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, NullSafePackageJson projectOrWorkspacePackageJson, YarnWorkspaces workspaceData, Set<LazyId> rootLazyIds) {
-        addRootDependenciesToGraph(graphBuilder, projectOrWorkspacePackageJson.getDependencies(), workspaceData, rootLazyIds);
-        if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION)) {
-            addRootDependenciesToGraph(graphBuilder, projectOrWorkspacePackageJson.getDevDependencies(), workspaceData, rootLazyIds);
-        }
-    }
-    
-    private void addDirectNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, YarnWorkspace workspace, YarnWorkspaces workspaceData, Set<LazyId> rootLazyIds) {
-        addRootDependenciesToGraph(graphBuilder, workspace.getDependencies(), workspaceData, rootLazyIds);
-        if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION)) {
-            addRootDependenciesToGraph(graphBuilder, workspace.getDevDependencies(), workspaceData, rootLazyIds);
-        }
-    }
-
-    private void addRootDependenciesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, Map<String, String> rootDependenciesToAdd, YarnWorkspaces workspaceData, Set<LazyId> rootLazyIds) {
+    private void addRootDependenciesToGraph(ExternalIdDependencyGraphBuilder graphBuilder, Map<String, String> rootDependenciesToAdd, YarnWorkspaces workspaceData) {
         for (Map.Entry<String, String> rootDependency : rootDependenciesToAdd.entrySet()) {
             Optional<YarnWorkspace> dependencyWorkspace = workspaceData.lookup(rootDependency.getKey(), rootDependency.getValue());
             if (dependencyWorkspace.isPresent()) {
@@ -155,7 +144,6 @@ public class YarnTransformer {
                 LazyId stringDependencyId = generateComponentDependencyId(rootDependency.getKey(), rootDependency.getValue());
                 logger.debug("Adding root dependency to graph: stringDependencyId: {}", stringDependencyId);
                 graphBuilder.addChildToRoot(stringDependencyId);
-                rootLazyIds.add(stringDependencyId);
             }
         }
     }
