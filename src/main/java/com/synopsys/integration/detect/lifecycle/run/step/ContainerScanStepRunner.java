@@ -115,7 +115,7 @@ public class ContainerScanStepRunner {
             projectNameVersion,
             projectGroupName,
             codeLocationName,
-            containerImage.length());
+            containerImageSizeInBytes);
         File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(binaryRunDirectory);
         String operationName = "Upload Container Scan BDIO Header to Initiate Scan";
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile, operationName);
