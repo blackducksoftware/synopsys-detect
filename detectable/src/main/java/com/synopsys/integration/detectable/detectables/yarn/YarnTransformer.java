@@ -68,6 +68,18 @@ public class YarnTransformer {
         return codeLocations;
     }
     
+    public List<CodeLocation> generateCodeLocations(YarnLockResult yarnLockResult, List<NameVersion> externalDependencies)
+        throws MissingExternalIdException {
+        List<CodeLocation> codeLocations = new LinkedList<>();
+        logger.debug("Adding root dependencies for project: {}:{}", yarnLockResult.getRootPackageJson().getNameString(), yarnLockResult.getRootPackageJson().getVersionString());
+        LazyBuilderMissingExternalIdHandler lazyBuilderHandler = getLazyBuilderHandler(externalDependencies);
+        ExternalIdDependencyGraphBuilder rootGraphBuilder = new ExternalIdDependencyGraphBuilder();
+        addRootDependenciesForProjectOrWorkspace(yarnLockResult, yarnLockResult.getRootPackageJson(), rootGraphBuilder);
+        DependencyGraph rootGraph = buildGraphForProjectOrWorkspace(lazyBuilderHandler, rootGraphBuilder, yarnLockResult);
+        codeLocations.add(new CodeLocation(rootGraph));
+        return codeLocations;
+    }
+    
     private void addRootDependenciesForProjectOrWorkspace(
         YarnLockResult yarnLockResult,
         NullSafePackageJson projectOrWorkspacePackageJson,

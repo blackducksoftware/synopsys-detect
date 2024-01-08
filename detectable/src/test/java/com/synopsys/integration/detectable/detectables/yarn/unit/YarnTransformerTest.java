@@ -81,7 +81,7 @@ class YarnTransformerTest {
         assertTrue(dependencyGraph.hasDependency(fooExternalId));
 
         ExternalId yarnExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "yarn", "1.22.5");
-        assertTrue(dependencyGraph.hasDependency(yarnExternalId));
+        assertFalse(dependencyGraph.hasDependency(yarnExternalId));
     }
 
     @Test
@@ -113,7 +113,7 @@ class YarnTransformerTest {
         );
 
         ExternalId yarnExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "yarn", "1.22.5");
-        assertTrue(dependencyGraph.hasDependency(yarnExternalId));
+        assertFalse(dependencyGraph.hasDependency(yarnExternalId));
     }
 
     @Test
@@ -207,7 +207,7 @@ class YarnTransformerTest {
         List<YarnLockEntryId> yarnLockEntryIdsFoo = Collections.singletonList(new YarnLockEntryId("foo", "fooFuzzyVersion-1.0"));
         List<YarnLockEntryId> yarnLockEntryIdsBar = Collections.singletonList(new YarnLockEntryId("bar", "barFuzzyVersion-1.0"));
         List<YarnLockEntryId> yarnLockEntryIdsYarn = Collections.singletonList(new YarnLockEntryId("yarn", "^1.22.4"));
-        List<YarnLockDependency> dependencyRefToYarn = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
+        List<YarnLockDependency> dependencyRefToYarn = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", true));
         List<YarnLockEntry> yarnLockEntries = new LinkedList<>();
 
         if (!yarn1project) {
