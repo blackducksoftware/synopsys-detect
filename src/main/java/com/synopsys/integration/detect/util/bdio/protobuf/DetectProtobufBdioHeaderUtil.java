@@ -17,14 +17,22 @@ public class DetectProtobufBdioHeaderUtil {
     private final NameVersion projectNameVersion;
     private final String projectGroupName;
     private final String codeLocationName;
+    private final Long fileSystemSizeInBytes;
     private static final String CREATOR_NAME = "SYNOPSYS_DETECT";
 
-    public DetectProtobufBdioHeaderUtil(String scanId, String scanType, NameVersion projectNameVersion, String projectGroupName, String codeLocationName) {
+    public DetectProtobufBdioHeaderUtil(String scanId,
+        String scanType,
+        NameVersion projectNameVersion,
+        String projectGroupName,
+        String codeLocationName,
+        Long fileSystemSizeInBytes
+    ) {
         this.scanId = scanId;
         this.scanType = scanType;
         this.projectNameVersion = projectNameVersion;
         this.projectGroupName = projectGroupName;
         this.codeLocationName = codeLocationName;
+        this.fileSystemSizeInBytes = fileSystemSizeInBytes;
     }
 
     public File createProtobufBdioHeader(File targetDirectory) throws IOException {
@@ -48,7 +56,7 @@ public class DetectProtobufBdioHeaderUtil {
             true,
             true,
             null,
-            null)
+            fileSystemSizeInBytes)
             ;
 
         String tempBdioArchivePath = targetDirectory.toPath() + "/bdio-protobuf.zip";
