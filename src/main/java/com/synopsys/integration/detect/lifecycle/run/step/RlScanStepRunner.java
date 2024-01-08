@@ -35,7 +35,7 @@ public class RlScanStepRunner {
     private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
     private static final String STORAGE_IMAGE_METADATA_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-message-1+json";
     private static final BlackDuckVersion MIN_BLACK_DUCK_VERSION = new BlackDuckVersion(2023, 10, 0);
-            // TODO true version but no servers with this right now, new BlackDuckVersion(2024, 4, 0);
+    // TODO true version but no servers with this right now, new BlackDuckVersion(2024, 4, 0);
     
     public RlScanStepRunner(OperationRunner operationRunner, BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion) {
         this.operationRunner = operationRunner;
@@ -81,6 +81,10 @@ public class RlScanStepRunner {
         }
 
         return Optional.ofNullable(scanId);
+    }
+    
+    public String getCodeLocationName() {
+        return codeLocationName;
     }
     
     // TODO getting very similar to container scanning, this is probably temporary as RL probably won't do this
@@ -147,8 +151,6 @@ public class RlScanStepRunner {
     private void initiateScan() throws IOException, IntegrationException, OperationException {
         DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(
             UUID.randomUUID().toString(),
-            // TODO this will need to be changed to a REVERSINGLABS scan when the scan container
-            // can account for this.
             ScanType.RL.name(),
             projectNameVersion,
             projectGroupName,
@@ -178,5 +180,4 @@ public class RlScanStepRunner {
         File targetFile = new File(operationRunner.getRlScanFilePath().get());
         return codeLocationNameManager.createReversingLabsScanCodeLocationName(targetFile, projectNameVersion.getName(), projectNameVersion.getVersion());
     }
-
 }
