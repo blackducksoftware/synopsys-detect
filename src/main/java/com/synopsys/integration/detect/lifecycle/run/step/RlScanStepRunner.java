@@ -31,6 +31,8 @@ public class RlScanStepRunner {
     private final BlackDuckRunData blackDuckRunData;
     private String codeLocationName;
     //private static final String STORAGE_ENDPOINT = "/api/uploads";
+    private static final String STORAGE_UPLOAD_ENDPOINT = "/api/storage/rldata/";
+    private static final String STORAGE_RL_CONTENT_TYPE = "application/vnd.blackducksoftware.rl-data-1+octet-stream";
     private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
     private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
     private static final String STORAGE_IMAGE_METADATA_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-message-1+json";
@@ -67,11 +69,12 @@ public class RlScanStepRunner {
             // Generate BDIO header and obtain scanID
             initiateScan();
             
+            // TODO start cleanup here
             logger.info("ReversingLabs scan initiated. Uploading file to scan.");
             uploadFileToStorageService();
             
             // TODO this is likely not necessary once we have a true RL path
-            uploadImageMetadataToStorageService();
+            //uploadImageMetadataToStorageService();
             
             // TODO perhaps publish an event
 
@@ -128,14 +131,14 @@ public class RlScanStepRunner {
 //            codeLocationName
 //        )) {
         
-        String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString());
+        String storageServiceEndpoint = String.join("", STORAGE_UPLOAD_ENDPOINT, scanId.toString());
         logger.debug("Uploading ReversingLabs file to storage endpoint: {}", storageServiceEndpoint);
         
         try (Response response = operationRunner.uploadFileToStorageService(
                 blackDuckRunData,
                 storageServiceEndpoint,
                 fileToUpload,
-                STORAGE_IMAGE_CONTENT_TYPE,
+                STORAGE_RL_CONTENT_TYPE,
                 operationName
         )) {
             if (response.isStatusCodeSuccess()) {
