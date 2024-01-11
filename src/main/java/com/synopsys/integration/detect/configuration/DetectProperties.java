@@ -41,12 +41,7 @@ import com.synopsys.integration.configuration.property.types.string.CaseSensitiv
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
 import com.synopsys.integration.configuration.property.types.string.StringListProperty;
 import com.synopsys.integration.configuration.property.types.string.StringProperty;
-import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
-import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
-import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
+import com.synopsys.integration.detect.configuration.enumeration.*;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedReducedPersistanceMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
@@ -479,7 +474,8 @@ public class DetectProperties {
             .setHelp(
                 "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .build();
+            .build().deprecateValue(SnippetMatching.FULL_SNIPPET_MATCHING,"The option FULL_SNIPPET_MATCHING will be removed for this property as the current implementation uses registration key which will not be granted for customer use after 31st January, 2024.")
+                .deprecateValue(SnippetMatching.FULL_SNIPPET_MATCHING_ONLY,"The option FULL_SNIPPET_MATCHING_ONLY will be removed for this property as the current implementation uses registration key which will not be granted for customer use after 31st January, 2024.");
     
     public static final ExtendedEnumProperty<ExtendedReducedPersistanceMode, ReducedPersistence> DETECT_BLACKDUCK_SIGNATURE_SCANNER_REDUCED_PERSISTENCE =
             ExtendedEnumProperty.newBuilder(
