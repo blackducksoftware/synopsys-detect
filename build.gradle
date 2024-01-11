@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.2.0-SIGQA2-SNAPSHOT'
+version = '9.3.0-SIGQA5-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -136,7 +136,7 @@ dependencies {
     implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.10-SNAPSHOT'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.2.0'
-    implementation "${locatorGroup}:${locatorModule}:1.0.21"
+    implementation "${locatorGroup}:${locatorModule}:1.1.6"
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation "org.springframework.boot:spring-boot"

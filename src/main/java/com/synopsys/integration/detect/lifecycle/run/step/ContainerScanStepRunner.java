@@ -25,12 +25,14 @@ public class ContainerScanStepRunner {
 
     private final OperationRunner operationRunner;
     private UUID scanId;
+    private String scanType = "CONTAINER";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final NameVersion projectNameVersion;
     private final String projectGroupName;
     private final BlackDuckRunData blackDuckRunData;
     private final File binaryRunDirectory;
     private final File containerImage;
+    private final Long containerImageSizeInBytes;
     private String codeLocationName;
     private static final BlackDuckVersion MIN_BLACK_DUCK_VERSION = new BlackDuckVersion(2023, 10, 0);
     private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
@@ -48,6 +50,7 @@ public class ContainerScanStepRunner {
         }
         projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
         containerImage = operationRunner.getContainerScanImage(gson, binaryRunDirectory);
+        containerImageSizeInBytes = containerImage != null && containerImage.exists() ? containerImage.length() : 0;
     }
 
     public Optional<UUID> invokeContainerScanningWorkflow() {
@@ -108,10 +111,11 @@ public class ContainerScanStepRunner {
     private void initiateScan() throws IOException, IntegrationException, OperationException {
         DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(
             UUID.randomUUID().toString(),
-            "CONTAINER",
+            scanType,
             projectNameVersion,
             projectGroupName,
-            codeLocationName);
+            codeLocationName,
+            containerImageSizeInBytes);
         File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(binaryRunDirectory);
         String operationName = "Upload Container Scan BDIO Header to Initiate Scan";
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile, operationName);

@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
@@ -34,8 +34,24 @@ public class ConanCommandRunner {
     }
 
     public ExecutableOutput runConanInfoCommand(File projectDir, ExecutableTarget conanExe) throws ExecutableRunnerException {
-        List<String> conanInfoArguments = generateConanInfoCommandArguments(projectDir);
+        List<String> conanInfoArguments = new ArrayList<>();
+        conanInfoArguments.add("info");
+        appendCommonGraphInfoArguments(conanInfoArguments, projectDir);
         return executableRunner.execute(ExecutableUtils.createFromTarget(projectDir, conanExe, conanInfoArguments));
+    }
+
+    public ExecutableOutput runConanGraphInfoCommand(File projectDir, ExecutableTarget conanExe) throws ExecutableFailedException {
+        List<String> conanGraphInfoArguments = new ArrayList<>();
+        conanGraphInfoArguments.add("graph");
+        conanGraphInfoArguments.add("info");
+        conanGraphInfoArguments.add("-vquiet");
+
+        conanGraphInfoArguments.add("-f");
+        conanGraphInfoArguments.add("json");
+
+        appendCommonGraphInfoArguments(conanGraphInfoArguments, projectDir);
+
+        return executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(projectDir, conanExe, conanGraphInfoArguments));
     }
 
     public boolean wasSuccess(ExecutableOutput conanInfoOutput) {
@@ -59,19 +75,19 @@ public class ConanCommandRunner {
         return true;
     }
 
-    @NotNull
-    private List<String> generateConanInfoCommandArguments(File projectDir) {
-        List<String> exeArgs = new ArrayList<>();
-        exeArgs.add("info");
+    public ExecutableOutput runConanVersionCommand(File projectDir, ExecutableTarget conanExe) throws ExecutableRunnerException {
+        return executableRunner.execute(ExecutableUtils.createFromTarget(projectDir, conanExe, "--version"));
+    }
+
+    private void appendCommonGraphInfoArguments(List<String> leadingArgs, File projectDir) {
         if (lockfilePath != null) {
-            exeArgs.add("--lockfile");
-            exeArgs.add(lockfilePath.toString());
+            leadingArgs.add("--lockfile");
+            leadingArgs.add(lockfilePath.toString());
         }
         if (StringUtils.isNotEmpty(additionalArguments)) {
             String[] additionalArgs = additionalArguments.split(" +");
-            exeArgs.addAll(Arrays.asList(additionalArgs));
+            leadingArgs.addAll(Arrays.asList(additionalArgs));
         }
-        exeArgs.add(projectDir.getAbsolutePath());
-        return exeArgs;
+        leadingArgs.add(projectDir.getAbsolutePath());
     }
 }

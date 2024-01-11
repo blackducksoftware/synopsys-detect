@@ -44,7 +44,6 @@ import com.synopsys.integration.configuration.property.types.string.StringProper
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
-import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVersion;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
@@ -257,7 +256,9 @@ public class DetectProperties {
         NullablePathProperty.newBuilder("detect.conan.lockfile.path")
             .setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp(
-                "The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
+                "The path to the conan lockfile to apply when running 'conan info' to get the dependency graph.",
+                "If set, the value will be used by CLI and lockfile detectors to determine the component versions and/or relationships.'"
+            )
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
 
@@ -1026,7 +1027,7 @@ public class DetectProperties {
             .setInfo("Maven Build Command", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "Maven command line arguments to add to the mvn/mvnw command line.",
-                "By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'"
+                "By default, Detect runs the mvn (or mvnw) command with two arguments: dependency:tree and -T1. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'. Please note that Detect will omit any thread-specifying arguments in order to ensure the accuracy of the dependency tree."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1744,8 +1745,8 @@ public class DetectProperties {
         EnumProperty.newBuilder("detect.blackduck.scan.mode", BlackduckScanMode.INTELLIGENT, BlackduckScanMode.class)
             .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)
             .setHelp(
-                "Set the Black Duck scanning mode of Detect",
-                "Set the scanning mode of Detect to control how Detect will send data to Black Duck. RAPID will not persist the results and disables select Detect functionality for faster results. INTELLIGENT persists the results and permits all features of Detect"
+                "Set the Black Duck scanning mode of Detect.",
+                "Set the scanning mode to control how Detect will send data to Black Duck. RAPID will not persist the results and disables select Detect functionality for faster results. INTELLIGENT, referred to as 'Full' scan mode in Black Duck, persists the results and permits all features of Detect."
             )
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.RAPID_SCAN)
             .setCategory(DetectCategory.Advanced)

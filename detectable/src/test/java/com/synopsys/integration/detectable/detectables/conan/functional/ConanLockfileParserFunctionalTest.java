@@ -91,4 +91,32 @@ public class ConanLockfileParserFunctionalTest {
 
         assertEquals(1, result.getCodeLocation().getDependencyGraph().getRootDependencies().size());
     }
+
+    @Test
+    public void testConan2Lockfile() throws IOException, IntegrationException {
+        File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan2/conan.lock");
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
+        ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, true), new ExternalIdFactory());
+        String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
+
+        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents);
+
+        DependencyGraph actualDependencyGraph = result.getCodeLocation().getDependencyGraph();
+        assertEquals(8, actualDependencyGraph.getRootDependencies().size());
+        GraphCompare.assertEqualsResource("/conan/lockfile/conan2/includeBuild_graph.json", actualDependencyGraph);
+    }
+
+    @Test
+    public void testConan2LockfileExcludeBuild() throws IOException, IntegrationException {
+        File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan2/conan.lock");
+        EnumListFilter<ConanDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(ConanDependencyType.BUILD);
+        ConanLockfileParser parser = new ConanLockfileParser(new Gson(), new ConanCodeLocationGenerator(dependencyTypeFilter, true), new ExternalIdFactory());
+        String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
+
+        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents);
+
+        DependencyGraph actualDependencyGraph = result.getCodeLocation().getDependencyGraph();
+        assertEquals(7, actualDependencyGraph.getRootDependencies().size());
+        GraphCompare.assertEqualsResource("/conan/lockfile/conan2/excludeBuild_graph.json", actualDependencyGraph);
+    }
 }
