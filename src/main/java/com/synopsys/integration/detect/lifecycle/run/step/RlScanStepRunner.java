@@ -157,7 +157,8 @@ public class RlScanStepRunner {
             ScanType.RL.name(),
             projectNameVersion,
             projectGroupName,
-            codeLocationName);
+            codeLocationName,
+            null);
         File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(rlRunDirectory);
         String operationName = "Upload ReversingLabs Scan BDIO Header to Initiate Scan";
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile, operationName);
