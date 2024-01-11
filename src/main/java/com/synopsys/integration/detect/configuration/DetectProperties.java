@@ -41,7 +41,12 @@ import com.synopsys.integration.configuration.property.types.string.CaseSensitiv
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
 import com.synopsys.integration.configuration.property.types.string.StringListProperty;
 import com.synopsys.integration.configuration.property.types.string.StringProperty;
-import com.synopsys.integration.detect.configuration.enumeration.*;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
+import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
+import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedReducedPersistanceMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
