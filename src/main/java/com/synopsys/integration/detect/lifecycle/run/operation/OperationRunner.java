@@ -1,46 +1,51 @@
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
+import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
+import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.OPERATION_NAME;
+import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.SUPPORTED_DETECTORS_LOG_MSG;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation;
-import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
-import com.synopsys.integration.detector.base.DetectorType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.blackducksoftware.bdio2.Bdio;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
-import com.synopsys.integration.blackduck.api.core.response.UrlSingleResponse;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.view.BomStatusScanView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.api.manual.response.BlackDuckStringResponse;
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationWaitResult;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
@@ -53,6 +58,7 @@ import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.componentlocator.beans.Component;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -159,6 +165,9 @@ import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportS
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.BdioToComponentListTransformer;
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation;
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.ScanResultToComponentListTransformer;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -167,6 +176,7 @@ import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
+import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
 import com.synopsys.integration.detect.workflow.status.FormattedCodeLocation;
@@ -179,6 +189,7 @@ import com.synopsys.integration.detector.accuracy.directory.DirectoryEvaluator;
 import com.synopsys.integration.detector.accuracy.entrypoint.DetectorRuleEvaluator;
 import com.synopsys.integration.detector.accuracy.search.SearchEvaluator;
 import com.synopsys.integration.detector.accuracy.search.SearchOptions;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.finder.DirectoryFinder;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.exception.IntegrationException;
@@ -186,21 +197,11 @@ import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.body.FileBodyContent;
-import com.synopsys.integration.rest.exception.IntegrationRestException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
-
-import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
-import com.synopsys.integration.componentlocator.beans.Component;
-import com.synopsys.integration.detect.workflow.componentlocationanalysis.BdioToComponentListTransformer;
-import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.SUPPORTED_DETECTORS_LOG_MSG;
-import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.OPERATION_NAME;
-import com.synopsys.integration.detect.workflow.componentlocationanalysis.ScanResultToComponentListTransformer;
 
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -454,33 +455,6 @@ public class OperationRunner {
                 logger.trace("I/O error occurred during file upload request.");
                 throw new IOException("I/O error occurred during file upload request to storage service.", e);
             }
-        });
-    }
-    
-    // Generic method to POST a file to /api/uploads endpoint of storage service
-    public Response uploadRlFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String operationName, NameVersion projectNameVersion, String codeLocationName)
-        throws OperationException {
-        return auditLog.namedPublic(operationName, () -> {
-            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
-
-            try {
-                Map<String, String> textParts = new HashMap<>();
-                textParts.put("projectName", projectNameVersion.getName());
-                textParts.put("version", projectNameVersion.getVersion());
-                textParts.put("codeLocationName", codeLocationName);
-
-                Map<String, File> binaryParts = new HashMap<>();
-                binaryParts.put("fileupload", payloadFile);
-
-                UrlSingleResponse<BlackDuckStringResponse> stringResponse = blackDuckServicesFactory.getApiDiscovery().metaUploadsLink();
-                BlackDuckResponseRequest request = new BlackDuckRequestBuilder().postMultipart(binaryParts, textParts)
-                        .buildBlackDuckResponseRequest(stringResponse.getUrl());
-                return blackDuckApiClient.execute(request);
-            } catch (IntegrationException e) {
-                logger.trace("Could not execute file upload request to storage service.");
-                throw new IntegrationException("Could not execute file upload request to storage service.", e);
-            }        
         });
     }
 
