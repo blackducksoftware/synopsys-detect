@@ -479,7 +479,8 @@ public class DetectProperties {
             .setHelp(
                 "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .build();
+            .build().deprecateValue(SnippetMatching.FULL_SNIPPET_MATCHING,"The option FULL_SNIPPET_MATCHING will be removed for this property as the current implementation uses registration key which will not be granted for customer use after 31st January, 2024.")
+                .deprecateValue(SnippetMatching.FULL_SNIPPET_MATCHING_ONLY,"The option FULL_SNIPPET_MATCHING_ONLY will be removed for this property as the current implementation uses registration key which will not be granted for customer use after 31st January, 2024.");
     
     public static final ExtendedEnumProperty<ExtendedReducedPersistanceMode, ReducedPersistence> DETECT_BLACKDUCK_SIGNATURE_SCANNER_REDUCED_PERSISTENCE =
             ExtendedEnumProperty.newBuilder(
@@ -1018,7 +1019,7 @@ public class DetectProperties {
             .setInfo("Maven Build Command", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "Maven command line arguments to add to the mvn/mvnw command line.",
-                "By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'"
+                "By default, Detect runs the mvn (or mvnw) command with two arguments: dependency:tree and -T1. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'. Please note that Detect will omit any thread-specifying arguments in order to ensure the accuracy of the dependency tree."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();

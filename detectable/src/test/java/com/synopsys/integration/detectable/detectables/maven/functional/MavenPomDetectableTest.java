@@ -65,7 +65,13 @@ public class MavenPomDetectableTest extends DetectableFunctionalTest {
             .createMavenPomDetectable(
                 detectableEnvironment,
                 new MavenPomResolverTest(),
-                new MavenCliExtractorOptions("test", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList())
+                new MavenCliExtractorOptions(
+                    "--threads 1C test -T5", // include several thread-related arguments to test that they get removed
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Collections.emptyList()
+                )
             );
     }
 
