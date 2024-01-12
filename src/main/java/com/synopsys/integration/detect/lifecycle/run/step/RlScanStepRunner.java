@@ -5,9 +5,15 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.bdio.proto.domain.ScanType;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.synopsys.integration.blackduck.version.BlackDuckVersion;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -15,10 +21,9 @@ import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
-import com.blackducksoftware.bdio.proto.domain.ScanType;
-import com.google.gson.JsonObject;
 
 public class RlScanStepRunner {
     
@@ -30,14 +35,9 @@ public class RlScanStepRunner {
     private final File rlRunDirectory;
     private final BlackDuckRunData blackDuckRunData;
     private String codeLocationName;
-    //private static final String STORAGE_ENDPOINT = "/api/uploads";
     private static final String STORAGE_UPLOAD_ENDPOINT = "/api/storage/rldata/";
     private static final String STORAGE_RL_CONTENT_TYPE = "application/vnd.blackducksoftware.rl-data-1+octet-stream";
-    private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
-    private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
-    private static final String STORAGE_IMAGE_METADATA_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-message-1+json";
-    private static final BlackDuckVersion MIN_BLACK_DUCK_VERSION = new BlackDuckVersion(2023, 10, 0);
-    // TODO true version but no servers with this right now, new BlackDuckVersion(2024, 4, 0);
+    private static final BlackDuckVersion MIN_BLACK_DUCK_VERSION = new BlackDuckVersion(2024, 4, 0);
     
     public RlScanStepRunner(OperationRunner operationRunner, BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion) {
         this.operationRunner = operationRunner;
@@ -65,16 +65,14 @@ public class RlScanStepRunner {
             }
 
             codeLocationName = createCodeLocationName();
+            File fileToUpload = new File(operationRunner.getRlScanFilePath().get());
             
             // Generate BDIO header and obtain scanID
-            initiateScan();
+            initiateScan(fileToUpload.length());
             
             // TODO start cleanup here
             logger.info("ReversingLabs scan initiated. Uploading file to scan.");
-            uploadFileToStorageService();
-            
-            // TODO this is likely not necessary once we have a true RL path
-            //uploadImageMetadataToStorageService();
+            uploadFileToStorageService(fileToUpload);
             
             // TODO perhaps publish an event
 
@@ -89,76 +87,44 @@ public class RlScanStepRunner {
     public String getCodeLocationName() {
         return codeLocationName;
     }
-    
-    // TODO getting very similar to container scanning, this is probably temporary as RL probably won't do this
-    // but if so we might want to have a storage service class
-    private void uploadImageMetadataToStorageService() throws IOException, OperationException, IntegrationException {
-        String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString(), "/message");
-        String operationName = "Upload ReversingLab Metadata JSON";
-        logger.debug("Uploading ReversingLabs metadata to storage endpoint: {}", storageServiceEndpoint);
 
-        JsonObject imageMetadataObject = operationRunner.createContainerScanImageMetadata(scanId, projectNameVersion);
-
-        try (Response response = operationRunner.uploadJsonToStorageService(
-            blackDuckRunData,
-            storageServiceEndpoint,
-            imageMetadataObject.toString(),
-            STORAGE_IMAGE_METADATA_CONTENT_TYPE,
-            operationName
-        )
-        ) {
-            if (response.isStatusCodeSuccess()) {
-                logger.debug("ReversingLabs metadata uploaded to storage service.");
-            } else {
-                logger.trace("Unable to upload ReversingLabs metadata." + response.getStatusCode() + " " + response.getStatusMessage());
-                throw new IntegrationException(String.join(" ", "Unable to upload ReversingLabs metadata. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
-            }
-        }    
-    }
-
-    private void uploadFileToStorageService() throws IOException, OperationException, IntegrationException {
-        String operationName = "Upload ReversingLabs File";
-
-        File fileToUpload = new File(operationRunner.getRlScanFilePath().get());
-        
-        // binary approach
-//        try (Response response = operationRunner.uploadRlFileToStorageService(
-//            blackDuckRunData,
-//            STORAGE_ENDPOINT,
-//            fileToUpload,
-//            operationName,
-//            projectNameVersion,
-//            codeLocationName
-//        )) {
-        
+    private void uploadFileToStorageService(File fileToUpload) throws IOException, OperationException, IntegrationException {
         String storageServiceEndpoint = String.join("", STORAGE_UPLOAD_ENDPOINT, scanId.toString());
         logger.debug("Uploading ReversingLabs file to storage endpoint: {}", storageServiceEndpoint);
         
-        try (Response response = operationRunner.uploadFileToStorageService(
-                blackDuckRunData,
-                storageServiceEndpoint,
-                fileToUpload,
-                STORAGE_RL_CONTENT_TYPE,
-                operationName
-        )) {
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+
+        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
+        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+            .postFile(fileToUpload, ContentType.create(STORAGE_RL_CONTENT_TYPE))
+            .addHeader("fileName", fileToUpload.getName())
+            .buildBlackDuckResponseRequest(postUrl);
+
+        try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
             if (response.isStatusCodeSuccess()) {
                 logger.debug("ReversingLabs file uploaded to storage service.");
             } else {
                 logger.trace("Unable to upload ReversingLabs file. {} {}", response.getStatusCode(), response.getStatusMessage());
                 throw new IntegrationException(String.join(" ", "Unable to upload ReversingLabs file. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
             }
+        } catch (IntegrationException e) {
+            logger.trace("Could not execute file upload request to storage service.");
+            throw new IntegrationException("Could not execute file upload request to storage service.", e);
+        } catch (IOException e) {
+            logger.trace("I/O error occurred during file upload request.");
+            throw new IOException("I/O error occurred during file upload request to storage service.", e);
         }
     }
 
-    // TODO very similar to container scan, might want to refactor?
-    private void initiateScan() throws IOException, IntegrationException, OperationException {
+    private void initiateScan(long fileSize) throws IOException, IntegrationException, OperationException {
         DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(
             UUID.randomUUID().toString(),
             ScanType.RL.name(),
             projectNameVersion,
             projectGroupName,
             codeLocationName,
-            null);
+            fileSize);
         File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(rlRunDirectory);
         String operationName = "Upload ReversingLabs Scan BDIO Header to Initiate Scan";
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile, operationName);
