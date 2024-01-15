@@ -18,9 +18,14 @@ ENV LC_ALL en_US.UTF-8
 # Install Java
 RUN apt-get -y install openjdk-17-jdk
 
+# Do not change SRC_DIR, value is expected by tests
+ENV SRC_DIR=/opt/project/src
+
 # Set up the test project
 RUN mkdir -p ${SRC_DIR}
 RUN git clone -b yocto-4.3.1 --depth 1 https://github.com/yoctoproject/poky.git ${SRC_DIR}
 
+RUN cd ${SRC_DIR}
+
 # Disable "sanity" checks to allow root to build the project
-RUN sed -i 's/INHERIT += "sanity"/#INHERIT += "sanity"/g' ${SRC_DIR}/meta/conf/sanity.conf
+RUN sed -i 's/INHERIT += "sanity"/#INHERIT += "sanity"/g' meta/conf/sanity.conf
