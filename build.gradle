@@ -8,8 +8,8 @@ buildscript {
         springBootVersion = gradle.ext.springBootVersion
         blackDuckCommonVersion = gradle.ext.blackDuckCommonVersion
         junitPlatformCustomTestTags = 'docker, battery'
-        javaTargetCompatibility = 8
-        javaSourceCompatibility = 8
+        javaTargetCompatibility = 17
+        javaSourceCompatibility = 17
     }
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
