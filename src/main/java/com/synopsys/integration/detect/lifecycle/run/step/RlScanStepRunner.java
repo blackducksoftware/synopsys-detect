@@ -2,6 +2,8 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -70,14 +72,14 @@ public class RlScanStepRunner {
             // Generate BDIO header and obtain scanID
             initiateScan(fileToUpload.length());
             
-            // TODO start cleanup here
             logger.info("ReversingLabs scan initiated. Uploading file to scan.");
             uploadFileToStorageService(fileToUpload);
             
-            // TODO perhaps publish an event
+            // publish success event
+            operationRunner.publishRlSuccess();
 
         } catch (IntegrationException | IOException | OperationException e) {
-            operationRunner.publishContainerFailure(e);
+            operationRunner.publishRlFailure(e);
             return Optional.empty();
         }
 
@@ -90,30 +92,26 @@ public class RlScanStepRunner {
 
     private void uploadFileToStorageService(File fileToUpload) throws IOException, OperationException, IntegrationException {
         String storageServiceEndpoint = String.join("", STORAGE_UPLOAD_ENDPOINT, scanId.toString());
+        String operationName = "Upload ReversingLabs File";
         logger.debug("Uploading ReversingLabs file to storage endpoint: {}", storageServiceEndpoint);
         
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-        BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
-
-        HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
-        BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-            .postFile(fileToUpload, ContentType.create(STORAGE_RL_CONTENT_TYPE))
-            .addHeader("fileName", fileToUpload.getName())
-            .buildBlackDuckResponseRequest(postUrl);
-
-        try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("fileName", fileToUpload.getName());
+        
+        try (Response response = operationRunner.uploadFileToStorageServiceWithHeaders(
+                blackDuckRunData,
+                storageServiceEndpoint,
+                fileToUpload, 
+                STORAGE_RL_CONTENT_TYPE,
+                operationName,
+                headers)
+            ) {
             if (response.isStatusCodeSuccess()) {
                 logger.debug("ReversingLabs file uploaded to storage service.");
             } else {
                 logger.trace("Unable to upload ReversingLabs file. {} {}", response.getStatusCode(), response.getStatusMessage());
                 throw new IntegrationException(String.join(" ", "Unable to upload ReversingLabs file. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
             }
-        } catch (IntegrationException e) {
-            logger.trace("Could not execute file upload request to storage service.");
-            throw new IntegrationException("Could not execute file upload request to storage service.", e);
-        } catch (IOException e) {
-            logger.trace("I/O error occurred during file upload request.");
-            throw new IOException("I/O error occurred during file upload request to storage service.", e);
         }
     }
 

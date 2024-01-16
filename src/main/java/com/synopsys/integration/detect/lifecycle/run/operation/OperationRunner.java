@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -437,15 +438,29 @@ public class OperationRunner {
     // Generic method to POST a file to /api/storage/containers endpoint of storage service
     public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType, String operationName)
         throws OperationException {
+        return uploadFileToStorageServiceWithHeaders(blackDuckRunData, storageServiceEndpoint, payloadFile, postContentType, operationName, null);
+    }
+    
+    public Response uploadFileToStorageServiceWithHeaders(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File fileToUpload, String postContentType, String operationName, Map<String, String> headers) 
+            throws OperationException {
         return auditLog.namedPublic(operationName, () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
             HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
-            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-                .postFile(payloadFile, ContentType.create(postContentType))
-                .buildBlackDuckResponseRequest(postUrl);
-
+            
+            BlackDuckRequestBuilder requestBuilder = new BlackDuckRequestBuilder()
+                    .postFile(fileToUpload, ContentType.create(postContentType));
+            
+            if (headers != null) {
+                for (String headerName : headers.keySet()) {
+                    requestBuilder.addHeader(headerName, headers.get(headerName));
+                }
+            }
+            
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = requestBuilder
+                    .buildBlackDuckResponseRequest(postUrl);
+            
             try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
                 return response;
             } catch (IntegrationException e) {
@@ -455,7 +470,7 @@ public class OperationRunner {
                 logger.trace("I/O error occurred during file upload request.");
                 throw new IOException("I/O error occurred during file upload request to storage service.", e);
             }
-        });
+        });  
     }
 
     public Response uploadJsonToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, String jsonPayload, String postContentType, String operationName)
@@ -1132,9 +1147,19 @@ public class OperationRunner {
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.CONTAINER_SCAN, StatusType.FAILURE));
         exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "CONTAINER_SCAN");
     }
+    
+    public void publishRlFailure(Exception e) {
+        logger.error("ReversingLabs scan failure: {}", e.getMessage());
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.RL_SCAN, StatusType.FAILURE));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "RL_SCAN");
+    }
 
     public void publishContainerSuccess() {
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.CONTAINER_SCAN, StatusType.SUCCESS));
+    }
+    
+    public void publishRlSuccess() {
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.RL_SCAN, StatusType.SUCCESS));
     }
 
     public void publishImpactFailure(Exception e) {
