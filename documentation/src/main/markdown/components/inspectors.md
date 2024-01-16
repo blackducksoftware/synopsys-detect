@@ -28,7 +28,7 @@ If you are offline the Docker Inspector jar file and required Docker image tar f
 
 In either case the Docker Inspector jar is run by default which uses your Docker engine to start and stop the container-based services.
 
-The source code for Docker Inspector is located at [GitHub](https://github.com/blackducksoftware/blackduck-docker-inspector).
+The source code for Docker Inspector is located at [GitHub](https://github.com/blackducksoftware/detect-docker-inspector).
 
 ## NuGet Inspector
 
