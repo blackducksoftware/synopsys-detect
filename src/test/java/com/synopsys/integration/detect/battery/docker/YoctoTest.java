@@ -11,6 +11,7 @@ import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunne
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detector.base.DetectorType;
 
 @Tag("integration")
 public class YoctoTest {
@@ -26,6 +27,7 @@ public class YoctoTest {
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.logContains("Bitbake CLI: SUCCESS");
+            dockerAssertions.successfulDetectorType(DetectorType.BITBAKE.toString());
             dockerAssertions.atLeastOneBdioFile();
         }
     }
