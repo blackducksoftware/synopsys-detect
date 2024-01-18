@@ -2,8 +2,6 @@
 
 ## Version 9.3.0
 
-### New features
-
 ### Changed features
 
 * Any arguments that specify the number of threads to be used provided as part of the `detect.maven.build.command` [solution_name] property will be omitted when executing the Maven CLI.
@@ -14,3 +12,6 @@
 * (IDETECT-4176) The FULL_SNIPPET_MATCHING and FULL_SNIPPET_MATCHING_ONLY options, currently controlled via registration key, for the --detect.blackduck.signature.scanner.snippet.matching property are deprecated and will be removed in the next major release of [solution_name].
 
 ### Dependency updates
+
+* Updated Guava library from 31.1 to 32.1.2 to resolve high severity [CVE-2023-2976](https://nvd.nist.gov/vuln/detail/CVE-2023-2976).
+
