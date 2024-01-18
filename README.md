@@ -34,9 +34,7 @@ For AirGap, please use our [Artifactory](https://sig-repo.synopsys.com/webapp/#/
 
 The latest quickstart documentation is [here](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/gettingstarted/quickstart.html).
 
-The latest full documentation is [here](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/introduction.html).
-
-Links to certain earlier versions can be found [here](https://community.synopsys.com/s/user-guide-archive).
+The latest full documentation and archived documentation in PDF format is [here](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/introduction.html).
 
 ## Getting help
 
