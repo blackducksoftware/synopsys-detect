@@ -15,4 +15,4 @@
 
 ### Dependency updates
 
-* google-guava from 31.1 to 32.1.2 to remediate CVE-2023-2976.
+* Updated Guava library from 31.1 to 32.1.2 to resolve high severity [CVE-2023-2976](https://nvd.nist.gov/vuln/detail/CVE-2023-2976).
