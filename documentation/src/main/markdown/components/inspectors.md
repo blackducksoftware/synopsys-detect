@@ -4,7 +4,7 @@ An inspector is typically a plugin that a [solution_name] detector uses to acces
 
 There are currently three inspectors that [solution_name] might download and one internally coded inspector.
 
-If [solution_name] decides that your package manager requries an external inspector you must either be online or have the applicable air gap files available.
+If [solution_name] decides that your package manager requires an external inspector you must either be online or have the applicable air gap files available.
 
 ## Gradle inspector
 
