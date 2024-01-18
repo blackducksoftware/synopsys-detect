@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.3.0-SIGQA4-SNAPSHOT'
+version = '9.3.0-SIGQA8-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -92,7 +92,7 @@ subprojects {
 
 allprojects {
     dependencies {
-        implementation "com.google.guava:guava:31.1-jre"
+        implementation "com.google.guava:guava:32.1.2-jre"
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0'
 
         implementation 'org.freemarker:freemarker:2.3.31'
