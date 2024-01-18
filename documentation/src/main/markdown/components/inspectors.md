@@ -2,7 +2,7 @@
 
 An inspector is typically a plugin that a [solution_name] detector uses to access the internal resources of a package manager through its API.
 
-There are currently three inspectors that [solution_name] might download and one internally coded inspector.
+There are currently three inspectors that [solution_name] might download, and one internally coded inspector.
 
 If [solution_name] decides that your package manager requires an external inspector you must either be online or have the applicable air gap files available.
 
