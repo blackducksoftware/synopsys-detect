@@ -254,6 +254,7 @@ public class IntelligentModeStepRunner {
         return detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN) ||
             detectToolFilter.shouldInclude(DetectTool.CONTAINER_SCAN) ||
             detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN) ||
+            // TODO if we don't actually want a link to the BOM this should be pulled.
             detectToolFilter.shouldInclude(DetectTool.RL_SCAN);
     }
 

@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -54,7 +55,6 @@ public class RlScanStepRunner {
         try {
             logger.debug("Determining if configuration is valid to run a ReversingLabs scan.");
             if (!isReversingLabsEligible()) {
-                logger.info("No detect.rl.scan.file.path property was provided. Skipping ReversingLabs scan.");
                 return Optional.ofNullable(scanId);
             }
             if (!isBlackDuckVersionValid()) {
@@ -73,7 +73,10 @@ public class RlScanStepRunner {
             initiateScan(fileToUpload.length());
             
             logger.info("ReversingLabs scan initiated. Uploading file to scan.");
+            
             uploadFileToStorageService(fileToUpload);
+            
+            logger.info("ReversingLabs file upload complete.");
             
             // publish success event
             operationRunner.publishRlSuccess();
@@ -140,7 +143,21 @@ public class RlScanStepRunner {
     }
     
     private boolean isReversingLabsEligible() {
-        return operationRunner.getRlScanFilePath().isPresent();
+        if (!operationRunner.getRlScanFilePath().isPresent()) {
+            logger.info("No detect.rl.scan.file.path property was provided. Skipping ReversingLabs scan.");
+            return false;
+        }
+        
+        String scanFilePath = operationRunner.getRlScanFilePath().get();
+        
+        File scanFile = new File(scanFilePath);
+        
+        if (!Files.isReadable(scanFile.toPath())) {
+            logger.info("Unable to access file: " + scanFilePath  + ". Please ensure the file exists and is readable by Detect.");
+            return false;
+        }
+    
+        return true;
     }
     
     private String createCodeLocationName() {
