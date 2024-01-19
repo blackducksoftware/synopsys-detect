@@ -441,7 +441,7 @@ public class OperationRunner {
         return uploadFileToStorageServiceWithHeaders(blackDuckRunData, storageServiceEndpoint, payloadFile, postContentType, operationName, null);
     }
     
-    public Response uploadFileToStorageServiceWithHeaders(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File fileToUpload, String postContentType, String operationName, Map<String, String> headers) 
+    public Response uploadFileToStorageServiceWithHeaders(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType, String operationName, Map<String, String> headers) 
             throws OperationException {
         return auditLog.namedPublic(operationName, () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
@@ -450,7 +450,7 @@ public class OperationRunner {
             HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
             
             BlackDuckRequestBuilder requestBuilder = new BlackDuckRequestBuilder()
-                    .postFile(fileToUpload, ContentType.create(postContentType));
+                    .postFile(payloadFile, ContentType.create(postContentType));
             
             if (headers != null) {
                 for (String headerName : headers.keySet()) {
