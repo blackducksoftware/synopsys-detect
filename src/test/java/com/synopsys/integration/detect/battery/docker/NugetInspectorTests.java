@@ -84,7 +84,7 @@ public class NugetInspectorTests {
     @Test
     void nugetExcludeDevDependencyTest() throws IOException, IntegrationException {
         try(DetectDockerTestRunner test = new DetectDockerTestRunner("detect-nuget-inspector-exclude-dependency","detect-dotnet-seven:1.0.3")) {
-            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("ExcludeDevDependency.dockerfile"));
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Nuget_ExcludeDevDependency.dockerfile"));
 
             String projectVersion = PROJECT_NAME + "-exclude_dev_dependency";
             BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
