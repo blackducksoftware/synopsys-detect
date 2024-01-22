@@ -142,7 +142,7 @@ public class RlScanStepRunner {
         return blackDuckVersion.isPresent() && blackDuckVersion.get().isAtLeast(MIN_BLACK_DUCK_VERSION);
     }
     
-    private boolean isReversingLabsEligible() {
+    private boolean isReversingLabsEligible() throws IOException {
         if (!operationRunner.getRlScanFilePath().isPresent()) {
             logger.info("No detect.rl.scan.file.path property was provided. Skipping ReversingLabs scan.");
             return false;
@@ -153,8 +153,7 @@ public class RlScanStepRunner {
         File scanFile = new File(scanFilePath);
         
         if (!Files.isReadable(scanFile.toPath())) {
-            logger.info("Unable to access file: " + scanFilePath  + ". Please ensure the file exists and is readable by Detect.");
-            return false;
+            throw new IOException("Unable to access file: " + scanFilePath  + ". Please ensure the file exists and is readable by Detect.");
         }
     
         return true;
