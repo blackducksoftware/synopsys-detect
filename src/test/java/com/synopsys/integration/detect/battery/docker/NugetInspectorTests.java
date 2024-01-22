@@ -106,6 +106,8 @@ public class NugetInspectorTests {
 
             blackduckAssertions.doesNotHaveComponents("Microsoft.CodeAnalysis.NetAnalyzers");
             blackduckAssertions.doesNotHaveComponents("Microsoft.Windows.CsWin32");
+            blackduckAssertions.hasComponents("CommunityToolkit.WinUI.Animations");
+            blackduckAssertions.hasComponents("Microsoft.Extensions.Logging");
         }
     }
 }
