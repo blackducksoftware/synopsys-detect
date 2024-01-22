@@ -3,7 +3,6 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,11 +21,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.synopsys.integration.blackduck.version.BlackDuckVersion;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -36,7 +29,6 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.Projec
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 
@@ -54,12 +46,15 @@ public class RlScanStepRunnerTest {
     private RlScanStepRunner rlRunner;
     
     private File rootDirectory;
+    private File scannableFile;
     
     @BeforeEach
     public void setup() throws IOException {
         MockitoAnnotations.openMocks(this);
         
-        rootDirectory = Files.createTempDirectory("RlRunnerTest").toFile();        
+        rootDirectory = Files.createTempDirectory("RlRunnerTest").toFile();      
+        scannableFile = new File(rootDirectory.toString() + "/path");
+        scannableFile.createNewFile();
         DirectoryManager directoryManager = mock(DirectoryManager.class);
         when(operationRunner.getDirectoryManager()).thenReturn(directoryManager); 
         when(directoryManager.getReversingLabsOutputDirectory()).thenReturn(rootDirectory); 
@@ -85,7 +80,7 @@ public class RlScanStepRunnerTest {
     
     @Test
     public void testBadBlackDuckVersion() {
-        when(operationRunner.getRlScanFilePath()).thenReturn(Optional.of("path"));
+        when(operationRunner.getRlScanFilePath()).thenReturn(Optional.of(scannableFile.toString()));
         
         // Needs to be 2024, 4, 0 or later
         when(blackDuckRunData.getBlackDuckServerVersion()).thenReturn(Optional.of(new BlackDuckVersion(2023, 4, 0)));
@@ -104,7 +99,7 @@ public class RlScanStepRunnerTest {
     
     @Test
     public void testRlScanSuccess() throws OperationException, IntegrationException {
-        when(operationRunner.getRlScanFilePath()).thenReturn(Optional.of("path"));
+        when(operationRunner.getRlScanFilePath()).thenReturn(Optional.of(scannableFile.toString()));
         when(blackDuckRunData.getBlackDuckServerVersion()).thenReturn(Optional.of(new BlackDuckVersion(2024, 4, 0)));
         when(operationRunner.getCodeLocationNameManager()).thenReturn(mock(CodeLocationNameManager.class));
         when(operationRunner.uploadBdioHeaderToInitiateScan(any(), any(), any())).thenReturn(UUID.randomUUID());
