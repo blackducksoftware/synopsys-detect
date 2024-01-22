@@ -86,7 +86,6 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
         String packageName = rpmPackage.getName();
         String packageVersion = rpmPackage.getVersion();
         String epoch = rpmPackage.getEpoch();
-        logger.info("Epoch: {}", epoch);
         if (!NO_VALUE.equals(epoch) && epoch != null && !epoch.equals("0")) {
             packageVersion = String.format("%s:%s", epoch, packageVersion);
         }
