@@ -1,5 +1,11 @@
 # [docker_inspector_name] Release notes
 
+## Version 10.1.2
+
+### Resolved issue
+
+* (IDETECT-4058) Improved match accuracy with a correction to identification of components when epoch is zero.
+
 ## Version 10.1.0
 
 ### Changed features

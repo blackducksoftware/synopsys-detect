@@ -12,6 +12,8 @@
 * (IDETECT-4171) Improved Component Location Analysis data validation support for package managers like NPM.
 * (IDETECT-4174) Resolved an issue where [solution_name] was not sending the container scan size to [blackduck_product_name] server, resulting in  [blackduck_product_name]'s "Scans" page reporting the size as zero.
 * (IDETECT-4176) The FULL_SNIPPET_MATCHING and FULL_SNIPPET_MATCHING_ONLY options, currently controlled via registration key, for the --detect.blackduck.signature.scanner.snippet.matching property are deprecated and will be removed in the next major release of [solution_name].
+* (IDETECT-4058) Improved match accuracy for [solution_name] Docker Inspector.
+* (IDETECT-4187) Removed references to 'murex' from test resources.
 
 ### Dependency updates
 
