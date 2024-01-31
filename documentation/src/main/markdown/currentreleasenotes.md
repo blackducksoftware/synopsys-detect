@@ -4,7 +4,7 @@
 
 ### New features
 
-* Nuget Inspector will now support exclusion of different dependency types from BOM with the use of a new property --detect.nuget.dependency.types.excluded added in [solution_name].
+* Nuget Inspector now supports the exclusion of user-specified dependency types from the Bill of Materials (BOM) via the [solution_name] property --detect.nuget.dependency.types.excluded. See the [detect.nuget.dependency.types.excluded](../properties/detectors/nuget.md#nuget-dependency-types-excluded) property for more information.
 
 ### Changed features
 
