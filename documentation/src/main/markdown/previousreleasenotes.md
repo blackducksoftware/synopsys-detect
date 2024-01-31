@@ -7,7 +7,7 @@
 
 * Any arguments that specify the number of threads to be used provided as part of the `detect.maven.build.command` [solution_name] property will be omitted when executing the Maven CLI.
 
-### Resolved Issues
+### Resolved issues
 
 * (IDETECT-4164) Improved Component Location Analysis parser support for package managers like Poetry that employ variable delimiters, for better location accuracy.
 * (IDETECT-4171) Improved Component Location Analysis data validation support for package managers like NPM.
@@ -31,7 +31,7 @@
 
 * pnpm 6, and pnpm 7 using the default v5 pnpm-lock.yaml file, are being deprecated. Support will be removed in [solution_name] 10.
 
-### Resolved Issues
+### Resolved issues
 
 * (IDETECT-3515) Resolved an issue where the Nuget Inspector was not supporting "\<Version\>" tags for "\<PackageReference\>" on the second line and was not cascading to Project Inspector in case of failure.
 

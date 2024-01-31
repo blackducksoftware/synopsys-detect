@@ -4,11 +4,15 @@
 
 ### New features
 
-* Nuget Inspector will now support exclusion of different dependency types from BOM with the use of a new property --detect.nuget.dependency.types.excluded added in [solution_name]. 
+* Nuget Inspector will now support exclusion of different dependency types from BOM with the use of a new property --detect.nuget.dependency.types.excluded added in [solution_name].
 
 ### Changed features
 
-### Resolved Issues
+* 
+
+### Resolved issues
+
+* 
 
 ### Dependency updates
 
