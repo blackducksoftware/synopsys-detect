@@ -168,13 +168,10 @@ public class IntelligentModeStepRunner {
         stepHelper.runToolIfIncluded(DetectTool.RL_SCAN, "ReversingLabs Scan", () -> {
             RlScanStepRunner rlScanStepRunner = new RlScanStepRunner(operationRunner, blackDuckRunData, projectNameVersion);
             Optional<UUID> scanId = rlScanStepRunner.invokeRlWorkflow();
-            
-            // TODO we can get the scanId but not sure if we want to do anything with it. There doesn't seem to be a
-            // BOM to wait for.
-//            scanId.ifPresent(uuid -> scanIdsToWaitFor.add(uuid.toString()));
-//            Set<String> rlScanCodeLocations = new HashSet<>();
-//            rlScanCodeLocations.add(rlScanStepRunner.getCodeLocationName());
-//            codeLocationAccumulator.addNonWaitableCodeLocation(rlScanCodeLocations);
+            scanId.ifPresent(uuid -> scanIdsToWaitFor.add(uuid.toString()));
+            Set<String> rlScanCodeLocations = new HashSet<>();
+            rlScanCodeLocations.add(rlScanStepRunner.getCodeLocationName());
+            codeLocationAccumulator.addNonWaitableCodeLocation(rlScanCodeLocations);
         });
 
         operationRunner.attemptToGenerateComponentLocationAnalysisIfEnabled();
@@ -254,7 +251,6 @@ public class IntelligentModeStepRunner {
         return detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN) ||
             detectToolFilter.shouldInclude(DetectTool.CONTAINER_SCAN) ||
             detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN) ||
-            // TODO if we don't actually want a link to the BOM this should be pulled.
             detectToolFilter.shouldInclude(DetectTool.RL_SCAN);
     }
 
