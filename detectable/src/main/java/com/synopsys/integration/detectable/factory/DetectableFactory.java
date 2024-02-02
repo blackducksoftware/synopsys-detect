@@ -214,6 +214,12 @@ import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspecto
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.pip.inspector.parser.PipInspectorTreeParser;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDependencyTransformer;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDependencyVersionParser;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectable;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvExtractor;
@@ -599,6 +605,17 @@ public class DetectableFactory {
         PipResolver pipResolver
     ) {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
+    }
+
+    public RequirementsFileDetectable createRequirementsFileDetectable(
+        DetectableEnvironment environment,
+        RequirementsFileDetectableOptions requirementsFileDetectableOptions
+    ) {
+        RequirementsFileDependencyVersionParser requirementsFileDependencyVersionParser = new RequirementsFileDependencyVersionParser();
+        RequirementsFileTransformer requirementsFileTransformer = new RequirementsFileTransformer(requirementsFileDependencyVersionParser);
+        RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
+        RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(gson, requirementsFileTransformer, requirementsFileDependencyTransformer);
+        return new RequirementsFileDetectable(environment, fileFinder, requirementsFileExtractor);
     }
 
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmLockOptions pnpmLockOptions) {
