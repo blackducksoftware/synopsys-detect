@@ -10,41 +10,45 @@ import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(name = "PIP Requirements Parse", language = "Python", forge = "PyPi", accuracy = DetectableAccuracyType.LOW, requirementsMarkdown = "File: requirements.txt")
-public class PipRequirementsParseDetectable extends Detectable {
-    public static final String REQUIREMENTS_FILE_NAME = "requirements.txt"; // TODO if provided, override with requirements txt file name from Detect's property
+public class RequirementsFileDetectable extends Detectable {
+    public static final String REQUIREMENTS_FILE_NAME = "requirements.txt";
+
+    // TODO if provided, override with requirements txt file name from Detect's property
 
     private final FileFinder fileFinder;
-    private final PackageJsonExtractor packageJsonExtractor;
+    private final RequirementsFileExtractor requirementsFileExtractor;
 
-    private File packageJsonFile;
+    private File requirementsFile;
 
-    public PipRequirementsParseDetectable(DetectableEnvironment environment, FileFinder fileFinder, PackageJsonExtractor packageJsonExtractor) {
+    public RequirementsFileDetectable(DetectableEnvironment environment, FileFinder fileFinder, RequirementsFileExtractor requirementsFileExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
-        this.packageJsonExtractor = packageJsonExtractor;
+        this.requirementsFileExtractor = requirementsFileExtractor;
     }
 
     @Override
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
-        packageJsonFile = requirements.file(REQUIREMENTS_FILE_NAME);
+        requirementsFile = requirements.file(REQUIREMENTS_FILE_NAME);
         return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() {
+        if (requirementsFile == null) {
+            return new RequirementsFileNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
+        }
         return new PassedDetectableResult();
     }
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         try {
-            return packageJsonExtractor.extract(packageJsonFile);
+            return requirementsFileExtractor.extract(requirementsFile);
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).failure(String.format("Failed to parse %s", REQUIREMENTS_FILE_NAME)).build();
         }
