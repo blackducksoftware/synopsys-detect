@@ -393,6 +393,7 @@ public class DetectConfigurationFactory {
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH);
         Boolean treatSkippedScansAsSuccess = detectConfiguration.getValue(DetectProperties.DETECT_FORCE_SUCCESS_ON_SKIP);
         Boolean isStateless = BlackduckScanMode.STATELESS.equals(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE));
+        Boolean integratedMatchingEnabled = detectConfiguration.getValue(DetectProperties.DETECT_INTEGRATED_MATCHING_ENABLED);
         RapidCompareMode compareMode = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE);
         
 
@@ -414,6 +415,7 @@ public class DetectConfigurationFactory {
             treatSkippedScansAsSuccess,
             isStateless,
             findReducedPersistence(),
+            integratedMatchingEnabled,
             compareMode
         );
     }
@@ -426,6 +428,7 @@ public class DetectConfigurationFactory {
         Path noticesReportPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_NOTICES_REPORT_PATH);
         List<PolicyRuleSeverityType> severitiesToFailPolicyCheck = detectConfiguration.getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES).representedValues();
         List<String> policyNamesToFailPolicyCheck = detectConfiguration.getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_NAMES);
+        Boolean integratedMatchingEnabled = detectConfiguration.getValue(DetectProperties.DETECT_INTEGRATED_MATCHING_ENABLED);
 
         return new BlackDuckPostOptions(
             waitForResults,
@@ -434,7 +437,8 @@ public class DetectConfigurationFactory {
             riskReportPdfPath,
             noticesReportPath,
             severitiesToFailPolicyCheck,
-            policyNamesToFailPolicyCheck
+            policyNamesToFailPolicyCheck,
+            integratedMatchingEnabled
         );
     }
 
