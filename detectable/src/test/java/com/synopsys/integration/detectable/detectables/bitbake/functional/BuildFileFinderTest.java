@@ -26,7 +26,7 @@ class BuildFileFinderTest {
     @ValueSource(strings = { "/bitbake/builddir_default", "/bitbake/builddir_custom" })
     void testFindingInDefaultAndCustom(String directoryPath) {
         File buildDir = FunctionalTestFiles.asFile(directoryPath);
-        BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment(null, null);
+        BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment(null, null, null);
 
         Optional<File> licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment);
 
@@ -37,7 +37,7 @@ class BuildFileFinderTest {
     @Test
     void testFindingBasedOnArchitecture() {
         File buildDir = FunctionalTestFiles.asFile("/bitbake/builddir_arch");
-        BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment("testarch", null); // This test adds architecture.
+        BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment("testarch", null, null); // This test adds architecture.
 
         Optional<File> licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment);
 
@@ -56,12 +56,38 @@ class BuildFileFinderTest {
         long currentTime = System.currentTimeMillis();
         assertTrue(lastModifiedManifestFile.setLastModified(currentTime), "The test needs to be able to set the last modified.");
         assertTrue(wrongManifestFile.setLastModified(currentTime - 1000), "The test needs to be able to set the last modified.");
-        BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment(null, licenseDir.getAbsolutePath()); // This test adds license directory
+        BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment(null, licenseDir.getAbsolutePath(), "core-image-minimal-qemux86-64"); // This test adds license directory
 
         Optional<File> licensesManifestFile = finder.findLicenseManifestFile(buildDir, "targetimage", bitbakeEnvironment);
 
         assertTrue(licensesManifestFile.isPresent());
         assertTrue(licensesManifestFile.get().isFile());
         assertEquals(licenseDir.getAbsolutePath() + "/targetimage-last-modified-architecture/license.manifest", licensesManifestFile.get().getAbsolutePath());
+    }
+
+    @Test
+    void testFindingBasedOnMachine() {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
+        File buildDir = FunctionalTestFiles.asFile("/bitbake/builddir_machine");
+        File licenseDir = FunctionalTestFiles.asFile("/bitbake/builddir_machine/tmp/deploy/licenses");
+
+        String architecture = "quemux86_64";
+
+        File lastModifiedManifestFile     = new File(licenseDir, architecture + "/core-image-minimal-qemux86-64.rootfs-20240202164632/license.manifest");
+        File previousModifiedManifestFile = new File(licenseDir, architecture + "/core-image-minimal-qemux86-64.rootfs-20240202164631/license.manifest");
+
+        long currentTime = System.currentTimeMillis();
+        assertTrue(lastModifiedManifestFile.setLastModified(currentTime), "The test needs to be able to set the last modified.");
+        assertTrue(previousModifiedManifestFile.setLastModified(currentTime - 1), "The test needs to be able to set the last modified.");
+
+        BitbakeEnvironment bitbakeEnvironment = new BitbakeEnvironment(architecture, licenseDir.getAbsolutePath(), "qemux86-64");
+
+        Optional<File> licensesManifestFileResult = finder.findLicenseManifestFile(buildDir, "core-image-minimal", bitbakeEnvironment);
+
+        assertTrue(licensesManifestFileResult.isPresent());
+        assertTrue(licensesManifestFileResult.get().isFile());
+        assertEquals(lastModifiedManifestFile.getAbsolutePath(), licensesManifestFileResult.get().getAbsolutePath());
+
     }
 }
