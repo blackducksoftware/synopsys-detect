@@ -11,4 +11,4 @@ RUN apt-get install -y git
 RUN mkdir -p ${SRC_DIR}
 RUN git clone --depth 1 https://github.com/webgoat/webgoat.git ${SRC_DIR}
 RUN cd ${SRC_DIR} \
-   && mvn compile clean -DskoipTests
+   && mvn compile clean -DskipTests
