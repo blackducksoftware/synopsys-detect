@@ -11,7 +11,7 @@ import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunne
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
-//@Tag("integration")
+@Tag("integration")
 public class ImpactTest {
     @Test
     void offlineImpact() throws IOException {
