@@ -25,7 +25,6 @@ public class RequirementsFileExtractor {
     }
 
     public Extraction extract(File requirementsFileObject) throws IOException {
-//        String requirementsFileText = FileUtils.readFileToString(requirementsFileObject, StandardCharsets.UTF_8);
         List<RequirementsFileDependency> dependencies = requirementsFileTransformer.transform(requirementsFileObject);
         DependencyGraph dependencyGraph = requirementsFileDependencyTransformer.transform(dependencies);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
