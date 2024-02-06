@@ -614,7 +614,7 @@ public class DetectableFactory {
         RequirementsFileDependencyVersionParser requirementsFileDependencyVersionParser = new RequirementsFileDependencyVersionParser();
         RequirementsFileTransformer requirementsFileTransformer = new RequirementsFileTransformer(requirementsFileDependencyVersionParser);
         RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
-        RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(gson, requirementsFileTransformer, requirementsFileDependencyTransformer);
+        RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
         return new RequirementsFileDetectable(environment, fileFinder, requirementsFileExtractor);
     }
 

@@ -13,16 +13,13 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class RequirementsFileExtractor {
-    private final Gson gson;
     private final RequirementsFileTransformer requirementsFileTransformer;
     private final RequirementsFileDependencyTransformer requirementsFileDependencyTransformer;
 
     public RequirementsFileExtractor(
-        Gson gson,
         RequirementsFileTransformer requirementsFileTransformer,
         RequirementsFileDependencyTransformer requirementsFileDependencyTransformer
     ) {
-        this.gson = gson;
         this.requirementsFileTransformer = requirementsFileTransformer;
         this.requirementsFileDependencyTransformer = requirementsFileDependencyTransformer;
     }
