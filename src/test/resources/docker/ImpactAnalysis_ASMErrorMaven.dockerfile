@@ -9,7 +9,6 @@ RUN apt-get install -y git
 
 # Set up the test project
 RUN mkdir -p ${SRC_DIR}
-WORKDIR ${SRC_DIR}
 RUN git clone --depth 1 https://github.com/webgoat/webgoat.git ${SRC_DIR}
-WORKDIR ${SRC_DIR}
+RUN cd ${SRC_DIR}
 RUN mvn clean compile -DskipTests
