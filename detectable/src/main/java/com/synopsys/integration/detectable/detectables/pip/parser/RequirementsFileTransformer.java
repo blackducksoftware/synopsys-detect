@@ -17,36 +17,46 @@ import java.util.stream.Collectors;
 
 public class RequirementsFileTransformer {
     private final RequirementsFileDependencyVersionParser requirementsFileDependencyVersionParser;
+
+
+    private static final List<String> OPERATORS_IN_PRIORITY_ORDER = Arrays.asList("==", "=", ">=", "~=", "<=", ">", "<");
+    private static final List<String> IGNORE_AFTER_CHARACTERS = Arrays.asList("#", ";", ",");
+    private static final List<String> TOKEN_CLEANUP_CHARS = Arrays.asList("==", ",", "\"");
     public RequirementsFileTransformer(
         RequirementsFileDependencyVersionParser requirementsFileDependencyVersionParser
     ) {
         this.requirementsFileDependencyVersionParser = requirementsFileDependencyVersionParser;
     }
-
     public List<RequirementsFileDependency> transform(File requirementsFileObject) throws IOException {
 
         List<RequirementsFileDependency> dependencies = new LinkedList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(requirementsFileObject))) {
             for (String line; (line = bufferedReader.readLine()) != null; ) {
 
-                // Ignore comments (i.e. lines starting with #) and empty/whitespace lines
-                if (line.isEmpty() || line.startsWith("#")) {
+                String formattedLine = formatLine(line);
+
+                // Ignore comments (i.e. lines starting with #) and empty/whitespace lines.
+                if (formattedLine.isEmpty() || formattedLine.startsWith("#")) {
                     continue;
                 }
 
                 List<String> tokens = Arrays.asList(line.trim().split(" "));
 
+                // Extract dependency. This will always be the first token of each valid line.
                 String dependency = "";
                 if (!tokens.isEmpty()) {
-                    dependency = tokens.get(0);
+                    dependency = formatToken(tokens.get(0));
                 }
 
-                int operatorIndex = tokens.indexOf("==");
+                // Find the index of the operator that separates a dependency from its version.
+                // Extract version. Version extracted will be the next token after operator.
+                int operatorIndex = findOperatorIndex(tokens);
                 String version = "";
                 if (operatorIndex > 0 && operatorIndex < tokens.size() - 1) {
-                    version = tokens.get(operatorIndex + 1);
+                    version = formatToken(tokens.get(operatorIndex + 1));
                 }
 
+                // Create a dependency entry and add it to the list
                 if (!dependency.isEmpty()) {
                     RequirementsFileDependency requirementsFileDependency = new RequirementsFileDependency(dependency, version);
                     dependencies.add(requirementsFileDependency);
@@ -56,5 +66,47 @@ public class RequirementsFileTransformer {
         return dependencies;
     }
 
+    private int findOperatorIndex(List<String> tokens) {
+        int operatorIndex = -1;
+        for (String operator : OPERATORS_IN_PRIORITY_ORDER) {
+            operatorIndex = tokens.indexOf(operator);
+            if (operatorIndex != -1) {
+                return operatorIndex;
+            }
+        }
+        return operatorIndex;
+    }
 
+    private List<String> splitByOperator(String line) {
+        for (String operator : OPERATORS_IN_PRIORITY_ORDER) {
+            if (line.contains(operator)) {
+                return Arrays.asList(line.trim().split(operator));
+            }
+        }
+        return Arrays.asList(line.trim().split(" "));
+    }
+
+    private String formatLine(String line) {
+        int ignoreAfterIndex;
+        String formattedLine = line.trim();
+        for (String ignoreAfterChar : IGNORE_AFTER_CHARACTERS) {
+            ignoreAfterIndex = formattedLine.indexOf(ignoreAfterChar);
+            formattedLine = formattedLine.substring(0, ignoreAfterIndex);
+        }
+        return formattedLine;
+    }
+
+    private String formatToken(String token) {
+        // Clean up any irrelevant symbols/chars from token
+        for (String charToRemove : TOKEN_CLEANUP_CHARS) {
+            token = token.replace(charToRemove, "");
+        }
+
+        // Remove any strings in square brackets. For example, if token is requests["foo", "bar"], it should be cleaned up to show as "requests"
+        int bracketIndex = token.indexOf("[");
+        if (bracketIndex > 0) {
+            token = token.substring(0, bracketIndex);
+        }
+        return token;
+    }
 }
