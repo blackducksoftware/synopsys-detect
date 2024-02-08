@@ -32,25 +32,10 @@ public class RequirementsFileTransformer {
                     continue;
                 }
 
-                List<String> tokensBeforeOperator = null;
-                List<String> tokensAfterOperator = null;
-
-                // Find the operator with its index that separates a dependency from its version.
-                List<Object> operatorWithIndex = findOperatorWithIndex(formattedLine);
-                String operatorFound = (String) operatorWithIndex.get(0);
-                if (!operatorFound.isEmpty()) {
-                    int operatorStartIndex = (int) operatorWithIndex.get(1);
-                    int operatorEndIndex = operatorStartIndex + operatorFound.length() - 1;
-
-                    // Get strings before and after operator
-                    String stringBeforeOperator = formattedLine.substring(0, operatorStartIndex).trim();
-                    String stringAfterOperator = formattedLine.substring(operatorEndIndex + 1).trim();
-
-                    // Tokenize based on whitespace as the parser should allow special characters in version and dependency strings
-                    tokensBeforeOperator = Arrays.asList(stringBeforeOperator.split(" "));
-                    tokensAfterOperator = Arrays.asList(stringAfterOperator.split(" "));
-                }
-
+                // Extract tokens before and after the operator that was found in the line
+                List<List<String>> extractedTokens = extractTokens(formattedLine);
+                List<String> tokensBeforeOperator = extractedTokens.get(0);
+                List<String> tokensAfterOperator = extractedTokens.get(1);
 
                 // Extract dependency. This will always be the first token or a substring of first token for each valid line.
                 // Format and cleanup each token
@@ -76,6 +61,26 @@ public class RequirementsFileTransformer {
         return dependencies;
     }
 
+    private List<List<String>> extractTokens(String formattedLine) {
+        List<String> tokensBeforeOperator = null;
+        List<String> tokensAfterOperator = null;
+        // Find the operator with its index that separates a dependency from its version.
+        List<Object> operatorWithIndex = findOperatorWithIndex(formattedLine);
+        String operatorFound = (String) operatorWithIndex.get(0);
+        if (!operatorFound.isEmpty()) {
+            int operatorStartIndex = (int) operatorWithIndex.get(1);
+            int operatorEndIndex = operatorStartIndex + operatorFound.length() - 1;
+
+            // Get strings before and after operator
+            String stringBeforeOperator = formattedLine.substring(0, operatorStartIndex).trim();
+            String stringAfterOperator = formattedLine.substring(operatorEndIndex + 1).trim();
+
+            // Tokenize based on whitespace as the parser should allow special characters in version and dependency strings
+            tokensBeforeOperator = Arrays.asList(stringBeforeOperator.split(" "));
+            tokensAfterOperator = Arrays.asList(stringAfterOperator.split(" "));
+        }
+        return Arrays.asList(tokensBeforeOperator, tokensAfterOperator);
+    }
 
     private List<Object> findOperatorWithIndex(String line) {
         int operatorIndex;
