@@ -80,4 +80,34 @@ public class NugetInspectorTests {
             blackduckAssertions.hasComponents("Microsoft.UI.Xaml");
         }
     }
+
+//    @Test
+//    void nugetExcludeDevDependencyTest() throws IOException, IntegrationException {
+//        try(DetectDockerTestRunner test = new DetectDockerTestRunner("detect-nuget-inspector-exclude-dependency","detect-dotnet-seven:1.0.3")) {
+//            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Nuget_ExcludeDevDependency.dockerfile"));
+//
+//            String projectVersion = PROJECT_NAME + "-exclude_dev_dependency";
+//            BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
+//            BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions(PROJECT_NAME, projectVersion);
+//            blackduckAssertions.emptyOnBlackDuck();
+//
+//            DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
+//            commandBuilder.connectToBlackDuck(blackDuckTestConnection);
+//            commandBuilder.projectNameVersion(blackduckAssertions);
+//            commandBuilder.waitForResults();
+//
+//            commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
+//            commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.NUGET.toString());
+//            commandBuilder.property(DetectProperties.DETECT_NUGET_DEPENDENCY_TYPES_EXCLUDED,"DEV");
+//            DockerAssertions dockerAssertions = test.run(commandBuilder);
+//
+//            dockerAssertions.logContains("NuGet Solution Native Inspector: SUCCESS");
+//            dockerAssertions.atLeastOneBdioFile();
+//
+//            blackduckAssertions.doesNotHaveComponents("Microsoft.CodeAnalysis.NetAnalyzers");
+//            blackduckAssertions.doesNotHaveComponents("Microsoft.Windows.CsWin32");
+//            blackduckAssertions.hasComponents("CommunityToolkit.WinUI.Animations");
+//            blackduckAssertions.hasComponents("Microsoft.Extensions.Logging");
+//        }
+//    }
 }

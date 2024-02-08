@@ -21,6 +21,10 @@ The detectors run a platform dependent self-contained executable that is current
 * The NuGet Detectors do not work with mono.
 </note>
 
+## Excluding dependency types
+[solution_name] offers the ability to exclude package manager specific dependency types from the BOM.
+Nuget dependency types can be filtered with the [detect.nuget.dependency.types.excluded](../properties/detectors/nuget.md#nuget-dependency-types-excluded) property.
+
 ### [solution_name] NuGet Inspector downloads
 
 [solution_name] jar execution will automatically download any required binaries not located in the cache.

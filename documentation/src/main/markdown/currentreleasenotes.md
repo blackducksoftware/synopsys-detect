@@ -1,20 +1,20 @@
 # Current Release notes
 
-## Version 9.3.0
+## Version 9.4.0
+
+### New features
+
+* 
 
 ### Changed features
 
-* Any arguments that specify the number of threads to be used provided as part of the `detect.maven.build.command` [solution_name] property will be omitted when executing the Maven CLI.
+* 
 
-### Resolved Issues
+### Resolved issues
 
-* (IDETECT-4164) Improved Component Location Analysis parser support for package managers like Poetry that employ variable delimiters, for better location accuracy.
-* (IDETECT-4171) Improved Component Location Analysis data validation support for package managers like NPM.
-* (IDETECT-4174) Resolved an issue where [solution_name] was not sending the container scan size to [blackduck_product_name] server, resulting in  [blackduck_product_name]'s "Scans" page reporting the size as zero.
-* (IDETECT-4176) The FULL_SNIPPET_MATCHING and FULL_SNIPPET_MATCHING_ONLY options, currently controlled via registration key, for the --detect.blackduck.signature.scanner.snippet.matching property are deprecated and will be removed in the next major release of [solution_name].
-* (IDETECT-4058) Improved match accuracy for [solution_name] Docker Inspector.
+* (IDETECT-4155) Improved input validation in Component Location Analysis.
 * (IDETECT-4187) Removed references to 'murex' from test resources.
 
 ### Dependency updates
 
-* Updated Guava library from 31.1 to 32.1.2 to resolve high severity [CVE-2023-2976](https://nvd.nist.gov/vuln/detail/CVE-2023-2976).
+* Released and Upgraded Detect Docker Inspector to version 10.1.1.

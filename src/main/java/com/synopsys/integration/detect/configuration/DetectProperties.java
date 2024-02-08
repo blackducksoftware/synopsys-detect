@@ -58,6 +58,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyT
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 import com.synopsys.integration.detectable.detectables.lerna.LernaPackageType;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
+import com.synopsys.integration.detectable.detectables.nuget.NugetDependencyType;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipenvDependencyType;
@@ -1155,6 +1156,14 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
             .build();
+
+    public static final NoneEnumListProperty<NugetDependencyType> DETECT_NUGET_DEPENDENCY_TYPES_EXCLUDED =
+            NoneEnumListProperty.newBuilder("detect.nuget.dependency.types.excluded", NoneEnum.NONE, NugetDependencyType.class)
+                    .setInfo("Nuget Dependency Types Excluded", DetectPropertyFromVersion.VERSION_9_4_0)
+                    .setHelp(createTypeFilterHelpText("Nuget dependency types"))
+                    .setExample(String.format("%s", NugetDependencyType.DEV.name()))
+                    .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+                    .build();
 
     public static final NullablePathProperty DETECT_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.output.path")
