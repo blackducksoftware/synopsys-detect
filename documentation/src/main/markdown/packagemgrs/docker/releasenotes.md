@@ -1,6 +1,6 @@
 # [docker_inspector_name] Release notes
 
-## Version 10.1.2
+## Version 10.1.1
 
 ### Resolved issue
 
