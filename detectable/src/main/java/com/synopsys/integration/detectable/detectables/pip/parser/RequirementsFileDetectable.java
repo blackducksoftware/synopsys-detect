@@ -104,12 +104,11 @@ public class RequirementsFileDetectable extends Detectable {
 
     private void processDefaultParentRequirementsFiles() throws IOException {
         requirementsFiles = fileFinder.findFiles(environment.getDirectory(), REQUIREMENTS_DEFAULT_FILE_NAME);
-        List<File> childRequirementsFiles;
-
+        List<File> childRequirementsFiles = new ArrayList<>();
         // If there are more than one parent requirements.txt files present, check for child references in each parent file
         for (File parentRequirementsFile : requirementsFiles) {
-            childRequirementsFiles = requirementsFileExtractor.findChildFileReferencesInParent(parentRequirementsFile);
-            requirementsFiles.addAll(childRequirementsFiles);
+            childRequirementsFiles.addAll(requirementsFileExtractor.findChildFileReferencesInParent(parentRequirementsFile));
         }
+        requirementsFiles.addAll(childRequirementsFiles);
     }
 }
