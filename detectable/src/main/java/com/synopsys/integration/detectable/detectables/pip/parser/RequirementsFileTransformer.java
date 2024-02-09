@@ -15,10 +15,10 @@ public class RequirementsFileTransformer {
     private static final List<String> IGNORE_AFTER_CHARACTERS = Arrays.asList("#", ";", ",");
     private static final List<String> TOKEN_CLEANUP_CHARS = Arrays.asList("==", ",", "\"");
 
-    public List<RequirementsFileDependency> transform(File requirementsFileObject) throws IOException {
+    public List<RequirementsFileDependency> transform(File requirementsFile) throws IOException {
 
         List<RequirementsFileDependency> dependencies = new LinkedList<>();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(requirementsFileObject))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(requirementsFile))) {
             for (String line; (line = bufferedReader.readLine()) != null; ) {
 
                 // Ignore comments (i.e. lines starting with #) and empty/whitespace lines.
@@ -98,7 +98,7 @@ public class RequirementsFileTransformer {
         return Arrays.asList("", -1);
     }
 
-    private String formatLine(String line) {
+    public String formatLine(String line) {
         int ignoreAfterIndex;
         String formattedLine = line.trim();
         for (String ignoreAfterChar : IGNORE_AFTER_CHARACTERS) {

@@ -1,6 +1,10 @@
 package com.synopsys.integration.detectable.detectables.pip.parser;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +19,8 @@ import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -47,27 +53,39 @@ public class RequirementsFileDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        requirementsFilePathsOverride = requirementsFileDetectableOptions.getRequirementsFilePaths();
+        // Applicable only if overrides are provided by --detect.pip.requirements.path or if at least one "requirements.txt" file is present in source directory.
 
-        // If no overrides provided by --detect.pip.requirements.path, search for the default "requirements.txt" file.
-        if (CollectionUtils.isEmpty(requirementsFilePathsOverride)) {
-            requirementsFiles = fileFinder.findFiles(environment.getDirectory(), REQUIREMENTS_DEFAULT_FILE_NAME);
-        } else {
-            List<File> requirementsFilesOverrides = new ArrayList<>();
-            File currentRequirementsFileOverride;
-            for (Path requirementsFilePath : requirementsFilePathsOverride) {
-                currentRequirementsFileOverride = requirementsFilePath.toFile();
-                if (currentRequirementsFileOverride.exists()) {
-                    requirementsFilesOverrides.add(currentRequirementsFileOverride);
+        try {
+            requirementsFilePathsOverride = requirementsFileDetectableOptions.getRequirementsFilePaths();
+            // If no overrides provided by --detect.pip.requirements.path, search for the default "requirements.txt" file(s).
+            if (CollectionUtils.isEmpty(requirementsFilePathsOverride)) {
+                requirementsFiles = fileFinder.findFiles(environment.getDirectory(), REQUIREMENTS_DEFAULT_FILE_NAME);
+                List<File> childRequirementsFiles;
+
+                // If there are more than one parent requirements.txt files present, check for child references in each parent file
+                for (File parentRequirementsFile : requirementsFiles) {
+                    childRequirementsFiles = requirementsFileExtractor.findChildFileReferencesInParent(parentRequirementsFile);
+                    requirementsFiles.addAll(childRequirementsFiles);
                 }
+            } else {
+                List<File> requirementsFilesOverrides = new ArrayList<>();
+                File currentRequirementsFileOverride;
+                for (Path requirementsFilePath : requirementsFilePathsOverride) {
+                    currentRequirementsFileOverride = requirementsFilePath.toFile();
+                    if (currentRequirementsFileOverride.exists()) {
+                        requirementsFilesOverrides.add(currentRequirementsFileOverride);
+                    }
+                }
+                requirementsFiles = requirementsFilesOverrides;
             }
-            requirementsFiles = requirementsFilesOverrides;
-        }
-        boolean requirementFilesPresent = CollectionUtils.isNotEmpty(requirementsFiles);
-        if (requirementFilesPresent) {
-            return new PassedDetectableResult();
-        } else {
-            return new FilesNotFoundDetectableResult(REQUIREMENTS_DEFAULT_FILE_NAME);
+            boolean requirementFilesPresent = CollectionUtils.isNotEmpty(requirementsFiles);
+            if (requirementFilesPresent) {
+                return new PassedDetectableResult();
+            } else {
+                return new FilesNotFoundDetectableResult(REQUIREMENTS_DEFAULT_FILE_NAME);
+            }}
+        catch (IOException e){
+            return new ExceptionDetectableResult(e);
         }
     }
 
@@ -86,4 +104,6 @@ public class RequirementsFileDetectable extends Detectable {
             return new Extraction.Builder().exception(e).failure(String.format("Failed to parse %s", REQUIREMENTS_DEFAULT_FILE_NAME)).build();
         }
     }
+
+
 }
