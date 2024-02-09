@@ -54,29 +54,14 @@ public class RequirementsFileDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         // Applicable only if overrides are provided by --detect.pip.requirements.path or if at least one "requirements.txt" file is present in source directory.
-
         try {
             requirementsFilePathsOverride = requirementsFileDetectableOptions.getRequirementsFilePaths();
             // If no overrides provided by --detect.pip.requirements.path, search for the default "requirements.txt" file(s).
+            // If overrides are provided, they have precedence over all files. So we do not include child requirements.txt files in the default parent.
             if (CollectionUtils.isEmpty(requirementsFilePathsOverride)) {
-                requirementsFiles = fileFinder.findFiles(environment.getDirectory(), REQUIREMENTS_DEFAULT_FILE_NAME);
-                List<File> childRequirementsFiles;
-
-                // If there are more than one parent requirements.txt files present, check for child references in each parent file
-                for (File parentRequirementsFile : requirementsFiles) {
-                    childRequirementsFiles = requirementsFileExtractor.findChildFileReferencesInParent(parentRequirementsFile);
-                    requirementsFiles.addAll(childRequirementsFiles);
-                }
+                processDefaultParentRequirementsFiles();
             } else {
-                List<File> requirementsFilesOverrides = new ArrayList<>();
-                File currentRequirementsFileOverride;
-                for (Path requirementsFilePath : requirementsFilePathsOverride) {
-                    currentRequirementsFileOverride = requirementsFilePath.toFile();
-                    if (currentRequirementsFileOverride.exists()) {
-                        requirementsFilesOverrides.add(currentRequirementsFileOverride);
-                    }
-                }
-                requirementsFiles = requirementsFilesOverrides;
+                processRequirementsFileOverrides();
             }
             boolean requirementFilesPresent = CollectionUtils.isNotEmpty(requirementsFiles);
             if (requirementFilesPresent) {
@@ -105,5 +90,26 @@ public class RequirementsFileDetectable extends Detectable {
         }
     }
 
+    private void processRequirementsFileOverrides() {
+        List<File> requirementsFilesOverrides = new ArrayList<>();
+        File currentRequirementsFileOverride;
+        for (Path requirementsFilePath : requirementsFilePathsOverride) {
+            currentRequirementsFileOverride = requirementsFilePath.toFile();
+            if (currentRequirementsFileOverride.exists()) {
+                requirementsFilesOverrides.add(currentRequirementsFileOverride);
+            }
+        }
+        requirementsFiles = requirementsFilesOverrides;
+    }
 
+    private void processDefaultParentRequirementsFiles() throws IOException {
+        requirementsFiles = fileFinder.findFiles(environment.getDirectory(), REQUIREMENTS_DEFAULT_FILE_NAME);
+        List<File> childRequirementsFiles;
+
+        // If there are more than one parent requirements.txt files present, check for child references in each parent file
+        for (File parentRequirementsFile : requirementsFiles) {
+            childRequirementsFiles = requirementsFileExtractor.findChildFileReferencesInParent(parentRequirementsFile);
+            requirementsFiles.addAll(childRequirementsFiles);
+        }
+    }
 }
