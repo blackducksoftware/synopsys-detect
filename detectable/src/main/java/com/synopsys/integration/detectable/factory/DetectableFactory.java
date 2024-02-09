@@ -615,7 +615,7 @@ public class DetectableFactory {
         RequirementsFileTransformer requirementsFileTransformer = new RequirementsFileTransformer();
         RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
         RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
-        return new RequirementsFileDetectable(environment, fileFinder, requirementsFileExtractor);
+        return new RequirementsFileDetectable(environment, fileFinder, requirementsFileExtractor, requirementsFileDetectableOptions);
     }
 
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmLockOptions pnpmLockOptions) {
