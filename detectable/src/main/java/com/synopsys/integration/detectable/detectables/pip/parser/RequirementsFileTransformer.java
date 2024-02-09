@@ -57,8 +57,12 @@ public class RequirementsFileTransformer {
     }
 
     private List<List<String>> extractTokens(String formattedLine) {
-        List<String> tokensBeforeOperator = null;
+        // Note: The line is always a valid line to extract from at this point since it has passed all the checks
+        // Hence it will contain at least the dependency. Version may or may not be present.
+
+        List<String> tokensBeforeOperator;
         List<String> tokensAfterOperator = null;
+
         // Find the operator with its index that separates a dependency from its version.
         List<Object> operatorWithIndex = findOperatorWithIndex(formattedLine);
         String operatorFound = (String) operatorWithIndex.get(0);
@@ -73,6 +77,9 @@ public class RequirementsFileTransformer {
             // Tokenize based on whitespace as the parser should allow special characters in version and dependency strings
             tokensBeforeOperator = Arrays.asList(stringBeforeOperator.split(" "));
             tokensAfterOperator = Arrays.asList(stringAfterOperator.split(" "));
+        } else {
+            // No operator found. Implies version is missing. Hence, only set tokensBeforeOperator as a tokenized version of original input line.
+            tokensBeforeOperator = Arrays.asList(formattedLine.split(" "));
         }
         return Arrays.asList(tokensBeforeOperator, tokensAfterOperator);
     }
