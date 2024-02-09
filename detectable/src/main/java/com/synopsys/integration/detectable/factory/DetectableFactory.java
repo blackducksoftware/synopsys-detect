@@ -612,7 +612,7 @@ public class DetectableFactory {
         RequirementsFileDetectableOptions requirementsFileDetectableOptions
     ) {
         RequirementsFileDependencyVersionParser requirementsFileDependencyVersionParser = new RequirementsFileDependencyVersionParser();
-        RequirementsFileTransformer requirementsFileTransformer = new RequirementsFileTransformer(requirementsFileDependencyVersionParser);
+        RequirementsFileTransformer requirementsFileTransformer = new RequirementsFileTransformer();
         RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
         RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
         return new RequirementsFileDetectable(environment, fileFinder, requirementsFileExtractor);

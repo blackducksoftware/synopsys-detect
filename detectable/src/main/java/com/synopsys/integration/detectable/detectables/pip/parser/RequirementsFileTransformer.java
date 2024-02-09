@@ -14,12 +14,7 @@ public class RequirementsFileTransformer {
     private static final List<String> OPERATORS_IN_PRIORITY_ORDER = Arrays.asList("==", ">=", "~=", "<=", ">", "<");
     private static final List<String> IGNORE_AFTER_CHARACTERS = Arrays.asList("#", ";", ",");
     private static final List<String> TOKEN_CLEANUP_CHARS = Arrays.asList("==", ",", "\"");
-    private RequirementsFileDependencyVersionParser requirementsFileDependencyVersionParser;
-    public RequirementsFileTransformer(
-        RequirementsFileDependencyVersionParser requirementsFileDependencyVersionParser
-    ) {
-        this.requirementsFileDependencyVersionParser = requirementsFileDependencyVersionParser;
-    }
+
     public List<RequirementsFileDependency> transform(File requirementsFileObject) throws IOException {
 
         List<RequirementsFileDependency> dependencies = new LinkedList<>();
