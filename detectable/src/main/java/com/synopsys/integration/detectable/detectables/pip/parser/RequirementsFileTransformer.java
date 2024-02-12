@@ -12,7 +12,7 @@ import java.util.List;
 public class RequirementsFileTransformer {
 
     private static final List<String> OPERATORS_IN_PRIORITY_ORDER = Arrays.asList("==", ">=", "~=", "<=", ">", "<");
-    private static final List<String> IGNORE_AFTER_CHARACTERS = Arrays.asList("#", ";", ",", "-");
+    private static final List<String> IGNORE_AFTER_CHARACTERS = Arrays.asList("#", ";", ",");
     private static final List<String> TOKEN_CLEANUP_CHARS = Arrays.asList("==", ",", "\"");
 
     public List<RequirementsFileDependency> transform(File requirementsFile) throws IOException {
@@ -101,6 +101,14 @@ public class RequirementsFileTransformer {
     public String formatLine(String line) {
         int ignoreAfterIndex;
         String formattedLine = line.trim();
+
+        // Ignore any lines that start with hyphen as these are flags, not dependency entries (can be - or --)
+        // Flags are handled in the extractor, not during dependency parsing, as they involve pre-parsing decisions (example: -r flag)
+        if (formattedLine.startsWith("-")) {
+            return "";
+        }
+
+        // Ignore any characters that appear after the chars in the IGNORE_AFTER_CHARACTERS list
         for (String ignoreAfterChar : IGNORE_AFTER_CHARACTERS) {
             ignoreAfterIndex = formattedLine.indexOf(ignoreAfterChar);
             if (ignoreAfterIndex >= 0) {
