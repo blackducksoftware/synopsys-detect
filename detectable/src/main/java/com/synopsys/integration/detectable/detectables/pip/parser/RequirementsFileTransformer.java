@@ -115,7 +115,7 @@ public class RequirementsFileTransformer {
                 formattedLine = formattedLine.substring(0, ignoreAfterIndex);
             }
         }
-        return formattedLine;
+        return formattedLine.trim();
     }
 
     public String formatToken(String token) {
