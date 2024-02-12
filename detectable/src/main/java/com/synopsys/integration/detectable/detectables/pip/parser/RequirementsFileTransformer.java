@@ -56,7 +56,7 @@ public class RequirementsFileTransformer {
         return dependencies;
     }
 
-    private List<List<String>> extractTokens(String formattedLine) {
+    public List<List<String>> extractTokens(String formattedLine) {
         // Note: The line is always a valid line to extract from at this point since it has passed all the checks
         // Hence it will contain at least the dependency. Version may or may not be present.
 
@@ -84,7 +84,7 @@ public class RequirementsFileTransformer {
         return Arrays.asList(tokensBeforeOperator, tokensAfterOperator);
     }
 
-    private List<Object> findOperatorWithIndex(String line) {
+    public List<Object> findOperatorWithIndex(String line) {
         int operatorIndex;
         List<Object> operatorWithIndex = new ArrayList<>();
         for (String operator : OPERATORS_IN_PRIORITY_ORDER) {
@@ -118,7 +118,7 @@ public class RequirementsFileTransformer {
         return formattedLine;
     }
 
-    private String formatToken(String token) {
+    public String formatToken(String token) {
         // Clean up any irrelevant symbols/chars from token
         for (String charToRemove : TOKEN_CLEANUP_CHARS) {
             token = token.replace(charToRemove, "");
