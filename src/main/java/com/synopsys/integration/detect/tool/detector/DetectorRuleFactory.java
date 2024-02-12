@@ -38,6 +38,7 @@ import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetect
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectable;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
@@ -235,6 +236,8 @@ public class DetectorRuleFactory {
                 detector.entryPoint(PipInspectorDetectable.class)
                     .search().defaults();
                 detector.entryPoint(PipfileLockDetectable.class)
+                    .search().defaults();
+                detector.entryPoint(RequirementsFileDetectable.class)
                     .search().defaults();
             })
             .allEntryPointsFallbackToNext()
