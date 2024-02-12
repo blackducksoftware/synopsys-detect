@@ -3,10 +3,13 @@ package com.synopsys.integration.detectable.detectables.pip.parser.unit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
 
@@ -102,40 +105,36 @@ public class RequirementsFileTransformerTest {
         Assertions.assertEquals(expectedLine, formattedLine);
     }
 
-    @Test
-    void testFormatTokenForDependencyTokenWithExtraAttached() {
-        String rawToken = "requests[security]";
-        String expectedToken = "requests";
-
-        String formattedToken = requirementsFileTransformer.formatToken(rawToken);
-        Assertions.assertEquals(expectedToken, formattedToken);
+    public static Stream<String> getFormatTokenRawDependencyInputs() {
+        return Stream.of(
+            EXPECTED_DEPENDENCY_NAME + "[security]",
+            "'" + EXPECTED_DEPENDENCY_NAME + "'",
+            "\"" + EXPECTED_DEPENDENCY_NAME +"\"",
+            EXPECTED_DEPENDENCY_NAME + "/"
+        );
     }
 
-    @Test
-    void testFormatTokenForVersionTokenWithComma() {
-        String rawToken = "1.2.4,";
-        String expectedToken = "1.2.4";
-
-        String formattedToken = requirementsFileTransformer.formatToken(rawToken);
-        Assertions.assertEquals(expectedToken, formattedToken);
+    public static Stream<String> getFormatTokenRawVersionInputs() {
+        return Stream.of(
+            EXPECTED_DEPENDENCY_VERSION + ",",
+            "\"" + EXPECTED_DEPENDENCY_VERSION + "\"",
+            "'" + EXPECTED_DEPENDENCY_VERSION + "'"
+        );
     }
 
-    @Test
-    void testFormatTokenForVersionTokenWithDoubleQuotes() {
-        String rawToken = "\"1.2.4\"";
-        String expectedToken = "1.2.4";
-
+    @ParameterizedTest
+    @MethodSource("getFormatTokenRawDependencyInputs")
+    void testFormatTokenForDependencyToken(String rawToken) {
         String formattedToken = requirementsFileTransformer.formatToken(rawToken);
-        Assertions.assertEquals(expectedToken, formattedToken);
+        Assertions.assertEquals(EXPECTED_DEPENDENCY_NAME, formattedToken);
     }
 
-    @Test
-    void testFormatTokenForVersionTokenWithSingleQuotes() {
-        String rawToken = "'1.2.4'";
-        String expectedToken = "1.2.4";
-
+    @ParameterizedTest
+    @MethodSource("getFormatTokenRawVersionInputs")
+    void testFormatTokenForVersionToken(String rawToken) {
         String formattedToken = requirementsFileTransformer.formatToken(rawToken);
-        Assertions.assertEquals(expectedToken, formattedToken);
+        Assertions.assertEquals(EXPECTED_DEPENDENCY_VERSION, formattedToken);
     }
+
 
 }
