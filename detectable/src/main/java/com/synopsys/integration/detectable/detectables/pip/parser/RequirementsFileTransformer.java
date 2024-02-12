@@ -12,7 +12,7 @@ import java.util.List;
 public class RequirementsFileTransformer {
 
     private static final List<String> OPERATORS_IN_PRIORITY_ORDER = Arrays.asList("==", ">=", "~=", "<=", ">", "<");
-    private static final List<String> IGNORE_AFTER_CHARACTERS = Arrays.asList("#", ";", ",");
+    private static final List<String> IGNORE_AFTER_CHARACTERS = Arrays.asList("#", ";", ",", "-");
     private static final List<String> TOKEN_CLEANUP_CHARS = Arrays.asList("==", ",", "\"");
 
     public List<RequirementsFileDependency> transform(File requirementsFile) throws IOException {

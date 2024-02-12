@@ -36,12 +36,10 @@ public class RequirementsFileExtractor {
             File childFile;
 
             for (String line; (line = bufferedReader.readLine()) != null; ) {
-                // Ignore comments (i.e. lines starting with #) and empty/whitespace lines.
-                String formattedLine = requirementsFileTransformer.formatLine(line);
-                if (!formattedLine.startsWith("-r")) {
+                if (!line.startsWith("-r")) {
                     continue;
                 }
-                tokens = Arrays.asList(formattedLine.split(" "));
+                tokens = Arrays.asList(line.split(" "));
                 if (tokens.size() > 1 && Objects.equals(tokens.get(0), "-r")) {
                     childFileReferenceToken = tokens.get(1);
                     if (childFileReferenceToken.isEmpty()) {
