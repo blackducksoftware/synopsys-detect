@@ -15,9 +15,6 @@ import net.bytebuddy.build.ToStringPlugin;
 public class RequirementsFileTransformerTest {
     private static final String EXPECTED_DEPENDENCY_NAME = "requests";
     private static final String EXPECTED_DEPENDENCY_VERSION = "12.3.3";
-    private static final String VALID_DEPENDENCY_LINE_WITH_SPACES = "requests == 12.3.3";
-    private static final String VALID_DEPENDENCY_LINE_WITHOUT_SPACES = "requests==12.3.3";
-    private static final String VALID_DEPENDENCY_LINE_WITH_EXTRAS = "requests [security] <= 12.3.3";
 
     private static RequirementsFileTransformer requirementsFileTransformer;
 
@@ -51,7 +48,7 @@ public class RequirementsFileTransformerTest {
 
     @Test
     void testExtractTokensForValidLineWithExtras() {
-        String validDependencyLine = "requests [security] <= 12.3.3";
+        String validDependencyLine = "requests [security] >= 12.3.3";
         List<String> expectedTokensBeforeOperator = Arrays.asList(EXPECTED_DEPENDENCY_NAME, "[security]");
         List<String> expectedTokensAfterOperator = Collections.singletonList(EXPECTED_DEPENDENCY_VERSION);
         List<List<String>> expectedTokens = Arrays.asList(expectedTokensBeforeOperator, expectedTokensAfterOperator);
@@ -60,5 +57,85 @@ public class RequirementsFileTransformerTest {
         Assertions.assertEquals(expectedTokens, extractedTokens);
     }
 
+    @Test
+    void testFormatLineForRawLineWithComments() {
+        String rawInputLine = "requests [security] >= 12.3.3    # sample comment";
+        String expectedLine = "requests [security] >= 12.3.3";
+
+        String formattedLine = requirementsFileTransformer.formatLine(rawInputLine);
+        Assertions.assertEquals(expectedLine, formattedLine);
+    }
+
+    @Test
+    void testFormatLineForRawLineWithUnderscore() {
+        String rawInputLine = "requests [security] >= 12.3.3; sys_platform == win32";
+        String expectedLine = "requests [security] >= 12.3.3";
+
+        String formattedLine = requirementsFileTransformer.formatLine(rawInputLine);
+        Assertions.assertEquals(expectedLine, formattedLine);
+    }
+
+    @Test
+    void testFormatLineForRawLineWithCommas() {
+        String rawInputLine = "requests [security] >= 12.3.3, < 14.0";
+        String expectedLine = "requests [security] >= 12.3.3";
+
+        String formattedLine = requirementsFileTransformer.formatLine(rawInputLine);
+        Assertions.assertEquals(expectedLine, formattedLine);
+    }
+
+    @Test
+    void testFormatLineForRawLineWithFlags() {
+        String rawInputLine = "-r /path/to/other/requirements.txt";
+        String expectedLine = "";
+
+        String formattedLine = requirementsFileTransformer.formatLine(rawInputLine);
+        Assertions.assertEquals(expectedLine, formattedLine);
+    }
+
+    @Test
+    void testFormatLineForRawLineWithEmptyWhiteSpace() {
+        String rawInputLine = "          ";
+        String expectedLine = "";
+
+        String formattedLine = requirementsFileTransformer.formatLine(rawInputLine);
+        Assertions.assertEquals(expectedLine, formattedLine);
+    }
+
+    @Test
+    void testFormatTokenForDependencyTokenWithExtraAttached() {
+        String rawToken = "requests[security]";
+        String expectedToken = "requests";
+
+        String formattedToken = requirementsFileTransformer.formatToken(rawToken);
+        Assertions.assertEquals(expectedToken, formattedToken);
+    }
+
+    @Test
+    void testFormatTokenForVersionTokenWithComma() {
+        String rawToken = "1.2.4,";
+        String expectedToken = "1.2.4";
+
+        String formattedToken = requirementsFileTransformer.formatToken(rawToken);
+        Assertions.assertEquals(expectedToken, formattedToken);
+    }
+
+    @Test
+    void testFormatTokenForVersionTokenWithDoubleQuotes() {
+        String rawToken = "\"1.2.4\"";
+        String expectedToken = "1.2.4";
+
+        String formattedToken = requirementsFileTransformer.formatToken(rawToken);
+        Assertions.assertEquals(expectedToken, formattedToken);
+    }
+
+    @Test
+    void testFormatTokenForVersionTokenWithSingleQuotes() {
+        String rawToken = "'1.2.4'";
+        String expectedToken = "1.2.4";
+
+        String formattedToken = requirementsFileTransformer.formatToken(rawToken);
+        Assertions.assertEquals(expectedToken, formattedToken);
+    }
 
 }
