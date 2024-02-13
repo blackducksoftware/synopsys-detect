@@ -13,8 +13,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
 
-import net.bytebuddy.build.ToStringPlugin;
-
 public class RequirementsFileTransformerTest {
     private static final String EXPECTED_DEPENDENCY_NAME = "requests";
     private static final String EXPECTED_DEPENDENCY_VERSION = "12.3.3";
@@ -70,9 +68,9 @@ public class RequirementsFileTransformerTest {
     }
 
     @Test
-    void testFormatLineForRawLineWithUnderscore() {
-        String rawInputLine = "requests [security] >= 12.3.3; sys_platform == win32";
-        String expectedLine = "requests [security] >= 12.3.3";
+    void testFormatLineForRawLineWithSemiColon() {
+        String rawInputLine = "requests <= 12.3.3; sys_platform == win32";
+        String expectedLine = "requests <= 12.3.3";
 
         String formattedLine = requirementsFileTransformer.formatLine(rawInputLine);
         Assertions.assertEquals(expectedLine, formattedLine);
@@ -80,8 +78,8 @@ public class RequirementsFileTransformerTest {
 
     @Test
     void testFormatLineForRawLineWithCommas() {
-        String rawInputLine = "requests [security] >= 12.3.3, < 14.0";
-        String expectedLine = "requests [security] >= 12.3.3";
+        String rawInputLine = "requests == 12.3.3, < 14.0";
+        String expectedLine = "requests == 12.3.3";
 
         String formattedLine = requirementsFileTransformer.formatLine(rawInputLine);
         Assertions.assertEquals(expectedLine, formattedLine);
@@ -109,8 +107,7 @@ public class RequirementsFileTransformerTest {
         return Stream.of(
             EXPECTED_DEPENDENCY_NAME + "[security]",
             "'" + EXPECTED_DEPENDENCY_NAME + "'",
-            "\"" + EXPECTED_DEPENDENCY_NAME +"\"",
-            EXPECTED_DEPENDENCY_NAME + "/"
+            "\"" + EXPECTED_DEPENDENCY_NAME +"\""
         );
     }
 

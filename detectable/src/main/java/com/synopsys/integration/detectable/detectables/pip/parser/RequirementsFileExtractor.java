@@ -8,8 +8,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -27,10 +29,10 @@ public class RequirementsFileExtractor {
         this.requirementsFileDependencyTransformer = requirementsFileDependencyTransformer;
     }
 
-    public List<File> findChildFileReferencesInParent(File parentRequirementsFile) throws IOException {
+    public Set<File> findChildFileReferencesInParent(File parentRequirementsFile) throws IOException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(parentRequirementsFile))) {
             List<String> tokens;
-            List<File> childRequirementsFiles = new ArrayList<>();
+            Set<File> childRequirementsFiles = new HashSet<>();
             String childFileReferenceToken;
             Path childFileReferencePath;
             File childFile;
@@ -42,14 +44,14 @@ public class RequirementsFileExtractor {
                 tokens = Arrays.asList(line.split(" "));
                 if (tokens.size() > 1 && Objects.equals(tokens.get(0), "-r")) {
                     childFileReferenceToken = tokens.get(1);
-                    if (childFileReferenceToken.isEmpty()) {
-                        continue;
+                    if (!childFileReferenceToken.isEmpty()) {
+                        childFileReferencePath = Paths.get(childFileReferenceToken);
+                        childFile = childFileReferencePath.toFile();
+                        if (childFile.exists()) {
+                            childRequirementsFiles.add(childFile);
+                        }
                     }
-                    childFileReferencePath = Paths.get(childFileReferenceToken);
-                    childFile = childFileReferencePath.toFile();
-                    if (childFile.exists()) {
-                        childRequirementsFiles.add(childFile);
-                    }
+
                 }
 
             }
@@ -57,7 +59,7 @@ public class RequirementsFileExtractor {
         }
     }
 
-    public Extraction extract(List<File> requirementsFiles) throws IOException {
+    public Extraction extract(Set<File> requirementsFiles) throws IOException {
         List<CodeLocation> codeLocations = new ArrayList<>();
         for (File requirementsFile : requirementsFiles) {
             List<RequirementsFileDependency> dependencies = requirementsFileTransformer.transform(requirementsFile);

@@ -1,14 +1,11 @@
 package com.synopsys.integration.detectable.detectables.pip.parser;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -16,11 +13,9 @@ import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
-import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -30,13 +25,11 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 public class RequirementsFileDetectable extends Detectable {
     public static final String REQUIREMENTS_DEFAULT_FILE_NAME = "requirements.txt";
 
-    // TODO if provided, override with requirements txt file name from Detect's property
-
     private final FileFinder fileFinder;
     private final RequirementsFileExtractor requirementsFileExtractor;
     private final RequirementsFileDetectableOptions requirementsFileDetectableOptions;
 
-    private List<File> requirementsFiles;
+    private Set<File> requirementsFiles;
     private List<Path> requirementsFilePathsOverride;
 
     public RequirementsFileDetectable(
@@ -90,21 +83,25 @@ public class RequirementsFileDetectable extends Detectable {
         }
     }
 
-    private void processRequirementsFileOverrides() {
-        List<File> requirementsFilesOverrides = new ArrayList<>();
+    private void processRequirementsFileOverrides() throws IOException {
+        Set<File> requirementsFilesOverrides = new HashSet<>();
+        Set<File> childRequirementsFiles = new HashSet<>();
         File currentRequirementsFileOverride;
         for (Path requirementsFilePath : requirementsFilePathsOverride) {
             currentRequirementsFileOverride = requirementsFilePath.toFile();
             if (currentRequirementsFileOverride.exists()) {
                 requirementsFilesOverrides.add(currentRequirementsFileOverride);
+                childRequirementsFiles.addAll(requirementsFileExtractor.findChildFileReferencesInParent(currentRequirementsFileOverride));
             }
         }
         requirementsFiles = requirementsFilesOverrides;
+        requirementsFiles.addAll(childRequirementsFiles);
     }
 
     private void processDefaultParentRequirementsFiles() throws IOException {
-        requirementsFiles = fileFinder.findFiles(environment.getDirectory(), REQUIREMENTS_DEFAULT_FILE_NAME);
-        List<File> childRequirementsFiles = new ArrayList<>();
+        List<File> requirementsFilesList = fileFinder.findFiles(environment.getDirectory(), REQUIREMENTS_DEFAULT_FILE_NAME);
+        requirementsFiles = new HashSet<>(requirementsFilesList);
+        Set<File> childRequirementsFiles = new HashSet<>();
         // If there are more than one parent requirements.txt files present, check for child references in each parent file
         for (File parentRequirementsFile : requirementsFiles) {
             childRequirementsFiles.addAll(requirementsFileExtractor.findChildFileReferencesInParent(parentRequirementsFile));

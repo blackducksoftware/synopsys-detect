@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,8 +25,6 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 @FunctionalTest
 class RequirementsFileDetectableTest {
     private static File requirementsFile;
-    private static RequirementsFileDependencyTransformer requirementsFileDependencyTransformer;
-    private static RequirementsFileTransformer requirementsFileTransformer;
     private static RequirementsFileExtractor requirementsFileExtractor;
     private static ExternalId testDependency1;
     private static ExternalId testDependency2;
@@ -44,14 +43,14 @@ class RequirementsFileDetectableTest {
 
         requirementsFile = new File("src/test/resources/detectables/functional/pip/requirements.txt");
 
-        requirementsFileTransformer = new RequirementsFileTransformer();
-        requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
+        RequirementsFileTransformer requirementsFileTransformer = new RequirementsFileTransformer();
+        RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
         requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
     }
 
     @Test
     void testDependencyExtractionFromRequirementsFile() throws IOException {
-        List<File> requirementsFiles = Collections.singletonList(requirementsFile);
+        Set<File> requirementsFiles = Collections.singleton(requirementsFile);
         Extraction testFileExtraction = requirementsFileExtractor.extract(requirementsFiles);
         Assertions.assertEquals(1, testFileExtraction.getCodeLocations().size());
 
