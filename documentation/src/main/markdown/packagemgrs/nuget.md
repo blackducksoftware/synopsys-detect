@@ -24,7 +24,8 @@ The detectors run a platform dependent self-contained executable that is current
 ## Excluding dependency types
 [solution_name] offers the ability to exclude package manager specific dependency types from the BOM.
 Nuget dependency types can be filtered with the [detect.nuget.dependency.types.excluded](../properties/detectors/nuget.md#nuget-dependency-types-excluded) property.
-This property will support exclusion of dependencies in projects that uses PackageReference and packages.config for listing the dependencies. As the support for Json files to store dependencies has been deprecated by Nuget, we will not be enhancing them to exclude dependency types. 
+This property supports exclusion of dependencies in projects that use PackageReference, and packages.config for listing dependencies.
+Support for storing dependencies in Json files has been deprecated by Nuget, and will not be enhancing the properties to exclude dependency types in this manner.
 
 ### [solution_name] NuGet Inspector downloads
 
