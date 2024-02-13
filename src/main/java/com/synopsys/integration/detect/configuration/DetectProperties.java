@@ -1160,7 +1160,7 @@ public class DetectProperties {
     public static final NoneEnumListProperty<NugetDependencyType> DETECT_NUGET_DEPENDENCY_TYPES_EXCLUDED =
             NoneEnumListProperty.newBuilder("detect.nuget.dependency.types.excluded", NoneEnum.NONE, NugetDependencyType.class)
                     .setInfo("Nuget Dependency Types Excluded", DetectPropertyFromVersion.VERSION_9_4_0)
-                    .setHelp(createTypeFilterHelpText("Nuget dependency types"))
+                    .setHelp(createTypeFilterHelpText("Nuget dependency types"), "This property will support exclusion of dependencies in projects that uses PackageReference and packages.config for listing the dependencies. As the support for Json files to store dependencies has been deprecated by Nuget, we will not be enhancing them to exclude dependency types.")
                     .setExample(String.format("%s", NugetDependencyType.DEV.name()))
                     .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
                     .build();
