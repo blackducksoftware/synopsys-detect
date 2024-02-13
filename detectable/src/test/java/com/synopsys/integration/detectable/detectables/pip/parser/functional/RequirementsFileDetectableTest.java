@@ -26,6 +26,7 @@ class RequirementsFileDetectableTest {
     private static File requirementsFile;
     private static RequirementsFileDependencyTransformer requirementsFileDependencyTransformer;
     private static RequirementsFileTransformer requirementsFileTransformer;
+    private static RequirementsFileExtractor requirementsFileExtractor;
     private static ExternalId testDependency1;
     private static ExternalId testDependency2;
     private static ExternalId testDependency3;
@@ -45,12 +46,11 @@ class RequirementsFileDetectableTest {
 
         requirementsFileTransformer = new RequirementsFileTransformer();
         requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
-
+        requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
     }
 
     @Test
     void testDependencyExtractionFromRequirementsFile() throws IOException {
-        RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
         List<File> requirementsFiles = Collections.singletonList(requirementsFile);
         Extraction testFileExtraction = requirementsFileExtractor.extract(requirementsFiles);
         Assertions.assertEquals(1, testFileExtraction.getCodeLocations().size());
