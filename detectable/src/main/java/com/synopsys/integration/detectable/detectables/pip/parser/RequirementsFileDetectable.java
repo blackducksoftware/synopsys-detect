@@ -85,17 +85,14 @@ public class RequirementsFileDetectable extends Detectable {
 
     private void processRequirementsFileOverrides() throws IOException {
         Set<File> requirementsFilesOverrides = new HashSet<>();
-        Set<File> childRequirementsFiles = new HashSet<>();
         File currentRequirementsFileOverride;
         for (Path requirementsFilePath : requirementsFilePathsOverride) {
             currentRequirementsFileOverride = requirementsFilePath.toFile();
             if (currentRequirementsFileOverride.exists()) {
                 requirementsFilesOverrides.add(currentRequirementsFileOverride);
-                childRequirementsFiles.addAll(requirementsFileExtractor.findChildFileReferencesInParent(currentRequirementsFileOverride));
             }
         }
         requirementsFiles = requirementsFilesOverrides;
-        requirementsFiles.addAll(childRequirementsFiles);
     }
 
     private void processDefaultParentRequirementsFiles() throws IOException {
