@@ -54,7 +54,7 @@ public class RequirementsFileExtractor {
                         if (childFile.exists()) {
                             childRequirementsFiles.add(childFile);
                         } else {
-                            logger.warn("Could not locate the requirements file at " + childFile.getAbsolutePath() + ". This file will not be included.");
+                            logger.warn("Could not locate the referenced requirements file at {}. This file will not be included.", childFileReferenceToken);
                         }
                     }
 
