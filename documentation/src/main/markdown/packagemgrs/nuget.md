@@ -25,7 +25,10 @@ The detectors run a platform dependent self-contained executable that is current
 [solution_name] offers the ability to exclude package manager specific dependency types from the BOM.
 Nuget dependency types can be filtered with the [detect.nuget.dependency.types.excluded](../properties/detectors/nuget.md#nuget-dependency-types-excluded) property.
 This property supports exclusion of dependencies in projects that use PackageReference, and packages.config for listing dependencies.
-Support for storing dependencies in Json files has been deprecated by Nuget. We will not be enhancing the properties to exclude dependency types in this manner.
+<note type="note">Support for storing dependencies in Json files has been deprecated by Nuget. As such we will not be enhancing the properties to exclude dependency types in this manner.</note>
+
+A project might be using a dependency purely as a development harness and you might not want to expose that to projects that will consume the package. You can use the PrivateAssets metadata to control this behavior. [solution_name] looks for the PrivateAssets attribute used within PackageReference tags to identify a development dependency. [solution_name] will ignore the contents of the tag and only observe the presence of these PrivateAssets to exclude those development related dependencies.
+For packages.config file, [solution_name] will look for developmentDependency tags to determine whether to include or exclude a dependency.
 
 ### [solution_name] NuGet Inspector downloads
 
