@@ -2,6 +2,8 @@ package com.synopsys.integration.detectable.detectables.pip.parser.unit;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
@@ -28,14 +30,18 @@ public class RequirementsFileExtractorTest {
     void testFindChildFileReferencesInParent() throws IOException {
         Set<File> childRequirementsFiles = requirementsFileExtractor.findChildFileReferencesInParent(requirementsFile);
 
-        Assertions.assertEquals(2, childRequirementsFiles.size());
+        Assertions.assertEquals(3, childRequirementsFiles.size());
 
-        int fileCounter = 2;
+        Set<String> expectedFileNamesSet = new HashSet<>(Arrays.asList(
+            "requirements-2.txt",
+            "requirements-3.txt",
+            "requirements-4.txt"
+        ));
+
         for (File childRequirementFile : childRequirementsFiles) {
             Assertions.assertNotNull(childRequirementFile);
             Assertions.assertTrue(childRequirementFile.exists());
-            Assertions.assertEquals("requirements-" + fileCounter + ".txt", childRequirementFile.getName());
-            fileCounter++;
+            Assertions.assertTrue(expectedFileNamesSet.contains(childRequirementFile.getName()));
         }
     }
 }

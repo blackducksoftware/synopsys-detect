@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
@@ -38,33 +38,43 @@ public class RequirementsFileExtractor {
             List<String> tokens;
             Set<File> childRequirementsFiles = new HashSet<>();
             String childFileReferenceToken;
-            Path childFileReferencePath;
             File childFile;
 
             for (String line; (line = bufferedReader.readLine()) != null; ) {
-                if (!line.startsWith("-r")) {
+                if (Boolean.FALSE.equals(doesLineStartWithRequirementsFlag(line))) {
                     continue;
                 }
-                tokens = Arrays.asList(line.split(" "));
-                if (tokens.size() > 1 && Objects.equals(tokens.get(0), "-r")) {
+                // Remove extra whitespace and split on space
+                tokens = Arrays.asList(line.replaceAll("\\s+", " ").split(" "));
+                if (tokens.size() > 1) {
                     childFileReferenceToken = tokens.get(1);
                     if (!childFileReferenceToken.isEmpty()) {
-                        childFileReferencePath = Paths.get(childFileReferenceToken);
-                        childFile = childFileReferencePath.toFile();
+                        childFile = resolveChildFileReference(parentRequirementsFile.toPath(), childFileReferenceToken);
                         if (childFile.exists()) {
                             childRequirementsFiles.add(childFile);
                         } else {
                             logger.warn("Could not locate the referenced requirements file at {}. This file will not be included.", childFileReferenceToken);
                         }
                     }
-
                 }
-
             }
             return childRequirementsFiles;
         }
     }
+    private File resolveChildFileReference(Path parentRequirementsFilePath, String childFileReferenceToken) throws IOException {
+        Path childFileReferencePath = Paths.get(childFileReferenceToken);
+        if (childFileReferencePath.isAbsolute()) {
+            return childFileReferencePath.toFile().getCanonicalFile();
+        }
+        Path parentFilePath = parentRequirementsFilePath.toAbsolutePath().getParent();
+        Path childFileAbsolutePath = Paths.get(parentFilePath.toString(), childFileReferencePath.toString());
+        return childFileAbsolutePath.toFile().getCanonicalFile();
+    }
 
+    private Boolean doesLineStartWithRequirementsFlag(String line) {
+        // can be -r or --requirement flag followed by a whitespace
+        return line.startsWith("-r ") || line.startsWith("--requirement ");
+    }
     public Extraction extract(Set<File> requirementsFiles) throws IOException {
         List<CodeLocation> codeLocations = new ArrayList<>();
         for (File requirementsFile : requirementsFiles) {

@@ -6,11 +6,13 @@ name3 >= 1.2  # PyYAML 5.1 is required for Python 3.8+ support
 
 # NOTE: resolvelib 0.x version bumps should be considered major/breaking
 
--r src/test/resources/detectables/functional/pip/requirements-2.txt
+-r requirements-2.txt
 
 name4 >= 0.5.3, < 1.1.0  # dependency resolver used by ansible-galaxy
 
--r src/test/resources/detectables/functional/pip/requirements-3.txt
+-r test-subdirectory/requirements-3.txt
+
+-r       ../pip/test-subdirectory/../requirements-4.txt # valid UNIX path that parser should be able to resolve (with extra whitespaces before path)
 -c sample-constraints.txt
 
 --dry-run
