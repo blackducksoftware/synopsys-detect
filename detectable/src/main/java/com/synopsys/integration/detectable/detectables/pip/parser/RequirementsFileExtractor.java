@@ -41,7 +41,7 @@ public class RequirementsFileExtractor {
             File childFile;
 
             for (String line; (line = bufferedReader.readLine()) != null; ) {
-                if (Boolean.FALSE.equals(doesLineStartWithRequirementsFlag(line))) {
+                if (!doesLineStartWithRequirementsFlag(line)) {
                     continue;
                 }
                 // Remove extra whitespace and split on space
@@ -71,7 +71,7 @@ public class RequirementsFileExtractor {
         return childFileAbsolutePath.toFile().getCanonicalFile();
     }
 
-    private Boolean doesLineStartWithRequirementsFlag(String line) {
+    private boolean doesLineStartWithRequirementsFlag(String line) {
         // can be -r or --requirement flag followed by a whitespace
         return line.startsWith("-r ") || line.startsWith("--requirement ");
     }
