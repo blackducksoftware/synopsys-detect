@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -20,6 +23,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 public class RequirementsFileExtractor {
     private final RequirementsFileTransformer requirementsFileTransformer;
     private final RequirementsFileDependencyTransformer requirementsFileDependencyTransformer;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public RequirementsFileExtractor(
         RequirementsFileTransformer requirementsFileTransformer,
@@ -49,6 +53,8 @@ public class RequirementsFileExtractor {
                         childFile = childFileReferencePath.toFile();
                         if (childFile.exists()) {
                             childRequirementsFiles.add(childFile);
+                        } else {
+                            logger.warn("Could not locate the requirements file at " + childFile.getAbsolutePath() + ". This file will not be included.");
                         }
                     }
 
