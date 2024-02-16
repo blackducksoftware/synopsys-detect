@@ -47,9 +47,6 @@ public class PhoneHomeSecrets {
 
     public static String getFileCheckSum(String filePath) throws NoSuchAlgorithmException, IOException {
         byte[] data = Files.readAllBytes(Paths.get(filePath));
-//        byte[] data = Files.readAllBytes(Paths.get(filePath+"\\com\\synopsys\\integration\\detect\\Application.class"));
-//        byte[] data = Files.readAllBytes(Paths.get("C:\\Users\\basim\\Desktop\\synopsys-detect\\build\\libs\\synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar\\BOOT-INF\\classes\\com\\synopsys\\integration\\detect\\Application.class"));
-//        byte[] data = Files.readAllBytes(Paths.get(filePath.substring(6)));
         byte[] hash = MessageDigest.getInstance("SHA-256").digest(data);
         return new BigInteger(1, hash).toString(16);
     }
