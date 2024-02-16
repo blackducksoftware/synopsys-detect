@@ -1,7 +1,13 @@
 package com.synopsys.integration.detect.boot;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 
+import com.synopsys.integration.detect.Application;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeSecrets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -91,7 +97,7 @@ public class ProductBootTest {
     private ProductRunData testBoot(BlackDuckDecision blackDuckDecision, ProductBootOptions productBootOptions, BlackDuckConnectivityResult blackDuckconnectivityResult)
         throws DetectUserFriendlyException, IOException, IntegrationException {
         ProductBootFactory productBootFactory = Mockito.mock(ProductBootFactory.class);
-        Mockito.when(productBootFactory.createPhoneHomeManager(Mockito.any())).thenReturn(null);
+        Mockito.when(productBootFactory.createPhoneHomeManager(Mockito.any(), Mockito.any())).thenReturn(null);
 
         BlackDuckVersionChecker blackDuckVersionChecker = Mockito.mock(BlackDuckVersionChecker.class);
         Mockito.when(blackDuckVersionChecker.check(Mockito.anyString())).thenReturn(BlackDuckVersionCheckerResult.passed());

@@ -1,8 +1,10 @@
 package com.synopsys.integration.detect.lifecycle.boot.product;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeSecrets;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,14 +115,25 @@ public class ProductBoot {
             boolean waitAtScanLevel = shouldWaitAtScanLevel(blackDuckConnectivityResult);
             
             if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getBlackDuckApiClient())) {
-                PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
-                bdRunData = BlackDuckRunData.online(
-                    blackDuckDecision.scanMode(),
-                    blackDuckServicesFactory,
-                    phoneHomeManager,
-                    blackDuckConnectivityResult,
-                    waitAtScanLevel
-                );
+                try {
+                    PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory, PhoneHomeSecrets.getGa4Credentials());
+                    bdRunData = BlackDuckRunData.online(
+                            blackDuckDecision.scanMode(),
+                            blackDuckServicesFactory,
+                            phoneHomeManager,
+                            blackDuckConnectivityResult,
+                            waitAtScanLevel
+                    );
+                } catch (NoSuchAlgorithmException e) {
+                    logger.debug("Skipping phone home due to Detect hash generation failure.");
+                } catch (InterruptedException e) {
+                    logger.debug("Skipping phone home due to GCP connection failure.");
+                } catch (Exception e) {
+                    logger.debug("Skipping phone home due to unknown failure.");
+                } finally {
+                    if (bdRunData == null)
+                        bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult, waitAtScanLevel);
+                }
             } else {
                 logger.debug("Skipping phone home due to Black Duck global settings.");
                 bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult, waitAtScanLevel);
