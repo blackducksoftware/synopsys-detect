@@ -33,4 +33,26 @@ public class YarnLockEntry extends Stringable {
     public String getVersion() {
         return version;
     }
+    
+    public String toPrettyString() {
+        if (!ids.isEmpty()) {
+            String name = ids.get(0).getName();
+            StringBuilder sb = new StringBuilder();
+            ids.forEach(id -> {
+                if (sb.length() != 0) {
+                    sb.append(", ").append(id.getVersion());
+                } else {
+                    sb.append(id.getVersion());
+                }
+            });
+            sb.append("], Dependencies:");
+            if (!dependencies.isEmpty()) {
+                dependencies.forEach(dep -> {
+                    sb.append("\n\t").append(dep.getName()).append(" : ").append(dep.getVersion()).append(", Optional:").append(dep.isOptional());
+                });
+            }
+            return name+" : "+version+" <- ["+sb.toString();
+        }
+        return "";
+    }
 }

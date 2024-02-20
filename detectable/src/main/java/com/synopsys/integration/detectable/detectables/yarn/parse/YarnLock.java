@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
 public class YarnLock {
     @Nullable
@@ -29,5 +30,15 @@ public class YarnLock {
 
     public List<YarnLockEntry> getEntries() {
         return entries;
+    }
+    
+    public String toPrettyString() {
+        StringBuilder mainSb = new StringBuilder();
+        for (int i=0; i < entries.size(); i++) {
+            final YarnLockEntry entry = entries.get(i);
+            
+            mainSb.append("\n").append(entry.toPrettyString());
+        }
+        return mainSb.toString();
     }
 }
