@@ -52,16 +52,17 @@ public class NugetProjectInspectorTest extends DetectableFunctionalTest {
         List<CodeLocation> codeLocations = extraction.getCodeLocations();
 
         Assertions.assertEquals(2, codeLocations.size());
-        Assertions.assertEquals(new File("C:\\Users\\jordanp\\source\\repos\\ConsoleApp3\\ConsoleApp1\\ConsoleApp1.csproj"), codeLocations.get(0).getSourcePath().orElse(null));
-        Assertions.assertEquals(new File("C:\\Users\\jordanp\\source\\repos\\ConsoleApp3\\ConsoleApp3\\ConsoleApp3.csproj"), codeLocations.get(1).getSourcePath().orElse(null));
+        Assertions.assertEquals(new File("/Users/devmehta/Desktop/p2p/p2pconn/FILE-0-myfile.csproj"), codeLocations.get(0).getSourcePath().orElse(null));
+        Assertions.assertEquals(new File("/Users/devmehta/Desktop/p2p/p2pconn/p2pconn.csproj"), codeLocations.get(1).getSourcePath().orElse(null));
 
         NameVersionGraphAssert consoleApp1 = new NameVersionGraphAssert(Forge.NUGET, codeLocations.get(0).getDependencyGraph());
-        consoleApp1.hasDependency("DocumentFormat.OpenXml", "2.13.0");
+        consoleApp1.hasDependency("boost", "100.2.3");
+        consoleApp1.hasDependency("MSTest.TestAdapter","1.0.0-preview");
 
         NameVersionGraphAssert consoleApp3 = new NameVersionGraphAssert(Forge.NUGET, codeLocations.get(1).getDependencyGraph());
+        consoleApp3.hasDependency("Newtonsoft.Json", "13.0.1");
         consoleApp3.hasDependency("Newtonsoft.Json.Bson", "1.0.2");
-        consoleApp3.hasDependency("Serilog", "2.10.0");
 
-        consoleApp3.hasParentChildRelationship("Newtonsoft.Json.Bson", "1.0.2", "Newtonsoft.Json", "12.0.1");
+        consoleApp3.hasParentChildRelationship("Newtonsoft.Json", "13.0.1", "Newtonsoft.Json.Bson", "1.0.2");
     }
 }
