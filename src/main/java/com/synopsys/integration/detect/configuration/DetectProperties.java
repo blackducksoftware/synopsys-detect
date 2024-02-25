@@ -58,6 +58,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyT
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 import com.synopsys.integration.detectable.detectables.lerna.LernaPackageType;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
+import com.synopsys.integration.detectable.detectables.nuget.NugetDependencyType;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipenvDependencyType;
@@ -371,7 +372,7 @@ public class DetectProperties {
         NullableStringProperty.newBuilder("detect.blackduck.signature.scanner.arguments")
             .setInfo("Signature Scanner Arguments", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
-                "A space-separated list of additional arguments to use when running the Black Duck signature scanner.",
+                "A space-separated list of additional arguments to use when running the Black Duck signature scanner. Key-value pairs are treated as replacements rather than as additions.",
                 "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in the current working directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from ./excludes.txt'"
             )
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
@@ -479,7 +480,8 @@ public class DetectProperties {
             .setHelp(
                 "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .build();
+            .build().deprecateValue(SnippetMatching.FULL_SNIPPET_MATCHING,"Is deprecated and will be removed in the next major release")
+                .deprecateValue(SnippetMatching.FULL_SNIPPET_MATCHING_ONLY,"Is deprecated and will be removed in the next major release");
     
     public static final ExtendedEnumProperty<ExtendedReducedPersistanceMode, ReducedPersistence> DETECT_BLACKDUCK_SIGNATURE_SCANNER_REDUCED_PERSISTENCE =
             ExtendedEnumProperty.newBuilder(
@@ -1018,7 +1020,7 @@ public class DetectProperties {
             .setInfo("Maven Build Command", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "Maven command line arguments to add to the mvn/mvnw command line.",
-                "By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'"
+                "By default, Detect runs the mvn (or mvnw) command with two arguments: dependency:tree and -T1. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'. Please note that Detect will omit any thread-specifying arguments in order to ensure the accuracy of the dependency tree."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1154,6 +1156,14 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
             .build();
+
+    public static final NoneEnumListProperty<NugetDependencyType> DETECT_NUGET_DEPENDENCY_TYPES_EXCLUDED =
+            NoneEnumListProperty.newBuilder("detect.nuget.dependency.types.excluded", NoneEnum.NONE, NugetDependencyType.class)
+                    .setInfo("Nuget Dependency Types Excluded", DetectPropertyFromVersion.VERSION_9_4_0)
+                    .setHelp(createTypeFilterHelpText("Nuget dependency types"), "This property supports exclusion of dependencies in projects that use PackageReference, and packages.config for listing dependencies that are not stored in Json files.")
+                    .setExample(String.format("%s", NugetDependencyType.DEV.name()))
+                    .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+                    .build();
 
     public static final NullablePathProperty DETECT_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.output.path")

@@ -1,22 +1,22 @@
 # Current Release notes
 
-## Version 9.2.0
+## Version 9.4.0
 
 ### New features
 
-* Support for pnpm is now extended to 8.9.2.
-* Nuget support extended to version 6.2 with Central Package Management now supported for projects and solutions.
-* Support for Conan is now extended to 2.0.14.
-* Support for Go and Python added to Component Location Analysis.
+* Nuget Inspector now supports the exclusion of user-specified dependency types from the Bill of Materials (BOM) via the [solution_name] property --detect.nuget.dependency.types.excluded. See the [detect.nuget.dependency.types.excluded](properties/detectors/nuget.md#nuget-dependency-types-excluded) property for more information.
+* Support for BitBake is now extended to 2.6 (Yocto 4.3.2).
 
 ### Changed features
 
-* pnpm 6, and pnpm 7 using the default v5 pnpm-lock.yaml file, are being deprecated. Support will be removed in [solution_name] 10.
+* Key-value pairs specified as part of the `detect.blackduck.signature.scanner.arguments` property are now treated as replacements rather than additions.
 
-### Resolved Issues
+### Resolved issues
 
-* (IDETECT-3515) Resolved an issue where the Nuget Inspector was not supporting "\<Version\>" tags for "\<PackageReference\>" on the second line and was not cascading to Project Inspector in case of failure.
+* (IDETECT-4155) Improved input validation in Component Location Analysis.
+* (IDETECT-4187) Removed references to 'murex' from test resources.
 
 ### Dependency updates
 
-* Released and Upgraded Nuget Inspector to version 1.2.0.
+* Released and Upgraded Nuget Inspector to version 1.3.0.
+* Released and Upgraded Detect Docker Inspector to version 10.1.1.

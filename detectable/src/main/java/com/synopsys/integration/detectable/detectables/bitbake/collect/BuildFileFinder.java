@@ -50,9 +50,22 @@ public class BuildFileFinder {
 
     public Optional<File> findLicenseManifestFile(File buildDir, String targetImageName, BitbakeEnvironment bitbakeEnvironment) {
         try {
+            String machine = bitbakeEnvironment.getMachine().orElse(null);
+
             String machineArch = bitbakeEnvironment.getMachineArch().orElse(null);
             File licensesDir = findLicensesDir(buildDir, bitbakeEnvironment.getLicensesDirPath().orElse(null));
-            logger.debug("Checking licenses dir {} for license.manifest for {}", licensesDir.getAbsolutePath(), targetImageName);
+
+            logger.debug(
+                "Checking licenses dir {} for license.manifest for image {}, architecture {}, and machine {}",
+                licensesDir.getAbsolutePath(), targetImageName, machineArch, machine
+            );
+
+            Optional<File> licenseFile = findMostRecentLicenseManifestFileForMachine(licensesDir, machineArch, targetImageName, machine);
+            if (licenseFile.isPresent()) {
+                return licenseFile;
+            }
+            logger.debug("Did not find a machine-specific license.manifest");
+
             List<File> licensesDirContents = generateListOfFiles(licensesDir);
             Optional<File> architectureSpecificManifestFile = findManifestFileForTargetArchitecture(targetImageName, machineArch, licensesDirContents);
             if (architectureSpecificManifestFile.isPresent()) {
@@ -124,16 +137,37 @@ public class BuildFileFinder {
     }
 
     private Optional<File> findMostRecentLicenseManifestFileForTarget(String targetImageName, List<File> licensesDirContents) {
+        return findMostRecentLicenseManifestInDirectoryList(licensesDirContents, targetImageName);
+    }
+
+    private Optional<File> findMostRecentLicenseManifestFileForMachine(File licensesDir, String architecture, String targetImageName, String machine) {
+        if (licensesDir == null || architecture == null || targetImageName == null || machine == null) {
+            return Optional.empty();
+        }
+
+        File architectureDir = new File(licensesDir, architecture);
+        if (!architectureDir.exists() || !architectureDir.isDirectory() || !followSymLinks && FileUtils.isSymlink(architectureDir)) {
+            return Optional.empty();
+        }
+
+        String prefix = targetImageName + "-" + machine + ".rootfs-";
+        return findMostRecentLicenseManifestInDirectoryList(Arrays.asList(architectureDir.listFiles()), prefix);
+    }
+
+    private Optional<File> findMostRecentLicenseManifestInDirectoryList(List<File> candidateDirectories, String directoryPrefix) {
         File latestLicenseManifestFile = null;
         long latestLicenseManifestFileTime = 0;
-        for (File licensesDirSubDir : licensesDirContents) {
-            if (licensesDirSubDir.getName().startsWith(targetImageName) && (followSymLinks || !FileUtils.isSymlink(licensesDirSubDir))) {
-                File thisLicenseManifestFile = new File(licensesDirSubDir, LICENSE_MANIFEST_FILENAME);
-                if ((thisLicenseManifestFile.exists()) && ((latestLicenseManifestFileTime == 0) || (thisLicenseManifestFile.lastModified() > latestLicenseManifestFileTime))) {
-                    // Newest found so far
-                    latestLicenseManifestFileTime = thisLicenseManifestFile.lastModified();
-                    latestLicenseManifestFile = thisLicenseManifestFile;
-                }
+
+        for (File dirContainingLicenseFile : candidateDirectories) {
+            if (!dirContainingLicenseFile.getName().startsWith(directoryPrefix) || !dirContainingLicenseFile.exists() || !dirContainingLicenseFile.isDirectory() || !followSymLinks && FileUtils.isSymlink(dirContainingLicenseFile)) {
+                continue;
+            }
+
+            File thisLicenseManifestFile = new File(dirContainingLicenseFile, LICENSE_MANIFEST_FILENAME);
+            if ((thisLicenseManifestFile.exists()) && ((latestLicenseManifestFileTime == 0) || (thisLicenseManifestFile.lastModified() > latestLicenseManifestFileTime))) {
+                // Newest found so far
+                latestLicenseManifestFileTime = thisLicenseManifestFile.lastModified();
+                latestLicenseManifestFile = thisLicenseManifestFile;
             }
         }
         return Optional.ofNullable(latestLicenseManifestFile);

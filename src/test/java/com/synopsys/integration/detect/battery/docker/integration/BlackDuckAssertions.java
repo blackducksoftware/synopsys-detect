@@ -2,7 +2,7 @@ package com.synopsys.integration.detect.battery.docker.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -110,6 +110,20 @@ public class BlackDuckAssertions {
                 .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
                 .findFirst();
             assertTrue(blackDuckCommonComponent.isPresent());
+        });
+    }
+
+    public void doesNotHaveComponents(String... componentNames) throws IntegrationException {
+        doesNotHaveComponents(Bds.of(componentNames).toSet());
+    }
+
+    public void doesNotHaveComponents(Set<String> componentNames) throws IntegrationException {
+        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
+        componentNames.forEach(componentName -> {
+            Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
+                    .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
+                    .findFirst();
+            assertFalse(blackDuckCommonComponent.isPresent());
         });
     }
 
