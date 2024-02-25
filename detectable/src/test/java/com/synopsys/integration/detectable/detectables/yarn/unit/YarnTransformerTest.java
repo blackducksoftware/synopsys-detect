@@ -144,15 +144,15 @@ class YarnTransformerTest {
         assertTrue(dependencyGraph.hasDependency(fooExternalId), "Missing the only expected dependency.");
     }
 
-//    @Test
-//    void testAllWorkspacesYarnV1() throws MissingExternalIdException {
-//        doAllWorkspacesTest(true);
-//    }
+    @Test
+    void testAllWorkspacesYarnV1() throws MissingExternalIdException {
+        doAllWorkspacesTest(true);
+    }
 
-//    @Test
-//    void testAllWorkspacesYarnV2() throws MissingExternalIdException {
-//        doAllWorkspacesTest(false);
-//    }
+    @Test
+    void testAllWorkspacesYarnV2() throws MissingExternalIdException {
+        doAllWorkspacesTest(false);
+    }
 
     private void doAllWorkspacesTest(boolean yarn1Project) throws MissingExternalIdException {
         // Unless filtered out, even workspaces that are not dependencies should be included

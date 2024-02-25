@@ -73,6 +73,6 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("async", "2.5.0");
         graphAssert.hasRootDependency("lodash", "4.17.4");
-        //graphAssert.hasParentChildRelationship("async", "2.5.0", "lodash", "4.17.4");
+        graphAssert.hasParentChildRelationship("async", "2.5.0", "lodash", "4.17.4");
     }
 }
