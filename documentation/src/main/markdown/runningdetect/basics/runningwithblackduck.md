@@ -23,6 +23,8 @@ project directory.
 
 Refer to [Black Duck Server properties](../../properties/configuration/blackduck-server.md), [Black Duck Signature Scanner properties](../../properties/configuration/signature-scanner.md), and [IaC Scan](../iacscan.md) for details.
 
+<note type="tip">Available signature scanner properties can be determined by specifying `--help` when executing the signature scanner jar file from the command line.</note>
+
 ## Offline mode
 
 If you do not have a [blackduck_product_name] instance, or if your network is down, you can still run [solution_name] in offline mode.

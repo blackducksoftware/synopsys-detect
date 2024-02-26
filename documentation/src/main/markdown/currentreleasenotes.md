@@ -9,7 +9,7 @@
 
 ### Changed features
 
-* Key-value pairs specified as part of the `detect.blackduck.signature.scanner.arguments` property are now treated as replacements rather than additions.
+* Key-value pairs specified as part of the `detect.blackduck.signature.scanner.arguments` property will now replace the values specified elsewhere, rather than act as additions.
 
 ### Resolved issues
 
