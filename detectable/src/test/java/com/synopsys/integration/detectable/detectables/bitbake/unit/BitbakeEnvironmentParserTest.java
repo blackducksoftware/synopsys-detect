@@ -1,8 +1,10 @@
 package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,12 +28,33 @@ public class BitbakeEnvironmentParserTest {
     void testParseEnvironment() {
         BitbakeEnvironmentParser parser = new BitbakeEnvironmentParser();
 
-        BitbakeEnvironment environment = parser.parseArchitecture(lines);
+        BitbakeEnvironment environment = parser.parse(lines);
 
         assertTrue(environment.getMachineArch().isPresent());
         assertEquals(ARCH, environment.getMachineArch().get());
 
         assertTrue(environment.getLicensesDirPath().isPresent());
         assertEquals(LICENSES_DIR, environment.getLicensesDirPath().get());
+
+        assertFalse(environment.getMachine().isPresent());
+    }
+
+    @Test
+    void testParseEnvironmentMachinePresent() {
+        BitbakeEnvironmentParser parser = new BitbakeEnvironmentParser();
+
+        List<String> linesWithMachine = new ArrayList<>(lines);
+        linesWithMachine.add("MACHINE=\"some_machine\"");
+
+        BitbakeEnvironment environment = parser.parse(linesWithMachine);
+
+        assertTrue(environment.getMachineArch().isPresent());
+        assertEquals(ARCH, environment.getMachineArch().get());
+
+        assertTrue(environment.getLicensesDirPath().isPresent());
+        assertEquals(LICENSES_DIR, environment.getLicensesDirPath().get());
+
+        assertTrue(environment.getMachine().isPresent());
+        assertEquals("some_machine", environment.getMachine().get());
     }
 }
