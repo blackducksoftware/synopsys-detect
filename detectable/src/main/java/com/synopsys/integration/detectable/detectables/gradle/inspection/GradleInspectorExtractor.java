@@ -60,6 +60,10 @@ public class GradleInspectorExtractor {
             List<File> reportFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
             List<CodeLocation> codeLocations = new ArrayList<>();
 
+            File rootProjectFile = fileFinder.findFile(outputDirectory,"root_project*");
+            reportFiles.remove(rootProjectFile);
+            reportFiles.add(0,rootProjectFile);
+
             reportFiles.stream()
                 .map(gradleReportParser::parseReport)
                 .filter(Optional::isPresent)

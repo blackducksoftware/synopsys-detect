@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -29,6 +30,8 @@ public class GradleReportParser {
     public static final String ROOT_PROJECT_VERSION_PREFIX = "rootProjectVersion:";
     public static final String DETECT_META_DATA_HEADER = "DETECT META DATA START";
     public static final String DETECT_META_DATA_FOOTER = "DETECT META DATA END";
+    public static String projectName = "";
+    public static String rootProjectName = "";
 
     private final GradleReportConfigurationParser gradleReportConfigurationParser = new GradleReportConfigurationParser();
 
@@ -74,9 +77,12 @@ public class GradleReportParser {
         } else if (line.startsWith(PROJECT_GROUP_PREFIX)) {
             gradleReport.setProjectGroup(line.substring(PROJECT_GROUP_PREFIX.length()).trim());
         } else if (line.startsWith(PROJECT_NAME_PREFIX)) {
-            gradleReport.setProjectName(line.substring(PROJECT_NAME_PREFIX.length()).trim());
+            projectName = line.substring(PROJECT_NAME_PREFIX.length()).trim();
+            gradleReport.setProjectName(projectName);
         } else if (line.startsWith(PROJECT_VERSION_PREFIX)) {
             gradleReport.setProjectVersionName(line.substring(PROJECT_VERSION_PREFIX.length()).trim());
+        } else if (line.startsWith(ROOT_PROJECT_NAME_PREFIX)) {
+            rootProjectName = line.substring(ROOT_PROJECT_NAME_PREFIX.length()).trim();
         }
     }
 

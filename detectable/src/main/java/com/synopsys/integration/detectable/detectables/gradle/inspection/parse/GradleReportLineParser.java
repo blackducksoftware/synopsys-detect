@@ -2,6 +2,8 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection.parse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +20,11 @@ public class GradleReportLineParser {
     private static final String COMPONENT_PREFIX = "--- ";
     private static final String[] REMOVE_SUFFIXES = new String[] { " (*)", " (c)", " (n)" };
     private static final String WINNING_INDICATOR = " -> ";
+    private static final String STRICTLY = "strictly";
+    private static final String REQUIRE = "require";
+    private static final String PREFER = "prefer";
+    private static final String REJECT = "reject";
+    public static Map<String, String> gradleRichVersions = new HashMap<>();
 
     public GradleTreeNode parseLine(String line) {
         int level = parseTreeLevel(line);
@@ -74,6 +81,17 @@ public class GradleReportLineParser {
                     gavPieces.add("");
                 }
                 gavPieces.set(2, winningSection);
+            }
+        }
+
+        if(gavPieces.size() == 3) {
+            String dependencyGroupName = gavPieces.get(0) + ":" + gavPieces.get(1);
+            if ((cleanedOutput.contains(STRICTLY) || cleanedOutput.contains(REJECT) || cleanedOutput.contains(REQUIRE) || cleanedOutput.contains(PREFER))) {
+                gradleRichVersions.putIfAbsent(dependencyGroupName, gavPieces.get(2));
+            }
+
+            if(gradleRichVersions.containsKey(dependencyGroupName)) {
+                gavPieces.set(2,gradleRichVersions.get(dependencyGroupName));
             }
         }
 
