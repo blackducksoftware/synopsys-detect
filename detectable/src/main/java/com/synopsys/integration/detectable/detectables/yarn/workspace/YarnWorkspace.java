@@ -11,8 +11,11 @@ import com.synopsys.integration.bdio.graph.builder.LazyId;
 import com.synopsys.integration.detectable.detectables.yarn.YarnTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.WorkspacePackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
 public class YarnWorkspace {
+    private static final String WORKSPACE_VERSION_PREFIX = "workspace:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final WorkspacePackageJson workspacePackageJson;
 
@@ -48,9 +51,18 @@ public class YarnWorkspace {
         return LazyId.fromString(
             getName().orElse(null)
                 + YarnTransformer.STRING_ID_NAME_VERSION_SEPARATOR
-                + YarnWorkspaces.WORKSPACE_VERSION_PREFIX
+                + WORKSPACE_VERSION_PREFIX
                 + workspacePackageJson.getDirRelativePath()
         );
+    }
+
+    public boolean matches(YarnLockEntry yarnLockEntry) {
+        for (YarnLockEntryId yarnLockEntryId : yarnLockEntry.getIds()) {
+            if (matches(yarnLockEntryId.getName(), yarnLockEntryId.getVersion())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean matches(YarnLockDependency yarnLockDependency) {
@@ -77,7 +89,7 @@ public class YarnWorkspace {
 
     public boolean matches(String name, String version) {
         if (getName().orElse("").equals(name)) {
-            if (!version.startsWith(YarnWorkspaces.WORKSPACE_VERSION_PREFIX) && !versionMatches(version)) {
+            if (!version.startsWith(WORKSPACE_VERSION_PREFIX) && !versionMatches(version)) {
                 logger.trace(
                     "yarn.lock dependency {} has the same name as a workspace, but the version is {} (vs. {}). Considering them the same anyway.",
                     name,

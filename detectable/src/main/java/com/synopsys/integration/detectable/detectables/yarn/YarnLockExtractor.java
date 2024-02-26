@@ -44,10 +44,15 @@ public class YarnLockExtractor {
             String projectName = rootPackageJson.getName().orElse("null");
             logger.debug("Extracting Yarn project {} in {}", projectName, projectDir.getAbsolutePath());
             YarnLock yarnLock = readYarnLock(yarnLockFile);
-            //YarnWorkspaces workspaceData = collectWorkspaceData(projectDir);
-            //ExcludedIncludedWildcardFilter workspacesFilter = deriveExcludedIncludedWildcardFilter();
 
-            YarnResult yarnResult = yarnPackager.generateCodeLocation(rootPackageJson, yarnLock, new ArrayList<>());
+            YarnResult yarnResult;
+            if (yarnLockOptions.getMonorepoMode()) {
+                yarnResult = yarnPackager.generateCodeLocation(rootPackageJson, yarnLock, new ArrayList<>());
+            } else {
+                YarnWorkspaces workspaceData = collectWorkspaceData(projectDir);
+                ExcludedIncludedWildcardFilter workspacesFilter = deriveExcludedIncludedWildcardFilter();
+                yarnResult = yarnPackager.generateCodeLocation(rootPackageJson, workspaceData, yarnLock, new ArrayList<>(), workspacesFilter);
+            }
 
             Optional<Exception> yarnException = yarnResult.getException();
             if (yarnException.isPresent()) {
