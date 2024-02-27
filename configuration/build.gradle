@@ -9,7 +9,10 @@ dependencyManagement {
 dependencies {
     implementation project(":common")
 
-    implementation "org.springframework:spring-core:5.3.32"
+    implementation "org.springframework:spring-jcl:5.3.32"
+    implementation("org.springframework:spring-core:5.3.32") {
+        exclude group: 'org.springframework', module: 'spring-jcl'
+    }
 
     implementation "org.springframework:spring-aop:5.3.32"
     implementation "org.springframework:spring-beans:5.3.32"
