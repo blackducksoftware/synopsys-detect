@@ -6,43 +6,17 @@
 
 ## Overview
 
-[solution_name] detectors for Python:
+[solution_name] detectors for discovery of dependencies in Python:
 
-* Pipenv detector
-* Pip detector (Pip Native Inspector)
-* Pipfile lock detector
-* Pip Requirements File Parser
+* PIPENV detectors
+	* Pipenv detector
+	* Pipfile lock detector
+* PIP detectors
+	* Pip Native Inspector
+	* Pip Requirements File Parser
 * Poetry detector
 
-## The Pip detector
-
-The Pip detector attempts to run on your project if any of the following are true: a setup.py file is found, a requirements.txt is found, or a requirements file is provided using the [--detect.pip.requirements.path](../properties/detectors/pip.md#pip-requirements-path) property.
-
-The Pip detector requires Python and pip executables:
-
-* [solution_name] looks for python on $PATH. You can override this by setting [--detect.python.path](../properties/detectors/python.md#python-executable)
-* [solution_name] looks for pip on $PATH. You can override this by setting [--detect.pip.path](../properties/detectors/pip.md#pip-executable)
-
-The Pip detector runs the [pip-inspector.py script](https://github.com/blackducksoftware/synopsys-detect/blob/master/src/main/resources/pip-inspector.py), which uses Python/pip libraries to query the pip cache for the project, which may or may not be a virtual environment, for dependency information:
-
-1. pip-inspector.py queries for the project dependencies by project name which can be discovered using setup.py, or provided using the detect.pip.project.name property, using the [pkg_resources library](https://setuptools.readthedocs.io/en/latest/pkg_resources.html). If your project is installed into the pip cache, this discovers dependencies specified in setup.py.
-1. If one or more requirements files are found or provided, pip-inspector.py uses the Python API called parse_requirements to query each requirements file for possible additional dependencies, and uses the pkg_resources library to query for the details of each.
-
-<note type="tip">pip-inspector.py uses the pkg_resources library to discover dependencies, only those packages which have been installed; using, for example, `pip install`, into the pip cache and appearing in the output of `pip list`, are included in the output. There must be a match between the package version on which your project depends and the package version installed in the pip cache. Additional details are available in the [pkg_resources library documentation](https://setuptools.readthedocs.io/en/latest/pkg_resources.html).</note>   
-<note type="note">If the packages are installed into a virtual environment for your project, you must run [solution_name] from within that virtual environment.</note>
-
-### Recommendations for Pip Detector
-
-* Be sure that [solution_name] is locating the correct verion of the Python executable; this can be done by running the logging level at DEBUG and then reading the log. This is a particular concern if your system has multiple versions of Python installed.
-* Create a setup.py file for your project.
-* Install your project and dependencies into the pip cache:
-````
-python setup.py install
-pip install -r requirements.txt
-````
-* The Pip detector derives your project name using your setup.py file if you have one. If you do not have a setup.py file, you must provide the correct project name using the propety --detect.pip.project.name.
-* If there are any dependencies specified in requirements.txt that are not specified in setup.py, then provide the requirements.txt file using the [solution_name] property.
-* If you are using a virtual environment, be sure to switch to that virtual environment when you run [solution_name]. This also applies when you are using a tool such as Poetry that sets up a Python virtual environment.
+## PIPENV Detectors
 
 ## Pipenv detector
 
@@ -66,7 +40,39 @@ The Pipfile lock detector attempts to run on your project if either a Pipfile.lo
 The Pipfile lock detector parses the Pipfile.lock file for dependency information. If the detector discovers a Pipfile file but not a Pipfile.lock file, it will prompt the user to generate a Pipfile.lock file by running `pipenv lock` and then run [solution_name] again.
 Pipfile.lock dependencies can be filtered using the [detect.pipfile.dependency.types.excluded](../properties/detectors/pip.md#pipfile-dependency-types-excluded) property.
 
-## Pip requirements file parser
+## PIP Detectors
+
+## Pip Native Inspector
+
+The Pip Native Inspector attempts to run on your project if any of the following are true: a setup.py file is found, a requirements.txt is found, or a requirements file is provided using the [--detect.pip.requirements.path](../properties/detectors/pip.md#pip-requirements-path) property.
+
+The Pip Native Inspector requires Python and pip executables:
+
+* [solution_name] looks for python on $PATH. You can override this by setting [--detect.python.path](../properties/detectors/python.md#python-executable)
+* [solution_name] looks for pip on $PATH. You can override this by setting [--detect.pip.path](../properties/detectors/pip.md#pip-executable)
+
+Pip Native Inspector runs the [pip-inspector.py script](https://github.com/blackducksoftware/synopsys-detect/blob/master/src/main/resources/pip-inspector.py), which uses Python/pip libraries to query the pip cache for the project, which may or may not be a virtual environment, for dependency information:
+
+1. pip-inspector.py queries for the project dependencies by project name which can be discovered using setup.py, or provided using the detect.pip.project.name property, using the [pkg_resources library](https://setuptools.readthedocs.io/en/latest/pkg_resources.html). If your project is installed into the pip cache, this discovers dependencies specified in setup.py.
+1. If one or more requirements files are found or provided, pip-inspector.py uses the Python API called parse_requirements to query each requirements file for possible additional dependencies, and uses the pkg_resources library to query for the details of each.
+
+<note type="tip">pip-inspector.py uses the pkg_resources library to discover dependencies, only those packages which have been installed; using, for example, `pip install`, into the pip cache and appearing in the output of `pip list`, are included in the output. There must be a match between the package version on which your project depends and the package version installed in the pip cache. Additional details are available in the [pkg_resources library documentation](https://setuptools.readthedocs.io/en/latest/pkg_resources.html).</note>   
+<note type="note">If the packages are installed into a virtual environment for your project, you must run [solution_name] from within that virtual environment.</note>
+
+### Recommendations for Pip Detector
+
+* Be sure that [solution_name] is locating the correct verion of the Python executable; this can be done by running the logging level at DEBUG and then reading the log. This is a particular concern if your system has multiple versions of Python installed.
+* Create a setup.py file for your project.
+* Install your project and dependencies into the pip cache:
+````
+python setup.py install
+pip install -r requirements.txt
+````
+* The Pip detector derives your project name using your setup.py file if you have one. If you do not have a setup.py file, you must provide the correct project name using the propety --detect.pip.project.name.
+* If there are any dependencies specified in requirements.txt that are not specified in setup.py, then provide the requirements.txt file using the [solution_name] property.   
+<note type="tip">If you are using a virtual environment, be sure to switch to that virtual environment when you run [solution_name]. This also applies when you are using a tool such as Poetry that sets up a Python virtual environment.</note>
+
+## PIP requirements file parser
 
 The Pip Requirements File Parser is a buildless detector that acts as a LOW accuracy fallback for the Pip Native Inspector. This detector gets triggered for Pip projects that contain one or more requirements.txt files but [solution_name] doesn't have access to a Pip executable in the environment where the scan is executed.
  
