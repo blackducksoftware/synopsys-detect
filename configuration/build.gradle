@@ -9,11 +9,13 @@ dependencyManagement {
 dependencies {
     implementation project(":common")
 
+    // Below exclusions of transitive dependencies and inclusions of corresponding direct dependencies
+    // were added to resolve CVE-2024-22243 appearing in 5.3.27 of springframework libraries.
+    // The below changes can be reverted in the future after comprehensively testing with an updated spring boot version
     implementation "org.springframework:spring-jcl:5.3.32"
     implementation("org.springframework:spring-core:5.3.32") {
         exclude group: 'org.springframework', module: 'spring-jcl'
     }
-
     implementation "org.springframework:spring-aop:5.3.32"
     implementation "org.springframework:spring-beans:5.3.32"
     implementation "org.springframework:spring-expression:5.3.32"
@@ -22,13 +24,10 @@ dependencies {
         exclude group: 'org.springframework', module: 'spring-beans'
         exclude group: 'org.springframework', module: 'spring-expression'
     }
-
     implementation("org.springframework.boot:spring-boot") {
         exclude group: 'org.springframework', module: 'spring-core'
         exclude group: 'org.springframework', module: 'spring-context'
     }
-
-
 
     testImplementation "org.springframework:spring-test"
     testImplementation "org.apache.commons:commons-collections4:4.2"
