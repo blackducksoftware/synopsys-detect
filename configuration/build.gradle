@@ -10,7 +10,16 @@ dependencies {
     implementation project(":common")
 
     implementation "org.springframework:spring-core:5.3.32"
-    implementation "org.springframework:spring-context:5.3.32"
+
+    implementation "org.springframework:spring-aop:5.3.32"
+    implementation "org.springframework:spring-beans:5.3.32"
+    implementation "org.springframework:spring-expression:5.3.32"
+    implementation("org.springframework:spring-context:5.3.32") {
+        exclude group: 'org.springframework', module: 'spring-aop'
+        exclude group: 'org.springframework', module: 'spring-beans'
+        exclude group: 'org.springframework', module: 'spring-expression'
+    }
+
     implementation("org.springframework.boot:spring-boot") {
         exclude group: 'org.springframework', module: 'spring-core'
         exclude group: 'org.springframework', module: 'spring-context'
