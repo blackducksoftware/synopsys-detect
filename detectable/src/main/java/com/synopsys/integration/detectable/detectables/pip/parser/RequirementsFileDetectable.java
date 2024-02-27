@@ -21,7 +21,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(name = "Pip Requirements Parser", language = "Python", forge = "PyPi", accuracy = DetectableAccuracyType.LOW, requirementsMarkdown = "File: requirements.txt")
+@DetectableInfo(name = "PIP Requirements Parser", language = "Python", forge = "PyPi", accuracy = DetectableAccuracyType.LOW, requirementsMarkdown = "File: requirements.txt")
 public class RequirementsFileDetectable extends Detectable {
     public static final String REQUIREMENTS_DEFAULT_FILE_NAME = "requirements.txt";
 
