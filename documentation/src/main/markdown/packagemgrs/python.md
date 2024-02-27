@@ -16,8 +16,6 @@
 
 ## The Pip detector
 
-The Pip detector discovers dependencies of Python projects.
-
 The Pip detector attempts to run on your project if any of the following are true: a setup.py file is found, a requirements.txt is found, or a requirements file is provided using the [--detect.pip.requirements.path](../properties/detectors/pip.md#pip-requirements-path) property.
 
 The Pip detector requires Python and pip executables:
@@ -30,14 +28,12 @@ The Pip detector runs the [pip-inspector.py script](https://github.com/blackduck
 1. pip-inspector.py queries for the project dependencies by project name which can be discovered using setup.py, or provided using the detect.pip.project.name property, using the [pkg_resources library](https://setuptools.readthedocs.io/en/latest/pkg_resources.html). If your project is installed into the pip cache, this discovers dependencies specified in setup.py.
 1. If one or more requirements files are found or provided, pip-inspector.py uses the Python API called parse_requirements to query each requirements file for possible additional dependencies, and uses the pkg_resources library to query for the details of each.
 
-Ramifications of this approach:
+<note type="tip">pip-inspector.py uses the pkg_resources library to discover dependencies, only those packages which have been installed; using, for example, `pip install`, into the pip cache and appearing in the output of `pip list`, are included in the output. There must be a match between the package version on which your project depends and the package version installed in the pip cache. Additional details are available in the [pkg_resources library documentation](https://setuptools.readthedocs.io/en/latest/pkg_resources.html).</note>   
+<note type="note">If the packages are installed into a virtual environment for your project, you must run [solution_name] from within that virtual environment.</note>
 
-* Because pip-inspector.py uses the pkg_resources library to discover dependencies, only those packages which have been installed; using, for example, `pip install`, into the pip cache; in other words, appearing in the output of `pip list`, are included in the output. There must be a match between the package version on which your project depends and the package version installed in the pip cache. Additional details are available in the [pkg_resources library documentation](https://setuptools.readthedocs.io/en/latest/pkg_resources.html).
-* If the packages are installed into a virtual environment for your project, you must run [solution_name] from within that virtual environment.
+### Recommendations for Pip Detector
 
-Recommendations:
-
-* Be sure that [solution_name] is finding the correct Python executable; this can be done by running the logging level at DEBUG and then reading the log. This is a particular concern if your system has multiple versions of Python installed; you must be sure [solution_name] is using the correct Python version.
+* Be sure that [solution_name] is locating the correct verion of the Python executable; this can be done by running the logging level at DEBUG and then reading the log. This is a particular concern if your system has multiple versions of Python installed.
 * Create a setup.py file for your project.
 * Install your project and dependencies into the pip cache:
 ````
@@ -49,8 +45,6 @@ pip install -r requirements.txt
 * If you are using a virtual environment, be sure to switch to that virtual environment when you run [solution_name]. This also applies when you are using a tool such as Poetry that sets up a Python virtual environment.
 
 ## Pipenv detector
-
-The Pipenv detector discovers dependencies of Python projects.
 
 The Pipenv detector attempts to run on your project if either a Pipfile or Pipfile.lock file is found.
 
@@ -66,8 +60,6 @@ To troubleshoot of the Pipenv detector, start by running `pipenv graph --bare --
 <note type="note">The [detect.pipfile.dependency.types.excluded](../properties/detectors/pip.md#pipfile-dependency-types-excluded) property does not apply to the Pipenv detector.</note>
 
 ## Pipfile lock detector
-
-The Pipfile lock detector discovers dependencies of Python projects.
 
 The Pipfile lock detector attempts to run on your project if either a Pipfile.lock or Pipfile file is found AND neither of the Pip or Pipenv detectors apply:
 
@@ -94,8 +86,6 @@ In cases where a range of versions is provided for a dependency, for example `>=
 Any extras added after the package name are not resolved by the parser. For example, for a package name declared as `requests[security]`, only the requests package is extracted and not the extra option specified as `[security]`.
 
 ## Poetry detector
-
-The Poetry detector discovers dependencies of Python projects.
 
 The Poetry detector attempts to run on your project if either a poetry.lock or pyproject.toml file containing a tool.poetry section is found.
 
