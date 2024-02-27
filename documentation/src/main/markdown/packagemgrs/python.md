@@ -22,7 +22,7 @@
 
 The Pipenv detector attempts to run on your project if either a Pipfile or Pipfile.lock file is found.
 
-The Pipenv detector requires Python and Pipenv executables:
+The Pipenv detector requires Python and Pipenv executables.
 
 * [solution_name] looks for python (or python3 if the python3 property is set to true) on $PATH. You can override this by setting the python path property.
 * [solution_name] looks for pipenv on $PATH.
@@ -35,7 +35,7 @@ To troubleshoot of the Pipenv detector, start by running `pipenv graph --bare --
 
 ## Pipfile lock detector
 
-The Pipfile lock detector attempts to run on your project if either a Pipfile.lock or Pipfile file is found AND neither of the Pip or Pipenv detectors apply:
+The Pipfile lock detector attempts to run on your project if either a Pipfile.lock or Pipfile file is found AND neither of the Pip or Pipenv detectors applied.
 
 The Pipfile lock detector parses the Pipfile.lock file for dependency information. If the detector discovers a Pipfile file but not a Pipfile.lock file, it will prompt the user to generate a Pipfile.lock file by running `pipenv lock` and then run [solution_name] again.
 Pipfile.lock dependencies can be filtered using the [detect.pipfile.dependency.types.excluded](../properties/detectors/pip.md#pipfile-dependency-types-excluded) property.
@@ -44,9 +44,9 @@ Pipfile.lock dependencies can be filtered using the [detect.pipfile.dependency.t
 
 ## Pip Native Inspector
 
-The Pip Native Inspector attempts to run on your project if any of the following are true: a setup.py file is found, a requirements.txt is found, or a requirements file is provided using the [--detect.pip.requirements.path](../properties/detectors/pip.md#pip-requirements-path) property.
+Pip Native Inspector attempts to run on your project if any of the following are true: a setup.py file is found, a requirements.txt is found, or a requirements file is provided using the [--detect.pip.requirements.path](../properties/detectors/pip.md#pip-requirements-path) property.
 
-The Pip Native Inspector requires Python and pip executables:
+Pip Native Inspector requires Python and pip executables.
 
 * [solution_name] looks for python on $PATH. You can override this by setting [--detect.python.path](../properties/detectors/python.md#python-executable)
 * [solution_name] looks for pip on $PATH. You can override this by setting [--detect.pip.path](../properties/detectors/pip.md#pip-executable)
@@ -68,13 +68,13 @@ Pip Native Inspector runs the [pip-inspector.py script](https://github.com/black
 python setup.py install
 pip install -r requirements.txt
 ````
-* The Pip detector derives your project name using your setup.py file if you have one. If you do not have a setup.py file, you must provide the correct project name using the propety --detect.pip.project.name.
+* Pip detector derives your project name using your setup.py file if you have one. If you do not have a setup.py file, you must provide the correct project name using the propety --detect.pip.project.name.
 * If there are any dependencies specified in requirements.txt that are not specified in setup.py, then provide the requirements.txt file using the [solution_name] property.   
 <note type="tip">If you are using a virtual environment, be sure to switch to that virtual environment when you run [solution_name]. This also applies when you are using a tool such as Poetry that sets up a Python virtual environment.</note>
 
 ## PIP requirements file parser
 
-The Pip Requirements File Parser is a buildless detector that acts as a LOW accuracy fallback for the Pip Native Inspector. This detector gets triggered for Pip projects that contain one or more requirements.txt files but [solution_name] doesn't have access to a Pip executable in the environment where the scan is executed.
+Pip Requirements File Parser is a buildless detector that acts as a LOW accuracy fallback for the Pip Native Inspector. This detector gets triggered for Pip projects that contain one or more requirements.txt files but [solution_name] doesn't have access to a Pip executable in the environment where the scan is executed.
  
 ### Requirements file selection (Default)
 
@@ -93,7 +93,7 @@ Any extras added after the package name are not resolved by the parser. For exam
 
 ## Poetry detector
 
-The Poetry detector attempts to run on your project if either a poetry.lock or pyproject.toml file containing a tool.poetry section is found.
+Poetry detector attempts to run on your project if either a poetry.lock or pyproject.toml file containing a tool.poetry section is found.
 
 The Poetry detector parses poetry.lock for dependency information. If the detector discovers a pyproject.toml file but not a poetry.lock file, it will prompt the user to generate a poetry.lock by running `poetry install` and then run [solution_name] again.
 The Poetry detector extracts the project's name and version from the pyproject.toml file.  If it does not find a pyproject.toml file, it will defer to values derived by git, from the project's directory, or defaults.
