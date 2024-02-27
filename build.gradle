@@ -140,8 +140,10 @@ dependencies {
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation("org.springframework.boot:spring-boot") {
         exclude group: 'org.springframework', module: 'spring-core'
+        exclude group: 'org.springframework', module: 'spring-context'
     }
     implementation "org.springframework:spring-core:5.3.32"
+    implementation "org.springframework:spring-context:5.3.32"
     implementation 'org.yaml:snakeyaml:2.0'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.apache.pdfbox:pdfbox:2.0.27'
