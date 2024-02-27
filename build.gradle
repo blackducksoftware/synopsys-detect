@@ -138,7 +138,7 @@ dependencies {
     implementation "${locatorGroup}:${locatorModule}:1.1.8"
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
-    implementation "org.springframework.boot:spring-boot" {
+    implementation("org.springframework.boot:spring-boot") {
         exclude group: 'org.springframework', module: 'spring-core'
     }
     implementation "org.springframework:spring-core:5.3.32"
