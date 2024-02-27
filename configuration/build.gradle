@@ -8,12 +8,14 @@ dependencyManagement {
 
 dependencies {
     implementation project(":common")
+
+    implementation "org.springframework:spring-core:5.3.32"
+    implementation "org.springframework:spring-context:5.3.32"
     implementation("org.springframework.boot:spring-boot") {
         exclude group: 'org.springframework', module: 'spring-core'
         exclude group: 'org.springframework', module: 'spring-context'
     }
-    implementation "org.springframework:spring-core:5.3.32"
-    implementation "org.springframework:spring-context:5.3.32"
+
 
 
     testImplementation "org.springframework:spring-test"
