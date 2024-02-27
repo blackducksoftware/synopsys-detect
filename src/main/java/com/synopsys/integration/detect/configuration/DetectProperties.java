@@ -1662,6 +1662,13 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
+    public static final BooleanProperty DETECT_YARN_MONOREPO_MODE =
+        BooleanProperty.newBuilder("detect.yarn.monorepo.mode", false)
+            .setInfo("Yarn Monorepo Mode Enabled", DetectPropertyFromVersion.VERSION_9_4_0)
+            .setHelp("Enable monorepo mode of the Yarn detector for increased performance and precision to scan a massive codebase.")
+            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
+            .build();
+    
     public static final NoneEnumListProperty<YarnDependencyType> DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.yarn.dependency.types.excluded", NoneEnum.NONE, YarnDependencyType.class)
             .setInfo("Yarn Dependency Types Excluded", DetectPropertyFromVersion.VERSION_4_0_0)

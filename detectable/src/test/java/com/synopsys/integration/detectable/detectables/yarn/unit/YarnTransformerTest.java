@@ -54,7 +54,7 @@ class YarnTransformerTest {
     private YarnTransformer createTransformer(YarnDependencyType... excludedTypes) {
         externalIdFactory = new ExternalIdFactory();
         EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter = EnumListFilter.fromExcluded(excludedTypes);
-        return new YarnTransformer(externalIdFactory, yarnDependencyTypeFilter);
+        return new YarnTransformer(externalIdFactory, yarnDependencyTypeFilter, false);
     }
 
     // Not yet covered by these tests: yarn 1 workspaces' dev dependencies specified in workspace package.json
