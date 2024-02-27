@@ -3,34 +3,40 @@ package com.synopsys.integration.detectable.detectables.yarn.workspace;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 
 public class YarnWorkspaces {
-    public static final String WORKSPACE_VERSION_PREFIX = "workspace:";
-    private final Map<String, YarnWorkspace> workspaceMap = new ConcurrentHashMap<>();
+    private final Collection<YarnWorkspace> workspaces;
     public static final YarnWorkspaces EMPTY = new YarnWorkspaces(new ArrayList<>(0));
 
     public YarnWorkspaces(Collection<YarnWorkspace> workspaces) {
-        workspaces.forEach(workspace -> {
-            workspaceMap.put(workspace.getName().orElse(""), workspace);
-        });
+        this.workspaces = workspaces;
     }
 
     public Collection<YarnWorkspace> getWorkspaces() {
-        return workspaceMap.values();
+        return workspaces;
     }
 
     public Optional<YarnWorkspace> lookup(YarnLockDependency yarnLockDependency) {
-        return lookup(yarnLockDependency.getName(), yarnLockDependency.getVersion());
+        return lookup(w -> w.matches(yarnLockDependency));
     }
-    
+
+    public Optional<YarnWorkspace> lookup(YarnLockEntry yarnLockEntry) {
+        return lookup(w -> w.matches(yarnLockEntry));
+    }
+
     public Optional<YarnWorkspace> lookup(String name, String version) {
-        YarnWorkspace workspace = workspaceMap.get(name);
-        if (workspace != null && workspace.matches(name, version)) {
-            return Optional.of(workspace);
+        return lookup(w -> w.matches(name, version));
+    }
+
+    private Optional<YarnWorkspace> lookup(Predicate<YarnWorkspace> p) {
+        for (YarnWorkspace candidateWorkspace : workspaces) {
+            if (p.test(candidateWorkspace)) {
+                return Optional.of(candidateWorkspace);
+            }
         }
         return Optional.empty();
     }

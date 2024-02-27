@@ -130,32 +130,43 @@ public class YarnTransformer {
                 ExternalIdDependencyGraphBuilder.LazyDependencyInfo parentInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, id);
                 Dependency parent = new Dependency(parentInfo.getName(), parentInfo.getVersion(), parentInfo.getExternalId(), null);
                 mutableDependencyGraph.addDirectDependency(parent);
-                
-                for (YarnLockDependency dependency : entry.getDependencies()) {
-                    if (!isWorkspace(yarnLockResult.getWorkspaceData(), dependency)) {
-                        String dependencyVersion;
-                        if (resolvedEntryIdVersionMap.containsKey(dependency.getName()) && resolvedEntryIdVersionMap.get(dependency.getName()).containsKey(dependency.getVersion())) {
-                            dependencyVersion = entry.getVersion();
-                        } else {
-                            dependencyVersion = dependency.getVersion();
-                        }
-                        LazyId stringDependencyId = generateComponentDependencyId(dependency.getName(), dependencyVersion);
-                        if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION) || !dependency.isOptional()) {
-                            graphBuilder.setDependencyInfo(stringDependencyId, dependency.getName(), dependencyVersion, generateComponentExternalId(dependency.getName(), dependencyVersion));
-                            //graphBuilder.addChildWithParent(stringDependencyId, id);
-                            LazyDependencyInfo childInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, stringDependencyId);
-                            Dependency child = new Dependency(childInfo.getName(), childInfo.getVersion(), childInfo.getExternalId(), null);
-                            mutableDependencyGraph.addChildWithParent(child, parent);
-                            
-                        } else {
-                            logger.trace("Excluding optional dependency: {}", stringDependencyId);
-                        }
-                    }
-                }
+                collectYarnDependencies(lazyBuilderHandler, graphBuilder, mutableDependencyGraph, yarnLockResult, entry, resolvedEntryIdVersionMap, parent);
             }
             resolvedEntryIdVersionMap.put(entryName, entryIdsToResolvedVersionMap);
         }
         return mutableDependencyGraph;
+    }
+    
+    private void collectYarnDependencies(
+            LazyBuilderMissingExternalIdHandler lazyBuilderHandler,
+            ExternalIdDependencyGraphBuilder graphBuilder,
+            BasicDependencyGraph mutableDependencyGraph,
+            YarnLockResult yarnLockResult,
+            YarnLockEntry entry,
+            Map<String, Map<String, String>> resolvedEntryIdVersionMap,
+            Dependency parent
+            ) throws MissingExternalIdException {
+        for (YarnLockDependency dependency : entry.getDependencies()) {
+            if (!isWorkspace(yarnLockResult.getWorkspaceData(), dependency)) {
+                String dependencyVersion;
+                if (resolvedEntryIdVersionMap.containsKey(dependency.getName()) && resolvedEntryIdVersionMap.get(dependency.getName()).containsKey(dependency.getVersion())) {
+                    dependencyVersion = entry.getVersion();
+                } else {
+                    dependencyVersion = dependency.getVersion();
+                }
+                LazyId stringDependencyId = generateComponentDependencyId(dependency.getName(), dependencyVersion);
+                if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION) || !dependency.isOptional()) {
+                    graphBuilder.setDependencyInfo(stringDependencyId, dependency.getName(), dependencyVersion, generateComponentExternalId(dependency.getName(), dependencyVersion));
+                    //graphBuilder.addChildWithParent(stringDependencyId, id);
+                    LazyDependencyInfo childInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, stringDependencyId);
+                    Dependency child = new Dependency(childInfo.getName(), childInfo.getVersion(), childInfo.getExternalId(), null);
+                    mutableDependencyGraph.addChildWithParent(child, parent);
+
+                } else {
+                    logger.trace("Excluding optional dependency: {}", stringDependencyId);
+                }
+            }
+        }
     }
 
     private boolean isWorkspace(YarnWorkspaces yarnWorkspaces, YarnLockDependency dependency) {
