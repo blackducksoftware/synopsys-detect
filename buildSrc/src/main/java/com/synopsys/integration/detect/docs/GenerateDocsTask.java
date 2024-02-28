@@ -32,7 +32,7 @@ import com.synopsys.integration.detect.docs.model.SplitGroup;
 import com.synopsys.integration.detect.docs.pages.AdvancedPropertyTablePage;
 import com.synopsys.integration.detect.docs.pages.DeprecatedPropertyTablePage;
 import com.synopsys.integration.detect.docs.pages.DetectorCascadePage;
-// Commenting out in 9.4 to manually create detectors table page detectors.md
+// Commenting out in 9.4 to manually create detectors table
 // import com.synopsys.integration.detect.docs.pages.DetectorEntryPoint;
 // import com.synopsys.integration.detect.docs.pages.DetectorType;
 import com.synopsys.integration.detect.docs.pages.ExitCodePage;
@@ -83,7 +83,7 @@ public class GenerateDocsTask extends DefaultTask {
         FileUtils.copyDirectory(sourceMarkdownDir, outputDir);
         createMarkdownFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
         createMarkdownFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
-       // Commenting out in 9.4 to manually create detectors table page detectors.md
+       // Commenting out in 9.4 to manually create detectors table
 	   // handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);
         createFromFreemarker(templateProvider, "downloadlocations.ftl", new File(installDir, "downloadlocations.md"));
@@ -104,7 +104,7 @@ public class GenerateDocsTask extends DefaultTask {
             template.process(data, writer);
         }
     }
-	// Commenting out in 9.4 to manually create detectors table page detectors.md
+	// Commenting out in 9.4 to manually create detectors table
     /* private void handleDetectors(TemplateProvider templateProvider, File baseOutputDir, HelpJsonData helpJson) throws IOException, TemplateException {
         File outputDir = new File(baseOutputDir, "components");
         List<DetectorType> detectorTypes = new ArrayList<>();
