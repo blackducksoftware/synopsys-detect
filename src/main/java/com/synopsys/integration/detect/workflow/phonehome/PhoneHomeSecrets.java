@@ -12,7 +12,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -38,12 +38,12 @@ public class PhoneHomeSecrets {
     }
 
     public static String getDetectJarCheckSum() throws NoSuchAlgorithmException, IOException {
-        String filePath = formatFilePath(Application.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-        return getFileCheckSum(filePath);
+        String fileUri = formatFileUri(Application.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+        return getFileCheckSum(fileUri);
     }
 
-    public static String getFileCheckSum(String filePath) throws NoSuchAlgorithmException, IOException {
-        byte[] data = Files.readAllBytes(Paths.get(filePath));
+    public static String getFileCheckSum(String fileUri) throws NoSuchAlgorithmException, IOException {
+        byte[] data = Files.readAllBytes(Path.of(URI.create(fileUri)));
         byte[] hash = MessageDigest.getInstance("SHA-256").digest(data);
         return new BigInteger(1, hash).toString(16);
     }
@@ -63,27 +63,10 @@ public class PhoneHomeSecrets {
         return gson.fromJson(responseBody, PhoneHomeSecrets.class);
     }
 
-    public static String formatFilePath(String filePath) {
-        // filePath at this point
-        // windows = "file:/C:/Users/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar!/BOOT-INF/classes!/"
-        // linux = "file:/home/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar!/BOOT-INF/classes!/"
-
-        if (filePath.contains(".jar"))
-            filePath = filePath.substring(0, filePath.lastIndexOf(".jar") + ".jar".length());
-        // windows = "file:/C:/Users/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
-        // linux = "file:/home/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
-
-        if (filePath.startsWith("file:"))
-            filePath = filePath.substring("file:".length());
-        // windows = "/C:/Users/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
-        // linux = "/home/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
-
-        if(filePath.startsWith("/") && System.getProperty("os.name").toLowerCase().contains("windows"))
-            filePath = filePath.substring(1);
-        // windows = "C:/Users/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
-        // linux = "/home/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
-
-        return filePath;
+    public static String formatFileUri(String fileUri) {
+        if (fileUri.contains(".jar"))
+            fileUri = fileUri.substring(0, fileUri.lastIndexOf(".jar") + ".jar".length());
+        return fileUri;
     }
 
     public String getApiSecret() {
