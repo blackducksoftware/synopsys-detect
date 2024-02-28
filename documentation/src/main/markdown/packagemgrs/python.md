@@ -9,7 +9,7 @@
 [solution_name] detectors for discovery of dependencies in Python:
 
 * PIPENV detectors
-	* Pipenv detector
+	* Pipenv lock detector
 	* Pipfile lock detector
 * PIP detectors
 	* Pip Native Inspector
@@ -18,13 +18,13 @@
 
 ## PIPENV Detectors
 
-## Pipenv detector
+## Pipenv lock detector
 
-The Pipenv detector attempts to run on your project if either a Pipfile or Pipfile.lock file is found.
+The Pipenv lock detector attempts to run on your project if either a Pipfile or Pipfile.lock file is found.
 
-The Pipenv detector requires Python and Pipenv executables.
+Pipenv detector requires Python and Pipenv executables.
 
-* [solution_name] looks for python (or python3 if the python3 property is set to true) on $PATH. You can override this by setting the python path property.
+* [solution_name] looks for python on $PATH. You can override this by setting the python path property.
 * [solution_name] looks for pipenv on $PATH.
 
 The Pipenv detector runs `pipenv run pip freeze` and `pipenv graph --bare --json-tree` and derives dependency information from the output. The dependency hierarchy is derived from the output of `pipenv graph --bare --json-tree`. The output of `pipenv run pip freeze` is used to improve the accuracy of dependency versions.
@@ -37,7 +37,7 @@ To troubleshoot of the Pipenv detector, start by running `pipenv graph --bare --
 
 The Pipfile lock detector attempts to run on your project if either a Pipfile.lock or Pipfile file is found AND neither of the Pip or Pipenv detectors applied.
 
-The Pipfile lock detector parses the Pipfile.lock file for dependency information. If the detector discovers a Pipfile file but not a Pipfile.lock file, it will prompt the user to generate a Pipfile.lock file by running `pipenv lock` and then run [solution_name] again.
+Pipfile lock detector parses the Pipfile.lock file for dependency information. If the detector discovers a Pipfile file but not a Pipfile.lock file, it will prompt the user to generate a Pipfile.lock file by running `pipenv lock` and then run [solution_name] again.
 Pipfile.lock dependencies can be filtered using the [detect.pipfile.dependency.types.excluded](../properties/detectors/pip.md#pipfile-dependency-types-excluded) property.
 
 ## PIP Detectors
