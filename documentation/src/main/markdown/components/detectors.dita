@@ -134,7 +134,7 @@
 							<entry>Objective C</entry>
 							<entry>COCOAPODS and NPMJS</entry>
 							<entry>
-								<p>Files: Podfile.lock</p>
+								<p>File: Podfile.lock</p>
 							</entry>
 							<entry>HIGH</entry>
 						</row>
@@ -176,7 +176,7 @@
 							<entry>C/C++</entry>
 							<entry>conan</entry>
 							<entry>
-								<p>Files: conan.lock</p>
+								<p>File: conan.lock</p>
 							</entry>
 							<entry>HIGH</entry>
 						</row>
@@ -217,7 +217,8 @@
 							<entry>Perl</entry>
 							<entry>CPAN</entry>
 							<entry>
-								<p>File: Makefile.PL Executables: cpan, and cpanm</p>
+								<p>File: Makefile.PL</p>
+								<p>Executables: cpan, and cpanm</p>
 							</entry>
 							<entry>HIGH</entry>
 						</row>
@@ -472,7 +473,7 @@
 							<entry>various</entry>
 							<entry>Maven Central</entry>
 							<entry>
-								<p>File: ivy.xml, build.xml</p>
+								<p>Files: ivy.xml, build.xml</p>
 							</entry>
 							<entry>LOW</entry>
 						</row>
@@ -492,7 +493,7 @@
 							<entry>Node JS</entry>
 							<entry>npmjs</entry>
 							<entry>
-								<p>File: lerna.json, package.json</p>
+								<p>Files: lerna.json, package.json</p>
 								<p>Executable: Lerna</p>
 								<p>One of: package-lock.json, npm-shrinkwrap.json, or yarn.lock</p>
 							</entry>
@@ -674,7 +675,7 @@
 							<entry>PHP</entry>
 							<entry>Pear</entry>
 							<entry>
-								<p>Files: package.xml</p>
+								<p>File: package.xml</p>
 								<p>Executable: pear</p>
 							</entry>
 							<entry>HIGH</entry>
@@ -707,7 +708,7 @@
 							<entry>Python</entry>
 							<entry>Pypi</entry>
 							<entry>
-								<p>setup.py file, or one or more requirements.txt files</p>
+								<p>Files: setup.py file, or one or more requirements.txt files</p>
 								<p>Executables: python and pip, or python3 and pip3</p>
 							</entry>
 							<entry>HIGH</entry>
@@ -839,7 +840,7 @@
 							<entry>Swift</entry>
 							<entry>Swift.org</entry>
 							<entry>
-								<p>File: Package.swift, Package.resolved</p>
+								<p>Files: Package.swift, Package.resolved</p>
 							</entry>
 							<entry>HIGH</entry>
 						</row>
@@ -881,7 +882,7 @@
 							<entry>GITHUB</entry>
 							<entry>
 								<p>Directory: *.xcodeproj</p>
-								<p>Files: Package.resolved</p>
+								<p>File: Package.resolved</p>
 							</entry>
 							<entry>HIGH</entry>
 						</row>
