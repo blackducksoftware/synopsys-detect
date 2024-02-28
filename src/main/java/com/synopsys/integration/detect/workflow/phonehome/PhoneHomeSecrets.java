@@ -67,16 +67,25 @@ public class PhoneHomeSecrets {
     }
 
     public static String formatFilePath(String filePath) {
-        filePath = filePath.substring(0, filePath.lastIndexOf(".jar") + 4 );
+        // filePath at this point
+        // windows = "file:/C:/Users/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar!/BOOT-INF/classes!/"
+        // linux = "file:/home/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar!/BOOT-INF/classes!/"
 
-        if (filePath.startsWith("/"))
+        if (filePath.contains(".jar"))
+            filePath = filePath.substring(0, filePath.lastIndexOf(".jar") + ".jar".length());
+        // windows = "file:/C:/Users/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
+        // linux = "file:/home/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
+
+        if (filePath.startsWith("file:"))
+            filePath = filePath.substring("file:".length());
+        // windows = "/C:/Users/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
+        // linux = "/home/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
+
+        if(filePath.startsWith("/") && System.getProperty("os.name").toLowerCase().contains("windows"))
             filePath = filePath.substring(1);
+        // windows = "C:/Users/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
+        // linux = "/home/<username>/synopsys-detect-9.4.0-SIGQA6-SNAPSHOT.jar"
 
-        if (filePath.startsWith("file:/")) {
-            filePath = filePath.substring(5);
-            if(System.getProperty("os.name").toLowerCase().contains("windows"))
-                filePath = filePath.substring(1);
-        }
         return filePath;
     }
 
