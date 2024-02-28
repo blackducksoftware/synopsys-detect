@@ -1010,7 +1010,7 @@ public class DetectableFactory {
     }
 
     private YarnPackager yarnPackager(YarnLockOptions yarnLockOptions) {
-        YarnTransformer yarnTransformer = new YarnTransformer(externalIdFactory, yarnLockOptions.getYarnDependencyTypeFilter());
+        YarnTransformer yarnTransformer = new YarnTransformer(externalIdFactory, yarnLockOptions.getYarnDependencyTypeFilter(), yarnLockOptions.getMonorepoMode());
         return new YarnPackager(yarnTransformer);
     }
 
