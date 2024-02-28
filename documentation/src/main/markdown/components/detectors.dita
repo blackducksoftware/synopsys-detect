@@ -11,7 +11,7 @@
         <p>Which detector(s) will run against your project is determined by the <xref href="../runningdetect/detectorcascade.md" format="markdown">detector search</xref>
             process.</p>
     </body>
-    <topic id="detector-types-entry-points-and-detectors">
+    <topic id="detector-types-and-detectors">
         <title>Detector Types, and Detectors</title>
         <body>
             <p>The following table contains information for each Detector type, and detector. Details on
