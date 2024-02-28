@@ -5,8 +5,16 @@ buildscript {
         blackDuckCommonVersion = gradle.ext.blackDuckCommonVersion
     }
 
-    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
-    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-cgp-version.gradle'
+//    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
+//    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-cgp-version.gradle'
+    repositories {
+        maven { url "https://sig-repo.synopsys.com/bds-integrations-release" }
+        mavenCentral()
+        maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url "C:\\Users\\basim\\.m2\\repository" }
+    }
+//    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-cgp-version.gradle'
+    project.ext { managedCgpVersion = '2.0.4' }
 
     dependencies {
         classpath "com.synopsys.integration:common-gradle-plugin:${managedCgpVersion}"
