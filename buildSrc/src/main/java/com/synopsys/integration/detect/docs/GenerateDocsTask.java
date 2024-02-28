@@ -32,8 +32,9 @@ import com.synopsys.integration.detect.docs.model.SplitGroup;
 import com.synopsys.integration.detect.docs.pages.AdvancedPropertyTablePage;
 import com.synopsys.integration.detect.docs.pages.DeprecatedPropertyTablePage;
 import com.synopsys.integration.detect.docs.pages.DetectorCascadePage;
-import com.synopsys.integration.detect.docs.pages.DetectorEntryPoint;
-import com.synopsys.integration.detect.docs.pages.DetectorType;
+// Commenting out in 9.4 to manually create detectors table page detectors.md
+// import com.synopsys.integration.detect.docs.pages.DetectorEntryPoint;
+// import com.synopsys.integration.detect.docs.pages.DetectorType;
 import com.synopsys.integration.detect.docs.pages.ExitCodePage;
 import com.synopsys.integration.detect.docs.pages.SimplePropertyTablePage;
 import com.synopsys.integration.exception.IntegrationException;
