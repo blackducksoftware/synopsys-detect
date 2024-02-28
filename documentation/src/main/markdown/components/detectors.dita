@@ -1,0 +1,913 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="detectors">
+    <title>Detectors</title>
+    <body>
+        <p>The <xref keyref="solution_name"/> Detector tool runs one or more detectors to find and
+            extract dependencies from all supported package managers.</p>
+        <p>Each package manager ecosystem is assigned a detector type. Each detector type may have
+            multiple methods (detectors) used to extract dependencies.</p>
+        <p>Which detector(s) will run against your project is determined by the <xref href="../runningdetect/detectorcascade.md" format="markdown">detector search</xref>
+            process.</p>
+    </body>
+    <topic id="detector-types-entry-points-and-detectors">
+        <title>Detector Types, and Detectors</title>
+        <body>
+            <p>The following table contains information for each Detector type, and detector. Details on
+                these terms is available on the <xref href="../runningdetect/detectorcascade.md" format="markdown">detector search</xref> page.</p>
+            <table>
+                <tgroup cols="6">
+                    <colspec colname="col1"/>
+                    <colspec colname="col2"/>
+                    <colspec colname="col3"/>
+                    <colspec colname="col4"/>
+                    <colspec colname="col5"/>
+                    <colspec colname="col6"/>
+                    <thead>
+                        <row>
+                            <entry>Detector Type</entry>
+                            <entry>Detector</entry>
+                            <entry>Language</entry>
+                            <entry>Forge</entry>
+                            <entry>Requirements</entry>
+                            <entry>Accuracy</entry>
+                        </row>
+                    </thead>
+                    <tbody>
+                        <row>
+                            <entry>
+                                <b>BITBAKE</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Bitbake CLI</entry>
+                            <entry>various</entry>
+                            <entry>YOCTO</entry>
+                            <entry>
+								<p>Properties: Package names</p>
+								<p>File: build env script</p>
+								<p>Executable: bash</p>
+                            </entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>CARGO</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Cargo Lock</entry>
+                            <entry>Rust</entry>
+                            <entry>crates</entry>
+                            <entry>
+								<p>Files: Cargo.lock, Cargo.toml</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>CARTHAGE</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Carthage Lock</entry>
+                            <entry>various</entry>
+                            <entry>GitHub</entry>
+                            <entry>
+								<p>Files: Cartfile, Cartfile.resolved</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>CLANG</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Clang CLI</entry>
+                            <entry>C or C++</entry>
+                            <entry>Derived from the Linux distribution.</entry>
+                            <entry>
+								<p>File: compile_commands.json</p>
+								<p>Executable: Linux package manager</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>COCOAPODS</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Pod Lock</entry>
+                            <entry>Objective C</entry>
+                            <entry>COCOAPODS and NPMJS</entry>
+                            <entry>
+								<p>Files: Podfile.lock</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>CONAN</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Conan 2 CLI</entry>
+                            <entry>C/C++</entry>
+                            <entry>conan</entry>
+                            <entry>
+								<p>Files: conanfile.txt or conanfile.py</p>
+								<p>Executable: conan (version 2.x)</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Conan 1 CLI</entry>
+                            <entry>C/C++</entry>
+                            <entry>conan</entry>
+                            <entry>
+								<p>Files: conanfile.txt or conanfile.py</p>
+								<p>Executable: conan (version 1.x)</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Conan Lock</entry>
+                            <entry>C/C++</entry>
+                            <entry>conan</entry>
+                            <entry>
+								<p>Files: conan.lock</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>CONDA</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Conda CLI</entry>
+                            <entry>Python</entry>
+                            <entry>Anaconda</entry>
+                            <entry>
+								<p>File: environment.yml</p>
+								<p>Executable: conda</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>CPAN</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Cpan CLI</entry>
+                            <entry>Perl</entry>
+                            <entry>CPAN</entry>
+                            <entry>
+								<p>File: Makefile.PL Executables: cpan, and cpanm</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>CRAN</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Packrat Lock</entry>
+                            <entry>R</entry>
+                            <entry>CRAN</entry>
+                            <entry>
+								<p>File: packrat.lock</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>DART</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Dart CLI</entry>
+                            <entry>Dart</entry>
+                            <entry>Dart</entry>
+                            <entry>
+								<p>Files: pubspec.yaml, pubspec.lock</p>
+								<p>Executable: dart, flutter</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Dart PubSpec Lock</entry>
+                            <entry>Dart</entry>
+                            <entry>Dart</entry>
+                            <entry>
+								<p>Files: pubspec.yaml, pubspec.lock</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>GIT</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Git</entry>
+                            <entry>various</entry>
+                            <entry>N/A</entry>
+                            <entry>
+								<p>Directory: .git</p>
+								<p>Executable: git</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Git Parse</entry>
+                            <entry>various</entry>
+                            <entry>N/A</entry>
+                            <entry>
+								<p>Files: .git/config, .git/HEAD, .git/ORIG_HEAD</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>GO_DEP</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>GoDep Lock</entry>
+                            <entry>Golang</entry>
+                            <entry>GitHub</entry>
+                            <entry>
+								<p>File: Gopkg.lock</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>GO_GRADLE</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>GoGradle Lock</entry>
+                            <entry>Golang</entry>
+                            <entry>GitHub</entry>
+                            <entry>
+								<p>File: gogradle.lock</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>GO_MOD</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>GoMod CLI</entry>
+                            <entry>Golang</entry>
+                            <entry>Go Modules</entry>
+                            <entry>
+								<p>File: go.mod</p>
+								<p>Executable: go</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>GO_VENDOR</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Go Vendor</entry>
+                            <entry>Golang</entry>
+                            <entry>GitHub</entry>
+                            <entry>
+								<p>File: vendor/vendor.json</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>GO_VNDR</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>GoVndr CLI</entry>
+                            <entry>Golang</entry>
+                            <entry>GitHub</entry>
+                            <entry>
+								<p>File: vendor.conf</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>GRADLE</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Gradle Native Inspector</entry>
+                            <entry>various</entry>
+                            <entry>Maven Central</entry>
+                            <entry>
+								<p>File: build.gradle or build.gradle.kts</p>
+								<p>Executable: gradlew or gradle</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Gradle Project Inspector</entry>
+                            <entry>various</entry>
+                            <entry>Maven Central</entry>
+                            <entry>
+								<p>File: build.gradle</p>
+							</entry>
+                            <entry>LOW</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>HEX</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Rebar CLI</entry>
+                            <entry>Erlang</entry>
+                            <entry>Hex</entry>
+                            <entry>
+								<p>File: rebar.config</p>
+								<p>Executable: rebar3</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>IVY</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Ivy Build Parse</entry>
+                            <entry>various</entry>
+                            <entry>Maven Central</entry>
+                            <entry>
+								<p>File: ivy.xml, build.xml</p>
+							</entry>
+                            <entry>LOW</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>LERNA</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Lerna CLI</entry>
+                            <entry>Node JS</entry>
+                            <entry>npmjs</entry>
+                            <entry>
+								<p>File: lerna.json, package.json</p>
+								<p>Executable: Lerna</p>
+								<p>One of: package-lock.json, npm-shrinkwrap.json, or yarn.lock</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>MAVEN</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Maven CLI</entry>
+                            <entry>various</entry>
+                            <entry>Maven Central</entry>
+                            <entry>
+								<p>File: pom.xml</p>
+								<p>Executable: mvnw or mvn</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Maven Wrapper CLI</entry>
+                            <entry>various</entry>
+                            <entry>Maven Central</entry>
+                            <entry>
+								<p>File: pom.groovy</p>
+								<p>Executable: mvnw or mvn</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Maven Project Inspector</entry>
+                            <entry>various</entry>
+                            <entry>Maven Central</entry>
+                            <entry>
+								<p>File: pom.xml</p>
+							</entry>
+                            <entry>LOW</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>NPM</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>NPM Shrinkwrap</entry>
+                            <entry>Node JS</entry>
+                            <entry>npmjs</entry>
+                            <entry>
+								<p>File: npm-shrinkwrap.json</p>
+								<p>Optionally, for better results: package.json</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>NPM Package Lock</entry>
+                            <entry>Node JS</entry>
+                            <entry>npmjs</entry>
+                            <entry>
+								<p>File: package-lock.json</p>
+								<p>Optionally, for better results: package.json</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>NPM CLI</entry>
+                            <entry>Node JS</entry>
+                            <entry>npmjs</entry>
+                            <entry>
+								<p>Files: node_modules, package.json</p>
+								<p>Executable: npm</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>NPM Package Json Parse</entry>
+                            <entry>Node JS</entry>
+                            <entry>npmjs</entry>
+                            <entry>
+								<p>File: package.json</p>
+							</entry>
+                            <entry>LOW</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>NUGET</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>NuGet Solution Native Inspector</entry>
+                            <entry>C#</entry>
+                            <entry>NuGet.org</entry>
+                            <entry>
+								<p>File: a solution file with .sln extension</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>NuGet Project Native Inspector</entry>
+                            <entry>C#</entry>
+                            <entry>NuGet.org</entry>
+                            <entry>
+								<p>File: project file with one of the following extensions:
+                                .csproj, .fsproj, .vbproj, .asaproj, .dcproj, .shproj, .ccproj,
+                                .sfproj, .njsproj, .vcxproj, .vcproj, .xproj, .pyproj, .hiveproj,
+                                .pigproj, .jsproj, .usqlproj, .deployproj, .msbuildproj, .sqlproj,
+                                .dbproj, .rproj</p>
+								</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>NuGet Project Inspector</entry>
+                            <entry>C#</entry>
+                            <entry>NuGet.org</entry>
+                            <entry>
+								<p>File: project file with one of the following extensions:
+                                .csproj, .sln</p>
+							</entry>
+                            <entry>LOW</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>PACKAGIST</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Composer Lock</entry>
+                            <entry>PHP</entry>
+                            <entry>Packagist.org</entry>
+                            <entry>
+								<p>Files: composer.lock, composer.json</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>PEAR</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Pear CLI</entry>
+                            <entry>PHP</entry>
+                            <entry>Pear</entry>
+                            <entry>
+								<p>Files: package.xml</p>
+								<p>Executable: pear</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>PIP</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Pipenv Lock</entry>
+                            <entry>Python</entry>
+                            <entry>PyPi</entry>
+                            <entry>
+								<p>Files: Pipfile or Pipfile.lock</p>
+								<p>Executables: python or python3,
+                                and pipenv</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>PIP Native Inspector</entry>
+                            <entry>Python</entry>
+                            <entry>Pypi</entry>
+                            <entry>
+								<p>setup.py file, or one or more requirements.txt files</p>
+                                <p>Executables: python and pip, or python3 and pip3</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Pipfile Lock</entry>
+                            <entry>Python</entry>
+                            <entry>PyPi</entry>
+                            <entry>
+								<p>Files: Pipfile, Pipfile.lock</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>PIP Requirements Parse</entry>
+                            <entry>Python</entry>
+                            <entry>PyPi</entry>
+                            <entry>
+								<p>File: requirements.txt</p>
+							</entry>
+                            <entry>LOW</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>PNPM</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Pnpm Lock</entry>
+                            <entry>Node JS</entry>
+                            <entry>npmjs</entry>
+                            <entry>
+								<p>Files: pnpm-lock.yaml and package.json</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>POETRY</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Poetry Lock</entry>
+                            <entry>Python</entry>
+                            <entry>pypi</entry>
+                            <entry>
+								<p>Files: Poetry.lock, pyproject.toml</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>RUBYGEMS</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Gemfile Lock</entry>
+                            <entry>Ruby</entry>
+                            <entry>RubyGems</entry>
+                            <entry>
+								<p>File: Gemfile.lock</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Gemspec Parse</entry>
+                            <entry>Ruby</entry>
+                            <entry>RubyGems</entry>
+                            <entry>
+								<p>File: gemspec file (with .gemspec extension)</p>
+							</entry>
+                            <entry>LOW</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>SBT</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Sbt Native Inspector</entry>
+                            <entry>Scala</entry>
+                            <entry>Maven Central</entry>
+                            <entry>
+								<p>File: build.sbt</p>
+								<p>Plugin: Dependency Graph</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>SWIFT</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Swift Lock</entry>
+                            <entry>Swift</entry>
+                            <entry>Swift.org</entry>
+                            <entry>
+								<p>File: Package.swift, Package.resolved</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Swift CLI</entry>
+                            <entry>Swift</entry>
+                            <entry>Swift.org</entry>
+                            <entry>
+								<p>File: Package.swift</p>
+								<p>Executables: swift</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>XCODE</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Xcode Workspace Lock</entry>
+                            <entry>Swift</entry>
+                            <entry>GITHUB</entry>
+                            <entry>
+								<p>Directory: *.xcworkspace</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Xcode Project Lock</entry>
+                            <entry>Swift</entry>
+                            <entry>GITHUB</entry>
+                            <entry>
+								<p>Directory: *.xcodeproj</p>
+								<p>Files: Package.resolved</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                        <row>
+                            <entry>
+                                <b>YARN</b>
+                            </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                            <entry> </entry>
+                        </row>
+                        <row>
+                            <entry> </entry>
+                            <entry>Yarn Lock</entry>
+                            <entry>Node JS</entry>
+                            <entry>npmjs</entry>
+                            <entry>
+								<p>Files: yarn.lock and package.json</p>
+							</entry>
+                            <entry>HIGH</entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </table>
+        </body>
+    </topic>
+</topic>

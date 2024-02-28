@@ -82,7 +82,8 @@ public class GenerateDocsTask extends DefaultTask {
         FileUtils.copyDirectory(sourceMarkdownDir, outputDir);
         createMarkdownFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
         createMarkdownFromFreemarker(templateProvider, runningDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
-        handleDetectors(templateProvider, outputDir, helpJson);
+       // Commenting out in 9.4 to manually create detectors table page detectors.md
+	   // handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);
         createFromFreemarker(templateProvider, "downloadlocations.ftl", new File(installDir, "downloadlocations.md"));
     }
@@ -102,8 +103,8 @@ public class GenerateDocsTask extends DefaultTask {
             template.process(data, writer);
         }
     }
-
-    private void handleDetectors(TemplateProvider templateProvider, File baseOutputDir, HelpJsonData helpJson) throws IOException, TemplateException {
+	// Commenting out in 9.4 to manually create detectors table page detectors.md
+    /* private void handleDetectors(TemplateProvider templateProvider, File baseOutputDir, HelpJsonData helpJson) throws IOException, TemplateException {
         File outputDir = new File(baseOutputDir, "components");
         List<DetectorType> detectorTypes = new ArrayList<>();
         helpJson.getDetectors().stream()
@@ -128,8 +129,8 @@ public class GenerateDocsTask extends DefaultTask {
             });
 
         createMarkdownFromFreemarker(templateProvider, outputDir, "detectors", new DetectorCascadePage(detectorTypes));
-    }
-
+    } */
+	
     private String encodePropertyLocation(String propertyName) {
         if (!propertyName.equals(propertyName.trim())) {
             throw new RuntimeException(
