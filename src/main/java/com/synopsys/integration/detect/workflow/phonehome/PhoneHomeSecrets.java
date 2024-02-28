@@ -5,11 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import com.synopsys.integration.detect.Application;
 import org.mockito.Mockito;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -17,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
 
 public class PhoneHomeSecrets {
     public static String API_SECRET_NAME = "api_secret";
