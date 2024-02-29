@@ -70,7 +70,8 @@ public class MavenPomDetectableTest extends DetectableFunctionalTest {
                     Collections.emptyList(),
                     Collections.emptyList(),
                     Collections.emptyList(),
-                    Collections.emptyList()
+                    Collections.emptyList(),
+false
                 )
             );
     }

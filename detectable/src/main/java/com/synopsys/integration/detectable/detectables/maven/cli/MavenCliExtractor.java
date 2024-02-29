@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
+import com.synopsys.integration.detectable.util.MavenPomFileGenerator;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.common.util.Bds;
@@ -41,18 +42,22 @@ public class MavenCliExtractor {
 
         ExecutableOutput mvnExecutableResult = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, mavenExe, commandArguments));
 
+        MavenPomFileGenerator mavenPomFileGenerator = new MavenPomFileGenerator(executableRunner, mavenExe);
         List<String> mavenOutput = mvnExecutableResult.getStandardOutputAsList();
         List<String> excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes();
         List<String> includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes();
         List<String> excludedModules = mavenCliExtractorOptions.getMavenExcludedModules();
         List<String> includedModules = mavenCliExtractorOptions.getMavenIncludedModules();
+        Boolean includeShadedDependencies = mavenCliExtractorOptions.getMavenIncludeShadedDependencies();
         List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(
             directory.toString(),
             mavenOutput,
             excludedScopes,
             includedScopes,
             excludedModules,
-            includedModules
+            includedModules,
+            includeShadedDependencies,
+            mavenPomFileGenerator
         );
 
         List<CodeLocation> codeLocations = Bds.of(mavenResults)

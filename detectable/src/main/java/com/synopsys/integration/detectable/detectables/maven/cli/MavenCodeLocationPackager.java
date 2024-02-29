@@ -1,12 +1,13 @@
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.regex.Pattern;
 
+import com.synopsys.integration.detectable.util.MavenPomFileGenerator;
+import com.synopsys.integration.detectable.factory.MavenPomParserFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +42,14 @@ public class MavenCodeLocationPackager {
     private int level;
     private boolean inOutOfScopeTree = false;
     private DependencyGraph currentGraph = null;
+    private HashMap<Dependency,List<Dependency>> shadedDependencies = new HashMap<>();
+    private final MavenPomParserFactory mavenPomParserFactory;
+    private MavenPomFileGenerator mavenPomFileGenerator;
+    private Path tempDirectoryPath = null;
 
     public MavenCodeLocationPackager(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
+        this.mavenPomParserFactory = new MavenPomParserFactory(externalIdFactory);
     }
 
     // mavenOutput should be the full output of mvn dependency:tree (no scope applied); scope filtering is now done by this method
@@ -53,7 +59,9 @@ public class MavenCodeLocationPackager {
         List<String> excludedScopes,
         List<String> includedScopes,
         List<String> excludedModules,
-        List<String> includedModules
+        List<String> includedModules,
+        Boolean includeShadedDependencies,
+        MavenPomFileGenerator mavenPomFileGenerator
     ) {
         ExcludedIncludedWildcardFilter modulesFilter = ExcludedIncludedWildcardFilter.fromCollections(excludedModules, includedModules);
         ExcludedIncludedWildcardFilter scopeFilter = ExcludedIncludedWildcardFilter.fromCollections(excludedScopes, includedScopes);
@@ -62,6 +70,7 @@ public class MavenCodeLocationPackager {
         dependencyParentStack = new Stack<>();
         parsingProjectSection = false;
         currentGraph = new BasicDependencyGraph();
+        this.mavenPomFileGenerator = mavenPomFileGenerator;
 
         level = 0;
         for (String currentLine : mavenOutput) {
@@ -97,6 +106,9 @@ public class MavenCodeLocationPackager {
             }
             if (currentMavenProject != null) {
                 populateGraphDependencies(scopeFilter, dependency, previousLevel);
+                if(includeShadedDependencies && !currentGraph.hasDependency(dependency) && !orphans.contains(dependency)) {
+                    addShadedDependencies(dependency);
+                }
             }
         }
         addOrphansToGraph(currentGraph, orphans);
@@ -185,6 +197,31 @@ public class MavenCodeLocationPackager {
                 }
                 addDependencyIfInScope(currentGraph, orphans, scopeFilter, inOutOfScopeTree, dependencyParentStack.peek(), dependency);
                 dependencyParentStack.push(dependency);
+            }
+        }
+    }
+
+    private void addShadedDependencies(Dependency dependency) {
+        MavenPomParser mavenPomParser = mavenPomParserFactory.getMavenPomParser();
+        try {
+            if(tempDirectoryPath == null) {
+                tempDirectoryPath = mavenPomFileGenerator.createNewDirectory();
+            }
+           mavenPomFileGenerator.generatePomFile(tempDirectoryPath, dependency,"pom");
+           File pomFile = new File(tempDirectoryPath.toString()+"/"+dependency.getName()+"-"+dependency.getVersion()+".pom");
+           mavenPomParser.parsePOMFile(pomFile);
+           pomFile.delete();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+
+        if(mavenPomParser.getMavenShadePluginUseInformation()) {
+            try {
+                mavenPomFileGenerator.generateJarFile(tempDirectoryPath,dependency);
+                String jarFilePath = tempDirectoryPath.toString()+"/"+dependency.getName()+"-"+dependency.getVersion()+".jar";
+                mavenPomFileGenerator.extractJar(jarFilePath,tempDirectoryPath.toFile());
+            } catch (Exception e) {
+                throw new RuntimeException();
             }
         }
     }
