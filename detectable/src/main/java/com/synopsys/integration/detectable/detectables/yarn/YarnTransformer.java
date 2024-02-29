@@ -133,8 +133,7 @@ public class YarnTransformer {
             ExternalIdDependencyGraphBuilder.LazyDependencyInfo parentInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, id);
             Dependency parent = new Dependency(parentInfo.getName(), parentInfo.getVersion(), parentInfo.getExternalId(), null);
             mutableDependencyGraph.addDirectDependency(parent);
-            Map<String, String> entryIdsToResolvedVersionMap = resolvedEntryIdVersionMap.get(entryName);
-            collectYarnDependencies(lazyBuilderHandler, graphBuilder, mutableDependencyGraph, yarnLockResult, entry, entryIdsToResolvedVersionMap, parent);
+            collectYarnDependencies(lazyBuilderHandler, graphBuilder, mutableDependencyGraph, yarnLockResult, entry, resolvedEntryIdVersionMap, parent);
         }
         return mutableDependencyGraph;
     }
@@ -145,16 +144,27 @@ public class YarnTransformer {
             BasicDependencyGraph mutableDependencyGraph,
             YarnLockResult yarnLockResult,
             YarnLockEntry entry,
-            Map<String, String> entryIdsToResolvedVersionMap,
+            Map<String, Map<String, String>> resolvedEntryIdVersionMap,
             Dependency parent
             ) throws MissingExternalIdException {
         for (YarnLockDependency dependency : entry.getDependencies()) {
             if (!isWorkspace(yarnLockResult.getWorkspaceData(), dependency)) {
-                String dependencyVersion = entryIdsToResolvedVersionMap.get(dependency.getVersion());
-                if (dependencyVersion == null) {
+                Map<String, String> idVersionMap = resolvedEntryIdVersionMap.get(dependency.getName());
+                String dependencyVersion;
+                if (idVersionMap != null) {
+                    dependencyVersion = idVersionMap.get(dependency.getVersion());
+                    if (dependencyVersion == null) {
+                        if (idVersionMap.values().isEmpty()) {
+                            logger.warn("Dependency {} with version definition {} not found in the Yarn map entries {}", dependency.getName(), dependency.getVersion(), idVersionMap.toString());
+                            dependencyVersion = dependency.getVersion();
+                        } else {
+                            // 1. Choose first version.
+                            dependencyVersion = (String) idVersionMap.values().toArray()[0];
+                        }
+                        // 2. Try to auto-resolve to one of the versions.
+                    }
+                } else {
                     dependencyVersion = dependency.getVersion();
-                    // 1. Choose first version.
-                    // 2. Try to auto-resolve to one of the versions.
                 }
                 LazyId stringDependencyId = generateComponentDependencyId(dependency.getName(), dependencyVersion);
                 if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION) || !dependency.isOptional()) {
