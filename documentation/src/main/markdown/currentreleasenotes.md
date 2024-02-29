@@ -8,6 +8,7 @@
 * Support for BitBake is now extended to 2.6 (Yocto 4.3.2).
 * A new detector for Python packages has been added. The PIP Requirements File Parse is a buildless detector that acts as a LOW accuracy fallback for the PIP Native Inspector. This detector is triggered for PIP projects that contain one or more requirements.txt files if [solution_name] does not have access to a PIP executable in the environment where the scan is run.
 	* See [PIP Requirements File Parse](packagemgrs/python.md).
+* To improve yarn detector performance a new parameter is now available, `--detect.yarn.monorepo.mode`, which enables monorepo mode to build the dependency graph without analysis of workspaces. The default setting for this parameter is false and must be set to true to be enabled.
 
 ### Changed features
 
