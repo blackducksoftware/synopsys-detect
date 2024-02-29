@@ -13,7 +13,7 @@
 	* Pipfile lock detector
 * PIP detectors
 	* Pip Native Inspector
-	* Pip Requirements File Parser
+	* Pip Requirements File Parse
 * Poetry detector
 
 ## PIPENV Detectors
@@ -72,9 +72,9 @@ pip install -r requirements.txt
 * If there are any dependencies specified in requirements.txt that are not specified in setup.py, then provide the requirements.txt file using the [solution_name] property.   
 <note type="tip">If you are using a virtual environment, be sure to switch to that virtual environment when you run [solution_name]. This also applies when you are using a tool such as Poetry that sets up a Python virtual environment.</note>
 
-## PIP requirements file parser
+## PIP Requirements File Parse
 
-Pip Requirements File Parser is a buildless detector that acts as a LOW accuracy fallback for the Pip Native Inspector. This detector gets triggered for Pip projects that contain one or more requirements.txt files but [solution_name] doesn't have access to a Pip executable in the environment where the scan is executed.
+Pip Requirements File Parse is a buildless detector that acts as a LOW accuracy fallback for the Pip Native Inspector. This detector gets triggered for Pip projects that contain one or more requirements.txt files but [solution_name] doesn't have access to a Pip executable in the environment where the scan is executed.
  
 ### Requirements file selection (Default)
 
