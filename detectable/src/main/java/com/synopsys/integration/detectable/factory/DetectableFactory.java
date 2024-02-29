@@ -214,6 +214,11 @@ import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspecto
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.pip.inspector.parser.PipInspectorTreeParser;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDependencyTransformer;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectable;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvExtractor;
@@ -599,6 +604,16 @@ public class DetectableFactory {
         PipResolver pipResolver
     ) {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
+    }
+
+    public RequirementsFileDetectable createRequirementsFileDetectable(
+        DetectableEnvironment environment,
+        RequirementsFileDetectableOptions requirementsFileDetectableOptions
+    ) {
+        RequirementsFileTransformer requirementsFileTransformer = new RequirementsFileTransformer();
+        RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
+        RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
+        return new RequirementsFileDetectable(environment, fileFinder, requirementsFileExtractor, requirementsFileDetectableOptions);
     }
 
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmLockOptions pnpmLockOptions) {
@@ -995,7 +1010,7 @@ public class DetectableFactory {
     }
 
     private YarnPackager yarnPackager(YarnLockOptions yarnLockOptions) {
-        YarnTransformer yarnTransformer = new YarnTransformer(externalIdFactory, yarnLockOptions.getYarnDependencyTypeFilter());
+        YarnTransformer yarnTransformer = new YarnTransformer(externalIdFactory, yarnLockOptions.getYarnDependencyTypeFilter(), yarnLockOptions.getMonorepoMode());
         return new YarnPackager(yarnTransformer);
     }
 

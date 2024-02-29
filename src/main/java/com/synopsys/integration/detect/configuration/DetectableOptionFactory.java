@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.synopsys.integration.detectable.detectables.nuget.NugetDependencyType;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
@@ -40,6 +41,7 @@ import com.synopsys.integration.detectable.detectables.packagist.PackagistDepend
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipenvDependencyType;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectableOptions;
@@ -248,6 +250,12 @@ public class DetectableOptionFactory {
         return new PipInspectorDetectableOptions(pipProjectName, requirementsFilePath);
     }
 
+    public RequirementsFileDetectableOptions createRequirementsFileDetectableOptions() {
+        String pipProjectName = detectConfiguration.getNullableValue(DetectProperties.DETECT_PIP_PROJECT_NAME);
+        List<Path> requirementsFilePath = detectConfiguration.getPaths(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH);
+        return new RequirementsFileDetectableOptions(pipProjectName, requirementsFilePath);
+    }
+
     public PnpmLockOptions createPnpmLockOptions() {
         Set<PnpmDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
         EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
@@ -274,11 +282,12 @@ public class DetectableOptionFactory {
 
     public YarnLockOptions createYarnLockOptions() {
         Set<YarnDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
+        Boolean monorepoMode = detectConfiguration.getValue(DetectProperties.DETECT_YARN_MONOREPO_MODE);
         EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
 
         List<String> excludedWorkspaces = detectConfiguration.getValue(DetectProperties.DETECT_YARN_EXCLUDED_WORKSPACES);
         List<String> includedWorkspaces = detectConfiguration.getValue(DetectProperties.DETECT_YARN_INCLUDED_WORKSPACES);
-        return new YarnLockOptions(yarnDependencyTypeFilter, excludedWorkspaces, includedWorkspaces);
+        return new YarnLockOptions(yarnDependencyTypeFilter, excludedWorkspaces, includedWorkspaces, monorepoMode);
     }
 
     public NugetInspectorOptions createNugetInspectorOptions() {
@@ -287,7 +296,8 @@ public class DetectableOptionFactory {
         List<String> includedModules = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_INCLUDED_MODULES);
         List<String> packagesRepoUrl = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL);
         Path nugetConfigPath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_NUGET_CONFIG_PATH);
-        return new NugetInspectorOptions(ignoreFailures, excludedModules, includedModules, packagesRepoUrl, nugetConfigPath);
+        Set<NugetDependencyType> nugetExcludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
+        return new NugetInspectorOptions(ignoreFailures, excludedModules, includedModules, packagesRepoUrl, nugetConfigPath, nugetExcludedDependencyTypes);
     }
 
     private boolean getFollowSymLinks() {

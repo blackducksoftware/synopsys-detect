@@ -1,7 +1,9 @@
 # Using a configuration file
 
 Another commonly-used method of configuring [solution_name] is to provide a configuration file. The configuration file
-can be a Java properties (.properties) file, or a YAML (.yml) file.
+can be a Java properties (.properties) file, or a YAML (.yml) file. 
+
+<note type="note">Configuration files support all properties, only the formatting, as noted below, changes based on the type of configuration file employed. See [All Properties](../properties/all-properties.md).</note>
 
 Spring Boot will look for a configuration file named application.properties or application.yml
 in the current working directory, or a ./config subdirectory. If it exists, it will read

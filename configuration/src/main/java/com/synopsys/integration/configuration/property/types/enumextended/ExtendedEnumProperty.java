@@ -1,6 +1,7 @@
 package com.synopsys.integration.configuration.property.types.enumextended;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.property.PropertyBuilder;
 import com.synopsys.integration.configuration.property.base.ValuedAlikeProperty;
+import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueUsage;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 public class ExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends ValuedAlikeProperty<ExtendedEnumValue<E, B>> {
@@ -75,5 +77,29 @@ public class ExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends 
     @Override
     public String describeType() {
         return bClass.getSimpleName();
+    }
+
+    private final List<B> deprecatedValues = new ArrayList<>();
+    @NotNull
+    public ExtendedEnumProperty<E,B> deprecateValue(B value, String reason) {
+        deprecatedValues.add(value);
+        addDeprecatedValueInfo(value.toString(), reason);
+        return this;
+    }
+
+    @Override
+    @NotNull
+    public List<DeprecatedValueUsage> checkForDeprecatedValues(ExtendedEnumValue<E, B> value) {
+        if (getPropertyDeprecationInfo() == null)
+            return Collections.emptyList();
+        if (getPropertyDeprecationInfo().getDeprecatedValues() == null)
+            return Collections.emptyList();
+
+        List<DeprecatedValueUsage> usages = new ArrayList<>();
+        if (value.getBaseValue().isPresent() && deprecatedValues.contains(value.getBaseValue().get())) {
+            createDeprecatedValueUsageIfExists(value.getBaseValue().get().toString())
+                    .ifPresent(usages::add);
+        }
+        return usages;
     }
 }
