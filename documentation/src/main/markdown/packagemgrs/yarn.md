@@ -21,8 +21,6 @@ The yarn.lock file contains necessary details about those
 direct dependencies and their transient dependencies, enabling [solution_name]
 to build the complete graph of direct and transient dependencies.
 
-[solution_name] supports projects that use Yarn version 1 or version 2.
-
 ## Yarn workspace support
 
 In addition to the codelocation generated for the project (showing its direct
@@ -65,3 +63,12 @@ When using the workspace exclude and include properties, use the workspace
 referencing guidelines described above. You can also use
 filename globbing-style wildcards and specify multiple values separated
 by commas.
+
+### Enable monorepo mode
+
+To speed up scanning by building the dependency graph without analysis of workspaces, set the parameter`--detect.yarn.monorepo.mode=true` to enable monorepo mode.   
+The default setting for this parameter is false and must be set to true to enable.
+
+<note type="note">The properties `detect.yarn.excluded.workspaces` and `detect.yarn.included.workspaces` do not apply if `detect.yarn.monorepo.mode=true`.</note>
+
+See [Yarn monorepo](https://yarnpkg.com/advanced/lexicon#monorepo) for further information about workspaces and monorepo configuration.
