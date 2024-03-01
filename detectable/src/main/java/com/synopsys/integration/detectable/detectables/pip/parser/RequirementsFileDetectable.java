@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -29,6 +31,7 @@ public class RequirementsFileDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final RequirementsFileExtractor requirementsFileExtractor;
     private final RequirementsFileDetectableOptions requirementsFileDetectableOptions;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Set<File> requirementsFiles;
     private List<Path> requirementsFilePathsOverride;
@@ -88,13 +91,15 @@ public class RequirementsFileDetectable extends Detectable {
         }
     }
 
-    private void processRequirementsFileOverrides() throws IOException {
+    private void processRequirementsFileOverrides() {
         Set<File> requirementsFilesOverrides = new HashSet<>();
         File currentRequirementsFileOverride;
         for (Path requirementsFilePath : requirementsFilePathsOverride) {
             currentRequirementsFileOverride = requirementsFilePath.toFile();
             if (currentRequirementsFileOverride.exists()) {
                 requirementsFilesOverrides.add(currentRequirementsFileOverride);
+            } else {
+                logger.warn("Could not locate the requirements file provided via detect.pip.requirements.path at {}. This file will not be included.", requirementsFilePath);
             }
         }
         requirementsFiles = requirementsFilesOverrides;
