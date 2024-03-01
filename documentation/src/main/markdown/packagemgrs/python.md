@@ -90,6 +90,7 @@ The `--detect.pip.requirements.path` property can be used to provide an explicit
 This parser is a LOW accuracy, best-effort detector. In most cases, it can extract dependency information from the file when entries are in the format `<dependency_name> == <version_name>`. This is the typical format in requirements files generated with the Pip CLI using the `pip freeze > requirements.txt` command. The parser does not resolve any special wildcard characters in the version string, for example a version string present as `1.2.*` is extracted exactly as it is.
 In cases where a range of versions is provided for a dependency, for example `>= 1.2.3, <1.3`, the parser will extract the lowest version in the range i.e. `1.2.3`.
 Any extras added after the package name are not resolved by the parser. For example, for a package name declared as `requests[security]`, only the requests package is extracted and not the extra option specified as `[security]`.
+<note type="note>If any URL to a component is present in the requirements file being parsed, the parser will extract the entire URL as a component without a version.</note>
 
 ## Poetry detector
 
