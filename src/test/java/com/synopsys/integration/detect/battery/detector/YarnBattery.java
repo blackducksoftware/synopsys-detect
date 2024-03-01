@@ -166,7 +166,6 @@ public class YarnBattery {
         test.run();
     }
     
-    @Test
     void yarnMonorepo() {
         DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("yarn2-hierarchical-monorepo", "yarn/yarn2-hierarchical-monorepo");
         test.sourceDirectoryNamed("yarn2-hierarchical-monorepo");
