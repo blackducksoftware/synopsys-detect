@@ -161,22 +161,22 @@
 						</row>
 						<row>
 							<entry> </entry>
+							<entry>Conan Lock</entry>
+							<entry>C/C++</entry>
+							<entry>conan</entry>
+							<entry>
+								<p>File: conan.lock</p>
+							</entry>
+							<entry>HIGH</entry>
+						</row>
+						<row>
+							<entry> </entry>
 							<entry>Conan 1 CLI</entry>
 							<entry>C/C++</entry>
 							<entry>conan</entry>
 							<entry>
 								<p>Files: conanfile.txt or conanfile.py</p>
 								<p>Executable: conan (version 1.x)</p>
-							</entry>
-							<entry>HIGH</entry>
-						</row>
-						<row>
-							<entry> </entry>
-							<entry>Conan Lock</entry>
-							<entry>C/C++</entry>
-							<entry>conan</entry>
-							<entry>
-								<p>File: conan.lock</p>
 							</entry>
 							<entry>HIGH</entry>
 						</row>
