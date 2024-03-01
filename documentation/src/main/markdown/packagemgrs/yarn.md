@@ -21,8 +21,6 @@ The yarn.lock file contains necessary details about those
 direct dependencies and their transient dependencies, enabling [solution_name]
 to build the complete graph of direct and transient dependencies.
 
-[solution_name] supports projects that use Yarn version 1 or version 2.
-
 ## Yarn workspace support
 
 In addition to the codelocation generated for the project (showing its direct
