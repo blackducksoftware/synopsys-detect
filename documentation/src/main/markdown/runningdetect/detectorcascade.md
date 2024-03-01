@@ -60,12 +60,12 @@ When detect.detector.search.depth is greater than 0,
 nesting rules may prevent a detector from applying on a subdirectory of the source directory (say, src/a/b/c/d)
 based on which detectors applied on any of its ancestor directories (src/a/b/c, src/a/b, src/a, or src).
 
-Here are two examples of nesting rules:
+Here are examples of nesting rules:
 1. If any GRADLE detector applied on any ancestor directory, no GRADLE detector will apply on the current directory.
 1. If any XCODE detector applied on any ancestor directory, neither SWIFT detector will apply on the current directory.
+1. If an XCODE project has already processed, ignore XCODE project files that are nested inside.
 
-Nesting rules can be disabled by setting
-property `detect.detector.search.continue` to true.
+Nesting rules can be disabled by setting property `detect.detector.search.continue` to true.
 
 ## [detector_cascade]
 
@@ -84,18 +84,11 @@ Cascade sequences are not configurable.
 
 ## Entry points
 
-In the [detector table](../components/detectors.md), most Detector Types have a single Entry Point. For those Detector Types, the Entry Point column can be ignored.
+When multiple detectors are defined for a Detector Type, we consider those to be detection entry points.
+This allows for the definition of different nesting rules within the same Detector Type for different scenarios.
 
-There are a few Detector Types for which multiple Entry Points are defined.
-When multiple Entry Points are defined for a Detector Type,
-they exist to support the relatively rare need to define different nesting rules
-within the same Detector Type for different scenarios.
-(Nesting rules can usually be, and usually are, applied at the Detector Type level.)
-For example: Detect should ignore XCODE project files that are nested inside an XCODE project that it has already processed.
-Entry Points provide the mechanism by which more nuanced nesting rules such as this are applied.
-
-Each Entry Point has one or more Detectors. Detectors are attempted in the order listed until one applies and succeeds.
-If none succeed, [solution_name] proceeds to the next Entry Point (if there is one) for the Detector Type.
+Detectors are attempted in the order listed until one applies and succeeds.
+If none succeed, [solution_name] proceeds to the next (if there is one) for the Detector Type.
 
 ## Troubleshooting detector search
 
@@ -114,7 +107,7 @@ A detector has three methods:
 
 Accuracy is an assessment of how complete and reliable a detector's results are. Each detector has one of two possible accuracy values: HIGH, or LOW.
 A detector's accuracy value is not configurable.
-You can find the accuracy for each detector in the [detector table](../components/detectors.md).
+You can find the accuracy for each detector in the [detector table](../components/detectors.dita).
 
 Detectors that run the project's package manager and
 discover dependencies from its output are generally assigned high accuracy because the package manager is typically a reliable source of truth
