@@ -12,8 +12,9 @@ import java.util.List;
 public class RequirementsFileTransformer {
 
     private static final List<String> OPERATORS_IN_PRIORITY_ORDER = Arrays.asList("==", ">=", "~=", "<=", ">", "<");
-    private static final List<String> IGNORE_AFTER_CHARACTERS = Arrays.asList("#", ";");
-    private static final List<String> TOKEN_CLEANUP_CHARS = Arrays.asList("==", ",", "\"", "'");
+    private static final List<String> IGNORE_AFTER_CHARS = Arrays.asList("#", ";");
+    private static final List<String> TOKEN_CLEANUP_CHARS = Arrays.asList("\"", "'");
+    private static final List<String> TOKEN_IGNORE_AFTER_CHARS = Arrays.asList(",", "==", ">=", "~=", "<=", ">", "<");
 
     public List<RequirementsFileDependency> transform(File requirementsFile) throws IOException {
 
@@ -109,7 +110,7 @@ public class RequirementsFileTransformer {
         }
 
         // Ignore any characters that appear after the chars in the IGNORE_AFTER_CHARACTERS list
-        for (String ignoreAfterChar : IGNORE_AFTER_CHARACTERS) {
+        for (String ignoreAfterChar : IGNORE_AFTER_CHARS) {
             ignoreAfterIndex = formattedLine.indexOf(ignoreAfterChar);
             if (ignoreAfterIndex >= 0) {
                 formattedLine = formattedLine.substring(0, ignoreAfterIndex);
@@ -119,7 +120,15 @@ public class RequirementsFileTransformer {
     }
 
     public String formatToken(String token) {
-        // Clean up any irrelevant symbols/chars from token
+        // If a token was extracted with operators or a comma, ignore all characters after the operator/comma
+        int ignoreAfterIndex;
+        for (String ignoreAfterChar : TOKEN_IGNORE_AFTER_CHARS) {
+            ignoreAfterIndex = token.indexOf(ignoreAfterChar);
+            if (ignoreAfterIndex >= 0) {
+                token = token.substring(0, ignoreAfterIndex);
+            }
+        }
+        // Clean up any irrelevant symbols/chars from token, like double quotes, single quotes, etc.
         for (String charToRemove : TOKEN_CLEANUP_CHARS) {
             token = token.replace(charToRemove, "");
         }
