@@ -1,1 +1,1 @@
-name7==1.2.3
+nestedname==1.2.3
