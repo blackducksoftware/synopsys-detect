@@ -14,7 +14,7 @@ public class RequirementsFileTransformer {
     private static final List<String> OPERATORS_IN_PRIORITY_ORDER = Arrays.asList("==", ">=", "~=", "<=", ">", "<");
     private static final List<String> IGNORE_AFTER_CHARS = Arrays.asList("#", ";");
     private static final List<String> TOKEN_CLEANUP_CHARS = Arrays.asList("\"", "'");
-    private static final List<String> TOKEN_IGNORE_AFTER_CHARS = Arrays.asList(",", "==", ">=", "~=", "<=", ">", "<");
+    private static final List<String> TOKEN_IGNORE_AFTER_CHARS = Arrays.asList(",", "[", "==", ">=", "~=", "<=", ">", "<");
 
     public List<RequirementsFileDependency> transform(File requirementsFile) throws IOException {
 
@@ -121,6 +121,7 @@ public class RequirementsFileTransformer {
 
     public String formatToken(String token) {
         // If a token was extracted with operators or a comma, ignore all characters after the operator/comma
+        // Ignore any Python package "extras" present in the token name. For example, if token is requests["foo", "bar"], it should be cleaned up to show as "requests"
         int ignoreAfterIndex;
         for (String ignoreAfterChar : TOKEN_IGNORE_AFTER_CHARS) {
             ignoreAfterIndex = token.indexOf(ignoreAfterChar);
@@ -131,11 +132,6 @@ public class RequirementsFileTransformer {
         // Clean up any irrelevant symbols/chars from token, like double quotes, single quotes, etc.
         for (String charToRemove : TOKEN_CLEANUP_CHARS) {
             token = token.replace(charToRemove, "");
-        }
-        // Remove any strings in square brackets. For example, if token is requests["foo", "bar"], it should be cleaned up to show as "requests"
-        int bracketIndex = token.indexOf("[");
-        if (bracketIndex > 0) {
-            token = token.substring(0, bracketIndex);
         }
         return token;
     }
