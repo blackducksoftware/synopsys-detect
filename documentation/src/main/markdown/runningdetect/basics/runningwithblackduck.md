@@ -6,7 +6,7 @@
 
 When running [solution_name] with [blackduck_product_name] and connection details are provided, [solution_name] executes all eligible detection tools by default, including the following:
 
-* The [detector tool](../../components/detectors.md), which runs the appropriate package manager-specific detector; the Maven detector
+* The [detector tool](../../components/detectors.dita), which runs the appropriate package manager-specific detector; the Maven detector
 for Maven projects, the Gradle detector for Gradle projects, and so forth.
 * The [Black Duck Signature Scanner](../../properties/configuration/signature-scanner.md), which performs a [blackduck_signature_scan_act] on the
 project directory.
@@ -22,6 +22,8 @@ project directory.
 * Run [IaC Scan](../iacscan.md) on provided targets. Note: Iac Scan capabilities require [blackduck_product_name] 2022.7.0 or later.
 
 Refer to [Black Duck Server properties](../../properties/configuration/blackduck-server.md), [Black Duck Signature Scanner properties](../../properties/configuration/signature-scanner.md), and [IaC Scan](../iacscan.md) for details.
+
+<note type="tip">Available signature scanner properties can be determined by specifying `--help` when executing the signature scanner jar file from the command line.</note>
 
 ## Offline mode
 

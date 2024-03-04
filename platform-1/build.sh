@@ -13,7 +13,7 @@ sed -e "s/RELEASE_VERSION/$RELEASE_VERSION/g" -e "s/UBI_VERSION/$UBI_VERSION/g" 
 
 FULL_IMAGE_NAME="${TARGET_REPO}/${TARGET_IMAGE}:${TARGET_IMAGE_TAG}"
 REGISTRY=registry.access.redhat.com
-IMAGE=ubi8/ubi
+IMAGE=ubi9/ubi
 TAG="${UBI_VERSION}"
 
 docker build --pull -t "${FULL_IMAGE_NAME}"  \
