@@ -66,9 +66,9 @@ by commas.
 
 ### Enable monorepo mode
 
-To speed up scanning by building the dependency graph without analysis of workspaces, set the parameter`--detect.yarn.monorepo.mode=true` to enable monorepo mode.   
+To speed up scanning by building the dependency graph without analysis of workspaces, set the parameter`--detect.yarn.ignore.all.workspaces=true`.   
 The default setting for this parameter is false and must be set to true to enable.
 
-<note type="note">The properties `detect.yarn.excluded.workspaces` and `detect.yarn.included.workspaces` do not apply if `detect.yarn.monorepo.mode=true`.</note>
+<note type="note">The properties `detect.yarn.excluded.workspaces` and `detect.yarn.included.workspaces` do not apply if `detect.yarn.ignore.all.workspaces=true`.</note>
 
 See [Yarn monorepo](https://yarnpkg.com/advanced/lexicon#monorepo) for further information about workspaces and monorepo configuration.
