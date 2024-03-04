@@ -174,7 +174,7 @@ public class YarnBattery {
         test.sourceFileFromResource("workspace-a/package.json");
         test.sourceFileFromResource("workspace-a/child-workspace/package.json");
         test.sourceFileFromResource("nondep-workspace/package.json");
-        test.property("detect.yarn.monorepo.mode", "true");
+        test.property("detect.yarn.ignore.all.workspaces", "true");
         test.expectBdioResources();
         test.run();
     }
