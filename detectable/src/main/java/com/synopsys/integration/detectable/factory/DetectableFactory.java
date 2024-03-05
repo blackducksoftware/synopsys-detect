@@ -687,7 +687,7 @@ public class DetectableFactory {
     }
     
     public SetupToolsDetectable createSetupToolsDetectable(DetectableEnvironment environment) {
-        return new SetupToolsDetectable(environment);
+        return new SetupToolsDetectable(environment, fileFinder);
     }
 
     // Used by three Detectables
