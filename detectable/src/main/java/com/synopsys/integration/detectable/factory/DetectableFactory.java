@@ -219,6 +219,7 @@ import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFi
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
+import com.synopsys.integration.detectable.detectables.pip.setuptools.SetupToolsDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvExtractor;
@@ -683,6 +684,10 @@ public class DetectableFactory {
         XcodeWorkspaceExtractor xcodeWorkspaceExtractor = new XcodeWorkspaceExtractor(xcodeWorkspaceParser, xcodeWorkspaceFormatChecker, packageResolvedExtractor, fileFinder);
 
         return new XcodeWorkspaceDetectable(environment, fileFinder, packageResolvedExtractor, xcodeWorkspaceExtractor);
+    }
+    
+    public SetupToolsDetectable createSetupToolsDetectable(DetectableEnvironment environment) {
+        return new SetupToolsDetectable(environment);
     }
 
     // Used by three Detectables

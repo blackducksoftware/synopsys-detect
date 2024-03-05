@@ -35,6 +35,7 @@ public enum DetectorType { // TODO: 8.0.0 Rename DetectorTypes
     POETRY,
     RUBYGEMS,
     SBT,
+    SETUPTOOLS,
     SWIFT, // SWIFT_PM
     YARN,
     CLANG,
