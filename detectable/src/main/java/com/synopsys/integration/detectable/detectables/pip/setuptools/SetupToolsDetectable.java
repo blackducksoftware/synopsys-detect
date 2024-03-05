@@ -2,9 +2,14 @@ package com.synopsys.integration.detectable.detectables.pip.setuptools;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.FileUtils;
+import org.tomlj.Toml;
+import org.tomlj.TomlArray;
+import org.tomlj.TomlParseResult;
 import org.xml.sax.SAXException;
 
 import com.google.gson.JsonSyntaxException;
@@ -18,6 +23,13 @@ import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.NpmPackagesObjectNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PoorlyFormattedJson;
+import com.synopsys.integration.detectable.detectable.result.SetupToolsRequiresNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detectable.util.CycleDetectedException;
@@ -27,6 +39,8 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 public class SetupToolsDetectable extends Detectable {
     
     public static final String PY_PROJECT_TOML = "pyproject.toml";
+    public static final String BUILD_KEY = "build-system.requires";
+    public static final String REQUIRED_KEY = "setuptools";
     
     private final FileFinder fileFinder;
 
@@ -47,8 +61,29 @@ public class SetupToolsDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            String projectTomlText = FileUtils.readFileToString(projectToml, StandardCharsets.UTF_8);
+
+            TomlParseResult result = Toml.parse(projectTomlText);
+
+            if (result != null) {
+                TomlArray buildRequires = result.getArray(BUILD_KEY);
+
+                if (buildRequires != null) {
+                    for (int i = 0; i < buildRequires.size(); i++) {
+                        String requires = buildRequires.getString(i);
+
+                        if (requires.equals(REQUIRED_KEY)) {
+                            return new PassedDetectableResult();
+                        }
+                    }
+                }
+            }
+
+            return new SetupToolsRequiresNotFoundDetectableResult();
+        } catch (Exception e) {
+            return new ExceptionDetectableResult(e);
+        }
     }
 
     @Override
