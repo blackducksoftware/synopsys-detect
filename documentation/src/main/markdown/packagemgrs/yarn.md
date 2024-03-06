@@ -66,11 +66,20 @@ by commas.
 
 ### Enable workspace ignore
 
-To speed up scanning by building the dependency graph without analysis of workspaces, set the parameter`--detect.yarn.ignore.all.workspaces=true`.   
-The default setting for this parameter is false and must be set to true to enable.
+To speed up scanning by building the dependency graph without analysis of workspaces, 
+set the parameter`--detect.yarn.ignore.all.workspaces=true`. The default setting 
+for this parameter is false and must be set to true to enable.
 
-Dependencies in workspaces that are not in the Yarn lock file will not be included in the Bill of Materials.
+Dependencies in workspaces that are not in the Yarn lock file will not be included 
+in the Bill of Materials.
 
-<note type="note">The properties `detect.yarn.excluded.workspaces` and `detect.yarn.included.workspaces` do not apply if `detect.yarn.ignore.all.workspaces=true`.</note>
+If the Yarn lock file has been generated to include non-production dependencies,
+with the command `yarn install --production=false` as an example, then those dependencies 
+will be included in the Bill of materials.
 
-See [Yarn monorepo](https://yarnpkg.com/advanced/lexicon#monorepo) for further information about workspaces and monorepo configuration.
+<note type="note">The properties `--detect.yarn.dependency.types.excluded=NON_PRODUCTION`, 
+`detect.yarn.excluded.workspaces` and `detect.yarn.included.workspaces` do not apply 
+if `detect.yarn.ignore.all.workspaces=true` has been set.</note>
+
+See [Yarn monorepo](https://yarnpkg.com/advanced/lexicon#monorepo) for further 
+information about workspaces and monorepo configuration.
