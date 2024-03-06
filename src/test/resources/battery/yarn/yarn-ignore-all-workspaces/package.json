@@ -1,0 +1,13 @@
+{
+  "name": "hier",
+  "version": "mynewversion",
+  "dependencies": {
+    "workspace-a": "^1.0.0"
+  },
+  "workspaces": {
+    "packages": [
+      "workspace-a",
+      "nondep-workspace"
+    ]
+  }
+}

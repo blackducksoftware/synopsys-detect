@@ -1,0 +1,12 @@
+{
+  "name": "workspace-a",
+  "version": "1.0.0",
+  "dependencies": {
+    "child-workspace": "^1.0.0"
+  },
+  "workspaces": {
+    "packages": [
+      "child-workspace"
+    ]
+  }
+}

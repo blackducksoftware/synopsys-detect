@@ -1,0 +1,7 @@
+{
+  "name": "child-workspace",
+  "version": "1.0.0",
+  "dependencies": {
+    "openssl": "^1.1.0"
+  }
+}
