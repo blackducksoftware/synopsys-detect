@@ -220,6 +220,7 @@ import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFi
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
 import com.synopsys.integration.detectable.detectables.pip.setuptools.SetupToolsDetectable;
+import com.synopsys.integration.detectable.detectables.pip.setuptools.SetupToolsExtractor;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvExtractor;
@@ -687,7 +688,7 @@ public class DetectableFactory {
     }
     
     public SetupToolsDetectable createSetupToolsDetectable(DetectableEnvironment environment) {
-        return new SetupToolsDetectable(environment, fileFinder);
+        return new SetupToolsDetectable(environment, fileFinder, setupToolsExtractor());
     }
 
     // Used by three Detectables
@@ -1092,6 +1093,10 @@ public class DetectableFactory {
 
     private SwiftExtractor swiftExtractor() {
         return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer(), toolVersionLogger);
+    }
+    
+    private SetupToolsExtractor setupToolsExtractor() {
+        return new SetupToolsExtractor();
     }
 
     //#endregion Utility

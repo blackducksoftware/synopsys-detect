@@ -24,12 +24,8 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.NpmPackagesObjectNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PoorlyFormattedJson;
 import com.synopsys.integration.detectable.detectable.result.SetupToolsRequiresNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detectable.util.CycleDetectedException;
@@ -43,12 +39,15 @@ public class SetupToolsDetectable extends Detectable {
     public static final String REQUIRED_KEY = "setuptools";
     
     private final FileFinder fileFinder;
+    private final SetupToolsExtractor setupToolsExtractor;
 
     private File projectToml;
+    private TomlParseResult parsedToml;
     
-    public SetupToolsDetectable(DetectableEnvironment environment, FileFinder fileFinder) {
+    public SetupToolsDetectable(DetectableEnvironment environment, FileFinder fileFinder, SetupToolsExtractor setupToolsExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
+        this.setupToolsExtractor = setupToolsExtractor;
     }
 
     @Override
@@ -64,10 +63,10 @@ public class SetupToolsDetectable extends Detectable {
         try {
             String projectTomlText = FileUtils.readFileToString(projectToml, StandardCharsets.UTF_8);
 
-            TomlParseResult result = Toml.parse(projectTomlText);
+            parsedToml = Toml.parse(projectTomlText);
 
-            if (result != null) {
-                TomlArray buildRequires = result.getArray(BUILD_KEY);
+            if (parsedToml != null) {
+                TomlArray buildRequires = parsedToml.getArray(BUILD_KEY);
 
                 if (buildRequires != null) {
                     for (int i = 0; i < buildRequires.size(); i++) {
@@ -90,7 +89,6 @@ public class SetupToolsDetectable extends Detectable {
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException,
             ExecutableFailedException, IOException, JsonSyntaxException, CycleDetectedException, DetectableException,
             MissingExternalIdException, ParserConfigurationException, SAXException {
-        // TODO Auto-generated method stub
-        return null;
+        return setupToolsExtractor.extract(projectToml);
     }
 }
