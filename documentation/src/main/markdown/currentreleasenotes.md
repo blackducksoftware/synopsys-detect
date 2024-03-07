@@ -20,6 +20,8 @@
 
 * (IDETECT-4155) Improved input validation in Component Location Analysis.
 * (IDETECT-4187) Removed references to 'murex' from test resources.
+* (IDETECT-4207) Fixed Nuget Inspector IndexOutofRangeException for cases of multiple `Directory.Packages.props` files.
+* (IDETECT-3909) Resolved an issue causing ASM8 Error when running Vulnerability Impact Analysis.
 
 ### Dependency updates
 
