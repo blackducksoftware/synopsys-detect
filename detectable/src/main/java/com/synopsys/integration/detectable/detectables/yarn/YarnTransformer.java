@@ -120,22 +120,31 @@ public class YarnTransformer {
             countComponents++;
             Map<String, String> entryIdsToResolvedVersionMap = new HashMap<>(entry.getIds().size());
             String entryName = entry.getIds().get(0).getName();
-            for (YarnLockEntryId entryId : entry.getIds()) {
-                entryIdsToResolvedVersionMap.put(entryId.getVersion(), entry.getVersion());
+            if (shouldInclude(entryName, entry.getVersion())) {
+                // Yarn and patch libraries should not be included in the graph.
+                for (YarnLockEntryId entryId : entry.getIds()) {
+                    entryIdsToResolvedVersionMap.put(entryId.getVersion(), entry.getVersion());
+                }
+                resolvedEntryIdVersionMap.put(entryName, entryIdsToResolvedVersionMap);
             }
-            resolvedEntryIdVersionMap.put(entryName, entryIdsToResolvedVersionMap);
         }
         
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             String entryName = entry.getIds().get(0).getName();
-            LazyId id = generateComponentDependencyId(entryName, entry.getVersion());
-            graphBuilder.setDependencyInfo(id, entryName, entry.getVersion(), generateComponentExternalId(entryName, entry.getVersion()));
-            ExternalIdDependencyGraphBuilder.LazyDependencyInfo parentInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, id);
-            Dependency parent = new Dependency(parentInfo.getName(), parentInfo.getVersion(), parentInfo.getExternalId(), null);
-            mutableDependencyGraph.addDirectDependency(parent);
-            collectYarnDependencies(lazyBuilderHandler, graphBuilder, mutableDependencyGraph, yarnLockResult, entry, resolvedEntryIdVersionMap, parent);
+            if (shouldInclude(entryName, entry.getVersion())) {
+                LazyId id = generateComponentDependencyId(entryName, entry.getVersion());
+                graphBuilder.setDependencyInfo(id, entryName, entry.getVersion(), generateComponentExternalId(entryName, entry.getVersion()));
+                ExternalIdDependencyGraphBuilder.LazyDependencyInfo parentInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, id);
+                Dependency parent = new Dependency(parentInfo.getName(), parentInfo.getVersion(), parentInfo.getExternalId(), null);
+                mutableDependencyGraph.addDirectDependency(parent);
+                collectYarnDependencies(lazyBuilderHandler, graphBuilder, mutableDependencyGraph, yarnLockResult, entry, resolvedEntryIdVersionMap, parent);
+            }
         }
         return mutableDependencyGraph;
+    }
+    
+    private boolean shouldInclude(String entryName, String entryVersion) {
+        return !entryName.contains("@patch:") && !entryName.startsWith("yarnpkg") && !entryVersion.equalsIgnoreCase("0.0.0-use.local"); 
     }
     
     private void collectYarnDependencies(
