@@ -94,12 +94,13 @@ allprojects {
     dependencies {
         implementation "com.google.guava:guava:32.1.2-jre"
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0'
+        implementation 'org.mockito:mockito-core:2.+'
 
         implementation 'org.freemarker:freemarker:2.3.31'
         implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.14'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
-        testImplementation 'org.mockito:mockito-core:2.+'
+//        testImplementation 'org.mockito:mockito-core:2.+'
     }
 }
 
