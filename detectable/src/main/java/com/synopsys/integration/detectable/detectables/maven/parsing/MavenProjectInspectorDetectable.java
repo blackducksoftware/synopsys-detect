@@ -2,6 +2,8 @@ package com.synopsys.integration.detectable.detectables.maven.parsing;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -27,6 +29,7 @@ public class MavenProjectInspectorDetectable extends Detectable {
     private final ProjectInspectorResolver projectInspectorResolver;
     private final ProjectInspectorExtractor projectInspectorExtractor;
     private final ProjectInspectorOptions projectInspectorOptions; // TODO: Options don't belong here
+    public String includeShadedDependencies = "";
 
     private ExecutableTarget inspector;
 
@@ -62,11 +65,15 @@ public class MavenProjectInspectorDetectable extends Detectable {
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
         return projectInspectorExtractor.extract(
             projectInspectorOptions,
-            Collections.emptyList(),
+            includeShadedDependencies.equals("") ? Collections.emptyList() : Collections.singletonList(includeShadedDependencies),
             environment.getDirectory(),
             extractionEnvironment.getOutputDirectory(),
             inspector
         );
+    }
+
+    public Map<String, Set<String>> getShadedDependencies() {
+        return projectInspectorExtractor.getShadedDependencies();
     }
 
 }

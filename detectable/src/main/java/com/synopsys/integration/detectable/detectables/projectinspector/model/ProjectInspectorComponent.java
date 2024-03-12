@@ -14,6 +14,17 @@ public class ProjectInspectorComponent {
         public String description;
     }
 
+    public static class ShadedBy {
+        @SerializedName("Id")
+        public String id;
+
+        @SerializedName("Description")
+        public String description;
+    }
+
+    @SerializedName("ShadedBy")
+    public ShadedBy shadedBy;
+
     @SerializedName("IncludedBy")
     public List<IncludedBy> includedBy;
 

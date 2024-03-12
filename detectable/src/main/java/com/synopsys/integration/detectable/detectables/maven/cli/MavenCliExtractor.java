@@ -1,9 +1,11 @@
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.io.File;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorDetectable;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.common.util.Bds;
@@ -22,6 +24,7 @@ public class MavenCliExtractor {
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
     private final CommandParser commandParser;
     private final ToolVersionLogger toolVersionLogger;
+    private Map<String, Set<String>> shadedDependencies = new HashMap<>();
 
     public MavenCliExtractor(
         DetectableExecutableRunner executableRunner,
@@ -35,7 +38,7 @@ public class MavenCliExtractor {
         this.toolVersionLogger = toolVersionLogger;
     }
 
-    public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
+    public Extraction extract(File directory, ExecutableTarget mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions, MavenProjectInspectorDetectable mavenProjectInspectorDetectable, ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
         toolVersionLogger.log(directory, mavenExe);
         List<String> commandArguments = mavenCliExtractorOptions.buildCliArguments(commandParser);
 
@@ -46,13 +49,27 @@ public class MavenCliExtractor {
         List<String> includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes();
         List<String> excludedModules = mavenCliExtractorOptions.getMavenExcludedModules();
         List<String> includedModules = mavenCliExtractorOptions.getMavenIncludedModules();
+        Boolean includeShadedDependencies = mavenCliExtractorOptions.getMavenIncludeShadedDependencies();
+
+        if(includeShadedDependencies) {
+            try {
+                mavenProjectInspectorDetectable.includeShadedDependencies = "include_shaded_dependencies";
+                mavenProjectInspectorDetectable.extractable();
+                Extraction extraction = mavenProjectInspectorDetectable.extract(extractionEnvironment);
+                shadedDependencies = mavenProjectInspectorDetectable.getShadedDependencies();
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+        }
+
         List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(
             directory.toString(),
             mavenOutput,
             excludedScopes,
             includedScopes,
             excludedModules,
-            includedModules
+            includedModules,
+            shadedDependencies
         );
 
         List<CodeLocation> codeLocations = Bds.of(mavenResults)
