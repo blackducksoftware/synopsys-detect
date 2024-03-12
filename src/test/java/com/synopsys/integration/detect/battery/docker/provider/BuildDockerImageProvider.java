@@ -39,7 +39,6 @@ public class BuildDockerImageProvider implements DockerImageProvider {
 
         try (BuildImageCmd buildImageCmd = dockerClient.buildImageCmd(imageDockerFile)) {
 
-            // If the parent test has provided MavenShadedDependencies.dockerfile args, pass them to the image build command
             for (Map.Entry<String, String> entry : buildArgs.entrySet()) {
                 buildImageCmd.withBuildArg(entry.getKey(), entry.getValue());
             }
