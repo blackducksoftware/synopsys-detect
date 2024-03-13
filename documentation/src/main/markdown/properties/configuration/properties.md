@@ -1,3 +1,5 @@
 # Properties
 
-See the left-hand menu for links to [company_name] [solution_name] property settings.
+[company_name] [solution_name] is highly configurable, with property settings defining scan execution parameters.   
+
+The left-hand table of contents contains links to those [company_name] [solution_name] property settings.   
