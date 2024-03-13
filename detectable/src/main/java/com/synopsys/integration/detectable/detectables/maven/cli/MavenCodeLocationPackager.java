@@ -220,11 +220,11 @@ public class MavenCodeLocationPackager {
                 logger.trace(String.format("adding orphan: %s", dependency.getExternalId().toString()));
                 graph.addParentWithChild(orphanListParent, dependency);
             }
-            addShadedDependenciesToGraph(graph, orphanListParent);
+            addOrphanShadedDependenciesToGraph(graph, orphanListParent);
         }
     }
 
-    private void addShadedDependenciesToGraph(DependencyGraph graph, Dependency orphanParent) {
+    private void addOrphanShadedDependenciesToGraph(DependencyGraph graph, Dependency orphanParent) {
         shadedDependenciesConverted.forEach((dependency, shadedDependency) -> {
             ScopedDependency parentDependency = new ScopedDependency(dependency.getName(), dependency.getVersion(), dependency, null);
             graph.addParentWithChild(orphanParent, parentDependency);
