@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,7 +94,9 @@ public class RlScanStepRunner {
         logger.debug("Uploading ReversingLabs file to storage endpoint: {}", storageServiceEndpoint);
         
         Map<String, String> headers = new HashMap<>();
-        headers.put("fileName", fileToUpload.getName());
+
+        String encodedName = URLEncoder.encode(fileToUpload.getName(), "UTF-8");
+        headers.put("X-Filename", encodedName);
         
         try (Response response = operationRunner.uploadFileToStorageServiceWithHeaders(
                 blackDuckRunData,
