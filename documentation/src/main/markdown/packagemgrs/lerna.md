@@ -48,9 +48,9 @@ With the [detect.lerna.package.types.excluded](../properties/detectors/lerna.md#
 
 ## Lerna path
 
-[solution_name] executes commands against the Lerna executable to determine package information.
+[company_name] [solution_name] executes commands against the Lerna executable to determine package information.
 
-[solution_name] will attempt to find the Lerna executable, but if the user wishes to override the executable [solution_name] uses, they can supply a path to the executable using [detect.lerna.path](../properties/detectors/lerna.md#lerna-executable)
+[company_name] [solution_name] will attempt to find the Lerna executable, but if the user wishes to override the executable [company_name] [solution_name] uses, they can supply a path to the executable using [detect.lerna.path](../properties/detectors/lerna.md#lerna-executable)
 
 ## Excluding Packages
 

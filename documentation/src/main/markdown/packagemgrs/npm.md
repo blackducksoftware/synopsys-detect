@@ -6,7 +6,7 @@
 
 ## Overview
 
-[solution_name] has the following NPM detectors:
+[company_name] [solution_name] has the following NPM detectors:
 
 * NPM package shrinkwrap detector
 * NPM package lock detector
@@ -14,14 +14,14 @@
 * NPM CLI detector
 
 ## Excluding dependency types
-[solution_name] offers the ability to exclude package manager specific dependency types from the BOM.
+[company_name] [solution_name] offers the ability to exclude package manager specific dependency types from the BOM.
 NPM dependency types can be filtered with the [detect.npm.dependency.types.excluded](../properties/detectors/npm.md#npm-dependency-types-excluded) property.
 
 ## NPM shrinkwrap
 
 The NPM shrinkwrap detector uses the [npm-shrinkwrap.json](https://docs.npmjs.com/cli/v7/configuring-npm/npm-shrinkwrap-json) file.
 
-It is the same as a package-lock.json but is a publishable lockfile. Though both have high accuracy, [solution_name] prefers shrinkwrap over package lock.
+It is the same as a package-lock.json but is a publishable lockfile. Though both have high accuracy, [company_name] [solution_name] prefers shrinkwrap over package lock.
 
 ## NPM package lock
 
@@ -39,8 +39,8 @@ It executes *npm ls -json*, and verifies that it succeeded by ensuring that no m
 stderr, and that the exit code was 0. If both conditions are met, it parses the output for dependencies.
 
 If *npm ls -json* does write messages to stderr (for example, lint messages) that you would like
-[solution_name] to ignore, you can silence errors by adding the --silent npm argument to the npm
-command using [solution_name] property --detect.npm.arguments.
+[company_name] [solution_name] to ignore, you can silence errors by adding the --silent npm argument to the npm
+command using [company_name] [solution_name] property --detect.npm.arguments.
 
 This detector is only invoked if the more accurateNPM detectors (above) cannot be run.
 

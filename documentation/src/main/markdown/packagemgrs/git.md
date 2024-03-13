@@ -9,9 +9,9 @@ Ideally a Git detector runs in combination with a package manager detector that 
 If the package manager detector is unable to derive project and project version names,
 the Git detector may be able to provide them.
 
-A Git detector will run if [solution_name] finds a .git subdirectory in your source directory.
+A Git detector will run if [company_name] [solution_name] finds a .git subdirectory in your source directory.
 
-If [solution_name] finds a git executable
+If [company_name] [solution_name] finds a git executable
 (see the [detect git executable](../properties/configuration/paths.md#git-executable)
 property)
 the Git CLI detector will run git commands and derive project information from the output. 
