@@ -122,25 +122,29 @@ public class ProjectInspectorParser {
     }
 
     public void processShadedDependencies(ProjectInspectorModule module) {
-        module.components.forEach((dependencyId, component) -> {
-            if(component.shadedBy != null) {
-                String[] gavParts = component.shadedBy.description.split(":");
-                String group = gavParts[0];
-                String artifact = gavParts[1];
-                String version;
-                if (gavParts.length > 4) {
-                    version = gavParts[gavParts.length - 2];
-                } else {
-                    version = gavParts[gavParts.length - 1];
+        if(module.components != null) {
+            module.components.forEach((dependencyId, component) -> {
+                if (component.shadedBy != null) {
+                    String[] gavParts = component.shadedBy.description.split(":");
+                    String group = gavParts[0];
+                    String artifact = gavParts[1];
+                    String version;
+                    if (gavParts.length > 4) {
+                        version = gavParts[gavParts.length - 2];
+                    } else {
+                        version = gavParts[gavParts.length - 1];
+                    }
+                    String gav = String.join(":", group, artifact, version);
+                    if (shadedDependencies.containsKey(gav)) {
+                        shadedDependencies.get(gav).add(component.name);
+                    } else {
+                        shadedDependencies.put(gav, new HashSet<>(Arrays.asList(component.name)));
+                    }
                 }
-                String gav = String.join(":",group,artifact,version);
-                if(shadedDependencies.containsKey(gav)) {
-                    shadedDependencies.get(gav).add(component.name);
-                } else {
-                    shadedDependencies.put(gav, new HashSet<>(Arrays.asList(component.name)));
-                }
-            }
-        });
+            });
+        } else {
+            logger.info("From Detect 9.5.0 and onwards, we will support the latest version of Project Inspector i.e. 2024.2.0. If you are using the detect.project.inspector.path property, please use the latest version mentioned.");
+        }
     }
 
     public Dependency convertProjectInspectorDependency(ProjectInspectorComponent component) {
