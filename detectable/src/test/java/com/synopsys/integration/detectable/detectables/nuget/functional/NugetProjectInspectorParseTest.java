@@ -18,7 +18,7 @@ public class NugetProjectInspectorParseTest {
     @Test
     void checkParse() {
         String inspectorOutputPath = FunctionalTestFiles.resolvePath("/nuget/project_inspector/ConsoleApp.json");
-        List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(new File(inspectorOutputPath));
+        List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(new File(inspectorOutputPath), false);
 
         Assertions.assertEquals(2, codeLocations.size());
         Assertions.assertEquals(new File("/Users/devmehta/Desktop/p2p/p2pconn/FILE-0-myfile.csproj"), codeLocations.get(0).getSourcePath().orElse(null));
@@ -38,7 +38,7 @@ public class NugetProjectInspectorParseTest {
     @Test
     void checkParsingWithNoResults() {
         String inspectorOutputPath = FunctionalTestFiles.resolvePath("/nuget/project_inspector/ProjectInspectorNoResults.json");
-        List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(new File(inspectorOutputPath));
+        List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(new File(inspectorOutputPath), false);
 
         Assertions.assertEquals(0, codeLocations.size());
     }

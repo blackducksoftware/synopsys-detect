@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
 import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,13 +31,15 @@ public class ProjectInspectorParser {
     private final Gson gson;
     private final ExternalIdFactory externalIdFactory;
     private static final String MODULES_KEY = "Modules";
+    private final Map<String,Set<String>> shadedDependencies = new HashMap<>();
+    private boolean versionMismatch = false;
 
     public ProjectInspectorParser(Gson gson, ExternalIdFactory externalIdFactory) {
         this.gson = gson;
         this.externalIdFactory = externalIdFactory;
     }
 
-    public List<CodeLocation> parse(File outputFile) {
+    public List<CodeLocation> parse(File outputFile, boolean includeShadedDependencies) {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         if (outputFile == null || !outputFile.exists() || !outputFile.isFile()) {
@@ -51,7 +54,7 @@ public class ProjectInspectorParser {
             while (reader.hasNext()) {
                 String modulesObject = reader.nextName();
                 if (modulesObject != null && modulesObject.equals(MODULES_KEY)) {
-                    codeLocations = processModules(reader);
+                    codeLocations = processModules(reader, includeShadedDependencies);
                 } else {
                     reader.skipValue();
                 }
@@ -63,7 +66,7 @@ public class ProjectInspectorParser {
         return codeLocations;
     }
 
-    public List<CodeLocation> processModules(JsonReader reader) throws IOException {
+    public List<CodeLocation> processModules(JsonReader reader, boolean includeShadedDependencies) throws IOException {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         reader.beginObject();
@@ -72,11 +75,23 @@ public class ProjectInspectorParser {
             if (moduleId != null) {
                 JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
                 ProjectInspectorModule projectInspectorModule = gson.fromJson(module, ProjectInspectorModule.class);
-                CodeLocation codeLocation = codeLocationFromModule(projectInspectorModule);
-                codeLocations.add(codeLocation);
+                if(projectInspectorModule.components != null) {
+                    if (includeShadedDependencies) {
+                        processShadedDependencies(projectInspectorModule);
+                    } else {
+                        CodeLocation codeLocation = codeLocationFromModule(projectInspectorModule);
+                        codeLocations.add(codeLocation);
+                    }
+                } else {
+                    versionMismatch = true;
+                }
             }
         }
         reader.endObject();
+
+        if(versionMismatch) {
+            logger.info("Detect and Project Inspector version mismatch, confirm that compatible versions of Detect and Project Inspector are in use.");
+        }
 
         return codeLocations;
     }
@@ -85,7 +100,7 @@ public class ProjectInspectorParser {
     public CodeLocation codeLocationFromModule(ProjectInspectorModule module) {
         Map<String, Dependency> lookup = new HashMap<>();
 
-        //build the map of all external ids
+            //build the map of all external ids
         module.components.forEach((dependencyId, component) -> {
             lookup.computeIfAbsent(dependencyId, missingId -> convertProjectInspectorDependency(component));
         });
@@ -94,7 +109,7 @@ public class ProjectInspectorParser {
         DependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
         module.components.forEach((moduleDependencyId, moduleDependency) -> {
             Dependency dependency = lookup.get(moduleDependencyId);
-            if(moduleDependency.inclusionType.equals("DIRECT")){
+            if (moduleDependency.inclusionType.equals("DIRECT")) {
                 mutableDependencyGraph.addDirectDependency(dependency);
             } else if (moduleDependency.inclusionType.equals("TRANSITIVE")) {
                 moduleDependency.includedBy.forEach(includedBy -> {
@@ -110,6 +125,28 @@ public class ProjectInspectorParser {
         return new CodeLocation(mutableDependencyGraph, new File(module.moduleFile));
     }
 
+    public void processShadedDependencies(ProjectInspectorModule module) {
+        module.components.forEach((dependencyId, component) -> {
+            if (component.shadedBy != null) {
+                String[] gavParts = component.shadedBy.description.split(":");
+                String group = gavParts[0];
+                String artifact = gavParts[1];
+                String version;
+                if (gavParts.length > 4) {
+                    version = gavParts[gavParts.length - 2];
+                } else {
+                    version = gavParts[gavParts.length - 1];
+                }
+                String gav = String.join(":", group, artifact, version);
+                if (shadedDependencies.containsKey(gav)) {
+                    shadedDependencies.get(gav).add(component.name);
+                } else {
+                    shadedDependencies.put(gav, new HashSet<>(Arrays.asList(component.name)));
+                }
+            }
+        });
+    }
+
     public Dependency convertProjectInspectorDependency(ProjectInspectorComponent component) {
         if ("MAVEN".equals(component.dependencyType) && component.mavenCoordinate != null) {
             ProjectInspectorMavenCoordinate gav = component.mavenCoordinate;
@@ -122,5 +159,9 @@ public class ProjectInspectorParser {
         } else {
             throw new RuntimeException("Unknown Project Inspector dependency type: " + component.dependencyType);
         }
+    }
+
+    public Map<String, Set<String>> getShadedDependencies() {
+        return shadedDependencies;
     }
 }

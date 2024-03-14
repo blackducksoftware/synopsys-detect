@@ -11,6 +11,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorDetectable;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -22,6 +23,7 @@ public class MavenPomDetectable extends Detectable {
     private final MavenResolver mavenResolver;
     private final MavenCliExtractor mavenCliExtractor;
     private final MavenCliExtractorOptions mavenCliExtractorOptions;
+    private final MavenProjectInspectorDetectable mavenProjectInspectorDetectable;
 
     private ExecutableTarget mavenExe;
 
@@ -30,13 +32,15 @@ public class MavenPomDetectable extends Detectable {
         FileFinder fileFinder,
         MavenResolver mavenResolver,
         MavenCliExtractor mavenCliExtractor,
-        MavenCliExtractorOptions mavenCliExtractorOptions
+        MavenCliExtractorOptions mavenCliExtractorOptions,
+        MavenProjectInspectorDetectable mavenProjectInspectorDetectable
     ) {
         super(environment);
         this.fileFinder = fileFinder;
         this.mavenResolver = mavenResolver;
         this.mavenCliExtractor = mavenCliExtractor;
         this.mavenCliExtractorOptions = mavenCliExtractorOptions; //TODO: Should this be wrapped in a detectables options? -jp
+        this.mavenProjectInspectorDetectable = mavenProjectInspectorDetectable;
     }
 
     @Override
@@ -55,7 +59,7 @@ public class MavenPomDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        return mavenCliExtractor.extract(environment.getDirectory(), mavenExe, mavenCliExtractorOptions);
+        return mavenCliExtractor.extract(environment.getDirectory(), mavenExe, mavenCliExtractorOptions, mavenProjectInspectorDetectable, extractionEnvironment);
     }
 
 }

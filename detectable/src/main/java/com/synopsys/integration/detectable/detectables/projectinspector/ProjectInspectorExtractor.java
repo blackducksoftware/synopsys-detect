@@ -2,10 +2,7 @@ package com.synopsys.integration.detectable.detectables.projectinspector;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
@@ -15,6 +12,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableFaile
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class ProjectInspectorExtractor {
+
+    private static final String INCLUDE_SHADED_DEPENDENCIES = "include_shaded_dependencies";
     private final DetectableExecutableRunner executableRunner;
     private final ProjectInspectorParser projectInspectorParser;
 
@@ -31,6 +30,12 @@ public class ProjectInspectorExtractor {
         ExecutableTarget inspector
     ) throws ExecutableFailedException {
         File outputFile = new File(outputDirectory, "inspection.json");
+        boolean includeShadedDependencies = false;
+
+        if(extra.contains(INCLUDE_SHADED_DEPENDENCIES)) {
+            includeShadedDependencies = true;
+            extra = Collections.emptyList();
+        }
 
         // TODO: Could use a command runner
         List<String> arguments = new LinkedList<>();
@@ -50,8 +55,12 @@ public class ProjectInspectorExtractor {
 
         executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(targetDirectory, inspector, arguments));
 
-        List<CodeLocation> codeLocations = projectInspectorParser.parse(outputFile);
+        List<CodeLocation> codeLocations = projectInspectorParser.parse(outputFile, includeShadedDependencies);
 
         return new Extraction.Builder().success(codeLocations).build();
+    }
+
+    public Map<String, Set<String>> getShadedDependencies() {
+        return projectInspectorParser.getShadedDependencies();
     }
 }
