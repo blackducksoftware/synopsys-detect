@@ -725,7 +725,7 @@
 						</row>
 						<row>
 							<entry> </entry>
-							<entry>PIP Requirements Parse</entry>
+							<entry>PIP Requirements File Parse</entry>
 							<entry>Python</entry>
 							<entry>PyPi</entry>
 							<entry>

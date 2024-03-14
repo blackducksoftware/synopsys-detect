@@ -2,7 +2,7 @@
 
 # All Properties
 
-This page lists all [solution_name] properties, including advanced configuration and those properties that have been deprecated.
+This page lists all [company_name] [solution_name] properties, including advanced configuration and those properties that have been deprecated.
 For most use cases, refer to [basic properties](basic-properties.md).
 
 <#list groups?sort_by("groupName") as group>

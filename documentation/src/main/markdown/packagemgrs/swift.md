@@ -6,7 +6,7 @@
 
 ## Overview
 
-[solution_name] has two detectors for Swift:
+[company_name] [solution_name] has two detectors for Swift:
 
 * Swift CLI detector
 * Swift Package Resolved detector
@@ -44,12 +44,12 @@ The Xcode Workspace detector discovers dependencies of Xcode projects utilizing 
 
 The Xcode Workspace detector applies to directories matching the `*.xcworkspace` filename pattern within bounds of the *detect.detector.search.depth* property.
 
-When [solution_name] finds a matching directory, the Xcode Workspace detector then searches for a `Package.resolved` file inside your `*.xcworkspace` directory at `*.xcworkspace/xcshareddata/swiftpm/Package.resolved` and extracts those dependencies.
+When [company_name] [solution_name] finds a matching directory, the Xcode Workspace detector then searches for a `Package.resolved` file inside your `*.xcworkspace` directory at `*.xcworkspace/xcshareddata/swiftpm/Package.resolved` and extracts those dependencies.
 
-Additionally, the Xcode Workspace detector will analyze the contents of the `*.xcworkspace/contents.xcworkspacedata` XML file to determine Xcode Workspace reference locations. This ignores the *detect.detector.search.depth* property as [solution_name] is no longer searching, but be directed to a specific location.
+Additionally, the Xcode Workspace detector will analyze the contents of the `*.xcworkspace/contents.xcworkspacedata` XML file to determine Xcode Workspace reference locations. This ignores the *detect.detector.search.depth* property as [company_name] [solution_name] is no longer searching, but be directed to a specific location.
 
 Today supported Workspace reference locations are directories and Xcode Projects.
-Any referenced locations that are not found currently trigger a failure of [solution_name]
+Any referenced locations that are not found currently trigger a failure of [company_name] [solution_name]
 - Xcode Projects are identified with by the suffix `*.xcodeproj`. 
   - Example `location = "group:src/my-project.xcodeproj">`
 
@@ -74,7 +74,7 @@ This detector does not require any executables to run, but the Xcode Workspace m
 This file forms the basis for dependency extraction for most of the Swift and Xcode detectors.
 
 The `Package.resolved` is a JSON file containing a flat list of Swift packages required by the project.
-This file can be empty if the project has no dependencies, in which case [solution_name] will create an empty code-location for the Xcode project.
+This file can be empty if the project has no dependencies, in which case [company_name] [solution_name] will create an empty code-location for the Xcode project.
 
 Example `Package.resolved` file contents:
 ````
@@ -97,21 +97,21 @@ Example `Package.resolved` file contents:
 ````
 
 ### Extraction method
-[solution_name] is capable of extracting component name and versions from the JSON content within the `Package.resolved` file.
+[company_name] [solution_name] is capable of extracting component name and versions from the JSON content within the `Package.resolved` file.
 
 #### Forge
-Currently, all packages are assumed to come from GitHub. For support of additional public repositories, please contact the [solution_name] support team.
+Currently, all packages are assumed to come from GitHub. For support of additional public repositories, please contact the [company_name] [solution_name] support team.
 
 #### Component Name
 The component name is derived from the **repositoryURL** field.
 ````
 "repositoryURL": "https://github.com/apple/swift-argument-parser.git"
 ````
-[solution_name] will parse the path of the url to remove the host and `.git` extensions.
+[company_name] [solution_name] will parse the path of the url to remove the host and `.git` extensions.
 In the above example, this produces a component name of `apple/swift-argument-parser`.
 
 #### Component Version
-[solution_name] will use the **state.version** field to identify the component version.
+[company_name] [solution_name] will use the **state.version** field to identify the component version.
 ````
 "state": {
     "branch": null,

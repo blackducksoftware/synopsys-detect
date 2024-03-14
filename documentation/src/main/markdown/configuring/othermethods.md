@@ -1,10 +1,10 @@
 # Additional configuration methods and details
 
-[solution_name] reads property values using
+[company_name] [solution_name] reads property values using
 [Spring Boot's externalized configuration mechanism](https://docs.spring.io/spring-boot/docs/2.4.5/reference/html/spring-boot-features.html#boot-features-external-config),
 which provides capabilities beyond those described on this page.
 
-The most common methods used to pass a property value to [solution_name] are listed as follows. A method with a lower number in Spring Boot's order of precedence overrides a method with a higher number.
+The most common methods used to pass a property value to [company_name] [solution_name] are listed as follows. A method with a lower number in Spring Boot's order of precedence overrides a method with a higher number.
 
 * Using a command line argument, (#4 in Spring Boot's order of precedence):
 ````
