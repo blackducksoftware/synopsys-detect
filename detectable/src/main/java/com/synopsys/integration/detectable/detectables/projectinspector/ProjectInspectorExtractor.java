@@ -12,6 +12,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableFaile
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class ProjectInspectorExtractor {
+
+    private static final String INCLUDE_SHADED_DEPENDENCIES = "include_shaded_dependencies";
     private final DetectableExecutableRunner executableRunner;
     private final ProjectInspectorParser projectInspectorParser;
 
@@ -30,7 +32,7 @@ public class ProjectInspectorExtractor {
         File outputFile = new File(outputDirectory, "inspection.json");
         boolean includeShadedDependencies = false;
 
-        if(extra.contains("include_shaded_dependencies")) {
+        if(extra.contains(INCLUDE_SHADED_DEPENDENCIES)) {
             includeShadedDependencies = true;
             extra = Collections.emptyList();
         }

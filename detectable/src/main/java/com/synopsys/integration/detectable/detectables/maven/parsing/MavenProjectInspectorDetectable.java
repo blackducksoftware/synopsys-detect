@@ -24,12 +24,13 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 @DetectableInfo(name = "Maven Project Inspector", language = "various", forge = "Maven Central", accuracy = DetectableAccuracyType.LOW, requirementsMarkdown = "File: pom.xml.")
 public class MavenProjectInspectorDetectable extends Detectable {
     private static final String POM_XML_FILENAME = "pom.xml";
-
+    private static final String INCLUDE_SHADED_DEPENDENCIES = "include_shaded_dependencies";
     private final FileFinder fileFinder;
     private final ProjectInspectorResolver projectInspectorResolver;
     private final ProjectInspectorExtractor projectInspectorExtractor;
     private final ProjectInspectorOptions projectInspectorOptions; // TODO: Options don't belong here
-    public String includeShadedDependencies = "";
+    private boolean includeShadedDependencies = false;
+
 
     private ExecutableTarget inspector;
 
@@ -65,11 +66,15 @@ public class MavenProjectInspectorDetectable extends Detectable {
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
         return projectInspectorExtractor.extract(
             projectInspectorOptions,
-            includeShadedDependencies.equals("") ? Collections.emptyList() : Collections.singletonList(includeShadedDependencies),
+            includeShadedDependencies ? Collections.singletonList(INCLUDE_SHADED_DEPENDENCIES) : Collections.emptyList(),
             environment.getDirectory(),
             extractionEnvironment.getOutputDirectory(),
             inspector
         );
+    }
+
+    public void setIncludeShadedDependencies(boolean includeShadedDependencies) {
+        this.includeShadedDependencies = includeShadedDependencies;
     }
 
     public Map<String, Set<String>> getShadedDependencies() {

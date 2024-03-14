@@ -53,7 +53,7 @@ public class MavenCliExtractor {
 
         if(includeShadedDependencies) {
             try {
-                mavenProjectInspectorDetectable.includeShadedDependencies = "include_shaded_dependencies";
+                mavenProjectInspectorDetectable.setIncludeShadedDependencies(true);
                 mavenProjectInspectorDetectable.extractable();
                 Extraction extraction = mavenProjectInspectorDetectable.extract(extractionEnvironment);
                 shadedDependencies = mavenProjectInspectorDetectable.getShadedDependencies();
