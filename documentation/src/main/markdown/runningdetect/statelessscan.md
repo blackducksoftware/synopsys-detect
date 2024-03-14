@@ -1,8 +1,8 @@
 # Stateless Scan LCA
 
-Stateless Scan, or Stateless Scan Mode, is a way of running [solution_name] with [blackduck_product_name]. This mode is designed to be as fast as possible and does not persist any data on [blackduck_product_name]. Stateless Scan Mode has a unique set of restrictions, mode of configuration, and set of results.  It is similar to Rapid Scan Mode, however it differs in that it supports usage of the SIGNATURE_SCAN, BINARY_SCAN, and CONTAINER_SCAN tools.
+Stateless Scan, or Stateless Scan Mode, is a way of running [company_name] [solution_name] with [blackduck_product_name]. This mode is designed to be as fast as possible and does not persist any data on [blackduck_product_name]. Stateless Scan Mode has a unique set of restrictions, mode of configuration, and set of results.  It is similar to Rapid Scan Mode, however it differs in that it supports usage of the SIGNATURE_SCAN, BINARY_SCAN, and CONTAINER_SCAN tools.
 
-Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of [solution_name].
+Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of [company_name] [solution_name].
 
 ## Requirements and Limitations
 
@@ -16,13 +16,13 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
  
 ### Binary Scan Requirements
  * Must be running [blackduck_product_name] 2023.4.0 or greater using the hosted KB.
- * It is necessary to have [solution_name] and [blackduck_product_name] running in the hosted environment to perform these scans. 
+ * It is necessary to have [company_name] [solution_name] and [blackduck_product_name] running in the hosted environment to perform these scans. 
  * To run binary scan a Black Duck Binary Analysis (BDBA) license is required.
- * [solution_name] and [blackduck_product_name] must be running in the hosted Software Composition Analysis as a Service(SCAaaS) environment.
+ * [company_name] [solution_name] and [blackduck_product_name] must be running in the hosted Software Composition Analysis as a Service(SCAaaS) environment.
  
  ### Container Scan Requirements
  * Must be running [blackduck_product_name] 2023.10.0 or greater to execute container scans that provide container layer findings.
- * It is necessary to have [solution_name] and [blackduck_product_name] running in the hosted environment to perform these scans. 
+ * It is necessary to have [company_name] [solution_name] and [blackduck_product_name] running in the hosted environment to perform these scans. 
  * To run a Container Stateless Scan your [blackduck_product_name] server must have [blackduck_product_name] Secure Container (BDSC) licensed and enabled.
  
 ### Limitations
@@ -56,7 +56,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
 
 Unlike persistent scans, no data is stored on [blackduck_product_name] and all scans are done transiently. These scans are primarily intended to be fast, although they can take some time as communication with [blackduck_product_name] is a requirement as it is reliant on [blackduck_product_name] policies.
 
-[solution_name] intentionally fails with FAILURE_POLICY_VIOLATION if any component violates [blackduck_product_name] polices with a CRITICAL or BLOCKER severity. See the [blackduck_product_name] documentation on <a href="https://sig-product-docs.synopsys.com/bundle/bd-hub/page/Policies/Overview.html" target="_blank">Policy Managment</a>
+[company_name] [solution_name] intentionally fails with FAILURE_POLICY_VIOLATION if any component violates [blackduck_product_name] polices with a CRITICAL or BLOCKER severity. See the [blackduck_product_name] documentation on <a href="https://sig-product-docs.synopsys.com/bundle/bd-hub/page/Policies/Overview.html" target="_blank">Policy Managment</a>
  for a list of policy conditions that are supported by Stateless Scan. 
 
 The results are saved to a json file named `name_version_BlackDuck_DeveloperMode_Result.json` in the Scan Output directory, where name and version are the project's name and version.
@@ -91,7 +91,7 @@ The results of a Stateless Scan are also printed in the logs:
 2021-07-20 13:25:18 EDT INFO  [main] --- 		Components with Policy Violation Warnings:
 2021-07-20 13:25:18 EDT INFO  [main] --- 			Acorn 5.5.3 (npmjs:acorn/5.5.3)
 ```
-For [solution_name] version 8.7.0 and later, with [blackduck_product_name] 2023.1.2, Rapid Scan output reports upgrade guidance for transitive dependencies with known vulnerabilities. The output gives information as to the direct dependency upgrade options and the transitive dependencies affected. This output is given in the results section which appears near the end of the [solution_name] run and appears as follows:
+For [company_name] [solution_name] version 8.7.0 and later, with [blackduck_product_name] 2023.1.2, Rapid Scan output reports upgrade guidance for transitive dependencies with known vulnerabilities. The output gives information as to the direct dependency upgrade options and the transitive dependencies affected. This output is given in the results section which appears near the end of the [company_name] [solution_name] run and appears as follows:
 ```
 2023-03-09 13:01:56 EST INFO  [main] --- ===== Transitive Guidance =====
 2023-03-09 13:01:56 EST INFO  [main] --- 

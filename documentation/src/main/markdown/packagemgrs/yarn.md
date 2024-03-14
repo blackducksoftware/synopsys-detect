@@ -6,7 +6,7 @@
 
 ## Overview
 
-[solution_name] runs the Yarn detector if it finds both of the following files in your project:
+[company_name] [solution_name] runs the Yarn detector if it finds both of the following files in your project:
 
 * yarn.lock
 * package.json
@@ -14,18 +14,18 @@
 The Yarn detector reads both files (see *Yarn workspace support* below for information on
 other files the Yarn detector might read)
 to derive project and dependency information.
-The yarn.lock file must be up-to-date before [solution_name] runs.
-The package.json file specifies the direct dependencies for the project. [solution_name] adds these
+The yarn.lock file must be up-to-date before [company_name] [solution_name] runs.
+The package.json file specifies the direct dependencies for the project. [company_name] [solution_name] adds these
 dependencies to the top level of the dependency graph that it builds.
 The yarn.lock file contains necessary details about those
-direct dependencies and their transient dependencies, enabling [solution_name]
+direct dependencies and their transient dependencies, enabling [company_name] [solution_name]
 to build the complete graph of direct and transient dependencies.
 
 ## Yarn workspace support
 
 In addition to the codelocation generated for the project (showing its direct
 and transitive dependencies),
-[solution_name] also generates a codelocation per included workspace
+[company_name] [solution_name] also generates a codelocation per included workspace
 (all workspaces are included by default).
 
 ### Referencing workspaces
@@ -41,7 +41,7 @@ For example, if your project package.json contains:
 "packages/workspace-b"
 ],
 ````
-[solution_name] will expect you to refer to these workspaces as "packages/workspace-a" and "packages/workspace-b".
+[company_name] [solution_name] will expect you to refer to these workspaces as "packages/workspace-a" and "packages/workspace-b".
 This naming convention remains the same even at deeper workspace nesting levels. As an example, if your project
 has a workspace packages/workspace-a, and packages/workspace-a's package.json contains:
 ````
@@ -50,11 +50,11 @@ has a workspace packages/workspace-a, and packages/workspace-a's package.json co
 "child2-of-workspace-a"
 ],
 ````
-[solution_name] will expect you to refer to these workspaces as "child1-of-workspace-a" and "child2-of-workspace-a".
+[company_name] [solution_name] will expect you to refer to these workspaces as "child1-of-workspace-a" and "child2-of-workspace-a".
 
 ### Excluding workspaces
 
-By default, [solution_name] includes all workspaces in the results regardless of whether they
+By default, [company_name] [solution_name] includes all workspaces in the results regardless of whether they
 are declared as dependencies of the project.
 You can specify a subset of workspaces to include or exclude using the workspace exclude/include properties
 *detect.yarn.excluded.workspaces* and *detect.yarn.included.workspaces*.

@@ -1,13 +1,13 @@
-# [solution_name] Version Management
+# [company_name] [solution_name] Version Management
 
-[solution_name] self-updating feature will allow customers who choose to enable Centralized [solution_name] Version Management in [blackduck_product_name] to automate the update of [solution_name] across their pipelines.
+[company_name] [solution_name] self-updating feature will allow customers who choose to enable Centralized [company_name] [solution_name] Version Management in [blackduck_product_name] to automate the update of [company_name] [solution_name] across their pipelines.
 
-## Self updating [solution_name] scenarios
+## Self updating [company_name] [solution_name] scenarios
 
-The Self Update feature will call the `/api/tools/detect` API end point to check for the existence of a specified [solution_name] version in [blackduck_product_name] under the **Admin > System Settings > [solution_name] > [solution_name] Version** drop-down. If a version that is eligible for upgrade or downgrade has been specified, the request to download that version of the [solution_name] .jar will execute and the current run of [solution_name] will invoke it for the requested scan. 
+The Self Update feature will call the `/api/tools/detect` API end point to check for the existence of a specified [company_name] [solution_name] version in [blackduck_product_name] under the **Admin > System Settings > [company_name] [solution_name] > [company_name] [solution_name] Version** drop-down. If a version that is eligible for upgrade or downgrade has been specified, the request to download that version of the [company_name] [solution_name] .jar will execute and the current run of [company_name] [solution_name] will invoke it for the requested scan. 
 
-[solution_name] will download the required version from Synopsys "sig-repo" repository when the service is Synopsys hosted, or from a custom URL as configured in [blackduck_product_name], when internally hosted. To support self-update via internal hosting, the [solution_name] binary must be in a location accessible via https to all executing [solution_name] instances.   
-Centralized [solution_name] Version Management feature support in [blackduck_product_name] is available from [blackduck_product_name] version 2023.4.0 onwards.
+[company_name] [solution_name] will download the required version from Synopsys "sig-repo" repository when the service is Synopsys hosted, or from a custom URL as configured in [blackduck_product_name], when internally hosted. To support self-update via internal hosting, the [company_name] [solution_name] binary must be in a location accessible via https to all executing [company_name] [solution_name] instances.   
+Centralized [company_name] [solution_name] Version Management feature support in [blackduck_product_name] is available from [blackduck_product_name] version 2023.4.0 onwards.
 
 <!-- Variables do not resolve when in a note format hence the hardcoding below -->
 <note type="information">
@@ -20,19 +20,19 @@ If the Black Duck **Synopsys Hosted** option has been configued, Synopsys Detect
 </ul>
 </note>
 
-## Scenarios where [solution_name] self update will not execute
+## Scenarios where [company_name] [solution_name] self update will not execute
 
-If there exists no mapping in [blackduck_product_name], or if the current version of [solution_name] matches the mapped version in [blackduck_product_name], or any issue occurs during the execution of the Self Update feature, then [solution_name] will continue with the current version to execute the scan.
+If there exists no mapping in [blackduck_product_name], or if the current version of [company_name] [solution_name] matches the mapped version in [blackduck_product_name], or any issue occurs during the execution of the Self Update feature, then [company_name] [solution_name] will continue with the current version to execute the scan.
 
-If the [solution_name] URL of the [solution_name] .jar file to download and run has been hardcoded via [solution_name] property `DETECT_SOURCE` environment variable or the [solution_name] version set by the `DETECT_LATEST_RELEASE_VERSION` or `DETECT_VERSION_KEY` variables, self update will not occur. These are optional System environment properties used by Detect upgrade scripts.
+If the [company_name] [solution_name] URL of the [company_name] [solution_name] .jar file to download and run has been hardcoded via [company_name] [solution_name] property `DETECT_SOURCE` environment variable or the [company_name] [solution_name] version set by the `DETECT_LATEST_RELEASE_VERSION` or `DETECT_VERSION_KEY` variables, self update will not occur. These are optional System environment properties used by Detect upgrade scripts.
 
-If the [blackduck_product_name] “Internally Hosted” option has been selected and a [solution_name] download location has not been provided, the feature will not be enabled.
+If the [blackduck_product_name] “Internally Hosted” option has been selected and a [company_name] [solution_name] download location has not been provided, the feature will not be enabled.
 
 For further [blackduck_product_name] configuration information, refer to the documentation provided under the topic:
 <xref href="DetectLocation.dita" scope="peer"> Hosting location for Synopsys Detect.
 <data name="facets" value="pubname=bd-hub"/>
 
-## [solution_name] log examples for self update
+## [company_name] [solution_name] log examples for self update
 
 Downgrade to prior version blocked:  
 
@@ -52,7 +52,7 @@ Update to version allowed (8.9.0+):
 2023-05-05 12:33:53 EDT INFO  \[main] - Detect-Self-Updater:  Centrally managed version of Detect was downloaded successfully and is ready to be run: /Users/testuser/tmp/synopsys-detect-8.9.2.jar.
 ```
 
-Current version of [solution_name] matches the mapped version or there is no mapped version in [blackduck_product_name]:   
+Current version of [company_name] [solution_name] matches the mapped version or there is no mapped version in [blackduck_product_name]:   
 
 ```
 2023-05-05 12:33:52 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.synopsys‎ .com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.  

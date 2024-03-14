@@ -1,14 +1,14 @@
 # Component Location Analysis LCA
 
-Enable this feature by adding --detect.component.location.analysis.enabled=TRUE to a run of [solution_name].
+Enable this feature by adding --detect.component.location.analysis.enabled=TRUE to a run of [company_name] [solution_name].
 
-When enabled, [solution_name] creates an output file in the scan subdirectory of the output directory with the name 'components-with-locations.json' which identifies the declaration locations (filepath, line number and column position) of the version of open source components found in the scanned project.
+When enabled, [company_name] [solution_name] creates an output file in the scan subdirectory of the output directory with the name 'components-with-locations.json' which identifies the declaration locations (filepath, line number and column position) of the version of open source components found in the scanned project.
 
 * As Detect shuts down, by default, it performs cleanup operations which include deleting the component location analysis file. You can disable clean up by setting --detect.cleanup=false.
 
 ## Requirements and Limitations
 
-* Component Location Analysis is available under [solution_name] “Limited Customer Availability (LCA)”.
+* Component Location Analysis is available under [company_name] [solution_name] “Limited Customer Availability (LCA)”.
 * A limited subset of Detector Types support this feature.
     * The currently supported Detectors as of 9.2.0 are: NPM, MAVEN, GRADLE, NUGET, GO_MOD, GO_DEP, GO_GRADLE, GO_VENDOR, GO_VNDR, PIP, POETRY, and CONDA.
 * The currently supported scan modes as of 8.11.0 are: Rapid/Stateless and offline.
@@ -67,7 +67,7 @@ Each component is uniquely identified by a name and version. Components may opti
 
 ## Rapid/Stateless Scan Mode Results
 
-When [solution_name] runs a Rapid or Stateless scan, the output file includes policy violation vulnerabilities, component violating policies and remediation guidance (short term, long term and transitive upgrade guidance) when available. This information is contained within the metadata field of each component:
+When [company_name] [solution_name] runs a Rapid or Stateless scan, the output file includes policy violation vulnerabilities, component violating policies and remediation guidance (short term, long term and transitive upgrade guidance) when available. This information is contained within the metadata field of each component:
 ```
 {
       "sourcePath": "absolute/path/to/project/root",
