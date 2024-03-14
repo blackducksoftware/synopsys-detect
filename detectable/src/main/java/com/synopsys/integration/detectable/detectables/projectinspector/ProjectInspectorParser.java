@@ -90,7 +90,7 @@ public class ProjectInspectorParser {
         reader.endObject();
 
         if(versionMismatch) {
-            logger.info("From Detect 9.5.0 and onwards, we will support the latest version of Project Inspector i.e. 2024.2.0. If you are using the detect.project.inspector.path property, please use the latest version mentioned.");
+            logger.info("Detect and Project Inspector version mismatch, confirm that compatible versions of Detect and Project Inspector are in use.");
         }
 
         return codeLocations;

@@ -1,9 +1,12 @@
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.io.File;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Optional;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjectInspectorDetectable;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +61,7 @@ public class MavenCliExtractor {
                 Extraction extraction = mavenProjectInspectorDetectable.extract(extractionEnvironment);
                 shadedDependencies = mavenProjectInspectorDetectable.getShadedDependencies();
             } catch (Exception e) {
-               throw new RuntimeException("There was an error extracting the shaded dependencies from Project Inspector. Please ensure that you have the latest version of Project Inspector 2024.2.0",e);
+               throw new RuntimeException("There was an error extracting the shaded dependencies from Project Inspector. There might be version mismatch between Detect and Project Inspector, confirm that compatible versions of them are in use.",e);
             }
         }
 

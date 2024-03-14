@@ -478,7 +478,7 @@ public class DetectableFactory {
     }
 
     public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions, ProjectInspectorOptions projectInspectorOptions, ProjectInspectorResolver projectInspectorResolver) {
-        return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions, createMavenProjectInspectorDetectable(environment,projectInspectorResolver,projectInspectorOptions));
+        return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions, createMavenProjectInspectorDetectable(environment, projectInspectorResolver, projectInspectorOptions));
     }
 
     public MavenPomWrapperDetectable createMavenPomWrapperDetectable(
@@ -488,7 +488,7 @@ public class DetectableFactory {
         ProjectInspectorOptions projectInspectorOptions,
         ProjectInspectorResolver projectInspectorResolver
     ) {
-        return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions, createMavenProjectInspectorDetectable(environment,projectInspectorResolver,projectInspectorOptions ));
+        return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions, createMavenProjectInspectorDetectable(environment, projectInspectorResolver, projectInspectorOptions));
     }
 
     public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(
