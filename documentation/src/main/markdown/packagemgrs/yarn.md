@@ -21,8 +21,6 @@ The yarn.lock file contains necessary details about those
 direct dependencies and their transient dependencies, enabling [solution_name]
 to build the complete graph of direct and transient dependencies.
 
-[solution_name] supports projects that use Yarn version 1 or version 2.
-
 ## Yarn workspace support
 
 In addition to the codelocation generated for the project (showing its direct
@@ -65,3 +63,23 @@ When using the workspace exclude and include properties, use the workspace
 referencing guidelines described above. You can also use
 filename globbing-style wildcards and specify multiple values separated
 by commas.
+
+### Enable workspace ignore
+
+To speed up scanning by building the dependency graph without analysis of workspaces, 
+set the parameter`--detect.yarn.ignore.all.workspaces=true`. The default setting 
+for this parameter is false and must be set to true to enable.
+
+Dependencies in workspaces that are not in the Yarn lock file will not be included 
+in the Bill of Materials.
+
+If the Yarn lock file has been generated to include non-production dependencies,
+with the command `yarn install --production=false` as an example, then those dependencies 
+will be included in the Bill of materials.
+
+<note type="note">The properties `--detect.yarn.dependency.types.excluded=NON_PRODUCTION`, 
+`detect.yarn.excluded.workspaces` and `detect.yarn.included.workspaces` do not apply 
+if `detect.yarn.ignore.all.workspaces=true` has been set.</note>
+
+See [Yarn monorepo](https://yarnpkg.com/advanced/lexicon#monorepo) for further 
+information about workspaces and monorepo configuration.

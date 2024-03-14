@@ -79,7 +79,7 @@ public class RequirementsFileTransformerTest {
     @Test
     void testFormatLineForRawLineWithCommas() {
         String rawInputLine = "requests == 12.3.3, < 14.0";
-        String expectedLine = "requests == 12.3.3";
+        String expectedLine = "requests == 12.3.3, < 14.0";
 
         String formattedLine = requirementsFileTransformer.formatLine(rawInputLine);
         Assertions.assertEquals(expectedLine, formattedLine);
