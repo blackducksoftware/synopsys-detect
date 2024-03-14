@@ -58,7 +58,7 @@ public class MavenCliExtractor {
                 Extraction extraction = mavenProjectInspectorDetectable.extract(extractionEnvironment);
                 shadedDependencies = mavenProjectInspectorDetectable.getShadedDependencies();
             } catch (Exception e) {
-                throw new RuntimeException();
+               throw new RuntimeException("There was an error extracting the shaded dependencies from Project Inspector. Please ensure that you have the latest version of Project Inspector 2024.2.0",e);
             }
         }
 

@@ -1079,7 +1079,7 @@ public class DetectProperties {
                     .setInfo("Include Shaded Dependencies", DetectPropertyFromVersion.VERSION_9_5_0)
                     .setHelp(
                             "If set to true, Detect will include shaded dependencies as part of BOM.",
-                            "A shaded dependency is packaged inside the uber jar of the direct or transitive dependency referenced in the project. Detect will find the use of maven-shade-plugin from original POM file and based on that will derive information for these dependencies. This property will only be supported in build mode just like all other MAVEN properties. "
+                            "A shaded dependency is packaged inside the uber jar of the direct or transitive dependency referenced in the project. Detect will find the use of maven-shade-plugin from original POM file and based on that will derive information for these dependencies. This property will only be supported in build mode just like all other MAVEN properties."
                     )
                     .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
                     .build();

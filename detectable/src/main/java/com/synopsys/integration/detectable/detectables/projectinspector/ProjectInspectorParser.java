@@ -32,6 +32,7 @@ public class ProjectInspectorParser {
     private final ExternalIdFactory externalIdFactory;
     private static final String MODULES_KEY = "Modules";
     private final Map<String,Set<String>> shadedDependencies = new HashMap<>();
+    private boolean versionMismatch = false;
 
     public ProjectInspectorParser(Gson gson, ExternalIdFactory externalIdFactory) {
         this.gson = gson;
@@ -74,15 +75,23 @@ public class ProjectInspectorParser {
             if (moduleId != null) {
                 JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
                 ProjectInspectorModule projectInspectorModule = gson.fromJson(module, ProjectInspectorModule.class);
-                if(includeShadedDependencies) {
-                    processShadedDependencies(projectInspectorModule);
+                if(projectInspectorModule.components != null) {
+                    if (includeShadedDependencies) {
+                        processShadedDependencies(projectInspectorModule);
+                    } else {
+                        CodeLocation codeLocation = codeLocationFromModule(projectInspectorModule);
+                        codeLocations.add(codeLocation);
+                    }
                 } else {
-                    CodeLocation codeLocation = codeLocationFromModule(projectInspectorModule);
-                    codeLocations.add(codeLocation);
+                    versionMismatch = true;
                 }
             }
         }
         reader.endObject();
+
+        if(versionMismatch) {
+            logger.info("From Detect 9.5.0 and onwards, we will support the latest version of Project Inspector i.e. 2024.2.0. If you are using the detect.project.inspector.path property, please use the latest version mentioned.");
+        }
 
         return codeLocations;
     }
@@ -91,60 +100,51 @@ public class ProjectInspectorParser {
     public CodeLocation codeLocationFromModule(ProjectInspectorModule module) {
         Map<String, Dependency> lookup = new HashMap<>();
 
-        if(module.components != null) {
             //build the map of all external ids
-            module.components.forEach((dependencyId, component) -> {
-                lookup.computeIfAbsent(dependencyId, missingId -> convertProjectInspectorDependency(component));
-            });
+        module.components.forEach((dependencyId, component) -> {
+            lookup.computeIfAbsent(dependencyId, missingId -> convertProjectInspectorDependency(component));
+        });
 
-            //and add them to the graph
-            DependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
-            module.components.forEach((moduleDependencyId, moduleDependency) -> {
-                Dependency dependency = lookup.get(moduleDependencyId);
-                if (moduleDependency.inclusionType.equals("DIRECT")) {
-                    mutableDependencyGraph.addDirectDependency(dependency);
-                } else if (moduleDependency.inclusionType.equals("TRANSITIVE")) {
-                    moduleDependency.includedBy.forEach(includedBy -> {
-                        if (lookup.containsKey(includedBy.id)) {
-                            mutableDependencyGraph.addChildWithParent(dependency, lookup.get(includedBy.id));
-                        } else { //Theoretically should not happen according to PI devs. -jp
-                            throw new RuntimeException("An error occurred reading the project inspector output." +
-                                    " An unknown parent dependency was encountered '" + includedBy.id + "' while including dependency '" + moduleDependency.name + "'.");
-                        }
-                    });
-                }
-            });
-            return new CodeLocation(mutableDependencyGraph, new File(module.moduleFile));
-        } else {
-            logger.info("From Detect 9.5.0 and onwards, we will support the latest version of Project Inspector i.e. 2024.2.0. If you are using the detect.project.inspector.path property, please use the latest version mentioned.");
-        }
-        return null;
+        //and add them to the graph
+        DependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
+        module.components.forEach((moduleDependencyId, moduleDependency) -> {
+            Dependency dependency = lookup.get(moduleDependencyId);
+            if (moduleDependency.inclusionType.equals("DIRECT")) {
+                mutableDependencyGraph.addDirectDependency(dependency);
+            } else if (moduleDependency.inclusionType.equals("TRANSITIVE")) {
+                moduleDependency.includedBy.forEach(includedBy -> {
+                    if (lookup.containsKey(includedBy.id)) {
+                        mutableDependencyGraph.addChildWithParent(dependency, lookup.get(includedBy.id));
+                    } else { //Theoretically should not happen according to PI devs. -jp
+                        throw new RuntimeException("An error occurred reading the project inspector output." +
+                                " An unknown parent dependency was encountered '" + includedBy.id + "' while including dependency '" + moduleDependency.name + "'.");
+                    }
+                });
+            }
+        });
+        return new CodeLocation(mutableDependencyGraph, new File(module.moduleFile));
     }
 
     public void processShadedDependencies(ProjectInspectorModule module) {
-        if(module.components != null) {
-            module.components.forEach((dependencyId, component) -> {
-                if (component.shadedBy != null) {
-                    String[] gavParts = component.shadedBy.description.split(":");
-                    String group = gavParts[0];
-                    String artifact = gavParts[1];
-                    String version;
-                    if (gavParts.length > 4) {
-                        version = gavParts[gavParts.length - 2];
-                    } else {
-                        version = gavParts[gavParts.length - 1];
-                    }
-                    String gav = String.join(":", group, artifact, version);
-                    if (shadedDependencies.containsKey(gav)) {
-                        shadedDependencies.get(gav).add(component.name);
-                    } else {
-                        shadedDependencies.put(gav, new HashSet<>(Arrays.asList(component.name)));
-                    }
+        module.components.forEach((dependencyId, component) -> {
+            if (component.shadedBy != null) {
+                String[] gavParts = component.shadedBy.description.split(":");
+                String group = gavParts[0];
+                String artifact = gavParts[1];
+                String version;
+                if (gavParts.length > 4) {
+                    version = gavParts[gavParts.length - 2];
+                } else {
+                    version = gavParts[gavParts.length - 1];
                 }
-            });
-        } else {
-            logger.info("From Detect 9.5.0 and onwards, we will support the latest version of Project Inspector i.e. 2024.2.0. If you are using the detect.project.inspector.path property, please use the latest version mentioned.");
-        }
+                String gav = String.join(":", group, artifact, version);
+                if (shadedDependencies.containsKey(gav)) {
+                    shadedDependencies.get(gav).add(component.name);
+                } else {
+                    shadedDependencies.put(gav, new HashSet<>(Arrays.asList(component.name)));
+                }
+            }
+        });
     }
 
     public Dependency convertProjectInspectorDependency(ProjectInspectorComponent component) {

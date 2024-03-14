@@ -39,8 +39,8 @@ public class MavenPomDetectable extends Detectable {
         this.fileFinder = fileFinder;
         this.mavenResolver = mavenResolver;
         this.mavenCliExtractor = mavenCliExtractor;
-        this.mavenCliExtractorOptions = mavenCliExtractorOptions;
-        this.mavenProjectInspectorDetectable = mavenProjectInspectorDetectable; //TODO: Should this be wrapped in a detectables options? -jp
+        this.mavenCliExtractorOptions = mavenCliExtractorOptions; //TODO: Should this be wrapped in a detectables options? -jp
+        this.mavenProjectInspectorDetectable = mavenProjectInspectorDetectable;
     }
 
     @Override
