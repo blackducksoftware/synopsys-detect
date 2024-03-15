@@ -61,7 +61,7 @@ public class ProjectInspectorParser {
             }
             reader.endObject();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("An error occurred while reading inspection.json file", e);
         }
         return codeLocations;
     }
