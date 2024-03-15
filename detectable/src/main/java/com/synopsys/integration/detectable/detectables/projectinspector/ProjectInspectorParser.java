@@ -39,7 +39,7 @@ public class ProjectInspectorParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public List<CodeLocation> parse(File outputFile, boolean includeShadedDependencies) {
+    public List<CodeLocation> parse(File outputFile, boolean includeShadedDependencies) throws Exception {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         if (outputFile == null || !outputFile.exists() || !outputFile.isFile()) {
@@ -61,7 +61,7 @@ public class ProjectInspectorParser {
             }
             reader.endObject();
         } catch (Exception e) {
-            logger.error("An error occurred while reading inspection.json file", e);
+            throw new RuntimeException(e);
         }
         return codeLocations;
     }
@@ -90,7 +90,7 @@ public class ProjectInspectorParser {
         reader.endObject();
 
         if(versionMismatch) {
-            logger.info("Detect and Project Inspector version mismatch, confirm that compatible versions of Detect and Project Inspector are in use.");
+            throw new RuntimeException("Detect and Project Inspector version mismatch, confirm that compatible versions of Detect and Project Inspector are in use.");
         }
 
         return codeLocations;
