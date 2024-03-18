@@ -55,13 +55,20 @@ public class MavenCliExtractor {
         Boolean includeShadedDependencies = mavenCliExtractorOptions.getMavenIncludeShadedDependencies();
 
         if(includeShadedDependencies) {
+            Extraction extraction;
+            mavenProjectInspectorDetectable.setIncludeShadedDependencies(true);
+
             try {
-                mavenProjectInspectorDetectable.setIncludeShadedDependencies(true);
                 mavenProjectInspectorDetectable.extractable();
-                Extraction extraction = mavenProjectInspectorDetectable.extract(extractionEnvironment);
-                shadedDependencies = mavenProjectInspectorDetectable.getShadedDependencies();
+                extraction = mavenProjectInspectorDetectable.extract(extractionEnvironment);
             } catch (Exception e) {
-               throw new RuntimeException("There was an error extracting the shaded dependencies from Project Inspector. There might be version mismatch between Detect and Project Inspector, confirm that compatible versions of them are in use.",e);
+               throw new RuntimeException("There was an error extracting the shaded dependencies from Project Inspector. There might be version mismatch between Detect and Project Inspector, confirm that compatible versions of them are in use.", e);
+            }
+
+            if(extraction.isSuccess()) {
+                shadedDependencies = mavenProjectInspectorDetectable.getShadedDependencies();
+            } else {
+                return new Extraction.Builder().exception(extraction.getError()).build();
             }
         }
 

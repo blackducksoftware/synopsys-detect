@@ -16,7 +16,7 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class NugetProjectInspectorParseTest {
     @Test
-    void checkParse() {
+    void checkParse() throws Exception {
         String inspectorOutputPath = FunctionalTestFiles.resolvePath("/nuget/project_inspector/ConsoleApp.json");
         List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(new File(inspectorOutputPath), false);
 
@@ -36,7 +36,7 @@ public class NugetProjectInspectorParseTest {
     }
 
     @Test
-    void checkParsingWithNoResults() {
+    void checkParsingWithNoResults() throws Exception {
         String inspectorOutputPath = FunctionalTestFiles.resolvePath("/nuget/project_inspector/ProjectInspectorNoResults.json");
         List<CodeLocation> codeLocations = new ProjectInspectorParser(new Gson(), new ExternalIdFactory()).parse(new File(inspectorOutputPath), false);
 

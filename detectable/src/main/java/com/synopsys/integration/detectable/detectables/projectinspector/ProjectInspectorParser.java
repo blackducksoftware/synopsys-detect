@@ -39,7 +39,7 @@ public class ProjectInspectorParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public List<CodeLocation> parse(File outputFile, boolean includeShadedDependencies) {
+    public List<CodeLocation> parse(File outputFile, boolean includeShadedDependencies) throws Exception {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         if (outputFile == null || !outputFile.exists() || !outputFile.isFile()) {
@@ -61,7 +61,7 @@ public class ProjectInspectorParser {
             }
             reader.endObject();
         } catch (Exception e) {
-            logger.error("An error occurred while reading inspection.json file", e);
+            throw new RuntimeException(e);
         }
         return codeLocations;
     }
@@ -90,7 +90,7 @@ public class ProjectInspectorParser {
         reader.endObject();
 
         if(versionMismatch) {
-            logger.info("Detect and Project Inspector version mismatch, confirm that compatible versions of Detect and Project Inspector are in use.");
+            throw new RuntimeException("Detect and Project Inspector version mismatch, confirm that compatible versions of Detect and Project Inspector are in use.");
         }
 
         return codeLocations;
@@ -99,23 +99,28 @@ public class ProjectInspectorParser {
 
     public CodeLocation codeLocationFromModule(ProjectInspectorModule module) {
         Map<String, Dependency> lookup = new HashMap<>();
+        Map<String, Dependency> modules = new HashMap<>();
 
             //build the map of all external ids
         module.components.forEach((dependencyId, component) -> {
-            lookup.computeIfAbsent(dependencyId, missingId -> convertProjectInspectorDependency(component));
+            if(!component.dependencySource.equals("MODULE")) {
+                lookup.computeIfAbsent(dependencyId, missingId -> convertProjectInspectorDependency(component));
+            } else {
+                modules.computeIfAbsent(dependencyId, missingId -> convertProjectInspectorDependency(component));
+            }
         });
 
         //and add them to the graph
         DependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
         module.components.forEach((moduleDependencyId, moduleDependency) -> {
-            Dependency dependency = lookup.get(moduleDependencyId);
-            if (moduleDependency.inclusionType.equals("DIRECT")) {
+            Dependency dependency = lookup.getOrDefault(moduleDependencyId, null);
+            if (dependency != null && moduleDependency.inclusionType.equals("DIRECT")) {
                 mutableDependencyGraph.addDirectDependency(dependency);
-            } else if (moduleDependency.inclusionType.equals("TRANSITIVE")) {
+            } else if (dependency != null && moduleDependency.inclusionType.equals("TRANSITIVE")) {
                 moduleDependency.includedBy.forEach(includedBy -> {
                     if (lookup.containsKey(includedBy.id)) {
                         mutableDependencyGraph.addChildWithParent(dependency, lookup.get(includedBy.id));
-                    } else { //Theoretically should not happen according to PI devs. -jp
+                    } else if (!modules.containsKey(includedBy.id)) { //Theoretically should not happen according to PI devs. -jp
                         throw new RuntimeException("An error occurred reading the project inspector output." +
                                 " An unknown parent dependency was encountered '" + includedBy.id + "' while including dependency '" + moduleDependency.name + "'.");
                     }

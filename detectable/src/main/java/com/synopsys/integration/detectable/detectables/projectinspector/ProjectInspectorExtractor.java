@@ -54,8 +54,12 @@ public class ProjectInspectorExtractor {
             .ifPresent(additionalArguments -> arguments.addAll(Arrays.asList(additionalArguments)));
 
         executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(targetDirectory, inspector, arguments));
-
-        List<CodeLocation> codeLocations = projectInspectorParser.parse(outputFile, includeShadedDependencies);
+        List<CodeLocation> codeLocations;
+        try {
+            codeLocations = projectInspectorParser.parse(outputFile, includeShadedDependencies);
+        } catch (Exception e) {
+            return new Extraction.Builder().exception(e).build();
+        }
 
         return new Extraction.Builder().success(codeLocations).build();
     }
