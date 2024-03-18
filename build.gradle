@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.5.0-SIGQA3-devm.IDETECT-3587-PI'
+version = '9.5.0-SIGQA4-devm.IDETECT-3587-PI-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
