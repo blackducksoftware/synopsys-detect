@@ -45,6 +45,5 @@ The buildless gradle detector uses Project Inspector to find dependencies and do
 
 It currently supports "build.gradle" and does not support Kotlin build files.
 
-[company_name] [solution_name] 9.5.0 now uses the latest version of Project Inspector i.e. 2024.2.0 in which support certain arguments have been removed. 
-Support for `--strategy GRADLE` argument has been removed in the current release and changed to `--build-system GRADLE`. 
-`--force-gradle-repos "url"` will be removed from support in the next [company_name][solution_name] major release 10.0.0 and it will be changed to `--conf "maven.repo:url"`.
+As of [company_name] [solution_name] 9.5.0 the version of Project Inspector in use supports the `--build-system GRADLE` argument in place of `--strategy GRADLE`.
+The `--force-gradle-repos "url"` argument will be removed from support in the next [company_name][solution_name] major release and replaced with the `--conf "maven.repo:url"` argument.

@@ -72,6 +72,5 @@ The Maven Wrapper CLI detector attempts to run on your project if it finds a pom
 The Maven Project Inspector detector uses Project Inspector, which currently does not support plugins.
 The Maven Project Inspector includes the shaded dependencies as part of the BOM.
 
-[company_name] [solution_name] 9.5.0 now uses the latest version of Project Inspector i.e. 2024.2.0 in which support certain arguments have been removed.
-Support for `--strategy MAVEN` argument has been removed in the current release and changed to `--build-system MAVEN`. 
-`--force-maven-repos "url"` will be removed from support in the next [company_name][solution_name] major release 10.0.0 and it will be changed to `--conf "maven.repo:url"`.
+As of [company_name] [solution_name] 9.5.0 the version of Project Inspector in use supports the `--build-system MAVEN` argument in place of `--strategy MAVEN`.
+The `--force-maven-repos "url"` argument will be removed from support in the next [company_name][solution_name] major release and replaced with the `--conf "maven.repo:url"` argument.
