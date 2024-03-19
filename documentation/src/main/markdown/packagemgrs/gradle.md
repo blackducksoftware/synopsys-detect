@@ -44,3 +44,6 @@ The init-detect.gradle script configures each project with the custom 'gatherDep
 The buildless gradle detector uses Project Inspector to find dependencies and does not support dependency exclusions.
 
 It currently supports "build.gradle" and does not support Kotlin build files.
+
+As of [company_name] [solution_name] 9.5.0 the version of Project Inspector in use supports the `--build-system GRADLE` argument in place of `--strategy GRADLE`.
+The `--force-gradle-repos "url"` argument will be removed from support in the next [company_name][solution_name] major release and replaced with the `--conf "maven.repo:url"` argument.
