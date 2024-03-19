@@ -78,7 +78,7 @@ After discovering dependencies, NuGet client libraries are used to collect furth
 In buildless mode, [company_name] [solution_name] uses Project Inspector to find dependencies and only supports `.csproj` and `.sln` files.
 
 As of [company_name] [solution_name] 9.5.0 the version of Project Inspector in use supports the `--build-system MSBUILD` argument in place of `--strategy MSBUILD`.
-The `--force-nuget-repos "url"` argument will be removed from support in the next [company_name][solution_name] major release and replaced with the `--conf "nuget.repo:url"` argument.
+The `--force-nuget-repos "url"` argument will be removed from support in the next [company_name] [solution_name] major release and replaced with the `--conf "nuget.repo:url"` argument.
 
 ### [company_name] [solution_name] NuGet Inspector on Alpine
 

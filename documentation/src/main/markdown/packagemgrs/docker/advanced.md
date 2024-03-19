@@ -138,10 +138,10 @@ the top layer ID for ubuntu:latest changes over time.)
 Set the value of the [company_name] [solution_name] property *detect.docker.platform.top.layer.id* to the platform top layer ID.
 For example:
 
-    {[company_name] [solution_name] command} ... --docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c
+    {Detect command} ... --docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c
 
 In this mode, the container file system and/or container file system squashed image produced by [docker_inspector_name]
- only contains files added to the image by application layers. If the Black Duck signature scanner is run on this file,
+ only contains files added to the image by application layers. If the [blackduck_product_name] signature scanner is run on this file,
 it generates results based only on files found on application layers. This provides the benefit of isolating
 application components by excluding platform components. However, there may be some loss in match accuracy from the
 signature scanner because in this scenario, the signature scanner may be deprived of some contextual
