@@ -1,5 +1,5 @@
 # Detect in Jenkins Pipeline job
-In pipeline jobs there are only steps. You can generate the [solution_name] pipeline step as follows.
+In pipeline jobs there are only steps. You can generate the [company_name] [solution_name] pipeline step as follows.
 
 1. Navigate to **Jenkins > New Item**.
 1. In the **Enter an item name** field, type the name for your new Pipeline project.
@@ -30,6 +30,6 @@ The following is a simple example of a basic script.
 </figure>
 
 1. Run the build.
-1. After completing the Jenkins Pipeline build with [solution_name], you can view the complete scan results in your [blackduck_product_name] instance.
+1. After completing the Jenkins Pipeline build with [company_name] [solution_name], you can view the complete scan results in your [blackduck_product_name] instance.
 
 **Note:** In Jenkins pipelines, there are no post-build actions because post-build actions are a Freestyle job concept. 

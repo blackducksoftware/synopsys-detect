@@ -2,7 +2,7 @@
 
 ## General requirements
 
-* Typically, access to the internet is required to download and run [solution_name] and components from GitHub and other locations. For running without internet access,
+* Typically, access to the internet is required to download and run [company_name] [solution_name] and components from GitHub and other locations. For running without internet access,
 refer to [Air Gap Mode](../downloadingandinstalling/airgap.md).
 * Minimum 8GB RAM.
 * Java: OpenJDK 64-bit version 8, 11, 13, 14, 15, 16, or 17. If using Java 11: 11.0.5 or higher is required.
@@ -38,7 +38,7 @@ The risk report requires that the following fonts are installed:
 * Helvetica
 * Helvetica bold
 
-## Supported [solution_name] versions and Service duration
+## Supported [company_name] [solution_name] versions and Service duration
 
-* For information about support and service durations for [solution_name] versions, consult the
+* For information about support and service durations for [company_name] [solution_name] versions, consult the
 <xref href="Support-and-Service-Schedule.dita" scope="peer"> Support and Service Schedule.<data name="facets" value="pubname=blackduck-compatibility"/>

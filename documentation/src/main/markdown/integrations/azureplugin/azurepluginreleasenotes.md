@@ -3,8 +3,8 @@
 ## Version 9.0.0
 **New features**
 
-* Updated the plugin to use [solution_name] 9.   
-	* [solution_name] [Release Note](../../currentreleasenotes.md)
+* Updated the plugin to use [company_name] [solution_name] 9.   
+	* [company_name] [solution_name] [Release Note](../../currentreleasenotes.md)
 
 **Resolved issues**
 
@@ -19,13 +19,13 @@
 ## Version 8.0.0
 **New features**
 
-* Updated the plugin to use [solution_name] 8.
+* Updated the plugin to use [company_name] [solution_name] 8.
 
 ## Version 7.0.0
 **New features** 
 
-* Updated the plugin to use [solution_name] 7.
-* Added the ability to run [solution_name] in AirGap mode.
+* Updated the plugin to use [company_name] [solution_name] 7.
+* Added the ability to run [company_name] [solution_name] in AirGap mode.
 
 ## Version 6.0.0
 **Resolved issues**
@@ -36,12 +36,12 @@
 
 **Changed features**
 
-* The plugin versioning was changed to match the major version of [solution_name] that it is designed to work with, for example Detect ADO 6.0.0 works with [solution_name] major version 6.
+* The plugin versioning was changed to match the major version of [company_name] [solution_name] that it is designed to work with, for example Detect ADO 6.0.0 works with [company_name] [solution_name] major version 6.
 
 ## Version 3.0.0
 **New features**
 
-* Added the capability for the script to use the tool directory in the ADO agent to store the [solution_name] JAR. It will continue to use this JAR as long as the JAR version matches the version specified in the task configuration.
+* Added the capability for the script to use the tool directory in the ADO agent to store the [company_name] [solution_name] JAR. It will continue to use this JAR as long as the JAR version matches the version specified in the task configuration.
 * Added support for using Linux and Mac agents.
 
 **Changed features**
@@ -55,7 +55,7 @@
 
 **Changed features**
 
-* Product renamed to [solution_name] for Azure DevOps.
+* Product renamed to [company_name] [solution_name] for Azure DevOps.
 
 ## Version 1.1.0
 **Changed features**

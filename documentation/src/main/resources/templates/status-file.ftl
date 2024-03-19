@@ -1,10 +1,10 @@
 # Status File
 
-[solution_name] creates an output status file in the run folder with the name "status.json" which contains a summary of the [solution_name] run in a machine readable format.
+[company_name] [solution_name] creates an output status file in the run folder with the name "status.json" which contains a summary of the [company_name] [solution_name] run in a machine readable format.
 
 The file includes status codes, issues encountered and results produced. As additional processes consume this file, additional information will be added. The format is intended to evolve over time.
 
-* As [solution_name] shuts down, by default, it performs cleanup operations which include deleting the status file.  You can disable clean up by setting ```--detect.cleanup=false```.
+* As [company_name] [solution_name] shuts down, by default, it performs cleanup operations which include deleting the status file.  You can disable clean up by setting ```--detect.cleanup=false```.
 
 ## Body
 ```
@@ -72,7 +72,7 @@ The file includes status codes, issues encountered and results produced. As addi
 
 ## Results
 
-A result is a URL, file path to output, or messages produced by the [solution_name] run: a [blackduck_product_name] Bill Of Materials, Risk Report, Notices Report, Air Gap zip, or Rapid Scan results.
+A result is a URL, file path to output, or messages produced by the [company_name] [solution_name] run: a [blackduck_product_name] Bill Of Materials, Risk Report, Notices Report, Air Gap zip, or Rapid Scan results.
 ```
 {
 "location": The path to the result.
@@ -101,7 +101,7 @@ For those detectors that support it (currently, only CLANG), a list of file path
 ````
 ## Property Values
 
-A map of every property key to it's string value that [solution_name] found. These are only properties to which [solution_name] has a known key,
+A map of every property key to it's string value that [company_name] [solution_name] found. These are only properties to which [company_name] [solution_name] has a known key,
 so pass-through properties like Docker and dynamic properties like custom fields are not included. Passwords and other sensitive fields are masked.
 
 ````
@@ -112,8 +112,8 @@ so pass-through properties like Docker and dynamic properties like custom fields
 ````
 
 ## Operations
-A list of information regarding internal execution of [solution_name] to describe when portions of [solution_name] run and what their status is.
-This information is intended to be used when [solution_name] fails and the reason(s) for a [solution_name] failure.
+A list of information regarding internal execution of [company_name] [solution_name] to describe when portions of [company_name] [solution_name] run and what their status is.
+This information is intended to be used when [company_name] [solution_name] fails and the reason(s) for a [company_name] [solution_name] failure.
 ````
   "operations": {
     "startTimestamp": A formatted UTC timestamp when the execution started.
