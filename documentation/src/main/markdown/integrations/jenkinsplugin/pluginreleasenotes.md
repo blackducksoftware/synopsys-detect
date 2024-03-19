@@ -3,11 +3,11 @@
 ## **Version 9.0.0**
 **New features**
 
-* This release is compatible with [solution_name] 9.x.x. (Downloading and using detect9.(sh/ps1)).
+* This release is compatible with [company_name] [solution_name] 9.x.x. (Downloading and using detect9.(sh/ps1)).
 
 **Changed features**
 
-* Updated to use [solution_name] 9.x.x for execution.
+* Updated to use [company_name] [solution_name] 9.x.x for execution.
 * The plugin has been built against upgraded Jenkins/Jenkins plugin versions in order to mitigate known security risks.
 * Jenkins version 2.401.3 or later is required.   
 
@@ -15,8 +15,8 @@
 
 **Resolved issues**
 
-* (IDTCTJNKNS-263) Updated [solution_name] Jenkins Plugin to provide consistent behavior for Linux, and Mac Agent when project names have leading or trailing spaces.
-* (IDTCTJNKNS-272) Updated [solution_name] Jenkins Plugin to support passing '&' in the DETECT_SOURCE_PATH property.
+* (IDTCTJNKNS-263) Updated [company_name] [solution_name] Jenkins Plugin to provide consistent behavior for Linux, and Mac Agent when project names have leading or trailing spaces.
+* (IDTCTJNKNS-272) Updated [company_name] [solution_name] Jenkins Plugin to support passing '&' in the DETECT_SOURCE_PATH property.
 
 ## **Version 8.0.1**
 **Resolved issues**
@@ -26,43 +26,43 @@
 	* Inclusion of too many dependencies in version 8.0.0 [JENKINS-70671](https://issues.jenkins.io/browse/JENKINS-70671)
 	* 8.0.0 bundles pull-parser.jar by mistake. [JENKINS-71023](https://issues.jenkins.io/browse/JENKINS-71023)
 
-<note type="important">Customers running Jenkins version 2.410 and above should upgrade to [solution_name] Jenkins plugin 8.0.1</note>
+<note type="important">Customers running Jenkins version 2.410 and above should upgrade to [company_name] [solution_name] Jenkins plugin 8.0.1</note>
 
 ## **Version 8.0.0**
 **New features**
 
-* Updated to be compatible with [solution_name] 8.x.x. (Downloading and using detect8.(sh/ps1)).
+* Updated to be compatible with [company_name] [solution_name] 8.x.x. (Downloading and using detect8.(sh/ps1)).
 
 **Changed features**
  
-* The Jenkins plugin has been upgraded to use [solution_name] 8.x.x for execution.
+* The Jenkins plugin has been upgraded to use [company_name] [solution_name] 8.x.x for execution.
 * The plugin has been built against upgraded Jenkins/Jenkins plugin versions in order to mitigate known security risks.
 * The minimal Jenkins version required is 2.377.
 * Configuration and usage of the plugin is unchanged.
  
 **Resolved issues**
 
-* (IDTCTJNKNS-258) CVE-2022-42889 for [solution_name] Jenkins plugin 7.0.0
-* (IDTCTJNKNS-261) [solution_name] v8 for Jenkins plugin
+* (IDTCTJNKNS-258) CVE-2022-42889 for [company_name] [solution_name] Jenkins plugin 7.0.0
+* (IDTCTJNKNS-261) [company_name] [solution_name] v8 for Jenkins plugin
 * (IDTCTJNKNS-255) Update dependency for Jenkins version, including optional plugin dependencies
-* (IDTCTJNKNS-254) Only escape [solution_name] parameter values
+* (IDTCTJNKNS-254) Only escape [company_name] [solution_name] parameter values
 * (IDTCTJNKNS-253) Improve clarity of messages logged when running plugin
 * (IDTCTJNKNS-252) Update internal dependencies to latest
 * (IDTCTJNKNS-247) Detect shell scripts are executed first and then downloaded in Pipeline execution in Linux and Windows slave nodes
 * (IDTCTJNKNS-239) Avoid leaking API token string in the console output
-* (IDTCTJNKNS-228) Unable to use java version specified in pipeline when running [solution_name] in Air Gap mode
-* (IDTCTJNKNS-224) Improve clarity in the transition between the different stages of [solution_name] for Jenkins
-* (IDTCTJNKNS-220) Jenkins Build is changed to Unstable for Invalid values in [solution_name] Installers
+* (IDTCTJNKNS-228) Unable to use java version specified in pipeline when running [company_name] [solution_name] in Air Gap mode
+* (IDTCTJNKNS-224) Improve clarity in the transition between the different stages of [company_name] [solution_name] for Jenkins
+* (IDTCTJNKNS-220) Jenkins Build is changed to Unstable for Invalid values in [company_name] [solution_name] Installers
 * (IDTCTJNKNS-192) Size must be between 1 and 50 when --detect.project.tag is more than 50 characters
 
 ## **Version 7.0.0**
 **New features**
 
-* Update major version to match major version of [solution_name] that it runs.
-* Update plugin to be compatible with [solution_name] 7.x.x. (Downloading and using detect7.(sh/ps1)).
+* Update major version to match major version of [company_name] [solution_name] that it runs.
+* Update plugin to be compatible with [company_name] [solution_name] 7.x.x. (Downloading and using detect7.(sh/ps1)).
   - Use property detect.timeout instead of blackduck.timeout
   - Remove support for using blackduck.password and blackduck.username and exclusively use blackduck.api.token
-* Update UI when configuring plugin so that it will only list 'Secret Text' saved entries (Manage Jenkins -> Configure System -> [solution_name] -> Black Duck credentials)
+* Update UI when configuring plugin so that it will only list 'Secret Text' saved entries (Manage Jenkins -> Configure System -> [company_name] [solution_name] -> Black Duck credentials)
 
 **Changed features**
 
@@ -71,7 +71,7 @@
 ## **Version 3.1.0**
 **New features**
 
-* Added the capability to run [solution_name] in Air Gap mode using the [solution_name] plugin.
+* Added the capability to run [company_name] [solution_name] in Air Gap mode using the [company_name] [solution_name] plugin.
 
 ## **Version 3.0.0**
 **New features**
@@ -92,21 +92,21 @@
 ## **Version 2.1.1**
 **Resolved issues**
 
-* Resolved an issue wherein [solution_name] for Jenkins didn't escape commas correctly in PowerShell arguments. 
-* Resolved an issue wherein [solution_name] for Jenkins didn't function when there were spaces in the workspace path resulting in failure to find the shell/PowerShell script. 
-* Version 2.0.2 of the S[solution_name] for Jenkins plugin violated semantic versioning by introducing a non-backward compatible change. Updating to any 2.X version from version 2.0.1 or earlier must be done with caution as that update might break existing functionality. 
+* Resolved an issue wherein [company_name] [solution_name] for Jenkins didn't escape commas correctly in PowerShell arguments. 
+* Resolved an issue wherein [company_name] [solution_name] for Jenkins didn't function when there were spaces in the workspace path resulting in failure to find the shell/PowerShell script. 
+* Version 2.0.2 of the S[company_name] [solution_name] for Jenkins plugin violated semantic versioning by introducing a non-backward compatible change. Updating to any 2.X version from version 2.0.1 or earlier must be done with caution as that update might break existing functionality. 
 
 ## **Version 2.1.0**
 **New features**
 
-* [solution_name] for Jenkins now returns an exit code of 0 for a successful pipeline run.
+* [company_name] [solution_name] for Jenkins now returns an exit code of 0 for a successful pipeline run.
 
 **Changed features**
 
-* On build failures, [solution_name] for Jenkins no longer modifies the build status when run in a Jenkins pipeline. Now, it throws an exception error if Detect fails.
-* [solution_name] for Jenkins is improved to support the pipeline step context. Using *withEnv* and running Docker now works as expected.
+* On build failures, [company_name] [solution_name] for Jenkins no longer modifies the build status when run in a Jenkins pipeline. Now, it throws an exception error if Detect fails.
+* [company_name] [solution_name] for Jenkins is improved to support the pipeline step context. Using *withEnv* and running Docker now works as expected.
 * Added improvements for working with containers.
-* Verified support for [solution_name] Jenkins plugin in the Cloudbees Core environment built with Kubernetes.
+* Verified support for [company_name] [solution_name] Jenkins plugin in the Cloudbees Core environment built with Kubernetes.
 
 ## **Version 2.0.2**
 **New features**
@@ -115,7 +115,7 @@
 
 **Changed features**
 
-* Now uses [solution_name] site to resolve the shell scripts.
+* Now uses [company_name] [solution_name] site to resolve the shell scripts.
 
 **Resolved issues**
 
@@ -130,8 +130,8 @@
 ## **Version 2.0.0**
 **New features**
 
-* You can now run [solution_name] for Jenkins by uploading a Detect JAR file.
-* [solution_name] for Jenkins now uses the Polaris credentials stored in the credentials plugin in Jenkins.
+* You can now run [company_name] [solution_name] for Jenkins by uploading a Detect JAR file.
+* [company_name] [solution_name] for Jenkins now uses the Polaris credentials stored in the credentials plugin in Jenkins.
 
 ## **Version 1.5.0**
 **Resolved issues**
@@ -141,19 +141,19 @@
 
 **Changed features**
 
-* [solution_name] for Jenkins now displays in parenthesis the version of Detect packaged with the plugin.
+* [company_name] [solution_name] for Jenkins now displays in parenthesis the version of Detect packaged with the plugin.
 
 ## **Version 1.4.1**
 * Maintenance release with overall improvements in stability and security.
 
 ## **Version 1.4.0**
 * Added support for converting from a Maven project to a Gradle project.
-* Improved error handling for [solution_name] exit codes.
-* Addressed an issue wherein cancelling a [solution_name] job was not terminating correctly.
+* Improved error handling for [company_name] [solution_name] exit codes.
+* Addressed an issue wherein cancelling a [company_name] [solution_name] job was not terminating correctly.
 
 ## **Version 1.3.0**
 * Added support for Java 8.
-* [solution_name] for Jenkins now supports Jenkins version 2.60.1 and higher.
+* [company_name] [solution_name] for Jenkins now supports Jenkins version 2.60.1 and higher.
 * Added API key support.
 * Added support for Microsoft NT Lan Manager (NTLM) protocol.
 
@@ -167,7 +167,7 @@
 ## **Version 1.0.2**
 **Resolved Issues**
 
-* Subordinate nodes do not use the proxy to download the [solution_name] *.jar* file (potential fix)
+* Subordinate nodes do not use the proxy to download the [company_name] [solution_name] *.jar* file (potential fix)
 
 ## **Version 1.0.1**
 **Resolved Issues**

@@ -13,9 +13,9 @@ It shares a directory with image inspector containers by mounting it as a volume
 Configure your Docker settings to enable this file sharing by adding your home directory 
 as a sharable directory on the Docker settings Resources > FILE SHARING screen.
 
-The shared directories are created under the [solution_name] output directory
-(controlled by [solution_name] *detect.output.path*).
-If you change the location of the [solution_name] output directory be sure your Docker file sharing settings enable
+The shared directories are created under the [company_name] [solution_name] output directory
+(controlled by [company_name] [solution_name] *detect.output.path*).
+If you change the location of the [company_name] [solution_name] output directory be sure your Docker file sharing settings enable
 sharing of that directory.
 
 ### Docker restrictions

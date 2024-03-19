@@ -46,7 +46,7 @@ installed packages.
 
 The following steps are performed back on the host when the request to the image inspector service returns:
 
-1. Returns the output files (BDIO and signature and binary scan targets) to [solution_name] by copying them to the output directory.
+1. Returns the output files (BDIO and signature and binary scan targets) to [company_name] [solution_name] by copying them to the output directory.
 1. Stops/removes the image inspector container.  Note that this can be disabled.
 
 ### Container mode
@@ -54,12 +54,12 @@ The following steps are performed back on the host when the request to the image
 In container mode, you start four containers in such a way that they share a mounted volume and can reach each other through HTTP GET operations using
 base URLs that you provide:
 
-* One container for [solution_name] / [docker_inspector_name].
+* One container for [company_name] [solution_name] / [docker_inspector_name].
 * One container for each of the three image inspector services: Alpine, CentOS, and Ubuntu.
 
 In container mode you must provide the target image in a .tar file with one of the supported formats; you cannot specify that target image by repo:tag.
 
-[solution_name] invokes [docker_inspector_name], which
+[company_name] [solution_name] invokes [docker_inspector_name], which
 requests the dependency graph (in BDIO format) and signature/binary scan targets using HTTP from the default image inspector service using a 
 base URL that you have provided.
 
@@ -70,11 +70,11 @@ The following steps are performed inside the image inspector container:
 1. Runs the image inspector's Linux package manager on the target image package manager database to get details of the installed packages.
 1. Produces and returns a BDIO1 (.jsonld) file consisting of a graph of target image packages and, optionally, the container filesystem.
 
-The following steps are performed by [docker_inspector_name]/[solution_name] back in the [solution_name]  container when the request to the image inspector service returns:
+The following steps are performed by [docker_inspector_name]/[company_name] [solution_name] back in the [company_name] [solution_name]  container when the request to the image inspector service returns:
 
-1. [docker_inspector_name] returns the output files (BDIO and signature and binary scan targets) to [solution_name] by copying them to the output directory.
-1. [solution_name] converts the BDIO to BDIO2, adjusts the project, project version, and codelocation names, and uploads it to [blackduck_product_name].
-1. [solution_name] performs [blackduck_signature_scan_act] and [blackduck_binary_scan_capability] on the scan targets.
+1. [docker_inspector_name] returns the output files (BDIO and signature and binary scan targets) to [company_name] [solution_name] by copying them to the output directory.
+1. [company_name] [solution_name] converts the BDIO to BDIO2, adjusts the project, project version, and codelocation names, and uploads it to [blackduck_product_name].
+1. [company_name] [solution_name] performs [blackduck_signature_scan_act] and [blackduck_binary_scan_capability] on the scan targets.
 
 #### Deploying in container mode
 

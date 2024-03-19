@@ -22,23 +22,23 @@ The detectors run a platform dependent self-contained executable that is current
 </note>
 
 ## Excluding dependency types
-[solution_name] offers the ability to exclude package manager specific dependency types from the BOM.
+[company_name] [solution_name] offers the ability to exclude package manager specific dependency types from the BOM.
 Nuget dependency types can be filtered with the [detect.nuget.dependency.types.excluded](../properties/detectors/nuget.md#nuget-dependency-types-excluded) property.
 This property supports exclusion of dependencies in projects that use PackageReference, and packages.config for listing dependencies.
 <note type="note">Support for storing dependencies in Json files has been deprecated by Nuget. As such we will not be enhancing the properties to exclude dependency types in this manner.</note>
 
-A project might be using a dependency purely as a development harness and you might not want to expose that to projects that will consume the package. You can use the PrivateAssets metadata to control this behavior. [solution_name] looks for the PrivateAssets attribute used within PackageReference tags to identify a development dependency. [solution_name] will ignore the contents of the tag and only observe the presence of these PrivateAssets to exclude those development related dependencies.
-For packages.config file, [solution_name] will look for developmentDependency tags to determine whether to include or exclude a dependency.
+A project might be using a dependency purely as a development harness and you might not want to expose that to projects that will consume the package. You can use the PrivateAssets metadata to control this behavior. [company_name] [solution_name] looks for the PrivateAssets attribute used within PackageReference tags to identify a development dependency. [company_name] [solution_name] will ignore the contents of the tag and only observe the presence of these PrivateAssets to exclude those development related dependencies.
+For packages.config file, [company_name] [solution_name] will look for developmentDependency tags to determine whether to include or exclude a dependency.
 
-### [solution_name] NuGet Inspector downloads
+### [company_name] [solution_name] NuGet Inspector downloads
 
-[solution_name] jar execution will automatically download any required binaries not located in the cache.
+[company_name] [solution_name] jar execution will automatically download any required binaries not located in the cache.
 
 For direct access to the binaries or source code see [download locations](../downloadingandinstalling/downloadlocations.md).
 
 ### Inspector Operation
 
-An inspector is self-contained and requires no installation. Each executable is platform dependent and the correct inspector is downloaded by [solution_name] at runtime.
+An inspector is self-contained and requires no installation. Each executable is platform dependent and the correct inspector is downloaded by [company_name] [solution_name] at runtime.
 
 NuGet Solution Native Inspector runs if one or more solution (.sln) files are found and derives packages (dependencies) via analysis of solution files. Central Package Management is supported to include any package versions and global package references mentioned under `Directory.Packages.props` files indicated the (.sln) file for each project under the solution. Any package references and versions in the solution's `Directory.Build.props` will be included for each project under the solution.
 
@@ -57,7 +57,7 @@ NuGet inspectors derive dependency information from solution (.sln) files in thi
 
 In addition to the packages and dependencies found from the above files, packages and dependencies will be included from other `project.assets.json` files if configured in the corresponding project's property file. (`<projectname>.<projectfiletype>.nuget.g.props`).
 
-After discovering dependencies, NuGet client libraries are used to collect further information about the dependencies and write them to a JSON file (`<projectname>_inspection.json`). [solution_name] then parses that file for the dependency information.
+After discovering dependencies, NuGet client libraries are used to collect further information about the dependencies and write them to a JSON file (`<projectname>_inspection.json`). [company_name] [solution_name] then parses that file for the dependency information.
 
 ### NuGet Project Native Inspector supported project files
 
@@ -75,14 +75,17 @@ After discovering dependencies, NuGet client libraries are used to collect furth
 
 ### NuGet Detector buildless mode
 
-In buildless mode, [solution_name] uses Project Inspector to find dependencies and only supports `.csproj` and `.sln` files.
+In buildless mode, [company_name] [solution_name] uses Project Inspector to find dependencies and only supports `.csproj` and `.sln` files.
 
-### [solution_name] NuGet Inspector on Alpine
+As of [company_name] [solution_name] 9.5.0 the version of Project Inspector in use supports the `--build-system MSBUILD` argument in place of `--strategy MSBUILD`.
+The `--force-nuget-repos "url"` argument will be removed from support in the next [company_name][solution_name] major release and replaced with the `--conf "nuget.repo:url"` argument.
 
-The [solution_name] NuGet Inspectors depend on packages not installed by default on Alpine systems, such as the dynamic loader for DLLs.
+### [company_name] [solution_name] NuGet Inspector on Alpine
+
+The [company_name] [solution_name] NuGet Inspectors depend on packages not installed by default on Alpine systems, such as the dynamic loader for DLLs.
 
 When the dynamic loader is not present, an error message similar to the following appears in the log as a result of
-[solution_name]'s attempt to execute the NuGet Inspector:
+[company_name] [solution_name]'s attempt to execute the NuGet Inspector:
 ```
 java.io.IOException: Cannot run program ".../tools/detect-nuget-inspector/detect-nuget-inspector-1.0.1-linux/detect-nuget-inspector" (in directory ...): error=2, No such file or directory
 ```
