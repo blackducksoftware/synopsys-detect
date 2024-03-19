@@ -94,7 +94,7 @@ Start in **Pipelines > Library** inside Azure DevOps.
 #/bin/bash
 #Log in to ACR using the configured Variable Group
 docker login <registryname>.azurecr.io -u $(acr.username) -p $(acr.password)
-#Call [company_name] [solution_name], passing the Docker Image location
+#Call Detect, passing the Docker Image location
 bash <(curl -s -L https:‎ //detect.synopsys.com/detect9.sh) \
 --blackduck.url=$(blackduck.url) \
 --blackduck.api.token=$(blackduck.api.token) \ 
