@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.projectinspector.model;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -16,4 +17,7 @@ public class ProjectInspectorModule {
 
     @SerializedName("Dependencies")
     public List<ProjectInspectorDependency> dependencies;
+
+    @SerializedName("Components")
+    public Map<String,ProjectInspectorComponent> components;
 }
