@@ -113,6 +113,16 @@ public class CodeLocationNameGenerator {
 
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
     }
+    
+    public String createThreatIntelCodeLocationName(File targetFile, String projectName, String projectVersionName) {
+        String codeLocationTypeString = CodeLocationNameType.THREAT_INTEL.getName();
+        
+        String canonicalFileName = DetectFileUtils.tryGetCanonicalName(targetFile);
+        List<String> fileCodeLocationNamePieces = Arrays.asList(canonicalFileName, projectName, projectVersionName);
+        List<String> fileCodeLocationEndPieces = Collections.singletonList(codeLocationTypeString);
+
+        return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
+    }
 
     public String createImpactAnalysisCodeLocationName(File sourceDirectory, String projectName, String projectVersionName) {
         String codeLocationTypeString = CodeLocationNameType.IMPACT_ANALYSIS.getName();

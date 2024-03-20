@@ -36,6 +36,7 @@ public enum DetectGroup implements Group {
     CONTAINER_SCANNER("container scanner"),
     IMPACT_ANALYSIS("impact analysis"),
     IAC_SCAN("iac scan"),
+    THREAT_INTEL("threat intel"),
 
     //Detector Groups
     BAZEL("bazel", DETECTORS),
