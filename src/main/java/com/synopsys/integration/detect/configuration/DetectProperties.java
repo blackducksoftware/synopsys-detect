@@ -327,9 +327,9 @@ public class DetectProperties {
 
     public static final NullableStringProperty DETECT_THREAT_INTEL_SCAN_FILE =
             NullableStringProperty.newBuilder("detect.threatintel.scan.file.path")
-                .setInfo("ThreatIntel Scan Target", DetectPropertyFromVersion.VERSION_9_6_0)
+                .setInfo("Threat Intel Scan Target", DetectPropertyFromVersion.VERSION_9_6_0)
                 .setHelp(
-                    "If specified, this file and this file only will be uploaded for ThreatIntel analysis.  The THREAT_INTEL tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the THREAT_INTEL tool is invoked.")
+                    "If specified, this file and this file only will be uploaded for Threat Intel analysis.  The THREAT_INTEL tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the THREAT_INTEL tool is invoked.")
                 .setGroups(DetectGroup.THREAT_INTEL, DetectGroup.SOURCE_PATH)
                 .build();
 
