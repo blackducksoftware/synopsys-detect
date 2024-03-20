@@ -68,7 +68,8 @@ public class MavenCliExtractor {
             if(extraction.isSuccess()) {
                 shadedDependencies = mavenProjectInspectorDetectable.getShadedDependencies();
             } else {
-                return new Extraction.Builder().exception(extraction.getError()).build();
+                Exception exception = new RuntimeException("There was an error extracting the shaded dependencies from Project Inspector. There might be version mismatch between Detect and Project Inspector, confirm that compatible versions of them are in use.", extraction.getError());
+                return new Extraction.Builder().exception(exception).build();
             }
         }
 
