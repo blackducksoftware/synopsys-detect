@@ -532,7 +532,7 @@ public class DetectConfigurationFactory {
         return Optional.ofNullable(detectConfiguration.getNullableValue(DetectProperties.DETECT_CONTAINER_SCAN_FILE));
     }
     
-    public Optional<String> getRlScanFilePath() {
-        return Optional.ofNullable(detectConfiguration.getNullableValue(DetectProperties.DETECT_RL_SCAN_FILE));
+    public Optional<String> getThreatIntelScanFilePath() {
+        return Optional.ofNullable(detectConfiguration.getNullableValue(DetectProperties.DETECT_THREAT_INTEL_SCAN_FILE));
     }
 }

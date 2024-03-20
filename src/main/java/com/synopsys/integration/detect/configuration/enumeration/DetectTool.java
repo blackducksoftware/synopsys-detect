@@ -9,5 +9,5 @@ public enum DetectTool {
     BAZEL,
     IAC_SCAN,
     CONTAINER_SCAN,
-    RL_SCAN
+    THREAT_INTEL
 }

@@ -23,33 +23,33 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 
-public class RlScanStepRunner {
+public class ThreatIntelScanStepRunner {
     
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final NameVersion projectNameVersion;
     private final String projectGroupName;
     private UUID scanId;
     private final OperationRunner operationRunner;
-    private final File rlRunDirectory;
+    private final File threatIntelRunDirectory;
     private final BlackDuckRunData blackDuckRunData;
     private String codeLocationName;
     private static final String STORAGE_UPLOAD_ENDPOINT = "/api/storage/rldata/";
     private static final String STORAGE_RL_CONTENT_TYPE = "application/vnd.blackducksoftware.rl-data-1+octet-stream";
     private static final BlackDuckVersion MIN_BLACK_DUCK_VERSION = new BlackDuckVersion(2024, 4, 0);
     
-    public RlScanStepRunner(OperationRunner operationRunner, BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion) {
+    public ThreatIntelScanStepRunner(OperationRunner operationRunner, BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion) {
         this.operationRunner = operationRunner;
         this.blackDuckRunData = blackDuckRunData;
         this.projectNameVersion = projectNameVersion;
         
-        rlRunDirectory = operationRunner.getDirectoryManager().getReversingLabsOutputDirectory();
+        threatIntelRunDirectory = operationRunner.getDirectoryManager().getThreatIntelOutputDirectory();
         projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
     }
 
-    public Optional<UUID> invokeRlWorkflow() {
+    public Optional<UUID> invokeThreatIntelWorkflow() {
         try {
-            logger.debug("Determining if configuration is valid to run a ReversingLabs scan.");
-            if (!isReversingLabsEligible()) {
+            logger.debug("Determining if configuration is valid to run a Threat Intel scan.");
+            if (!isThreatIntelEligible()) {
                 return Optional.ofNullable(scanId);
             }
             if (!isBlackDuckVersionValid()) {
@@ -57,27 +57,27 @@ public class RlScanStepRunner {
                         Integer.toString(MIN_BLACK_DUCK_VERSION.getMajor()),
                         Integer.toString(MIN_BLACK_DUCK_VERSION.getMinor()),
                         Integer.toString(MIN_BLACK_DUCK_VERSION.getPatch()));
-                throw new IntegrationException("ReversingLabs scan is only supported with BlackDuck version "
-                        + minBlackDuckVersion + " or greater. ReversingLabs scan could not be run.");
+                throw new IntegrationException("Threat Intel scan is only supported with BlackDuck version "
+                        + minBlackDuckVersion + " or greater. Threat Intel scan could not be run.");
             }
 
             codeLocationName = createCodeLocationName();
-            File fileToUpload = new File(operationRunner.getRlScanFilePath().get());
+            File fileToUpload = new File(operationRunner.getThreatIntelScanFilePath().get());
             
             // Generate BDIO header and obtain scanID
             initiateScan(fileToUpload.length());
             
-            logger.info("ReversingLabs scan initiated. Uploading file to scan.");
+            logger.info("Theat Intel scan initiated. Uploading file to scan.");
             
             uploadFileToStorageService(fileToUpload);
             
-            logger.info("ReversingLabs file upload complete.");
+            logger.info("Threat Intel file upload complete.");
             
             // publish success event
-            operationRunner.publishRlSuccess();
+            operationRunner.publishThreatIntelSuccess();
 
         } catch (IntegrationException | IOException | OperationException e) {
-            operationRunner.publishRlFailure(e);
+            operationRunner.publishThreatIntelFailure(e);
             return Optional.empty();
         }
 
@@ -90,8 +90,8 @@ public class RlScanStepRunner {
 
     private void uploadFileToStorageService(File fileToUpload) throws IOException, OperationException, IntegrationException {
         String storageServiceEndpoint = String.join("", STORAGE_UPLOAD_ENDPOINT, scanId.toString());
-        String operationName = "Upload ReversingLabs File";
-        logger.debug("Uploading ReversingLabs file to storage endpoint: {}", storageServiceEndpoint);
+        String operationName = "Upload Threat Intel File";
+        logger.debug("Uploading Threat Intel file to storage endpoint: {}", storageServiceEndpoint);
         
         Map<String, String> headers = new HashMap<>();
 
@@ -107,10 +107,10 @@ public class RlScanStepRunner {
                 headers)
             ) {
             if (response.isStatusCodeSuccess()) {
-                logger.debug("ReversingLabs file uploaded to storage service.");
+                logger.debug("Threat Intel file uploaded to storage service.");
             } else {
-                logger.trace("Unable to upload ReversingLabs file. {} {}", response.getStatusCode(), response.getStatusMessage());
-                throw new IntegrationException(String.join(" ", "Unable to upload ReversingLabs file. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
+                logger.trace("Unable to upload Threat Intel file. {} {}", response.getStatusCode(), response.getStatusMessage());
+                throw new IntegrationException(String.join(" ", "Unable to upload Threat Intel file. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
             }
         }
     }
@@ -123,8 +123,8 @@ public class RlScanStepRunner {
             projectGroupName,
             codeLocationName,
             fileSize);
-        File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(rlRunDirectory);
-        String operationName = "Upload ReversingLabs Scan BDIO Header to Initiate Scan";
+        File bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(threatIntelRunDirectory);
+        String operationName = "Upload Threat Intel Scan BDIO Header to Initiate Scan";
         scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile, operationName);
         if (scanId == null) {
             logger.warn("Scan ID was not found in the response from the server.");
@@ -139,13 +139,13 @@ public class RlScanStepRunner {
         return blackDuckVersion.isPresent() && blackDuckVersion.get().isAtLeast(MIN_BLACK_DUCK_VERSION);
     }
     
-    private boolean isReversingLabsEligible() throws IOException {
-        if (!operationRunner.getRlScanFilePath().isPresent()) {
-            logger.info("No detect.rl.scan.file.path property was provided. Skipping ReversingLabs scan.");
+    private boolean isThreatIntelEligible() throws IOException {
+        if (!operationRunner.getThreatIntelScanFilePath().isPresent()) {
+            logger.info("No detect.threatintel.scan.file.path property was provided. Skipping Threat Intel scan.");
             return false;
         }
         
-        String scanFilePath = operationRunner.getRlScanFilePath().get();
+        String scanFilePath = operationRunner.getThreatIntelScanFilePath().get();
         
         File scanFile = new File(scanFilePath);
         
@@ -158,7 +158,7 @@ public class RlScanStepRunner {
     
     private String createCodeLocationName() {
         CodeLocationNameManager codeLocationNameManager = operationRunner.getCodeLocationNameManager();
-        File targetFile = new File(operationRunner.getRlScanFilePath().get());
-        return codeLocationNameManager.createReversingLabsScanCodeLocationName(targetFile, projectNameVersion.getName(), projectNameVersion.getVersion());
+        File targetFile = new File(operationRunner.getThreatIntelScanFilePath().get());
+        return codeLocationNameManager.createThreatIntelScanCodeLocationName(targetFile, projectNameVersion.getName(), projectNameVersion.getVersion());
     }
 }

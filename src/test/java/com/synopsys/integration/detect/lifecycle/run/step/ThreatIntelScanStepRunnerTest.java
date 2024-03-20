@@ -32,7 +32,7 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 
-public class RlScanStepRunnerTest {
+public class ThreatIntelScanStepRunnerTest {
     
     @Mock
     private OperationRunner operationRunner;
@@ -43,7 +43,7 @@ public class RlScanStepRunnerTest {
     @Mock
     private NameVersion projectNameVersion;
     
-    private RlScanStepRunner rlRunner;
+    private ThreatIntelScanStepRunner threatIntelRunner;
     
     private File rootDirectory;
     private File scannableFile;
@@ -52,16 +52,16 @@ public class RlScanStepRunnerTest {
     public void setup() throws IOException {
         MockitoAnnotations.openMocks(this);
         
-        rootDirectory = Files.createTempDirectory("RlRunnerTest").toFile();      
+        rootDirectory = Files.createTempDirectory("ThreatIntelRunnerTest").toFile();      
         scannableFile = new File(rootDirectory.toString() + "/path");
         scannableFile.createNewFile();
         DirectoryManager directoryManager = mock(DirectoryManager.class);
         when(operationRunner.getDirectoryManager()).thenReturn(directoryManager); 
-        when(directoryManager.getReversingLabsOutputDirectory()).thenReturn(rootDirectory); 
+        when(directoryManager.getThreatIntelOutputDirectory()).thenReturn(rootDirectory); 
         
         when(operationRunner.calculateProjectGroupOptions()).thenReturn(mock(ProjectGroupOptions.class));
         
-        rlRunner = new RlScanStepRunner(operationRunner, blackDuckRunData, projectNameVersion);
+        threatIntelRunner = new ThreatIntelScanStepRunner(operationRunner, blackDuckRunData, projectNameVersion);
     }
     
     @AfterEach
@@ -71,35 +71,35 @@ public class RlScanStepRunnerTest {
 
     @Test
     public void testNoScanFilePath() throws IOException {        
-        when(operationRunner.getRlScanFilePath()).thenReturn(Optional.empty());
+        when(operationRunner.getThreatIntelScanFilePath()).thenReturn(Optional.empty());
         
-        Optional<UUID> scanId = rlRunner.invokeRlWorkflow();
+        Optional<UUID> scanId = threatIntelRunner.invokeThreatIntelWorkflow();
         
         assertEquals(Optional.empty(), scanId);
     }
     
     @Test
     public void testBadBlackDuckVersion() {
-        when(operationRunner.getRlScanFilePath()).thenReturn(Optional.of(scannableFile.toString()));
+        when(operationRunner.getThreatIntelScanFilePath()).thenReturn(Optional.of(scannableFile.toString()));
         
         // Needs to be 2024, 4, 0 or later
         when(blackDuckRunData.getBlackDuckServerVersion()).thenReturn(Optional.of(new BlackDuckVersion(2023, 4, 0)));
         
-        Optional<UUID> scanId = rlRunner.invokeRlWorkflow();
+        Optional<UUID> scanId = threatIntelRunner.invokeThreatIntelWorkflow();
         
         assertEquals(Optional.empty(), scanId);
         
         ArgumentCaptor<Exception> argument = ArgumentCaptor.forClass(Exception.class);
-        verify(operationRunner).publishRlFailure(argument.capture());
+        verify(operationRunner).publishThreatIntelFailure(argument.capture());
         
-        String failure = "ReversingLabs scan is only supported with BlackDuck version 2024.4.0 or greater. ReversingLabs scan could not be run.";
+        String failure = "Threat Intel scan is only supported with BlackDuck version 2024.4.0 or greater. Threat Intel scan could not be run.";
         
         assertEquals(failure, argument.getValue().getMessage());
     }
     
     @Test
-    public void testRlScanSuccess() throws OperationException, IntegrationException {
-        when(operationRunner.getRlScanFilePath()).thenReturn(Optional.of(scannableFile.toString()));
+    public void testThreatIntelScanSuccess() throws OperationException, IntegrationException {
+        when(operationRunner.getThreatIntelScanFilePath()).thenReturn(Optional.of(scannableFile.toString()));
         when(blackDuckRunData.getBlackDuckServerVersion()).thenReturn(Optional.of(new BlackDuckVersion(2024, 4, 0)));
         when(operationRunner.getCodeLocationNameManager()).thenReturn(mock(CodeLocationNameManager.class));
         when(operationRunner.uploadBdioHeaderToInitiateScan(any(), any(), any())).thenReturn(UUID.randomUUID());
@@ -109,7 +109,7 @@ public class RlScanStepRunnerTest {
        
         when(operationRunner.uploadFileToStorageServiceWithHeaders(any(), any(), any(), any(), any(), any())).thenReturn(mockResponse);
         
-        Optional<UUID> scanId = rlRunner.invokeRlWorkflow();
+        Optional<UUID> scanId = threatIntelRunner.invokeThreatIntelWorkflow();
         
         assertTrue(scanId.isPresent());    
     }

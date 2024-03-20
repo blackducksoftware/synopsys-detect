@@ -86,13 +86,13 @@ public class CodeLocationNameManager {
         }
     }
 
-    public String createReversingLabsScanCodeLocationName(File targetFile, String projectName, String projectVersionName) {
+    public String createThreatIntelScanCodeLocationName(File targetFile, String projectName, String projectVersionName) {
         String scanCodeLocationName;
 
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
-            scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.REVERSING_LABS);
+            scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.THREAT_INTEL);
         } else {
-            scanCodeLocationName = codeLocationNameGenerator.createReversingLabsCodeLocationName(targetFile, projectName, projectVersionName);
+            scanCodeLocationName = codeLocationNameGenerator.createThreatIntelCodeLocationName(targetFile, projectName, projectVersionName);
         }
         return scanCodeLocationName;
     }

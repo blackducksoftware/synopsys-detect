@@ -7,7 +7,7 @@ public enum CodeLocationNameType {
     BINARY("binary"),
     CONTAINER("container"),
     IAC("iac"),
-    REVERSING_LABS("ReversingLabs");
+    THREAT_INTEL("ThreatIntel");
 
     private final String name;
 

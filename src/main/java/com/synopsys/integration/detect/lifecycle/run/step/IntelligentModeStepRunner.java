@@ -165,13 +165,13 @@ public class IntelligentModeStepRunner {
             mustWaitAtBomSummaryLevel.set(true);
         });
         
-        stepHelper.runToolIfIncluded(DetectTool.RL_SCAN, "ReversingLabs Scan", () -> {
-            RlScanStepRunner rlScanStepRunner = new RlScanStepRunner(operationRunner, blackDuckRunData, projectNameVersion);
-            Optional<UUID> scanId = rlScanStepRunner.invokeRlWorkflow();
+        stepHelper.runToolIfIncluded(DetectTool.THREAT_INTEL, "Threat Intel Scan", () -> {
+            ThreatIntelScanStepRunner threatIntelScanStepRunner = new ThreatIntelScanStepRunner(operationRunner, blackDuckRunData, projectNameVersion);
+            Optional<UUID> scanId = threatIntelScanStepRunner.invokeThreatIntelWorkflow();
             scanId.ifPresent(uuid -> scanIdsToWaitFor.add(uuid.toString()));
-            Set<String> rlScanCodeLocations = new HashSet<>();
-            rlScanCodeLocations.add(rlScanStepRunner.getCodeLocationName());
-            codeLocationAccumulator.addNonWaitableCodeLocation(rlScanCodeLocations);
+            Set<String> threatIntelScanCodeLocations = new HashSet<>();
+            threatIntelScanCodeLocations.add(threatIntelScanStepRunner.getCodeLocationName());
+            codeLocationAccumulator.addNonWaitableCodeLocation(threatIntelScanCodeLocations);
         });
 
         operationRunner.attemptToGenerateComponentLocationAnalysisIfEnabled();
@@ -251,7 +251,7 @@ public class IntelligentModeStepRunner {
         return detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN) ||
             detectToolFilter.shouldInclude(DetectTool.CONTAINER_SCAN) ||
             detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN) ||
-            detectToolFilter.shouldInclude(DetectTool.RL_SCAN);
+            detectToolFilter.shouldInclude(DetectTool.THREAT_INTEL);
     }
 
     private void publishPostResults(BdioResult bdioResult, ProjectVersionWrapper projectVersionWrapper, DetectToolFilter detectToolFilter) {

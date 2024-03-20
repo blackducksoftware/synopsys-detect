@@ -393,8 +393,8 @@ public class OperationRunner {
         return detectConfigurationFactory.getContainerScanFilePath();
     }
 
-    public Optional<String> getRlScanFilePath() {
-        return detectConfigurationFactory.getRlScanFilePath();
+    public Optional<String> getThreatIntelScanFilePath() {
+        return detectConfigurationFactory.getThreatIntelScanFilePath();
     }
     
     public File downloadContainerImage(Gson gson, File downloadDirectory, String containerImageUri) throws DetectUserFriendlyException, IntegrationException, IOException {
@@ -1148,18 +1148,18 @@ public class OperationRunner {
         exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "CONTAINER_SCAN");
     }
     
-    public void publishRlFailure(Exception e) {
-        logger.error("ReversingLabs scan failure: {}", e.getMessage());
-        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.RL_SCAN, StatusType.FAILURE));
-        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "RL_SCAN");
+    public void publishThreatIntelFailure(Exception e) {
+        logger.error("Threat Intel scan failure: {}", e.getMessage());
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.THREAT_INTEL, StatusType.FAILURE));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "THREAT_INTEL");
     }
 
     public void publishContainerSuccess() {
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.CONTAINER_SCAN, StatusType.SUCCESS));
     }
     
-    public void publishRlSuccess() {
-        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.RL_SCAN, StatusType.SUCCESS));
+    public void publishThreatIntelSuccess() {
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.THREAT_INTEL, StatusType.SUCCESS));
     }
 
     public void publishImpactFailure(Exception e) {

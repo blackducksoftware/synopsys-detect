@@ -42,11 +42,11 @@ public class DirectoryManager {
         RAPID("rapid"),
         RELEVANT("relevant"),
         REPORT("reports"),
-        REVERSING_LABS("reversing-labs"),
         SCAN("scan"),
         SHARED("shared"),
         STATUS("status"),
         STATUS_COPY("status-copy"),
+        THREAT_INTEL("threat-intel"),
         IAC("iac");
 
         private final String directoryName;
@@ -176,8 +176,8 @@ public class DirectoryManager {
         return getRunDirectory(RunDirectory.IMPACT_ANALYSIS);
     }
     
-    public File getReversingLabsOutputDirectory() {
-        return getRunDirectory(RunDirectory.REVERSING_LABS);
+    public File getThreatIntelOutputDirectory() {
+        return getRunDirectory(RunDirectory.THREAT_INTEL);
     }
 
     public File getRelevantOutputDirectory() {

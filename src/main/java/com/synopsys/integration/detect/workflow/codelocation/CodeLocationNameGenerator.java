@@ -114,8 +114,8 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
     }
     
-    public String createReversingLabsCodeLocationName(File targetFile, String projectName, String projectVersionName) {
-        String codeLocationTypeString = CodeLocationNameType.REVERSING_LABS.getName();
+    public String createThreatIntelCodeLocationName(File targetFile, String projectName, String projectVersionName) {
+        String codeLocationTypeString = CodeLocationNameType.THREAT_INTEL.getName();
         
         String canonicalFileName = DetectFileUtils.tryGetCanonicalName(targetFile);
         List<String> fileCodeLocationNamePieces = Arrays.asList(canonicalFileName, projectName, projectVersionName);

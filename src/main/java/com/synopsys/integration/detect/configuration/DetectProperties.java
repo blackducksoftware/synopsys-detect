@@ -325,12 +325,12 @@ public class DetectProperties {
             .setGroups(DetectGroup.CONTAINER_SCANNER, DetectGroup.SOURCE_PATH)
             .build();
 
-    public static final NullableStringProperty DETECT_RL_SCAN_FILE =
-            NullableStringProperty.newBuilder("detect.rl.scan.file.path")
-                .setInfo("ReversingLabs Scan Target", DetectPropertyFromVersion.VERSION_9_6_0)
+    public static final NullableStringProperty DETECT_THREAT_INTEL_SCAN_FILE =
+            NullableStringProperty.newBuilder("detect.threatintel.scan.file.path")
+                .setInfo("ThreatIntel Scan Target", DetectPropertyFromVersion.VERSION_9_6_0)
                 .setHelp(
-                    "If specified, this file and this file only will be uploaded for ReversingLabs analysis.  The RL_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the RL_SCAN tool is invoked.")
-                .setGroups(DetectGroup.RL_SCANNER, DetectGroup.SOURCE_PATH)
+                    "If specified, this file and this file only will be uploaded for ThreatIntel analysis.  The THREAT_INTEL tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the THREAT_INTEL tool is invoked.")
+                .setGroups(DetectGroup.THREAT_INTEL, DetectGroup.SOURCE_PATH)
                 .build();
 
     // TODO: Consider removing environment sourcing code in 9.0.0. IDETECT-3167
