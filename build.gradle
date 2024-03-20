@@ -140,8 +140,9 @@ dependencies {
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
 
     // Below direct inclusions of corresponding transitive dependencies
-    // were added to resolve CVE-2024-22243 appearing in 5.3.27 of springframework libraries.
+    // were added to resolve CVE-2024-22259 appearing in 5.3.27 of springframework libraries.
     // The below changes can be reverted in the future after comprehensively testing with an updated spring boot version
+    implementation "org.springframework:spring-jcl:5.3.32"
     implementation("org.springframework:spring-core:5.3.33")
     implementation "org.springframework:spring-aop:5.3.33"
     implementation "org.springframework:spring-beans:5.3.33"
