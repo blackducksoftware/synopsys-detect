@@ -52,6 +52,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedReduc
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
+import com.synopsys.integration.detectable.detectables.buildroot.BuildrootDependencyType;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDependencyType;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
@@ -366,6 +367,14 @@ public class DetectProperties {
             )
             .setExample("BUILD")
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
+            .build();
+
+    public static final NoneEnumListProperty<BuildrootDependencyType> DETECT_BUILDROOT_DEPENDENCY_TYPES_EXCLUDED =
+        NoneEnumListProperty.newBuilder("detect.buildroot.dependency.types.excluded", NoneEnum.NONE, BuildrootDependencyType.class)
+            .setInfo("Buildroot Excluded Dependency Types", DetectPropertyFromVersion.VERSION_9_5_0)
+            .setHelp("The dependency types to exclude from the results.")
+            .setExample("HOST")
+            .setGroups(DetectGroup.BUILDROOT, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final NullableStringProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS =
@@ -1075,14 +1084,24 @@ public class DetectProperties {
             .build();
 
     public static final BooleanProperty DETECT_MAVEN_INCLUDE_SHADED_DEPENDENCIES =
-            BooleanProperty.newBuilder("detect.maven.include.shaded.dependencies",false)
-                    .setInfo("Include Shaded Dependencies", DetectPropertyFromVersion.VERSION_9_5_0)
-                    .setHelp(
-                            "If set to true, Detect will include shaded dependencies as part of BOM.",
-                            "A shaded dependency is packaged inside the uber jar of the direct or transitive dependency referenced in the project. Detect will find the use of maven-shade-plugin from original POM file and based on that will derive information for these dependencies. This property will only be supported in build mode just like all other MAVEN properties."
-                    )
-                    .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
-                    .build();
+        BooleanProperty.newBuilder("detect.maven.include.shaded.dependencies",false)
+            .setInfo("Include Shaded Dependencies", DetectPropertyFromVersion.VERSION_9_5_0)
+            .setHelp(
+                    "If set to true, Detect will include shaded dependencies as part of BOM.",
+                    "A shaded dependency is packaged inside the uber jar of the direct or transitive dependency referenced in the project. Detect will find the use of maven-shade-plugin from original POM file and based on that will derive information for these dependencies. This property will only be supported in build mode just like all other MAVEN properties."
+            )
+            .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
+            .build();
+
+    public static final NullablePathProperty DETECT_MAKE_PATH =
+        NullablePathProperty.newBuilder("detect.make.path")
+            .setInfo("Make Executable", DetectPropertyFromVersion.VERSION_9_5_0)
+            .setHelp(
+                "The path to the Make executable.",
+                "If set, Detect will use the given Make executable instead of searching for one."
+            )
+            .setGroups(DetectGroup.BUILDROOT, DetectGroup.GLOBAL)
+            .build();
 
     public static final BooleanProperty DETECT_NOTICES_REPORT =
         BooleanProperty.newBuilder("detect.notices.report", false)
