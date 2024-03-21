@@ -2,9 +2,9 @@
 
 ## Online mode
 
-To view and manage your [solution_name] scan results after running [solution_name] online, do the following.
+To view and manage your [company_name] [solution_name] scan results after running [company_name] [solution_name] online, do the following.
 
-- In the [solution_name] output look for "Detect Result" and copy the Black Duck Project BOM URL as shown in the following example:
+- In the [company_name] [solution_name] output look for "Detect Result" and copy the Black Duck Project BOM URL as shown in the following example:
 
 ````
 2020-06-11 06:35:39 INFO [main] ---======== Detect Result ========
@@ -17,9 +17,9 @@ For help with viewing and analyzing your scan results go to the [blackduck_produ
 
 ## Offline mode
 
-To view and manage your [solution_name] scan results after running [solution_name] offline (with property *blackduck.offline.mode* set to *true*), do the following.
+To view and manage your [company_name] [solution_name] scan results after running [company_name] [solution_name] offline (with property *blackduck.offline.mode* set to *true*), do the following.
 
-- In the [solution_name] output (near the beginning), look for the value of "Run directory". The output files will be written into subdirectories of the run directory. For example:
+- In the [company_name] [solution_name] output (near the beginning), look for the value of "Run directory". The output files will be written into subdirectories of the run directory. For example:
 
 ````
 2022-03-07 15:46:29 EST INFO  [main] --- Run directory: /Users/billings/blackduck/runs/2022-03-07-20-46-29-611

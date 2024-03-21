@@ -16,6 +16,6 @@ To exclude specific detectors, use:
 
 Exclusions take precedence over inclusions.
 
-Refer to [Detectors](../../components/detectors.md) for the list of detector names.
+Refer to [Detectors](../../components/detectors.dita) for the list of detector names.
 
 Refer to [Properties](../../properties/all-properties.md) for details.

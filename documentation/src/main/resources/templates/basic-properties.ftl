@@ -1,6 +1,6 @@
 # Basic Properties
 
-This page lists [solution_name]'s basic properties.
+This page lists [company_name] [solution_name]'s basic properties.
 For advanced and deprecated properties, refer to [All Properties](all-properties.md).
 
 <#list groups?sort_by("groupName") as group>

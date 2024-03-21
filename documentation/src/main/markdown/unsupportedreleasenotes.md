@@ -6,7 +6,7 @@
 ### New features
 * Added support for Swift projects built with Swift 5.6 or later.
 
-* Added support for running IaC scans via [solution_name]. See [IaC Scan](runningdetect/iacscan.md) for more details. Note: IaC capabilities require Black Duck 2022.7.0 or later.
+* Added support for running IaC scans via [company_name] [solution_name]. See [IaC Scan](runningdetect/iacscan.md) for more details. Note: IaC capabilities require Black Duck 2022.7.0 or later.
 
 ## Version 7.13.2
 
@@ -21,7 +21,7 @@
 
 ### New features
 * Added support for a buildless Pipenv detector that parses the Pipfile.lock file (see the [python support page](packagemgrs/python.md) for more details).
-* [solution_name] now includes pass-through properties when logging configuration at the beginning of a run.
+* [company_name] [solution_name] now includes pass-through properties when logging configuration at the beginning of a run.
 * Added support for Xcode Workspaces (see the [swift support page](packagemgrs/swift.md) for more details).
 
 ### Changed features
@@ -31,7 +31,7 @@
 ### Resolved issues
 * (IDETECT-3136) Resolved an issue where NPM's `package-lock.json` was prioritized over `npm-shrinkwrap.json`.
 * (IDETECT-3184) Resolved an issue that prevented matches for Bazel maven_install components with complex (>3 parts) maven_coordinates values.
-* (IDETECT-3207) Resolved an issue that prevented Bazel and Docker Tool issues from being reported in the issues section of the [solution_name] log and status file.
+* (IDETECT-3207) Resolved an issue that prevented Bazel and Docker Tool issues from being reported in the issues section of the [company_name] [solution_name] log and status file.
 
 ### Dependency update
 
@@ -41,7 +41,7 @@
 
 ### Changed Features
 
-* When signature scanning is skipped due to the minimum scan interval on Black Duck not being met, [solution_name] by default will treat the run as a success and will not wait for the skipped scan(s). If the property detect.force.success.on.skip is set to false, [solution_name] will instead return exit code 13 when one or more signature scans were skipped.
+* When signature scanning is skipped due to the minimum scan interval on Black Duck not being met, [company_name] [solution_name] by default will treat the run as a success and will not wait for the skipped scan(s). If the property detect.force.success.on.skip is set to false, [company_name] [solution_name] will instead return exit code 13 when one or more signature scans were skipped.
 
 ## Version 7.12.0
 
@@ -50,28 +50,28 @@
 * Verified support for Java 16 and 17.
 * Added new properties detect.gradle.excluded.project.paths and detect.gradle.included.project.paths to allow filtering on paths which gradle guarantees to be unique.
 * Added support for vendoring Go Mod dependencies using [detect.go.mod.dependency.types.excluded=VENDORED](properties/detectors/go.md#go-mod-dependency-types-excluded) to exclude *test* and *build system* dependencies from Go modules declaring a version prior to `Go 1.16`.
-* Added a feature that allows users to configure [solution_name] to fail when policies of a certain name are violated.
+* Added a feature that allows users to configure [company_name] [solution_name] to fail when policies of a certain name are violated.
   See [detect.policy.check.fail.on.names](properties/configuration/project.md#fail-on-policy-names-with-violations) for details. Note: this feature requires Black Duck 2022.2.0 or later.
 * Added Rapid Compare Mode which enables returning only the differences in policy violations compared to a previous scan.
 
 ### Changed features
 
-* Changed default value of detect.project.clone.categories from ALL to COMPONENT_DATA, CUSTOM_FIELD_DATA, LICENSE_TERM_FULFILLMENT, VERSION_SETTINGS, VULN_DATA.  This avoids the automatic setting of the clone category DEEP_LICENSE introduced in Black Duck 2022.2.0. Users of [solution_name] 7.12.0 that wish to pass DEEP_LICENSE or ALL as a value to detect.project.clone.categories must be using Black Duck 2022.2.0 or later.
+* Changed default value of detect.project.clone.categories from ALL to COMPONENT_DATA, CUSTOM_FIELD_DATA, LICENSE_TERM_FULFILLMENT, VERSION_SETTINGS, VULN_DATA.  This avoids the automatic setting of the clone category DEEP_LICENSE introduced in Black Duck 2022.2.0. Users of [company_name] [solution_name] 7.12.0 that wish to pass DEEP_LICENSE or ALL as a value to detect.project.clone.categories must be using Black Duck 2022.2.0 or later.
 * Added new property detect.bazel.workspace.rules to replace the now deprecated detect.bazel.dependency.type property.
 * For Go Mod projects, successfully executing `go version` is now required. Unsuccessful attempts now result in a run failure.
 * The property *detect.go.mod.dependency.types.excluded* now only accepts a single value rather than a list of values.
 
 ### Resolved issues
 
-* (IDETECT-3016) Resolved an issue where proxies may block HEAD requests made by [solution_name] when attempting to download the Signature Scanner from Black Duck. Because the
-  criteria that [solution_name] uses to download the Black Duck Signature Scanner is new, the next run will re-download the Signature Scanner.
+* (IDETECT-3016) Resolved an issue where proxies may block HEAD requests made by [company_name] [solution_name] when attempting to download the Signature Scanner from Black Duck. Because the
+  criteria that [company_name] [solution_name] uses to download the Black Duck Signature Scanner is new, the next run will re-download the Signature Scanner.
 * (IDETECT-3165) Resolved an issue that could cause the Bitbake detector to fail with error `Graph Node recipe ... does not correspond to any known layer`.
 
 ## Version 7.11.1
 
 ### Changed features
 
-* Updated [solution_name] to package Air Gap with the latest Nuget Inspectors: IntegrationNugetInspector:3.1.1, BlackduckNugetInspector:1.1.1, NugetDotnet3Inspector:1.1.1,
+* Updated [company_name] [solution_name] to package Air Gap with the latest Nuget Inspectors: IntegrationNugetInspector:3.1.1, BlackduckNugetInspector:1.1.1, NugetDotnet3Inspector:1.1.1,
   NugetDotnet5Inspector:1.1.1.
 
 ## Version 7.11.0
@@ -90,8 +90,8 @@
 ### Resolved issues
 
 * (IDETECT-2925) Resolved an issue that could cause the Bitbake detector to incorrectly identify the layer of a dependency recipe.
-* (IDETECT-3080) Fixed an issue where [solution_name] would not include multiple versions of the same package in Cargo projects.
-* (IDETECT-3012) Resolved an issue that caused [solution_name] to incorrectly use BLACKDUCK_USERNAME and BLACKDUCK_PASSWORD.
+* (IDETECT-3080) Fixed an issue where [company_name] [solution_name] would not include multiple versions of the same package in Cargo projects.
+* (IDETECT-3012) Resolved an issue that caused [company_name] [solution_name] to incorrectly use BLACKDUCK_USERNAME and BLACKDUCK_PASSWORD.
 
 ## Version 7.10.0
 
@@ -102,7 +102,7 @@
 
 ### Changed features
 
-* [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
+* [company_name] [solution_name] now classifies empty code location warning messages as the DEBUG logging level instead of the previous classification as the WARN logging level.
 * BitBake detector: Added support for BitBake 1.52 (Yocto 3.4).
 * BitBake detector: Added support for BitBake projects with build directories that reside outside the project directory.
 * Deprecated many properties relating to filtering dependency types from the BOM. These property replacements will reduce the number of properties, apply consistency to detector
@@ -134,12 +134,12 @@
 
 ### Resolved issues
 
-* (IDETECT-2949) Fixed an issue where [solution_name] failed to properly parse Go module version names containing '-' characters.
-* (IDETECT-2959) Fixed an issue where [solution_name] would not fail when running `go mod why` fails.
-* (IDETECT-2971) Fixed an issue where [solution_name] would not produce unique code location paths for Pnpm projects.
+* (IDETECT-2949) Fixed an issue where [company_name] [solution_name] failed to properly parse Go module version names containing '-' characters.
+* (IDETECT-2959) Fixed an issue where [company_name] [solution_name] would not fail when running `go mod why` fails.
+* (IDETECT-2971) Fixed an issue where [company_name] [solution_name] would not produce unique code location paths for Pnpm projects.
 * (IDETECT-2939) Fixed an issue where NPM projects that had no declared dependencies would not exclude peer or dev dependencies.
-* (IDETECT-3038) Fixed an issue where [solution_name] would fail to parse file dependency declarations for pnpm projects in their pnpm-lock.yaml files.
-* (IDETECT-3000) Fixed an issue where [solution_name] would error out when a user's source directory and output directory did not share a common root.
+* (IDETECT-3038) Fixed an issue where [company_name] [solution_name] would fail to parse file dependency declarations for pnpm projects in their pnpm-lock.yaml files.
+* (IDETECT-3000) Fixed an issue where [company_name] [solution_name] would error out when a user's source directory and output directory did not share a common root.
 
 ## Version 7.9.0
 
@@ -157,8 +157,8 @@
 
 * (IDETECT-2499) Fixed an issue in the Gradle Inspector that caused it to exclude all identically named subprojects except one.
 * (IDETECT-2953) Fixed the project and project version links in risk report.
-* (IDETECT-2989) Fixed an issue with Go Mod projects where [solution_name] included unused transitive dependencies, despite detect.go.mod.enable.verification being set to 'true'.
-* (IDETECT-2935) Verified that [solution_name] is compatible with Gradle version 7.X.
+* (IDETECT-2989) Fixed an issue with Go Mod projects where [company_name] [solution_name] included unused transitive dependencies, despite detect.go.mod.enable.verification being set to 'true'.
+* (IDETECT-2935) Verified that [company_name] [solution_name] is compatible with Gradle version 7.X.
 
 ## Version 7.8.0
 
@@ -166,7 +166,7 @@
 
 * Added support for the pnpm package manager.
 * Added property detect.project.group.name for setting the Project Group.
-* [solution_name] now falls back to using a previously downloaded Docker Inspector, Project Inspector, and/or NuGet Inspector when https://sig-repo.synopsys.com is unreachable.
+* [company_name] [solution_name] now falls back to using a previously downloaded Docker Inspector, Project Inspector, and/or NuGet Inspector when https://sig-repo.synopsys.com is unreachable.
 
 ## Version 7.7.0
 
@@ -177,16 +177,16 @@
 
 ### Resolved issues
 
-* (IDETECT-2808, IDETECT-2863) Resolved an issue where [solution_name] would incorrectly resolve relative paths when processing signature scan targets.
-* (IDETECT-2859) Resolved an issue where [solution_name] was using an outdated cookie spec when making a request, resulting in a warning message.
+* (IDETECT-2808, IDETECT-2863) Resolved an issue where [company_name] [solution_name] would incorrectly resolve relative paths when processing signature scan targets.
+* (IDETECT-2859) Resolved an issue where [company_name] [solution_name] was using an outdated cookie spec when making a request, resulting in a warning message.
 
 ## Version 7.6.0
 
 ### New features
 
-* Added the property [detect.follow.symbolic.links](properties/configuration/general.md#follow-symbolic-links) which can be used to enable [solution_name] to follow symbolic links
+* Added the property [detect.follow.symbolic.links](properties/configuration/general.md#follow-symbolic-links) which can be used to enable [company_name] [solution_name] to follow symbolic links
   when searching directories for detectors, when creating exclusions for signature scan, and when creating binary scan targets.
-* Added support for Open Container Initiative (OCI) images provided to [solution_name] using the *detect.docker.tar* property.
+* Added support for Open Container Initiative (OCI) images provided to [company_name] [solution_name] using the *detect.docker.tar* property.
 * Added the property [detect.gradle.include.unresolved.configurations](properties/detectors/gradle.md#gradle-include-unresolved-configurations-advanced) for toggling the inclusion
   of [unresolved Gradle configurations](https://docs.gradle.org/7.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs).
 * Added Project Inspector support for MAVEN and GRADLE when resolving buildless dependencies.
@@ -196,7 +196,7 @@
 
 * The detect.project.clone.categories property now supports ALL and NONE as options.
 * The default value for property detect.project.clone.categories has changed to ALL.
-* Deprecated detect.bom.aggregate.name, detect.bom.aggregate.remediation.mode, and blackduck.legacy.upload.enabled. In version 8, [solution_name] will only operate in SUBPROJECT
+* Deprecated detect.bom.aggregate.name, detect.bom.aggregate.remediation.mode, and blackduck.legacy.upload.enabled. In version 8, [company_name] [solution_name] will only operate in SUBPROJECT
   aggregation mode to report the dependency graph with greater accuracy.
 * Maven defaults to the legacy buildless parser, Project Inspector must be enabled with detect.maven.buildless.legacy.mode. In version 8, it will default to Project Inspector.
 * Deprecated detect.maven.include.plugins as Project Inspector does not support plugins. In version 8, we will only support the Project Inspector Maven implementation which will
@@ -207,9 +207,9 @@
 ### Resolved issues
 
 * (IDETECT-2834) Resolved an issue where GoMod components missing a version were not being properly filtered causing a NullPointerException.
-* (IDETECT-2829) Resolved an issue that caused [solution_name] to use the wrong scan cli when in offline mode and ignore a specified local scan cli.
+* (IDETECT-2829) Resolved an issue that caused [company_name] [solution_name] to use the wrong scan cli when in offline mode and ignore a specified local scan cli.
 * (IDETECT-2820) Resolved an issue where pypi components in conda projects were not being matched.
-* (IDETECT-2773) Resolved an issue where [solution_name] was not replacing module paths as specified in go mod replace statements.
+* (IDETECT-2773) Resolved an issue where [company_name] [solution_name] was not replacing module paths as specified in go mod replace statements.
 
 ## Version 7.5.0
 
@@ -223,7 +223,7 @@
   search and Signature Scan.
 * The Docker Inspector can now be included (using the detect.tools property) when using
   the [rapid scan mode](properties/configuration/blackduck-server.md#detect-scan-mode-advanced).
-* Instead of "lite" Docker images that automatically disable all detectors, [solution_name] now supports "buildless" Docker images that automatically disable detectors that depend
+* Instead of "lite" Docker images that automatically disable all detectors, [company_name] [solution_name] now supports "buildless" Docker images that automatically disable detectors that depend
   on the presence of build tools but leave buildless detectors enabled.
 
 ### Resolved issues
@@ -270,9 +270,9 @@
 ### New features
 
 * Added ability to specify custom fonts to be used during risk report generation. See [here](results/reports.md#risk-report-generation) for more details.
-* There now exist Docker images that can be used to run [solution_name] from within a container.
+* There now exist Docker images that can be used to run [company_name] [solution_name] from within a container.
   See [Running Synopsys Detect from within a Docker container](runningdetect/runincontainer.md#running-synopsys-detect-from-within-a-docker-container) for more details.
-* Added detect.go.mod.enable.verification for disabling the `go mod why` check that [solution_name] uses to filter out unused dependencies.
+* Added detect.go.mod.enable.verification for disabling the `go mod why` check that [company_name] [solution_name] uses to filter out unused dependencies.
 * Added support for dotnet 5 when running the NuGet inspector.
 * Added a new property [detect.npm.include.peer.dependencies](properties/detectors/npm.md#include-npm-peer-dependencies) which allows the users to filter out NPM peer dependencies
   from their BOM.
@@ -281,16 +281,16 @@
 
 * The following clone categories were added to the default value for property detect.project.clone.categories: LICENSE_TERM_FULFILLMENT, CUSTOM_FIELD_DATA
 * The "Git Cli" detector has been renamed to the "Git" detector.
-* Whenever [solution_name] runs the following tools, it now logs (at level DEBUG) the tool's version: git, gradle, maven, conan, pip, and python.
+* Whenever [company_name] [solution_name] runs the following tools, it now logs (at level DEBUG) the tool's version: git, gradle, maven, conan, pip, and python.
 
 ### Resolved issues
 
 * (IDETECT-2541) Resolved an issue that caused the CLANG detector to fail when run in non-English locales on Ubuntu and Debian systems.
 * (IDETECT-2505) Resolved an issue that caused go mod components with +incompatible version suffixes to not be matched on Black Duck.
 * (IDETECT-2629) Resolved an issue that caused go mod projects without source having an empty BOM with the introduction of the detect.go.mod.enable.verification property.
-* (IDETECT-2659) Resolved an issue that caused [solution_name] to falsely report a missing detector when that detector matched only at a depths > 0 and was included in the value of
+* (IDETECT-2659) Resolved an issue that caused [company_name] [solution_name] to falsely report a missing detector when that detector matched only at a depths > 0 and was included in the value of
   property detect.required.detector.types.
-* (IDETECT-2696) Resolved an issue that could cause [solution_name] to fail with "IllegalStateException: Duplicate key {codelocation name}" when creating >100 codelocations in one
+* (IDETECT-2696) Resolved an issue that could cause [company_name] [solution_name] to fail with "IllegalStateException: Duplicate key {codelocation name}" when creating >100 codelocations in one
   run.
 * (IDETECT-2659) Resolved an issue that caused Detect to falsely report "One or more required detector types were not found" when the required detector ran based on files found in
   a subdirectory.
@@ -301,7 +301,7 @@
 
 ### New features
 
-* Added scripts detect7.sh and detect7.ps1 for invoking [solution_name] 7.x.x. detect.sh and detect.ps1 will (by default) continue to invoke the latest [solution_name] 6 version.
+* Added scripts detect7.sh and detect7.ps1 for invoking [company_name] [solution_name] 7.x.x. detect.sh and detect.ps1 will (by default) continue to invoke the latest [company_name] [solution_name] 6 version.
 * Added support for Yarn workspaces.
 * Added support for the dependency graph SBT plugin. Resolution cache generation is no longer a requirement of the SBT detector.
 * Added the properties [detect.excluded.directories](properties/configuration/paths.md#detect-excluded-directories-advanced),
@@ -444,7 +444,7 @@
 
 ### Known issues
 
-* When running the Docker Inspector on Windows, [solution_name] may fail to clean up all its working directories (and log the message "Error trying cleanup") due to the
+* When running the Docker Inspector on Windows, [company_name] [solution_name] may fail to clean up all its working directories (and log the message "Error trying cleanup") due to the
   following Docker issue:
   https://github.com/docker/for-win/issues/394.
 * False positives from Gradle are still possible if the replacement dependency is defined within a subproject that has subprojects. Work is being continued to fix this with
@@ -455,7 +455,7 @@
 ### New features
 
 * Added [properties](properties/configuration/debug.md#diagnostic-mode) for enabling diagnostic mode.
-* [solution_name] now supports Vulnerability Impact Analysis. Enabled
+* [company_name] [solution_name] now supports Vulnerability Impact Analysis. Enabled
   using [Vulnerability Impact Analysis Enabled](properties/configuration/impact-analysis.md#vulnerability-impact-analysis-enabled) property.
 
 ### Changed features
@@ -481,9 +481,9 @@
 
 * Bazel detector: added support for Bazel projects that specify dependencies using the haskell_cabal_library repository rule.
 * NuGet detector: added support for DotNet 3.1 runtime.
-* [solution_name] now supports projects managed by the Lerna package manager.
-* [solution_name] now supports projects managed by the Cargo package manager.
-* [solution_name] now supports projects managed by the Poetry package manager.
+* [company_name] [solution_name] now supports projects managed by the Lerna package manager.
+* [company_name] [solution_name] now supports projects managed by the Cargo package manager.
+* [company_name] [solution_name] now supports projects managed by the Poetry package manager.
 
 ### Changed features
 
@@ -499,7 +499,7 @@
 ### Resolved issues
 
 * (IDETECT-2019) Resolved an issue where the pip inspector would not be able to parse the requirements.txt file if pip's version was >= 20.1.
-* (IDETECT-2034) Resolved an issue that would cause a NullPointerException when [solution_name]'s initial attempt at generating a code location name produced a code location name
+* (IDETECT-2034) Resolved an issue that would cause a NullPointerException when [company_name] [solution_name]'s initial attempt at generating a code location name produced a code location name
   greater than 250 characters and either code location prefix or code location suffix is not set.
 * (IDETECT-1979) Resolved an issue that could cause the CLANG detector to miss some dependencies because it failed to correctly parse complex nested quoted strings within
   compile_commands.json values.
@@ -516,29 +516,29 @@
 
 * The Yarn detector now extracts project information from package.json files. Git is no longer the default supplier of project information for Yarn projects.
 * Added Yarn Detector support for dependencies that are missing a fuzzy version in a lockfile dependency declaration.
-* [solution_name] logs policy violations when it is configured to [fail on policy violations](properties/configuration/project.md#fail-on-policy-violation-severities).
+* [company_name] [solution_name] logs policy violations when it is configured to [fail on policy violations](properties/configuration/project.md#fail-on-policy-violation-severities).
 
 ### Changed features
 
 * Users can [upload source](properties/configuration/signature-scanner.md#upload-source-mode) files
   when [license search](properties/configuration/signature-scanner.md#signature-scanner-license-search) is enabled regardless of whether
   [snippet matching](properties/configuration/signature-scanner.md#snippet-matching) has been enabled.
-* [solution_name] is now compatible with Yocto 3.0.
-* [solution_name] stops if the Docker Inspector tool applies and [solution_name] is running on Windows.
-* [solution_name] configures Docker Inspector's working directories inside [solution_name]'s run directory.
-* [solution_name] requires and runs Docker Inspector version 9.
-* Moved the location to which detect.sh downloads the [solution_name] .jar from /tmp to ~/synopsys-detect/download.
+* [company_name] [solution_name] is now compatible with Yocto 3.0.
+* [company_name] [solution_name] stops if the Docker Inspector tool applies and [company_name] [solution_name] is running on Windows.
+* [company_name] [solution_name] configures Docker Inspector's working directories inside [company_name] [solution_name]'s run directory.
+* [company_name] [solution_name] requires and runs Docker Inspector version 9.
+* Moved the location to which detect.sh downloads the [company_name] [solution_name] .jar from /tmp to ~/synopsys-detect/download.
 
 ### Resolved issues
 
 * (IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output. As a last resort, the commit hash will be used as a version.
-* (IDETECT-1883) Resolved an issue where [solution_name] failed to extract project information when parsing a Git repository with a detached head while in buildless mode.
+* (IDETECT-1883) Resolved an issue where [company_name] [solution_name] failed to extract project information when parsing a Git repository with a detached head while in buildless mode.
 * (IDETECT-1970) Resolved an issue where the default value for [parallel processors](properties/configuration/general.md#detect-parallel-processors-advanced) was not used. The
   available runtime processor count was being used instead.
 * (IDETECT-1973) Resolved an issue where the NuGet exe inspector would not resolve from Artifactory.
-* (IDETECT-1965) Resolved an issue where [solution_name] would fail to resolve environment variables where it did so previously.
+* (IDETECT-1965) Resolved an issue where [company_name] [solution_name] would fail to resolve environment variables where it did so previously.
 * (IDETECT-1974) Resolved an issue wherein the Yarn detector was throwing an exception for dependencies not defined in the yarn.lock file.
-* (IDETECT-2037) Resolved an issue where [solution_name] would fail with a "hostname in certificate didn't match" error while downloading the Gradle inspector.
+* (IDETECT-2037) Resolved an issue where [company_name] [solution_name] would fail with a "hostname in certificate didn't match" error while downloading the Gradle inspector.
 
 ## Version 6.2.1
 
@@ -550,7 +550,7 @@
 
 ### New features
 
-* The [solution_name] .jar file is now signed, enabling [code verification](downloadingandinstalling/verification.md) by users.
+* The [company_name] [solution_name] .jar file is now signed, enabling [code verification](downloadingandinstalling/verification.md) by users.
 * [Simple proxy information](packagemgrs/gradle.md#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
 * Detect now creates a status file describing the results of the run which includes things like [issues, results, and status codes.](runningdetect/status-file.md)
 * The property configuration table in the log now includes the origin of the property's value.
@@ -567,12 +567,12 @@
 
 ### Resolved issues
 
-* Resolved an issue where the download URL for [solution_name] was being set to an internal URL upon release (IDETECT-1847).
+* Resolved an issue where the download URL for [company_name] [solution_name] was being set to an internal URL upon release (IDETECT-1847).
 * Resolved an issue where all transitive dependencies found by the Pip inspector were being reported as direct dependencies (IDETECT-1893).
 * Resolved an issue where using pip version 20+ with the Pip inspector caused a failure to import a
   dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
 * Resolved the following vulnerabilities (IDETECT-1872): org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
-* Resolved an issue where [solution_name] had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).
+* Resolved an issue where [company_name] [solution_name] had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).
 * Note: Yarn workspaces are not currently supported. See [yarn workspace support](packagemgrs/yarn.md#yarn-workspace-support).
 * Resolved an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats (IDETECT-1925).
 * When parsing package.xml files, Detect will no longer raise a SAXParseException when the file contains a doctype declaration, and will continue parsing the rest of the file (

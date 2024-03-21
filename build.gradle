@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.4.0-SIGQA8-SNAPSHOT'
+version = '9.5.0-SIGQA2-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -138,7 +138,18 @@ dependencies {
     implementation "${locatorGroup}:${locatorModule}:1.1.8"
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
-    implementation "org.springframework.boot:spring-boot"
+
+    // Below direct inclusions of corresponding transitive dependencies
+    // were added to resolve CVE-2024-22259 appearing in 5.3.27 of springframework libraries.
+    // The below changes can be reverted in the future after comprehensively testing with an updated spring boot version
+    implementation "org.springframework:spring-jcl:5.3.33"
+    implementation("org.springframework:spring-core:5.3.33")
+    implementation "org.springframework:spring-aop:5.3.33"
+    implementation "org.springframework:spring-beans:5.3.33"
+    implementation "org.springframework:spring-expression:5.3.33"
+    implementation("org.springframework:spring-context:5.3.33")
+    implementation("org.springframework.boot:spring-boot")
+
     implementation 'org.yaml:snakeyaml:2.0'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.apache.pdfbox:pdfbox:2.0.27'

@@ -7,7 +7,7 @@
 		<prodinfo>
 			<prodname>Synopsys Detect</prodname>
 			<vrmlist>
-				<vrm version="9.4.0"/>
+				<vrm version="9.5.0"/>
 			</vrmlist>
 		</prodinfo>
 		<!-- zoomin bundle name -->
@@ -101,7 +101,7 @@
 	</topicref>
 	<topicref href="components/overview.md" format="markdown">
 		<topicref href="components/tools.md" format="markdown"/>
-		<topicref href="components/detectors.md" format="markdown"/>
+		<topicref href="components/detectors.dita" format="dita"/>
 		<topicref href="components/inspectors.md" format="markdown"/>
 	</topicref>
 	<topicref href="packagemgrs/overview.md" format="markdown">

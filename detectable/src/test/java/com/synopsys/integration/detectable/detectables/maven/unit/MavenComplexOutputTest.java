@@ -110,7 +110,8 @@ public class MavenComplexOutputTest {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList()
+                Collections.emptyList(),
+                Collections.emptyMap()
         );
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.MAVEN, results.get(0).getCodeLocation().getDependencyGraph());
         graphAssert.hasRootSize(1);

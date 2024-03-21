@@ -1,6 +1,6 @@
 # Using a configuration file
 
-Another commonly-used method of configuring [solution_name] is to provide a configuration file. The configuration file
+Another commonly-used method of configuring [company_name] [solution_name] is to provide a configuration file. The configuration file
 can be a Java properties (.properties) file, or a YAML (.yml) file. 
 
 <note type="note">Configuration files support all properties, only the formatting, as noted below, changes based on the type of configuration file employed. See [All Properties](../properties/all-properties.md).</note>
@@ -31,11 +31,11 @@ file syntax: `propertyName=propertyValue`, one per line.
 
 When setting a property value in a .yml file, do not prefix the property name with hyphens,
 and adhere to YAML syntax for dictionaries: `propertyName: propertyValue`, one per line.
-There is a [solution_name] command line help option, -hyaml, that can be used to generate a template YAML configuration file. 
+There is a [company_name] [solution_name] command line help option, -hyaml, that can be used to generate a template YAML configuration file. 
 
-## Running [solution_name] from a directory that contains a file named *config*
+## Running [company_name] [solution_name] from a directory that contains a file named *config*
 
-If a file named *config* exists in the directory from which you run [solution_name], 
+If a file named *config* exists in the directory from which you run [company_name] [solution_name], 
 you must override the default value of the Spring Boot property *spring.config.location* so that Spring Boot does not try to read
 that file as a directory. If you are using a Spring Boot configuration
 file such as application.properties or application.yml, set the value of *spring.config.location* so Spring Boot will find your configration file.

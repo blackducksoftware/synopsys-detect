@@ -372,8 +372,8 @@ public class DetectProperties {
         NullableStringProperty.newBuilder("detect.blackduck.signature.scanner.arguments")
             .setInfo("Signature Scanner Arguments", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
-                "A space-separated list of additional arguments to use when running the Black Duck signature scanner. Key-value pairs are treated as replacements rather than as additions.",
-                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in the current working directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from ./excludes.txt'"
+                "A space-separated list of additional arguments to use when running the Black Duck signature scanner. Key-value pairs specified as arguments will replace the same entries specifed elswhere. Available signature scanner properties can be determined by specifying '--help' when executing the signature scanner jar file from the command line.",
+                "Example usage: Running in bash on Linux and you want signature scanner to read a list of directories to exclude from the scan (using the signature scanner '--exclude-from' option). Configure signature scanner to read excluded directories from a file named excludes.txt in the current working directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from ./excludes.txt'"
             )
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
             .setExample("--exclude-from ./excludes.txt")
@@ -1074,6 +1074,16 @@ public class DetectProperties {
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
 
+    public static final BooleanProperty DETECT_MAVEN_INCLUDE_SHADED_DEPENDENCIES =
+            BooleanProperty.newBuilder("detect.maven.include.shaded.dependencies",false)
+                    .setInfo("Include Shaded Dependencies", DetectPropertyFromVersion.VERSION_9_5_0)
+                    .setHelp(
+                            "If set to true, Detect will include shaded dependencies as part of BOM.",
+                            "A shaded dependency is packaged inside the uber jar of the direct or transitive dependency referenced in the project. Detect will find the use of maven-shade-plugin from original POM file and based on that will derive information for these dependencies. This property will only be supported in build mode just like all other MAVEN properties."
+                    )
+                    .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
+                    .build();
+
     public static final BooleanProperty DETECT_NOTICES_REPORT =
         BooleanProperty.newBuilder("detect.notices.report", false)
             .setInfo("Generate Notices Report", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1662,6 +1672,13 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
+    public static final BooleanProperty DETECT_YARN_MONOREPO_MODE =
+        BooleanProperty.newBuilder("detect.yarn.ignore.all.workspaces", false)
+            .setInfo("Ignore All Workspaces", DetectPropertyFromVersion.VERSION_9_4_0)
+            .setHelp("All workspaces are ignored by the Yarn detector for increased performance and precision to scan a massive codebase.")
+            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
+            .build();
+    
     public static final NoneEnumListProperty<YarnDependencyType> DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.yarn.dependency.types.excluded", NoneEnum.NONE, YarnDependencyType.class)
             .setInfo("Yarn Dependency Types Excluded", DetectPropertyFromVersion.VERSION_4_0_0)

@@ -8,7 +8,7 @@
 
 The Conda detector discovers dependencies of python projects utilizing the Conda package and environment manager.
 
-[solution_name] runs the Conda detector if an environment.yml file is found in your project.
+[company_name] [solution_name] runs the Conda detector if an environment.yml file is found in your project.
 
 The Conda detector requires that the *conda* executable is on the PATH, or that its path is passed in via `--detect.conda.path`.
 

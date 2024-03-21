@@ -1,10 +1,10 @@
 # Installing the Azure DevOps plugin
-From the Azure Pipelines page, add the [solution_name] plug-in for ADO.
+From the Azure Pipelines page, add the [company_name] [solution_name] plug-in for ADO.
 
-**Install the [solution_name] extension for Azure DevOps**
+**Install the [company_name] [solution_name] extension for Azure DevOps**
 
 1. Click the plus sign (**+**) under Tasks for Agent Job
-1. Search for the [solution_name] plugin and click **Add** to add it to your pipeline.
+1. Search for the [company_name] [solution_name] plugin and click **Add** to add it to your pipeline.
 
 
    <figure>

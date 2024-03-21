@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
@@ -28,6 +31,7 @@ public class RequirementsFileDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final RequirementsFileExtractor requirementsFileExtractor;
     private final RequirementsFileDetectableOptions requirementsFileDetectableOptions;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private Set<File> requirementsFiles;
     private List<Path> requirementsFilePathsOverride;
@@ -58,7 +62,11 @@ public class RequirementsFileDetectable extends Detectable {
             }
             boolean requirementFilesPresent = CollectionUtils.isNotEmpty(requirementsFiles);
             if (requirementFilesPresent) {
-                return new PassedDetectableResult();
+                Requirements requirements = new Requirements(fileFinder, environment);
+                for (File requirementFile : requirementsFiles) {
+                    requirements.explainFile(requirementFile);
+                }
+                return requirements.result();
             } else {
                 return new FilesNotFoundDetectableResult(REQUIREMENTS_DEFAULT_FILE_NAME);
             }}
@@ -83,13 +91,15 @@ public class RequirementsFileDetectable extends Detectable {
         }
     }
 
-    private void processRequirementsFileOverrides() throws IOException {
+    private void processRequirementsFileOverrides() {
         Set<File> requirementsFilesOverrides = new HashSet<>();
         File currentRequirementsFileOverride;
         for (Path requirementsFilePath : requirementsFilePathsOverride) {
             currentRequirementsFileOverride = requirementsFilePath.toFile();
             if (currentRequirementsFileOverride.exists()) {
                 requirementsFilesOverrides.add(currentRequirementsFileOverride);
+            } else {
+                logger.warn("Could not locate the requirements file provided via detect.pip.requirements.path at {}. This file will not be included.", requirementsFilePath);
             }
         }
         requirementsFiles = requirementsFilesOverrides;

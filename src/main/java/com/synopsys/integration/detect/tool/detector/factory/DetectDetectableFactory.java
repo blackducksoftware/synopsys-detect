@@ -194,11 +194,11 @@ public class DetectDetectableFactory {
     }
 
     public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createMavenPomDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
+        return detectableFactory.createMavenPomDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions(), detectableOptionFactory.createProjectInspectorOptions(), projectInspectorResolver);
     }
 
     public MavenPomWrapperDetectable createMavenPomWrapperDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createMavenPomWrapperDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
+        return detectableFactory.createMavenPomWrapperDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions(), detectableOptionFactory.createProjectInspectorOptions(), projectInspectorResolver);
     }
 
     public Conan1CliDetectable createConanCliDetectable(DetectableEnvironment environment) {
