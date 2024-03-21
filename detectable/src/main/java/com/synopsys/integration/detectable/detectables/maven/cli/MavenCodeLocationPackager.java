@@ -202,6 +202,10 @@ public class MavenCodeLocationPackager {
                 dependencyParentStack.push(dependency);
             }
         }
+        shadedDependenciesStuff(dependency);
+    }
+
+    private void shadedDependenciesStuff(ScopedDependency dependency) {
         if(!shadedDependenciesConverted.isEmpty() && shadedDependenciesConverted.containsKey(dependency.getExternalId())) {
             for(Dependency childDependency: shadedDependenciesConverted.get(dependency.getExternalId())) {
                 currentGraph.addParentWithChild(dependency, childDependency);
