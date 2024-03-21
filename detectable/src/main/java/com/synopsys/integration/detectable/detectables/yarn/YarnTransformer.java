@@ -176,17 +176,20 @@ public class YarnTransformer {
                     dependencyVersion = dependency.getVersion();
                 }
                 LazyId stringDependencyId = generateComponentDependencyId(dependency.getName(), dependencyVersion);
-                if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION) || !dependency.isOptional()) {
-                    graphBuilder.setDependencyInfo(stringDependencyId, dependency.getName(), dependencyVersion, generateComponentExternalId(dependency.getName(), dependencyVersion));
-                    //graphBuilder.addChildWithParent(stringDependencyId, id);
-                    LazyDependencyInfo childInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, stringDependencyId);
-                    Dependency child = new Dependency(childInfo.getName(), childInfo.getVersion(), childInfo.getExternalId(), null);
-                    mutableDependencyGraph.addChildWithParent(child, parent);
-
-                } else {
-                    logger.trace("Excluding optional dependency: {}", stringDependencyId);
-                }
+                moveToMethod(dependency, dependencyVersion, parent,lazyBuilderHandler, graphBuilder, mutableDependencyGraph, stringDependencyId);
             }
+        }
+    }
+
+    private void moveToMethod(YarnLockDependency dependency, String dependencyVersion, Dependency parent, LazyBuilderMissingExternalIdHandler lazyBuilderHandler, ExternalIdDependencyGraphBuilder graphBuilder, BasicDependencyGraph mutableDependencyGraph,LazyId stringDependencyId) throws MissingExternalIdException {
+        if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION) || !dependency.isOptional()) {
+            graphBuilder.setDependencyInfo(stringDependencyId, dependency.getName(), dependencyVersion, generateComponentExternalId(dependency.getName(), dependencyVersion));
+            LazyDependencyInfo childInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, stringDependencyId);
+            Dependency child = new Dependency(childInfo.getName(), childInfo.getVersion(), childInfo.getExternalId(), null);
+            mutableDependencyGraph.addChildWithParent(child, parent);
+
+        } else {
+            logger.trace("Excluding optional dependency: {}", stringDependencyId);
         }
     }
 
