@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorParser;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -202,10 +201,10 @@ public class MavenCodeLocationPackager {
                 dependencyParentStack.push(dependency);
             }
         }
-        shadedDependenciesStuff(dependency);
+        addShadedDependenciesToGraph(dependency);
     }
 
-    private void shadedDependenciesStuff(ScopedDependency dependency) {
+    private void addShadedDependenciesToGraph(ScopedDependency dependency) {
         if(!shadedDependenciesConverted.isEmpty() && shadedDependenciesConverted.containsKey(dependency.getExternalId())) {
             for(Dependency childDependency: shadedDependenciesConverted.get(dependency.getExternalId())) {
                 currentGraph.addParentWithChild(dependency, childDependency);
