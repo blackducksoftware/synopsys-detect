@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonParseException;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
 import com.synopsys.integration.bdio.graph.builder.LazyId;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
@@ -50,7 +51,12 @@ public class BuildrootExtractor {
 
         String output = executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(workingDirectory, makeExe, "show-info")).getStandardOutput();
 
-        Map<String, ShowInfoComponent> components = parser.parse(output);
+        Map<String, ShowInfoComponent> components;
+        try {
+            components = parser.parse(output);
+        } catch (JsonParseException e) {
+            return Extraction.failure("Unable to parse make show-info output");
+        }
 
         LazyExternalIdDependencyGraphBuilder graph = new LazyExternalIdDependencyGraphBuilder();
 
