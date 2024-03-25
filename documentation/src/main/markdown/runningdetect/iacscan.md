@@ -2,7 +2,7 @@
 
 IaC ("Infrastructure as Code") Scan is a type of scanning supported by [company_name] [solution_name] that involves scanning code or configuration files used for automated management and provisioning of infrastructure (networks, virtual machines, load balancers, and connection topology).
 
-To configure IaC Scan, see [IaC Scan properties](../properties/configuration/iac-scan.md).
+To configure IaC Scan, see [IaC Scan properties](../properties/configuration/iac-scan.md#iac-scan-arguments).
 
 See the [blackduck_product_name] documentation for futher details on <a href="https://sig-product-docs.synopsys.com/bundle/bd-hub/page/InternalProjectVersions/infrastructureAsCode.html" target="_blank">Infrastructure as Code scanning.</a>
 
