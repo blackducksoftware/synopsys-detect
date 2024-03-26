@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.tool.detector;
 
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
+import com.synopsys.integration.detectable.detectables.buildroot.BuildrootDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoLockDetectable;
 import com.synopsys.integration.detectable.detectables.carthage.CarthageLockDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
@@ -79,6 +80,11 @@ public class DetectorRuleFactory {
 
         rules.addDetector(DetectorType.BITBAKE, detector -> {
             detector.entryPoint(BitbakeDetectable.class)
+                .search().defaults();
+        });
+
+        rules.addDetector(DetectorType.BUILDROOT, detector -> {
+            detector.entryPoint(BuildrootDetectable.class)
                 .search().defaults();
         });
 

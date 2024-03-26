@@ -15,6 +15,8 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOpti
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
+import com.synopsys.integration.detectable.detectables.buildroot.BuildrootDependencyType;
+import com.synopsys.integration.detectable.detectables.buildroot.BuildrootDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliOptions;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
@@ -84,6 +86,13 @@ public class DetectableOptionFactory {
         Set<BitbakeDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_BITBAKE_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
         EnumListFilter<BitbakeDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         return new BitbakeDetectableOptions(buildEnvName, sourceArguments, packageNames, searchDepth, getFollowSymLinks(), dependencyTypeFilter);
+    }
+
+    public BuildrootDetectableOptions createBuildrootDetectableOptions() {
+        EnumListFilter<BuildrootDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(
+            detectConfiguration.getValue(DetectProperties.DETECT_BUILDROOT_DEPENDENCY_TYPES_EXCLUDED).representedValueSet()
+        );
+        return new BuildrootDetectableOptions(dependencyTypeFilter);
     }
 
     public ClangDetectableOptions createClangDetectableOptions() {

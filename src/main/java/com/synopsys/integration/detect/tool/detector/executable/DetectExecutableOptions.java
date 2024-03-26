@@ -13,6 +13,7 @@ public class DetectExecutableOptions {
     private final Path flutterPath;
     private final Path gradleUserPath;
     private final Path mavenUserPath;
+    private final Path makeUserPath;
     private final Path npmUserPath;
     private final Path pearUserPath;
     private final Path pipUserPath;
@@ -38,6 +39,7 @@ public class DetectExecutableOptions {
         Path flutterPath,
         Path gradleUserPath,
         Path mavenUserPath,
+        Path makeUserPath,
         Path npmUserPath,
         Path pearUserPath,
         Path pipUserPath,
@@ -62,6 +64,7 @@ public class DetectExecutableOptions {
         this.flutterPath = flutterPath;
         this.gradleUserPath = gradleUserPath;
         this.mavenUserPath = mavenUserPath;
+        this.makeUserPath = makeUserPath;
         this.npmUserPath = npmUserPath;
         this.pearUserPath = pearUserPath;
         this.pipUserPath = pipUserPath;
@@ -115,6 +118,10 @@ public class DetectExecutableOptions {
 
     public Path getMavenUserPath() {
         return mavenUserPath;
+    }
+
+    public Path getMakeUserPath() {
+        return makeUserPath;
     }
 
     public Path getNpmUserPath() {

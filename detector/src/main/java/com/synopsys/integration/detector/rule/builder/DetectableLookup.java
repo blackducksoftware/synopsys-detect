@@ -55,7 +55,7 @@ public class DetectableLookup {
                     try {
                         return (T) method.invoke(factory, environment);
                     } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException();
+                        throw new RuntimeException(e);
                     }
                 };
             }

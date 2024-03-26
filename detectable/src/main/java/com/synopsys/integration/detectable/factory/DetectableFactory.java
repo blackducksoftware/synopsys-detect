@@ -26,6 +26,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.GoReso
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.LernaResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.MakeResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
@@ -59,6 +60,9 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.LicenseMani
 import com.synopsys.integration.detectable.detectables.bitbake.parse.PwdOutputParser;
 import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeDependencyGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.transform.BitbakeGraphTransformer;
+import com.synopsys.integration.detectable.detectables.buildroot.BuildrootDetectable;
+import com.synopsys.integration.detectable.detectables.buildroot.BuildrootDetectableOptions;
+import com.synopsys.integration.detectable.detectables.buildroot.BuildrootExtractor;
 import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
 import com.synopsys.integration.detectable.detectables.cargo.CargoLockDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
@@ -345,6 +349,11 @@ public class DetectableFactory {
             bitbakeDetectableOptions.getDependencyTypeFilter()
         );
         return new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor, bashResolver);
+    }
+
+    public BuildrootDetectable createBuildrootDetectable(DetectableEnvironment environment, BuildrootDetectableOptions options, MakeResolver makeResolver) {
+        BuildrootExtractor buildrootExtractor = new BuildrootExtractor(options, executableRunner, toolVersionLogger);
+        return new BuildrootDetectable(environment, fileFinder, buildrootExtractor, makeResolver);
     }
 
     public CargoLockDetectable createCargoDetectable(DetectableEnvironment environment) {
