@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pip.inspector.functional;
+package com.synopsys.integration.detectable.detectables.poetry.functional;
 
 import java.io.IOException;
 import java.nio.file.Paths;

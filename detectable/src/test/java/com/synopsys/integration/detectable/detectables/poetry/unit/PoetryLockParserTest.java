@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pip.inspector.unit;
+package com.synopsys.integration.detectable.detectables.poetry.unit;
 
 import java.io.IOException;
 import java.util.Arrays;
