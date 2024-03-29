@@ -1,10 +1,7 @@
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +39,8 @@ public class MavenCodeLocationPackager {
     private boolean inOutOfScopeTree = false;
     private DependencyGraph currentGraph = null;
 
+    private Map<ExternalId, Set<Dependency>> shadedDependenciesConverted = new HashMap<>();
+
     public MavenCodeLocationPackager(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
@@ -53,7 +52,8 @@ public class MavenCodeLocationPackager {
         List<String> excludedScopes,
         List<String> includedScopes,
         List<String> excludedModules,
-        List<String> includedModules
+        List<String> includedModules,
+        Map<String, Set<String>> shadedDependencies
     ) {
         ExcludedIncludedWildcardFilter modulesFilter = ExcludedIncludedWildcardFilter.fromCollections(excludedModules, includedModules);
         ExcludedIncludedWildcardFilter scopeFilter = ExcludedIncludedWildcardFilter.fromCollections(excludedScopes, includedScopes);
@@ -62,6 +62,20 @@ public class MavenCodeLocationPackager {
         dependencyParentStack = new Stack<>();
         parsingProjectSection = false;
         currentGraph = new BasicDependencyGraph();
+
+        if(!shadedDependencies.isEmpty()) {
+            shadedDependencies.forEach((dependency, shadedDependency) -> {
+                String[] gavParts = dependency.split(":");
+                String group = gavParts[0];
+                String artifact = gavParts[1];
+                String version = gavParts[2];
+                ExternalId dependencyId = externalIdFactory.createMavenExternalId(group, artifact, version);
+                shadedDependenciesConverted.put(dependencyId, new HashSet<>());
+                shadedDependency.forEach(childDependencyString -> {
+                    shadedDependenciesConverted.get(dependencyId).add(textToDependency(childDependencyString));
+                });
+            });
+        }
 
         level = 0;
         for (String currentLine : mavenOutput) {
@@ -187,11 +201,21 @@ public class MavenCodeLocationPackager {
                 dependencyParentStack.push(dependency);
             }
         }
+        addShadedDependenciesToGraph(dependency);
+    }
+
+    private void addShadedDependenciesToGraph(ScopedDependency dependency) {
+        if(!shadedDependenciesConverted.isEmpty() && shadedDependenciesConverted.containsKey(dependency.getExternalId())) {
+            for(Dependency childDependency: shadedDependenciesConverted.get(dependency.getExternalId())) {
+                currentGraph.addParentWithChild(dependency, childDependency);
+            }
+            shadedDependenciesConverted.remove(dependency.getExternalId());
+        }
     }
 
     private void addOrphansToGraph(DependencyGraph graph, List<Dependency> orphans) {
         logger.trace(String.format("# orphans: %d", orphans.size()));
-        if (orphans.size() > 0) {
+        if (!orphans.isEmpty() || !shadedDependenciesConverted.isEmpty()) {
             Dependency orphanListParent = createOrphanListParentDependency();
             logger.trace(String.format("adding orphan list parent dependency: %s", orphanListParent.getExternalId().toString()));
             graph.addChildToRoot(orphanListParent);
@@ -199,7 +223,18 @@ public class MavenCodeLocationPackager {
                 logger.trace(String.format("adding orphan: %s", dependency.getExternalId().toString()));
                 graph.addParentWithChild(orphanListParent, dependency);
             }
+            addOrphanShadedDependenciesToGraph(graph, orphanListParent);
         }
+    }
+
+    private void addOrphanShadedDependenciesToGraph(DependencyGraph graph, Dependency orphanParent) {
+        shadedDependenciesConverted.forEach((dependency, shadedDependency) -> {
+            ScopedDependency parentDependency = new ScopedDependency(dependency.getName(), dependency.getVersion(), dependency, null);
+            graph.addParentWithChild(orphanParent, parentDependency);
+            shadedDependency.forEach(childDependency -> {
+                graph.addParentWithChild(parentDependency, childDependency);
+            });
+        });
     }
 
     private void addDependencyIfInScope(
@@ -269,10 +304,10 @@ public class MavenCodeLocationPackager {
         if (!isGav(componentText)) {
             return null;
         }
-        
+
         // This is a GAV line.
         componentText = removeGroupArtifactPipedSuffixIfExists(componentText);
-        
+
         String[] gavParts = componentText.split(":");
         String group = gavParts[0];
         String artifact = gavParts[1];
@@ -313,13 +348,13 @@ public class MavenCodeLocationPackager {
         if (!isGav(componentText)) {
             return null;
         }
-        
+
         // This is a GAV line.
         componentText = removeGroupArtifactPipedSuffixIfExists(componentText);
-        
+
         String[] gavParts = componentText.split(":");
         String group = gavParts[0];
-        String artifact = gavParts[1];        
+        String artifact = gavParts[1];
         String version;
         if (gavParts.length == 4) {
             // Dependency does not include the classifier

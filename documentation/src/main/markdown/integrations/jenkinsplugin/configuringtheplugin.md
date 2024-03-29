@@ -2,7 +2,7 @@
 Use the following process to configure the Synopsys Detect for Jenkins plugin.  Note that the supported credential formats are user name and password or API token.  SAML is not supported.
 
 1. After installing, navigate to **Manage Jenkins** > **Configure System**.
-1. Navigate to the **[solution_name]** section, and complete the following.
+1. Navigate to the **[company_name] [solution_name]** section, and complete the following.
    1. **Global download strategy**: Depending on your desired deployment method, select either the option to **Install Air Gapped Detect as a Tool Installation** or **Download via scripts or use DETECT\_JAR** from the drop-down list.
    
    <figure>

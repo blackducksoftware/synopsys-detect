@@ -1,8 +1,8 @@
 # Detector Properties
 
-This section contains details about properties that configure the [solution_name] detectors.
+This section contains details about properties that configure the [company_name] [solution_name] detectors.
 
-[solution_name] uses detectors to find and extract dependencies from supported package managers.
+[company_name] [solution_name] uses detectors to find and extract dependencies from supported package managers.
 
 By default, all detectors are eligible to run. The set of detectors that actually run depends on the files that exist in your project directory. 
 

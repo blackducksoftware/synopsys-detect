@@ -20,8 +20,8 @@ the request
 to the image inspector that can process the target image (which starts
 again at step 1).
 4. Translates that package list to BDIO and uploads it to Black Duck, or returns it to the the
-caller (e.g. [solution_name]) to upload to Black Duck.
-5. Returns the constructed file system to the caller (e.g. [solution_name]) for signature scanning.
+caller (e.g. [company_name] [solution_name]) to upload to Black Duck.
+5. Returns the constructed file system to the caller (e.g. [company_name] [solution_name]) for signature scanning.
 
 The user ID and group ID of the image inspector service process will (in general) be different from the user ID and
 group ID of the [docker_inspector_name] process. Consequently, the the environment must be confugred
@@ -135,13 +135,13 @@ so you would run `docker inspect ubuntu:latest`.
 sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c. (Because the *latest* tag moves frequently,
 the top layer ID for ubuntu:latest changes over time.)
 
-Set the value of the [solution_name] property *detect.docker.platform.top.layer.id* to the platform top layer ID.
+Set the value of the [company_name] [solution_name] property *detect.docker.platform.top.layer.id* to the platform top layer ID.
 For example:
 
-    {[solution_name] command} ... --docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c
+    {Detect command} ... --docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c
 
 In this mode, the container file system and/or container file system squashed image produced by [docker_inspector_name]
- only contains files added to the image by application layers. If the Black Duck signature scanner is run on this file,
+ only contains files added to the image by application layers. If the [blackduck_product_name] signature scanner is run on this file,
 it generates results based only on files found on application layers. This provides the benefit of isolating
 application components by excluding platform components. However, there may be some loss in match accuracy from the
 signature scanner because in this scenario, the signature scanner may be deprived of some contextual
@@ -158,9 +158,9 @@ You will need to configure your Docker settings to enable this file sharing.
 The simplest way to do this is to add your home directory as a sharable directory
 on the Docker settings Resources > FILE SHARING screen.
 
-The shared directories are created under the [solution_name] output directory
-(controlled by [solution_name] *detect.output.path*).
-If you change the location of the [solution_name] output directory, be sure your Docker file sharing settings enable
+The shared directories are created under the [company_name] [solution_name] output directory
+(controlled by [company_name] [solution_name] *detect.output.path*).
+If you change the location of the [company_name] [solution_name] output directory, be sure your Docker file sharing settings enable
 sharing of that directory.
 
 ### Docker restrictions
@@ -236,13 +236,13 @@ When *use.platform.default.docker.host* is set to true (the default value) *and*
 on Windows, [docker_inspector_name] overrides only the DOCKER_HOST value
 (setting it to "npipe:////./pipe/docker_engine").
 
-## Running [solution_name] on a project directory that exists within a Docker image
+## Running [company_name] [solution_name] on a project directory that exists within a Docker image
 
-When you want to run [solution_name] on a directory that exists within a Docker image, you can use the following approach:
-1. Run [solution_name] on the image to generate the container filesystem for the image.
-2. Run [solution_name] on a directory within that container filesystem.
+When you want to run [company_name] [solution_name] on a directory that exists within a Docker image, you can use the following approach:
+1. Run [company_name] [solution_name] on the image to generate the container filesystem for the image.
+2. Run [company_name] [solution_name] on a directory within that container filesystem.
 
-[solution_name] performs these actions without running the image/container.
+[company_name] [solution_name] performs these actions without running the image/container.
 
 To see a simple example that illustrates this approach, use the following commands to download these sample files:
 
@@ -258,7 +258,7 @@ You must make the script executable before you run it.
 To use iScan to scan a specific directory within an image:
  
 1. Run [docker_inspector_name] on the target image to get the container file system.
-You can also do this using [solution_name] using `--detect.docker.passthrough.*` properties.
+You can also do this using [company_name] [solution_name] using `--detect.docker.passthrough.*` properties.
 Include the following [docker_inspector_name] properties:
 ```
 --upload.bdio=false                        # disable BDIO upload
@@ -267,16 +267,16 @@ Include the following [docker_inspector_name] properties:
 ```
 2. Locate the container file system in the output directory (*.tar.gz) and untar it.
 3. cd into the directory within the untared container file system that you want to scan.
-4. Invoke [solution_name] there.
+4. Invoke [company_name] [solution_name] there.
 
-## Excluding files/directories from the returned container file system which excludes them from [solution_name]'s signature scan
+## Excluding files/directories from the returned container file system which excludes them from [company_name] [solution_name]'s signature scan
 
 To exclude certain files and/or directories from the returned file system, you can
 specify that list of directories with the property *--output.containerfilesystem.excluded.paths*.
 
-For example, if you are invoking [docker_inspector_name] from [solution_name], and want [solution_name]
+For example, if you are invoking [docker_inspector_name] from [company_name] [solution_name], and want [company_name] [solution_name]
 to exclude the */etc* and */usr/bin* directories from the signature scan, you
-could run [solution_name] like this:
+could run [company_name] [solution_name] like this:
 ```
 ./detect.sh --detect.docker.image=ubuntu:latest --detect.docker.passthrough.output.containerfilesystem.excluded.paths=/etc,/usr/bin
 ```
@@ -284,12 +284,12 @@ could run [solution_name] like this:
 ## OCI Image support
 
 [docker_inspector_name] supports [OCI image](https://github.com/opencontainers/image-spec/blob/main/spec.md) archives (.tar files)
-passed to it via the [solution_name] detect.docker.tar property.
+passed to it via the [company_name] [solution_name] detect.docker.tar property.
 
 [docker_inspector_name] derives the image repo:tag value for each manifest in the index.json file from an
 annotation with key 'org.opencontainers.image.ref.name' if it is present.
 
-If the OCI archive contains multiple images, [docker_inspector_name] constructs the target repo:tag from the values of [solution_name] properties detect.docker.passthrough.docker.image.repo
+If the OCI archive contains multiple images, [docker_inspector_name] constructs the target repo:tag from the values of [company_name] [solution_name] properties detect.docker.passthrough.docker.image.repo
 and detect.docker.passthrough.docker.image.tag (if detect.docker.passthrough.docker.image.tag is not set it defaults to "latest"), and looks for a manifest annotation with key 'org.opencontainers.image.ref.name'
 that has value matching the constructed target repo:tag. If a match is found, [docker_inspector_name] inspects the matching image. If no match is found, or detect.docker.passthrough.docker.image.repo
 is not set, [docker_inspector_name] fails.

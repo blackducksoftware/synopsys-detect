@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.6.0-SIGQA3-rl-scan-SNAPSHOT'
+version = '9.6.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -151,25 +151,16 @@ dependencies {
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
 
-    // Below exclusions of transitive dependencies and inclusions of corresponding direct dependencies
-    // were added to resolve CVE-2024-22243 appearing in 5.3.27 of springframework libraries.
+    // Below direct inclusions of corresponding transitive dependencies
+    // were added to resolve CVE-2024-22259 appearing in 5.3.27 of springframework libraries.
     // The below changes can be reverted in the future after comprehensively testing with an updated spring boot version
-    implementation "org.springframework:spring-jcl:5.3.32"
-    implementation("org.springframework:spring-core:5.3.32") {
-        exclude group: 'org.springframework', module: 'spring-jcl'
-    }
-    implementation "org.springframework:spring-aop:5.3.32"
-    implementation "org.springframework:spring-beans:5.3.32"
-    implementation "org.springframework:spring-expression:5.3.32"
-    implementation("org.springframework:spring-context:5.3.32") {
-        exclude group: 'org.springframework', module: 'spring-aop'
-        exclude group: 'org.springframework', module: 'spring-beans'
-        exclude group: 'org.springframework', module: 'spring-expression'
-    }
-    implementation("org.springframework.boot:spring-boot") {
-        exclude group: 'org.springframework', module: 'spring-core'
-        exclude group: 'org.springframework', module: 'spring-context'
-    }
+    implementation "org.springframework:spring-jcl:5.3.33"
+    implementation("org.springframework:spring-core:5.3.33")
+    implementation "org.springframework:spring-aop:5.3.33"
+    implementation "org.springframework:spring-beans:5.3.33"
+    implementation "org.springframework:spring-expression:5.3.33"
+    implementation("org.springframework:spring-context:5.3.33")
+    implementation("org.springframework.boot:spring-boot")
 
     implementation 'org.yaml:snakeyaml:2.0'
     implementation 'org.zeroturnaround:zt-zip:1.13'

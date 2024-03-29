@@ -18,7 +18,7 @@ public class MavenCliExtractorOptionsTest {
     @MethodSource("provideTestCasesForBuildCliArguments")
     public void testBuildCliArguments(String mavenBuildCommand, List<String> expected) {
         CommandParser commandParser = new CommandParser();
-        MavenCliExtractorOptions options = new MavenCliExtractorOptions(mavenBuildCommand, null, null, null, null);
+        MavenCliExtractorOptions options = new MavenCliExtractorOptions(mavenBuildCommand, null, null, null, null, false);
         assertEquals(
             expected,
             options.buildCliArguments(commandParser)

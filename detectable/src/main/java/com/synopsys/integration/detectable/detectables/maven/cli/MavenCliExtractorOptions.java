@@ -22,6 +22,7 @@ public class MavenCliExtractorOptions {
     private final List<String> mavenIncludedScopes;
     private final List<String> mavenExcludedModules;
     private final List<String> mavenIncludedModules;
+    private final Boolean mavenIncludeShadedDependencies;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -30,13 +31,15 @@ public class MavenCliExtractorOptions {
         List<String> mavenExcludedScopes,
         List<String> mavenIncludedScopes,
         List<String> mavenExcludedModules,
-        List<String> mavenIncludedModules
+        List<String> mavenIncludedModules,
+        Boolean mavenIncludeShadedDependencies
     ) {
         this.mavenBuildCommand = mavenBuildCommand;
         this.mavenExcludedScopes = mavenExcludedScopes;
         this.mavenIncludedScopes = mavenIncludedScopes;
         this.mavenExcludedModules = mavenExcludedModules;
         this.mavenIncludedModules = mavenIncludedModules;
+        this.mavenIncludeShadedDependencies = mavenIncludeShadedDependencies;
     }
 
     public Optional<String> getMavenBuildCommand() {
@@ -95,5 +98,9 @@ public class MavenCliExtractorOptions {
 
     public List<String> getMavenIncludedModules() {
         return mavenIncludedModules;
+    }
+
+    public Boolean getMavenIncludeShadedDependencies() {
+        return mavenIncludeShadedDependencies;
     }
 }

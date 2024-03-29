@@ -1,6 +1,6 @@
 # User role requirements when running with [blackduck_product_name]
 
-Any user can download [solution_name] and run a scan, however you must configure a user/API token in [blackduck_product_name] for the [solution_name] scan to be analyzed by [blackduck_product_name].  
+Any user can download [company_name] [solution_name] and run a scan, however you must configure a user/API token in [blackduck_product_name] for the [company_name] [solution_name] scan to be analyzed by [blackduck_product_name].  
  
 For more information on creating a [blackduck_product_name] user token, please consult the documentation provided by [blackduck_product_name] under the topic:
 <xref href="MyAccessTokens.dita" scope="peer"> Managing user access tokens.

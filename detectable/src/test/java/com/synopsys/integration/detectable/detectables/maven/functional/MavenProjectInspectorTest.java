@@ -6,6 +6,10 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.util.FunctionalTestFiles;
+import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 
@@ -34,38 +38,7 @@ public class MavenProjectInspectorTest extends DetectableFunctionalTest {
         String inspector = new File("inspector").getCanonicalPath();
         addExecutableOutput(createStandardOutput(""), inspector, "inspect", "--dir", source, "--output-file", jsonFile.getPath());
 
-        addOutputFile(jsonFile.toPath(), "{",
-            "   \"Dir\": \"/opt/project/src\",",
-            "   \"Modules\": {",
-            "      \"/opt/project/src/pom.xml\": {",
-            "         \"ModuleFile\": \"/opt/project/src/pom.xml\",",
-            "         \"ModuleDir\": \"/opt/project/src\",",
-            "         \"Dependencies\": [",
-            "            {",
-            "               \"Id\": \"91390d46-4824-1909-fc05-0d949a4466c8\",",
-            "               \"IncludedBy\": [",
-            "                  \"DIRECT\"",
-            "               ],",
-            "               \"MavenCoordinates\": {",
-            "                  \"GroupId\": \"COORDINATE_GROUP\",",
-            "                  \"ArtifactId\": \"COORDINATE_ARTIFACT\",",
-            "                  \"Version\": \"COORDINATE_VERSION\"",
-            "               },",
-            "               \"DependencyType\": \"MAVEN\",",
-            "               \"DependencySource\": \"EXTERNAL\",",
-            "               \"Name\": \"NON_COORDINATE_NAME\",",
-            "               \"Version\": \"NON_COORDINATE_VERSION\",",
-            "               \"Artifacts\": [",
-            "                  \"/root/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar\"",
-            "               ],",
-            "               \"Scope\": \"compile\"",
-            "            }",
-            "         ],",
-            "         \"Strategy\": \"MAVEN\"",
-            "      }",
-            "   }",
-            "}"
-        );
+        addOutputFile(jsonFile.toPath(), FunctionalTestFiles.asListOfStrings("/maven/project_inspector_maven.json"));
     }
 
     @NotNull
@@ -89,15 +62,16 @@ public class MavenProjectInspectorTest extends DetectableFunctionalTest {
         Set<Dependency> dependencies = codeLocation.getDependencyGraph().getRootDependencies();
         Assertions.assertEquals(1, dependencies.size());
 
-        Dependency first = dependencies.iterator().next();
-        Assertions.assertNotNull(first);
+        NameVersionGraphAssert dependencyGraph = new NameVersionGraphAssert(Forge.MAVEN, codeLocations.get(0).getDependencyGraph());
 
-        Assertions.assertEquals("COORDINATE_ARTIFACT", first.getName());
-        Assertions.assertEquals("COORDINATE_VERSION", first.getVersion());
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        ExternalId junit = externalIdFactory.createMavenExternalId("org.junit.jupiter", "junit-jupiter-api", "5.10.2");
+        ExternalId apiguardian = externalIdFactory.createMavenExternalId("org.apiguardian","apiguardian-api","1.1.2");
+        ExternalId opentest = externalIdFactory.createMavenExternalId("org.opentest4j","opentest4j","1.3.0");
 
-        ExternalId firstId = first.getExternalId();
-        Assertions.assertEquals("COORDINATE_ARTIFACT", firstId.getName());
-        Assertions.assertEquals("COORDINATE_VERSION", firstId.getVersion());
-        Assertions.assertEquals("COORDINATE_GROUP", firstId.getGroup());
+        dependencyGraph.hasDependency(junit);
+        dependencyGraph.hasDependency(apiguardian);
+
+        dependencyGraph.hasParentChildRelationship(junit,opentest);
     }
 }
