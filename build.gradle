@@ -70,6 +70,18 @@ repositories {
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
+        url "${internalRepoHost}/artifactory/bds-bdio-release"
+        content { excludeModule(locatorGroup, locatorModule) }
+    }
+    maven {
+        url "${internalRepoHost}/artifactory/bds-bdio-nightly"
+        content { excludeModule(locatorGroup, locatorModule) }
+    }
+    maven {
+        url "${internalRepoHost}/artifactory/bds-bdio-snapshot"
+        content { excludeModule(locatorGroup, locatorModule) }
+    }
+    maven {
         url "${externalRepoHost}/bds-bdio-release"
         content { excludeModule(locatorGroup, locatorModule) }
     }
@@ -132,7 +144,7 @@ dependencies {
 
     implementation 'ch.qos.logback:logback-classic:1.2.11'
 
-    implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.6'
+    implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.10'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.2.9'
     implementation "${locatorGroup}:${locatorModule}:1.1.8"
