@@ -76,21 +76,15 @@ public class GradleReportParser {
 
     private void setGradleReportInfo(GradleReport gradleReport, String line) {
         if (line.startsWith(PROJECT_DIRECTORY_PREFIX)) {
-            String projectDirectory = line.substring(PROJECT_DIRECTORY_PREFIX.length()).trim();
-            gradleReport.setProjectSourcePath(projectDirectory);
-            metadata.put(PROJECT_DIRECTORY_PREFIX, projectDirectory);
+            gradleReport.setProjectSourcePath(line.substring(PROJECT_DIRECTORY_PREFIX.length()).trim());
         } else if (line.startsWith(PROJECT_GROUP_PREFIX)) {
-            String projectGroup = line.substring(PROJECT_GROUP_PREFIX.length()).trim();
-            gradleReport.setProjectGroup(projectGroup);
-            metadata.put(PROJECT_GROUP_PREFIX, projectGroup);
+            gradleReport.setProjectGroup(line.substring(PROJECT_GROUP_PREFIX.length()).trim());
         } else if (line.startsWith(PROJECT_NAME_PREFIX)) {
             String projectName = line.substring(PROJECT_NAME_PREFIX.length()).trim();
             gradleReport.setProjectName(projectName);
             metadata.put(PROJECT_NAME_PREFIX, projectName);
         } else if (line.startsWith(PROJECT_VERSION_PREFIX)) {
-            String projectVersion = line.substring(PROJECT_VERSION_PREFIX.length()).trim();
-            gradleReport.setProjectVersionName(projectVersion);
-            metadata.put(PROJECT_VERSION_PREFIX, projectVersion);
+            gradleReport.setProjectVersionName(line.substring(PROJECT_VERSION_PREFIX.length()).trim());
         } else if (line.startsWith(ROOT_PROJECT_NAME_PREFIX)) {
             String rootProjectName = line.substring(ROOT_PROJECT_NAME_PREFIX.length()).trim();
             metadata.put(ROOT_PROJECT_NAME_PREFIX, rootProjectName);
