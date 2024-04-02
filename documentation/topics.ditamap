@@ -97,6 +97,7 @@
 		<topicref href="runningdetect/concurrent.md" format="markdown"/>
 		<topicref href="runningdetect/containerscanning.md" format="markdown"/>
 		<topicref href="runningdetect/runincontainer.md" format="markdown"/>
+		<topicref href="runningdetect/threatintelscan.md" format="markdown"/>
 		<topicref href="runningdetect/component-location-analysis.md" format="markdown"/>
 	</topicref>
 	<topicref href="components/overview.md" format="markdown">
