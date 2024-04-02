@@ -8,9 +8,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -25,14 +26,13 @@ public class GradleReportParser {
     public static final String PROJECT_DIRECTORY_PREFIX = "projectDirectory:";
     public static final String PROJECT_GROUP_PREFIX = "projectGroup:";
     public static final String PROJECT_NAME_PREFIX = "projectName:";
+    public static final String PROJECT_PARENT_PREFIX = "projectParent:";
     public static final String PROJECT_VERSION_PREFIX = "projectVersion:";
     public static final String ROOT_PROJECT_NAME_PREFIX = "rootProjectName:";
     public static final String ROOT_PROJECT_VERSION_PREFIX = "rootProjectVersion:";
     public static final String DETECT_META_DATA_HEADER = "DETECT META DATA START";
     public static final String DETECT_META_DATA_FOOTER = "DETECT META DATA END";
-    public static String projectName = "";
-    public static String rootProjectName = "";
-
+    public static Map<String, String> metadata = new HashMap<>();
     private final GradleReportConfigurationParser gradleReportConfigurationParser = new GradleReportConfigurationParser();
 
     public Optional<GradleReport> parseReport(File reportFile) {
@@ -41,24 +41,27 @@ public class GradleReportParser {
         List<String> configurationLines = new ArrayList<>();
         try (InputStream dependenciesInputStream = new FileInputStream(reportFile);
             BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8))) {
-            while (reader.ready()) {
-                String line = reader.readLine();
-                /*
-                  The meta data section will be at the end of the file after all of the "gradle dependencies" output
-                 */
-                if (line.startsWith(DETECT_META_DATA_HEADER)) {
+
+            List<String> reportLines = reader.lines().collect(Collectors.toList());
+
+            for(int i = reportLines.size()-1; i>=0; i--) {
+                if (reportLines.get(i).startsWith(DETECT_META_DATA_FOOTER)) {
                     processingMetaData = true;
-                } else if (line.startsWith(DETECT_META_DATA_FOOTER)) {
-                    processingMetaData = false;
+                } else if (reportLines.get(i).startsWith(DETECT_META_DATA_HEADER)) {
+                    break;
                 } else if (processingMetaData) {
-                    setGradleReportInfo(gradleReport, line);
+                    setGradleReportInfo(gradleReport, reportLines.get(i));
+                }
+            }
+
+            for(String line: reportLines) {
+                if (StringUtils.isBlank(line)) {
+                    parseConfigurationLines(configurationLines, gradleReport);
+                    configurationLines.clear();
+                } else if (line.startsWith(DETECT_META_DATA_HEADER)) {
+                    break;
                 } else {
-                    if (StringUtils.isBlank(line)) {
-                        parseConfigurationLines(configurationLines, gradleReport);
-                        configurationLines.clear();
-                    } else {
-                        configurationLines.add(line);
-                    }
+                    configurationLines.add(line);
                 }
             }
 
@@ -73,16 +76,27 @@ public class GradleReportParser {
 
     private void setGradleReportInfo(GradleReport gradleReport, String line) {
         if (line.startsWith(PROJECT_DIRECTORY_PREFIX)) {
-            gradleReport.setProjectSourcePath(line.substring(PROJECT_DIRECTORY_PREFIX.length()).trim());
+            String projectDirectory = line.substring(PROJECT_DIRECTORY_PREFIX.length()).trim();
+            gradleReport.setProjectSourcePath(projectDirectory);
+            metadata.put(PROJECT_DIRECTORY_PREFIX, projectDirectory);
         } else if (line.startsWith(PROJECT_GROUP_PREFIX)) {
-            gradleReport.setProjectGroup(line.substring(PROJECT_GROUP_PREFIX.length()).trim());
+            String projectGroup = line.substring(PROJECT_GROUP_PREFIX.length()).trim();
+            gradleReport.setProjectGroup(projectGroup);
+            metadata.put(PROJECT_GROUP_PREFIX, projectGroup);
         } else if (line.startsWith(PROJECT_NAME_PREFIX)) {
-            projectName = line.substring(PROJECT_NAME_PREFIX.length()).trim();
+            String projectName = line.substring(PROJECT_NAME_PREFIX.length()).trim();
             gradleReport.setProjectName(projectName);
+            metadata.put(PROJECT_NAME_PREFIX, projectName);
         } else if (line.startsWith(PROJECT_VERSION_PREFIX)) {
-            gradleReport.setProjectVersionName(line.substring(PROJECT_VERSION_PREFIX.length()).trim());
+            String projectVersion = line.substring(PROJECT_VERSION_PREFIX.length()).trim();
+            gradleReport.setProjectVersionName(projectVersion);
+            metadata.put(PROJECT_VERSION_PREFIX, projectVersion);
         } else if (line.startsWith(ROOT_PROJECT_NAME_PREFIX)) {
-            rootProjectName = line.substring(ROOT_PROJECT_NAME_PREFIX.length()).trim();
+            String rootProjectName = line.substring(ROOT_PROJECT_NAME_PREFIX.length()).trim();
+            metadata.put(ROOT_PROJECT_NAME_PREFIX, rootProjectName);
+        } else if (line.startsWith(PROJECT_PARENT_PREFIX)) {
+            String projectParent = line.substring(PROJECT_PARENT_PREFIX.length()).trim();
+            metadata.put(PROJECT_PARENT_PREFIX, projectParent);
         }
     }
 
@@ -90,7 +104,7 @@ public class GradleReportParser {
         if (configurationLines.size() > 1 && isConfigurationHeader(configurationLines)) {
             String header = configurationLines.get(0);
             List<String> dependencyTree = configurationLines.stream().skip(1).collect(Collectors.toList());
-            GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree);
+            GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree, metadata);
             gradleReport.getConfigurations().add(configuration);
         }
     }

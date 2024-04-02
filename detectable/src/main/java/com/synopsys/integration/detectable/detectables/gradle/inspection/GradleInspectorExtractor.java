@@ -57,12 +57,20 @@ public class GradleInspectorExtractor {
             gradleRunner.runGradleDependencies(directory, gradleExe, gradleInspector, gradleCommand, proxyInfo, outputDirectory);
 
             File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
-            List<File> reportFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
             List<CodeLocation> codeLocations = new ArrayList<>();
 
-            File rootProjectFile = fileFinder.findFile(outputDirectory,"root_project*");
-            reportFiles.remove(rootProjectFile);
-            reportFiles.add(0,rootProjectFile);
+            List<File> reportFiles = new ArrayList<>();
+
+            int depthCount = 0;
+            while(true) {
+                String pattern = "_depth" + depthCount;
+                List<File> tempList = fileFinder.findFiles(outputDirectory,"*"+pattern+"_dependencyGraph.txt");
+                if(tempList.isEmpty()) {
+                    break;
+                }
+                reportFiles.addAll(tempList);
+                depthCount++;
+            }
 
             reportFiles.stream()
                 .map(gradleReportParser::parseReport)
