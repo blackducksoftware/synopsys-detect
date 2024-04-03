@@ -1,6 +1,6 @@
 # Threat Intel Scan
 
-Threat Intel Scan is a way of running a scan of binary files and providing malware warnings and risk analysis.
+Threat Intel Scan is a way of running binary file scans that provide malware warnings and risk analysis of open source and commercial software.
 
 [company_name] [solution_name] will accept a user provided local file path to a binary file.
 
@@ -11,8 +11,7 @@ Threat Intel Scan supports persistent (Intelligent) scan modes in [blackduck_pro
 ## Requirements and Limitations
 
 ### General Requirements
- * Your [blackduck_product_name] server must have [blackduck_product_name] .
- * Must have Match as a Service (MaaS) licensed, and enabled within [blackduck_product_name].
+ * Your [blackduck_product_name] server must have the appropriate [blackduck_product_name] license.
  * A unique project version must be provided, or the scan service will respond with an error.
  * Must be running [blackduck_product_name] 2024.4.0 or greater.
  * Threat Intel Scans require network connectivity (Air gap mode is not supported).
@@ -27,17 +26,10 @@ Threat Intel Scan supports persistent (Intelligent) scan modes in [blackduck_pro
 --detect.tools=THREAT_INTEL
 --detect.container.scan.file.path=<Path to local binary file>
 ```
-
+ 
 ## Results
 
-Threat intel scan findings will appear in the [blackduck_product_name] user interface, please consult the documentation provided by [blackduck_product_name].
-<!-- TBD Reference link directly to [blackduck_product_name] Docs once they are available
-<xref href="threatintelscans.dita" scope="peer">Threat Intel Scans
-<data name="facets" value="pubname=bd-hub"/>
-and image
-<figure>
-<img src="images/threatintelscans.png"
-         alt="Threat Intel Scan Results">
-    <figcaption>Threat Intel Scan Results.</figcaption>
-</figure>
--->
+Threat intel scan findings will appear in the [blackduck_product_name] user interface, please consult the documentation [here](https://sig-product-docs.synopsys.com/bundle/bd-hub/page/Welcome.html)
+
+## Further information
+For additional information regarding the related properties, see [threat-intel](../properties/configuration/threat-intel.md)
