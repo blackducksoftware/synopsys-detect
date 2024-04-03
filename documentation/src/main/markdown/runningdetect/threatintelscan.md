@@ -12,9 +12,9 @@ Threat Intel Scan supports persistent (Intelligent) scan modes in [blackduck_pro
 
 ### General Requirements
  * Your [blackduck_product_name] server must have the appropriate [blackduck_product_name] license.
- * A unique project version must be provided, or the scan service will respond with an error.
  * Must be running [blackduck_product_name] 2024.4.0 or greater.
  * Threat Intel Scans require network connectivity (Air gap mode is not supported).
+ * Threat Intel does not provide project and version name defaults to [company_name] [solution_name], so you need to set project and version names via properties when Threat Intel is the only tool invoked.
  
 ### Limitations
  * Threat Intel Scan is limited to images of 5GB or less for hosted services.
