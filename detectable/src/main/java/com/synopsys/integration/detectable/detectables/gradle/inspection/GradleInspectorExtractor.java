@@ -3,11 +3,10 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.comparator.NameFileComparator;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,25 +56,14 @@ public class GradleInspectorExtractor {
             gradleRunner.runGradleDependencies(directory, gradleExe, gradleInspector, gradleCommand, proxyInfo, outputDirectory);
 
             File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
+            List<File> reportFiles = fileFinder.findFiles(outputDirectory,"*_dependencyGraph.txt");
             List<CodeLocation> codeLocations = new ArrayList<>();
 
-            List<File> reportFiles = new ArrayList<>();
+            File[] files = new File[reportFiles.size()];
+            reportFiles.toArray(files);
+            List<File> reportFilesSorted = Arrays.asList(sortFilesByDepth(files));
 
-            int filesCount = fileFinder.findFiles(outputDirectory,"*_dependencyGraph.txt").size();
-            int depthCount = 0;
-            int currentCount = 0;
-            while(true) {
-                String pattern = "_depth" + depthCount;
-                List<File> tempList = fileFinder.findFiles(outputDirectory,"*"+pattern+"_dependencyGraph.txt");
-                currentCount += tempList.size();
-                reportFiles.addAll(tempList);
-                if(filesCount == currentCount) {
-                    break;
-                }
-                depthCount++;
-            }
-
-            reportFiles.stream()
+            reportFilesSorted.stream()
                 .map(gradleReportParser::parseReport)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -106,6 +94,32 @@ public class GradleInspectorExtractor {
             logger.warn("Failed to parse file {}", rootProjectMetadataFile.getAbsolutePath());
             return Optional.empty();
         }
+    }
+
+    private File[] sortFilesByDepth(File[] files) {
+        Arrays.sort(files, new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                int n1 = extractDepthNumber(o1.getName());
+                int n2 = extractDepthNumber(o2.getName());
+                return n1 - n2;
+            }
+
+            private int extractDepthNumber(String name) {
+                int i;
+                try {
+                    int s = name.indexOf("depth") + 5;
+                    int e = name.indexOf("_dependencyGraph");
+                    String number = name.substring(s, e);
+                    i = Integer.parseInt(number);
+                } catch(Exception e) {
+                    i = 0; //  default to 0
+                }
+                return i;
+            }
+        });
+
+        return files;
     }
 
 }
