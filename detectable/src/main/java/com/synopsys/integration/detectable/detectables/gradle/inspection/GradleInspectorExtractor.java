@@ -61,14 +61,17 @@ public class GradleInspectorExtractor {
 
             List<File> reportFiles = new ArrayList<>();
 
+            int filesCount = fileFinder.findFiles(outputDirectory,"*_dependencyGraph.txt").size();
             int depthCount = 0;
+            int currentCount = 0;
             while(true) {
                 String pattern = "_depth" + depthCount;
                 List<File> tempList = fileFinder.findFiles(outputDirectory,"*"+pattern+"_dependencyGraph.txt");
-                if(tempList.isEmpty()) {
+                currentCount += tempList.size();
+                reportFiles.addAll(tempList);
+                if(filesCount == currentCount) {
                     break;
                 }
-                reportFiles.addAll(tempList);
                 depthCount++;
             }
 
