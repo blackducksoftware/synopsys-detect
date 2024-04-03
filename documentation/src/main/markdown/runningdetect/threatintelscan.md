@@ -21,7 +21,7 @@ Threat Intel Scan supports persistent (Intelligent) scan modes in [blackduck_pro
  * Threat Intel Scan is limited to images of 6GB or less for local, on-prem services.
  
 ## Invocation
- * To invoke a threat intel scan, which executes in "Intelligent" mode by default, the following must be provided at a minimum:   
+To invoke a threat intel scan, which executes in "Intelligent" mode by default, the following must be provided at a minimum:   
  ```
 --detect.tools=THREAT_INTEL
 --detect.container.scan.file.path=<Path to local binary file>
