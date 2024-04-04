@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.componentlocator.ComponentLocator;
+import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
 import com.synopsys.integration.componentlocator.beans.Component;
 import com.synopsys.integration.componentlocator.beans.Input;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -26,7 +27,7 @@ public class GenerateComponentLocationAnalysisOperation {
     public static final String OPERATION_NAME = "Generating Component Location Analysis File for All Components";
     private static final String LOCATOR_INPUT_FILE_NAME = "components-source.json";
     private static final String LOCATOR_OUTPUT_FILE_NAME = "components-with-locations.json";
-    public static final String SUPPORTED_DETECTORS_LOG_MSG = "Component Location Analysis supports NPM, Maven, Gradle and NuGet detectors only.";
+    public static final String SUPPORTED_DETECTORS_LOG_MSG = "Component Location Analysis supports specific detectors ".concat(SUPPORTED_DETECTORS.toString()).concat(" only.");
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**

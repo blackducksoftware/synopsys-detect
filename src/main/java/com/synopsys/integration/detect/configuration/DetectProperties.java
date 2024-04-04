@@ -325,6 +325,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.CONTAINER_SCANNER, DetectGroup.SOURCE_PATH)
             .build();
 
+    public static final NullableStringProperty DETECT_THREAT_INTEL_SCAN_FILE =
+            NullableStringProperty.newBuilder("detect.threatintel.scan.file.path")
+                .setInfo("Threat Intel Scan Target", DetectPropertyFromVersion.VERSION_9_6_0)
+                .setHelp(
+                    "If specified, this file and this file only will be uploaded for Threat Intel analysis.  The THREAT_INTEL tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the THREAT_INTEL tool is invoked.")
+                .setGroups(DetectGroup.THREAT_INTEL, DetectGroup.SOURCE_PATH)
+                .build();
+
     // TODO: Consider removing environment sourcing code in 9.0.0. IDETECT-3167
     public static final StringProperty DETECT_BITBAKE_BUILD_ENV_NAME =
         StringProperty.newBuilder("detect.bitbake.build.env.name", "oe-init-build-env")
@@ -1133,7 +1141,7 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.nuget.excluded.modules")
             .setInfo("Nuget Projects Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "The projects within the solution to exclude. Detect will exclude all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$')")
+                "The projects within the solution to exclude. Detect will exclude all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$'). Note that the term 'modules' in the parameter name is synonymous with Nuget 'project'.")
             .setExample("^BaGet.Core$,^BaGet.Core.Tests$")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1149,9 +1157,9 @@ public class DetectProperties {
 
     public static final CaseSensitiveStringListProperty DETECT_NUGET_INCLUDED_MODULES =
         CaseSensitiveStringListProperty.newBuilder("detect.nuget.included.modules")
-            .setInfo("Nuget Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Nuget Projects Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "The names of the projects in a solution to include (overrides exclude). Detect will include all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$')")
+                "The names of the projects in a solution to include (overrides exclude). Detect will include all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$'). Note that the term 'modules' in the parameter name is synonymous with Nuget 'project'.")
             .setExample("^BaGet.Core$,^BaGet.Core.Tests$")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)

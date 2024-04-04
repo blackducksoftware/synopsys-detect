@@ -13,7 +13,7 @@ import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
+import com.synopsys.integration.detectable.detectables.git.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageState;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedPackage;
 

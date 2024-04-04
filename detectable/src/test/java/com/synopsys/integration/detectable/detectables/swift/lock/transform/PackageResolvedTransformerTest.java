@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
+import com.synopsys.integration.detectable.detectables.git.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageResolvedFormat;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.PackageState;
 import com.synopsys.integration.detectable.detectables.swift.lock.data.ResolvedPackage;

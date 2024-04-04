@@ -131,9 +131,9 @@ import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGen
 import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
 import com.synopsys.integration.detectable.detectables.git.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCommandRunner;
-import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
@@ -808,7 +808,7 @@ public class DetectableFactory {
     }
 
     private GitParseExtractor gitParseExtractor() {
-        return new GitParseExtractor(gitFileParser(), gitConfigNameVersionTransformer(), gitConfigNodeTransformer());
+        return new GitParseExtractor(gitFileParser(), gitConfigNameVersionTransformer(), gitConfigNodeTransformer(), gitUrlParser());
     }
 
     private GitUrlParser gitUrlParser() {
