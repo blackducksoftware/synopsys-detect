@@ -113,6 +113,7 @@ public class GradleInspectorExtractor {
                     String number = name.substring(s, e);
                     i = Integer.parseInt(number);
                 } catch(Exception e) {
+                    logger.error("The file name is not analogous to the structure expected" + name);
                     i = 0; //  default to 0
                 }
                 return i;
