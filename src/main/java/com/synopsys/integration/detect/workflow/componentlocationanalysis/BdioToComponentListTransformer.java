@@ -68,7 +68,9 @@ public class BdioToComponentListTransformer {
     private Set<Component> externalIDsToComponentSet(List<ExternalId> gavs) {
         Set<Component> componentSet = new LinkedHashSet<>();
         for (ExternalId gav : gavs) {
-            componentSet.add(new Component(gav.getGroup(), gav.getName(), gav.getVersion(), new JsonObject()));
+            if (gav.getName()!=null && gav.getVersion()!=null) {
+                componentSet.add(new Component(gav.getGroup(), gav.getName(), gav.getVersion(), new JsonObject()));
+            }
         }
         return componentSet;
     }
