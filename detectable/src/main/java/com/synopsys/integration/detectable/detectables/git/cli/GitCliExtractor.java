@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectables.git.GitUrlParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionMetadata;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
@@ -36,6 +37,7 @@ public class GitCliExtractor {
             toolVersionLogger.log(directory, gitExecutable);
 
             String remoteUrl = gitCommandRunner.getRepoUrl(gitExecutable, directory);
+            remoteUrl = gitUrlParser.removeCredentialsFromUri(remoteUrl);
             String repoName = gitUrlParser.getRepoName(remoteUrl);
 
             Optional<String> branch = Optional.ofNullable(gitCommandRunner.getRepoBranch(gitExecutable, directory));
