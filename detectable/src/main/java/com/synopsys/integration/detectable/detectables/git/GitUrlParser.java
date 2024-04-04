@@ -22,6 +22,9 @@ public class GitUrlParser {
 
     /**
      * Strip out credentials if the string is a URI and contains credentials.
+     * 
+     * For example, a URL such as https://user:pass@synopsys.com/some/repo will become https://synopsys.com/some/repo
+     * 
      * @param remoteUrlString
      * @return sanitized URI or original string
      */
