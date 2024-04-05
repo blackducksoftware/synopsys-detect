@@ -36,7 +36,7 @@
 
 * Produce reports of the open-source analysis findings.
 
-* Provide malware and threat inteligence information.   
+* Provide malware information if identified.   
 
 ## How [company_name] [solution_name] functions.   
 
