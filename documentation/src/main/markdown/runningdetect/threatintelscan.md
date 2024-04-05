@@ -11,7 +11,7 @@ ReversingLabs Scan supports persistent (Intelligent) scan modes in [blackduck_pr
 ## Requirements and Limitations
 
 ### General Requirements
- * Your [blackduck_product_name] server must have the appropriate [blackduck_product_name] ReversingLabs license.
+ * [blackduck_product_name] server must have the appropriate ReversingLabs license.
  * Must be running [blackduck_product_name] 2024.4.0 or greater.
  * ReversingLabs scans require network connectivity (Air gap mode is not supported).
  * ReversingLabs does not provide project and version name defaults to [company_name] [solution_name], so you need to set project and version names via properties when ReversingLabs is the only tool invoked.
@@ -21,10 +21,12 @@ ReversingLabs Scan supports persistent (Intelligent) scan modes in [blackduck_pr
  * ReversingLabs Scan is limited to images of 6GB or less for local, on-prem services.
  
 ## Invocation
-To invoke a ReversingLabs scan, which executes in "Intelligent" mode by default, the following must be provided at a minimum:   
+To invoke a ReversingLabs scan, which executes in "Intelligent" mode by default, the following must be provided at a minimum in addition to [blackduck_product_name] Server related configuration properties:   
  ```
 --detect.tools=THREAT_INTEL
 --detect.container.scan.file.path=<Path to local binary file>
+--detect.project.name=<Use existing or set as a value to be created>
+--detect.project.version.name=<Use existing or set as a value to be created>
 ```
  
 ## Results
