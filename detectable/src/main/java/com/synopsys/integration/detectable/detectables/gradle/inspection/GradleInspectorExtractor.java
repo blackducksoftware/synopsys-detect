@@ -3,10 +3,13 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Comparator;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.comparator.NameFileComparator;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
