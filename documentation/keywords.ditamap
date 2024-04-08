@@ -6,6 +6,7 @@
   <keydef keys="division_name"><topicmeta><keywords><keyword>SIG</keyword></keywords></topicmeta></keydef>
   <keydef keys="binary_repo_type"><topicmeta><keywords><keyword>Artifactory</keyword></keywords></topicmeta></keydef>
   <keydef keys="solution_name"><topicmeta><keywords><keyword>Detect</keyword></keywords></topicmeta></keydef>
+  <keydef keys="threat_intel"><topicmeta><keywords><keyword>ReversingLabs</keyword></keywords></topicmeta></keydef>
   <keydef keys="source_project_name"><topicmeta><keywords><keyword>synopsys-detect</keyword></keywords></topicmeta></keydef>
   <keydef keys="bash_script_name"><topicmeta><keywords><keyword>detect9.sh</keyword></keywords></topicmeta></keydef>
   <keydef keys="powershell_script_name"><topicmeta><keywords><keyword>detect9.ps1</keyword></keywords></topicmeta></keydef>

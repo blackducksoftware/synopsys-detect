@@ -2,7 +2,7 @@
 
 [company_name] [solution_name] is an intelligent scan client that analyzes code in your projects and associated folders to perform compositional analysis. [company_name] [solution_name] can be configured to send scan results to [blackduck_product_name], which generates risk analysis when identifying open-source components, licenses, and security vulnerabilities.
 
-[company_name] [solution_name] can be used in both connected and air gap modes.  
+[company_name] [solution_name] can be used in both connected and air gap modes depending on the types of scans being run.    
 
 ## [company_name] [solution_name] has the following characteristics.     
 
@@ -14,7 +14,7 @@
 
 * Runs on Windows, Linux, and macOS. It is available through GitHub, under the permissive Apache License, Version 2.0 and does not require pre-installation or extensive configuration.
 
-* Supports scanning Docker images by identifying open-source libraries and code within the images, using both signature scanning and the package manager analysis techniques.  
+* Supports scanning Docker images by identifying open-source libraries and code within the images, using both signature scanning and the package manager analysis techniques.    
 
 ## [company_name] [solution_name] functionality consolidation.   
 
@@ -34,7 +34,11 @@
 
 * Calculate security vulnerability risk in your code.
 
-* Produce reports of the open-source analysis findings.  
+* Produce reports of the open-source analysis findings.
+
+* Provide malware information if identified.   
+
+<note type="note">Some scan types require specific feature licenses to execute. Contact your [company_name] representative for further information.</note>
 
 ## How [company_name] [solution_name] functions.   
 
@@ -46,5 +50,4 @@ When looking at vulnerabilities in open source and third-party software, [compan
 
 * Uploads both sets of results (dependency details) to [blackduck_product_name] creating the project/version if it does not already exist. [blackduck_product_name] uses the uploaded dependency information to build the Bill Of Materials (BOM) for the project/version.
 
-* You can view the output and analysis results in [blackduck_product_name].  
-
+* You can view the output and analysis results in [blackduck_product_name].    
