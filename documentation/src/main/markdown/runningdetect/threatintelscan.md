@@ -4,7 +4,7 @@
 
 [company_name] [solution_name] will accept a user provided local file path to a binary file for [threat_intel] Scan.
 
-Identification of malware will be displayed to [blackduck_product_name] users will include file name, product (component name), and other identifiers, along with a description of the type of malware, if malware is detected.
+Identification of malware will be displayed to [blackduck_product_name] users will include file name, file path, and other identifiers, along with a description of the type of malware, and severity of the finding if malware is detected.
 
 ## Workflow
 
@@ -38,7 +38,7 @@ To invoke a [threat_intel] scan, which executes in "Intelligent" mode by default
  
 ## Results
 
-[threat_intel] scan findings will appear in the [blackduck_product_name] user interface under the **Malware** tab. Further information on viewing results is available [here](https://sig-product-docs.synopsys.com/bundle/bd-hub/page/ComponentDiscovery/aboutReversinglabsScanning.html)
+[threat_intel] scan findings will appear in the [blackduck_product_name] user interface under the **Malware** tab. Further information on viewing [threat_intel] results is available [here](https://sig-product-docs.synopsys.com/bundle/bd-hub/page/ComponentDiscovery/aboutReversinglabsScanning.html)
 
 ## Further information
 For additional information regarding the related properties, see [threat-intel](../properties/configuration/threat-intel.md)
