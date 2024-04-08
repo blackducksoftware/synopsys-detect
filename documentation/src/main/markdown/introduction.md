@@ -38,7 +38,7 @@
 
 * Provide malware information if identified.   
 
-<note type="information">Some scan types require specific feature licenses to execute.</note>
+<note type="attention">Some scan types require specific feature licenses to execute.</note>
 
 ## How [company_name] [solution_name] functions.   
 
