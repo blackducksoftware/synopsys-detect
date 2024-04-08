@@ -28,7 +28,7 @@ Identification of malware will be displayed to [blackduck_product_name] users wi
  * [threat_intel] Scan is limited to images of 6GB or less for local, on-prem services.
  
 ## Invocation
-To invoke a [threat_intel] scan, which executes in "Intelligent" mode by default, the following must be provided at a minimum in addition to [blackduck_product_name] Server related configuration properties:   
+To invoke a [threat_intel] scan, which only executes in "Intelligent" mode, the following must be provided at a minimum in addition to [blackduck_product_name] Server related configuration properties:   
  ```
 --detect.tools=THREAT_INTEL
 --detect.container.scan.file.path=<Path to local binary file>
