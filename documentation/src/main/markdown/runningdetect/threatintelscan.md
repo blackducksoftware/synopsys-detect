@@ -20,6 +20,7 @@ Identification of malware will be displayed to [blackduck_product_name] users wi
 ### General Requirements
  * [blackduck_product_name] server must have the appropriate [threat_intel] license.
  * Must be running [blackduck_product_name] 2024.4.0 or greater.
+ * The [threat_intel] service container (rl-service) must be running.
  * [threat_intel] scans require network connectivity (Air gap mode is not supported).
  * [threat_intel] scan does not provide project and version name defaults so you need to set project and version names via properties when [threat_intel] is the only tool invoked. (If the specified project or version does not exist in [blackduck_product_name], it will be created.)
  
