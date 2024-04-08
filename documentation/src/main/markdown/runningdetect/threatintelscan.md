@@ -10,7 +10,7 @@ Identification of malware will be displayed to [blackduck_product_name] users wi
 
 1. [company_name] [solution_name] sends a BDIO header to scan service to generate a scan ID.   
 1. The file for scanning is uploaded to [blackduck_product_name] Storage service.   
-1. Once uploaded, [threat_intel] service container receives a RabbitMQ message, indicating that there is a new scan request, at which point [threat_intel] service takes the file from Storage service and downloads it to its own container.   
+1. Once uploaded, [threat_intel] service takes the file from Storage service and downloads it to its own container.   
 1. The [threat_intel] Service calls the remote [threat_intel] API to analyze this file and sends a hash of the file to scan.   
 1. Once complete, a report in JSON format is sent back to [threat_intel] service, which is then forwarded to [blackduck_product_name] Scan service. This report is saved in the [blackduck_product_name] database.   
 <note type="note">The scanned file is removed from Storage service when the scan completes, and [threat_intel] service does not persist any data for this file.</note>
