@@ -32,7 +32,7 @@ Identification of malware will be displayed to [blackduck_product_name] users wi
 To invoke a [threat_intel] scan, which only executes in "Intelligent" mode, the following must be provided at a minimum in addition to [blackduck_product_name] Server related configuration properties:   
  ```
 --detect.tools=THREAT_INTEL
---detect.container.scan.file.path=<Path to local binary file>
+--detect.threatintel.scan.file.path=<Path to local binary file>
 --detect.project.name=<Use existing or set as a value to be created>
 --detect.project.version.name=<Use existing or set as a value to be created>
 ```
