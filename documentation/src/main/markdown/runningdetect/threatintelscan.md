@@ -2,7 +2,7 @@
 
 [threat_intel] Scans are a way of running binary file analysis that provides malware warnings, with a risk analysis level applied, for open source and commercial software.
 
-[company_name] [solution_name] will accept a user provided local file path to a binary file for [threat_intel] Scan.
+[company_name] [solution_name] will accept a user provided local file path to a binary file for [threat_intel] Scan. This file may be a single executable, or a compressed file, such as a tar or zip, that contains many files for analysis.
 
 Identification of malware will be displayed to [blackduck_product_name] users will include file name, file path, and other identifiers, along with a description of the type of malware, and severity of the finding if malware is detected.
 
