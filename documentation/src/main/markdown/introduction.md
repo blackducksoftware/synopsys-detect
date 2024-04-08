@@ -2,7 +2,7 @@
 
 [company_name] [solution_name] is an intelligent scan client that analyzes code in your projects and associated folders to perform compositional analysis. [company_name] [solution_name] can be configured to send scan results to [blackduck_product_name], which generates risk analysis when identifying open-source components, licenses, and security vulnerabilities.
 
-[company_name] [solution_name] can be used in both connected and air gap modes.    
+[company_name] [solution_name] can be used in both connected and air gap modes depending on the types of scans being run.    
 
 ## [company_name] [solution_name] has the following characteristics.     
 
