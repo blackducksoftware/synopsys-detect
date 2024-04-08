@@ -4,14 +4,14 @@
 
 [company_name] [solution_name] will accept a user provided local file path to a binary file for [threat_intel] Scan. This file may be a single executable, or a compressed file, such as a tar or zip, that contains many files for analysis.
 
-Identification of malware will be displayed to [blackduck_product_name] users will include file name, file path, and other identifiers, along with a description of the type of malware, and severity of the finding if malware is detected.
+Identification of malware displayed to [blackduck_product_name] users will include file name, file path, and other identifiers, along with a description of the type of malware, and severity of the findings.
 
 ## Workflow
 
-1. [company_name] [solution_name] sends a BDIO header to scan service to generate a scan ID.   
-1. The file for scanning is uploaded to [blackduck_product_name] Storage service.   
+1. The file for scanning is uploaded to [blackduck_product_name] Storage service by [company_name] [solution_name].   
 1. Once uploaded, [threat_intel] service takes the file from Storage service and downloads it to its own container.   
-1. The [threat_intel] Service calls the remote [threat_intel] API to analyze this file and sends a hash of the file to scan.   
+1. The [threat_intel] service invokes [threat_intel] tools to extract any archived files and generate file hashes.   
+1. [threat_intel] is sent the SHA-1 hash of the uploaded file, along with hashes, and their size in bytes, of files extracted from any archives.
 1. Once complete, a report in JSON format is sent back to [threat_intel] service, which is then forwarded to [blackduck_product_name] Scan service. This report is saved in the [blackduck_product_name] database.   
 <note type="note">The scanned file is removed from Storage service when the scan completes, and [threat_intel] service does not persist any data for this file.</note>
 
