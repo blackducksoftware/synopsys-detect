@@ -38,6 +38,8 @@
 
 * Provide malware information if identified.   
 
+<note type="information">Some scan types require specific feature licenses to execute.</note>
+
 ## How [company_name] [solution_name] functions.   
 
 When looking at vulnerabilities in open source and third-party software, [company_name] [solution_name] performs the following basic steps:
