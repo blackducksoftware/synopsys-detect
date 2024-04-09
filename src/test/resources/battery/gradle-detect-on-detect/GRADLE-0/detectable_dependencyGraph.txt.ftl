@@ -437,4 +437,5 @@ projectDirectory:${sourcePath?replace("\\", "/")}/detectable
 projectGroup:com.synopsys.integration
 projectName:detectable
 projectVersion:7.5.0-SNAPSHOT
+projectParent:root project ':synopsys-detect'
 DETECT META DATA END

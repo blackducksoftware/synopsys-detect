@@ -94,7 +94,7 @@ public class GradleReportLineParser {
 
         String projectName = metadata.getOrDefault(PROJECT_NAME_PREFIX, "orphanProject");
         String rootProjectName = metadata.getOrDefault(ROOT_PROJECT_NAME_PREFIX, "");
-        String projectParent = metadata.getOrDefault(PROJECT_PARENT_PREFIX, null);
+        String projectParent = metadata.getOrDefault(PROJECT_PARENT_PREFIX, "null");
 
         addRelation(projectParent, projectName, rootProjectName);
 

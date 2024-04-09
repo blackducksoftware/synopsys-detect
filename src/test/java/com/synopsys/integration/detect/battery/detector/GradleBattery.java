@@ -7,7 +7,7 @@ import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 
-@Tag("battery")
+//@Tag("battery")
 public class GradleBattery {
     private static final String RESOURCE_FOLDER = "GRADLE-0";
 
