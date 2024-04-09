@@ -58,6 +58,7 @@ public enum DetectGroup implements Group {
     PEAR("pear", DETECTORS),
     PIP("pip", DETECTORS),
     PNPM("pnpm", DETECTORS),
+    POETRY("poetry", DETECTORS),
     PYTHON("python", DETECTORS),
     RUBY("ruby", DETECTORS),
     SBT("sbt", DETECTORS),

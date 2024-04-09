@@ -276,7 +276,7 @@ public class DetectDetectableFactory {
     }
 
     public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createPoetryDetectable(environment);
+        return detectableFactory.createPoetryDetectable(environment, detectableOptionFactory.createPoetryOptions());
     }
 
     public RebarDetectable createRebarDetectable(DetectableEnvironment environment) {

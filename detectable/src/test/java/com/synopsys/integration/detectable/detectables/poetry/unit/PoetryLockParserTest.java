@@ -25,7 +25,7 @@ public class PoetryLockParserTest {
             "version = \"2.0.0\""
         ));
         PoetryLockParser poetryLockParser = new PoetryLockParser();
-        DependencyGraph graph = poetryLockParser.parseLockFile(input);
+        DependencyGraph graph = poetryLockParser.parseLockFile(input, null);
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, graph);
         graphAssert.hasRootSize(2);
@@ -54,7 +54,7 @@ public class PoetryLockParserTest {
             "version = \"3.7\""
         ));
         PoetryLockParser poetryLockParser = new PoetryLockParser();
-        DependencyGraph graph = poetryLockParser.parseLockFile(input);
+        DependencyGraph graph = poetryLockParser.parseLockFile(input, null);
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, graph);
         graphAssert.hasRootSize(1);
@@ -75,7 +75,7 @@ public class PoetryLockParserTest {
             "version = \"3.0\""
         ));
         PoetryLockParser poetryLockParser = new PoetryLockParser();
-        DependencyGraph graph = poetryLockParser.parseLockFile(input);
+        DependencyGraph graph = poetryLockParser.parseLockFile(input, null);
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, graph);
         graphAssert.hasRootSize(0);
@@ -110,7 +110,7 @@ public class PoetryLockParserTest {
             "test1 = \"~1.0.0\""
         ));
         PoetryLockParser poetryLockParser = new PoetryLockParser();
-        DependencyGraph graph = poetryLockParser.parseLockFile(input);
+        DependencyGraph graph = poetryLockParser.parseLockFile(input, null);
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, graph);
         graphAssert.hasRootSize(1);

@@ -1176,12 +1176,12 @@ public class DetectProperties {
             .build();
 
     public static final NoneEnumListProperty<NugetDependencyType> DETECT_NUGET_DEPENDENCY_TYPES_EXCLUDED =
-            NoneEnumListProperty.newBuilder("detect.nuget.dependency.types.excluded", NoneEnum.NONE, NugetDependencyType.class)
-                    .setInfo("Nuget Dependency Types Excluded", DetectPropertyFromVersion.VERSION_9_4_0)
-                    .setHelp(createTypeFilterHelpText("Nuget dependency types"), "This property supports exclusion of dependencies in projects that use PackageReference, and packages.config for listing dependencies that are not stored in Json files.")
-                    .setExample(String.format("%s", NugetDependencyType.DEV.name()))
-                    .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-                    .build();
+        NoneEnumListProperty.newBuilder("detect.nuget.dependency.types.excluded", NoneEnum.NONE, NugetDependencyType.class)
+            .setInfo("Nuget Dependency Types Excluded", DetectPropertyFromVersion.VERSION_9_4_0)
+            .setHelp(createTypeFilterHelpText("Nuget dependency types"), "This property supports exclusion of dependencies in projects that use PackageReference, and packages.config for listing dependencies that are not stored in Json files.")
+            .setExample(String.format("%s", NugetDependencyType.DEV.name()))
+            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .build();
 
     public static final NullablePathProperty DETECT_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.output.path")
@@ -1277,6 +1277,13 @@ public class DetectProperties {
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_11_0)
             .setHelp(createTypeFilterHelpText("pnpm dependency types"))
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .build();
+
+    public static final CaseSensitiveStringListProperty DETECT_POETRY_DEPENDENCY_GROUPS_EXCLUDED =
+        CaseSensitiveStringListProperty.newBuilder("detect.poetry.dependency.groups.excluded")
+            .setInfo("Poetry dependency groups", DetectPropertyFromVersion.VERSION_9_7_0)
+            .setHelp(createTypeFilterHelpText("Poetry dependency groups"))
+            .setGroups(DetectGroup.POETRY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final NullablePathProperty DETECT_SWIFT_PATH =
