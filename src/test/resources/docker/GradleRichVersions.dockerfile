@@ -10,8 +10,8 @@ ENV JAVA_TOOL_OPTIONS="-Dhttps.protocols=TLSv1.2"
 # Set up the test project
 RUN mkdir -p ${SRC_DIR}
 
-RUN wget ${artifactory_url}/artifactory/detect-generic-qa-local/gradle-rich-versions.zip \
-    && unzip gradle-rich-versions.zip -d /opt/project/src \
-    && rm gradle-rich-versions.zip
+RUN wget ${artifactory_url}/artifactory/detect-generic-qa-local/gradle-rich-versions-project.zip
+RUN unzip gradle-rich-versions-project.zip -d /opt/project/src
+RUN rm gradle-rich-versions-project.zip
 
 RUN cd ${SRC_DIR}

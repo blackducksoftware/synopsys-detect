@@ -136,7 +136,7 @@ public class BlackDuckAssertions {
                 .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
                 .findFirst();
         assertTrue(blackDuckCommonComponent.isPresent());
-        String blackDuckCommonComponentVersion = blackDuckCommonComponent.get().getComponentVersion();
+        String blackDuckCommonComponentVersion = blackDuckCommonComponent.get().getComponentVersionName();
         assertEquals(version, blackDuckCommonComponentVersion);
     }
 
@@ -146,7 +146,7 @@ public class BlackDuckAssertions {
                 .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
                 .findFirst();
         assertTrue(blackDuckCommonComponent.isPresent());
-        String blackDuckCommonComponentVersion = blackDuckCommonComponent.get().getComponentVersion();
+        String blackDuckCommonComponentVersion = blackDuckCommonComponent.get().getComponentVersionName();
         assertNotEquals(version, blackDuckCommonComponentVersion);
     }
 
