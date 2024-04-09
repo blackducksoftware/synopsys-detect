@@ -88,7 +88,8 @@ public class GradleNativeInspectorTests {
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             // Detect specific assertions
-            dockerAssertions.successfulDetectorType(DetectorType.GRADLE.toString());
+            dockerAssertions.logContains("Gradle Native Inspector: SUCCESS");
+            dockerAssertions.logContains("GRADLE: SUCCESS");
             dockerAssertions.atLeastOneBdioFile();
 
             blackduckAssertions.checkComponentVersionNotExists("Apache Log4j", "2.22.1");
