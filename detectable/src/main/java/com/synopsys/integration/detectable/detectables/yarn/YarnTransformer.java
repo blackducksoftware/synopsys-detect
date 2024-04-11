@@ -134,7 +134,7 @@ public class YarnTransformer {
             if (shouldInclude(entryName, entry.getVersion())) {
                 LazyId id = generateComponentDependencyId(entryName, entry.getVersion());
                 graphBuilder.setDependencyInfo(id, entryName, entry.getVersion(), generateComponentExternalId(entryName, entry.getVersion()));
-                ExternalIdDependencyGraphBuilder.LazyDependencyInfo parentInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, id);
+                LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo parentInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, id);
                 Dependency parent = new Dependency(parentInfo.getName(), parentInfo.getVersion(), parentInfo.getExternalId(), null);
                 mutableDependencyGraph.addDirectDependency(parent);
                 collectYarnDependencies(lazyBuilderHandler, graphBuilder, mutableDependencyGraph, yarnLockResult, entry, resolvedEntryIdVersionMap, parent);
@@ -158,35 +158,43 @@ public class YarnTransformer {
             ) throws MissingExternalIdException {
         for (YarnLockDependency dependency : entry.getDependencies()) {
             if (!isWorkspace(yarnLockResult.getWorkspaceData(), dependency)) {
-                Map<String, String> idVersionMap = resolvedEntryIdVersionMap.get(dependency.getName());
-                String dependencyVersion;
-                if (idVersionMap != null) {
-                    dependencyVersion = idVersionMap.get(dependency.getVersion());
-                    if (dependencyVersion == null) {
-                        if (idVersionMap.values().isEmpty()) {
-                            logger.warn("Dependency {} with version definition {} not found in the Yarn map entries {}", dependency.getName(), dependency.getVersion(), idVersionMap.toString());
-                            dependencyVersion = dependency.getVersion();
-                        } else {
-                            // 1. Choose first version.
-                            dependencyVersion = (String) idVersionMap.values().toArray()[0];
-                        }
-                        // 2. Try to auto-resolve to one of the versions.
-                    }
-                } else {
-                    dependencyVersion = dependency.getVersion();
-                }
+                String dependencyVersion = getDependencyVersion(resolvedEntryIdVersionMap, dependency);
                 LazyId stringDependencyId = generateComponentDependencyId(dependency.getName(), dependencyVersion);
-                if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION) || !dependency.isOptional()) {
-                    graphBuilder.setDependencyInfo(stringDependencyId, dependency.getName(), dependencyVersion, generateComponentExternalId(dependency.getName(), dependencyVersion));
-                    //graphBuilder.addChildWithParent(stringDependencyId, id);
-                    LazyDependencyInfo childInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, stringDependencyId);
-                    Dependency child = new Dependency(childInfo.getName(), childInfo.getVersion(), childInfo.getExternalId(), null);
-                    mutableDependencyGraph.addChildWithParent(child, parent);
-
-                } else {
-                    logger.trace("Excluding optional dependency: {}", stringDependencyId);
-                }
+                includeNonProductionOrOptionalIfNeeded(dependency, dependencyVersion, parent,lazyBuilderHandler, graphBuilder, mutableDependencyGraph, stringDependencyId);
             }
+        }
+    }
+
+    private String getDependencyVersion(Map<String, Map<String, String>> resolvedEntryIdVersionMap, YarnLockDependency dependency) {
+        Map<String, String> idVersionMap = resolvedEntryIdVersionMap.get(dependency.getName());
+        String dependencyVersion;
+        if (idVersionMap != null) {
+            dependencyVersion = idVersionMap.get(dependency.getVersion());
+            if (dependencyVersion == null) {
+                if (idVersionMap.values().isEmpty()) {
+                    logger.warn("Dependency {} with version definition {} not found in the Yarn map entries {}", dependency.getName(), dependency.getVersion(), idVersionMap.toString());
+                    dependencyVersion = dependency.getVersion();
+                } else {
+                    // 1. Choose first version.
+                    dependencyVersion = (String) idVersionMap.values().toArray()[0];
+                }
+                // 2. Try to auto-resolve to one of the versions.
+            }
+        } else {
+            dependencyVersion = dependency.getVersion();
+        }
+        return dependencyVersion;
+    }
+
+    private void includeNonProductionOrOptionalIfNeeded(YarnLockDependency dependency, String dependencyVersion, Dependency parent, LazyBuilderMissingExternalIdHandler lazyBuilderHandler, ExternalIdDependencyGraphBuilder graphBuilder, BasicDependencyGraph mutableDependencyGraph, LazyId stringDependencyId) throws MissingExternalIdException {
+        if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION) || !dependency.isOptional()) {
+            graphBuilder.setDependencyInfo(stringDependencyId, dependency.getName(), dependencyVersion, generateComponentExternalId(dependency.getName(), dependencyVersion));
+            LazyDependencyInfo childInfo = graphBuilder.checkAndHandleMissingExternalId(lazyBuilderHandler, stringDependencyId);
+            Dependency child = new Dependency(childInfo.getName(), childInfo.getVersion(), childInfo.getExternalId(), null);
+            mutableDependencyGraph.addChildWithParent(child, parent);
+
+        } else {
+            logger.trace("Excluding optional dependency: {}", stringDependencyId);
         }
     }
 

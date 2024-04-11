@@ -1,38 +1,47 @@
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
+import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
+import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.OPERATION_NAME;
+import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.SUPPORTED_DETECTORS_LOG_MSG;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation;
-import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
-import com.synopsys.integration.detector.base.DetectorType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.blackducksoftware.bdio2.Bdio;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.view.BomStatusScanView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
 import com.synopsys.integration.blackduck.bdio2.util.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
@@ -50,6 +59,7 @@ import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.componentlocator.beans.Component;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -156,6 +166,9 @@ import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportS
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationEventPublisher;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.BdioToComponentListTransformer;
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation;
+import com.synopsys.integration.detect.workflow.componentlocationanalysis.ScanResultToComponentListTransformer;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -164,6 +177,7 @@ import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.detect.workflow.project.ProjectEventPublisher;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
+import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
 import com.synopsys.integration.detect.workflow.status.FormattedCodeLocation;
@@ -176,6 +190,7 @@ import com.synopsys.integration.detector.accuracy.directory.DirectoryEvaluator;
 import com.synopsys.integration.detector.accuracy.entrypoint.DetectorRuleEvaluator;
 import com.synopsys.integration.detector.accuracy.search.SearchEvaluator;
 import com.synopsys.integration.detector.accuracy.search.SearchOptions;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.finder.DirectoryFinder;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.exception.IntegrationException;
@@ -188,15 +203,6 @@ import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.OperatingSystemType;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
-
-import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
-import com.synopsys.integration.componentlocator.beans.Component;
-import com.synopsys.integration.detect.workflow.componentlocationanalysis.BdioToComponentListTransformer;
-import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.SUPPORTED_DETECTORS_LOG_MSG;
-import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.OPERATION_NAME;
-import com.synopsys.integration.detect.workflow.componentlocationanalysis.ScanResultToComponentListTransformer;
 
 public class OperationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -387,6 +393,10 @@ public class OperationRunner {
         return detectConfigurationFactory.getContainerScanFilePath();
     }
 
+    public Optional<String> getThreatIntelScanFilePath() {
+        return detectConfigurationFactory.getThreatIntelScanFilePath();
+    }
+    
     public File downloadContainerImage(Gson gson, File downloadDirectory, String containerImageUri) throws DetectUserFriendlyException, IntegrationException, IOException {
         String targetPathName = downloadDirectory.toString().concat("/targetImage");
         ConnectionFactory connectionFactory = new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
@@ -428,15 +438,29 @@ public class OperationRunner {
     // Generic method to POST a file to /api/storage/containers endpoint of storage service
     public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType, String operationName)
         throws OperationException {
+        return uploadFileToStorageServiceWithHeaders(blackDuckRunData, storageServiceEndpoint, payloadFile, postContentType, operationName, null);
+    }
+    
+    public Response uploadFileToStorageServiceWithHeaders(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType, String operationName, Map<String, String> headers) 
+            throws OperationException {
         return auditLog.namedPublic(operationName, () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
 
             HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(storageServiceEndpoint);
-            BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
-                .postFile(payloadFile, ContentType.create(postContentType))
-                .buildBlackDuckResponseRequest(postUrl);
-
+            
+            BlackDuckRequestBuilder requestBuilder = new BlackDuckRequestBuilder()
+                    .postFile(payloadFile, ContentType.create(postContentType));
+            
+            if (headers != null) {
+                for (String headerName : headers.keySet()) {
+                    requestBuilder.addHeader(headerName, headers.get(headerName));
+                }
+            }
+            
+            BlackDuckResponseRequest buildBlackDuckResponseRequest = requestBuilder
+                    .buildBlackDuckResponseRequest(postUrl);
+            
             try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
                 return response;
             } catch (IntegrationException e) {
@@ -446,7 +470,7 @@ public class OperationRunner {
                 logger.trace("I/O error occurred during file upload request.");
                 throw new IOException("I/O error occurred during file upload request to storage service.", e);
             }
-        });
+        });  
     }
 
     public Response uploadJsonToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, String jsonPayload, String postContentType, String operationName)
@@ -1123,9 +1147,19 @@ public class OperationRunner {
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.CONTAINER_SCAN, StatusType.FAILURE));
         exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "CONTAINER_SCAN");
     }
+    
+    public void publishThreatIntelFailure(Exception e) {
+        logger.error("Threat Intel scan failure: {}", e.getMessage());
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.THREAT_INTEL, StatusType.FAILURE));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "THREAT_INTEL");
+    }
 
     public void publishContainerSuccess() {
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.CONTAINER_SCAN, StatusType.SUCCESS));
+    }
+    
+    public void publishThreatIntelSuccess() {
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.THREAT_INTEL, StatusType.SUCCESS));
     }
 
     public void publishImpactFailure(Exception e) {

@@ -13,5 +13,6 @@ value specified in parentheses are:
 * [Vulnerability Impact Analysis Tool](../runningdetect/basics/runningwithblackduck.md) (--detect.tools=IMPACT_ANALYSIS)
 * [IaC Scanner](../runningdetect/basics/runningwithblackduck.md) (--detect.tools=IAC_SCAN)
 * [Container Scan](../runningdetect/containerscanning.md) (--detect.tools=CONTAINER_SCAN)
+* [ReversingLabs Scan](../runningdetect/threatintelscan.md) (--detect.tools=THREAT_INTEL)
 
 The detector tool runs any applicable [detectors](../components/detectors.dita).

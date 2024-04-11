@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.synopsys.integration.detectable.detectables.git.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfig;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigResult;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
@@ -30,11 +31,13 @@ public class GitParseExtractor {
     private final GitFileParser gitFileParser;
     private final GitConfigNameVersionTransformer gitConfigExtractor;
     private final GitConfigNodeTransformer gitConfigNodeTransformer;
+    private final GitUrlParser gitUrlParser;
 
-    public GitParseExtractor(GitFileParser gitFileParser, GitConfigNameVersionTransformer gitConfigExtractor, GitConfigNodeTransformer gitConfigNodeTransformer) {
+    public GitParseExtractor(GitFileParser gitFileParser, GitConfigNameVersionTransformer gitConfigExtractor, GitConfigNodeTransformer gitConfigNodeTransformer, GitUrlParser gitUrlParser) {
         this.gitFileParser = gitFileParser;
         this.gitConfigExtractor = gitConfigExtractor;
         this.gitConfigNodeTransformer = gitConfigNodeTransformer;
+        this.gitUrlParser = gitUrlParser;
     }
 
     public final Extraction extract(@Nullable File gitConfigFile, @Nullable File gitHeadFile, @Nullable File gitOriginHeadFile) {
@@ -58,7 +61,7 @@ public class GitParseExtractor {
             String headCommitHash = StringUtils.trimToNull(readFileToStringSafetly(gitOriginHeadFile));
 
             GitInfo gitInfo = new GitInfo(
-                gitConfigResult.getRemoteUrl(),
+                gitUrlParser.removeCredentialsFromUri(gitConfigResult.getRemoteUrl()),
                 headCommitHash,
                 gitConfigResult.getBranch().orElse(null)
             );
