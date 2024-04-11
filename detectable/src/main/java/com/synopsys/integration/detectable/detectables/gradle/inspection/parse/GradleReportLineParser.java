@@ -1,8 +1,13 @@
 package com.synopsys.integration.detectable.detectables.gradle.inspection.parse;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Map;
+import java.util.Queue;
+import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,15 +23,25 @@ public class GradleReportLineParser {
     private static final String COMPONENT_PREFIX = "--- ";
     private static final String[] REMOVE_SUFFIXES = new String[] { " (*)", " (c)", " (n)" };
     private static final String WINNING_INDICATOR = " -> ";
+    private static final String STRICTLY = "strictly";
+    private static final String REQUIRE = "require";
+    private static final String PREFER = "prefer";
+    private static final String REJECT = "reject";
+    private static final Map<String, String> gradleRichVersions = new HashMap<>();
+    private static final Map<String, HashSet<String>> richVersionGroup = new HashMap<>();
+    private static final Map<String, String> relationsMap = new HashMap<>();
+    public static final String PROJECT_NAME_PREFIX = "projectName:";
+    public static final String ROOT_PROJECT_NAME_PREFIX = "rootProjectName:";
+    public static final String PROJECT_PARENT_PREFIX = "projectParent:";
 
-    public GradleTreeNode parseLine(String line) {
+    public GradleTreeNode parseLine(String line, Map<String, String> metadata) {
         int level = parseTreeLevel(line);
         if (!line.contains(COMPONENT_PREFIX)) {
             return GradleTreeNode.newUnknown(level);
         } else if (StringUtils.containsAny(line, PROJECT_INDICATORS)) {
             return GradleTreeNode.newProject(level);
         } else {
-            List<String> gav = parseGav(line);
+            List<String> gav = parseGav(line, metadata);
             if (gav.size() != 3) {
                 logger.trace(String.format(
                     "The line can not be reasonably split in to the necessary parts: %s",
@@ -52,7 +67,7 @@ public class GradleReportLineParser {
         return line;
     }
 
-    private List<String> parseGav(String line) {
+    private List<String> parseGav(String line, Map<String, String> metadata) {
         String cleanedOutput = StringUtils.trimToEmpty(line);
         cleanedOutput = cleanedOutput.substring(cleanedOutput.indexOf(COMPONENT_PREFIX) + COMPONENT_PREFIX.length());
 
@@ -77,7 +92,51 @@ public class GradleReportLineParser {
             }
         }
 
+        String projectName = metadata.getOrDefault(PROJECT_NAME_PREFIX, "orphanProject");
+        String rootProjectName = metadata.getOrDefault(ROOT_PROJECT_NAME_PREFIX, "");
+        String projectParent = metadata.getOrDefault(PROJECT_PARENT_PREFIX, "null");
+
+        addRelation(projectParent, projectName, rootProjectName);
+
+        if(gavPieces.size() == 3) {
+            String dependencyGroupName = gavPieces.get(0) + ":" + gavPieces.get(1);
+            if ((cleanedOutput.contains(STRICTLY) || cleanedOutput.contains(REJECT) || cleanedOutput.contains(REQUIRE) || cleanedOutput.contains(PREFER))) {
+                gradleRichVersions.putIfAbsent(dependencyGroupName, gavPieces.get(2));
+                richVersionGroup.computeIfAbsent(projectName, value -> new HashSet<>()).add(dependencyGroupName);
+            }
+
+            if(gradleRichVersions.containsKey(dependencyGroupName)) {
+                if(richVersionGroup.containsKey(projectName) && richVersionGroup.get(projectName).contains(dependencyGroupName)) {
+                    gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
+                } else if(richVersionGroup.containsKey(rootProjectName) && richVersionGroup.get(rootProjectName).contains(dependencyGroupName)) {
+                    gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
+                } else if (checkParentRichVersion(rootProjectName, projectParent, dependencyGroupName)) {
+                    gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
+                }
+            }
+        }
+
         return gavPieces;
+    }
+
+    private void addRelation(String projectParent, String projectName, String rootProjectName) {
+        if (!projectParent.equals("null") && !projectParent.contains("root project")) {
+            String parentString = projectParent.substring(projectParent.lastIndexOf(":") + 1, projectParent.lastIndexOf("'"));
+            relationsMap.putIfAbsent(projectName, parentString);
+        } else if (!projectParent.equals("null") && !projectName.equals(rootProjectName)) {
+            relationsMap.putIfAbsent(projectName, rootProjectName);
+        }
+    }
+
+    private boolean checkParentRichVersion(String rootProjectName, String projectParent, String dependencyGroupName) {
+       String currentProject = projectParent.substring(projectParent.lastIndexOf(":") + 1, projectParent.lastIndexOf("'"));
+       while(!currentProject.equals(rootProjectName)) {
+           if(richVersionGroup.containsKey(currentProject) && richVersionGroup.get(currentProject).contains(dependencyGroupName)) {
+               return true;
+           }
+           currentProject = relationsMap.getOrDefault(currentProject, rootProjectName);
+       }
+       return false;
     }
 
     private int parseTreeLevel(String line) {
