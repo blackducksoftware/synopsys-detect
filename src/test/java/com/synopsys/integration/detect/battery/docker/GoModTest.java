@@ -30,7 +30,9 @@ public class GoModTest {
         "1.17.13",
         "1.18.10",
         "1.19.12",
-        "1.20.4"
+        "1.20.4",
+        "1.21.9",
+        "1.22.2"
     };
 
     private static final String PROJECT_NAME = "go-mod-docker";
