@@ -10,7 +10,7 @@ When enabled, [company_name] [solution_name] creates an output file in the scan 
 
 * Component Location Analysis is available under [company_name] [solution_name] “Limited Customer Availability (LCA)”.
 * A limited subset of Detector Types support this feature.
-    * Detectors supported as of 9.2.0 are: NPM, MAVEN, GRADLE, NUGET, GO_MOD, GO_DEP, GO_GRADLE, GO_VENDOR, GO_VNDR, PIP, POETRY, and CONDA.
+    * Detectors supported as of 9.2.0 are: NPM, MAVEN, GRADLE, NUGET, GO_MOD, GO_DEP, GO_GRADLE, GO_VENDOR, GO_VNDR, PIP, POETRY, CONDA, and YARN.
 * Scan modes supported as of 8.11.0 are: Offline and Rapid/Stateless.
     * Offline mode
       * When enabled for a scan without [blackduck_product_name] connectivity, all detected open source components will be included in the location analysis results.
