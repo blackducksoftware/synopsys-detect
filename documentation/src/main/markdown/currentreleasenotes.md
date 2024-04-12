@@ -6,3 +6,6 @@
 * ReversingLabs Scans - this new feature provides analysis of software packages for file-based malware threats.
 	See [ReversingLabs Scans](runningdetect/threatintelscan.md) for further information.
 
+## Dependency updates
+* Upgraded Component Locator to version 1.1.10 to certify support for location of components in Yarn Lock and Nuget Centralized Package Management files.
+
