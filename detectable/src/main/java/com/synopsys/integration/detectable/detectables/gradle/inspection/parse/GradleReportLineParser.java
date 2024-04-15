@@ -106,17 +106,22 @@ public class GradleReportLineParser {
             }
 
             if(gradleRichVersions.containsKey(dependencyGroupName)) {
-                if(richVersionGroup.containsKey(projectName) && richVersionGroup.get(projectName).contains(dependencyGroupName)) {
-                    gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
-                } else if(richVersionGroup.containsKey(rootProjectName) && richVersionGroup.get(rootProjectName).contains(dependencyGroupName)) {
-                    gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
-                } else if (checkParentRichVersion(rootProjectName, projectParent, dependencyGroupName)) {
-                    gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
-                }
+                updateRichVersion(dependencyGroupName, projectParent, projectName, rootProjectName, gavPieces);
             }
+
         }
 
         return gavPieces;
+    }
+
+    private void updateRichVersion(String dependencyGroupName, String projectParent, String projectName, String rootProjectName, List<String> gavPieces) {
+        if(richVersionGroup.containsKey(projectName) && richVersionGroup.get(projectName).contains(dependencyGroupName)) {
+            gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
+        } else if(richVersionGroup.containsKey(rootProjectName) && richVersionGroup.get(rootProjectName).contains(dependencyGroupName)) {
+            gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
+        } else if (checkParentRichVersion(rootProjectName, projectParent, dependencyGroupName)) {
+            gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
+        }
     }
 
     private void addRelation(String projectParent, String projectName, String rootProjectName) {
