@@ -47,3 +47,7 @@ It currently supports "build.gradle" and does not support Kotlin build files.
 
 As of [company_name] [solution_name] 9.5.0 the version of Project Inspector in use supports the `--build-system GRADLE` argument in place of `--strategy GRADLE`.
 The `--force-gradle-repos "url"` argument will be removed from support in the next [company_name] [solution_name] major release and replaced with the `--conf "maven.repo:url"` argument.
+
+### Rich version declaration support
+
+Rich version declarations allow a user to define rules around which version of a given direct or transitive dependency are resolved when Gradle performs its dependency conflict resolution. Typically, these are set in a parent build.gradle file, and because these rich version declarations set a specific requirement that conflict resolution must respect, the subsequent child modules will pull dependencies according to the rich version declaration. See Gradle documentation: [Rich Version Declaration](https://docs.gradle.org/current/userguide/rich_versions.html).
