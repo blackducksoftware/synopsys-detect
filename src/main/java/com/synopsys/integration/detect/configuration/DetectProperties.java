@@ -1284,7 +1284,7 @@ public class DetectProperties {
             .setInfo("Poetry dependency groups", DetectPropertyFromVersion.VERSION_9_7_0)
             .setHelp(
                 createTypeFilterHelpText("Poetry dependency groups"),
-                "When specified, presence of both poetry.lock and pyproject.toml files is required for this detector to run successfully."
+                "When specified, presence of both poetry.lock and pyproject.toml files is required for this detector to run successfully. Components that belong to excluded groups as well as their dependencies will be excluded from the BOM. If a component also belongs to a non-excluded group, it will be included in the BOM together with its dependencies."
             )
             .setGroups(DetectGroup.POETRY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
