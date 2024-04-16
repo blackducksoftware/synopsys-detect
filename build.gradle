@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.6.0-SIGQA3-SNAPSHOT'
+version = '9.7.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -147,19 +147,19 @@ dependencies {
     implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.10'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.2.9'
-    implementation "${locatorGroup}:${locatorModule}:1.1.9"
+    implementation "${locatorGroup}:${locatorModule}:1.1.10"
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
 
     // Below direct inclusions of corresponding transitive dependencies
     // were added to resolve CVE-2024-22259 appearing in 5.3.27 of springframework libraries.
     // The below changes can be reverted in the future after comprehensively testing with an updated spring boot version
-    implementation "org.springframework:spring-jcl:5.3.33"
-    implementation("org.springframework:spring-core:5.3.33")
-    implementation "org.springframework:spring-aop:5.3.33"
-    implementation "org.springframework:spring-beans:5.3.33"
-    implementation "org.springframework:spring-expression:5.3.33"
-    implementation("org.springframework:spring-context:5.3.33")
+    implementation "org.springframework:spring-jcl:5.3.34"
+    implementation("org.springframework:spring-core:5.3.34")
+    implementation "org.springframework:spring-aop:5.3.34"
+    implementation "org.springframework:spring-beans:5.3.34"
+    implementation "org.springframework:spring-expression:5.3.34"
+    implementation("org.springframework:spring-context:5.3.34")
     implementation("org.springframework.boot:spring-boot")
 
     implementation 'org.yaml:snakeyaml:2.0'
