@@ -33,6 +33,6 @@ dependencies {
         exclude group: 'org.springframework', module: 'spring-core'
     }
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
-    implementation 'org.springframework:spring-core:5.3.33'
+    implementation 'org.springframework:spring-core:5.3.34'
     implementation gradleApi()
 }
