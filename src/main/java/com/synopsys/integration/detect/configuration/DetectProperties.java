@@ -1282,7 +1282,10 @@ public class DetectProperties {
     public static final CaseSensitiveStringListProperty DETECT_POETRY_DEPENDENCY_GROUPS_EXCLUDED =
         CaseSensitiveStringListProperty.newBuilder("detect.poetry.dependency.groups.excluded")
             .setInfo("Poetry dependency groups", DetectPropertyFromVersion.VERSION_9_7_0)
-            .setHelp(createTypeFilterHelpText("Poetry dependency groups"))
+            .setHelp(
+                createTypeFilterHelpText("Poetry dependency groups"),
+                "When specified, presence of both poetry.lock and pyproject.toml files is required for this detector to run successfully."
+            )
             .setGroups(DetectGroup.POETRY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
