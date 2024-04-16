@@ -30,6 +30,7 @@ public class GradleReportLineParser {
     private static final Map<String, String> gradleRichVersions = new HashMap<>();
     private static final Map<String, HashSet<String>> richVersionGroup = new HashMap<>();
     private static final Map<String, String> relationsMap = new HashMap<>();
+    private static String foundParentProject = "";
     public static final String PROJECT_NAME_PREFIX = "projectName:";
     public static final String ROOT_PROJECT_NAME_PREFIX = "rootProjectName:";
     public static final String PROJECT_PARENT_PREFIX = "projectParent:";
@@ -101,14 +102,11 @@ public class GradleReportLineParser {
         if(gavPieces.size() == 3) {
             String dependencyGroupName = gavPieces.get(0) + ":" + gavPieces.get(1);
             if ((cleanedOutput.contains(STRICTLY) || cleanedOutput.contains(REJECT) || cleanedOutput.contains(REQUIRE) || cleanedOutput.contains(PREFER))) {
-                gradleRichVersions.putIfAbsent(dependencyGroupName, gavPieces.get(2));
+                gradleRichVersions.putIfAbsent(projectName + ":" + dependencyGroupName, gavPieces.get(2));
                 richVersionGroup.computeIfAbsent(projectName, value -> new HashSet<>()).add(dependencyGroupName);
             }
 
-            if(gradleRichVersions.containsKey(dependencyGroupName)) {
-                updateRichVersion(dependencyGroupName, projectParent, projectName, rootProjectName, gavPieces);
-            }
-
+            updateRichVersion(dependencyGroupName, projectParent, projectName, rootProjectName, gavPieces);
         }
 
         return gavPieces;
@@ -116,11 +114,11 @@ public class GradleReportLineParser {
 
     private void updateRichVersion(String dependencyGroupName, String projectParent, String projectName, String rootProjectName, List<String> gavPieces) {
         if(richVersionGroup.containsKey(projectName) && richVersionGroup.get(projectName).contains(dependencyGroupName)) {
-            gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
+            gavPieces.set(2, gradleRichVersions.get(projectName + ":" + dependencyGroupName));
         } else if(richVersionGroup.containsKey(rootProjectName) && richVersionGroup.get(rootProjectName).contains(dependencyGroupName)) {
-            gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
+            gavPieces.set(2, gradleRichVersions.get(rootProjectName + ":" + dependencyGroupName));
         } else if (checkParentRichVersion(rootProjectName, projectParent, dependencyGroupName)) {
-            gavPieces.set(2, gradleRichVersions.get(dependencyGroupName));
+            gavPieces.set(2, gradleRichVersions.get(foundParentProject + ":" + dependencyGroupName));
         }
     }
 
@@ -134,13 +132,16 @@ public class GradleReportLineParser {
     }
 
     private boolean checkParentRichVersion(String rootProjectName, String projectParent, String dependencyGroupName) {
-       String currentProject = projectParent.substring(projectParent.lastIndexOf(":") + 1, projectParent.lastIndexOf("'"));
-       while(!currentProject.equals(rootProjectName)) {
-           if(richVersionGroup.containsKey(currentProject) && richVersionGroup.get(currentProject).contains(dependencyGroupName)) {
-               return true;
-           }
-           currentProject = relationsMap.getOrDefault(currentProject, rootProjectName);
-       }
+        if(!projectParent.equals("null")) {
+            String currentProject = projectParent.substring(projectParent.lastIndexOf(":") + 1, projectParent.lastIndexOf("'"));
+            while (!currentProject.equals(rootProjectName)) {
+                if (richVersionGroup.containsKey(currentProject) && richVersionGroup.get(currentProject).contains(dependencyGroupName)) {
+                    foundParentProject = currentProject;
+                    return true;
+                }
+                currentProject = relationsMap.getOrDefault(currentProject, rootProjectName);
+            }
+        }
        return false;
     }
 
