@@ -25,10 +25,17 @@ public class GradleReportLineParser {
     private static final String REQUIRE = "require";
     private static final String PREFER = "prefer";
     private static final String REJECT = "reject";
-    private static final Map<String, Map<String, String>> gradleRichVersions = new HashMap<>();
-    private static final Map<String, HashSet<String>> richVersionGroup = new HashMap<>();
-    private static final Map<String, String> relationsMap = new HashMap<>();
-    private static String foundParentProject = "";
+
+    // This map handles all the dependencies which uses rich version
+    // declarations with the respect to the project they are declared in.
+    // The nested map has dependencies with their versions and each
+    // module will have its own nested map.
+    private final Map<String, Map<String, String>> gradleRichVersions = new HashMap<>();
+
+    // This map is handling all the child-parent relationships which are found in the entire project
+    // with each child as a key and their respective parent as the value.
+    private final Map<String, String> relationsMap = new HashMap<>();
+    private String foundParentProject = "";
     public static final String PROJECT_NAME_PREFIX = "projectName:";
     public static final String ROOT_PROJECT_NAME_PREFIX = "rootProjectName:";
     public static final String PROJECT_PARENT_PREFIX = "projectParent:";
@@ -101,7 +108,6 @@ public class GradleReportLineParser {
             String dependencyGroupName = gavPieces.get(0) + ":" + gavPieces.get(1);
             if ((cleanedOutput.contains(STRICTLY) || cleanedOutput.contains(REJECT) || cleanedOutput.contains(REQUIRE) || cleanedOutput.contains(PREFER))) {
                 gradleRichVersions.computeIfAbsent(projectName, value -> new HashMap<>()).putIfAbsent(dependencyGroupName, gavPieces.get(2));
-                richVersionGroup.computeIfAbsent(projectName, value -> new HashSet<>()).add(dependencyGroupName);
             }
 
             updateRichVersion(dependencyGroupName, projectParent, projectName, rootProjectName, gavPieces);
@@ -133,7 +139,7 @@ public class GradleReportLineParser {
         if(!projectParent.equals("null")) {
             String currentProject = projectParent.substring(projectParent.lastIndexOf(":") + 1, projectParent.lastIndexOf("'"));
             while (!currentProject.equals(rootProjectName)) {
-                if (richVersionGroup.containsKey(currentProject) && richVersionGroup.get(currentProject).contains(dependencyGroupName)) {
+                if (gradleRichVersions.containsKey(currentProject) && gradleRichVersions.get(currentProject).containsKey(dependencyGroupName)) {
                     foundParentProject = currentProject;
                     return true;
                 }
