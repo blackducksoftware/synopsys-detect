@@ -137,13 +137,18 @@ public class GradleReportLineParser {
 
     private boolean checkParentRichVersion(String rootProjectName, String projectParent, String dependencyGroupName) {
         if(!projectParent.equals("null")) {
-            String currentProject = projectParent.substring(projectParent.lastIndexOf(":") + 1, projectParent.lastIndexOf("'"));
-            while (!currentProject.equals(rootProjectName)) {
-                if (gradleRichVersions.containsKey(currentProject) && gradleRichVersions.get(currentProject).containsKey(dependencyGroupName)) {
-                    foundParentProject = currentProject;
-                    return true;
+            String currentProject;
+            try {
+                currentProject = projectParent.substring(projectParent.lastIndexOf(":") + 1, projectParent.lastIndexOf("'"));
+                while (!currentProject.equals(rootProjectName)) {
+                    if (gradleRichVersions.containsKey(currentProject) && gradleRichVersions.get(currentProject).containsKey(dependencyGroupName)) {
+                        foundParentProject = currentProject;
+                        return true;
+                    }
+                    currentProject = relationsMap.getOrDefault(currentProject, rootProjectName);
                 }
-                currentProject = relationsMap.getOrDefault(currentProject, rootProjectName);
+            } catch (Exception e) {
+                logger.error("The project parent is not analogous to the structure expected: " + projectParent);
             }
         }
        return false;
