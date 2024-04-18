@@ -237,6 +237,7 @@ import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOpt
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParser;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryExtractor;
+import com.synopsys.integration.detectable.detectables.poetry.PoetryOptions;
 import com.synopsys.integration.detectable.detectables.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.detectables.poetry.parser.ToolPoetrySectionParser;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
@@ -628,8 +629,8 @@ public class DetectableFactory {
         return new PodlockDetectable(environment, fileFinder, podlockExtractor());
     }
 
-    public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment) {
-        return new PoetryDetectable(environment, fileFinder, poetryExtractor(), toolPoetrySectionParser());
+    public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment, PoetryOptions poetryOptions) {
+        return new PoetryDetectable(environment, fileFinder, poetryExtractor(), toolPoetrySectionParser(), poetryOptions);
     }
 
     public RebarDetectable createRebarDetectable(DetectableEnvironment environment, Rebar3Resolver rebar3Resolver) {

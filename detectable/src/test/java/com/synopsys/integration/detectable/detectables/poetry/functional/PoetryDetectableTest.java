@@ -1,7 +1,8 @@
-package com.synopsys.integration.detectable.detectables.pip.inspector.functional;
+package com.synopsys.integration.detectable.detectables.poetry.functional;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectables.poetry.PoetryOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -54,7 +56,7 @@ public class PoetryDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createPoetryDetectable(detectableEnvironment);
+        return detectableFactory.createPoetryDetectable(detectableEnvironment, new PoetryOptions(Collections.emptyList()));
     }
 
     @Override
