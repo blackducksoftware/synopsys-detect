@@ -25,10 +25,6 @@ Identification of malware displayed to [blackduck_product_name] users will inclu
  * [threat_intel] scans require network connectivity (Air gap mode is not supported).
  * [threat_intel] scan does not provide project and version name defaults so you need to set project and version names via properties when [threat_intel] is the only tool invoked. (If the specified project or version does not exist in [blackduck_product_name], it will be created.)
  
-### Limitations
- * [threat_intel] Scan is limited to images of 5GB or less for hosted services.
- * [threat_intel] Scan is limited to images of 6GB or less for local, on-prem services.
- 
 ## Invocation
 To invoke a [threat_intel] scan, which only executes in "Intelligent" mode, the following must be provided at a minimum in addition to [blackduck_product_name] Server related configuration properties:   
  ```
