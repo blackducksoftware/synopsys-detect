@@ -29,6 +29,7 @@ import com.synopsys.integration.detectable.detectable.result.PropertyInsufficien
 import com.synopsys.integration.detectable.detectable.result.PubSpecLockNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.SbtMissingPluginDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.SectionNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.SetupToolsRequiresNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.WrongConanExecutableVersionResult;
 import com.synopsys.integration.detectable.detectable.result.WrongOperatingSystemResult;
 import com.synopsys.integration.detector.result.ExcludedDetectorResult;
@@ -89,6 +90,7 @@ public class DetectorResultStatusCodeLookup {
         map.put(WrongConanExecutableVersionResult.class, DetectorStatusCode.EXECUTABLE_VERSION_MISMATCH);
         map.put(YieldedDetectorResult.class, DetectorStatusCode.YIELDED);
         map.put(PackageResolvedNotFoundDetectableResult.class, DetectorStatusCode.EXCLUDED);
+        map.put(SetupToolsRequiresNotFoundDetectableResult.class, DetectorStatusCode.SETUP_TOOLS_REQUIRES_NOT_FOUND);
 
         return map;
     }
