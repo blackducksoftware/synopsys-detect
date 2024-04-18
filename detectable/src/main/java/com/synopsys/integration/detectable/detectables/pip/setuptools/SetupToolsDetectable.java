@@ -31,7 +31,7 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
-@DetectableInfo(name = "Setuptools", language = "Python", forge = "Pypi", accuracy = DetectableAccuracyType.LOW, requirementsMarkdown = "A pyproject.toml file.")
+@DetectableInfo(name = "Setuptools", language = "Python", forge = "Pypi", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "A pyproject.toml file.")
 public class SetupToolsDetectable extends Detectable {
     
     public static final String PY_PROJECT_TOML = "pyproject.toml";
@@ -54,6 +54,8 @@ public class SetupToolsDetectable extends Detectable {
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
         projectToml = requirements.file(PY_PROJECT_TOML);
+        
+        // TODO also require pip and maybe python
         
         return requirements.result();
     }
