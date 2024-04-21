@@ -13,6 +13,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Transforms {@link BdioResult} to list of {@link Component}s, which will then be used to assemble the input to
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
  *
  */
 public class BdioToComponentListTransformer {
+    
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     /**
      * Given a BDIO, creates a set containing each detected component's corresponding {@link Component} representation.
@@ -70,6 +74,8 @@ public class BdioToComponentListTransformer {
         for (ExternalId gav : gavs) {
             if (gav.getName()!=null && gav.getVersion()!=null) {
                 componentSet.add(new Component(gav.getGroup(), gav.getName(), gav.getVersion(), new JsonObject()));
+            } else {
+                logger.info("Invalid component entry {} from BDIO is not included for component location analysis.", gav.toString());
             }
         }
         return componentSet;
