@@ -32,6 +32,10 @@ public class GradleReportLineParser {
     // module will have its own nested map.
     private final Map<String, Map<String, String>> gradleRichVersions = new HashMap<>();
 
+    // This map handles all the transitives whose parent uses rich version
+    // declarations with the respect to the project they are declared in.
+    // The nested map has dependencies with their versions and each
+    // module will have its own nested map.
     private final Map<String, Map<String, String>> transitiveRichVersions = new HashMap<>();
 
     // This map is handling all the child-parent relationships which are found in the entire project
