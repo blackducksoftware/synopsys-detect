@@ -32,22 +32,31 @@ public class GradleReportLineParser {
     // module will have its own nested map.
     private final Map<String, Map<String, String>> gradleRichVersions = new HashMap<>();
 
+    private final Map<String, Map<String, String>> transitiveRichVersions = new HashMap<>();
+
     // This map is handling all the child-parent relationships which are found in the entire project
     // with each child as a key and their respective parent as the value.
     private final Map<String, String> relationsMap = new HashMap<>();
     private String foundParentProject = "";
+    private String projectName;
+    private String rootProjectName;
+    private String projectParent;
+    private int level;
+    private int previousLevel;
+    private String declaredDependency = null;
     public static final String PROJECT_NAME_PREFIX = "projectName:";
     public static final String ROOT_PROJECT_NAME_PREFIX = "rootProjectName:";
     public static final String PROJECT_PARENT_PREFIX = "projectParent:";
 
     public GradleTreeNode parseLine(String line, Map<String, String> metadata) {
-        int level = parseTreeLevel(line);
+        level = parseTreeLevel(line);
         if (!line.contains(COMPONENT_PREFIX)) {
             return GradleTreeNode.newUnknown(level);
         } else if (StringUtils.containsAny(line, PROJECT_INDICATORS)) {
             return GradleTreeNode.newProject(level);
         } else {
             List<String> gav = parseGav(line, metadata);
+            previousLevel = level;
             if (gav.size() != 3) {
                 logger.trace(String.format(
                     "The line can not be reasonably split in to the necessary parts: %s",
@@ -98,31 +107,49 @@ public class GradleReportLineParser {
             }
         }
 
-        String projectName = metadata.getOrDefault(PROJECT_NAME_PREFIX, "orphanProject");
-        String rootProjectName = metadata.getOrDefault(ROOT_PROJECT_NAME_PREFIX, "");
-        String projectParent = metadata.getOrDefault(PROJECT_PARENT_PREFIX, "null");
+        projectName = metadata.getOrDefault(PROJECT_NAME_PREFIX, "orphanProject");
+        rootProjectName = metadata.getOrDefault(ROOT_PROJECT_NAME_PREFIX, "");
+        projectParent = metadata.getOrDefault(PROJECT_PARENT_PREFIX, "null");
 
         addRelation(projectParent, projectName, rootProjectName);
 
         if(gavPieces.size() == 3) {
             String dependencyGroupName = gavPieces.get(0) + ":" + gavPieces.get(1);
-            if ((cleanedOutput.contains(STRICTLY) || cleanedOutput.contains(REJECT) || cleanedOutput.contains(REQUIRE) || cleanedOutput.contains(PREFER))) {
-                gradleRichVersions.computeIfAbsent(projectName, value -> new HashMap<>()).putIfAbsent(dependencyGroupName, gavPieces.get(2));
-            }
-
-            updateRichVersion(dependencyGroupName, projectParent, projectName, rootProjectName, gavPieces);
+            storeRichVersion(cleanedOutput, dependencyGroupName, gavPieces);
+            updateRichVersion(dependencyGroupName, gavPieces);
         }
 
         return gavPieces;
     }
 
-    private void updateRichVersion(String dependencyGroupName, String projectParent, String projectName, String rootProjectName, List<String> gavPieces) {
+    private void storeRichVersion(String cleanedOutput, String dependencyGroupName, List<String> gavPieces) {
+        if (checkRichVersionUse(cleanedOutput)) {
+            gradleRichVersions.computeIfAbsent(projectName, value -> new HashMap<>()).putIfAbsent(dependencyGroupName, gavPieces.get(2));
+            declaredDependency = dependencyGroupName;
+            transitiveRichVersions.putIfAbsent(dependencyGroupName, new HashMap<>());
+        } else if (checkIfTransitiveRichVersion()) {
+            if(transitiveRichVersions.containsKey(declaredDependency)) {
+                transitiveRichVersions.get(declaredDependency).putIfAbsent(dependencyGroupName, gavPieces.get(2));
+            }
+        } else {
+            declaredDependency = null;
+        }
+    }
+
+    private void updateRichVersion(String dependencyGroupName, List<String> gavPieces) {
         if(gradleRichVersions.containsKey(projectName) && gradleRichVersions.get(projectName).containsKey(dependencyGroupName)) {
             gavPieces.set(2, gradleRichVersions.get(projectName).get(dependencyGroupName));
+            declaredDependency = dependencyGroupName;
         } else if(gradleRichVersions.containsKey(rootProjectName) && gradleRichVersions.get(rootProjectName).containsKey(dependencyGroupName)) {
             gavPieces.set(2, gradleRichVersions.get(rootProjectName).get(dependencyGroupName));
+            declaredDependency = dependencyGroupName;
         } else if (checkParentRichVersion(rootProjectName, projectParent, dependencyGroupName)) {
             gavPieces.set(2, gradleRichVersions.get(foundParentProject).get(dependencyGroupName));
+            declaredDependency = dependencyGroupName;
+        } else if(checkIfTransitiveRichVersion() && transitiveRichVersions.containsKey(declaredDependency) && transitiveRichVersions.get(declaredDependency).containsKey(dependencyGroupName)) {
+            gavPieces.set(2, transitiveRichVersions.get(declaredDependency).get(dependencyGroupName));
+        } else {
+            declaredDependency = null;
         }
     }
 
@@ -151,6 +178,14 @@ public class GradleReportLineParser {
             }
         }
        return false;
+    }
+
+    private boolean checkRichVersionUse(String dependencyLine) {
+        return dependencyLine.contains(STRICTLY) || dependencyLine.contains(REJECT) || dependencyLine.contains(REQUIRE) || dependencyLine.contains(PREFER);
+    }
+
+    private boolean checkIfTransitiveRichVersion() {
+       return declaredDependency != null && level != 0;
     }
 
     private int parseTreeLevel(String line) {
