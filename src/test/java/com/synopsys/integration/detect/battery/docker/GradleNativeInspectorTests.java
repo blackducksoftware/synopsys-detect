@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Tag("integration")
+//@Tag("integration")
 public class GradleNativeInspectorTests {
 
     public static String ARTIFACTORY_URL = "https://artifactory.internal.synopsys.com:443";
@@ -96,6 +96,7 @@ public class GradleNativeInspectorTests {
             blackduckAssertions.checkComponentVersionExists("graphql-java", "18.2");
             blackduckAssertions.checkComponentVersionNotExists("SLF4J API Module", "2.0.4");
             blackduckAssertions.checkComponentVersionExists("google-guava", "v29.0");
+            blackduckAssertions.checkComponentVersionNotExists("Apache Log4J API", "2.22.1");
 
         }
     }

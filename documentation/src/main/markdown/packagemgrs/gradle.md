@@ -38,7 +38,7 @@ The init-detect.gradle script configures each project with the custom 'gatherDep
 ### Rich version declaration support
 
 Rich version declarations allow a user to define rules around which version of a given direct or transitive dependency are resolved when Gradle performs its dependency conflict resolution. Typically, these are set in a parent build.gradle file, and because these rich version declarations set a specific requirement that conflict resolution must respect, the subsequent child modules will pull dependencies according to the rich version declaration.
-[company_name] [solution_name] derives this information from dependency graph that Gradle Native Inspector generates as described above. If the information is not mentioned in the graph then [company_name] [solution_name] will not support those declarations.
+[company_name] [solution_name] derives this information from the dependency graph that Gradle Native Inspector generates as described above. If the information is not mentioned in the graph then [company_name] [solution_name] will not support those declarations.
 See Gradle documentation: [Rich Version Declaration](https://docs.gradle.org/current/userguide/rich_versions.html).
 
 ### Running the Gradle inspector with a proxy
