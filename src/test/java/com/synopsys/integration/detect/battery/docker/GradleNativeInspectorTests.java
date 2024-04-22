@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-//@Tag("integration")
+@Tag("integration")
 public class GradleNativeInspectorTests {
 
     public static String ARTIFACTORY_URL = "https://artifactory.internal.synopsys.com:443";
