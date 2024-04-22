@@ -42,6 +42,7 @@ public class GradleReportLineParser {
     // with each child as a key and their respective parent as the value.
     private final Map<String, String> relationsMap = new HashMap<>();
     private String richVersionProject = null;
+    private boolean richVersionDeclared = false;
     private String projectName;
     private String rootProjectName;
     private String projectParent;
@@ -116,30 +117,31 @@ public class GradleReportLineParser {
 
         if(gavPieces.size() == 3) {
             String dependencyGroupName = gavPieces.get(0) + ":" + gavPieces.get(1);
-            storeRichVersion(cleanedOutput, dependencyGroupName, gavPieces);
-            updateRichVersion(dependencyGroupName, gavPieces);
+            if(level == 0 && checkRichVersionUse(cleanedOutput)) {
+                storeDirectRichVersion(dependencyGroupName, gavPieces);
+            } else {
+                storeOrUpdateRichVersion(dependencyGroupName, gavPieces);
+            }
         }
 
         return gavPieces;
     }
 
-    private void storeRichVersion(String cleanedOutput, String dependencyGroupName, List<String> gavPieces) {
-        if (checkRichVersionUse(cleanedOutput)) {
-            gradleRichVersions.computeIfAbsent(projectName, value -> new HashMap<>()).putIfAbsent(dependencyGroupName, gavPieces.get(2));
-            richVersionProject = projectName;
-        } else if (checkIfTransitiveRichVersion()) {
-            transitiveRichVersions.computeIfAbsent(richVersionProject, value -> new HashMap<>()).putIfAbsent(dependencyGroupName, gavPieces.get(2));
-        } else {
-            richVersionProject = null;
-        }
+    private void storeDirectRichVersion(String dependencyGroupName, List<String> gavPieces) {
+        gradleRichVersions.computeIfAbsent(projectName, value -> new HashMap<>()).putIfAbsent(dependencyGroupName, gavPieces.get(2));
+        richVersionProject = projectName;
+        richVersionDeclared = true;
     }
 
-    private void updateRichVersion(String dependencyGroupName, List<String> gavPieces) {
+    private void storeOrUpdateRichVersion(String dependencyGroupName, List<String> gavPieces) {
         if (checkParentRichVersion(dependencyGroupName)) {
             gavPieces.set(2, gradleRichVersions.get(richVersionProject).get(dependencyGroupName));
         } else if(checkIfTransitiveRichVersion() && transitiveRichVersions.containsKey(richVersionProject) && transitiveRichVersions.get(richVersionProject).containsKey(dependencyGroupName)) {
             gavPieces.set(2, transitiveRichVersions.get(richVersionProject).get(dependencyGroupName));
+        } else if (checkIfTransitiveRichVersion() && richVersionDeclared) {
+            transitiveRichVersions.computeIfAbsent(richVersionProject, value -> new HashMap<>()).putIfAbsent(dependencyGroupName, gavPieces.get(2));
         } else {
+            richVersionDeclared = false;
             richVersionProject = null;
         }
     }
