@@ -57,6 +57,15 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
 
 public class DetectBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -264,5 +273,82 @@ public class DetectBoot {
     private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues) {
         eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new TreeMap<>(maskedRawPropertyValues));
     }
-
+    
+    private final Set<String> avoid = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+            ".gitattributes", 
+            ".gitignore", 
+            ".github", 
+            ".git",
+            "__MACOSX",
+            ".DS_Store")));
+    
+    private final Set<String> binaryExtensions = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+            ".bin", 
+            ".exe", 
+            ".out", 
+            ".dll")));
+    
+    public boolean shouldAvoid(String name) {
+        for (String includedExtension : binaryExtensions) {
+            if (name.endsWith(includedExtension)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean isBinary(String name) {
+        for (String includedExtension : binaryExtensions) {
+            if (name.endsWith(includedExtension)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public Map<String, List<String>> searchFileSystem(String pathToSearch) {
+        Map<String, List<String>> map = new HashMap<>();
+        long t1 = System.currentTimeMillis();
+        try {
+            Files.walkFileTree(Paths.get(pathToSearch), new FileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                        throws IOException {
+                    final String fileName = file.getFileName().toString().trim().toLowerCase();
+                    if (!Files.isDirectory(file) && !shouldAvoid(fileName)) {
+                        if (isBinary(fileName)) {
+                            //binary
+                        }
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+                
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    String directoryName = dir.getFileName().toString().trim().toLowerCase();
+                    if(!shouldAvoid(directoryName)){
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+                
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                    return FileVisitResult.TERMINATE;
+                }
+                
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    return FileVisitResult.CONTINUE;
+                }
+                
+            });
+            return null;
+        } catch (IOException ex) {
+            logger.error("Failure when attempting to locate build config files.", ex);
+            return null;
+        } finally {
+            logger.debug("Done. Seconds: {}", (System.currentTimeMillis()-t1)/1000D);
+        }
+    }
 }
