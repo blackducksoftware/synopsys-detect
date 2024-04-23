@@ -75,7 +75,7 @@ public class BdioToComponentListTransformer {
             if (gav.getName()!=null && gav.getVersion()!=null) {
                 componentSet.add(new Component(gav.getGroup(), gav.getName(), gav.getVersion(), new JsonObject()));
             } else {
-                logger.info("Invalid component entry {} from BDIO is not included for component location analysis.", gav.toString());
+                logger.warn("Invalid component entry {} from BDIO is not included for component location analysis.", gav.toString());
             }
         }
         return componentSet;
