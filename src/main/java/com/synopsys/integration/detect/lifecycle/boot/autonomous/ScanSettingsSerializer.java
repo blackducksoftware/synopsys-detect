@@ -14,8 +14,6 @@ import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanSetti
 
 public class ScanSettingsSerializer {
     private static ScanSettings scanSettings;
-    private static final String SCAN_SETTINGS_TARGET_LOCATION = "";
-
     public void setScanSettings(final ScanSettings scanSettings) {
         this.scanSettings = scanSettings;
     }
@@ -31,15 +29,18 @@ public class ScanSettingsSerializer {
         }
     }
 
-    public static void writeScanSettingsFile() throws IOException {
-        File scanSettingsFile = new File(SCAN_SETTINGS_TARGET_LOCATION);
+    public static String serializeScanSettingsModel() {
         Gson gson = new GsonBuilder()
             .disableHtmlEscaping()
             .excludeFieldsWithModifiers(Modifier.TRANSIENT)
             .setPrettyPrinting().create();
-        String serializedOutput = gson.toJson(scanSettings);
-        try (FileWriter fw = new FileWriter(scanSettingsFile)) {
-            fw.write(serializedOutput);
+        return gson.toJson(scanSettings);
+    }
+
+    public static void writeScanSettingsModelToTarget(File targetFile) throws IOException {
+        String serializedScanSettings = serializeScanSettingsModel();
+        try (FileWriter fw = new FileWriter(targetFile)) {
+            fw.write(serializedScanSettings);
             fw.flush();
         } catch (IOException e) {
             throw e;
