@@ -7,8 +7,7 @@ import java.util.Set;
 
 public class ScanSettings {
     Map<String, String> globalProperties = new HashMap<>();
-    DetectorSettings detectorSettings;
-    Set<Detector> detectors = new HashSet<>();
+    Set<ScanType> scanTypes = new HashSet<>();
 
     public Map<String, String> getGlobalProperties() {
         return globalProperties;
@@ -18,29 +17,11 @@ public class ScanSettings {
         this.globalProperties = globalProperties;
     }
 
-    public DetectorSettings getDetectorSettings() {
-        return detectorSettings;
+    public Set<ScanType> getScanTypes() {
+        return scanTypes;
     }
 
-    public void setDetectorSettings(final DetectorSettings detectorSettings) {
-        this.detectorSettings = detectorSettings;
+    public void setScanTypes(final Set<ScanType> scanTypes) {
+        this.scanTypes = scanTypes;
     }
-
-    public Set<Detector> getDetectors() {
-        return detectors;
-    }
-
-    public void setDetectors(final Set<Detector> detectors) {
-        this.detectors = detectors;
-    }
-
-    public Set<DetectTool> getDetectTools() {
-        return detectTools;
-    }
-
-    public void setDetectTools(final Set<DetectTool> detectTools) {
-        this.detectTools = detectTools;
-    }
-
-    Set<DetectTool> detectTools = new HashSet<>();
 }
