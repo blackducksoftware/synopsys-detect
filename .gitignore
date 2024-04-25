@@ -31,3 +31,7 @@ docker-test/
 *.gradle
 
 download/
+
+# spring configuration file(s)
+application.properties
+application.yml
