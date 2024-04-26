@@ -28,6 +28,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.successfulOperation("Generating Component Location Analysis File for All Components");
+            dockerAssertions.logContainsPattern("Component Location Analysis File: .*components-with-locations\\.json");
         }
     }
     @Test
@@ -42,6 +43,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.successfulOperation("Generating Component Location Analysis File for Reported Components");
+            dockerAssertions.logContainsPattern("Component Location Analysis File: .*components-with-locations\\.json");
         }
     }
 }
