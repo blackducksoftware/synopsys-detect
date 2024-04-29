@@ -55,29 +55,33 @@ public class ToolPoetrySectionParser {
         }
 
         for (String key : parseResult.dottedKeySet(true)) {
-            if (!parseResult.isTable(key)) {
-                continue;
-            }
-
-            TomlTable table = parseResult.getTable(key);
-
-            if (key.equals(MAIN_DEPENDENCY_GROUP_KEY)) {
-                addAllTableKeysToSet(result, table);
-            } else if (key.equals(LEGACY_DEV_DEPENDENCY_GROUP_KEY)) { // in Poetry 1.0 to 1.2 this was the way of specifying dev dependencies
-                if (!options.getExcludedGroups().contains(DEFAULT_DEV_GROUP_NAME)) {
-                    addAllTableKeysToSet(result, table);
-                }
-            } else if (key.startsWith(DEPENDENCY_GROUP_KEY_PREFIX) && key.endsWith(DEPENDENCY_GROUP_KEY_SUFFIX)) {
-                String group = key.substring(DEPENDENCY_GROUP_KEY_PREFIX.length(), key.length() - DEPENDENCY_GROUP_KEY_SUFFIX.length());
-
-                if (!options.getExcludedGroups().contains(group)) {
-                    addAllTableKeysToSet(result, table);
-                }
-            }
+            processKeyForRootPackages(parseResult, options, result, key);
         }
 
         result.remove(PYTHON_COMPONENT_NAME);
         return result;
+    }
+
+    private void processKeyForRootPackages(TomlParseResult parseResult, PoetryOptions options, Set<String> result, String key) {
+        if (!parseResult.isTable(key)) {
+            return;
+        }
+
+        TomlTable table = parseResult.getTable(key);
+
+        if (key.equals(MAIN_DEPENDENCY_GROUP_KEY)) {
+            addAllTableKeysToSet(result, table);
+        } else if (key.equals(LEGACY_DEV_DEPENDENCY_GROUP_KEY)) { // in Poetry 1.0 to 1.2 this was the way of specifying dev dependencies
+            if (!options.getExcludedGroups().contains(DEFAULT_DEV_GROUP_NAME)) {
+                addAllTableKeysToSet(result, table);
+            }
+        } else if (key.startsWith(DEPENDENCY_GROUP_KEY_PREFIX) && key.endsWith(DEPENDENCY_GROUP_KEY_SUFFIX)) {
+            String group = key.substring(DEPENDENCY_GROUP_KEY_PREFIX.length(), key.length() - DEPENDENCY_GROUP_KEY_SUFFIX.length());
+
+            if (!options.getExcludedGroups().contains(group)) {
+                addAllTableKeysToSet(result, table);
+            }
+        }
     }
 
     private void addAllTableKeysToSet(Set<String> set, TomlTable table) {
