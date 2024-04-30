@@ -91,6 +91,6 @@ public class SetupToolsDetectable extends Detectable {
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException,
             ExecutableFailedException, IOException, JsonSyntaxException, CycleDetectedException, DetectableException,
             MissingExternalIdException, ParserConfigurationException, SAXException {
-        return setupToolsExtractor.extract(projectToml);
+        return setupToolsExtractor.extract(projectToml, environment.getDirectory());
     }
 }
