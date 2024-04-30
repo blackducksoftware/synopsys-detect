@@ -20,7 +20,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '8.11.1-SIGQA2-patch.8.11.IDETECT-4281-SNAPSHOT'
+version = '8.11.1-SIGQA2'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
