@@ -57,6 +57,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
+import java.io.ByteArrayInputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -66,6 +67,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
+import org.apache.commons.io.FileUtils;
+import org.apache.tika.Tika;
+import org.apache.tika.mime.MediaType;
+import org.apache.tika.mime.MediaTypeRegistry;
 
 public class DetectBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -288,6 +293,8 @@ public class DetectBoot {
             ".out", 
             ".dll")));
     
+    private final MediaTypeRegistry mediaTypeRegistry = MediaTypeRegistry.getDefaultRegistry();
+    
     public boolean shouldAvoid(String name) {
         for (String includedExtension : binaryExtensions) {
             if (name.endsWith(includedExtension)) {
@@ -297,27 +304,32 @@ public class DetectBoot {
         return false;
     }
     
-    public boolean isBinary(String name) {
-        for (String includedExtension : binaryExtensions) {
-            if (name.endsWith(includedExtension)) {
-                return true;
-            }
+    private boolean isBinary(File file) throws IOException {
+        Set<MediaType> mediaTypes = new HashSet<>();
+        MediaType mediaType = MediaType.parse(new Tika().detect(new ByteArrayInputStream(FileUtils.readFileToByteArray(file))));
+        while(mediaType != null) {
+            mediaTypes.addAll(mediaTypeRegistry.getAliases(mediaType));
+            mediaTypes.add(mediaType);
+            mediaType = mediaTypeRegistry.getSupertype(mediaType);
         }
-        return false;
+        return mediaTypes.stream().noneMatch(x -> x.getType().equals("text"));
     }
     
-    public Map<String, List<String>> searchFileSystem(String pathToSearch) {
-        Map<String, List<String>> map = new HashMap<>();
+    public Map<Enum, Set<String>> searchFileSystem(String pathToSearch) {
+        
         long t1 = System.currentTimeMillis();
         try {
+            Map<Enum, Set<String>> map = new HashMap<>();
             Files.walkFileTree(Paths.get(pathToSearch), new FileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
                         throws IOException {
                     final String fileName = file.getFileName().toString().trim().toLowerCase();
                     if (!Files.isDirectory(file) && !shouldAvoid(fileName)) {
-                        if (isBinary(fileName)) {
-                            //binary
+                        if (isBinary(file.toFile())) {
+                            map.computeIfAbsent(DetectTool.BINARY_SCAN, k -> new HashSet<>()).add(file.toAbsolutePath().toString());
+                        } else {
+                            map.computeIfAbsent(DetectTool.DETECTOR, k -> new HashSet<>()).add(file.toAbsolutePath().toString());
                         }
                     }
                     return FileVisitResult.CONTINUE;
@@ -343,10 +355,10 @@ public class DetectBoot {
                 }
                 
             });
-            return null;
+            return map;
         } catch (IOException ex) {
             logger.error("Failure when attempting to locate build config files.", ex);
-            return null;
+            return Collections.EMPTY_MAP;
         } finally {
             logger.debug("Done. Seconds: {}", (System.currentTimeMillis()-t1)/1000D);
         }
