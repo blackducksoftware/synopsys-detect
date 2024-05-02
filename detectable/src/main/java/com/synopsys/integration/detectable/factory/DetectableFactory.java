@@ -1096,7 +1096,7 @@ public class DetectableFactory {
     }
     
     private SetupToolsExtractor setupToolsExtractor() {
-        return new SetupToolsExtractor();
+        return new SetupToolsExtractor(externalIdFactory);
     }
 
     //#endregion Utility

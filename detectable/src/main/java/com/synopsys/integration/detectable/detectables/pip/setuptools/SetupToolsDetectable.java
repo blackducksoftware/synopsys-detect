@@ -55,7 +55,8 @@ public class SetupToolsDetectable extends Detectable {
         Requirements requirements = new Requirements(fileFinder, environment);
         projectToml = requirements.file(PY_PROJECT_TOML);
         
-        // TODO also require pip and maybe python
+        // TODO require the requires ["setuptools"] line, need to check syntax
+        // TODO also require pip for build detector.
         
         return requirements.result();
     }
@@ -91,6 +92,7 @@ public class SetupToolsDetectable extends Detectable {
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException,
             ExecutableFailedException, IOException, JsonSyntaxException, CycleDetectedException, DetectableException,
             MissingExternalIdException, ParserConfigurationException, SAXException {
-        return setupToolsExtractor.extract(projectToml, environment.getDirectory());
+        // TODO in case we need directory specific files can call environment.getDirectory()
+        return setupToolsExtractor.extract(projectToml);
     }
 }
