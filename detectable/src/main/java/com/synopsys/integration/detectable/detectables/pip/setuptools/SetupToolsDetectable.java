@@ -54,8 +54,7 @@ public class SetupToolsDetectable extends Detectable {
     public DetectableResult applicable() {
         Requirements requirements = new Requirements(fileFinder, environment);
         projectToml = requirements.file(PY_PROJECT_TOML);
-        
-        // TODO require the requires ["setuptools"] line, need to check syntax
+
         // TODO also require pip for build detector.
         
         return requirements.result();
