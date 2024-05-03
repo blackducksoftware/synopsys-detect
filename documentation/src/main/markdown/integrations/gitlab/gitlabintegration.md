@@ -34,8 +34,9 @@ The recommended way of configuring [company_name] [solution_name] from a GitLab 
 
 	<note type="note">You can make these variables protected. For additional information, refer to [Gitlab protected secret variables](https://gitlab.com/help/ci/variables/README#protected-secret-variables).</note>
 
-4. Configure [company_name] [solution_name] to be a script step in the *.gitlab-ci.yml* file of the project you want to scan. Then add the snippet for [company_name] [solution_name].   
-Ensure that the final line of the following command fits on a single command line.
+4. Configure [company_name] [solution_name] to be a script step in the *.gitlab-ci.yml* file of the project you want to scan. Then add the snippet for [company_name] [solution_name].    
+
+    Ensure that the final line of the following command fits on a single command line.
 
     ```
 	image: java:8build:
@@ -45,12 +46,12 @@ Ensure that the final line of the following command fits on a single command lin
 	test:
 		stage: test
 		script:
-		- bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --blackduck.url="${BLACKDUCK\_URL}" --blackduck.api.token="${BLACKDUCK\_TOKEN}" --blackduck.trust.cert=true --<any other flags>
+			- bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --blackduck.url="${BLACKDUCK\_URL}" --blackduck.api.token="${BLACKDUCK\_TOKEN}" --blackduck.trust.cert=true --<any other flags>
     ```
 
-5.	Configure [company_name] [solution_name] as a script build step. Otherwise, GitLab cannot enforce build changes influenced by [company_name] [solution_name]. For example, checking for policy, failing builds according to policy, and others.
+5. Configure [company_name] [solution_name] as a script build step so GitLab can enforce enforce build changes influenced by [company_name] [solution_name]. For example, checking for policy, failing builds according to policy, and others.
 
-6.	After you commit the change to *.gitlab-ci.yml,* the pipeline runs. After the build with [company_name] [solution_name] completes, you can view the complete scan results in your [blackduck_product_name] instance.
+6. After you commit the change to *.gitlab-ci.yml,* the pipeline runs. After the build with [company_name] [solution_name] completes, you can view the complete scan results in your [blackduck_product_name] instance.
 
 ## Configuring with username and password
 For improved security, it is recommended to use a revocable API token, as described in the preceding process, instead of storing an account password in GitLab settings.
@@ -59,7 +60,7 @@ For improved security, it is recommended to use a revocable API token, as descri
 
 2. Expand the **Secret variables** tab.  
 
-	<figure>
+    <figure>
     <img src="../gitlab/images/pipelineconfig2.png"
          alt="Configuring pipeline secret variables">
     <figcaption>Configuring the pipeline secret variables</figcaption>
@@ -75,9 +76,9 @@ For improved security, it is recommended to use a revocable API token, as descri
 
 	<note type="note">You can make these variables protected. For additional information, refer to [Gitlab protected secret variables](https://gitlab.com/help/ci/variables/README#protected-secret-variables).</note>
 
-4. Configure [company_name] [solution_name] to be a script step in the *.gitlab-ci.yml* file of the project you want to scan. Then add the snippet for [company_name] [solution_name].  
+4. Configure [company_name] [solution_name] to be a script step in the *.gitlab-ci.yml* file of the project you want to scan. Then add the snippet for [company_name] [solution_name].    
 
-Ensure that the final line of the following command fits on a single command line.
+    Ensure that the final line of the following command fits on a single command line.
 
     ```
 	image: java:8build:
@@ -90,7 +91,7 @@ Ensure that the final line of the following command fits on a single command lin
 			- bash <(curl -s -L <https://detect.synopsys.com/detect9.sh>) --blackduck.url="${BLACKDUCK\_URL}" --blackduck.hub.username="${BLACKDUCK\_USERNAME}" --blackduck.hub.password="${BLACKDUCK\_PASSWORD}" --blackduck.trust.cert=true --<any other flags>
     ```
 
-5.	Configure [company_name] [solution_name] as a script build step. Otherwise, GitLab cannot enforce build changes influenced by [company_name] [solution_name]. For example, checking for policy, failing builds according to policy, and others.
+5. Configure [company_name] [solution_name] as a script build step so GitLab can enforce build changes influenced by [company_name] [solution_name]. For example, checking for policy, failing builds according to policy, and others.
 
-6.	After you commit the change to *gitlab-ci.yml*, the pipeline runs. When the build with [company_name] [solution_name] completes, you can view the scan results in your [blackduck_product_name] instance.
+6. After you commit the change to *gitlab-ci.yml*, the pipeline runs. When the build with [company_name] [solution_name] completes, you can view the scan results in your [blackduck_product_name] instance.
 
