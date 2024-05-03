@@ -177,6 +177,17 @@ public class MavenCodeLocationPackagerTest {
     }
 
     @Test
+    public void testIsEclipsePackage() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
+
+        String line = "[INFO] +- p2.eclipse-plugin:org.eclipse.core.runtime:jar:3.17.100.v20200203-0917:system";
+        line = mavenCodeLocationPackager.trimLogLevel(line);
+        String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
+        Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
+        assertEquals("org.eclipse.core.runtime/3.17.100.v20200203-0917", dependency.getExternalId().createExternalId());
+    }
+
+    @Test
     public void testIndexOfEndOfSegments() {
         MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null);
 
