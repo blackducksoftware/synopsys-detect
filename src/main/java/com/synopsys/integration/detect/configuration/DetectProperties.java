@@ -1284,7 +1284,7 @@ public class DetectProperties {
             .setInfo("Poetry dependency groups", DetectPropertyFromVersion.VERSION_9_7_0)
             .setHelp(
                 createTypeFilterHelpText("Poetry dependency groups"),
-                "When specified, presence of both `poetry.lock` and `pyproject.toml` files is required for this detector to run successfully. Components that belong to excluded groups as well as their dependencies will be excluded from the BOM. If a component also belongs to a non-excluded group, it will be included in the BOM together with its dependencies. For example, to recursively exclude all components under the `tool.poetry.group.dev.dependencies` and `tool.poetry.group.test.dependencies` sections of `pyproject.toml`: `detect.poetry.dependency.groups.excluded='dev,test'`. For Poetry pre-1.2.x style of specifying dev depenenicies (`tool.poetry.dev-dependencies` section), use `dev` as the group name."
+                "When specified, presence of both `poetry.lock` and `pyproject.toml` files is required for this detector to run successfully. Components and related dependencies that belong to excluded groups will not be in the BOM unless the component also belongs to a non-excluded group. For example, to recursively exclude all components under the `tool.poetry.group.dev.dependencies` and `tool.poetry.group.test.dependencies` sections of `pyproject.toml`: `detect.poetry.dependency.groups.excluded='dev,test'`. For Poetry pre-1.2.x style of specifying dev depenenicies (`tool.poetry.dev-dependencies` section), use `dev` as the group name."
             )
             .setGroups(DetectGroup.POETRY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
