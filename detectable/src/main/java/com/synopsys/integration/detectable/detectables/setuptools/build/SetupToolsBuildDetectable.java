@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pip.setuptools;
+package com.synopsys.integration.detectable.detectables.setuptools.build;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,13 +26,14 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.SetupToolsRequiresNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectables.setuptools.SetupToolsExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detectable.util.CycleDetectedException;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 @DetectableInfo(name = "Setuptools", language = "Python", forge = "Pypi", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "A pyproject.toml file.")
-public class SetupToolsDetectable extends Detectable {
+public class SetupToolsBuildDetectable extends Detectable {
     
     public static final String PY_PROJECT_TOML = "pyproject.toml";
     public static final String BUILD_KEY = "build-system.requires";
@@ -44,7 +45,7 @@ public class SetupToolsDetectable extends Detectable {
     private File projectToml;
     private TomlParseResult parsedToml;
     
-    public SetupToolsDetectable(DetectableEnvironment environment, FileFinder fileFinder, SetupToolsExtractor setupToolsExtractor) {
+    public SetupToolsBuildDetectable(DetectableEnvironment environment, FileFinder fileFinder, SetupToolsExtractor setupToolsExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.setupToolsExtractor = setupToolsExtractor;

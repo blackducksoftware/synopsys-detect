@@ -219,8 +219,6 @@ import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFi
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
-import com.synopsys.integration.detectable.detectables.pip.setuptools.SetupToolsDetectable;
-import com.synopsys.integration.detectable.detectables.pip.setuptools.SetupToolsExtractor;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvExtractor;
@@ -263,6 +261,8 @@ import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParse
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtGraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
+import com.synopsys.integration.detectable.detectables.setuptools.SetupToolsExtractor;
+import com.synopsys.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftExtractor;
@@ -687,8 +687,8 @@ public class DetectableFactory {
         return new XcodeWorkspaceDetectable(environment, fileFinder, packageResolvedExtractor, xcodeWorkspaceExtractor);
     }
     
-    public SetupToolsDetectable createSetupToolsDetectable(DetectableEnvironment environment) {
-        return new SetupToolsDetectable(environment, fileFinder, setupToolsExtractor());
+    public SetupToolsBuildDetectable createSetupToolsDetectable(DetectableEnvironment environment) {
+        return new SetupToolsBuildDetectable(environment, fileFinder, setupToolsExtractor());
     }
 
     // Used by three Detectables

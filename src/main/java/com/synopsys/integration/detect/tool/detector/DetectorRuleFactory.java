@@ -39,7 +39,6 @@ import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDet
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectable;
-import com.synopsys.integration.detectable.detectables.pip.setuptools.SetupToolsDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
@@ -48,6 +47,7 @@ import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
@@ -274,7 +274,7 @@ public class DetectorRuleFactory {
         });
         
         rules.addDetector(DetectorType.SETUPTOOLS, detector -> {
-           detector.entryPoint(SetupToolsDetectable.class)
+           detector.entryPoint(SetupToolsBuildDetectable.class)
                .search().defaults();
         });
 

@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pip.setuptools;
+package com.synopsys.integration.detectable.detectables.setuptools;
 
 import java.io.BufferedReader;
 import java.io.File;
