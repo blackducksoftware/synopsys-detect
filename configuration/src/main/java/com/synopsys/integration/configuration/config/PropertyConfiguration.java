@@ -77,8 +77,13 @@ public class PropertyConfiguration {
         } else if (parseException.isPresent() && propertyResolutionInfo.isPresent()) {
             throw new InvalidPropertyException(property.getKey(), propertyResolutionInfo.get().getSource(), parseException.get());
         } else if(!scanSettingsProperties.isEmpty() && scanSettingsProperties.containsKey(property.getKey())) {
-            R scanSettingsValue = (R) scanSettingsProperties.get(property.getKey());
-            return Optional.of(property.convertValue((V) scanSettingsValue));
+            String scanSettingsValue = scanSettingsProperties.get(property.getKey());
+            try {
+                V returnValue = property.getValueParser().parse(scanSettingsValue);
+                return Optional.of(property.convertValue(returnValue));
+            } catch (ValueParseException e) {
+                throw new RuntimeException("There was an error parsing the value from Scan Settings File", e);
+            }
         } else {
             return Optional.empty();
         }
@@ -98,8 +103,13 @@ public class PropertyConfiguration {
         } else if (parseException.isPresent() && propertyResolutionInfo.isPresent()) {
             throw new InvalidPropertyException(property.getKey(), propertyResolutionInfo.get().getSource(), parseException.get());
         } else if(!scanSettingsProperties.isEmpty() && scanSettingsProperties.containsKey(property.getKey())) {
-            V scanSettingsValue = (V) scanSettingsProperties.get(property.getKey());
-            return property.convertValue(scanSettingsValue);
+            String scanSettingsValue =  scanSettingsProperties.get(property.getKey());
+            try {
+                V returnValue = property.getValueParser().parse(scanSettingsValue);
+                return property.convertValue(returnValue);
+            } catch (ValueParseException e) {
+                throw new RuntimeException("There was an error parsing the value from Scan Settings File", e);
+            }
         } else {
             V defaultValue = property.getDefaultValue();
             return property.convertValue(defaultValue);
@@ -119,8 +129,12 @@ public class PropertyConfiguration {
         } else if (parseException.isPresent() && propertyResolutionInfo.isPresent()) {
             throw new InvalidPropertyException(property.getKey(), propertyResolutionInfo.get().getSource(), parseException.get());
         } else if(!scanSettingsProperties.isEmpty() && scanSettingsProperties.containsKey(property.getKey())) {
-            V scanSettingsValue = (V) scanSettingsProperties.get(property.getKey());
-            return Optional.of(scanSettingsValue);
+            String scanSettingsValue = scanSettingsProperties.get(property.getKey());
+            try {
+                return Optional.of(property.getValueParser().parse(scanSettingsValue));
+            } catch (ValueParseException e) {
+                throw new RuntimeException("There was an error parsing the value from Scan Settings File", e);
+            }
         } else {
             return Optional.empty();
         }

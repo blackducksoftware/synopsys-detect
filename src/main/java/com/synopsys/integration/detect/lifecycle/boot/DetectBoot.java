@@ -137,8 +137,6 @@ public class DetectBoot {
             });
         }
 
-        scanSettingsProperties.put("blackduck.url","https://us03-qa-hub21.nprd.sig.synopsys.com/");
-
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources, scanSettingsProperties);
 
         SortedMap<String, String> maskedRawPropertyValues = collectMaskedRawPropertyValues(propertyConfiguration);
