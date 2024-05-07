@@ -202,6 +202,7 @@ public class DetectProperties {
         NullablePathProperty.newBuilder("detect.bazel.path")
             .setInfo("Bazel Executable", DetectPropertyFromVersion.VERSION_5_2_0)
             .setHelp("The path to the Bazel executable.")
+            .setExample("$HOME/bin/bazel")
             .setGroups(DetectGroup.BAZEL, DetectGroup.GLOBAL)
             .build();
 
@@ -279,6 +280,7 @@ public class DetectProperties {
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The path to the output directory for the generated BDIO file.", "If not set, the BDIO file will be placed in a 'BDIO' subdirectory of the output directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("$HOME/temp/bdiofiles")
             .build();
 
     public static final NullableStringProperty DETECT_BDIO_FILE_NAME =
@@ -289,6 +291,7 @@ public class DetectProperties {
                 "If not set, the file name is generated from your project, version and code location names."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("Project1BDIO")
             .build();
 
     public static final NullablePathProperty DETECT_BINARY_SCAN_FILE =
