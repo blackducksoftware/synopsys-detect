@@ -41,14 +41,16 @@ public class SetupToolsExtractor {
 
     public Extraction extract(File sourceDirectory, File projectToml, ExecutableTarget pipExe) {
         try {
+            // TODO this belongs in a Parser class? Then can have a parser class for each 
+            // file type.
             TomlParseResult tomlParseResult = TomlFileUtils.parseFile(projectToml);
             
             // TODO get direct dependencies from Toml file. Eventually we'll need to get these from cfg and py files
             // instead if those exist or have dependencies. 
-            //TODO The npm detector uses a more complex packager
-            // and transformer approach but this seems pretty straightforward so not sure we need to follow that model
             Set<String> tomlDirectDependencies = parseDirectDependencies(tomlParseResult);
 
+            // TODO the graph stuff is usually in a "transformer" class, I probably don't need the
+            // model or result classes as this is pretty simple so far.
             DependencyGraph dependencyGraph = new BasicDependencyGraph();
             
             if (pipExe != null) {
