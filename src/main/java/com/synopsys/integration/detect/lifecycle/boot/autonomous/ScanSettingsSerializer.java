@@ -32,14 +32,4 @@ public class ScanSettingsSerializer {
             .setPrettyPrinting().create();
         return gson.toJson(scanSettings);
     }
-
-    public static void writeScanSettingsModelToTarget(File targetFile, ScanSettings scanSettings) throws IOException {
-        String serializedScanSettings = serializeScanSettingsModel(scanSettings);
-        try (FileWriter fw = new FileWriter(targetFile)) {
-            fw.write(serializedScanSettings);
-            fw.flush();
-        } catch (IOException e) {
-            throw e;
-        }
-    }
 }
