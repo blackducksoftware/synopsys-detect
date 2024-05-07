@@ -88,8 +88,8 @@ import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectab
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockExtractor;
 import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockParser;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
-import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.Conan1CliDetectable;
+import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractor;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliOptions;
@@ -687,8 +687,8 @@ public class DetectableFactory {
         return new XcodeWorkspaceDetectable(environment, fileFinder, packageResolvedExtractor, xcodeWorkspaceExtractor);
     }
     
-    public SetupToolsBuildDetectable createSetupToolsDetectable(DetectableEnvironment environment) {
-        return new SetupToolsBuildDetectable(environment, fileFinder, setupToolsExtractor());
+    public SetupToolsBuildDetectable createSetupToolsDetectable(DetectableEnvironment environment, PipResolver pipResolver) {
+        return new SetupToolsBuildDetectable(environment, fileFinder, pipResolver, setupToolsExtractor());
     }
 
     // Used by three Detectables
@@ -1096,7 +1096,7 @@ public class DetectableFactory {
     }
     
     private SetupToolsExtractor setupToolsExtractor() {
-        return new SetupToolsExtractor(externalIdFactory);
+        return new SetupToolsExtractor(executableRunner, externalIdFactory);
     }
 
     //#endregion Utility

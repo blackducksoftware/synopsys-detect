@@ -339,6 +339,6 @@ public class DetectDetectableFactory {
     }
     
     public SetupToolsBuildDetectable createSetupToolsDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createSetupToolsDetectable(environment);
+        return detectableFactory.createSetupToolsDetectable(environment, detectExecutableResolver);
     }
 }

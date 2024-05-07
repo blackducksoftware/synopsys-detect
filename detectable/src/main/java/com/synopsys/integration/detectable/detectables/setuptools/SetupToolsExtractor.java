@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,34 +22,42 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.util.TomlFileUtils;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.Extraction.Builder;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class SetupToolsExtractor {
     
+    private final DetectableExecutableRunner executableRunner;
+    
     private ExternalIdFactory externalIdFactory;
 
-    public SetupToolsExtractor(ExternalIdFactory externalIdFactory) {
+    public SetupToolsExtractor(DetectableExecutableRunner executableRunner, ExternalIdFactory externalIdFactory) {
+        this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(File projectToml, boolean havePip) {
+    public Extraction extract(File sourceDirectory, File projectToml, ExecutableTarget pipExe) {
         try {
             TomlParseResult tomlParseResult = TomlFileUtils.parseFile(projectToml);
             
             // TODO get direct dependencies from Toml file. Eventually we'll need to get these from cfg and py files
-            // instead if those exist or have dependencies. Also, the npm detector uses a more complex packager
+            // instead if those exist or have dependencies. 
+            //TODO The npm detector uses a more complex packager
             // and transformer approach but this seems pretty straightforward so not sure we need to follow that model
             Set<String> tomlDirectDependencies = parseDirectDependencies(tomlParseResult);
 
             DependencyGraph dependencyGraph = new BasicDependencyGraph();
             
-            if (havePip) {
+            if (pipExe != null) {
                 // Get dependencies by running pip show on each direct dependency
                 for (String directDependency : tomlDirectDependencies) {
-                    parseShowDependency(dependencyGraph, directDependency, null);
+                    parseShowDependency(pipExe, sourceDirectory, dependencyGraph, directDependency, null);
                 }
             } else {
                 // Unable to determine transitive dependencies, add parsed dependencies directly
@@ -80,30 +90,10 @@ public class SetupToolsExtractor {
         }
     }
 
-    // TODO poor name as this both runs and parses a dependency
-    private void parseShowDependency(DependencyGraph dependencyGraph, String dependencyToSearch, Dependency parentDependency) throws IOException, InterruptedException {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command(Arrays.asList("pip", "show", dependencyToSearch));
-        Process process = processBuilder.start();
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line;
-        Map<String, String> showOutput = new HashMap<>();
-        while ((line = reader.readLine()) != null) {
-            String[] parts = line.split(": ");
-            if (parts.length >= 2) {
-                String key = parts[0].trim();
-                String value = parts[1].trim();
-                if (key.equals("Version") || key.equals("Requires")) {
-                    showOutput.put(key, value);
-                }
-            }
-        }
-
-        int exitCode = process.waitFor();
-        if (exitCode != 0) {
-            throw new RuntimeException("Error running pip show, exit code: " + exitCode);
-        }
+    private void parseShowDependency(ExecutableTarget pipExe, File sourceDirectory, DependencyGraph dependencyGraph, String dependencyToSearch, Dependency parentDependency) throws IOException, InterruptedException, ExecutableRunnerException {
+        List<String> rawShowOutput = runPipShow(sourceDirectory, pipExe, dependencyToSearch);
+        
+        Map<String, String> showOutput = parsePipShow(rawShowOutput);
         
         Dependency currentDependency = entryToDependency(dependencyToSearch, showOutput.get("Version"));
         
@@ -118,9 +108,37 @@ public class SetupToolsExtractor {
         if (showOutput.containsKey("Requires")) {
             String[] requiredPackages = showOutput.get("Requires").split(", ");
             for (String requiredPackage : requiredPackages) {
-                parseShowDependency(dependencyGraph, requiredPackage, currentDependency);
+                parseShowDependency(pipExe, sourceDirectory, dependencyGraph, requiredPackage, currentDependency);
             }
         }
+    }
+
+    public List<String> runPipShow(File sourceDirectory, ExecutableTarget pipExe, String dependencyToSearch) throws ExecutableRunnerException {
+        List<String> pipArguments = new ArrayList<>();
+        
+        if (StringUtils.isNotBlank(dependencyToSearch)) {
+            pipArguments.add("show");
+            pipArguments.add(dependencyToSearch);
+        }
+        
+        return executableRunner.execute(ExecutableUtils.createFromTarget(sourceDirectory, pipExe, pipArguments)).getStandardOutputAsList();
+    }
+    
+    public Map<String, String> parsePipShow(List<String> rawShowOutput) {
+        Map<String, String> showOutput = new HashMap<>();
+        
+        for (String line : rawShowOutput) {
+            String[] parts = line.split(": ");
+            if (parts.length >= 2) {
+                String key = parts[0].trim();
+                String value = parts[1].trim();
+                if (key.equals("Version") || key.equals("Requires")) {
+                    showOutput.put(key, value);
+                }
+            }
+        }
+
+        return showOutput;
     }
 
     public Set<String> parseDirectDependencies(TomlParseResult tomlParseResult) throws IOException {
@@ -135,16 +153,6 @@ public class SetupToolsExtractor {
         
         return results;
     }
-    
-//    private List<Dependency> transformDependencies(MultiValuedMap<String, String> dependencies) {
-//        if (dependencies == null || dependencies.size() == 0) {
-//            return new ArrayList<>();
-//        }
-//        return dependencies.entries().stream()
-//            .map(entry -> entryToDependency(entry.getKey(), entry.getValue()))
-//            .collect(Collectors.toList());
-//    }
-//
     
     private Dependency entryToDependency(String key) {
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, key);
