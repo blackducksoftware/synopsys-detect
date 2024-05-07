@@ -1,5 +1,5 @@
-# Running [company_name] [solution_name]
+# Planning and Running [company_name] [solution_name]
 
-This section describes the basics of running [company_name] [solution_name].
+This section describes the basics of planning your installation and running [company_name] [solution_name].
 
-Refer to the menu topics for information about planning, and running the application in your environment.
+Refer to the topics in the table of contents for information regarding the planning, aquisition, and running the application in your environment.

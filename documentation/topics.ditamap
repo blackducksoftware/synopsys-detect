@@ -70,7 +70,6 @@
 		<topicref href="naming/aggregation.md" format="markdown"/>
 	</topicref>
 	<topicref href="runningdetect/intro.md" format="markdown">
-		<topicref href="runningdetect/basics/intro.md" format="markdown">
 			<topicref href="runningdetect/basics/decidinghowtouse.md" format="markdown"/>
 			<topicref href="runningdetect/basics/positioning.md" format="markdown"/>
 			<topicref href="runningdetect/basics/choosingworkingdir.md" format="markdown"/>
@@ -80,7 +79,7 @@
 			<topicref href="runningdetect/basics/runningjar.md" format="markdown"/>
 			<topicref href="runningdetect/basics/choosingtargettype.md" format="markdown"/>
 			<topicref href="runningdetect/basics/runningwithblackduck.md" format="markdown"/>
-		</topicref>
+		
 		<topicref href="runningdetect/includingexcluding/intro.md" format="markdown">
 			<topicref href="runningdetect/includingexcluding/tools.md" format="markdown"/>
 			<topicref href="runningdetect/includingexcluding/detectors.md" format="markdown"/>
