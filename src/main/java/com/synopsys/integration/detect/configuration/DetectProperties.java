@@ -785,6 +785,7 @@ public class DetectProperties {
             .setInfo("Git Executable", DetectPropertyFromVersion.VERSION_5_5_0)
             .setHelp("Path of the git executable")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/usr/bin/git")
             .build();
 
     public static final NullablePathProperty DETECT_GO_PATH =
@@ -987,6 +988,7 @@ public class DetectProperties {
             .setInfo("Java Executable", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp("Path to the Java executable used by Docker Inspector.", "If set, Detect will use the given Java executable instead of searching for one.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/usr/lib/jvm/jdk-17/bin/java")
             .build();
 
     public static final CaseSensitiveStringListProperty DETECT_LERNA_EXCLUDED_PACKAGES =
