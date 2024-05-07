@@ -24,7 +24,7 @@ public class DetectConfigurationFactoryTestUtils {
     public static DetectConfigurationFactory factoryOf(Pair<Property, String>... properties) {
         Map<String, String> propertyMap = Bds.of(properties).toMap(pair -> pair.getLeft().getKey(), Pair::getRight);
         PropertySource inMemoryPropertySource = new MapPropertySource("test", propertyMap);
-        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.singletonList(inMemoryPropertySource));
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.singletonList(inMemoryPropertySource), Collections.emptySortedMap());
         DetectPropertyConfiguration detectPropertyConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
         return new DetectConfigurationFactory(detectPropertyConfiguration, new Gson());
     }

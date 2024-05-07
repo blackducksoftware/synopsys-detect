@@ -49,7 +49,7 @@ class DiagnosticDecisionTest {
         propertySourceMap.put(DetectProperties.DETECT_DIAGNOSTIC.getKey(), String.valueOf(isDiagnostic));
         MapPropertySource mapPropertySource = new MapPropertySource(TEST_PROPERTY_SOURCE_NAME, propertySourceMap);
 
-        return new PropertyConfiguration(Collections.singletonList(mapPropertySource));
+        return new PropertyConfiguration(Collections.singletonList(mapPropertySource), Collections.emptySortedMap());
     }
 
     private DetectArgumentState createDetectArgumentState(boolean isDiagnostic) {

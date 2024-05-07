@@ -10,8 +10,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Collections;
 
+import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.help.yaml.HelpYamlWriter;
+import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +72,8 @@ public class DetectBoot {
     private final DetectArgumentState detectArgumentState;
     private final List<PropertySource> propertySources;
     private final InstalledToolManager installedToolManager;
+    private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DOCKER, DetectTool.DETECTOR);
+    private SortedMap<String, String> scanSettingsProperties = new TreeMap<>();
 
     public DetectBoot(
         EventSystem eventSystem,
@@ -96,19 +101,19 @@ public class DetectBoot {
                 DetectGroup.BLACKDUCK_SERVER,
                 detectArgumentState
             );
-            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources, Collections.emptySortedMap())));
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
             HelpJsonManager helpJsonManager = detectBootFactory.createHelpJsonManager();
             helpJsonManager.createHelpJsonDocument(String.format("synopsys-detect-%s-help.json", detectVersion));
-            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources, Collections.emptySortedMap())));
         }
 
         if (detectArgumentState.isHelpYamlDocument()) {
             HelpYamlWriter helpYamlWriter = new HelpYamlWriter();
             helpYamlWriter.createHelpYamlDocument(String.format("synopsys-detect-%s-template-application.yml", detectVersion));
-            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources, Collections.emptySortedMap())));
         }
 
         DEFAULT_PRINT_STREAM.println();
@@ -121,7 +126,20 @@ public class DetectBoot {
             propertySources.add(0, interactivePropertySource);
         }
 
-        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
+        boolean autonomousScanEnabled = true;
+        ScanSettings scanSettings = new ScanSettings();
+
+        if(autonomousScanEnabled) {
+            scanSettingsProperties.putAll(scanSettings.getDetectorSharedProperties());
+            scanSettingsProperties.putAll(scanSettings.getGlobalDetectProperties());
+            scanSettings.getScanTypes().forEach(scanType ->  {
+                scanSettingsProperties.putAll(scanType.getScanProperties());
+            });
+        }
+
+        scanSettingsProperties.put("blackduck.url","https://us03-qa-hub21.nprd.sig.synopsys.com/");
+
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources, scanSettingsProperties);
 
         SortedMap<String, String> maskedRawPropertyValues = collectMaskedRawPropertyValues(propertyConfiguration);
 
@@ -199,12 +217,18 @@ public class DetectBoot {
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
+        List<DetectTool> adoptedScanTypes = Arrays.asList(DetectTool.BINARY_SCAN, DetectTool.DETECTOR);
 
         try {
-            BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode();
+            boolean blackduckScanModeSpecified = detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
+            BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
+
+
+            BlackduckScanMode blackduckScanMode = decideScanMode(blackDuckConnectionDetails, adoptedScanTypes, blackduckScanModeSpecified, detectConfigurationFactory);
+
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
-                detectConfigurationFactory.createBlackDuckConnectionDetails(),
+                blackDuckConnectionDetails,
                 blackduckScanMode,
                 detectConfigurationFactory.createHasSignatureScan()
             );
@@ -243,6 +267,24 @@ public class DetectBoot {
                 installedToolLocator
             );
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
+    }
+
+    private BlackduckScanMode decideScanMode(BlackDuckConnectionDetails blackDuckConnectionDetails, List<DetectTool> adoptedScanType, boolean blackduckScanModeSpecified, DetectConfigurationFactory detectConfigurationFactory) {
+        if(!blackduckScanModeSpecified) {
+            Optional<String> scaasFilePath = detectConfigurationFactory.getScaaasFilePath();
+            Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
+
+            if (blackDuckUrl.isPresent()) {
+                boolean isNotRapid = adoptedScanType.stream().anyMatch(tool -> !rapidTools.contains(tool));
+                if (!adoptedScanType.isEmpty() && !isNotRapid && scaasFilePath.isPresent()) {
+                    return BlackduckScanMode.RAPID;
+                } else if (!adoptedScanType.isEmpty() && scaasFilePath.isPresent()) {
+                    return BlackduckScanMode.STATELESS;
+                }
+            }
+            return BlackduckScanMode.INTELLIGENT;
+        }
+        return detectConfigurationFactory.createScanMode();
     }
 
     private void oneRequiresTheOther(boolean firstCondition, boolean secondCondition, String errorMessageIfNot) throws DetectUserFriendlyException {

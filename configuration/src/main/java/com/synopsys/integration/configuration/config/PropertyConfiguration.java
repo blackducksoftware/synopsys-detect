@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.SortedMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -33,9 +34,11 @@ public class PropertyConfiguration {
     private final Map<String, PropertyResolution> resolutionCache = new HashMap<>();
     private final Map<String, PropertyValue<?>> valueCache = new HashMap<>();
     private final List<PropertySource> orderedPropertySources;
+    private final SortedMap<String, String> scanSettingsProperties;
 
-    public PropertyConfiguration(@NotNull List<PropertySource> orderedPropertySources) {
+    public PropertyConfiguration(@NotNull List<PropertySource> orderedPropertySources, SortedMap<String, String> scanSettingsProperties) {
         this.orderedPropertySources = orderedPropertySources;
+        this.scanSettingsProperties = scanSettingsProperties;
     }
 
     //region
@@ -73,6 +76,9 @@ public class PropertyConfiguration {
                 .map(property::convertValue);
         } else if (parseException.isPresent() && propertyResolutionInfo.isPresent()) {
             throw new InvalidPropertyException(property.getKey(), propertyResolutionInfo.get().getSource(), parseException.get());
+        } else if(!scanSettingsProperties.isEmpty() && scanSettingsProperties.containsKey(property.getKey())) {
+            R scanSettingsValue = (R) scanSettingsProperties.get(property.getKey());
+            return Optional.of(property.convertValue((V) scanSettingsValue));
         } else {
             return Optional.empty();
         }
@@ -91,6 +97,9 @@ public class PropertyConfiguration {
             return value.map(property::convertValue).get();
         } else if (parseException.isPresent() && propertyResolutionInfo.isPresent()) {
             throw new InvalidPropertyException(property.getKey(), propertyResolutionInfo.get().getSource(), parseException.get());
+        } else if(!scanSettingsProperties.isEmpty() && scanSettingsProperties.containsKey(property.getKey())) {
+            V scanSettingsValue = (V) scanSettingsProperties.get(property.getKey());
+            return property.convertValue(scanSettingsValue);
         } else {
             V defaultValue = property.getDefaultValue();
             return property.convertValue(defaultValue);
@@ -109,6 +118,9 @@ public class PropertyConfiguration {
             return value.getValue();
         } else if (parseException.isPresent() && propertyResolutionInfo.isPresent()) {
             throw new InvalidPropertyException(property.getKey(), propertyResolutionInfo.get().getSource(), parseException.get());
+        } else if(!scanSettingsProperties.isEmpty() && scanSettingsProperties.containsKey(property.getKey())) {
+            V scanSettingsValue = (V) scanSettingsProperties.get(property.getKey());
+            return Optional.of(scanSettingsValue);
         } else {
             return Optional.empty();
         }
@@ -223,9 +235,19 @@ public class PropertyConfiguration {
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());
 
+        keys.addAll(scanSettingsProperties.keySet().stream()
+                .filter(predicate)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList()));
+
         Map<String, String> keyMap = new HashMap<>();
         keys.forEach(key -> {
-            resolveKey(key).ifPresent(rawValue -> keyMap.put(key, rawValue));
+            Optional<String> rawValue = resolveKey(key);
+            if(rawValue.isPresent()) {
+                keyMap.put(key, rawValue.get());
+            } else if (scanSettingsProperties.containsKey(key)) {
+                keyMap.put(key, scanSettingsProperties.get(key));
+            }
         });
         return keyMap;
     }
