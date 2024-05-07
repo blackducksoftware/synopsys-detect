@@ -162,10 +162,9 @@ public class DetectBoot {
             );
         }
 
-        // TODO start
+        // TODO Scan settings model obtained below is to be used by the delta-checking operations
         AutonomousManager autonomousManager = new AutonomousManager(directoryManager);
         ScanSettings scanSettings = autonomousManager.getScanSettingsModel();
-        // TODO end
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
@@ -251,14 +250,6 @@ public class DetectBoot {
                 installedToolManager,
                 installedToolLocator
             );
-
-        // TODO example use case when writing updates after delta checks
-        SortedMap<String, String> globalDetectProperties = new TreeMap<>();
-        globalDetectProperties.put("blackduck.scan.mode", "STATELESS");
-        globalDetectProperties.put("blackduck.url", "https://www.bd-customer.com");
-        scanSettings.setGlobalDetectProperties(globalDetectProperties);
-        autonomousManager.writeScanSettingsModelToTarget(scanSettings);
-        // TODO end
 
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
     }

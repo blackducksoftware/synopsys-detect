@@ -36,6 +36,10 @@ public class AutonomousManager {
         return scanSettings;
     }
 
+    public void updateScanSettingsModel(ScanSettings scanSettings) {
+        this.scanSettings = scanSettings;
+    }
+
     public String getHashedScanSettingsFileName() {
         return hashedScanSettingsFileName;
     }
@@ -45,6 +49,7 @@ public class AutonomousManager {
     }
 
     public void writeScanSettingsModelToTarget(ScanSettings scanSettings) throws IOException {
+        updateScanSettingsModel(scanSettings);
         String serializedScanSettings = ScanSettingsSerializer.serializeScanSettingsModel(scanSettings);
         try (FileWriter fw = new FileWriter(scanSettingsTargetFile)) {
             fw.write(serializedScanSettings);
