@@ -6,8 +6,8 @@ import com.synopsys.integration.detectable.detectables.cargo.CargoLockDetectable
 import com.synopsys.integration.detectable.detectables.carthage.CarthageLockDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
-import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.Conan1CliDetectable;
+import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
@@ -48,6 +48,7 @@ import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockD
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
 import com.synopsys.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.buildless.SetupToolsBuildlessDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
@@ -276,7 +277,9 @@ public class DetectorRuleFactory {
         rules.addDetector(DetectorType.SETUPTOOLS, detector -> {
            detector.entryPoint(SetupToolsBuildDetectable.class)
                .search().defaults();
-        });
+           detector.entryPoint(SetupToolsBuildlessDetectable.class)
+               .search().defaults();
+        }).allEntryPointsFallbackToNext();
 
         return rules.build();
     }

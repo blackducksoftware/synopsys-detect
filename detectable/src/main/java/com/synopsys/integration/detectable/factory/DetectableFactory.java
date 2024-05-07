@@ -263,6 +263,7 @@ import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
 import com.synopsys.integration.detectable.detectables.setuptools.SetupToolsExtractor;
 import com.synopsys.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.buildless.SetupToolsBuildlessDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftExtractor;
@@ -687,8 +688,12 @@ public class DetectableFactory {
         return new XcodeWorkspaceDetectable(environment, fileFinder, packageResolvedExtractor, xcodeWorkspaceExtractor);
     }
     
-    public SetupToolsBuildDetectable createSetupToolsDetectable(DetectableEnvironment environment, PipResolver pipResolver) {
+    public SetupToolsBuildDetectable createSetupToolsBuildDetectable(DetectableEnvironment environment, PipResolver pipResolver) {
         return new SetupToolsBuildDetectable(environment, fileFinder, pipResolver, setupToolsExtractor());
+    }
+    
+    public SetupToolsBuildlessDetectable createSetupToolsBuildlessDetectable(DetectableEnvironment environment, PipResolver pipResolver) {
+        return new SetupToolsBuildlessDetectable(environment, fileFinder, setupToolsExtractor());
     }
 
     // Used by three Detectables

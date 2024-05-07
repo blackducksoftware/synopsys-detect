@@ -1,11 +1,8 @@
 package com.synopsys.integration.detectable.detectables.setuptools;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -114,12 +111,11 @@ public class SetupToolsExtractor {
     }
 
     public List<String> runPipShow(File sourceDirectory, ExecutableTarget pipExe, String dependencyToSearch) throws ExecutableRunnerException {
-        List<String> pipArguments = new ArrayList<>();
+        // TODO somewhere need checks to blow up if no dependencies are found.
         
-        if (StringUtils.isNotBlank(dependencyToSearch)) {
-            pipArguments.add("show");
-            pipArguments.add(dependencyToSearch);
-        }
+        List<String> pipArguments = new ArrayList<>();
+        pipArguments.add("show");
+        pipArguments.add(dependencyToSearch);
         
         return executableRunner.execute(ExecutableUtils.createFromTarget(sourceDirectory, pipExe, pipArguments)).getStandardOutputAsList();
     }
