@@ -33,9 +33,7 @@ public class SetupToolsExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(File projectToml) {
-        // TODO eventually have to account, perhaps in a new set of files entirely, for a pip-less approach
-        // Get dependencies by running pip show on each direct dependency
+    public Extraction extract(File projectToml, boolean havePip) {
         try {
             TomlParseResult tomlParseResult = TomlFileUtils.parseFile(projectToml);
             
@@ -46,8 +44,18 @@ public class SetupToolsExtractor {
 
             DependencyGraph dependencyGraph = new BasicDependencyGraph();
             
-            for (String directDependency : tomlDirectDependencies) {
-                parseShowDependency(dependencyGraph, directDependency, null);
+            if (havePip) {
+                // Get dependencies by running pip show on each direct dependency
+                for (String directDependency : tomlDirectDependencies) {
+                    parseShowDependency(dependencyGraph, directDependency, null);
+                }
+            } else {
+                // Unable to determine transitive dependencies, add parsed dependencies directly
+                // to the root of the graph.
+                for (String directDependency : tomlDirectDependencies) {
+                    Dependency currentDependency = entryToDependency(directDependency);
+                    dependencyGraph.addChildrenToRoot(currentDependency);
+                }
             }
 
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
@@ -137,6 +145,12 @@ public class SetupToolsExtractor {
 //            .collect(Collectors.toList());
 //    }
 //
+    
+    private Dependency entryToDependency(String key) {
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, key);
+        return new Dependency(externalId); 
+    }
+    
     private Dependency entryToDependency(String key, String value) {
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, key, value);
         return new Dependency(externalId);

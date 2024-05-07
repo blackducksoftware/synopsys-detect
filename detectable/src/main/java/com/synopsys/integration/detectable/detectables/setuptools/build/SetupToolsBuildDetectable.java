@@ -35,9 +35,9 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 @DetectableInfo(name = "Setuptools", language = "Python", forge = "Pypi", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "A pyproject.toml file and the pip executable.")
 public class SetupToolsBuildDetectable extends Detectable {
     
-    public static final String PY_PROJECT_TOML = "pyproject.toml";
-    public static final String BUILD_KEY = "build-system.requires";
-    public static final String REQUIRED_KEY = "setuptools";
+    private static final String PY_PROJECT_TOML = "pyproject.toml";
+    private static final String BUILD_KEY = "build-system.requires";
+    private static final String REQUIRED_KEY = "setuptools";
     
     private final FileFinder fileFinder;
     private final SetupToolsExtractor setupToolsExtractor;
@@ -93,6 +93,6 @@ public class SetupToolsBuildDetectable extends Detectable {
             ExecutableFailedException, IOException, JsonSyntaxException, CycleDetectedException, DetectableException,
             MissingExternalIdException, ParserConfigurationException, SAXException {
         // TODO in case we need directory specific files can call environment.getDirectory()
-        return setupToolsExtractor.extract(projectToml);
+        return setupToolsExtractor.extract(projectToml, true);
     }
 }
