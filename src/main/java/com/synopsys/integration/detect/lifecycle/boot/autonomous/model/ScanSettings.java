@@ -1,15 +1,9 @@
 package com.synopsys.integration.detect.lifecycle.boot.autonomous.model;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
-import org.apache.commons.collections.set.AbstractSortedSetDecorator;
 
 /**
  * ScanSettings is a data model used to store the properties and scan targets used by Detect for the given or
