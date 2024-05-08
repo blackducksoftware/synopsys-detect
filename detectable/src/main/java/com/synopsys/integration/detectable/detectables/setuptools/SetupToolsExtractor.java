@@ -24,6 +24,8 @@ import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.util.TomlFileUtils;
+import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsParsedResult;
+import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.Extraction.Builder;
 import com.synopsys.integration.executable.ExecutableRunnerException;
@@ -39,29 +41,29 @@ public class SetupToolsExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(File sourceDirectory, File projectToml, ExecutableTarget pipExe) {
+    public Extraction extract(File sourceDirectory, SetupToolsParser parser, ExecutableTarget pipExe) {
         try {
             // TODO this belongs in a Parser class? Then can have a parser class for each 
-            // file type.
-            TomlParseResult tomlParseResult = TomlFileUtils.parseFile(projectToml);
+            // file type. Maybe I can have an interface or parent class so I can just pass in
+            // DependencyFile or something like that and call DependencyFile.parse
             
             // TODO get direct dependencies from Toml file. Eventually we'll need to get these from cfg and py files
             // instead if those exist or have dependencies. 
-            Set<String> tomlDirectDependencies = parseDirectDependencies(tomlParseResult);
+            SetupToolsParsedResult parsedResult = parser.parse();
 
             // TODO the graph stuff is usually in a "transformer" class, I probably don't need the
-            // model or result classes as this is pretty simple so far.
+            // model or result classes as this is pretty simple so far. Like NpmLockfileGraphTransformer.transform
             DependencyGraph dependencyGraph = new BasicDependencyGraph();
             
             if (pipExe != null) {
                 // Get dependencies by running pip show on each direct dependency
-                for (String directDependency : tomlDirectDependencies) {
+                for (String directDependency : parsedResult.getDirectDependencies()) {
                     parseShowDependency(pipExe, sourceDirectory, dependencyGraph, directDependency, null);
                 }
             } else {
                 // Unable to determine transitive dependencies, add parsed dependencies directly
                 // to the root of the graph.
-                for (String directDependency : tomlDirectDependencies) {
+                for (String directDependency : parsedResult.getDirectDependencies()) {
                     Dependency currentDependency = entryToDependency(directDependency);
                     dependencyGraph.addChildrenToRoot(currentDependency);
                 }
@@ -69,8 +71,8 @@ public class SetupToolsExtractor {
 
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
-            String projectName = tomlParseResult.getString("project.name");
-            String projectVersion = tomlParseResult.getString("project.version");
+            String projectName = parsedResult.getProjectName();
+            String projectVersion = parsedResult.getProjectVersion();
 
             Builder builder = new Extraction.Builder();
             builder.success(codeLocation);
@@ -137,19 +139,6 @@ public class SetupToolsExtractor {
         }
 
         return showOutput;
-    }
-
-    public Set<String> parseDirectDependencies(TomlParseResult tomlParseResult) throws IOException {
-        Set<String> results = new HashSet<>();
-        
-        TomlArray dependencies = tomlParseResult.getArray("project.dependencies");
-        
-        // TODO I doubt this will handle strings that have versions or version specifiers
-        for (int i = 0; i < dependencies.size(); i++) {
-            results.add(dependencies.getString(i));
-        }
-        
-        return results;
     }
     
     private Dependency entryToDependency(String key) {

@@ -23,8 +23,12 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.PipRes
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.SetupToolsNoDependenciesDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.SetupToolsRequiresNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectables.setuptools.SetupToolsExtractUtils;
 import com.synopsys.integration.detectable.detectables.setuptools.SetupToolsExtractor;
+import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detectable.util.CycleDetectedException;
@@ -44,6 +48,8 @@ public class SetupToolsBuildDetectable extends Detectable {
     
     private ExecutableTarget pipExe;
     
+    private SetupToolsParser setupToolsParser;
+    
     public SetupToolsBuildDetectable(DetectableEnvironment environment, FileFinder fileFinder, PipResolver pipResolver, SetupToolsExtractor setupToolsExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
@@ -61,15 +67,28 @@ public class SetupToolsBuildDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        pipExe = pipResolver.resolvePip();
-        if (pipExe == null) {
-            return new ExecutableNotFoundDetectableResult("pip");
-        }
-        
         try {
+            // Ensure pip is installed and accessible.
+            pipExe = pipResolver.resolvePip();
+            if (pipExe == null) {
+                return new ExecutableNotFoundDetectableResult("pip");
+            }
+        
             parsedToml = SetupToolsExtractUtils.extractToml(projectToml);
 
-            return SetupToolsExtractUtils.checkTomlRequiresSetupTools(parsedToml);
+            // Ensure an existing pyproject.toml with a requires setuptools line.
+            if (parsedToml == null || !SetupToolsExtractUtils.checkTomlRequiresSetupTools(parsedToml)) {
+                return new SetupToolsRequiresNotFoundDetectableResult();
+            }
+            
+            // Ensure dependencies/requirements are specified in a toml, cfg, or py file.
+            setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(parsedToml);
+            
+            if (setupToolsParser == null) {
+               return new SetupToolsNoDependenciesDetectableResult(); 
+            }
+            
+            return new PassedDetectableResult();
         } catch (Exception e) {
             return new ExceptionDetectableResult(e);
         }
@@ -79,6 +98,6 @@ public class SetupToolsBuildDetectable extends Detectable {
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException,
             ExecutableFailedException, IOException, JsonSyntaxException, CycleDetectedException, DetectableException,
             MissingExternalIdException, ParserConfigurationException, SAXException {
-        return setupToolsExtractor.extract(environment.getDirectory(), projectToml, pipExe);
+        return setupToolsExtractor.extract(environment.getDirectory(), setupToolsParser, pipExe);
     }
 }

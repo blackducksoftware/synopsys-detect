@@ -4,6 +4,6 @@ public class SetupToolsRequiresNotFoundDetectableResult extends FailedDetectable
 
     @Override
     public String toDescription() {
-        return "setuptools requires is missing from build-system section of the pyproject.toml. Unable to continue the Setuptools Detector.";
+        return "setuptools requires a pyproject.toml with a requires setuptools line in the build-system section. Unable to continue the Setuptools Detector.";
     }
 }
