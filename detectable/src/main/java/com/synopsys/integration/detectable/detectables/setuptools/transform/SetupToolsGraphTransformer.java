@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
@@ -36,22 +38,33 @@ public class SetupToolsGraphTransformer {
         if (pipExe != null) {
             // Get dependencies by running pip show on each direct dependency
             for (String directDependency : parsedResult.getDirectDependencies().keySet()) {
-                parseShowDependency(pipExe, sourceDirectory, dependencyGraph, directDependency, null);
+                handleShowDependency(pipExe, sourceDirectory, dependencyGraph, directDependency, null);
             }
         } else {
             // Unable to determine transitive dependencies, add parsed dependencies directly
             // to the root of the graph.
-            // TODO need to update to handle versions
-            for (String directDependency : parsedResult.getDirectDependencies().keySet()) {
-                Dependency currentDependency = entryToDependency(directDependency);
-                dependencyGraph.addChildrenToRoot(currentDependency);
-            }
+            handleParsedDependencies(parsedResult, dependencyGraph);
         }
         
         return dependencyGraph;
     }
+
+    public void handleParsedDependencies(SetupToolsParsedResult parsedResult, DependencyGraph dependencyGraph) {
+        Map<String, String> directDependencies = parsedResult.getDirectDependencies();
+        
+        for (String directDependency : directDependencies.keySet()) {
+            String version = directDependencies.get(directDependency);
+            Dependency currentDependency;
+            if (StringUtils.isEmpty(version)) {
+                currentDependency = entryToDependency(directDependency);
+            } else {
+                currentDependency = entryToDependency(directDependency, version);
+            }
+            dependencyGraph.addChildrenToRoot(currentDependency);
+        }
+    }
     
-    private void parseShowDependency(ExecutableTarget pipExe, File sourceDirectory, DependencyGraph dependencyGraph, String dependencyToSearch, Dependency parentDependency) throws ExecutableRunnerException {
+    private void handleShowDependency(ExecutableTarget pipExe, File sourceDirectory, DependencyGraph dependencyGraph, String dependencyToSearch, Dependency parentDependency) throws ExecutableRunnerException {
         List<String> rawShowOutput = runPipShow(sourceDirectory, pipExe, dependencyToSearch);
         
         Map<String, String> showOutput = parsePipShow(rawShowOutput);
@@ -69,7 +82,7 @@ public class SetupToolsGraphTransformer {
         if (showOutput.containsKey("Requires")) {
             String[] requiredPackages = showOutput.get("Requires").split(", ");
             for (String requiredPackage : requiredPackages) {
-                parseShowDependency(pipExe, sourceDirectory, dependencyGraph, requiredPackage, currentDependency);
+                handleShowDependency(pipExe, sourceDirectory, dependencyGraph, requiredPackage, currentDependency);
             }
         }
     }
