@@ -1,17 +1,17 @@
 package com.synopsys.integration.detectable.detectables.setuptools.parse;
 
-import java.util.Set;
+import java.util.Map;
 
 public class SetupToolsParsedResult {
 
     private String projectName;
     private String projectVersion;
-    private Set<String> directDependencies;
+    private Map<String, String> directDependencies;
 
-    public SetupToolsParsedResult(String projectName, String projectVersion, Set<String> directDependencies) {
+    public SetupToolsParsedResult(String projectName, String projectVersion, Map<String, String> parsedDirectDependencies) {
         this.projectName = projectName;
         this.projectVersion = projectVersion;
-        this.directDependencies = directDependencies;
+        this.directDependencies = parsedDirectDependencies;
     }
 
     public String getProjectName() {
@@ -22,7 +22,7 @@ public class SetupToolsParsedResult {
         return projectVersion;
     }
 
-    public Set<String> getDirectDependencies() {
+    public Map<String, String> getDirectDependencies() {
         return directDependencies;
     }
 }

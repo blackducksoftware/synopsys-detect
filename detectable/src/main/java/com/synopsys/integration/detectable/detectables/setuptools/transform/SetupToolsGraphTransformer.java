@@ -35,13 +35,14 @@ public class SetupToolsGraphTransformer {
         
         if (pipExe != null) {
             // Get dependencies by running pip show on each direct dependency
-            for (String directDependency : parsedResult.getDirectDependencies()) {
+            for (String directDependency : parsedResult.getDirectDependencies().keySet()) {
                 parseShowDependency(pipExe, sourceDirectory, dependencyGraph, directDependency, null);
             }
         } else {
             // Unable to determine transitive dependencies, add parsed dependencies directly
             // to the root of the graph.
-            for (String directDependency : parsedResult.getDirectDependencies()) {
+            // TODO need to update to handle versions
+            for (String directDependency : parsedResult.getDirectDependencies().keySet()) {
                 Dependency currentDependency = entryToDependency(directDependency);
                 dependencyGraph.addChildrenToRoot(currentDependency);
             }

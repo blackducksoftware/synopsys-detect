@@ -1,7 +1,10 @@
 package com.synopsys.integration.detectable.detectables.setuptools.parse;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +22,7 @@ public class SetupToolsTomlParser implements SetupToolsParser {
 
     @Override
     public SetupToolsParsedResult parse() throws IOException {
-        Set<String> parsedDirectDependencies = parseDirectDependencies(parsedToml);
+        Map<String, String> parsedDirectDependencies = parseDirectDependencies(parsedToml);
         String projectName = parsedToml.getString("project.name");
         String projectVersion = parsedToml.getString("project.version");
         
@@ -27,20 +30,46 @@ public class SetupToolsTomlParser implements SetupToolsParser {
         
         return result;
     }
-    
-    // TODO this might only work for the build detector as I'm not currently trying to extract
-    // the version.
-    public Set<String> parseDirectDependencies(TomlParseResult tomlParseResult) throws IOException {
-        Set<String> results = new HashSet<>();
-        
+
+    public Map<String, String> parseDirectDependencies(TomlParseResult tomlParseResult) throws IOException {
+        Map<String, String> results = new HashMap<>();
+
         TomlArray dependencies = tomlParseResult.getArray("project.dependencies");
-        
-        Pattern pattern = Pattern.compile("^[^<>=! ]+");
+
+        Pattern pattern = Pattern.compile("^([^<>=!\\[ ]+)");
+        Pattern versionPattern = Pattern.compile("([0-9]+(\\.[0-9]+)*(-[0-9A-Za-z-.]+)?(\\+[0-9A-Za-z-.]+)?)");
+
+        Comparator<String> versionComparator = (v1, v2) -> {
+            String[] parts1 = v1.split("\\.");
+            String[] parts2 = v2.split("\\.");
+            for (int i = 0; i < Math.min(parts1.length, parts2.length); i++) {
+                if (parts1[i].contains("-") || parts1[i].contains("+")) {
+                    return -1;
+                } else if (parts2[i].contains("-") || parts2[i].contains("+")) {
+                    return 1;
+                }
+                int comparison = Integer.compare(Integer.parseInt(parts1[i]), Integer.parseInt(parts2[i]));
+                if (comparison != 0) {
+                    return comparison;
+                }
+            }
+            return Integer.compare(parts1.length, parts2.length);
+        };
 
         for (int i = 0; i < dependencies.size(); i++) {
-            Matcher matcher = pattern.matcher(dependencies.getString(i));
+            String dependency = dependencies.getString(i).split(";")[0].split("#")[0];
+            Matcher matcher = pattern.matcher(dependency);
             if (matcher.find()) {
-                results.add(matcher.group());
+                String dependencyName = matcher.group(1);
+                String version = "";
+                Matcher versionMatcher = versionPattern.matcher(dependency);
+                while (versionMatcher.find()) {
+                    String currentVersion = versionMatcher.group();
+                    if (version.isEmpty() || versionComparator.compare(currentVersion, version) < 0) {
+                        version = currentVersion;
+                    }
+                }
+                results.put(dependencyName, version);
             }
         }
         
