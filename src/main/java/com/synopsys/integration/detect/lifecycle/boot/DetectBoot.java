@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,8 @@ import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
 import com.synopsys.integration.detect.configuration.validation.DeprecationResult;
 import com.synopsys.integration.detect.configuration.validation.DetectConfigurationBootManager;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
+import com.synopsys.integration.detect.lifecycle.boot.autonomous.AutonomousManager;
+import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
@@ -91,7 +94,8 @@ public class DetectBoot {
         this.installedToolManager = installedToolManager;
     }
 
-    public Optional<DetectBootResult> boot(String detectVersion, String detectBuildDate) throws IOException, IllegalAccessException {
+    public Optional<DetectBootResult> boot(String detectVersion, String detectBuildDate) throws IOException, IllegalAccessException, NoSuchAlgorithmException {
+
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             HelpPrinter helpPrinter = new HelpPrinter();
             helpPrinter.printAppropriateHelpMessage(
@@ -173,6 +177,10 @@ public class DetectBoot {
                 maskedRawPropertyValues
             );
         }
+
+        // TODO Scan settings model obtained below is to be used by the delta-checking operations
+        AutonomousManager autonomousManager = new AutonomousManager(directoryManager);
+        ScanSettings scanSettings = autonomousManager.getScanSettingsModel();
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
@@ -264,6 +272,7 @@ public class DetectBoot {
                 installedToolManager,
                 installedToolLocator
             );
+
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 

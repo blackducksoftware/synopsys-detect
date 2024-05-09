@@ -5,8 +5,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.apache.commons.collections.set.AbstractSortedSetDecorator;
-
 /**
  * ScanSettings is a data model used to store the properties and scan targets used by Detect for the given or
  * derived <code>detect.source.path</code> value, when Detect's autonomous scanning mode is enabled.
