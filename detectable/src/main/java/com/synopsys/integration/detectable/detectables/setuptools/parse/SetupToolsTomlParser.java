@@ -3,6 +3,8 @@ package com.synopsys.integration.detectable.detectables.setuptools.parse;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.tomlj.TomlArray;
 import org.tomlj.TomlParseResult;
@@ -26,14 +28,20 @@ public class SetupToolsTomlParser implements SetupToolsParser {
         return result;
     }
     
+    // TODO this might only work for the build detector as I'm not currently trying to extract
+    // the version.
     public Set<String> parseDirectDependencies(TomlParseResult tomlParseResult) throws IOException {
         Set<String> results = new HashSet<>();
         
         TomlArray dependencies = tomlParseResult.getArray("project.dependencies");
         
-        // TODO I doubt this will handle strings that have versions or version specifiers
+        Pattern pattern = Pattern.compile("^[^<>=! ]+");
+
         for (int i = 0; i < dependencies.size(); i++) {
-            results.add(dependencies.getString(i));
+            Matcher matcher = pattern.matcher(dependencies.getString(i));
+            if (matcher.find()) {
+                results.add(matcher.group());
+            }
         }
         
         return results;
