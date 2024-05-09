@@ -11,6 +11,8 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detect.workflow.result.ComponentLocatorResult;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +41,7 @@ public class GenerateComponentLocationAnalysisOperation {
      * @throws com.synopsys.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException
      * @throws DetectUserFriendlyException
      */
-    public void locateComponents(Set<Component> componentsSet, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
+    public ComponentLocatorResult locateComponents(Set<Component> componentsSet, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
         Input componentLocatorInput = new Input(projectSrcDir.getAbsolutePath(), new JsonObject(), componentsSet);
         String outputFilepath = scanOutputFolder + "/" + LOCATOR_OUTPUT_FILE_NAME;
         if (logger.isDebugEnabled()) {
@@ -54,12 +56,16 @@ public class GenerateComponentLocationAnalysisOperation {
         }
         logger.info("Component Location Analysis file saved at: {}", outputFilepath);
         logger.info(ReportConstants.RUN_SEPARATOR);
+        return new ComponentLocatorResult(outputFilepath);
     }
 
-    public void locateComponentsForOnlineIntelligentScan() throws ComponentLocatorException {
+    public ComponentLocatorResult locateComponentsForOnlineIntelligentScan() throws ComponentLocatorException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         logger.info("Intelligent Scan mode does not support Component Location Analysis.");
         failComponentLocationAnalysisOperation();
+
+        // unreachable statement, mainly here so we don't forget to log a result if this function is ever implemented
+        return new ComponentLocatorResult("change me");
     }
 
     /**
