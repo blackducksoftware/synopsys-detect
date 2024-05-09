@@ -1,14 +1,10 @@
 package com.synopsys.integration.detectable.detectable.result;
 
 public class ExecutableNotFoundDetectableResult extends FailedDetectableResult {
-    private final String executableName;
+    private static final String PREFIX = "No ";
+    private static final String SUFFIX = " executable was found.";
 
     public ExecutableNotFoundDetectableResult(String executableName) {
-        this.executableName = executableName;
-    }
-
-    @Override
-    public String toDescription() {
-        return "No " + executableName + " executable was found.";
+        super(PREFIX, executableName, SUFFIX);
     }
 }

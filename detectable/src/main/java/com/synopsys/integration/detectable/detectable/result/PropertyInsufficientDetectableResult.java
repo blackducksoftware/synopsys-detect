@@ -4,18 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 
 @Deprecated
 public class PropertyInsufficientDetectableResult extends FailedDetectableResult {
-    private final String message;
+    private static final String PREFIX = "The properties are insufficient to run. ";
 
     public PropertyInsufficientDetectableResult() {
-        this(null);
+        super(PREFIX);
     }
 
     public PropertyInsufficientDetectableResult(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public String toDescription() {
-        return "The properties are insufficient to run. " + StringUtils.trimToEmpty(message);
+        super(PREFIX , StringUtils.trimToEmpty(message));
     }
 }

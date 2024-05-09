@@ -1,8 +1,9 @@
 package com.synopsys.integration.detectable.detectable.result;
 
 public class ExcludedDetectableResult extends FailedDetectableResult {
-    @Override
-    public String toDescription() {
-        return "Detector type was excluded.";
+    private static final String DEFAULT = "Detector type was excluded.";
+    
+    public ExcludedDetectableResult() {
+        super(DEFAULT);
     }
 }

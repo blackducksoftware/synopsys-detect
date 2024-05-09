@@ -1,14 +1,9 @@
 package com.synopsys.integration.detectable.detectable.result;
 
 public class InspectorNotFoundDetectableResult extends FailedDetectableResult {
-    private final String inspectorName;
+    private static final String FORMAT = "No %s inspector was found.";
 
     public InspectorNotFoundDetectableResult(String inspectorName) {
-        this.inspectorName = inspectorName;
-    }
-
-    @Override
-    public String toDescription() {
-        return "No " + inspectorName + " inspector was found.";
+        super(String.format(FORMAT, inspectorName));
     }
 }

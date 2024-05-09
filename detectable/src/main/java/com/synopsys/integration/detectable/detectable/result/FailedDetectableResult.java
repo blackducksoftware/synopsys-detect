@@ -7,6 +7,25 @@ import java.util.List;
 import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 
 public class FailedDetectableResult implements DetectableResult {
+    
+    protected final String reason;
+    
+    public FailedDetectableResult(){
+        this.reason = "Failed.";
+    }
+    
+    public FailedDetectableResult(String reason){
+        this.reason = reason;
+    }
+    
+    public FailedDetectableResult(String prefix, String reason){
+        this.reason = prefix.concat(reason);
+    }
+    
+    public FailedDetectableResult(String prefix, String reason, String suffix){
+        this.reason = prefix.concat(reason).concat(suffix);
+    }
+    
     @Override
     public boolean getPassed() {
         return false;
@@ -14,7 +33,7 @@ public class FailedDetectableResult implements DetectableResult {
 
     @Override
     public String toDescription() {
-        return "Failed.";
+        return reason;
     }
 
     @Override

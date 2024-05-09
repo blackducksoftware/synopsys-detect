@@ -1,14 +1,9 @@
 package com.synopsys.integration.detectable.detectable.result;
 
 public class ExceptionDetectableResult extends FailedDetectableResult {
-    private final Exception exception;
+    private static final String PREFIX = "Exception occurred: ";
 
     public ExceptionDetectableResult(Exception exception) {
-        this.exception = exception;
-    }
-
-    @Override
-    public String toDescription() {
-        return "Exception occurred: " + exception.getMessage();
+        super(PREFIX, exception.getMessage());
     }
 }

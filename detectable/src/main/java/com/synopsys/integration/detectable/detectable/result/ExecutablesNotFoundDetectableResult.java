@@ -3,14 +3,9 @@ package com.synopsys.integration.detectable.detectable.result;
 import java.util.List;
 
 public class ExecutablesNotFoundDetectableResult extends FailedDetectableResult {
-    private final List<String> executableNames;
+    private static final String PREFIX = "None of the following executables were found ";
 
     public ExecutablesNotFoundDetectableResult(List<String> executableNames) {
-        this.executableNames = executableNames;
-    }
-
-    @Override
-    public String toDescription() {
-        return "None of the following executables were found " + String.join(",", executableNames);
+        super(PREFIX, String.join(",", executableNames));
     }
 }
