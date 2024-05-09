@@ -1,5 +1,7 @@
 package com.synopsys.integration.detectable.factory;
 
+import java.io.File;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -264,6 +266,7 @@ import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder
 import com.synopsys.integration.detectable.detectables.setuptools.SetupToolsExtractor;
 import com.synopsys.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
 import com.synopsys.integration.detectable.detectables.setuptools.buildless.SetupToolsBuildlessDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.transform.SetupToolsGraphTransformer;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftExtractor;
@@ -689,11 +692,11 @@ public class DetectableFactory {
     }
     
     public SetupToolsBuildDetectable createSetupToolsBuildDetectable(DetectableEnvironment environment, PipResolver pipResolver) {
-        return new SetupToolsBuildDetectable(environment, fileFinder, pipResolver, setupToolsExtractor());
+        return new SetupToolsBuildDetectable(environment, fileFinder, pipResolver, setupToolsExtractor(environment.getDirectory()));
     }
     
     public SetupToolsBuildlessDetectable createSetupToolsBuildlessDetectable(DetectableEnvironment environment, PipResolver pipResolver) {
-        return new SetupToolsBuildlessDetectable(environment, fileFinder, setupToolsExtractor());
+        return new SetupToolsBuildlessDetectable(environment, fileFinder, setupToolsExtractor(environment.getDirectory()));
     }
 
     // Used by three Detectables
@@ -1100,8 +1103,12 @@ public class DetectableFactory {
         return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer(), toolVersionLogger);
     }
     
-    private SetupToolsExtractor setupToolsExtractor() {
-        return new SetupToolsExtractor(executableRunner, externalIdFactory);
+    private SetupToolsGraphTransformer setupToolsGraphTransformer(File sourceDirectory) {
+        return new SetupToolsGraphTransformer(sourceDirectory, externalIdFactory, executableRunner);
+    }
+    
+    private SetupToolsExtractor setupToolsExtractor(File sourceDirectory) {
+        return new SetupToolsExtractor(setupToolsGraphTransformer(sourceDirectory));
     }
 
     //#endregion Utility
