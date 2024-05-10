@@ -324,7 +324,15 @@ public class MavenCodeLocationPackager {
             logger.warn("This line does not specify a scope - it is possible that a match is not found for this dependency: " + componentText);
             version = gavParts[gavParts.length - 1];
         }
-        ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
+
+        ExternalId externalId;
+        if (isEclipsePackage(group))
+        {
+            externalId = externalIdFactory.createEclipseExternalId(artifact, version);
+        } else {
+            externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
+        }
+
         return new ScopedDependency(artifact, version, externalId, scope);
     }
     
@@ -419,6 +427,10 @@ public class MavenCodeLocationPackager {
         }
         logger.debug(debugMessage);
         return false;
+    }
+
+    private boolean isEclipsePackage(String group) {
+        return (group.equals("p2.eclipse-plugin") || group.equals("p2.eclipse-feature") || group.equals("p2.p2-installable-unit"));
     }
 
     public boolean doesLineContainSegmentsInOrder(String line, String... segments) {
