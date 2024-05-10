@@ -16,9 +16,9 @@ public class NugetInspectorArguments {
 
     //At the time of writing, both inspectors (exe and dotnet) use the same arguments so a shared static method is provided.
     //If they diverge the options object protects the argument conversion so each inspector can convert as they see fit.
-    public static List<String> fromInspectorOptions(NugetInspectorOptions nugetInspectorOptions, File sourcePath, File outputDirectory) throws IOException {
+    public static List<String> fromInspectorOptions(NugetInspectorOptions nugetInspectorOptions, String sourcePaths, File outputDirectory) throws IOException {
         List<String> options = new ArrayList<>(Arrays.asList(
-            "--target_path=" + sourcePath.getCanonicalPath(),
+            "--target_path=" + sourcePaths,
             "--output_directory=" + outputDirectory.getCanonicalPath(),
             "--ignore_failure=" + nugetInspectorOptions.isIgnoreFailures()
         ));

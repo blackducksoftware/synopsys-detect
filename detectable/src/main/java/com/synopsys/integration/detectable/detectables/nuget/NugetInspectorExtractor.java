@@ -2,6 +2,10 @@ package com.synopsys.integration.detectable.detectables.nuget;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,16 +50,11 @@ public class NugetInspectorExtractor {
 
     public Extraction extract(List<File> targets, File outputDirectory, ExecutableTarget inspector, NugetInspectorOptions nugetInspectorOptions) {
         try {
-            List<NugetTargetResult> results = new ArrayList<>();
+            String targetFilesPath = outputDirectory.getCanonicalPath().concat("/targetPaths.tmp");
+            writeTargetPathsToTemporaryLockedFile(targetFilesPath, targets);
+            NugetTargetResult result = executeTarget(inspector, targetFilesPath, outputDirectory, nugetInspectorOptions);
 
-            for (int i = 0; i < targets.size(); i++) {
-                File targetDirectory = new File(outputDirectory, "inspection-" + i);
-                results.add(executeTarget(inspector, targets.get(i), targetDirectory, nugetInspectorOptions));
-            }
-
-            List<CodeLocation> codeLocations = results.stream()
-                .flatMap(it -> it.codeLocations.stream())
-                .collect(Collectors.toList());
+            List<CodeLocation> codeLocations = result.codeLocations.stream().collect(Collectors.toList());
 
             Map<File, CodeLocation> codeLocationsBySource = new HashMap<>();
 
@@ -70,25 +69,22 @@ public class NugetInspectorExtractor {
                 }
             });
 
-            Optional<NameVersion> nameVersion = results.stream()
-                .filter(it -> it.nameVersion != null)
-                .map(it -> it.nameVersion)
-                .findFirst();
+            Optional<NameVersion> nameVersion = Optional.of(result.nameVersion);
 
             List<CodeLocation> uniqueCodeLocations = new ArrayList<>(codeLocationsBySource.values());
             return new Extraction.Builder().success(uniqueCodeLocations).nameVersionIfPresent(nameVersion).build();
-        } catch (Exception e) {
+        } catch (DetectableException | ExecutableRunnerException | IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private NugetTargetResult executeTarget(ExecutableTarget inspector, File targetFile, File outputDirectory, NugetInspectorOptions nugetInspectorOptions)
+    private NugetTargetResult executeTarget(ExecutableTarget inspector, String targetFiles, File outputDirectory, NugetInspectorOptions nugetInspectorOptions)
         throws ExecutableRunnerException, IOException, DetectableException {
         if (!outputDirectory.exists() && !outputDirectory.mkdirs()) {
             throw new DetectableException(String.format("Executing the nuget inspector failed, could not create output directory: %s", outputDirectory));
         }
 
-        List<String> arguments = NugetInspectorArguments.fromInspectorOptions(nugetInspectorOptions, targetFile, outputDirectory);
+        List<String> arguments = NugetInspectorArguments.fromInspectorOptions(nugetInspectorOptions, targetFiles, outputDirectory);
         Executable executable = ExecutableUtils.createFromTarget(outputDirectory, inspector, arguments);
         ExecutableOutput executableOutput = executableRunner.execute(executable);
 
@@ -119,5 +115,25 @@ public class NugetInspectorExtractor {
 
         return targetResult;
     }
-
+    
+    public void writeTargetPathsToTemporaryLockedFile(String filePath, List<File> targets) throws IOException {
+        FileChannel channel;
+        try (RandomAccessFile stream = new RandomAccessFile(filePath, "rw")) {
+            channel = stream.getChannel();
+            FileLock lock = null;
+            try {
+                lock = channel.tryLock();
+            } catch (final OverlappingFileLockException e) {
+                stream.close();
+                channel.close();
+            }
+            for (File target : targets) {
+                stream.writeChars(target.getAbsolutePath());
+            }
+            if (lock != null) {
+                lock.release();
+            }
+        }
+        channel.close();
+    }
 }
