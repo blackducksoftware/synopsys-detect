@@ -34,7 +34,7 @@
 ### Removed features
 
 * Removed support for running Docker Inspector as a standalone utility (by executing blackduck-docker-inspector.sh or by executing the [docker_inspector_name] .jar). [docker_inspector_name]  must be invoked by running Synopsys Detect.
-* Removed all [docker_inspector_name] properties involved in connecting to Black Duck ("blackduck.*"). Use [solution_name] properties instead.
+* Removed all [docker_inspector_name] properties involved in connecting to Black Duck ("blackduck.*"). Use [company_name] [solution_name] properties instead.
 
 ## Version 9.4.3
 
@@ -132,7 +132,7 @@ when logging level is set to DEBUG or higher.
 
 ## Version 9.0.0
 ### Changed feature
-* The internal format of the Black Duck Input Output (BDIO) file that is produced is now compatible with [solution_name] version 6.3 and later.
+* The internal format of the Black Duck Input Output (BDIO) file that is produced is now compatible with [company_name] [solution_name] version 6.3 and later.
 
 ## Version 8.3.1
 ### Resolved issues

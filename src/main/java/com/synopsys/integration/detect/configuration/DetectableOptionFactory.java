@@ -47,6 +47,7 @@ import com.synopsys.integration.detectable.detectables.pipenv.parse.PipenvDepend
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
+import com.synopsys.integration.detectable.detectables.poetry.PoetryOptions;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
 import com.synopsys.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
@@ -183,7 +184,8 @@ public class DetectableOptionFactory {
         List<String> mavenIncludedScopes = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_INCLUDED_SCOPES);
         List<String> mavenExcludedModules = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_EXCLUDED_MODULES);
         List<String> mavenIncludedModules = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_INCLUDED_MODULES);
-        return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
+        Boolean includeShadedDependencies = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_INCLUDE_SHADED_DEPENDENCIES);
+        return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules, includeShadedDependencies);
     }
 
     public ConanCliOptions createConanCliOptions() {
@@ -260,6 +262,11 @@ public class DetectableOptionFactory {
         Set<PnpmDependencyType> excludedDependencyTypes = detectConfiguration.getValue(DetectProperties.DETECT_PNPM_DEPENDENCY_TYPES_EXCLUDED).representedValueSet();
         EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedDependencyTypes);
         return new PnpmLockOptions(dependencyTypeFilter);
+    }
+
+    public PoetryOptions createPoetryOptions() {
+        List<String> excludedGroups = detectConfiguration.getValue(DetectProperties.DETECT_POETRY_DEPENDENCY_GROUPS_EXCLUDED);
+        return new PoetryOptions(excludedGroups);
     }
 
     public ProjectInspectorOptions createProjectInspectorOptions() {

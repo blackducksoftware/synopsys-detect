@@ -1,7 +1,7 @@
 # Switching between multiple profiles
 
 A profile is, in effect, a set of pre-defined properties. You select the profile (property settings)
-you want when you run [solution_name].
+you want when you run [company_name] [solution_name].
 
 ## Creating a profile
 
@@ -11,7 +11,7 @@ Populate it with property assignments as previously described.
 
 ## Selecting a profile on the command line
 
-To select one or more profiles on the [solution_name] command line, assign the the comma-separated list of profiles
+To select one or more profiles on the [company_name] [solution_name] command line, assign the the comma-separated list of profiles
 to the Spring Boot property *spring.profiles.active*:
 ```
 bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --spring.profiles.active={profilename}

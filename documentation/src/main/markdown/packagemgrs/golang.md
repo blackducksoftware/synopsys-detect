@@ -6,7 +6,7 @@
 
 ## Overview
 
-[solution_name] has four detectors for GoLang:
+[company_name] [solution_name] has four detectors for GoLang:
 
 * Go Mod Cli (GO_MOD) detector (recommended)
 * Go Lock (GO_DEP) detector
@@ -24,9 +24,9 @@
 
 ### Excluding Test and Build System dependencies
 
-[solution_name] can run additional Go commands to filter out *test* and *build system* dependencies from the BOM.
+[company_name] [solution_name] can run additional Go commands to filter out *test* and *build system* dependencies from the BOM.
 
-Use [detect.go.mod.dependency.types.excluded=VENDORED](../properties/detectors/go.md#go-mod-dependency-types-excluded) to exclude the most dependencies. This will instruct [solution_name] to execute `go mod why -vendor` to generate a list
+Use [detect.go.mod.dependency.types.excluded=VENDORED](../properties/detectors/go.md#go-mod-dependency-types-excluded) to exclude the most dependencies. This will instruct [company_name] [solution_name] to execute `go mod why -vendor` to generate a list
 of modules to exclude.
 
 Use the VENDORED option because running `go mod why` without the `-vendor` flag results in *test* and *build system* dependencies being included in the BOM from Go modules declaring a version prior to `Go 1.16`. See
@@ -34,14 +34,14 @@ the [go mod why documentation](https://go.dev/ref/mod#go-mod-why) for additional
 
 #### Note on current exclusion behavior:
 
-Now, [solution_name] runs *go mod why* by default to remove unused components from the BOM. This may result in a low number of detected dependencies. This behavior can be controlled with
+Now, [company_name] [solution_name] runs *go mod why* by default to remove unused components from the BOM. This may result in a low number of detected dependencies. This behavior can be controlled with
 the [detect.go.mod.dependency.types.excluded](../properties/detectors/go.md#go-mod-dependency-types-excluded)
 property.
 
 If the [detect.go.mod.dependency.types.excluded](../properties/detectors/go.md#go-mod-dependency-types-excluded) property is not provided, the behavior is driven by the value of this deprecated
 property [detect.go.mod.dependency.types](../properties/detectors/go.md#go-mod-dependency-types).
 
-In version 8.0.0, [solution_name] will not exclude any dependencies from the BOM by default and  [detect.go.mod.dependency.types](../properties/detectors/go.md#go-mod-dependency-types) will be removed.
+In version 8.0.0, [company_name] [solution_name] will not exclude any dependencies from the BOM by default and  [detect.go.mod.dependency.types](../properties/detectors/go.md#go-mod-dependency-types) will be removed.
 
 ## Go Lock (GO_DEP) detector
 

@@ -325,6 +325,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.CONTAINER_SCANNER, DetectGroup.SOURCE_PATH)
             .build();
 
+    public static final NullableStringProperty DETECT_THREAT_INTEL_SCAN_FILE =
+            NullableStringProperty.newBuilder("detect.threatintel.scan.file.path")
+                .setInfo("Threat Intel Scan Target", DetectPropertyFromVersion.VERSION_9_6_0)
+                .setHelp(
+                    "If specified, this file and this file only will be uploaded for Threat Intel analysis.  The THREAT_INTEL tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the THREAT_INTEL tool is invoked.")
+                .setGroups(DetectGroup.THREAT_INTEL, DetectGroup.SOURCE_PATH)
+                .build();
+
     // TODO: Consider removing environment sourcing code in 9.0.0. IDETECT-3167
     public static final StringProperty DETECT_BITBAKE_BUILD_ENV_NAME =
         StringProperty.newBuilder("detect.bitbake.build.env.name", "oe-init-build-env")
@@ -1074,6 +1082,16 @@ public class DetectProperties {
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
 
+    public static final BooleanProperty DETECT_MAVEN_INCLUDE_SHADED_DEPENDENCIES =
+            BooleanProperty.newBuilder("detect.maven.include.shaded.dependencies",false)
+                    .setInfo("Include Shaded Dependencies", DetectPropertyFromVersion.VERSION_9_5_0)
+                    .setHelp(
+                            "If set to true, Detect will include shaded dependencies as part of BOM.",
+                            "A shaded dependency is packaged inside the uber jar of the direct or transitive dependency referenced in the project. Detect will find the use of maven-shade-plugin from original POM file and based on that will derive information for these dependencies. This property will only be supported in build mode just like all other MAVEN properties."
+                    )
+                    .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
+                    .build();
+
     public static final BooleanProperty DETECT_NOTICES_REPORT =
         BooleanProperty.newBuilder("detect.notices.report", false)
             .setInfo("Generate Notices Report", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1123,7 +1141,7 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.nuget.excluded.modules")
             .setInfo("Nuget Projects Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "The projects within the solution to exclude. Detect will exclude all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$')")
+                "The projects within the solution to exclude. Detect will exclude all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$'). Note that the term 'modules' in the parameter name is synonymous with Nuget 'project'.")
             .setExample("^BaGet.Core$,^BaGet.Core.Tests$")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1139,9 +1157,9 @@ public class DetectProperties {
 
     public static final CaseSensitiveStringListProperty DETECT_NUGET_INCLUDED_MODULES =
         CaseSensitiveStringListProperty.newBuilder("detect.nuget.included.modules")
-            .setInfo("Nuget Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Nuget Projects Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "The names of the projects in a solution to include (overrides exclude). Detect will include all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$')")
+                "The names of the projects in a solution to include (overrides exclude). Detect will include all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$'). Note that the term 'modules' in the parameter name is synonymous with Nuget 'project'.")
             .setExample("^BaGet.Core$,^BaGet.Core.Tests$")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1158,12 +1176,12 @@ public class DetectProperties {
             .build();
 
     public static final NoneEnumListProperty<NugetDependencyType> DETECT_NUGET_DEPENDENCY_TYPES_EXCLUDED =
-            NoneEnumListProperty.newBuilder("detect.nuget.dependency.types.excluded", NoneEnum.NONE, NugetDependencyType.class)
-                    .setInfo("Nuget Dependency Types Excluded", DetectPropertyFromVersion.VERSION_9_4_0)
-                    .setHelp(createTypeFilterHelpText("Nuget dependency types"), "This property supports exclusion of dependencies in projects that use PackageReference, and packages.config for listing dependencies that are not stored in Json files.")
-                    .setExample(String.format("%s", NugetDependencyType.DEV.name()))
-                    .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-                    .build();
+        NoneEnumListProperty.newBuilder("detect.nuget.dependency.types.excluded", NoneEnum.NONE, NugetDependencyType.class)
+            .setInfo("Nuget Dependency Types Excluded", DetectPropertyFromVersion.VERSION_9_4_0)
+            .setHelp(createTypeFilterHelpText("Nuget dependency types"), "This property supports exclusion of dependencies in projects that use PackageReference, and packages.config for listing dependencies that are not stored in JSON files.")
+            .setExample(String.format("%s", NugetDependencyType.DEV.name()))
+            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .build();
 
     public static final NullablePathProperty DETECT_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.output.path")
@@ -1259,6 +1277,16 @@ public class DetectProperties {
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_11_0)
             .setHelp(createTypeFilterHelpText("pnpm dependency types"))
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .build();
+
+    public static final CaseSensitiveStringListProperty DETECT_POETRY_DEPENDENCY_GROUPS_EXCLUDED =
+        CaseSensitiveStringListProperty.newBuilder("detect.poetry.dependency.groups.excluded")
+            .setInfo("Poetry dependency groups", DetectPropertyFromVersion.VERSION_9_7_0)
+            .setHelp(
+                createTypeFilterHelpText("Poetry dependency groups"),
+                "When specified, presence of both `poetry.lock` and `pyproject.toml` files is required for this detector to run successfully. Components and related dependencies that belong to excluded groups will not be in the BOM unless the component also belongs to a non-excluded group. For example, to recursively exclude all components under the `tool.poetry.group.dev.dependencies` and `tool.poetry.group.test.dependencies` sections of `pyproject.toml`: `detect.poetry.dependency.groups.excluded='dev,test'`. For Poetry pre-1.2.x style of specifying dev depenenicies (`tool.poetry.dev-dependencies` section), use `dev` as the group name."
+            )
+            .setGroups(DetectGroup.POETRY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final NullablePathProperty DETECT_SWIFT_PATH =

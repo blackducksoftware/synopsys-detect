@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
+import com.synopsys.integration.detectable.detectables.projectinspector.model.ProjectInspectorComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,13 +31,15 @@ public class ProjectInspectorParser {
     private final Gson gson;
     private final ExternalIdFactory externalIdFactory;
     private static final String MODULES_KEY = "Modules";
+    private final Map<String,Set<String>> shadedDependencies = new HashMap<>();
+    private boolean versionMismatch = false;
 
     public ProjectInspectorParser(Gson gson, ExternalIdFactory externalIdFactory) {
         this.gson = gson;
         this.externalIdFactory = externalIdFactory;
     }
 
-    public List<CodeLocation> parse(File outputFile) {
+    public List<CodeLocation> parse(File outputFile, boolean includeShadedDependencies) throws Exception {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         if (outputFile == null || !outputFile.exists() || !outputFile.isFile()) {
@@ -49,19 +54,19 @@ public class ProjectInspectorParser {
             while (reader.hasNext()) {
                 String modulesObject = reader.nextName();
                 if (modulesObject != null && modulesObject.equals(MODULES_KEY)) {
-                    codeLocations = processModules(reader);
+                    codeLocations = processModules(reader, includeShadedDependencies);
                 } else {
                     reader.skipValue();
                 }
             }
             reader.endObject();
         } catch (Exception e) {
-            logger.error("An error occurred while reading inspection.json file", e);
+            throw new RuntimeException(e);
         }
         return codeLocations;
     }
 
-    public List<CodeLocation> processModules(JsonReader reader) throws IOException {
+    public List<CodeLocation> processModules(JsonReader reader, boolean includeShadedDependencies) throws IOException {
         List<CodeLocation> codeLocations = new ArrayList<>();
 
         reader.beginObject();
@@ -70,11 +75,23 @@ public class ProjectInspectorParser {
             if (moduleId != null) {
                 JsonObject module = JsonParser.parseReader(reader).getAsJsonObject();
                 ProjectInspectorModule projectInspectorModule = gson.fromJson(module, ProjectInspectorModule.class);
-                CodeLocation codeLocation = codeLocationFromModule(projectInspectorModule);
-                codeLocations.add(codeLocation);
+                if(projectInspectorModule.components != null) {
+                    if (includeShadedDependencies) {
+                        processShadedDependencies(projectInspectorModule);
+                    } else {
+                        CodeLocation codeLocation = codeLocationFromModule(projectInspectorModule);
+                        codeLocations.add(codeLocation);
+                    }
+                } else {
+                    versionMismatch = true;
+                }
             }
         }
         reader.endObject();
+
+        if(versionMismatch) {
+            throw new RuntimeException("Detect and Project Inspector version mismatch, confirm that compatible versions of Detect and Project Inspector are in use.");
+        }
 
         return codeLocations;
     }
@@ -82,39 +99,74 @@ public class ProjectInspectorParser {
 
     public CodeLocation codeLocationFromModule(ProjectInspectorModule module) {
         Map<String, Dependency> lookup = new HashMap<>();
+        Map<String, Dependency> modules = new HashMap<>();
 
-        //build the map of all external ids
-        module.dependencies.forEach(dependency -> lookup.computeIfAbsent(dependency.id, missingId -> convertProjectInspectorDependency(dependency)));
+            //build the map of all external ids
+        module.components.forEach((dependencyId, component) -> {
+            if(!component.dependencySource.equals("MODULE")) {
+                lookup.computeIfAbsent(dependencyId, missingId -> convertProjectInspectorDependency(component));
+            } else {
+                modules.computeIfAbsent(dependencyId, missingId -> convertProjectInspectorDependency(component));
+            }
+        });
 
         //and add them to the graph
         DependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
-        module.dependencies.forEach(moduleDependency -> {
-            Dependency dependency = lookup.get(moduleDependency.id);
-            moduleDependency.includedBy.forEach(parent -> {
-                if ("DIRECT".equals(parent)) {
-                    mutableDependencyGraph.addDirectDependency(dependency);
-                } else if (lookup.containsKey(parent)) {
-                    mutableDependencyGraph.addChildWithParent(dependency, lookup.get(parent));
-                } else { //Theoretically should not happen according to PI devs. -jp
-                    throw new RuntimeException("An error occurred reading the project inspector output." +
-                        " An unknown parent dependency was encountered '" + parent + "' while including dependency '" + moduleDependency.name + "'.");
-                }
-            });
+        module.components.forEach((moduleDependencyId, moduleDependency) -> {
+            Dependency dependency = lookup.getOrDefault(moduleDependencyId, null);
+            if (dependency != null && moduleDependency.inclusionType.equals("DIRECT")) {
+                mutableDependencyGraph.addDirectDependency(dependency);
+            } else if (dependency != null && moduleDependency.inclusionType.equals("TRANSITIVE")) {
+                moduleDependency.includedBy.forEach(includedBy -> {
+                    if (lookup.containsKey(includedBy.id)) {
+                        mutableDependencyGraph.addChildWithParent(dependency, lookup.get(includedBy.id));
+                    } else if (!modules.containsKey(includedBy.id)) { //Theoretically should not happen according to PI devs. -jp
+                        throw new RuntimeException("An error occurred reading the project inspector output." +
+                                " An unknown parent dependency was encountered '" + includedBy.id + "' while including dependency '" + moduleDependency.name + "'.");
+                    }
+                });
+            }
         });
         return new CodeLocation(mutableDependencyGraph, new File(module.moduleFile));
     }
 
-    public Dependency convertProjectInspectorDependency(ProjectInspectorDependency dependency) {
-        if ("MAVEN".equals(dependency.dependencyType) && dependency.mavenCoordinate != null) {
-            ProjectInspectorMavenCoordinate gav = dependency.mavenCoordinate;
+    public void processShadedDependencies(ProjectInspectorModule module) {
+        module.components.forEach((dependencyId, component) -> {
+            if (component.shadedBy != null) {
+                String[] gavParts = component.shadedBy.description.split(":");
+                String group = gavParts[0];
+                String artifact = gavParts[1];
+                String version;
+                if (gavParts.length > 4) {
+                    version = gavParts[gavParts.length - 2];
+                } else {
+                    version = gavParts[gavParts.length - 1];
+                }
+                String gav = String.join(":", group, artifact, version);
+                if (shadedDependencies.containsKey(gav)) {
+                    shadedDependencies.get(gav).add(component.name);
+                } else {
+                    shadedDependencies.put(gav, new HashSet<>(Arrays.asList(component.name)));
+                }
+            }
+        });
+    }
+
+    public Dependency convertProjectInspectorDependency(ProjectInspectorComponent component) {
+        if ("MAVEN".equals(component.dependencyType) && component.mavenCoordinate != null) {
+            ProjectInspectorMavenCoordinate gav = component.mavenCoordinate;
             return new Dependency(gav.artifact, gav.version, externalIdFactory.createMavenExternalId(gav.group, gav.artifact, gav.version));
-        } else if ("MAVEN".equals(dependency.dependencyType)) {
+        } else if ("MAVEN".equals(component.dependencyType)) {
             logger.warn("Project Inspector Maven dependency did not have coordinates, using name and version only.");
-            return new Dependency(dependency.name, dependency.version, externalIdFactory.createNameVersionExternalId(Forge.MAVEN, dependency.name, dependency.version));
-        } else if ("NUGET".equals(dependency.dependencyType)) {
-            return new Dependency(dependency.name, dependency.version, externalIdFactory.createNameVersionExternalId(Forge.NUGET, dependency.name, dependency.version));
+            return new Dependency(component.name, component.version, externalIdFactory.createNameVersionExternalId(Forge.MAVEN, component.name, component.version));
+        } else if ("NUGET".equals(component.dependencyType)) {
+            return new Dependency(component.name, component.version, externalIdFactory.createNameVersionExternalId(Forge.NUGET, component.name, component.version));
         } else {
-            throw new RuntimeException("Unknown Project Inspector dependency type: " + dependency.dependencyType);
+            throw new RuntimeException("Unknown Project Inspector dependency type: " + component.dependencyType);
         }
+    }
+
+    public Map<String, Set<String>> getShadedDependencies() {
+        return shadedDependencies;
     }
 }

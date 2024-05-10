@@ -1,6 +1,6 @@
 # Using environment variables
 
-[solution_name] properties can also be set using environment variables.
+[company_name] [solution_name] properties can also be set using environment variables.
 
 On Linux, when setting a property value using an environment variable, the environment variable name
 is the property name converted to uppercase, with period characters (".") converted to underscore

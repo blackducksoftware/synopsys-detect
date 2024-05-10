@@ -133,9 +133,9 @@ import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGen
 import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
 import com.synopsys.integration.detectable.detectables.git.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCommandRunner;
-import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
@@ -239,6 +239,7 @@ import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOpt
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParser;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryExtractor;
+import com.synopsys.integration.detectable.detectables.poetry.PoetryOptions;
 import com.synopsys.integration.detectable.detectables.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.detectables.poetry.parser.ToolPoetrySectionParser;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
@@ -483,16 +484,18 @@ public class DetectableFactory {
         return new IvyParseDetectable(environment, fileFinder, ivyParseExtractor());
     }
 
-    public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions) {
-        return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
+    public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions, ProjectInspectorOptions projectInspectorOptions, ProjectInspectorResolver projectInspectorResolver) {
+        return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions, createMavenProjectInspectorDetectable(environment, projectInspectorResolver, projectInspectorOptions));
     }
 
     public MavenPomWrapperDetectable createMavenPomWrapperDetectable(
         DetectableEnvironment environment,
         MavenResolver mavenResolver,
-        MavenCliExtractorOptions mavenCliExtractorOptions
+        MavenCliExtractorOptions mavenCliExtractorOptions,
+        ProjectInspectorOptions projectInspectorOptions,
+        ProjectInspectorResolver projectInspectorResolver
     ) {
-        return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
+        return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions, createMavenProjectInspectorDetectable(environment, projectInspectorResolver, projectInspectorOptions));
     }
 
     public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(
@@ -632,8 +635,8 @@ public class DetectableFactory {
         return new PodlockDetectable(environment, fileFinder, podlockExtractor());
     }
 
-    public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment) {
-        return new PoetryDetectable(environment, fileFinder, poetryExtractor(), toolPoetrySectionParser());
+    public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment, PoetryOptions poetryOptions) {
+        return new PoetryDetectable(environment, fileFinder, poetryExtractor(), toolPoetrySectionParser(), poetryOptions);
     }
 
     public RebarDetectable createRebarDetectable(DetectableEnvironment environment, Rebar3Resolver rebar3Resolver) {
@@ -820,7 +823,7 @@ public class DetectableFactory {
     }
 
     private GitParseExtractor gitParseExtractor() {
-        return new GitParseExtractor(gitFileParser(), gitConfigNameVersionTransformer(), gitConfigNodeTransformer());
+        return new GitParseExtractor(gitFileParser(), gitConfigNameVersionTransformer(), gitConfigNodeTransformer(), gitUrlParser());
     }
 
     private GitUrlParser gitUrlParser() {

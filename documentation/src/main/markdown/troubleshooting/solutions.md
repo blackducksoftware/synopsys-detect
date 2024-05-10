@@ -30,7 +30,7 @@ DETECT_SOURCE was not set or computed correctly, please check your configuration
 
 If the curl command described above does not successfully return a value for property DETECT_LATEST, you must determine why, and make the changes necessary so that curl command works.
 
-## [solution_name] succeeds, but the results are incomplete because package managers or subprojects were overlooked
+## [company_name] [solution_name] succeeds, but the results are incomplete because package managers or subprojects were overlooked
 
 ### Symptom
 
@@ -40,16 +40,16 @@ package managers were not recognized and/or subprojects were overlooked.
 ### Possible cause
 
 The detector search depth needs to be increased. The default value (0) limits the search for package manager files to the project directory. If project manager files
-are located in subdirectories and/or there are subprojects, this depth should be increased to enable [solution_name] to find the relevant files, so it
+are located in subdirectories and/or there are subprojects, this depth should be increased to enable [company_name] [solution_name] to find the relevant files, so it
 will run the appropriate detector(s).
 
 See [detector search depth](../properties/configuration/paths.md#detector-search-depth) for more details.
 
-## [solution_name] fails and a TRACE log shows an HTTP response from [blackduck_product_name] of "402 Payment Required" or "502 Bad Gateway"
+## [company_name] [solution_name] fails and a TRACE log shows an HTTP response from [blackduck_product_name] of "402 Payment Required" or "502 Bad Gateway"
 
 ### Symptom
 
-[solution_name] fails, and a TRACE log contains "402 Payment Required" or "502 Bad Gateway".
+[company_name] [solution_name] fails, and a TRACE log contains "402 Payment Required" or "502 Bad Gateway".
 
 ### Possible cause
 
@@ -59,7 +59,7 @@ See [detector search depth](../properties/configuration/paths.md#detector-search
 
 Enable the required feature on the [blackduck_product_name] server.
 
-## Unexpected behavior running [solution_name] on a project that uses Spring Boot
+## Unexpected behavior running [company_name] [solution_name] on a project that uses Spring Boot
 
 ### Symptom
 
@@ -68,11 +68,11 @@ Unexpected behavior, and/or unexpected property values shown in the log.
 ### Possible cause
 
 If your source directory contains Spring Framework configuration files named application.properties, application.yml,
-or application.xml that are written for any application other than [solution_name], you should not run [solution_name] from your source directory.
+or application.xml that are written for any application other than [company_name] [solution_name], you should not run [company_name] [solution_name] from your source directory.
 
 ### Solution
 
-To prevent [solution_name] from reading those files, run [solution_name] from a different directory. Use the following property to point to your source directory.
+To prevent [company_name] [solution_name] from reading those files, run [company_name] [solution_name] from a different directory. Use the following property to point to your source directory.
 ```
 --detect.source.path={project directory path}
 ```
@@ -90,7 +90,7 @@ The [blackduck_product_name] server certificate is not in Java's keystore.
 ### Solution
 
 1. Acquire the certificate file for your [blackduck_product_name] server.
-1. Determine which *java* executable is being used to run [solution_name]. If you run [bash_script_name], that is either $JAVA_HOME/bin/java (the default) or the first *java* found on your $PATH.
+1. Determine which *java* executable is being used to run [company_name] [solution_name]. If you run [bash_script_name], that is either $JAVA_HOME/bin/java (the default) or the first *java* found on your $PATH.
 1. Determine the Java home directory for that *java* executable.
 1. Run [keytool](https://docs.oracle.com/en/java/javase/11/tools/keytool.html) to install the [blackduck_product_name] server certificate into the keystore in that Java home directory.
 
@@ -100,7 +100,7 @@ Although not recommended, it is possible to disable the certificate check with t
 
 ### Symptom
 
-Running [solution_name] on a NuGet project on Windows, a message similar to the following appears in the [solution_name] log:
+Running [company_name] [solution_name] on a NuGet project on Windows, a message similar to the following appears in the [company_name] [solution_name] log:
 
 ````
 Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException: Illegal char
@@ -127,7 +127,7 @@ ERROR [main] -- createProject.arg0.name can't be blank [HTTP Error]: There was a
 
 ### Possible cause
 
-No project name and version were provided via properties and no [solution_name] tool capable of deriving a project name and version was included in the run. For example,
+No project name and version were provided via properties and no [company_name] [solution_name] tool capable of deriving a project name and version was included in the run. For example,
 you will get this (or a similar) error if you run with --detect.tools.BINARY_SCANNER and do not set --detect.project.name or --detect.project.version.name.
 
 ### Solution
@@ -150,7 +150,7 @@ The Java bundled with the [blackduck_signature_scanner_name] does not work on Al
 
 ### Solution
 
-Install an appropriate version of Java and tell [solution_name] to invoke the [blackduck_signature_scanner_name] using that
+Install an appropriate version of Java and tell [company_name] [solution_name] to invoke the [blackduck_signature_scanner_name] using that
 version of Java by setting environment variable BDS_JAVA_HOME to the JAVA_HOME value for that Java installation.
 
 For example:
@@ -170,7 +170,7 @@ export BDS_JAVA_HOME=/usr/lib/jvm/java-11-openjdk/jre
 ### Symptom
 
 When running on Windows, inspecting a Docker image (e.g. using --detect.docker.image or --detect.docker.tar),
-during shutdown, [solution_name] logs messages similar to the following:
+during shutdown, [company_name] [solution_name] logs messages similar to the following:
 ````
 2020-08-14 14:31:04 DEBUG [main] --- Error trying cleanup:
 
@@ -183,7 +183,7 @@ Caused by: java.nio.file.FileSystemException: C:\Users\Administrator\blackduck\r
 
 This happens when Docker fails to release its lock on the volume mounted directory when it shuts down the image inspector service container
 due to [Docker for Windows issue 394](https://github.com/docker/for-win/issues/394).
-The result is that [solution_name] cannot fully clean up its output directory and leaves behind empty subdirectories.
+The result is that [company_name] [solution_name] cannot fully clean up its output directory and leaves behind empty subdirectories.
 The problem may be intermittent.
 
 ### Solution

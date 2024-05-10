@@ -1,6 +1,6 @@
 # Rapid Scan
 
-Rapid Scan or Rapid Scan Mode is a way of running [solution_name] with Black Duck that is designed to be as fast as possible and does not persist any data on Black Duck. Rapid Scan Mode has a unique set of restrictions, mode of configuration and set of results.  
+Rapid Scan or Rapid Scan Mode is a way of running [company_name] [solution_name] with Black Duck that is designed to be as fast as possible and does not persist any data on Black Duck. Rapid Scan Mode has a unique set of restrictions, mode of configuration and set of results.  
 
 Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of Detect.
 
@@ -13,7 +13,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties
     * Rapid Scan only reports components that violate policies. 
     * If no policies are violated or there are no defined policies, then no components are returned.
  * Rapid Scan does not support ```detect.policy.check.fail.on.severities```
-    * [solution_name] will fail with FAILURE_POLICY_VIOLATION if any component violates Black Duck polices with a CRITICAL or BLOCKER severity. 
+    * [company_name] [solution_name] will fail with FAILURE_POLICY_VIOLATION if any component violates Black Duck polices with a CRITICAL or BLOCKER severity. 
     * See the Black Duck documentation for a list of policy conditions that are supported by Rapid Scan. 
  * Rapid Scan does not support ```detect.policy.check.fail.on.names```
  * Rapid Scan cannot create a Risk or Notices report.
@@ -23,7 +23,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties
 
 Rapid scan policy overrides can be provided in a file named '.bd-rapid-scan.yaml' in the source directory. The file name must match exactly.
 
-[solution_name] will automatically upload the config file during a rapid scan when present.
+[company_name] [solution_name] will automatically upload the config file during a rapid scan when present.
 
 The file is a YAML file intended to be checked-in to SCM alongside other build config files.
 
@@ -81,7 +81,7 @@ The results are also printed in the logs:
 2021-07-20 13:25:18 EDT INFO  [main] --- 		Components with Policy Violation Warnings:
 2021-07-20 13:25:18 EDT INFO  [main] --- 			Acorn 5.5.3 (npmjs:acorn/5.5.3)
 ```
-For [solution_name] version 8.7.0 and later, with [blackduck_product_name] 2023.1.2, Rapid Scan output now reports upgrade guidance for transitive dependencies with known vulnerabilities. The output gives information as to the direct dependency upgrade options and the transitive dependencies affected. This output is given in the results section which appears near the end of the [solution_name] run and appears as follows:
+For [company_name] [solution_name] version 8.7.0 and later, with [blackduck_product_name] 2023.1.2, Rapid Scan output now reports upgrade guidance for transitive dependencies with known vulnerabilities. The output gives information as to the direct dependency upgrade options and the transitive dependencies affected. This output is given in the results section which appears near the end of the [company_name] [solution_name] run and appears as follows:
 ```
 2023-03-09 13:01:56 EST INFO  [main] --- ===== Transitive Guidance =====
 2023-03-09 13:01:56 EST INFO  [main] --- 

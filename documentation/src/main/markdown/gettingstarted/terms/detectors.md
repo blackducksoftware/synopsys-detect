@@ -1,6 +1,6 @@
 # Detectors
 
-The [solution_name] Detector tool runs one or more detectors to find and extract dependencies from all supported package managers.
+The [company_name] [solution_name] Detector tool runs one or more detectors to find and extract dependencies from all supported package managers.
 
 Each package manager ecosystem is assigned a detector type. Each detector type may use multiple methods (detectors) to extract dependencies.
 

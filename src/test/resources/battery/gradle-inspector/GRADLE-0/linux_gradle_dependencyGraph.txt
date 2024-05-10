@@ -157,4 +157,5 @@ rootProjectVersion:0.1
 projectGroup:com.blackducksoftware.test
 projectName:linux-gradle
 projectVersion:0.1
+projectParent:null
 DETECT META DATA END

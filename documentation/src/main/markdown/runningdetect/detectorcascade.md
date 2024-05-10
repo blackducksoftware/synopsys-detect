@@ -16,7 +16,7 @@ There may be more than one project in your source directory.
 
 In contrast, graph building is performed by the individual detector(s) that run on a root project. This involves building a graph that
 starts with the root project found by detector search. The graph includes subprojects, direct dependencies, and transitive dependencies.
-The graph is eventually included in [solution_name]'s output: the BDIO.
+The graph is eventually included in [company_name] [solution_name]'s output: the BDIO.
 Exclusion of subsets of the graph (subprojects, configurations, etc.) is optionally done as 
 part of graph building (controlled by properties such as `detect.{pkgmgr}.excluded.*` and `detect.{pkgmgr}.included.*`).
 It is important to recognize that detector search and graph building are completely separate processes
@@ -73,14 +73,14 @@ Nesting rules can be disabled by setting property `detect.detector.search.contin
 For a given project root directory, [detector_cascade] first tries the detector that would produce the most accurate results.
 If the first detector is unable to run (if, for example, the package manager executable it needs is not on the PATH),
 [detector_cascade] will try the next-best detector. This process continues until one of the applicable detector's extraction method succeeds
-or [solution_name] runs out of detectors that apply.
+or [company_name] [solution_name] runs out of detectors that apply.
 
-[solution_name] will always try the more accurate detectors first, falling back to less accurate detectors only if the more accurate
+[company_name] [solution_name] will always try the more accurate detectors first, falling back to less accurate detectors only if the more accurate
 detectors fail (or can't be run). 
 
 Cascade sequences are not configurable.
 
-[detector_cascade] in combination with detector accuracy (described below) replace the previous (pre-[solution_name] 8) distinction between "build mode" and "buildless mode",
+[detector_cascade] in combination with detector accuracy (described below) replace the previous (pre-[company_name] [solution_name] 8) distinction between "build mode" and "buildless mode",
 
 ## Entry points
 
@@ -88,11 +88,11 @@ When multiple detectors are defined for a Detector Type, we consider those to be
 This allows for the definition of different nesting rules within the same Detector Type for different scenarios.
 
 Detectors are attempted in the order listed until one applies and succeeds.
-If none succeed, [solution_name] proceeds to the next (if there is one) for the Detector Type.
+If none succeed, [company_name] [solution_name] proceeds to the next (if there is one) for the Detector Type.
 
 ## Troubleshooting detector search
 
-For more insight into the decisions [solution_name] made during detector search, generate
+For more insight into the decisions [company_name] [solution_name] made during detector search, generate
 a diagnostic zip file (run with `-d`) and read the reports/search_detailed_report.txt file.
 
 ## Detector execution phases
@@ -101,7 +101,7 @@ A detector has three methods:
 
 1. The applicable method determines whether the detector applies to the current directory, based on files that it finds in the directory. For example, if a Gradle detector would look for a build.gradle file.
 1. The extractable method determines whether other prerequisites are met. For example, a detector that runs a package manager executable would check to see if that executable is available.
-1. The extract method discovers dependencies and returns a graph. In a few cases extraction is performed with the help of a separate [solution_name] component called an inspector.
+1. The extract method discovers dependencies and returns a graph. In a few cases extraction is performed with the help of a separate [company_name] [solution_name] component called an inspector.
 
 ## Detector accuracy
 
@@ -116,7 +116,7 @@ Detectors that parse package manager-generated lockfiles also tend to be highly 
 Detectors that parse human-editable files are generally assigned low accuracy due to challenges and limitations that are inherent in that approach.
 
 Consider, for example, a Gradle project.
-[solution_name] could run the Gradle Native Inspector detector
+[company_name] [solution_name] could run the Gradle Native Inspector detector
 (which discovers dependencies by running the Gradle CLI), or the
 Gradle Project Inspector detector (which discovers dependencies by parsing Gradle files).
 If the Gradle Native Inspector succeeds, it would produce higher accuracy results than the Gradle Project Inspector detector.
@@ -127,13 +127,13 @@ and (depending on the user's preference) low accuracy might be better than nothi
 
 You choose the list of detector types from which you require the most accurate results using the `detect.accuracy.required` property.
 This property accepts a list of detector types (MAVEN, GRADLE, ...).
-This property defaults to ALL, which means you want [solution_name] to exit if any detector type applies, but
+This property defaults to ALL, which means you want [company_name] [solution_name] to exit if any detector type applies, but
 only low accuracy results could be generated.
-When [solution_name] exits due to accuracy requirements not being met, it returns the FAILURE_ACCURACY_NOT_MET exit code.
-This default produces behavior roughly similar to the default mode (detect.detector.buildless=false) prior to [solution_name] 8.
+When [company_name] [solution_name] exits due to accuracy requirements not being met, it returns the FAILURE_ACCURACY_NOT_MET exit code.
+This default produces behavior roughly similar to the default mode (detect.detector.buildless=false) prior to [company_name] [solution_name] 8.
 
 To get the best results available regardless of accuracy, set this property to NONE.
-This value produces behavior roughly similar to buildless mode (detect.detector.buildless=true) prior to [solution_name] 8,
+This value produces behavior roughly similar to buildless mode (detect.detector.buildless=true) prior to [company_name] [solution_name] 8,
 except that high accuracy results will be produced where possible (buildless mode used to prevent that).
 
 To specify that you require accurate results from some (but not all) detector types, set property
@@ -142,5 +142,5 @@ To specify that you require accurate results from some (but not all) detector ty
 ## Evaluation of accuracy
 
 After executing detectors, an actual result accuracy is known, at which point Detect evaluates whether the detector results it was able to generate meet the user's accuracy requirements.
-If the user's accuracy requirements were not met, [solution_name]
+If the user's accuracy requirements were not met, [company_name] [solution_name]
 fails with the FAILURE_ACCURACY_NOT_MET exit code.

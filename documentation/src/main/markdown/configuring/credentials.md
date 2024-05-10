@@ -1,6 +1,6 @@
 # Providing sensitive values such as credentials
 
-You can provide sensitive values such as credentials to [solution_name] using a variety of
+You can provide sensitive values such as credentials to [company_name] [solution_name] using a variety of
 mechanisms provided by [Spring Boot](https://docs.spring.io/spring-boot/docs/2.4.5/reference/html/spring-boot-features.html#boot-features-external-config),
 including:
 

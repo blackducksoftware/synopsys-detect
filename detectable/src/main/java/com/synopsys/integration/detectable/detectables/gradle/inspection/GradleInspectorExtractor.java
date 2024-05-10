@@ -3,9 +3,11 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Comparator;
 
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
@@ -57,10 +59,14 @@ public class GradleInspectorExtractor {
             gradleRunner.runGradleDependencies(directory, gradleExe, gradleInspector, gradleCommand, proxyInfo, outputDirectory);
 
             File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
-            List<File> reportFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
+            List<File> reportFiles = fileFinder.findFiles(outputDirectory,"*_dependencyGraph.txt");
             List<CodeLocation> codeLocations = new ArrayList<>();
 
-            reportFiles.stream()
+            File[] files = new File[reportFiles.size()];
+            reportFiles.toArray(files);
+            List<File> reportFilesSorted = Arrays.asList(sortFilesByDepth(files));
+
+            reportFilesSorted.stream()
                 .map(gradleReportParser::parseReport)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -91,6 +97,33 @@ public class GradleInspectorExtractor {
             logger.warn("Failed to parse file {}", rootProjectMetadataFile.getAbsolutePath());
             return Optional.empty();
         }
+    }
+
+    private File[] sortFilesByDepth(File[] files) {
+        Arrays.sort(files, new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                int n1 = extractDepthNumber(o1.getName());
+                int n2 = extractDepthNumber(o2.getName());
+                return n1 - n2;
+            }
+
+            private int extractDepthNumber(String name) {
+                int i;
+                try {
+                    int s = name.indexOf("depth") + 5;
+                    int e = name.indexOf("_dependencyGraph");
+                    String number = name.substring(s, e);
+                    i = Integer.parseInt(number);
+                } catch(Exception e) {
+                    logger.error("The file name is not analogous to the structure expected: " + name);
+                    i = 0; //  default to 0
+                }
+                return i;
+            }
+        });
+
+        return files;
     }
 
 }

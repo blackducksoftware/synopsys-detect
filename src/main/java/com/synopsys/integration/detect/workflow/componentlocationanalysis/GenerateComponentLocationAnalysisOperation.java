@@ -4,12 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.componentlocator.ComponentLocator;
+import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
 import com.synopsys.integration.componentlocator.beans.Component;
 import com.synopsys.integration.componentlocator.beans.Input;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detect.workflow.result.ComponentLocatorResult;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +29,7 @@ public class GenerateComponentLocationAnalysisOperation {
     public static final String OPERATION_NAME = "Generating Component Location Analysis File for All Components";
     private static final String LOCATOR_INPUT_FILE_NAME = "components-source.json";
     private static final String LOCATOR_OUTPUT_FILE_NAME = "components-with-locations.json";
-    public static final String SUPPORTED_DETECTORS_LOG_MSG = "Component Location Analysis supports NPM, Maven, Gradle and NuGet detectors only.";
+    public static final String SUPPORTED_DETECTORS_LOG_MSG = "Component Location Analysis supports specific detectors ".concat(SUPPORTED_DETECTORS.toString()).concat(" only.");
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -38,7 +41,7 @@ public class GenerateComponentLocationAnalysisOperation {
      * @throws com.synopsys.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException
      * @throws DetectUserFriendlyException
      */
-    public void locateComponents(Set<Component> componentsSet, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
+    public ComponentLocatorResult locateComponents(Set<Component> componentsSet, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
         Input componentLocatorInput = new Input(projectSrcDir.getAbsolutePath(), new JsonObject(), componentsSet);
         String outputFilepath = scanOutputFolder + "/" + LOCATOR_OUTPUT_FILE_NAME;
         if (logger.isDebugEnabled()) {
@@ -53,12 +56,16 @@ public class GenerateComponentLocationAnalysisOperation {
         }
         logger.info("Component Location Analysis file saved at: {}", outputFilepath);
         logger.info(ReportConstants.RUN_SEPARATOR);
+        return new ComponentLocatorResult(outputFilepath);
     }
 
-    public void locateComponentsForOnlineIntelligentScan() throws ComponentLocatorException {
+    public ComponentLocatorResult locateComponentsForOnlineIntelligentScan() throws ComponentLocatorException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         logger.info("Intelligent Scan mode does not support Component Location Analysis.");
         failComponentLocationAnalysisOperation();
+
+        // unreachable statement, mainly here so we don't forget to log a result if this function is ever implemented
+        return new ComponentLocatorResult("change me");
     }
 
     /**

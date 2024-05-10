@@ -16,7 +16,7 @@ import java.util.Set;
 public class ExternalIdDependencyGraphBuilder extends LazyExternalIdDependencyGraphBuilder {
     
     public LazyDependencyInfo checkAndHandleMissingExternalId(LazyBuilderMissingExternalIdHandler lazyBuilderHandler, LazyId lazyId) throws MissingExternalIdException {
-        LazyDependencyInfo lazyDependencyInfo = this.infoForId(lazyId);
+        LazyDependencyInfo lazyDependencyInfo = this.infoForIdCopy(lazyId);
         if (lazyDependencyInfo.getExternalId() == null) {
             ExternalId handledExternalId = lazyBuilderHandler.handleMissingExternalId(lazyId, lazyDependencyInfo);
             if (handledExternalId == null || lazyId == null) {
@@ -36,7 +36,12 @@ public class ExternalIdDependencyGraphBuilder extends LazyExternalIdDependencyGr
 
     private final Map<LazyId, LazyDependencyInfo> dependencyInfo = new HashMap<>();
 
-    private LazyDependencyInfo infoForId(LazyId id) {
+    /**
+     * This method exactly duplicates the same method (minus -Copy suffix in method signature) from the parent class.
+     * @param id
+     * @return
+     */
+    private LazyDependencyInfo infoForIdCopy(LazyId id) {
         LazyDependencyInfo info = dependencyInfo.get(id);
         if (info.getAliasId() != null) {
             info = dependencyInfo.get(info.getAliasId());
@@ -60,7 +65,7 @@ public class ExternalIdDependencyGraphBuilder extends LazyExternalIdDependencyGr
         BasicDependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
 
         for (LazyId lazyId : dependencyInfo.keySet()) {
-            LazyDependencyInfo lazyDependencyInfo = infoForId(lazyId);
+            LazyDependencyInfo lazyDependencyInfo = infoForIdCopy(lazyId);
             if (lazyDependencyInfo.getExternalId() == null) {
                 ExternalId handledExternalId = lazyBuilderHandler.handleMissingExternalId(lazyId, lazyDependencyInfo);
                 if (handledExternalId == null || lazyId == null) {
@@ -72,11 +77,11 @@ public class ExternalIdDependencyGraphBuilder extends LazyExternalIdDependencyGr
         }
 
         for (LazyId lazyId : dependencyInfo.keySet()) {
-            LazyDependencyInfo lazyDependencyInfo = infoForId(lazyId);
+            LazyDependencyInfo lazyDependencyInfo = infoForIdCopy(lazyId);
             Dependency dependency = new Dependency(lazyDependencyInfo.getName(), lazyDependencyInfo.getVersion(), lazyDependencyInfo.getExternalId(), null);
 
             for (LazyId child : lazyDependencyInfo.getChildren()) {
-                LazyDependencyInfo childInfo = infoForId(child);
+                LazyDependencyInfo childInfo = infoForIdCopy(child);
                 mutableDependencyGraph.addParentWithChild(dependency,
                         new Dependency(childInfo.getName(), childInfo.getVersion(), childInfo.getExternalId(), null));
             }
@@ -89,21 +94,25 @@ public class ExternalIdDependencyGraphBuilder extends LazyExternalIdDependencyGr
         return mutableDependencyGraph;
     }
 
-    private void ensureDependencyInfoExists(LazyId lazyId) {
+    /**
+     * This method exactly duplicates the same method (minus -Copy suffix in method signature) from the parent class.
+     * @param lazyId
+     */
+    private void ensureDependencyInfoExistsCopy(LazyId lazyId) {
         dependencyInfo.computeIfAbsent(lazyId, key -> new LazyDependencyInfo());
     }
 
     @Override
     public void setDependencyAsAlias(LazyId realLazyId, LazyId fakeLazyId) {
-        ensureDependencyInfoExists(realLazyId);
-        ensureDependencyInfoExists(fakeLazyId);
+        ensureDependencyInfoExistsCopy(realLazyId);
+        ensureDependencyInfoExistsCopy(fakeLazyId);
         LazyDependencyInfo info = dependencyInfo.get(fakeLazyId);
         info.setAliasId(realLazyId);
     }
 
     @Override
     public void setDependencyInfo(LazyId id, String name, String version, ExternalId externalId) {
-        ensureDependencyInfoExists(id);
+        ensureDependencyInfoExistsCopy(id);
         LazyDependencyInfo info = dependencyInfo.get(id);
         info.setName(name);
         info.setVersion(version);
@@ -112,29 +121,29 @@ public class ExternalIdDependencyGraphBuilder extends LazyExternalIdDependencyGr
 
     @Override
     public void setDependencyName(LazyId id, String name) {
-        ensureDependencyInfoExists(id);
+        ensureDependencyInfoExistsCopy(id);
         LazyDependencyInfo info = dependencyInfo.get(id);
         info.setName(name);
     }
 
     @Override
     public void setDependencyVersion(LazyId id, String version) {
-        ensureDependencyInfoExists(id);
+        ensureDependencyInfoExistsCopy(id);
         LazyDependencyInfo info = dependencyInfo.get(id);
         info.setVersion(version);
     }
 
     @Override
     public void setDependencyExternalId(LazyId id, ExternalId externalId) {
-        ensureDependencyInfoExists(id);
+        ensureDependencyInfoExistsCopy(id);
         LazyDependencyInfo info = dependencyInfo.get(id);
         info.setExternalId(externalId);
     }
 
     @Override
     public void addParentWithChild(LazyId parent, LazyId child) {
-        ensureDependencyInfoExists(child);
-        ensureDependencyInfoExists(parent);
+        ensureDependencyInfoExistsCopy(child);
+        ensureDependencyInfoExistsCopy(parent);
         dependencyInfo.get(parent).getChildren().add(child);
 
     }
@@ -188,7 +197,7 @@ public class ExternalIdDependencyGraphBuilder extends LazyExternalIdDependencyGr
 
     @Override
     public void addChildToRoot(LazyId child) {
-        ensureDependencyInfoExists(child);
+        ensureDependencyInfoExistsCopy(child);
         rootLazyIds.add(child);
     }
 

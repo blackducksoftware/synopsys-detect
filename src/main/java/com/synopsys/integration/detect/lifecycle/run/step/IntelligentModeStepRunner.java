@@ -164,6 +164,15 @@ public class IntelligentModeStepRunner {
             codeLocationAccumulator.addNonWaitableCodeLocation(iacScanCodeLocationData.getCodeLocationNames());
             mustWaitAtBomSummaryLevel.set(true);
         });
+        
+        stepHelper.runToolIfIncluded(DetectTool.THREAT_INTEL, "Threat Intel Scan", () -> {
+            ThreatIntelScanStepRunner threatIntelScanStepRunner = new ThreatIntelScanStepRunner(operationRunner, blackDuckRunData, projectNameVersion);
+            Optional<UUID> scanId = threatIntelScanStepRunner.invokeThreatIntelWorkflow();
+            scanId.ifPresent(uuid -> scanIdsToWaitFor.add(uuid.toString()));
+            Set<String> threatIntelScanCodeLocations = new HashSet<>();
+            threatIntelScanCodeLocations.add(threatIntelScanStepRunner.getCodeLocationName());
+            codeLocationAccumulator.addNonWaitableCodeLocation(threatIntelScanCodeLocations);
+        });
 
         operationRunner.attemptToGenerateComponentLocationAnalysisIfEnabled();
 
@@ -241,7 +250,8 @@ public class IntelligentModeStepRunner {
     private boolean shouldPublishBomLinkForTool(DetectToolFilter detectToolFilter) {
         return detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN) ||
             detectToolFilter.shouldInclude(DetectTool.CONTAINER_SCAN) ||
-            detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN);
+            detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN) ||
+            detectToolFilter.shouldInclude(DetectTool.THREAT_INTEL);
     }
 
     private void publishPostResults(BdioResult bdioResult, ProjectVersionWrapper projectVersionWrapper, DetectToolFilter detectToolFilter) {

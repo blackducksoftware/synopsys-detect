@@ -2,11 +2,9 @@ package com.synopsys.integration.detectable.detectables.poetry;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
@@ -28,9 +26,12 @@ public class PoetryExtractor {
         this.poetryLockParser = poetryLockParser;
     }
 
-    public Extraction extract(File poetryLock, @Nullable TomlTable toolDotPoetrySection) {
+    public Extraction extract(File poetryLock, @Nullable TomlTable toolDotPoetrySection, Set<String> rootPackages) {
         try {
-            DependencyGraph graph = poetryLockParser.parseLockFile(FileUtils.readFileToString(poetryLock, StandardCharsets.UTF_8));
+            DependencyGraph graph = poetryLockParser.parseLockFile(
+                FileUtils.readFileToString(poetryLock, StandardCharsets.UTF_8),
+                rootPackages
+            );
             CodeLocation codeLocation = new CodeLocation(graph);
 
             Optional<NameVersion> poetryNameVersion = extractNameVersionFromToolDotPoetrySection(toolDotPoetrySection);
@@ -45,11 +46,6 @@ public class PoetryExtractor {
         } catch (IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
-    }
-
-    private String getFileAsString(File cargoLock, Charset encoding) throws IOException {
-        List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
-        return String.join(System.lineSeparator(), goLockAsList);
     }
 
     private Optional<NameVersion> extractNameVersionFromToolDotPoetrySection(@Nullable TomlTable toolDotPoetry) {

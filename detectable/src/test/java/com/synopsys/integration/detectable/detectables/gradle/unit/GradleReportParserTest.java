@@ -10,6 +10,8 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.model.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportLineParser;
 
+import java.util.Collections;
+
 public class GradleReportParserTest {
     //private final TestUtil testUtil = new TestUtil();
 
@@ -53,7 +55,7 @@ compile
 
     private void assertParsedGavDoesNotContain(String line, String contains) {
         GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
-        GradleTreeNode node = gradleReportLineParser.parseLine(line);
+        GradleTreeNode node = gradleReportLineParser.parseLine(line, Collections.emptyMap());
         assertTrue(node.getGav().isPresent());
 
         GradleGav gav = node.getGav().get();
@@ -63,12 +65,12 @@ compile
     @Test
     public void getLineLevelTest() {
         GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
-        assertEquals(5, gradleReportLineParser.parseLine(("|    |         |    |    \\--- org.springframework:spring-core:4.3.5.RELEASE")).getLevel());
-        assertEquals(3, gradleReportLineParser.parseLine(("|    |         \\--- com.squareup.okhttp3:okhttp:3.4.2 (*)")).getLevel());
-        assertEquals(4, gradleReportLineParser.parseLine(("     |    |         \\--- org.ow2.asm:asm:5.0.3")).getLevel());
-        assertEquals(1, gradleReportLineParser.parseLine(("     +--- org.hamcrest:hamcrest-core:1.3")).getLevel());
-        assertEquals(0, gradleReportLineParser.parseLine(("+--- org.springframework.boot:spring-boot-starter: -> 1.4.3.RELEASE")).getLevel());
-        assertEquals(0, gradleReportLineParser.parseLine(("\\--- org.apache.commons:commons-compress:1.13")).getLevel());
+        assertEquals(5, gradleReportLineParser.parseLine(("|    |         |    |    \\--- org.springframework:spring-core:4.3.5.RELEASE"), Collections.emptyMap()).getLevel());
+        assertEquals(3, gradleReportLineParser.parseLine(("|    |         \\--- com.squareup.okhttp3:okhttp:3.4.2 (*)"), Collections.emptyMap()).getLevel());
+        assertEquals(4, gradleReportLineParser.parseLine(("     |    |         \\--- org.ow2.asm:asm:5.0.3"), Collections.emptyMap()).getLevel());
+        assertEquals(1, gradleReportLineParser.parseLine(("     +--- org.hamcrest:hamcrest-core:1.3"), Collections.emptyMap()).getLevel());
+        assertEquals(0, gradleReportLineParser.parseLine(("+--- org.springframework.boot:spring-boot-starter: -> 1.4.3.RELEASE"), Collections.emptyMap()).getLevel());
+        assertEquals(0, gradleReportLineParser.parseLine(("\\--- org.apache.commons:commons-compress:1.13"), Collections.emptyMap()).getLevel());
     }
 
 }

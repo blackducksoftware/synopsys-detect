@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.poetry;
 
 import java.io.File;
+import java.util.Set;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -8,6 +9,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PoetryLockfileNotFoundDetectableResult;
@@ -25,17 +27,19 @@ public class PoetryDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final PoetryExtractor poetryExtractor;
     private final ToolPoetrySectionParser poetrySectionParser;
+    private final PoetryOptions poetryOptions;
 
     private File pyprojectToml;
     private File poetryLock;
     private ToolPoetrySectionResult toolPoetrySectionResult;
 
-    public PoetryDetectable(DetectableEnvironment environment, FileFinder fileFinder, PoetryExtractor poetryExtractor, ToolPoetrySectionParser tomlPoetrySectionParser) {
+    public PoetryDetectable(DetectableEnvironment environment, FileFinder fileFinder, PoetryExtractor poetryExtractor, ToolPoetrySectionParser tomlPoetrySectionParser, PoetryOptions options) {
         super(environment);
         this.fileFinder = fileFinder;
         this.poetryExtractor = poetryExtractor;
         this.toolPoetrySectionResult = null;
         this.poetrySectionParser = tomlPoetrySectionParser;
+        this.poetryOptions = options;
     }
 
     @Override
@@ -59,11 +63,17 @@ public class PoetryDetectable extends Detectable {
         if (poetryLock == null && pyprojectToml != null) {
             return new PoetryLockfileNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         }
+
+        if (!poetryOptions.getExcludedGroups().isEmpty() && pyprojectToml == null) {
+            return new FileNotFoundDetectableResult(PYPROJECT_TOML_FILE_NAME);
+        }
+
         return new PassedDetectableResult();
     }
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return poetryExtractor.extract(poetryLock, toolPoetrySectionResult.getToolPoetrySection().orElse(null));
+        Set<String> rootPackages = poetrySectionParser.parseRootPackages(pyprojectToml, poetryOptions);
+        return poetryExtractor.extract(poetryLock, toolPoetrySectionResult.getToolPoetrySection().orElse(null), rootPackages);
     }
 }

@@ -341,4 +341,5 @@ projectDirectory:${sourcePath?replace("\\", "/")}/common
 projectGroup:com.synopsys.integration
 projectName:common
 projectVersion:7.5.0-SNAPSHOT
+projectParent:root project ':synopsys-detect'
 DETECT META DATA END

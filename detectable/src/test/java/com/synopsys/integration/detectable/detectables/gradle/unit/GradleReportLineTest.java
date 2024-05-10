@@ -10,6 +10,8 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.model.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportLineParser;
 
+import java.util.Collections;
+
 public class GradleReportLineTest {
     @Test
     public void testMiscWinningIndicators() {
@@ -95,7 +97,7 @@ public class GradleReportLineTest {
     private void assertDependency(String line, String[] expectedResults) {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
-        GradleTreeNode gradleTreeNode = gradleReportLineParser.parseLine(line);
+        GradleTreeNode gradleTreeNode = gradleReportLineParser.parseLine(line, Collections.emptyMap());
         GradleGav gav = gradleTreeNode.getGav().get();
         ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getGroup(), gav.getName(), gav.getVersion());
         Dependency dependency = new Dependency(gav.getName(), gav.getVersion(), externalId);
