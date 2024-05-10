@@ -280,7 +280,7 @@ public class DetectProperties {
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The path to the output directory for the generated BDIO file.", "If not set, the BDIO file will be placed in a 'BDIO' subdirectory of the output directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
-            .setExample("$HOME/temp/bdiofiles")
+            .setExample("/home/<username>/blackduck/scan-outputs/bdio")
             .build();
 
     public static final NullableStringProperty DETECT_BDIO_FILE_NAME =
@@ -1196,6 +1196,7 @@ public class DetectProperties {
                 "If set, Detect will use the given directory to store files that it downloads and creates, instead of using the default location (~/blackduck)."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/home/<username>/blackduck/scan-outputs")
             .build();
 
     public static final NullablePathProperty DETECT_TOOLS_OUTPUT_PATH =
@@ -1207,6 +1208,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
+            .setExample("/home/<username>/blackduck/scan-outputs/tools")
             .build();
 
     public static final NoneEnumListProperty<PackagistDependencyType> DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED =
@@ -1812,6 +1814,7 @@ public class DetectProperties {
                 "If set, Detect will use the given directory to store a copy of the status.json file."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/home/<username>/blackduck/scan-outputs/status")
             .build();
     
     public static final BooleanProperty BLACKDUCK_OFFLINE_MODE_FORCE_BDIO =
