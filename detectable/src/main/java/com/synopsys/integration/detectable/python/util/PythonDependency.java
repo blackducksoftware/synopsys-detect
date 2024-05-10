@@ -1,10 +1,10 @@
-package com.synopsys.integration.detectable.detectables.pip.parser;
+package com.synopsys.integration.detectable.python.util;
 
-public class RequirementsFileDependency {
+public class PythonDependency {
     private final String name;
     private final String version;
 
-    public RequirementsFileDependency(String name, String version) {
+    public PythonDependency(String name, String version) {
         this.name = name;
         this.version = version;
     }
