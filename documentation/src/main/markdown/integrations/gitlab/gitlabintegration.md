@@ -49,7 +49,7 @@ The recommended way of configuring [company_name] [solution_name] from a GitLab 
 			- bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --blackduck.url="${BLACKDUCK\_URL}" --blackduck.api.token="${BLACKDUCK\_TOKEN}" --blackduck.trust.cert=true --<any other flags>
     ```
 
-5. Configure [company_name] [solution_name] as a script build step so GitLab can enforce enforce build changes influenced by [company_name] [solution_name]. For example, checking for policy, failing builds according to policy, and others.
+5. Configure [company_name] [solution_name] as a script build step so GitLab can enforce build changes influenced by [company_name] [solution_name]. For example, checking for policy, failing builds according to policy, and others.
 
 6. After you commit the change to *.gitlab-ci.yml,* the pipeline runs. After the build with [company_name] [solution_name] completes, you can view the complete scan results in your [blackduck_product_name] instance.
 
@@ -74,7 +74,7 @@ For improved security, it is recommended to use a revocable API token, as descri
 
 	- BLACKDUCK\_PASSWORD - containing the password of the [blackduck_product_name] account to be used.
 
-	<note type="note">You can make these variables protected. For additional information, refer to [Gitlab protected secret variables](https://gitlab.com/help/ci/variables/README#protected-secret-variables).</note>
+	<note type="note">You can make these variables protected. For additional information, refer to [Gitlab protected secret variables](https://docs.gitlab.com/ee/ci/variables/#protect-a-cicd-variable).</note>
 
 4. Configure [company_name] [solution_name] to be a script step in the *.gitlab-ci.yml* file of the project you want to scan. Then add the snippet for [company_name] [solution_name].    
 
