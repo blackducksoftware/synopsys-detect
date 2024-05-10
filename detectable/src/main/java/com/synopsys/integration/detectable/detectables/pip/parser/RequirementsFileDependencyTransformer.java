@@ -13,7 +13,7 @@ public class RequirementsFileDependencyTransformer {
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
     private final DependencyFactory dependencyFactory = new DependencyFactory(externalIdFactory);
 
-    public DependencyGraph transform(List<RequirementsFileDependency> dependencies) {
+    public DependencyGraph transform(List<PythonDependency> dependencies) {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
         dependencies.stream()
             .map(this::createDependency)
@@ -21,7 +21,7 @@ public class RequirementsFileDependencyTransformer {
         return dependencyGraph;
     }
 
-    private Dependency createDependency(RequirementsFileDependency dependency) {
+    private Dependency createDependency(PythonDependency dependency) {
         return dependencyFactory.createNameVersionDependency(Forge.PYPI, dependency.getName(), dependency.getVersion());
     }
 }

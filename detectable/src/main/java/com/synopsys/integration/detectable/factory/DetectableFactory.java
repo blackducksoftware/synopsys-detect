@@ -220,7 +220,7 @@ import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFi
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectable;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
-import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
+import com.synopsys.integration.detectable.detectables.pip.parser.PythonDependencyTransformer;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvExtractor;
@@ -616,7 +616,7 @@ public class DetectableFactory {
         DetectableEnvironment environment,
         RequirementsFileDetectableOptions requirementsFileDetectableOptions
     ) {
-        RequirementsFileTransformer requirementsFileTransformer = new RequirementsFileTransformer();
+        PythonDependencyTransformer requirementsFileTransformer = new PythonDependencyTransformer();
         RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
         RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
         return new RequirementsFileDetectable(environment, fileFinder, requirementsFileExtractor, requirementsFileDetectableOptions);

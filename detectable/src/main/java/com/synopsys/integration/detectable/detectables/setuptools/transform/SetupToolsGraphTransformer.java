@@ -17,6 +17,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectables.pip.parser.PythonDependency;
 import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsParsedResult;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
@@ -37,8 +38,8 @@ public class SetupToolsGraphTransformer {
         
         if (pipExe != null) {
             // Get dependencies by running pip show on each direct dependency
-            for (String directDependency : parsedResult.getDirectDependencies().keySet()) {
-                handleShowDependency(pipExe, sourceDirectory, dependencyGraph, directDependency, null);
+            for (PythonDependency directDependency : parsedResult.getDirectDependencies()) {
+                handleShowDependency(pipExe, sourceDirectory, dependencyGraph, directDependency.getName(), null);
             }
         } else {
             // Unable to determine transitive dependencies, add parsed dependencies directly
@@ -50,15 +51,15 @@ public class SetupToolsGraphTransformer {
     }
 
     public void handleParsedDependencies(SetupToolsParsedResult parsedResult, DependencyGraph dependencyGraph) {
-        Map<String, String> directDependencies = parsedResult.getDirectDependencies();
+        List<PythonDependency> directDependencies = parsedResult.getDirectDependencies();
         
-        for (String directDependency : directDependencies.keySet()) {
-            String version = directDependencies.get(directDependency);
+        for (PythonDependency directDependency : directDependencies) {
+            String version = directDependency.getVersion();
             Dependency currentDependency;
             if (StringUtils.isEmpty(version)) {
-                currentDependency = entryToDependency(directDependency);
+                currentDependency = entryToDependency(directDependency.getName());
             } else {
-                currentDependency = entryToDependency(directDependency, version);
+                currentDependency = entryToDependency(directDependency.getName(), version);
             }
             dependencyGraph.addChildrenToRoot(currentDependency);
         }

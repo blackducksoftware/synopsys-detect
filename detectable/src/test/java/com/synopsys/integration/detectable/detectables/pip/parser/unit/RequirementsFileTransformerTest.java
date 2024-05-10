@@ -11,17 +11,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
+import com.synopsys.integration.detectable.detectables.pip.parser.PythonDependencyTransformer;
 
 public class RequirementsFileTransformerTest {
     private static final String EXPECTED_DEPENDENCY_NAME = "requests";
     private static final String EXPECTED_DEPENDENCY_VERSION = "12.3.3";
 
-    private static RequirementsFileTransformer requirementsFileTransformer;
+    private static PythonDependencyTransformer requirementsFileTransformer;
 
     @BeforeAll
     static void setUp() {
-        requirementsFileTransformer = new RequirementsFileTransformer();
+        requirementsFileTransformer = new PythonDependencyTransformer();
     }
 
 

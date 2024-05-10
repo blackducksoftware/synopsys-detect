@@ -18,7 +18,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDependencyTransformer;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
-import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
+import com.synopsys.integration.detectable.detectables.pip.parser.PythonDependencyTransformer;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -43,7 +43,7 @@ class RequirementsFileDetectableTest {
 
         requirementsFile = new File("src/test/resources/detectables/functional/pip/requirements.txt");
 
-        RequirementsFileTransformer requirementsFileTransformer = new RequirementsFileTransformer();
+        PythonDependencyTransformer requirementsFileTransformer = new PythonDependencyTransformer();
         RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
         requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
     }

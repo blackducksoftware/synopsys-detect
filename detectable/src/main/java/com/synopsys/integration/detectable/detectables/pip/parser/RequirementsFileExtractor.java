@@ -21,12 +21,12 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class RequirementsFileExtractor {
-    private final RequirementsFileTransformer requirementsFileTransformer;
+    private final PythonDependencyTransformer requirementsFileTransformer;
     private final RequirementsFileDependencyTransformer requirementsFileDependencyTransformer;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public RequirementsFileExtractor(
-        RequirementsFileTransformer requirementsFileTransformer,
+        PythonDependencyTransformer requirementsFileTransformer,
         RequirementsFileDependencyTransformer requirementsFileDependencyTransformer
     ) {
         this.requirementsFileTransformer = requirementsFileTransformer;
@@ -78,7 +78,7 @@ public class RequirementsFileExtractor {
     public Extraction extract(Set<File> requirementsFiles) throws IOException {
         List<CodeLocation> codeLocations = new ArrayList<>();
         for (File requirementsFile : requirementsFiles) {
-            List<RequirementsFileDependency> dependencies = requirementsFileTransformer.transform(requirementsFile);
+            List<PythonDependency> dependencies = requirementsFileTransformer.transform(requirementsFile);
             DependencyGraph dependencyGraph = requirementsFileDependencyTransformer.transform(dependencies);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
             codeLocations.add(codeLocation);
