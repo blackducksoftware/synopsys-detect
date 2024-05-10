@@ -34,10 +34,14 @@ public class PropertyConfiguration {
     private final Map<String, PropertyResolution> resolutionCache = new HashMap<>();
     private final Map<String, PropertyValue<?>> valueCache = new HashMap<>();
     private final List<PropertySource> orderedPropertySources;
-    private final SortedMap<String, String> scanSettingsProperties;
+    private SortedMap<String, String> scanSettingsProperties;
 
     public PropertyConfiguration(@NotNull List<PropertySource> orderedPropertySources, SortedMap<String, String> scanSettingsProperties) {
         this.orderedPropertySources = orderedPropertySources;
+        this.scanSettingsProperties = scanSettingsProperties;
+    }
+
+    public void setScanSettingsProperties(SortedMap<String, String> scanSettingsProperties) {
         this.scanSettingsProperties = scanSettingsProperties;
     }
 

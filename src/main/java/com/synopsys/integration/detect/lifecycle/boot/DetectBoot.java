@@ -16,6 +16,7 @@ import java.util.Collections;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.help.yaml.HelpYamlWriter;
 import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanSettings;
+import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +77,6 @@ public class DetectBoot {
     private final List<PropertySource> propertySources;
     private final InstalledToolManager installedToolManager;
     private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DOCKER, DetectTool.DETECTOR);
-    private SortedMap<String, String> scanSettingsProperties = new TreeMap<>();
 
     public DetectBoot(
         EventSystem eventSystem,
@@ -130,16 +130,7 @@ public class DetectBoot {
             propertySources.add(0, interactivePropertySource);
         }
 
-        boolean autonomousScanEnabled = true;
-        ScanSettings scanSettings = new ScanSettings();
-
-        if(autonomousScanEnabled) {
-            scanSettingsProperties.putAll(scanSettings.getDetectorSharedProperties());
-            scanSettingsProperties.putAll(scanSettings.getGlobalDetectProperties());
-            scanSettings.getScanTypes().forEach(scanType ->  {
-                scanSettingsProperties.putAll(scanType.getScanProperties());
-            });
-        }
+        SortedMap<String, String> scanSettingsProperties = new TreeMap<>();
 
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources, scanSettingsProperties);
 
@@ -166,6 +157,19 @@ public class DetectBoot {
 
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, gson);
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
+
+        boolean autonomousScanEnabled = detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED);
+
+        // TODO Scan settings model obtained below is to be used by the delta-checking operations
+        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, autonomousScanEnabled);
+
+        if(autonomousScanEnabled) {
+            scanSettingsProperties = autonomousManager.getAllScanSettingsProperties();
+            scanSettingsProperties.put("blackduck.url","https://us03-qa-hub21.nprd.sig.synopsys.com/");
+            scanSettingsProperties.put("blackduck.offline.mode","false");
+            propertyConfiguration.setScanSettingsProperties(scanSettingsProperties);
+        }
+
         InstalledToolLocator installedToolLocator = new InstalledToolLocator(directoryManager.getPermanentDirectory().toPath(), gson);
 
         DiagnosticSystem diagnosticSystem = null;
@@ -178,9 +182,6 @@ public class DetectBoot {
             );
         }
 
-        // TODO Scan settings model obtained below is to be used by the delta-checking operations
-        AutonomousManager autonomousManager = new AutonomousManager(directoryManager);
-        ScanSettings scanSettings = autonomousManager.getScanSettingsModel();
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
@@ -230,7 +231,7 @@ public class DetectBoot {
             BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
 
 
-            BlackduckScanMode blackduckScanMode = decideScanMode(blackDuckConnectionDetails, adoptedScanTypes, blackduckScanModeSpecified, detectConfigurationFactory);
+            BlackduckScanMode blackduckScanMode = decideScanMode(blackDuckConnectionDetails, adoptedScanTypes, blackduckScanModeSpecified, detectConfigurationFactory, autonomousScanEnabled);
 
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
@@ -276,8 +277,8 @@ public class DetectBoot {
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
-    private BlackduckScanMode decideScanMode(BlackDuckConnectionDetails blackDuckConnectionDetails, List<DetectTool> adoptedScanType, boolean blackduckScanModeSpecified, DetectConfigurationFactory detectConfigurationFactory) {
-        if(!blackduckScanModeSpecified) {
+    private BlackduckScanMode decideScanMode(BlackDuckConnectionDetails blackDuckConnectionDetails, List<DetectTool> adoptedScanType, boolean blackduckScanModeSpecified, DetectConfigurationFactory detectConfigurationFactory, boolean autonomousScanEnabled) {
+        if(!blackduckScanModeSpecified && autonomousScanEnabled) {
             Optional<String> scaasFilePath = detectConfigurationFactory.getScaaasFilePath();
             Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
 

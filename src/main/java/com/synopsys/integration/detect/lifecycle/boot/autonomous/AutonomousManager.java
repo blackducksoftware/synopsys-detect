@@ -3,8 +3,14 @@ package com.synopsys.integration.detect.lifecycle.boot.autonomous;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Optional;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.List;
 import java.util.UUID;
 
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanType;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanSettings;
@@ -13,15 +19,18 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 public class AutonomousManager {
 
     private DirectoryManager directoryManager;
+    private boolean autonomousScanEnabled = false;
     private String detectSourcePath;
     private String hashedScanSettingsFileName;
     private File scanSettingsTargetFile;
     private ScanSettings scanSettings;
 
     public AutonomousManager(
-        DirectoryManager directoryManager
+        DirectoryManager directoryManager,
+        boolean autonomousScanEnabled
     ) {
         this.directoryManager = directoryManager;
+        this.autonomousScanEnabled = autonomousScanEnabled;
 
         detectSourcePath = directoryManager.getSourceDirectory().getPath();
         hashedScanSettingsFileName = StringUtils.join(UUID.nameUUIDFromBytes(detectSourcePath.getBytes()).toString(), ".json");
@@ -30,6 +39,10 @@ public class AutonomousManager {
         scanSettingsTargetFile = new File(scanSettingsTargetDir, hashedScanSettingsFileName);
 
         scanSettings = initializeScanSettingsModel();
+    }
+
+    public boolean getAutonomousScanEnabled() {
+        return autonomousScanEnabled;
     }
 
     public ScanSettings getScanSettingsModel() {
@@ -64,5 +77,16 @@ public class AutonomousManager {
             return ScanSettingsSerializer.deserializeScanSettingsFile(scanSettingsTargetFile);
         }
         return new ScanSettings();
+    }
+
+    public SortedMap<String, String> getAllScanSettingsProperties() {
+        SortedMap<String, String> scanSettingsProperties = new TreeMap<>();
+        scanSettingsProperties.putAll(scanSettings.getDetectorSharedProperties());
+        scanSettingsProperties.putAll(scanSettings.getGlobalDetectProperties());
+        scanSettings.getScanTypes().forEach(scanType ->  {
+            scanSettingsProperties.putAll(scanType.getScanProperties());
+        });
+
+        return scanSettingsProperties;
     }
 }
