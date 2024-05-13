@@ -19,10 +19,13 @@ import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsParsedResult;
 import com.synopsys.integration.detectable.python.util.PythonDependency;
+import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class SetupToolsGraphTransformer {
 
+    private static final String UNEXPECTED_PIP_OUTPUT = "Unexpected empty pip show results. Please run pip install . on the project and try running Detect again.";
+    
     private File sourceDirectory;
     private ExternalIdFactory externalIdFactory;
     private DetectableExecutableRunner executableRunner;
@@ -95,7 +98,13 @@ public class SetupToolsGraphTransformer {
         pipArguments.add("show");
         pipArguments.add(dependencyToSearch);
         
-        return executableRunner.execute(ExecutableUtils.createFromTarget(sourceDirectory, pipExe, pipArguments)).getStandardOutputAsList();
+        ExecutableOutput executableOutput = executableRunner.execute(ExecutableUtils.createFromTarget(sourceDirectory, pipExe, pipArguments));
+        
+        if (executableOutput.getReturnCode() == 0) {
+            return executableOutput.getStandardOutputAsList();
+        } else {
+            throw new ExecutableRunnerException(new Exception(UNEXPECTED_PIP_OUTPUT));
+        }
     }
     
     public Map<String, String> parsePipShow(List<String> rawShowOutput) {
