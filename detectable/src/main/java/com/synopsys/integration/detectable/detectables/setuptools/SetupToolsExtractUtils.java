@@ -32,7 +32,7 @@ public class SetupToolsExtractUtils {
                 for (int i = 0; i < buildRequires.size(); i++) {
                     String requires = buildRequires.getString(i);
 
-                    if (requires.equals(REQUIRED_KEY)) {
+                    if (requires.contains(REQUIRED_KEY)) {
                         return true;
                     }
                 }
