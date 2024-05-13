@@ -156,12 +156,11 @@ public class DetectBoot {
         DetectPropertyConfiguration detectConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
 
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, gson);
-        DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
 
         boolean autonomousScanEnabled = detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED);
 
         // TODO Scan settings model obtained below is to be used by the delta-checking operations
-        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, autonomousScanEnabled);
+        AutonomousManager autonomousManager = new AutonomousManager(autonomousScanEnabled);
 
         if(autonomousScanEnabled) {
             scanSettingsProperties = autonomousManager.getAllScanSettingsProperties();
@@ -169,6 +168,8 @@ public class DetectBoot {
             scanSettingsProperties.put("blackduck.offline.mode","false");
             propertyConfiguration.setScanSettingsProperties(scanSettingsProperties);
         }
+
+        DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
 
         InstalledToolLocator installedToolLocator = new InstalledToolLocator(directoryManager.getPermanentDirectory().toPath(), gson);
 

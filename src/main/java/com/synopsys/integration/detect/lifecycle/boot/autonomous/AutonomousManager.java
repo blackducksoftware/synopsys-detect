@@ -26,11 +26,13 @@ public class AutonomousManager {
     private ScanSettings scanSettings;
 
     public AutonomousManager(
-        DirectoryManager directoryManager,
         boolean autonomousScanEnabled
     ) {
-        this.directoryManager = directoryManager;
         this.autonomousScanEnabled = autonomousScanEnabled;
+    }
+
+    public void setDirectoryManager(DirectoryManager directoryManager) {
+        this.directoryManager = directoryManager;
 
         detectSourcePath = directoryManager.getSourceDirectory().getPath();
         hashedScanSettingsFileName = StringUtils.join(UUID.nameUUIDFromBytes(detectSourcePath.getBytes()).toString(), ".json");
