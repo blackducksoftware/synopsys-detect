@@ -32,7 +32,7 @@ public class GradleReportParser {
     public static final String ROOT_PROJECT_VERSION_PREFIX = "rootProjectVersion:";
     public static final String DETECT_META_DATA_HEADER = "DETECT META DATA START";
     public static final String DETECT_META_DATA_FOOTER = "DETECT META DATA END";
-    public static Map<String, String> metadata = new HashMap<>();
+    private final Map<String, String> metadata = new HashMap<>();
     private final GradleReportConfigurationParser gradleReportConfigurationParser = new GradleReportConfigurationParser();
 
     public Optional<GradleReport> parseReport(File reportFile) {

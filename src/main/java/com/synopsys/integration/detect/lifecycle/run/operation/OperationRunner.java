@@ -647,7 +647,7 @@ public class OperationRunner {
                 } else {
                     auditLog.namedPublic(
                             OPERATION_NAME,
-                            () -> new GenerateComponentLocationAnalysisOperation().locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                            () -> publishResult(new GenerateComponentLocationAnalysisOperation().locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory()))
                     );
                 }
             }
@@ -673,7 +673,7 @@ public class OperationRunner {
                 } else {
                     auditLog.namedPublic(
                             OPERATION_NAME,
-                            () -> (new GenerateComponentLocationAnalysisOperation()).locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                            () -> publishResult(new GenerateComponentLocationAnalysisOperation().locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory()))
                     );
                 }
             }
@@ -707,7 +707,7 @@ public class OperationRunner {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
             auditLog.namedPublic(
                     OPERATION_NAME,
-                    () -> (new GenerateComponentLocationAnalysisOperation()).locateComponentsForOnlineIntelligentScan()
+                    () -> publishResult(new GenerateComponentLocationAnalysisOperation().locateComponentsForOnlineIntelligentScan())
             );
         }
     }
