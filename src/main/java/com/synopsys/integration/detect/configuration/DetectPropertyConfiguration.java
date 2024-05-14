@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.config.value.PropertyValue;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.base.TypedProperty;
@@ -48,6 +49,10 @@ public class DetectPropertyConfiguration {
 
     public <V, R> R getValue(ValuedProperty<V, R> detectProperty) {
         return propertyConfiguration.getValue(detectProperty);
+    }
+    
+    public <V, R> void setValue(ValuedProperty<V, R> detectProperty, PropertyValue<R> propertyValue) {
+        propertyConfiguration.setValue(detectProperty, propertyValue);
     }
 
     @SafeVarargs

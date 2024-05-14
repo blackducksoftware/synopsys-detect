@@ -1783,6 +1783,14 @@ public class DetectProperties {
                 "If set to true, Detect will follow symbolic links when searching for detectors, when searching for files that select detectors (such as Bitbake and Sbt) need, when searching for directories to exclude from signature scan, and when searching for binary scan targets.  Symbolic links are not supported for Impact Analysis.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .build();
+    
+    public static final BooleanProperty DETECT_AUTONOMOUS_SCAN_ENABLED =
+        BooleanProperty.newBuilder("detect.autonomous.scan.enabled", false)
+                .setInfo("Autonomous Scan Enabled", DetectPropertyFromVersion.VERSION_9_8_0)
+                .setHelp("If true, Detect will enable autonomous scanning feature.")
+                .setGroups(DetectGroup.GLOBAL)
+                .setCategory(DetectCategory.Advanced)
+                .build();
 
     public static final EnumProperty<BlackduckScanMode> DETECT_BLACKDUCK_SCAN_MODE =
         EnumProperty.newBuilder("detect.blackduck.scan.mode", BlackduckScanMode.INTELLIGENT, BlackduckScanMode.class)

@@ -96,6 +96,11 @@ public class PropertyConfiguration {
             return property.convertValue(defaultValue);
         }
     }
+    
+    @NotNull
+    public <V, R> void setValue(@NotNull TypedProperty<V, R> property, @NotNull PropertyValue<R> propertyValue) {
+        valueCache.put(property.getKey(), propertyValue);
+    }
 
     @NotNull
     public <V, R> Optional<V> getProvidedParsedValue(@NotNull TypedProperty<V, R> property) throws InvalidPropertyException {

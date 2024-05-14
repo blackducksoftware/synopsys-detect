@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
@@ -213,6 +214,37 @@ public class DetectBoot {
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
+        
+        if (!hasImageOrTar && detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED)) {
+            Path detectSourcePath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_SOURCE_PATH);
+            if (detectSourcePath == null) {
+                logger.error("Detect autonomous scan mode requires Detect Source Path (--detect.source.path) to be set.");
+            } else {
+                AllNoneEnumCollection<DetectTool> includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
+                AllNoneEnumCollection<DetectTool> excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
+                Map<Enum, Set<String>> scanTypeEvidenceMap = searchFileSystem(detectSourcePath);
+                if (!excludedTools.containsValue(DetectTool.BINARY_SCAN)
+                        && !includedTools.containsValue(DetectTool.BINARY_SCAN)
+                        && !scanTypeEvidenceMap.get(DetectTool.BINARY_SCAN).isEmpty()) {
+                    List<DetectTool> tools = includedTools.toPresentValues();
+                    tools.add(DetectTool.BINARY_SCAN);
+                }
+                if (!excludedTools.containsValue(DetectTool.DETECTOR)
+                        && !includedTools.containsValue(DetectTool.DETECTOR)
+                        && !scanTypeEvidenceMap.get(DetectTool.DETECTOR).isEmpty()) {
+                    List<DetectTool> tools = includedTools.toPresentValues();
+                    tools.add(DetectTool.DETECTOR);
+                }
+                if (!excludedTools.containsValue(DetectTool.SIGNATURE_SCAN)
+                        && !includedTools.containsValue(DetectTool.SIGNATURE_SCAN)
+                        && includedTools.containsNone()) {
+                    List<DetectTool> tools = includedTools.toPresentValues();
+                    tools.add(DetectTool.SIGNATURE_SCAN);
+                    
+                    detectConfiguration.setValue(DetectProperties.DETECT_TOOLS, tools);
+                }
+            }
+        }
 
         try {
             BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode();
@@ -315,12 +347,12 @@ public class DetectBoot {
         return mediaTypes.stream().noneMatch(x -> x.getType().equals("text"));
     }
     
-    public Map<Enum, Set<String>> searchFileSystem(String pathToSearch) {
+    public Map<Enum, Set<String>> searchFileSystem(Path pathToSearch) {
         
         long t1 = System.currentTimeMillis();
         try {
             Map<Enum, Set<String>> map = new HashMap<>();
-            Files.walkFileTree(Paths.get(pathToSearch), new FileVisitor<Path>() {
+            Files.walkFileTree(pathToSearch, new FileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
                         throws IOException {
