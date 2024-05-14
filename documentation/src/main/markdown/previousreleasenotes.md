@@ -151,6 +151,12 @@
 * Released and Upgraded Nuget Inspector to version 1.1.0.
 * Fixed EsotericSoftware YAMLBeans library version to resolve critical severity [CVE-2023-24621](https://nvd.nist.gov/vuln/detail/CVE-2023-24621)
 
+## Version 8.11.1
+
+### Resolved issues
+
+* (IDETECT-42811) Improved forward compatibility of Project Version Update requests `--detect.project.version.update=true`, sent from [company_name] [solution_name] to [blackduck_product_name], for the Projects API by specifying the content type of the request.
+
 ## Version 8.11.0
 
 ### New features
