@@ -155,7 +155,7 @@
 
 ### Resolved issues
 
-* (IDETECT-42811) Improved forward compatibility of Project Version Update requests `--detect.project.version.update=true`, sent from [company_name] [solution_name] to [blackduck_product_name], for the Projects API by specifying the content type of the request.
+* (IDETECT-4281) Improved forward compatibility of Project Version Update requests `--detect.project.version.update=true`, sent from [company_name] [solution_name] to [blackduck_product_name], for the Projects API by specifying the content type of the request.
 
 ## Version 8.11.0
 
