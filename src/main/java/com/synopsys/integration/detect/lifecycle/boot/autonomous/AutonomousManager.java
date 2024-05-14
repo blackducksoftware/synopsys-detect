@@ -29,9 +29,6 @@ public class AutonomousManager {
         boolean autonomousScanEnabled
     ) {
         this.autonomousScanEnabled = autonomousScanEnabled;
-    }
-
-    public void setDirectoryManager(DirectoryManager directoryManager) {
         this.directoryManager = directoryManager;
 
         detectSourcePath = directoryManager.getSourceDirectory().getPath();
