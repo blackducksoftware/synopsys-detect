@@ -50,15 +50,7 @@ public class SetupToolsCfgParser implements SetupToolsParser {
                     }
                 }
                 else if (isInstallRequiresSection) {
-                    // If the line starts with "[" or matches the pattern for a new key, we've reached a new section or a new key.
-                    // So we stop adding to dependencies. 
-                    
-                    // A new key is defined by alphanumeric characters, followed by optional
-                    // whitespace, followed by a single =, followed by optional whitespace, followed by more alphanumeric characters
-                    // TODO this needs to parse complex things
-                    // package names must match
-                    if (line.startsWith("[") 
-                            || line.matches("^\\s*[a-zA-Z0-9_.-]+\\s*=\\s*(?![=!<>~]).*$")) {
+                    if (isEndofInstallRequiresSection(line)) { 
                         break;
                     }
                     // If the line is not empty, add it to the dependencies list
@@ -70,5 +62,24 @@ public class SetupToolsCfgParser implements SetupToolsParser {
         }
 
         return dependencies;
+    }
+
+    private boolean isEndofInstallRequiresSection(String line) {
+        /*
+         * If the line starts with a [ we have reached a new section and want to exit.
+         * 
+         * The line.matches call looks for a new key. 
+         * It will return true if the string starts with optional whitespace, 
+         * followed by one or more alphanumeric characters, periods, underscores, or hyphens, 
+         * (which is the allowed set of characters for a key), followed by
+         * optional whitespace, an equal sign, optional whitespace, and then any
+         * character that is not another =, !, <, >, or ~ which would indicate a requirement 
+         * operator and not a new key.
+         */
+        if (line.startsWith("[") || line.matches("^\\s*[a-zA-Z0-9_.-]+\\s*=\\s*(?![=!<>~]).*$")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
