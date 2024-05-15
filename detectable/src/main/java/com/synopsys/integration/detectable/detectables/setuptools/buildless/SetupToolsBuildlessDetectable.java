@@ -43,6 +43,8 @@ public class SetupToolsBuildlessDetectable extends Detectable {
     private TomlParseResult parsedToml;
     
     private SetupToolsParser setupToolsParser;
+    
+    private Requirements fileResolver;
 
     public SetupToolsBuildlessDetectable(DetectableEnvironment environment, FileFinder fileFinder, SetupToolsExtractor setupToolsExtractor) {
         super(environment);
@@ -52,10 +54,10 @@ public class SetupToolsBuildlessDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        Requirements requirements = new Requirements(fileFinder, environment);
-        projectToml = requirements.file(PY_PROJECT_TOML);
+        fileResolver = new Requirements(fileFinder, environment);
+        projectToml = fileResolver.file(PY_PROJECT_TOML);
         
-        return requirements.result();
+        return fileResolver.result();
     }
 
     @Override
@@ -69,7 +71,7 @@ public class SetupToolsBuildlessDetectable extends Detectable {
             }
             
             // Ensure dependencies/requirements are specified in a toml, cfg, or py file.
-            setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(parsedToml);
+            setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(parsedToml, fileResolver);
             
             if (setupToolsParser == null) {
                return new SetupToolsNoDependenciesDetectableResult(); 
