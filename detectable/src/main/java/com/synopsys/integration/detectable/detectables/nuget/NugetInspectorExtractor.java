@@ -129,6 +129,7 @@ public class NugetInspectorExtractor {
             }
             for (File target : targets) {
                 stream.writeChars(target.getAbsolutePath());
+                stream.writeChars(System.lineSeparator());
             }
             if (lock != null) {
                 lock.release();
