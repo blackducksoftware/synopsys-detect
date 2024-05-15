@@ -6,7 +6,9 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-public class ScanType {
+import org.jetbrains.annotations.NotNull;
+
+public class ScanType implements Comparable<ScanType> {
     /**
      * Name of the scan tool or detector that is applicable.
      * Example: "SIGNATURE_SCAN" or "MAVEN".
@@ -27,6 +29,17 @@ public class ScanType {
      * <br>Example 2: <code>scanTargets.add("/path/to/binary_1.exe")</code>
      */
     private SortedSet<String> scanTargets = new TreeSet<>();
+
+    @Override
+    public int compareTo(@NotNull ScanType o) {
+        return scanTypeName.compareTo(o.scanTypeName);
+    }
+
+    public ScanType(String scanTypeName, SortedMap<String, String> scanProperties, SortedSet<String> scanTargets) {
+        this.scanTypeName = scanTypeName;
+        this.scanTargets = scanTargets;
+        this.scanProperties = scanProperties;
+    }
 
     public String getScanTypeName() {
         return scanTypeName;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.SortedMap;
 
+import com.synopsys.integration.detect.lifecycle.boot.autonomous.AutonomousManager;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +82,7 @@ public class DetectBootFactory {
     private final EventSystem eventSystem;
     private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
     private final FileFinder fileFinder;
+    private DirectoryManager directoryManager;
 
     public DetectBootFactory(DetectRunId detectRunId, DetectInfo detectInfo, Gson gson, EventSystem eventSystem, FileFinder fileFinder) {
         this.detectRunId = detectRunId;
@@ -99,7 +101,8 @@ public class DetectBootFactory {
         DirectoryManager directoryManager,
         Configuration configuration,
         InstalledToolManager installedToolManager,
-        InstalledToolLocator installedToolLocator
+        InstalledToolLocator installedToolLocator,
+        AutonomousManager autonomousManager
     ) {
         return new BootSingletons(
             productRunData,
@@ -115,7 +118,8 @@ public class DetectBootFactory {
             directoryManager,
             configuration,
             installedToolManager,
-            installedToolLocator
+            installedToolLocator,
+            autonomousManager
         );
     }
 
@@ -197,7 +201,7 @@ public class DetectBootFactory {
     }
 
     public DirectoryManager createDirectoryManager(DetectConfigurationFactory detectConfigurationFactory) throws IOException {
-        return new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRunId);
+       return new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRunId);
     }
 
     public DetectConfigurationBootManager createDetectConfigurationBootManager(PropertyConfiguration detectConfiguration) {

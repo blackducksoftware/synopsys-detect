@@ -1,7 +1,13 @@
 package com.synopsys.integration.detect.lifecycle.run;
 
 import java.util.Optional;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.Arrays;
 
+import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.lifecycle.boot.autonomous.AutonomousManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +62,7 @@ public class DetectRun {
             ProductRunData productRunData = bootSingletons.getProductRunData(); //TODO: Remove run data from boot singletons
             OperationRunner operationRunner = createOperationFactory(bootSingletons, utilitySingletons, eventSingletons);
             StepHelper stepHelper = new StepHelper(utilitySingletons.getOperationSystem(), utilitySingletons.getOperationWrapper(), productRunData.getDetectToolFilter());
+            AutonomousManager autonomousManager = bootSingletons.getAutonomousManager();
 
             UniversalStepRunner stepRunner = new UniversalStepRunner(operationRunner, stepHelper); //Product independent tools
             UniversalToolsResult universalToolsResult = stepRunner.runUniversalTools();
@@ -76,6 +83,15 @@ public class DetectRun {
             } else {
                 bdio = BdioResult.none();
             }
+
+            if(autonomousManager.getAutonomousScanEnabled()) {
+                SortedMap<String, SortedSet<String>> scanTargets = stepRunner.getScanTargets(universalToolsResult);
+                autonomousManager.updateScanTargets(scanTargets);
+                SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
+                autonomousManager.updateScanSettingsProperties(defaultValueMap, Arrays.asList("DETECTOR","BINARY_SCAN","GRADLE"));
+                autonomousManager.writeScanSettingsModelToTarget();
+            }
+
             if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
                 if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) {

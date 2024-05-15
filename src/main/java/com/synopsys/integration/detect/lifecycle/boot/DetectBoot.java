@@ -162,10 +162,11 @@ public class DetectBoot {
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
 
         // TODO Scan settings model obtained below is to be used by the delta-checking operations
-        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, autonomousScanEnabled);
+        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, autonomousScanEnabled, maskedRawPropertyValues);
 
         if(autonomousScanEnabled) {
             scanSettingsProperties = autonomousManager.getAllScanSettingsProperties();
+            scanSettingsProperties.put("blackduck.url", "https://us03-qa-hub21.nprd.sig.synopsys.com/");
             propertyConfiguration.setScanSettingsProperties(scanSettingsProperties);
         }
 
@@ -180,7 +181,6 @@ public class DetectBoot {
                 maskedRawPropertyValues
             );
         }
-
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
@@ -270,7 +270,8 @@ public class DetectBoot {
                 directoryManager,
                 freemarkerConfiguration,
                 installedToolManager,
-                installedToolLocator
+                installedToolLocator,
+                autonomousManager
             );
 
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
