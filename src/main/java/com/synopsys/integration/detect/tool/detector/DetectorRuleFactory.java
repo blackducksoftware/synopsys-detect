@@ -226,6 +226,13 @@ public class DetectorRuleFactory {
                 .fallback(NugetProjectInspectorDetectable.class)
                 .search().defaults();
         });
+        
+        rules.addDetector(DetectorType.SETUPTOOLS, detector -> {
+            detector.entryPoint(SetupToolsBuildDetectable.class)
+                .search().defaults();
+            detector.entryPoint(SetupToolsBuildlessDetectable.class)
+                .search().defaults();
+         }).allEntryPointsFallbackToNext();
 
         rules.addDetector(DetectorType.POETRY, detector -> {
             detector.entryPoint(PoetryDetectable.class)
@@ -243,7 +250,8 @@ public class DetectorRuleFactory {
                     .search().defaults();
             })
             .allEntryPointsFallbackToNext()
-            .yieldsTo(DetectorType.POETRY);
+            .yieldsTo(DetectorType.POETRY)
+            .yieldsTo(DetectorType.SETUPTOOLS);
 
         rules.addDetector(DetectorType.RUBYGEMS, detector -> {
             detector.entryPoint(GemlockDetectable.class)
@@ -273,13 +281,6 @@ public class DetectorRuleFactory {
             detector.entryPoint(ClangDetectable.class)
                 .search().defaults();
         });
-        
-        rules.addDetector(DetectorType.SETUPTOOLS, detector -> {
-           detector.entryPoint(SetupToolsBuildDetectable.class)
-               .search().defaults();
-           detector.entryPoint(SetupToolsBuildlessDetectable.class)
-               .search().defaults();
-        }).allEntryPointsFallbackToNext();
 
         return rules.build();
     }
