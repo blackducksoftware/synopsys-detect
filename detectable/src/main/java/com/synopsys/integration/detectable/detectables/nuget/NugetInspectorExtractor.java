@@ -50,7 +50,7 @@ public class NugetInspectorExtractor {
 
     public Extraction extract(List<File> targets, File outputDirectory, ExecutableTarget inspector, NugetInspectorOptions nugetInspectorOptions) {
         try {
-            String targetFilesPath = outputDirectory.getCanonicalPath().concat("/targetPaths.tmp");
+            String targetFilesPath = outputDirectory.getParentFile().getParentFile().getCanonicalPath().concat("/targetPaths.tmp");
             writeTargetPathsToTemporaryLockedFile(targetFilesPath, targets);
             NugetTargetResult result = executeTarget(inspector, targetFilesPath, outputDirectory, nugetInspectorOptions);
 
@@ -117,6 +117,7 @@ public class NugetInspectorExtractor {
     }
     
     public void writeTargetPathsToTemporaryLockedFile(String filePath, List<File> targets) throws IOException {
+        
         FileChannel channel;
         try (RandomAccessFile stream = new RandomAccessFile(filePath, "rw")) {
             channel = stream.getChannel();
