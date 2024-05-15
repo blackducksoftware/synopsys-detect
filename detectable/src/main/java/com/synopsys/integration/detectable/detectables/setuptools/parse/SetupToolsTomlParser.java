@@ -12,7 +12,7 @@ import com.synopsys.integration.detectable.python.util.PythonDependencyTransform
 
 public class SetupToolsTomlParser implements SetupToolsParser {
     
-    TomlParseResult parsedToml;
+    private TomlParseResult parsedToml;
     
     public SetupToolsTomlParser(TomlParseResult parsedToml) {
         this.parsedToml = parsedToml;
@@ -24,9 +24,7 @@ public class SetupToolsTomlParser implements SetupToolsParser {
         String projectName = parsedToml.getString("project.name");
         String projectVersion = parsedToml.getString("project.version");
         
-        SetupToolsParsedResult result = new SetupToolsParsedResult(projectName, projectVersion, parsedDirectDependencies);
-        
-        return result;
+        return new SetupToolsParsedResult(projectName, projectVersion, parsedDirectDependencies);
     }
 
     public List<PythonDependency> parseDirectDependencies(TomlParseResult tomlParseResult) throws IOException {

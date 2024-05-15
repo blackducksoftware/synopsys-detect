@@ -59,7 +59,7 @@ public class SetupToolsExtractUtils {
         
         // Step 2: Check the setup.cfg
         File cfgFile = fileResolver.file(SETUP_CFG);
-        SetupToolsCfgParser cfgParser = new SetupToolsCfgParser();
+        SetupToolsCfgParser cfgParser = new SetupToolsCfgParser(parsedToml);
         
         List<String> cfgDependencies = cfgParser.load(cfgFile.toString());
 

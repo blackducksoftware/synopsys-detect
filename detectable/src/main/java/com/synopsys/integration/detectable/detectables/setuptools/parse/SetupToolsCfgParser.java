@@ -5,14 +5,39 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.tomlj.TomlParseResult;
+
+import com.synopsys.integration.detectable.python.util.PythonDependency;
+import com.synopsys.integration.detectable.python.util.PythonDependencyTransformer;
+
 public class SetupToolsCfgParser implements SetupToolsParser {
+    
+    private TomlParseResult parsedToml;
+    
+    private String projectName;
+    
+    private List<String> dependencies;
+    
+    public SetupToolsCfgParser(TomlParseResult parsedToml) {
+        this.parsedToml = parsedToml;
+        this.dependencies = new ArrayList<>();
+    }
 
     @Override
     public SetupToolsParsedResult parse() throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+        String tomlProjectName = parsedToml.getString("project.name");
+        String projectVersion = parsedToml.getString("project.version");
+        
+        // If we have multiple project names the name from the toml wins
+        // I've only seen version information in the toml so use that.
+        String finalProjectName = (tomlProjectName != null && !tomlProjectName.isEmpty()) ? tomlProjectName : projectName;
+        
+        List<PythonDependency> parsedDirectDependencies = parseDirectDependencies();
+        
+        return new SetupToolsParsedResult(finalProjectName, projectVersion, parsedDirectDependencies);
     }
 
     /**
@@ -25,8 +50,6 @@ public class SetupToolsCfgParser implements SetupToolsParser {
      * @throws IOException
      */
     public List<String> load(String filePath) throws FileNotFoundException, IOException {
-        List<String> dependencies = new ArrayList<>();
-
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
 
@@ -35,6 +58,10 @@ public class SetupToolsCfgParser implements SetupToolsParser {
 
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
+                
+                if (line.startsWith("name")) {
+                    parseProjectName(line);
+                }
 
                 // Remove all whitespace from the line for key searching
                 String keySearch = line.replaceAll("\\s", "");
@@ -62,6 +89,29 @@ public class SetupToolsCfgParser implements SetupToolsParser {
         }
 
         return dependencies;
+    }
+    
+    private List<PythonDependency> parseDirectDependencies() {
+        List<PythonDependency> results = new LinkedList<>();
+        
+        PythonDependencyTransformer dependencyTransformer = new PythonDependencyTransformer();
+
+        for (String dependencyLine : dependencies) {            
+            PythonDependency dependency = dependencyTransformer.transformLine(dependencyLine);
+
+            if (dependency != null) {
+                results.add(dependency);
+            }
+        }
+        
+        return results;
+    }
+
+    public void parseProjectName(String line) {
+        String[] parts = line.split("=", 2);
+        if (parts.length > 1 && !parts[1].trim().isEmpty()) {
+            projectName = parts[1].trim();
+        }
     }
 
     private boolean isEndofInstallRequiresSection(String line) {
