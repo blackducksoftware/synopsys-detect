@@ -26,18 +26,21 @@ public class AutonomousManager {
     private ScanSettings scanSettings;
 
     public AutonomousManager(
+        DirectoryManager directoryManager,
         boolean autonomousScanEnabled
     ) {
         this.autonomousScanEnabled = autonomousScanEnabled;
         this.directoryManager = directoryManager;
 
-        detectSourcePath = directoryManager.getSourceDirectory().getPath();
-        hashedScanSettingsFileName = StringUtils.join(UUID.nameUUIDFromBytes(detectSourcePath.getBytes()).toString(), ".json");
+        if(autonomousScanEnabled) {
+            detectSourcePath = directoryManager.getSourceDirectory().getPath();
+            hashedScanSettingsFileName = StringUtils.join(UUID.nameUUIDFromBytes(detectSourcePath.getBytes()).toString(), ".json");
 
-        File scanSettingsTargetDir = directoryManager.getScanSettingsOutputDirectory();
-        scanSettingsTargetFile = new File(scanSettingsTargetDir, hashedScanSettingsFileName);
+            File scanSettingsTargetDir = directoryManager.getScanSettingsOutputDirectory();
+            scanSettingsTargetFile = new File(scanSettingsTargetDir, hashedScanSettingsFileName);
 
-        scanSettings = initializeScanSettingsModel();
+            scanSettings = initializeScanSettingsModel();
+        }
     }
 
     public boolean getAutonomousScanEnabled() {
