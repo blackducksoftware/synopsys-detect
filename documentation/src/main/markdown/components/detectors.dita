@@ -694,10 +694,10 @@
 							<entry> </entry>
 							<entry>Pipenv Lock</entry>
 							<entry>Python</entry>
-							<entry>PyPi</entry>
+							<entry>PyPI</entry>
 							<entry>
 								<p>Files: Pipfile or Pipfile.lock</p>
-								<p>Executables: python or python3,
+								<p>Executables: python or python3 specified via --detect.python.path property,
                                 and pipenv</p>
 							</entry>
 							<entry>HIGH</entry>
@@ -706,10 +706,10 @@
 							<entry> </entry>
 							<entry>PIP Native Inspector</entry>
 							<entry>Python</entry>
-							<entry>Pypi</entry>
+							<entry>PyPI</entry>
 							<entry>
 								<p>Files: setup.py file, or one or more requirements.txt files</p>
-								<p>Executables: python and pip, or python3 and pip3</p>
+								<p>Executables: python and pip, or python3 and pip3 specified via --detect.python.path and --detect.pip.path properties</p>
 							</entry>
 							<entry>HIGH</entry>
 						</row>
@@ -717,7 +717,7 @@
 							<entry> </entry>
 							<entry>Pipfile Lock</entry>
 							<entry>Python</entry>
-							<entry>PyPi</entry>
+							<entry>PyPI</entry>
 							<entry>
 								<p>Files: Pipfile, Pipfile.lock</p>
 							</entry>
@@ -727,7 +727,7 @@
 							<entry> </entry>
 							<entry>PIP Requirements File Parse</entry>
 							<entry>Python</entry>
-							<entry>PyPi</entry>
+							<entry>PyPI</entry>
 							<entry>
 								<p>File: requirements.txt</p>
 							</entry>
@@ -767,7 +767,7 @@
 							<entry> </entry>
 							<entry>Poetry Lock</entry>
 							<entry>Python</entry>
-							<entry>pypi</entry>
+							<entry>PyPI</entry>
 							<entry>
 								<p>Files: Poetry.lock, pyproject.toml</p>
 							</entry>
@@ -823,6 +823,38 @@
 								<p>Plugin: Dependency Graph</p>
 							</entry>
 							<entry>HIGH</entry>
+						</row>
+						<row>
+							<entry>
+								<b>Setuptools</b>
+							</entry>
+							<entry> </entry>
+							<entry> </entry>
+							<entry> </entry>
+							<entry> </entry>
+							<entry> </entry>
+						</row>
+						<row>
+							<entry> </entry>
+							<entry>Setuptools Detector</entry>
+							<entry>Python</entry>
+							<entry>PyPI</entry>
+							<entry>
+								<p>Files: pyproject.toml and optionally setup.cfg, or setup.py</p>
+								<p>Executables: python and pip, or python3 and pip3 specified via --detect.python.path and --detect.pip.path properties.</p>
+							</entry>
+							<entry>HIGH</entry>
+						</row>
+						<row>
+							<entry> </entry>
+							<entry>Setuptools Detector</entry>
+							<entry>Python</entry>
+							<entry>PyPI</entry>
+							<entry>
+								<p>File: pyproject.toml and optionally setup.cfg, or setup.py</p>
+								<p>Executables: python or python3 specified via --detect.python.path property.</p>
+							</entry>
+							<entry>LOW</entry>
 						</row>
 						<row>
 							<entry>
