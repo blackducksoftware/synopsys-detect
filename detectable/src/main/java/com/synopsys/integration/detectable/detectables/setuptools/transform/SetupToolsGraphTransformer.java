@@ -70,8 +70,8 @@ public class SetupToolsGraphTransformer {
         }
     }
     
-    private void handleShowDependency(ExecutableTarget pipExe, File sourceDirectory, DependencyGraph dependencyGraph, String dependencyToSearch, Dependency parentDependency, boolean failIfNotFound) throws ExecutableRunnerException {
-        List<String> rawShowOutput = runPipShow(sourceDirectory, pipExe, dependencyToSearch, failIfNotFound);
+    private void handleShowDependency(ExecutableTarget pipExe, File sourceDirectory, DependencyGraph dependencyGraph, String dependencyToSearch, Dependency parentDependency, boolean isConditionalDependency) throws ExecutableRunnerException {
+        List<String> rawShowOutput = runPipShow(sourceDirectory, pipExe, dependencyToSearch, isConditionalDependency);
         
         if (rawShowOutput == null) {
             return;
@@ -97,7 +97,7 @@ public class SetupToolsGraphTransformer {
         }
     }
     
-    public List<String> runPipShow(File sourceDirectory, ExecutableTarget pipExe, String dependencyToSearch, boolean failIfNotFound) throws ExecutableRunnerException {      
+    public List<String> runPipShow(File sourceDirectory, ExecutableTarget pipExe, String dependencyToSearch, boolean isConditionalDependency) throws ExecutableRunnerException {      
         List<String> pipArguments = new ArrayList<>();
         pipArguments.add("show");
         pipArguments.add(dependencyToSearch);
@@ -107,10 +107,11 @@ public class SetupToolsGraphTransformer {
         if (executableOutput.getReturnCode() == 0) {
             return executableOutput.getStandardOutputAsList();
         } else {
-            if (failIfNotFound) {
-                throw new ExecutableRunnerException(new Exception(UNEXPECTED_PIP_OUTPUT));
-            } else {
+            // Don't consider it a failure if this is a conditional dependency, it might not have been installed intentionally
+            if (isConditionalDependency) {
                 return null;
+            } else {
+                throw new ExecutableRunnerException(new Exception(UNEXPECTED_PIP_OUTPUT));
             }
         }
     }

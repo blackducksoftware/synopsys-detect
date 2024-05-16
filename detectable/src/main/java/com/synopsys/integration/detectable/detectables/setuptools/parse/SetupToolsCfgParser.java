@@ -98,6 +98,13 @@ public class SetupToolsCfgParser implements SetupToolsParser {
 
         for (String dependencyLine : dependencies) {            
             PythonDependency dependency = dependencyTransformer.transformLine(dependencyLine);
+            
+            // If we have a ; in our requirements line then there is a condition on this dependency.
+            // We want to know this so we don't consider it a failure later if we try to run pip show
+            // on it and we don't find it.
+            if (dependencyLine.contains(";")) {
+                dependency.setConditional(true);
+            }
 
             if (dependency != null) {
                 results.add(dependency);
