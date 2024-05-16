@@ -10,9 +10,12 @@ import org.tomlj.Toml;
 import org.tomlj.TomlArray;
 import org.tomlj.TomlParseResult;
 
+import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsCfgParser;
 import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsParser;
+import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsPyParser;
 import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsTomlParser;
 
 public class SetupToolsExtractUtils {
@@ -48,7 +51,7 @@ public class SetupToolsExtractUtils {
         return false;
     }
 
-    public static SetupToolsParser findDependenciesFile(TomlParseResult parsedToml, Requirements fileResolver) throws IOException {
+    public static SetupToolsParser findDependenciesFile(TomlParseResult parsedToml, FileFinder fileFinder, DetectableEnvironment environment) throws IOException {
         // Dependencies, if they exist at all, will be in one of three files.
         // Step 1: Check the pyproject.toml
         TomlArray tomlDependencies = parsedToml.getArray(TOML_DEPENDENCIES);
@@ -58,13 +61,31 @@ public class SetupToolsExtractUtils {
         }
         
         // Step 2: Check the setup.cfg
+        Requirements fileResolver = new Requirements(fileFinder, environment);
         File cfgFile = fileResolver.file(SETUP_CFG);
-        SetupToolsCfgParser cfgParser = new SetupToolsCfgParser(parsedToml);
         
-        List<String> cfgDependencies = cfgParser.load(cfgFile.toString());
+        if (cfgFile != null) {
+            SetupToolsCfgParser cfgParser = new SetupToolsCfgParser(parsedToml);
 
-        if (cfgDependencies != null && cfgDependencies.size() > 0) {
-            return cfgParser;
+            List<String> cfgDependencies = cfgParser.load(cfgFile.toString());
+
+            if (cfgDependencies != null && cfgDependencies.size() > 0) {
+                return cfgParser;
+            }
+        }
+        
+        // Step 3: Check the setup.py
+        fileResolver = new Requirements(fileFinder, environment);
+        File pyFile = fileResolver.file(SETUP_PY);
+        
+        if (pyFile != null) {
+            SetupToolsPyParser pyParser = new SetupToolsPyParser(parsedToml);
+
+            List<String> pyDependencies = pyParser.load(pyFile.toString());
+            
+            if (pyDependencies != null && pyDependencies.size() > 0) {
+                return pyParser;
+            }
         }
         
         return null;

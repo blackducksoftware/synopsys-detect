@@ -42,7 +42,7 @@ public class SetupToolsGraphTransformer {
         if (pipExe != null) {
             // Get dependencies by running pip show on each direct dependency
             for (PythonDependency directDependency : parsedResult.getDirectDependencies()) {
-                handleShowDependency(pipExe, sourceDirectory, dependencyGraph, directDependency.getName(), null);
+                handleShowDependency(pipExe, sourceDirectory, dependencyGraph, directDependency.getName(), null, directDependency.isConditional());
             }
         } else {
             // Unable to determine transitive dependencies, add parsed dependencies directly
@@ -70,8 +70,12 @@ public class SetupToolsGraphTransformer {
         }
     }
     
-    private void handleShowDependency(ExecutableTarget pipExe, File sourceDirectory, DependencyGraph dependencyGraph, String dependencyToSearch, Dependency parentDependency) throws ExecutableRunnerException {
-        List<String> rawShowOutput = runPipShow(sourceDirectory, pipExe, dependencyToSearch);
+    private void handleShowDependency(ExecutableTarget pipExe, File sourceDirectory, DependencyGraph dependencyGraph, String dependencyToSearch, Dependency parentDependency, boolean failIfNotFound) throws ExecutableRunnerException {
+        List<String> rawShowOutput = runPipShow(sourceDirectory, pipExe, dependencyToSearch, failIfNotFound);
+        
+        if (rawShowOutput == null) {
+            return;
+        }
         
         Map<String, String> showOutput = parsePipShow(rawShowOutput);
         
@@ -88,12 +92,12 @@ public class SetupToolsGraphTransformer {
         if (showOutput.containsKey("Requires")) {
             String[] requiredPackages = showOutput.get("Requires").split(", ");
             for (String requiredPackage : requiredPackages) {
-                handleShowDependency(pipExe, sourceDirectory, dependencyGraph, requiredPackage, currentDependency);
+                handleShowDependency(pipExe, sourceDirectory, dependencyGraph, requiredPackage, currentDependency, false);
             }
         }
     }
     
-    public List<String> runPipShow(File sourceDirectory, ExecutableTarget pipExe, String dependencyToSearch) throws ExecutableRunnerException {      
+    public List<String> runPipShow(File sourceDirectory, ExecutableTarget pipExe, String dependencyToSearch, boolean failIfNotFound) throws ExecutableRunnerException {      
         List<String> pipArguments = new ArrayList<>();
         pipArguments.add("show");
         pipArguments.add(dependencyToSearch);
@@ -103,7 +107,11 @@ public class SetupToolsGraphTransformer {
         if (executableOutput.getReturnCode() == 0) {
             return executableOutput.getStandardOutputAsList();
         } else {
-            throw new ExecutableRunnerException(new Exception(UNEXPECTED_PIP_OUTPUT));
+            if (failIfNotFound) {
+                throw new ExecutableRunnerException(new Exception(UNEXPECTED_PIP_OUTPUT));
+            } else {
+                return null;
+            }
         }
     }
     
