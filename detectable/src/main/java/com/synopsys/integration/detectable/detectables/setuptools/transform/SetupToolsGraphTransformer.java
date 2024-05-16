@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -23,6 +25,7 @@ import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class SetupToolsGraphTransformer {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String UNEXPECTED_PIP_OUTPUT = "Unexpected empty pip show results. Please run pip install . on the project and try running Detect again.";
     
@@ -109,6 +112,7 @@ public class SetupToolsGraphTransformer {
         } else {
             // Don't consider it a failure if this is a conditional dependency, it might not have been installed intentionally
             if (isConditionalDependency) {
+                logger.info(String.format("Dependency %s is not in the pip cache. Ignoring as a condition is specified on the dependency.", dependencyToSearch));
                 return null;
             } else {
                 throw new ExecutableRunnerException(new Exception(UNEXPECTED_PIP_OUTPUT));
