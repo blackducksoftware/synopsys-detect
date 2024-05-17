@@ -51,8 +51,12 @@ public class DetectPropertyConfiguration {
         return propertyConfiguration.getValue(detectProperty);
     }
     
-    public <V, R> void setValue(ValuedProperty<V, R> detectProperty, PropertyValue<R> propertyValue) {
-        propertyConfiguration.setValue(detectProperty, propertyValue);
+    public <V, R> void setValue(NullableProperty<V, R> detectProperty, PropertyValue<V> value) {
+        propertyConfiguration.setValue(detectProperty, value);
+    }
+    
+    public <V, R> void setValue(ValuedProperty<V, R> detectProperty, PropertyValue<V> value) {
+        propertyConfiguration.setValue(detectProperty, value);
     }
 
     @SafeVarargs

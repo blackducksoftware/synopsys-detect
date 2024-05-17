@@ -39,7 +39,6 @@ public class DetectToolFilter {
         RunDecision runDecision,
         BlackDuckDecision blackDuckDecision
     ) {
-
         this.excludedIncludedFilter = excludedIncludedFilter;
         this.impactEnabled = impactEnabled;
         this.iacEnabled = iacEnabled;

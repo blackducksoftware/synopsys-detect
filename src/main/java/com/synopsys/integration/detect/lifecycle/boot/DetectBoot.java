@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
@@ -38,6 +37,7 @@ import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
 import com.synopsys.integration.detect.configuration.validation.DeprecationResult;
 import com.synopsys.integration.detect.configuration.validation.DetectConfigurationBootManager;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
+import com.synopsys.integration.detect.lifecycle.boot.decision.AutoScanTypeDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
@@ -58,20 +58,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
-import java.io.ByteArrayInputStream;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Set;
-import org.apache.commons.io.FileUtils;
-import org.apache.tika.Tika;
-import org.apache.tika.mime.MediaType;
-import org.apache.tika.mime.MediaTypeRegistry;
 
 public class DetectBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -200,7 +187,7 @@ public class DetectBoot {
         ProductRunData productRunData;
 
         // store the result of hasImageOrTar... we will need this in more than one place.
-        boolean hasImageOrTar = false;
+        boolean hasImageOrTar;
         DetectableOptionFactory detectableOptionFactory;
         try {
             ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
@@ -214,37 +201,12 @@ public class DetectBoot {
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
+        AutoScanTypeDecider autoDetectTool = new AutoScanTypeDecider();
+        autoDetectTool.decide(hasImageOrTar, detectConfiguration);
         
-        if (!hasImageOrTar && detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED)) {
-            Path detectSourcePath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_SOURCE_PATH);
-            if (detectSourcePath == null) {
-                logger.error("Detect autonomous scan mode requires Detect Source Path (--detect.source.path) to be set.");
-            } else {
-                AllNoneEnumCollection<DetectTool> includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
-                AllNoneEnumCollection<DetectTool> excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
-                Map<Enum, Set<String>> scanTypeEvidenceMap = searchFileSystem(detectSourcePath);
-                if (!excludedTools.containsValue(DetectTool.BINARY_SCAN)
-                        && !includedTools.containsValue(DetectTool.BINARY_SCAN)
-                        && !scanTypeEvidenceMap.get(DetectTool.BINARY_SCAN).isEmpty()) {
-                    List<DetectTool> tools = includedTools.toPresentValues();
-                    tools.add(DetectTool.BINARY_SCAN);
-                }
-                if (!excludedTools.containsValue(DetectTool.DETECTOR)
-                        && !includedTools.containsValue(DetectTool.DETECTOR)
-                        && !scanTypeEvidenceMap.get(DetectTool.DETECTOR).isEmpty()) {
-                    List<DetectTool> tools = includedTools.toPresentValues();
-                    tools.add(DetectTool.DETECTOR);
-                }
-                if (!excludedTools.containsValue(DetectTool.SIGNATURE_SCAN)
-                        && !includedTools.containsValue(DetectTool.SIGNATURE_SCAN)
-                        && includedTools.containsNone()) {
-                    List<DetectTool> tools = includedTools.toPresentValues();
-                    tools.add(DetectTool.SIGNATURE_SCAN);
-                    
-                    detectConfiguration.setValue(DetectProperties.DETECT_TOOLS, tools);
-                }
-            }
-        }
+        // For Auto Scan Mode.
+        List<DetectTool> autoIncludedTools = autoDetectTool.getAutoIncludedTools();
+        Map<Enum, Set<String>> scanTypeEvidenceMap = autoDetectTool.getScanTypeEvidenceMap();
 
         try {
             BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode();
@@ -257,7 +219,7 @@ public class DetectBoot {
 
             // in order to know if docker is needed we have to have either detect.target.type=IMAGE or detect.docker.image
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE || hasImageOrTar, detectConfigurationFactory.createDetectTarget()); //TODO: Move to proper decision home. -jp
-            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
+            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision, autoIncludedTools);
             oneRequiresTheOther(
                 detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
                 detectToolFilter.shouldInclude(DetectTool.DOCKER),
@@ -309,90 +271,5 @@ public class DetectBoot {
 
     private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues) {
         eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new TreeMap<>(maskedRawPropertyValues));
-    }
-    
-    private final Set<String> avoid = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-            ".gitattributes", 
-            ".gitignore", 
-            ".github", 
-            ".git",
-            "__MACOSX",
-            ".DS_Store")));
-    
-    private final Set<String> binaryExtensions = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-            ".bin", 
-            ".exe", 
-            ".out", 
-            ".dll")));
-    
-    private final MediaTypeRegistry mediaTypeRegistry = MediaTypeRegistry.getDefaultRegistry();
-    
-    public boolean shouldAvoid(String name) {
-        for (String includedExtension : binaryExtensions) {
-            if (name.endsWith(includedExtension)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    private boolean isBinary(File file) throws IOException {
-        Set<MediaType> mediaTypes = new HashSet<>();
-        MediaType mediaType = MediaType.parse(new Tika().detect(new ByteArrayInputStream(FileUtils.readFileToByteArray(file))));
-        while(mediaType != null) {
-            mediaTypes.addAll(mediaTypeRegistry.getAliases(mediaType));
-            mediaTypes.add(mediaType);
-            mediaType = mediaTypeRegistry.getSupertype(mediaType);
-        }
-        return mediaTypes.stream().noneMatch(x -> x.getType().equals("text"));
-    }
-    
-    public Map<Enum, Set<String>> searchFileSystem(Path pathToSearch) {
-        
-        long t1 = System.currentTimeMillis();
-        try {
-            Map<Enum, Set<String>> map = new HashMap<>();
-            Files.walkFileTree(pathToSearch, new FileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-                        throws IOException {
-                    final String fileName = file.getFileName().toString().trim().toLowerCase();
-                    if (!Files.isDirectory(file) && !shouldAvoid(fileName)) {
-                        if (isBinary(file.toFile())) {
-                            map.computeIfAbsent(DetectTool.BINARY_SCAN, k -> new HashSet<>()).add(file.toAbsolutePath().toString());
-                        } else {
-                            map.computeIfAbsent(DetectTool.DETECTOR, k -> new HashSet<>()).add(file.toAbsolutePath().toString());
-                        }
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-                
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                    String directoryName = dir.getFileName().toString().trim().toLowerCase();
-                    if(!shouldAvoid(directoryName)){
-                        return FileVisitResult.SKIP_SUBTREE;
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-                
-                @Override
-                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                    return FileVisitResult.TERMINATE;
-                }
-                
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    return FileVisitResult.CONTINUE;
-                }
-                
-            });
-            return map;
-        } catch (IOException ex) {
-            logger.error("Failure when attempting to locate build config files.", ex);
-            return Collections.EMPTY_MAP;
-        } finally {
-            logger.debug("Done. Seconds: {}", (System.currentTimeMillis()-t1)/1000D);
-        }
     }
 }
