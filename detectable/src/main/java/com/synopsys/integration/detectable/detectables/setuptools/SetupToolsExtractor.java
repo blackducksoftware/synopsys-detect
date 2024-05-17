@@ -23,8 +23,6 @@ public class SetupToolsExtractor {
 
     public Extraction extract(File sourceDirectory, SetupToolsParser parser, ExecutableTarget pipExe) {
         try {
-            // TODO get direct dependencies from Toml file. Eventually we'll need to get these from cfg and py files
-            // instead if those exist or have dependencies. 
             SetupToolsParsedResult parsedResult = parser.parse();
             
             DependencyGraph dependencyGraph = setupToolsTransformer.transform(pipExe, parsedResult);
