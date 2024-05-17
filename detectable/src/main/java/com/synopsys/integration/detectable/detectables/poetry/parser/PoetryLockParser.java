@@ -53,8 +53,8 @@ public class PoetryLockParser {
                 continue;
             }
             for (String dependency : dependencies) {
-                Dependency child = packageMap.get(dependency);
-                Dependency parent = packageMap.get(lockPackage.getString(NAME_KEY));
+                Dependency child = getPackage(dependency);
+                Dependency parent = getPackage(lockPackage.getString(NAME_KEY));
                 if (child != null && parent != null) {
                     graph.addChildWithParent(child, parent);
                 }
@@ -66,7 +66,7 @@ public class PoetryLockParser {
 
     private void populateDirectDependencies(DependencyGraph graph, Set<String> rootPackages) {
         for (String rootPackage : rootPackages) {
-            Dependency dependency = packageMap.get(rootPackage);
+            Dependency dependency = getPackage(rootPackage);
             if (dependency == null) {
                 throw new RuntimeException(
                     "Likely pyproject.toml and poetry.lock mismatch. A root package could not be found in the lockfile: " + rootPackage
@@ -87,12 +87,12 @@ public class PoetryLockParser {
                 String projectName = lockPackage.getString(NAME_KEY);
                 String projectVersion = lockPackage.getString(VERSION_KEY);
 
-                packageMap.put(projectName, Dependency.FACTORY.createNameVersionDependency(Forge.PYPI, projectName, projectVersion));
-                rootPackages.add(projectName);
+                putPackage(projectName, Dependency.FACTORY.createNameVersionDependency(Forge.PYPI, projectName, projectVersion));
+                rootPackages.add(projectName.toLowerCase());
 
                 if (lockPackage.getTable(DEPENDENCIES_KEY) != null) {
                     List<String> dependencies = extractFromDependencyList(lockPackage.getTable(DEPENDENCIES_KEY));
-                    dependencyPackages.addAll(dependencies);
+                    dependencies.stream().forEach(s -> { dependencyPackages.add(s.toLowerCase()); });
                 }
 
             }
@@ -100,6 +100,14 @@ public class PoetryLockParser {
         rootPackages.removeAll(dependencyPackages);
 
         return rootPackages;
+    }
+
+    private void putPackage(String name, Dependency dependency) {
+        packageMap.put(name.toLowerCase(), dependency);
+    }
+
+    private Dependency getPackage(String name) {
+        return packageMap.get(name.toLowerCase());
     }
 
     private List<String> extractFromDependencyList(@Nullable TomlTable dependencyList) {
