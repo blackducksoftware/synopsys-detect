@@ -38,6 +38,10 @@ public class GoModuleDependencyHelper {
             
             // Splitting here allows matching with less effort
             String[] splitLine = grphLine.split(" ");
+
+            if(splitLine[1].startsWith("go@")) {
+                continue;
+            }
             
             // anything that falls in here isn't a direct dependency of main
             boolean needsRedux = !containsDirect && splitLine[0].equals(main);
