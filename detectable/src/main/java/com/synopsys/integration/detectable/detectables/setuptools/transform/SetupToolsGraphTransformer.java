@@ -45,7 +45,7 @@ public class SetupToolsGraphTransformer {
         if (pipExe != null) {
             // Get dependencies by running pip show on each direct dependency
             for (PythonDependency directDependency : parsedResult.getDirectDependencies()) {
-                handleShowDependency(pipExe, sourceDirectory, dependencyGraph, directDependency.getName(), null, directDependency.isConditional());
+                handleShowDependency(pipExe, dependencyGraph, directDependency.getName(), null, directDependency.isConditional());
             }
         } else {
             // Unable to determine transitive dependencies, add parsed dependencies directly
@@ -73,8 +73,8 @@ public class SetupToolsGraphTransformer {
         }
     }
     
-    private void handleShowDependency(ExecutableTarget pipExe, File sourceDirectory, DependencyGraph dependencyGraph, String dependencyToSearch, Dependency parentDependency, boolean isConditionalDependency) throws ExecutableRunnerException {
-        List<String> rawShowOutput = runPipShow(sourceDirectory, pipExe, dependencyToSearch, isConditionalDependency);
+    private void handleShowDependency(ExecutableTarget pipExe, DependencyGraph dependencyGraph, String dependencyToSearch, Dependency parentDependency, boolean isConditionalDependency) throws ExecutableRunnerException {
+        List<String> rawShowOutput = runPipShow(pipExe, dependencyToSearch, isConditionalDependency);
         
         if (rawShowOutput == null) {
             return;
@@ -95,12 +95,12 @@ public class SetupToolsGraphTransformer {
         if (showOutput.containsKey("Requires")) {
             String[] requiredPackages = showOutput.get("Requires").split(", ");
             for (String requiredPackage : requiredPackages) {
-                handleShowDependency(pipExe, sourceDirectory, dependencyGraph, requiredPackage, currentDependency, false);
+                handleShowDependency(pipExe, dependencyGraph, requiredPackage, currentDependency, false);
             }
         }
     }
     
-    public List<String> runPipShow(File sourceDirectory, ExecutableTarget pipExe, String dependencyToSearch, boolean isConditionalDependency) throws ExecutableRunnerException {      
+    public List<String> runPipShow(ExecutableTarget pipExe, String dependencyToSearch, boolean isConditionalDependency) throws ExecutableRunnerException {      
         List<String> pipArguments = new ArrayList<>();
         pipArguments.add("show");
         pipArguments.add(dependencyToSearch);
