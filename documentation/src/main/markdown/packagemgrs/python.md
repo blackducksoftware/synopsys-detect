@@ -110,4 +110,7 @@ Setuptools detector attempts to run on your project, after potential execution o
 
 [company_name] [solution_name] parses the pyproject.toml file to determine if the `[build-system]` section has been configured for Setuptools via the `requries= ["setuptools"]` setting. If the setting is located and pip is installed in the environment, either in the default location or specified via the `--detect.pip.path` property, the detector will execute in a virtual environment. If the detector discovers a configured pyproject.toml file but not a pip executible, it will execute in buildless mode where it will parse dependencies from the pyproject.toml, setup.cfg, or setup.py files but may not be able to specify exact package versions.
 
-If you are new to Setuptools, check out [Dependency Management in Setuptools](https://setuptools.pypa.io/en/latest/userguide/dependency_management.html).
+For setup.cfg and setup.py file parsing, the Setuptools detector supports direct mentioning of dependency files. For reference, see 
+[Dependency Management in Setuptools](https://setuptools.pypa.io/en/latest/userguide/dependency_management.html).
+
+<note type="tip">URL references, optional dependencies and `file: \<path to file\>` parameters found in setup.cfg are not supported. For setup.py files, programmatic population of the `install_requires` parameter is not supported.</note>
