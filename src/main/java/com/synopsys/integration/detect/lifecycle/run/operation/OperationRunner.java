@@ -624,7 +624,10 @@ public class OperationRunner {
         logger.info(ReportConstants.RUN_SEPARATOR);
         auditLog.namedPublic(
                 OPERATION_NAME,
-                () -> new GenerateComponentLocationAnalysisOperation().failComponentLocationAnalysisOperation()
+                () -> {
+                    new GenerateComponentLocationAnalysisOperation(detectConfigurationFactory, statusEventPublisher, exitCodePublisher)
+                        .failComponentLocationAnalysisOperation();
+                }
         );
     }
 
@@ -647,7 +650,12 @@ public class OperationRunner {
                 } else {
                     auditLog.namedPublic(
                             OPERATION_NAME,
-                            () -> publishResult(new GenerateComponentLocationAnalysisOperation().locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory()))
+                            () -> {
+                                publishResult(
+                                    new GenerateComponentLocationAnalysisOperation(detectConfigurationFactory, statusEventPublisher, exitCodePublisher)
+                                        .locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                                );
+                            }
                     );
                 }
             }
@@ -673,7 +681,12 @@ public class OperationRunner {
                 } else {
                     auditLog.namedPublic(
                             OPERATION_NAME,
-                            () -> publishResult(new GenerateComponentLocationAnalysisOperation().locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory()))
+                            () -> {
+                                publishResult(
+                                    new GenerateComponentLocationAnalysisOperation(detectConfigurationFactory, statusEventPublisher, exitCodePublisher)
+                                        .locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                                );
+                            }
                     );
                 }
             }
@@ -707,7 +720,10 @@ public class OperationRunner {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
             auditLog.namedPublic(
                     OPERATION_NAME,
-                    () -> publishResult(new GenerateComponentLocationAnalysisOperation().locateComponentsForOnlineIntelligentScan())
+                    () -> publishResult(
+                        new GenerateComponentLocationAnalysisOperation(detectConfigurationFactory, statusEventPublisher, exitCodePublisher)
+                            .locateComponentsForOnlineIntelligentScan()
+                    )
             );
         }
     }
