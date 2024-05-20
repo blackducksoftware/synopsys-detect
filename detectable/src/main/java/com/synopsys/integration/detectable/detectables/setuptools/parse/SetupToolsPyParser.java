@@ -1,11 +1,14 @@
 package com.synopsys.integration.detectable.detectables.setuptools.parse;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.python.core.PyList;
 import org.python.core.PyObject;
@@ -40,29 +43,42 @@ public class SetupToolsPyParser implements SetupToolsParser {
     }
     
     public List<String> load(String setupFile) throws IOException {
-        try (PythonInterpreter pyInterp = new PythonInterpreter()) {
-            // Read the Python script from the resources directory
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/parse_setup.py")))) {
-                String line;
-                StringBuilder pythonCode = new StringBuilder();
+        // The pattern "\\[?'(.*)'\\s*\\]?,?|\\[?\"(.*)\"\\s*\\]?,?" works as follows:
+        // - "\\[?'(.*)'\\s*\\]?,?" matches dependencies that start with an optional '[' followed by a mandatory single quote,
+        //   then any characters (the dependency name), ending with a single quote followed by optional whitespace and an optional ',' or ']'.
+        // - The '|' symbol denotes OR, meaning the pattern on either side can match.
+        // - "\\[?\"(.*)\"\\s*\\]?,?" is similar to the first part but for dependencies enclosed in double quotes.
+        Pattern pattern = Pattern.compile("\\[?'(.*)'\\s*\\]?,?|\\[?\"(.*)\"\\s*\\]?,?");
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(setupFile))) {
+            String line;
+            boolean isInstallRequiresSection = false;
 
-                while ((line = reader.readLine()) != null) {
-                    pythonCode.append(line);
-                    pythonCode.append("\n");
+            while ((line = reader.readLine()) != null) {
+                // If after removing all whitespace the line starts with install_requires=
+                // then we have found the section we are after.
+                if (line.trim().replaceAll("\\s+","").startsWith("install_requires=")) {
+                    isInstallRequiresSection = true;
+                    continue;
                 }
+                if (isInstallRequiresSection) {
+                    // If the [ is on its own line skip it, it doesn't contain a dependency
+                    if (line.trim().equals("[")) {
+                        continue;
+                    }
 
-                // Call the Python script and function
-                pyInterp.exec(pythonCode.toString());
-                PyObject pyFunc = pyInterp.get("parse_install_requires");
-                PyObject pyObject = pyFunc.__call__(new PyString(setupFile));
-
-                if (pyObject instanceof PyList) {
-                    PyList pyList = (PyList) pyObject;
-                    for (Object obj : pyList) {
-                        if (obj instanceof String) {
-                            String requirement = (String) obj;
-                            dependencies.add(requirement);
-                        }
+                    // Using the pattern to match the dependencies in the current line.
+                    Matcher matcher = pattern.matcher(line.trim());
+                    if (matcher.find()) {
+                        // Extracting the dependency from the matched group.
+                        String dependency = matcher.group(1) != null ? matcher.group(1) : matcher.group(2);
+                        // Adding the dependency to the list.
+                        dependencies.add(dependency);
+                    }
+                    
+                    // If the line ends with ] or ], it means we have reached the end of the dependencies list.
+                    if (line.trim().endsWith("]") || line.trim().endsWith("],")) {
+                        break;
                     }
                 }
             }
