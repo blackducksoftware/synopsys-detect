@@ -12,7 +12,6 @@ import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunne
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
-@Disabled
 @Tag("integration")
 public class GenerateComponentLocationAnalysisOperationIT {
     @Test
