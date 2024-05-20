@@ -1,7 +1,5 @@
 package com.synopsys.integration.detectable.detectables.setuptools;
 
-import java.io.File;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -21,7 +19,7 @@ public class SetupToolsExtractor {
         this.setupToolsTransformer = setupToolsTransformer;
     }
 
-    public Extraction extract(File sourceDirectory, SetupToolsParser parser, ExecutableTarget pipExe) {
+    public Extraction extract(SetupToolsParser parser, ExecutableTarget pipExe) {
         try {
             SetupToolsParsedResult parsedResult = parser.parse();
             

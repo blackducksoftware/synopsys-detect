@@ -41,10 +41,13 @@ public class SetupToolsPyParser implements SetupToolsParser {
         // The pattern "\\[?'(.*)'\\s*\\]?,?|\\[?\"(.*)\"\\s*\\]?,?" works as follows:
         // - "\\[?'(.*)'\\s*\\]?,?" matches dependencies that start with an optional '[' followed by a mandatory single quote,
         //   then any characters (the dependency name), ending with a single quote followed by optional whitespace and an optional ',' or ']'.
-        // - The '|' symbol denotes OR, meaning the pattern on either side can match.
         // - "\\[?\"(.*)\"\\s*\\]?,?" is similar to the first part but for dependencies enclosed in double quotes.
-        Pattern pattern = Pattern.compile("\\[?'(.*)'\\s*\\]?,?|\\[?\"(.*)\"\\s*\\]?,?");
-        
+        // Pattern for single quotes
+        Pattern patternSingleQuotes = Pattern.compile("\\[?'(.*)'\\s*\\]?,?");
+
+        // Pattern for double quotes
+        Pattern patternDoubleQuotes = Pattern.compile("\\[?\"(.*)\"\\s*\\]?,?");
+
         try (BufferedReader reader = new BufferedReader(new FileReader(setupFile))) {
             String line;
             boolean isInstallRequiresSection = false;
@@ -61,15 +64,8 @@ public class SetupToolsPyParser implements SetupToolsParser {
                     if (line.trim().equals("[")) {
                         continue;
                     }
-
-                    // Using the pattern to match the dependencies in the current line.
-                    Matcher matcher = pattern.matcher(line.trim());
-                    if (matcher.find()) {
-                        // Extracting the dependency from the matched group.
-                        String dependency = matcher.group(1) != null ? matcher.group(1) : matcher.group(2);
-                        // Adding the dependency to the list.
-                        dependencies.add(dependency);
-                    }
+                    
+                    checkLineForDependency(line, patternSingleQuotes, patternDoubleQuotes);
                     
                     // If the line ends with ] or ], it means we have reached the end of the dependencies list.
                     if (line.trim().endsWith("]") || line.trim().endsWith("],")) {
@@ -82,6 +78,26 @@ public class SetupToolsPyParser implements SetupToolsParser {
         return dependencies;
     }
     
+    private void checkLineForDependency(String line, Pattern patternSingleQuotes, Pattern patternDoubleQuotes) {
+        // Using the pattern for single quotes to match the dependencies in the current line.
+        Matcher matcherSingleQuotes = patternSingleQuotes.matcher(line.trim());
+        if (matcherSingleQuotes.find()) {
+            // Extracting the dependency from the matched group.
+            String dependency = matcherSingleQuotes.group(1);
+            // Adding the dependency to the list.
+            dependencies.add(dependency);
+        }
+
+        // Using the pattern for double quotes to match the dependencies in the current line.
+        Matcher matcherDoubleQuotes = patternDoubleQuotes.matcher(line.trim());
+        if (matcherDoubleQuotes.find()) {
+            // Extracting the dependency from the matched group.
+            String dependency = matcherDoubleQuotes.group(1);
+            // Adding the dependency to the list.
+            dependencies.add(dependency);
+        }
+    }
+
     private List<PythonDependency> parseDirectDependencies() {
         List<PythonDependency> results = new LinkedList<>();
         

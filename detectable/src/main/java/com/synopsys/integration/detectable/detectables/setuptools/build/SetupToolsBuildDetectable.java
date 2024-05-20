@@ -98,6 +98,6 @@ public class SetupToolsBuildDetectable extends Detectable {
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException,
             ExecutableFailedException, IOException, JsonSyntaxException, CycleDetectedException, DetectableException,
             MissingExternalIdException, ParserConfigurationException, SAXException {
-        return setupToolsExtractor.extract(environment.getDirectory(), setupToolsParser, pipExe);
+        return setupToolsExtractor.extract(setupToolsParser, pipExe);
     }
 }

@@ -23,10 +23,14 @@ import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToo
 
 public class SetupToolsExtractUtilsTest {
     
+    private static final String TOML = ".toml";
+    private static final String BUILD_SYSTEM_REQUIRES_SETUPTOOLS = "[build-system]\nrequires = [\"setuptools\"]";
+    private static final String PYPROJECT = "pyproject";
+
     @Test
     public void testExtractToml() throws IOException {
-        String tomlContent = "[build-system]\nrequires = [\"setuptools\"]";
-        Path tempFile = Files.createTempFile("pyproject", ".toml");
+        String tomlContent = BUILD_SYSTEM_REQUIRES_SETUPTOOLS;
+        Path tempFile = Files.createTempFile(PYPROJECT, TOML);
         Files.write(tempFile, tomlContent.getBytes());
 
         TomlParseResult result = SetupToolsExtractUtils.extractToml(tempFile.toFile());
@@ -38,8 +42,8 @@ public class SetupToolsExtractUtilsTest {
 
     @Test
     public void testCheckTomlRequiresSetupTools() throws IOException {
-        String tomlContent = "[build-system]\nrequires = [\"setuptools\"]";
-        Path tempFile = Files.createTempFile("pyproject", ".toml");
+        String tomlContent = BUILD_SYSTEM_REQUIRES_SETUPTOOLS;
+        Path tempFile = Files.createTempFile(PYPROJECT, TOML);
         Files.write(tempFile, tomlContent.getBytes());
 
         TomlParseResult result = SetupToolsExtractUtils.extractToml(tempFile.toFile());
@@ -52,7 +56,7 @@ public class SetupToolsExtractUtilsTest {
     @Test
     public void testFindDependenciesFileForPyProjectToml() throws IOException {
         String tomlContent = "[project]\ndependencies = [\"requests\"]";
-        Path tempFile = Files.createTempFile("pyproject", ".toml");
+        Path tempFile = Files.createTempFile(PYPROJECT, TOML);
         Files.write(tempFile, tomlContent.getBytes());
 
         TomlParseResult result = SetupToolsExtractUtils.extractToml(tempFile.toFile());
@@ -72,8 +76,8 @@ public class SetupToolsExtractUtilsTest {
     
     @Test
     public void testFindDependenciesFileForSetupCfg() throws IOException {
-        String tomlContent = "[build-system]\nrequires = [\"setuptools\"]";
-        Path tempFileToml = Files.createTempFile("pyproject", ".toml");
+        String tomlContent = BUILD_SYSTEM_REQUIRES_SETUPTOOLS;
+        Path tempFileToml = Files.createTempFile(PYPROJECT, TOML);
         Files.write(tempFileToml, tomlContent.getBytes());
         
         TomlParseResult result = SetupToolsExtractUtils.extractToml(tempFileToml.toFile());
@@ -92,6 +96,31 @@ public class SetupToolsExtractUtilsTest {
         assertTrue(setupToolsParser instanceof SetupToolsCfgParser);
 
         Files.delete(tempFileCfg);
+        Files.delete(tempFileToml);
+    }
+    
+    @Test
+    public void testFindDependenciesFileForSetupPy() throws IOException {
+        String tomlContent = BUILD_SYSTEM_REQUIRES_SETUPTOOLS;
+        Path tempFileToml = Files.createTempFile(PYPROJECT, TOML);
+        Files.write(tempFileToml, tomlContent.getBytes());
+        
+        TomlParseResult result = SetupToolsExtractUtils.extractToml(tempFileToml.toFile());
+        
+        String pyContent = "setup(\n    install_requires=[\n        'BazSpam ==1.1',\n    ],\n)";
+        Path tempFilePy = Files.createTempFile("setup", ".py");
+        Files.write(tempFilePy, pyContent.getBytes());
+
+        FileFinder fileFinder = mock(FileFinder.class);
+        DetectableEnvironment environment = mock(DetectableEnvironment.class);
+        when(fileFinder.findFile(environment.getDirectory(), "setup.py")).thenReturn(tempFilePy.toFile());
+        
+        SetupToolsParser setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(result, fileFinder, environment);
+
+        assertNotNull(setupToolsParser);
+        assertTrue(setupToolsParser instanceof SetupToolsPyParser);
+
+        Files.delete(tempFilePy);
         Files.delete(tempFileToml);
     }
 }

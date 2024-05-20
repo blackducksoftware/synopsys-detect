@@ -2,6 +2,7 @@ package com.synopsys.integration.detectable.detectables.setuptools.transform;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +26,10 @@ import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class SetupToolsGraphTransformer {
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private static final String REQUIRES = "Requires";
     private static final String UNEXPECTED_PIP_OUTPUT = "Unexpected empty pip show results. Please run pip install . on the project and try running Detect again.";
     
     private File sourceDirectory;
@@ -56,7 +59,7 @@ public class SetupToolsGraphTransformer {
         return dependencyGraph;
     }
 
-    public void handleParsedDependencies(SetupToolsParsedResult parsedResult, DependencyGraph dependencyGraph) {
+    private void handleParsedDependencies(SetupToolsParsedResult parsedResult, DependencyGraph dependencyGraph) {
         List<PythonDependency> directDependencies = parsedResult.getDirectDependencies();
         
         for (PythonDependency directDependency : directDependencies) {
@@ -76,7 +79,7 @@ public class SetupToolsGraphTransformer {
     private void handleShowDependency(ExecutableTarget pipExe, DependencyGraph dependencyGraph, String dependencyToSearch, Dependency parentDependency, boolean isConditionalDependency) throws ExecutableRunnerException {
         List<String> rawShowOutput = runPipShow(pipExe, dependencyToSearch, isConditionalDependency);
         
-        if (rawShowOutput == null) {
+        if (rawShowOutput.isEmpty()) {
             return;
         }
         
@@ -92,8 +95,8 @@ public class SetupToolsGraphTransformer {
         }
         
         // See if we need to continue exploring this chain of dependencies
-        if (showOutput.containsKey("Requires")) {
-            String[] requiredPackages = showOutput.get("Requires").split(", ");
+        if (showOutput.containsKey(REQUIRES)) {
+            String[] requiredPackages = showOutput.get(REQUIRES).split(", ");
             for (String requiredPackage : requiredPackages) {
                 handleShowDependency(pipExe, dependencyGraph, requiredPackage, currentDependency, false);
             }
@@ -113,7 +116,7 @@ public class SetupToolsGraphTransformer {
             // Don't consider it a failure if this is a conditional dependency, it might not have been installed intentionally
             if (isConditionalDependency) {
                 logger.info(String.format("Dependency %s is not in the pip cache. Ignoring as a condition is specified on the dependency.", dependencyToSearch));
-                return null;
+                return Collections.emptyList();
             } else {
                 throw new ExecutableRunnerException(new Exception(UNEXPECTED_PIP_OUTPUT));
             }
@@ -128,7 +131,7 @@ public class SetupToolsGraphTransformer {
             if (parts.length >= 2) {
                 String key = parts[0].trim();
                 String value = parts[1].trim();
-                if (key.equals("Version") || key.equals("Requires")) {
+                if (key.equals("Version") || key.equals(REQUIRES)) {
                     showOutput.put(key, value);
                 }
             }

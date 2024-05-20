@@ -85,6 +85,6 @@ public class SetupToolsBuildlessDetectable extends Detectable {
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException,
             ExecutableFailedException, IOException, JsonSyntaxException, CycleDetectedException, DetectableException,
             MissingExternalIdException, ParserConfigurationException, SAXException {
-        return setupToolsExtractor.extract(environment.getDirectory(), setupToolsParser, null);
+        return setupToolsExtractor.extract(setupToolsParser, null);
     }
 }
