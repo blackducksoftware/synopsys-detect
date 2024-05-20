@@ -2,7 +2,6 @@ package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +26,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulOperation("Generating Component Location Analysis File for All Components");
+            dockerAssertions.successfulOperation(GenerateComponentLocationAnalysisOperation.OPERATION_NAME);
             dockerAssertions.logContainsPattern("Component Location Analysis File: .*components-with-locations\\.json");
             dockerAssertions.logDoesNotContain("COMPONENT_LOCATOR: SUCCESS");
         }
@@ -44,7 +43,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulOperation("Generating Component Location Analysis File for Reported Components");
+            dockerAssertions.successfulOperation(GenerateComponentLocationAnalysisOperation.OPERATION_NAME);
             dockerAssertions.logContainsPattern("Component Location Analysis File: .*components-with-locations\\.json");
             dockerAssertions.logDoesNotContain("COMPONENT_LOCATOR: SUCCESS");
 
@@ -65,7 +64,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulOperation("Generating Component Location Analysis File for All Components");
+            dockerAssertions.successfulOperation(GenerateComponentLocationAnalysisOperation.OPERATION_NAME);
             dockerAssertions.logContainsPattern("Component Location Analysis File: .*components-with-locations\\.json");
             dockerAssertions.logContains("COMPONENT_LOCATOR: SUCCESS");
         }
@@ -83,10 +82,9 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulOperation("Generating Component Location Analysis File for Reported Components");
+            dockerAssertions.successfulOperation(GenerateComponentLocationAnalysisOperation.OPERATION_NAME);
             dockerAssertions.logContainsPattern("Component Location Analysis File: .*components-with-locations\\.json");
             dockerAssertions.logContains("COMPONENT_LOCATOR: SUCCESS");
-
         }
     }
 }
