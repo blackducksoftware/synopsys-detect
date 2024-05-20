@@ -7,6 +7,7 @@ public class RapidScanComponentDetail {
     private final RapidScanComponentGroupDetail componentDetails;
     private final RapidScanComponentGroupDetail securityDetails;
     private final RapidScanComponentGroupDetail licenseDetails;
+    private final RapidScanComponentGroupDetail violatingPoliciesDetails;
 
     public RapidScanComponentDetail(
         String component,
@@ -14,7 +15,8 @@ public class RapidScanComponentDetail {
         String componentIdentifier,
         RapidScanComponentGroupDetail componentDetails,
         RapidScanComponentGroupDetail securityDetails,
-        RapidScanComponentGroupDetail licenseDetails
+        RapidScanComponentGroupDetail licenseDetails,
+        RapidScanComponentGroupDetail violatingPoliciesDetails
     ) {
         this.component = component;
         this.version = version;
@@ -22,6 +24,7 @@ public class RapidScanComponentDetail {
         this.componentDetails = componentDetails;
         this.securityDetails = securityDetails;
         this.licenseDetails = licenseDetails;
+        this.violatingPoliciesDetails = violatingPoliciesDetails;
     }
 
     public boolean hasErrors() {
@@ -55,6 +58,8 @@ public class RapidScanComponentDetail {
     public RapidScanComponentGroupDetail getLicenseDetails() {
         return licenseDetails;
     }
+
+    public RapidScanComponentGroupDetail getViolatingPoliciesDetails() { return violatingPoliciesDetails; }
 
     public int getComponentErrorCount() {
         return getGroupErrorCount(componentDetails);

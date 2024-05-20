@@ -4,7 +4,8 @@ public enum RapidScanDetailGroup {
     LICENSE("License"),
     POLICY("Components"),
     SECURITY("Security"),
-    TRANSITIVE("Upgrade Guidance For Transitive Components");
+    TRANSITIVE("Upgrade Guidance For Transitive Components"),
+    VIOLATING_POLICIES("All violated policies");
 
     private final String displayName;
 
