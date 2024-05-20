@@ -3,17 +3,12 @@ package com.synopsys.integration.detectable.detectables.setuptools.parse;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.python.core.PyList;
-import org.python.core.PyObject;
-import org.python.core.PyString;
-import org.python.util.PythonInterpreter;
 import org.tomlj.TomlParseResult;
 
 import com.synopsys.integration.detectable.python.util.PythonDependency;
