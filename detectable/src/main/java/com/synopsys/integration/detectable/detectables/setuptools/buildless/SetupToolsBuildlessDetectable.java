@@ -69,7 +69,7 @@ public class SetupToolsBuildlessDetectable extends Detectable {
             }
             
             // Ensure dependencies/requirements are specified in a toml, cfg, or py file.
-            setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(parsedToml, fileFinder, environment);
+            setupToolsParser = SetupToolsExtractUtils.resolveSetupToolsParser(parsedToml, fileFinder, environment);
             
             if (setupToolsParser == null) {
                return new SetupToolsNoDependenciesDetectableResult(); 

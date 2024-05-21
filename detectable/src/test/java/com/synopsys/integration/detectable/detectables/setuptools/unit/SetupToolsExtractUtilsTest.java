@@ -66,7 +66,7 @@ public class SetupToolsExtractUtilsTest {
         when(fileFinder.findFile(environment.getDirectory(), "setup.cfg")).thenReturn(null);
         when(fileFinder.findFile(environment.getDirectory(), "setup.py")).thenReturn(null);
         
-        SetupToolsParser setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(result, fileFinder, environment);
+        SetupToolsParser setupToolsParser = SetupToolsExtractUtils.resolveSetupToolsParser(result, fileFinder, environment);
 
         assertNotNull(setupToolsParser);
         assertTrue(setupToolsParser instanceof SetupToolsTomlParser);
@@ -90,7 +90,7 @@ public class SetupToolsExtractUtilsTest {
         DetectableEnvironment environment = mock(DetectableEnvironment.class);
         when(fileFinder.findFile(environment.getDirectory(), "setup.cfg")).thenReturn(tempFileCfg.toFile());
         
-        SetupToolsParser setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(result, fileFinder, environment);
+        SetupToolsParser setupToolsParser = SetupToolsExtractUtils.resolveSetupToolsParser(result, fileFinder, environment);
 
         assertNotNull(setupToolsParser);
         assertTrue(setupToolsParser instanceof SetupToolsCfgParser);
@@ -115,7 +115,7 @@ public class SetupToolsExtractUtilsTest {
         DetectableEnvironment environment = mock(DetectableEnvironment.class);
         when(fileFinder.findFile(environment.getDirectory(), "setup.py")).thenReturn(tempFilePy.toFile());
         
-        SetupToolsParser setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(result, fileFinder, environment);
+        SetupToolsParser setupToolsParser = SetupToolsExtractUtils.resolveSetupToolsParser(result, fileFinder, environment);
 
         assertNotNull(setupToolsParser);
         assertTrue(setupToolsParser instanceof SetupToolsPyParser);
