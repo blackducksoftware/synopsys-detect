@@ -218,6 +218,11 @@ public class DetectConfigurationFactory {
     public Boolean isComponentLocationAnalysisEnabled() {
         return detectConfiguration.getValue(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED);
     }
+
+    public Boolean doesComponentLocatorAffectStatus() {
+        return detectConfiguration.getValue(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_STATUS);
+    }    
+
     public DetectToolFilter createToolFilter(RunDecision runDecision, BlackDuckDecision blackDuckDecision) {
         Optional<Boolean> impactEnabled = Optional.of(detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED));
 

@@ -1,5 +1,14 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
+import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -7,18 +16,17 @@ import com.synopsys.integration.componentlocator.ComponentLocator;
 import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
 import com.synopsys.integration.componentlocator.beans.Component;
 import com.synopsys.integration.componentlocator.beans.Input;
+import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.result.ComponentLocatorResult;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Set;
+import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 
 /**
  * This class will generate the appropriate input file for Component Locator, invoke the library's obfuscated JAR and
@@ -30,7 +38,17 @@ public class GenerateComponentLocationAnalysisOperation {
     private static final String LOCATOR_INPUT_FILE_NAME = "components-source.json";
     private static final String LOCATOR_OUTPUT_FILE_NAME = "components-with-locations.json";
     public static final String SUPPORTED_DETECTORS_LOG_MSG = "Component Location Analysis supports specific detectors ".concat(SUPPORTED_DETECTORS.toString()).concat(" only.");
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final DetectConfigurationFactory detectConfigurationFactory;
+    private final StatusEventPublisher statusEventPublisher;
+    private final ExitCodePublisher exitCodePublisher;
+
+    public GenerateComponentLocationAnalysisOperation(DetectConfigurationFactory detectConfigurationFactory, StatusEventPublisher statusEventPublisher, ExitCodePublisher exitCodePublisher) {
+        this.detectConfigurationFactory = detectConfigurationFactory;
+        this.statusEventPublisher = statusEventPublisher;
+        this.exitCodePublisher = exitCodePublisher;
+    }
 
     /**
      * Given a BDIO, generates an output file consisting of the list of unique components detected and their declaration
@@ -56,6 +74,7 @@ public class GenerateComponentLocationAnalysisOperation {
         }
         logger.info("Component Location Analysis file saved at: {}", outputFilepath);
         logger.info(ReportConstants.RUN_SEPARATOR);
+        publishComponentLocatorSuccessIfEnabled();
         return new ComponentLocatorResult(outputFilepath);
     }
 
@@ -64,7 +83,8 @@ public class GenerateComponentLocationAnalysisOperation {
         logger.info("Intelligent Scan mode does not support Component Location Analysis.");
         failComponentLocationAnalysisOperation();
 
-        // unreachable statement, mainly here so we don't forget to log a result if this function is ever implemented
+        // unreachable statements, mainly here so we don't forget to log a result if this function is ever implemented
+        publishComponentLocatorSuccessIfEnabled();
         return new ComponentLocatorResult("change me");
     }
 
@@ -74,9 +94,24 @@ public class GenerateComponentLocationAnalysisOperation {
      * @throws com.synopsys.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException
      */
     public void failComponentLocationAnalysisOperation() throws ComponentLocatorException {
+        publishComponentLocatorFailureIfEnabled();
         throw new ComponentLocatorException("Failed to generate Component Location Analysis file.");
     }
-    
+
+
+    private void publishComponentLocatorSuccessIfEnabled() {
+        if (detectConfigurationFactory.doesComponentLocatorAffectStatus()) {
+            statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.COMPONENT_LOCATOR, StatusType.SUCCESS));
+        }
+    }
+
+    private void publishComponentLocatorFailureIfEnabled() {
+        if (detectConfigurationFactory.doesComponentLocatorAffectStatus()) {
+            statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.COMPONENT_LOCATOR, StatusType.FAILURE));
+            exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_COMPONENT_LOCATOR, "Component Locator failed");
+        }
+    }
+
     private File serializeInputToJson(File saveInputFileDir, Input libInput) throws DetectUserFriendlyException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String serializedLibInput = gson.toJson(libInput, Input.class);
