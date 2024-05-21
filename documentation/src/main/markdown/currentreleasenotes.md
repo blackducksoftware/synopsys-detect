@@ -9,3 +9,4 @@
 ### Resolved issues
 * (IDETECT-4341) The Poetry detector will now recognize Python components with case insensitivity.
 * (IDETECT-3181) Improved Eclipse component matching implementation through better handling of external identifiers.
+* (IDETECT-3989) Complete set of policy violations, regardless of category, now printed to console output. 

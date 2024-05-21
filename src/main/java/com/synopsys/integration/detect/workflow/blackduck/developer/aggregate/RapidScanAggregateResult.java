@@ -12,6 +12,7 @@ public class RapidScanAggregateResult {
     private final RapidScanComponentGroupDetail componentDetails;
     private final RapidScanComponentGroupDetail securityDetails;
     private final RapidScanComponentGroupDetail licenseDetails;
+    private final RapidScanComponentGroupDetail violatingPoliciesDetails;
     private final List<String> transitiveGuidance;
 
     public RapidScanAggregateResult(
@@ -19,12 +20,14 @@ public class RapidScanAggregateResult {
         RapidScanComponentGroupDetail componentDetails,
         RapidScanComponentGroupDetail securityDetails,
         RapidScanComponentGroupDetail licenseDetails,
+        RapidScanComponentGroupDetail violatingPoliciesDetails,
         List<String> transitiveGuidance
     ) {
         this.summary = summary;
         this.componentDetails = componentDetails;
         this.securityDetails = securityDetails;
         this.licenseDetails = licenseDetails;
+        this.violatingPoliciesDetails = violatingPoliciesDetails;
         this.transitiveGuidance = transitiveGuidance;
     }
 
@@ -36,6 +39,7 @@ public class RapidScanAggregateResult {
         logGroupDetail(logger, componentDetails);
         logGroupDetail(logger, securityDetails);
         logGroupDetail(logger, licenseDetails);
+        logGroupDetail(logger, violatingPoliciesDetails);
     }
 
     private void logGroupDetail(IntLogger logger, RapidScanComponentGroupDetail groupDetail) {
