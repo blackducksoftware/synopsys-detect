@@ -4,7 +4,7 @@
 [company_name] [solution_name] looks for risk report generation details in the properties whose names start with detect.risk.report, including:
 
 * detect.risk.report.pdf (enable report generation by setting to "true")
-* detect.risk.report.path (path where report will be located)
+* detect.risk.report.pdf.path (path where the generated report will be located)
 
 ## Fonts
 

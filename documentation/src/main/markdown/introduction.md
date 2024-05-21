@@ -4,7 +4,7 @@
 
 [company_name] [solution_name] can be used in both connected and air gap modes depending on the types of scans being run.    
 
-## [company_name] [solution_name] has the following characteristics.     
+## [company_name] [solution_name] characteristics.     
 
 * [company_name] [solution_name] integrates with development tools used throughout the SDLC (software development life cycle) and automatically detects resources to optimize its scan methodology.
 

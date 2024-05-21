@@ -38,6 +38,7 @@ public class MavenCodeLocationPackager {
     private int level;
     private boolean inOutOfScopeTree = false;
     private DependencyGraph currentGraph = null;
+    private int eclipsePackageExternalIdModifiedCounter = 0;
 
     private Map<ExternalId, Set<Dependency>> shadedDependenciesConverted = new HashMap<>();
 
@@ -114,6 +115,7 @@ public class MavenCodeLocationPackager {
             }
         }
         addOrphansToGraph(currentGraph, orphans);
+        logger.debug(String.format("Modified %d Eclipse package external IDs.", eclipsePackageExternalIdModifiedCounter));
 
         return codeLocations;
     }
@@ -329,6 +331,7 @@ public class MavenCodeLocationPackager {
         if (isEclipsePackage(group))
         {
             externalId = externalIdFactory.createEclipseExternalId(artifact, version);
+            eclipsePackageExternalIdModifiedCounter ++;
         } else {
             externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
         }
@@ -476,5 +479,9 @@ public class MavenCodeLocationPackager {
 
         return lineThatStartsAndEndsWithParentheses.matcher(cleanedLineWithParentheses).matches()
                 ? cleanedLineWithParentheses.substring(1, cleanedLineWithParentheses.length() - 1) : cleanedLineWithParentheses;
+    }
+
+    public int getEclipsePackageExternalIdModifiedCounter() {
+        return eclipsePackageExternalIdModifiedCounter;
     }
 }

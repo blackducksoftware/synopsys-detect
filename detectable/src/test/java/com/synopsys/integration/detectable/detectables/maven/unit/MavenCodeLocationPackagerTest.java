@@ -187,6 +187,7 @@ public class MavenCodeLocationPackagerTest {
         Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
         assertEquals("org.eclipse.core.runtime/3.17.100.v20200203-0917", dependency.getExternalId().createExternalId());
         assertEquals(Forge.ECLIPSE, dependency.getExternalId().getForge());
+        assertEquals(1, mavenCodeLocationPackager.getEclipsePackageExternalIdModifiedCounter());
     }
 
     @Test

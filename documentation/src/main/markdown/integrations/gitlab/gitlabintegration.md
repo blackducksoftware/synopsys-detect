@@ -1,13 +1,13 @@
 # GitLab Integration
-[company_name] [solution_name] is designed to run in the native build environment of the project you want to scan. The following procedures provide guidance on setting up [company_name] [solution_name] with your GitLab continuous integration builds.
+[company_name] [solution_name] is designed to run in the native build environment of the project you want to scan. The following procedures provide guidance on setting up [company_name] [solution_name] with your GitLab continuous integration builds.
 
 ## Configuring with API tokens
-The recommended way of configuring [company_name] [solution_name] from a GitLab pipeline is to use an API token.  This is detailed as follows.
+The recommended way of configuring [company_name] [solution_name] from a GitLab pipeline is to use an API token. This is detailed as follows.
 
 1. In [blackduck_product_name], navigate to the profile of the user whose credentials are used to scan projects from the pipeline.
-2. Scroll down to the **User Access Token** section, and complete the fields to create a new token.
-3. Check both the **Read Access** and **Write Access** boxes.
-4. Click  **Generate.** Save or copy the displayed token.
+2. Scroll down to the **User Access Token** section, and complete the fields to create a new token.
+3. Check both the **Read Access** and **Write Access** boxes.
+4. Click **Generate.** Save or copy the displayed token.
 
     <figure>
     <img src="../gitlab/images/myaccesstokens.png"
@@ -16,9 +16,9 @@ The recommended way of configuring [company_name] [solution_name] from a GitLab
     </figure>
 
 ## Configuring your environment variables
-1. In the sidebar, navigate to **Settings**. Then select **CI/CD**.
+1. In the sidebar, navigate to **Settings**. Then select **CI/CD**.
 
-2. Expand the **Secret variables** tab.  
+2. Expand the **Secret variables** tab.  
 
     <figure>
     <img src="../gitlab/images/pipelineconfig1.png"
@@ -28,17 +28,17 @@ The recommended way of configuring [company_name] [solution_name] from a GitLab
 
 3. Create two environment variables:
 
-	- HUB\_URL -  containing the URL of your [blackduck_product_name] installation.
+	- BLACKDUCK\_URL - URL of your [blackduck_product_name] installation.
 
-	- HUB\_TOKEN - containing the API token generated in the prerequisite steps.
+	- BLACKDUCK\_TOKEN - API token that you generated in [blackduck_product_name].
 
-    **Note:** You can make these variables protected. For additional information, refer to [Gitlab protected secret variables](https://gitlab.com/help/ci/variables/README#protected-secret-variables).
+	<note type="note">You can make these variables protected. For additional information, refer to [Gitlab protected secret variables](https://gitlab.com/help/ci/variables/README#protected-secret-variables).</note>
 
-4. Configure [company_name] [solution_name] to be a script step in the *.gitlab-ci.yml* file of the project you want to scan. Then add the snippet for [company_name] [solution_name].  
+4. Configure [company_name] [solution_name] to be a script step in the *.gitlab-ci.yml* file of the project you want to scan. Then add the snippet for [company_name] [solution_name].    
 
-    **Note:** Ensure that the final line of the following command fits on a single command line.
+    Ensure that the final line of the following command fits on a single command line.
 
-    ~~~
+    ```
 	image: java:8build:
 		stage: build
 		script:
@@ -46,21 +46,21 @@ The recommended way of configuring [company_name] [solution_name] from a GitLab
 	test:
 		stage: test
 		script:
-		- bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --blackduck.url="${HUB\_URL}" --blackduck.api.token={your Black Duck access token} --blackduck.trust.cert=true --<any other flags>
-    ~~~
+			- bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --blackduck.url="${BLACKDUCK\_URL}" --blackduck.api.token="${BLACKDUCK\_TOKEN}" --blackduck.trust.cert=true --<any other flags>
+    ```
 
-5.	Configure [company_name] [solution_name] as a script build step. Otherwise, GitLab cannot enforce build changes influenced by [company_name] [solution_name]. For example, checking for policy, failing builds according to policy, and others.
+5. Configure [company_name] [solution_name] as a script build step so GitLab can enforce build changes influenced by [company_name] [solution_name]. For example, checking for policy, failing builds according to policy, and others.
 
-6.	After you commit the change to *.gitlab-ci.yml,* the pipeline runs. After the build with [company_name] [solution_name] completes, you can view the complete scan results in your [blackduck_product_name] instance.
+6. After you commit the change to *.gitlab-ci.yml,* the pipeline runs. After the build with [company_name] [solution_name] completes, you can view the complete scan results in your [blackduck_product_name] instance.
 
 ## Configuring with username and password
-For improved security, Synopsys recommends a revocable API token, as described in the preceding process, instead of storing an account password in GitLab settings.
+For improved security, it is recommended to use a revocable API token, as described in the preceding process, instead of storing an account password in GitLab settings.
 
-1. In the sidebar project menu, navigate to **Settings**  Then select **CI/CD**.
+1. In the sidebar project menu, navigate to **Settings** Then select **CI/CD**.
 
-2. Expand the **Secret variables** tab.  
+2. Expand the **Secret variables** tab.  
 
-	<figure>
+    <figure>
     <img src="../gitlab/images/pipelineconfig2.png"
          alt="Configuring pipeline secret variables">
     <figcaption>Configuring the pipeline secret variables</figcaption>
@@ -68,19 +68,19 @@ For improved security, Synopsys recommends a revocable API token, as described i
 
 3. Create three environment variables:
 
-	- HUB\_URL - containing the URL of your [blackduck_product_name] environment.
+	- BLACKDUCK\_URL - URL of your [blackduck_product_name] installation.
 
-	- HUB\_USERNAME - containing the username of the [blackduck_product_name] account to be used.
+	- BLACKDUCK\_USERNAME - containing the username of the [blackduck_product_name] account to be used.
 
-	- HUB\_PASSWORD - containing the password of the [blackduck_product_name] account to be used.
-	
-    **Note:** You can make these variables protected. For additional information, refer to [Gitlab protected secret variables](https://gitlab.com/help/ci/variables/README#protected-secret-variables).
+	- BLACKDUCK\_PASSWORD - containing the password of the [blackduck_product_name] account to be used.
 
-4. Configure [company_name] [solution_name] to be a script step in the *.gitlab-ci.yml* file of the project you want to scan. Then add the snippet for [company_name] [solution_name].  
+	<note type="note">You can make these variables protected. For additional information, refer to [Gitlab protected secret variables](https://docs.gitlab.com/ee/ci/variables/#protect-a-cicd-variable).</note>
 
-    **Note:** Ensure that the final line of the following command fits on a single command line.
+4. Configure [company_name] [solution_name] to be a script step in the *.gitlab-ci.yml* file of the project you want to scan. Then add the snippet for [company_name] [solution_name].    
 
-    ~~~
+    Ensure that the final line of the following command fits on a single command line.
+
+    ```
 	image: java:8build:
 		stage: build
 		script:
@@ -88,10 +88,10 @@ For improved security, Synopsys recommends a revocable API token, as described i
 	test:
 		stage: test
 		script:
-			- bash <(curl -s -L <https://detect.synopsys.com/detect9.sh>) --blackduck.url="${HUB\_URL}"  --blackduck.hub.username="${HUB\_USERNAME}" --blackduck.hub.password="${HUB\_PASSWORD}" --blackduck.api.token={your Black Duck access token} --blackduck.trust.cert=true --<any other flags>
-    ~~~
+			- bash <(curl -s -L <https://detect.synopsys.com/detect9.sh>) --blackduck.url="${BLACKDUCK\_URL}" --blackduck.hub.username="${BLACKDUCK\_USERNAME}" --blackduck.hub.password="${BLACKDUCK\_PASSWORD}" --blackduck.trust.cert=true --<any other flags>
+    ```
 
-5.	Configure [company_name] [solution_name] as a script build step. Otherwise, GitLab cannot enforce build changes influenced by [company_name] [solution_name]. For example, checking for policy, failing builds according to policy, and others.
+5. Configure [company_name] [solution_name] as a script build step so GitLab can enforce build changes influenced by [company_name] [solution_name]. For example, checking for policy, failing builds according to policy, and others.
 
-6.	After you commit the change to *gitlab-ci.yml*, the pipeline runs. After the build with [company_name] [solution_name] completes, you can view the complete scan results in your [blackduck_product_name] instance.
+6. After you commit the change to *gitlab-ci.yml*, the pipeline runs. When the build with [company_name] [solution_name] completes, you can view the scan results in your [blackduck_product_name] instance.
 

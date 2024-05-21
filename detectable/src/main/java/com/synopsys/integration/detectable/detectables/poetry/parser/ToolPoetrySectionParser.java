@@ -12,6 +12,7 @@ import org.tomlj.TomlTable;
 import com.synopsys.integration.detectable.detectable.util.TomlFileUtils;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryOptions;
 
+
 public class ToolPoetrySectionParser {
     public static final String TOOL_POETRY_KEY = "tool.poetry";
     public static final String MAIN_DEPENDENCY_GROUP_KEY = "tool.poetry.dependencies";
@@ -24,7 +25,7 @@ public class ToolPoetrySectionParser {
     public static final String DEFAULT_DEV_GROUP_NAME = "dev";
 
     public static final String PYTHON_COMPONENT_NAME = "python";
-
+    
     public ToolPoetrySectionResult parseToolPoetrySection(@Nullable File pyprojectToml) {
         if (pyprojectToml != null) {
             try {
@@ -58,7 +59,6 @@ public class ToolPoetrySectionParser {
             processKeyForRootPackages(parseResult, options, result, key);
         }
 
-        result.remove(PYTHON_COMPONENT_NAME);
         return result;
     }
 
@@ -85,6 +85,17 @@ public class ToolPoetrySectionParser {
     }
 
     private void addAllTableKeysToSet(Set<String> set, TomlTable table) {
-        set.addAll(table.dottedKeySet());
+        for (String key : table.dottedKeySet()) {
+            if (key.equalsIgnoreCase(PYTHON_COMPONENT_NAME))
+                continue;
+
+            int dotIndex = key.indexOf('.', 0);
+            if (dotIndex == -1) {
+                set.add(key);
+            } else {
+                // remove the ".extras" part
+                set.add(key.substring(0, dotIndex));
+            }
+        }
     }
 }
