@@ -56,7 +56,7 @@ public class SetupToolsExtractUtils {
         // Step 1: Check the pyproject.toml
         TomlArray tomlDependencies = parsedToml.getArray(TOML_DEPENDENCIES);
         
-        if (tomlDependencies != null && tomlDependencies.size() > 0) {
+        if (tomlDependencies != null && !tomlDependencies.isEmpty()) {
             return new SetupToolsTomlParser(parsedToml);
         }
         
@@ -69,7 +69,7 @@ public class SetupToolsExtractUtils {
 
             List<String> cfgDependencies = cfgParser.load(cfgFile.toString());
 
-            if (cfgDependencies != null && cfgDependencies.size() > 0) {
+            if (cfgDependencies != null && !cfgDependencies.isEmpty()) {
                 return cfgParser;
             }
         }
@@ -83,7 +83,7 @@ public class SetupToolsExtractUtils {
 
             List<String> pyDependencies = pyParser.load(pyFile.toString());
             
-            if (pyDependencies != null && pyDependencies.size() > 0) {
+            if (pyDependencies != null && !pyDependencies.isEmpty()) {
                 return pyParser;
             }
         }

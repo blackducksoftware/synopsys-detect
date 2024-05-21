@@ -4,6 +4,6 @@ public class SetupToolsNoDependenciesDetectableResult extends FailedDetectableRe
 
     @Override
     public String toDescription() {
-        return "Unable to find package dependencies in the pyproject.toml, setup.cfg, or setup.py files. Unable to continue the Setuptools Detector.";
+        return "Did not find package dependencies in the pyproject.toml, setup.cfg, or setup.py files. Setuptools Detector will not be run.";
     }
 }
