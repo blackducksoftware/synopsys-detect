@@ -212,7 +212,7 @@ public class RapidScanComponentGroupDetail {
     // While it may be possible to reduce the overall message generation code in this class by pushing
     // some common pieces into a parent class or interface, it is likely not worth altering the libraries
     // as this may be temporary code.
-    public void addLViolatingPoliciesMessages(DeveloperScansScanView resultView,  List<DeveloperScansScanItemsViolatingPoliciesView> violatingPolicies) {
+    public void addViolatingPoliciesMessages(DeveloperScansScanView resultView, List<DeveloperScansScanItemsViolatingPoliciesView> violatingPolicies) {
         String baseMessage = getBaseMessage(resultView);
 
         String errorMessage = "", warningMessage = "";

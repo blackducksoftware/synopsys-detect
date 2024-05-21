@@ -19,7 +19,6 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.Ra
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 
-// TOME add test here
 public class RapidModeLogReportOperationTest {
 
     @Test

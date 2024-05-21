@@ -4,9 +4,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class RapidScanResultSummary {
-    private final int policyErrorCount; // should be renamed to componentPolicyErrorCount
+    private final int policyErrorCount;
     private final int policyWarningCount;
-    private final int securityErrorCount; // should be renamed to vulnerabilityPolicyErrorCount or something
+    private final int securityErrorCount;
     private final int securityWarningCount;
     private final int licenseErrorCount;
     private final int licenseWarningCount;

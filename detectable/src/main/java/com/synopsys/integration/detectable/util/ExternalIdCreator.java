@@ -35,7 +35,6 @@ public class ExternalIdCreator {
         return sharedFactory.createMavenExternalId(group, name, version);
     }
 
-    @Deprecated
     public static ExternalId maven(final String group, final String name) {
         return sharedFactory.createMavenExternalId(group, name);
     }

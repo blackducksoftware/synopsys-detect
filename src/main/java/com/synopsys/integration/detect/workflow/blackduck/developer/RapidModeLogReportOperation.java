@@ -30,11 +30,11 @@ public class RapidModeLogReportOperation {
 
     public RapidScanResultSummary perform(List<DeveloperScansScanView> results) throws DetectUserFriendlyException {
          RapidScanAggregateResult aggregateResult = rapidScanResultAggregator.aggregateData(results);
-        logger.info(String.format("%s:", scanMode + RapidScanDetectResult.NONPERSISTENT_SCAN_RESULT_DETAILS_HEADING)); // TOMe can be stateless scan result details OR rapid scan result details
+        logger.info(String.format("%s:", scanMode + RapidScanDetectResult.NONPERSISTENT_SCAN_RESULT_DETAILS_HEADING));
         aggregateResult.logResult(new Slf4jIntLogger(logger));
         RapidScanResultSummary summary = aggregateResult.getSummary();
         if (summary.hasErrors()) {
-            exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(summary.getPolicyViolationNames())); // TOME so error is needed in this part? this is only for stateless, what do we do for rapid?
+            exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(summary.getPolicyViolationNames()));
         }
         return summary;
     }

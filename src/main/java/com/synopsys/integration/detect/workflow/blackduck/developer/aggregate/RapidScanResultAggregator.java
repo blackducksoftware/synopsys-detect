@@ -22,7 +22,7 @@ public class RapidScanResultAggregator {
     private final Map<String, Set<String>> directToTransitiveChildren = new HashMap<>();
     private final Map<String, String[]> directUpgradeGuidanceVersions = new HashMap<>();
     
-    public RapidScanAggregateResult aggregateData(List<DeveloperScansScanView> results) { // TOME test this
+    public RapidScanAggregateResult aggregateData(List<DeveloperScansScanView> results) {
         Collection<RapidScanComponentDetail> componentDetails = aggregateComponentData(results);
         List<RapidScanComponentDetail> sortedByComponent = componentDetails.stream()
                 .sorted(Comparator.comparing(RapidScanComponentDetail::getComponentIdentifier))
@@ -181,7 +181,7 @@ public class RapidScanResultAggregator {
             componentIdentifier = resultView.getExternalId();
         }
         
-        RapidScanComponentGroupDetail componentGroupDetail = new RapidScanComponentGroupDetail(RapidScanDetailGroup.POLICY); // TOME policyGroupDetail?
+        RapidScanComponentGroupDetail componentGroupDetail = new RapidScanComponentGroupDetail(RapidScanDetailGroup.POLICY);
         RapidScanComponentGroupDetail securityGroupDetail = new RapidScanComponentGroupDetail(RapidScanDetailGroup.SECURITY);
         RapidScanComponentGroupDetail licenseGroupDetail = new RapidScanComponentGroupDetail(RapidScanDetailGroup.LICENSE);
         RapidScanComponentGroupDetail violatingPoliciesDetail = new RapidScanComponentGroupDetail(RapidScanDetailGroup.VIOLATING_POLICIES);
@@ -209,7 +209,7 @@ public class RapidScanResultAggregator {
     }
 
     private void addViolatingPoliciesData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsViolatingPoliciesView> allPolicyViolations, RapidScanComponentGroupDetail violatingPoliciesDetail) {
-        violatingPoliciesDetail.addLViolatingPoliciesMessages(resultView, allPolicyViolations);
+        violatingPoliciesDetail.addViolatingPoliciesMessages(resultView, allPolicyViolations);
     }
 
     /**
