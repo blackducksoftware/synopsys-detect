@@ -226,20 +226,11 @@ public class DetectorRuleFactory {
                 .fallback(NugetProjectInspectorDetectable.class)
                 .search().defaults();
         });
-        
-        // The cascade here is a bit tricky. We have the DetectorType.PIP
-        // yielding to Setuptools. This prevents PIP from incorrectly running
-        // when Setuptools is able to handle things. However, if both
-        // Setuptools fail we want to fallback to the PIP detectors as they 
-        // might be able to handle things.
+
         rules.addDetector(DetectorType.SETUPTOOLS, detector -> {
             detector.entryPoint(SetupToolsBuildDetectable.class)
                 .search().defaults();
             detector.entryPoint(SetupToolsBuildlessDetectable.class)
-                .fallback(PipenvDetectable.class)
-                .fallback(PipInspectorDetectable.class)
-                .fallback(PipfileLockDetectable.class)
-                .fallback(RequirementsFileDetectable.class)
                 .search().defaults();
          }).allEntryPointsFallbackToNext();
 
@@ -259,7 +250,7 @@ public class DetectorRuleFactory {
                     .search().defaults();
             })
             .allEntryPointsFallbackToNext()
-            .yieldsTo(DetectorType.POETRY, DetectorType.SETUPTOOLS);
+            .yieldsTo(DetectorType.POETRY);
 
         rules.addDetector(DetectorType.RUBYGEMS, detector -> {
             detector.entryPoint(GemlockDetectable.class)
