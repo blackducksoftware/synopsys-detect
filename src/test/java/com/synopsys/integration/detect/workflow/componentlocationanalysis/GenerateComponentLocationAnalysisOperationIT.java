@@ -2,27 +2,16 @@ package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
 import java.io.IOException;
 
-<<<<<<< HEAD
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckTestConnection;
-=======
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
->>>>>>> master
 import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
-<<<<<<< HEAD
-=======
-@Disabled
->>>>>>> master
 @Tag("integration")
 public class GenerateComponentLocationAnalysisOperationIT {
     @Test
@@ -34,10 +23,6 @@ public class GenerateComponentLocationAnalysisOperationIT {
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO, "true");
-<<<<<<< HEAD
-=======
-            commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, "DETECTOR");
->>>>>>> master
             commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
