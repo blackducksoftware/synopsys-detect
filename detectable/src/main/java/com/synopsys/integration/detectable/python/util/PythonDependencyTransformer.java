@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.pip.parser;
+package com.synopsys.integration.detectable.python.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,52 +9,61 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RequirementsFileTransformer {
+public class PythonDependencyTransformer {
 
     private static final List<String> OPERATORS_IN_PRIORITY_ORDER = Arrays.asList("==", ">=", "~=", "<=", ">", "<");
     private static final List<String> IGNORE_AFTER_CHARS = Arrays.asList("#", ";");
     private static final List<String> TOKEN_CLEANUP_CHARS = Arrays.asList("\"", "'");
     private static final List<String> TOKEN_IGNORE_AFTER_CHARS = Arrays.asList(",", "[", "==", ">=", "~=", "<=", ">", "<");
 
-    public List<RequirementsFileDependency> transform(File requirementsFile) throws IOException {
+    public List<PythonDependency> transform(File requirementsFile) throws IOException {
 
-        List<RequirementsFileDependency> dependencies = new LinkedList<>();
+        List<PythonDependency> dependencies = new LinkedList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(requirementsFile))) {
             for (String line; (line = bufferedReader.readLine()) != null; ) {
-
-                // Ignore comments (i.e. lines starting with #) and empty/whitespace lines.
-                String formattedLine = formatLine(line);
-                if (formattedLine.isEmpty() || formattedLine.startsWith("#")) {
-                    continue;
-                }
-
-                // Extract tokens before and after the operator that was found in the line
-                List<List<String>> extractedTokens = extractTokens(formattedLine);
-                List<String> tokensBeforeOperator = extractedTokens.get(0);
-                List<String> tokensAfterOperator = extractedTokens.get(1);
-
-                // Extract dependency. This will always be the first token or a substring of first token for each valid line.
-                // Format and cleanup each token
-                String dependency = "";
-                if (tokensBeforeOperator != null && !tokensBeforeOperator.isEmpty()) {
-                    dependency = formatToken(tokensBeforeOperator.get(0));
-                }
-
-                // Extract version. Version extracted will be the next token after operator.
-                String version = "";
-                if (tokensAfterOperator != null && !tokensAfterOperator.isEmpty()) {
-                    version = formatToken(tokensAfterOperator.get(0));
-                }
-
-                // Create a dependency entry and add it to the list
-                // Version can be an empty string but dependency name should always be non-empty
-                if (!dependency.isEmpty()) {
-                    RequirementsFileDependency requirementsFileDependency = new RequirementsFileDependency(dependency, version);
+                
+                PythonDependency requirementsFileDependency = transformLine(line);
+                
+                if (requirementsFileDependency != null) {
                     dependencies.add(requirementsFileDependency);
                 }
             }
         }
         return dependencies;
+    }
+
+    public PythonDependency transformLine(String line) {
+        // Ignore comments (i.e. lines starting with #) and empty/whitespace lines.
+        String formattedLine = formatLine(line);
+        if (formattedLine.isEmpty() || formattedLine.startsWith("#")) {
+            return null;
+        }
+
+        // Extract tokens before and after the operator that was found in the line
+        List<List<String>> extractedTokens = extractTokens(formattedLine);
+        List<String> tokensBeforeOperator = extractedTokens.get(0);
+        List<String> tokensAfterOperator = extractedTokens.get(1);
+        
+        // Extract dependency. This will always be the first token or a substring of first token for each valid line.
+        // Format and cleanup each token
+        String dependency = "";
+        if (tokensBeforeOperator != null && !tokensBeforeOperator.isEmpty()) {
+            dependency = formatToken(tokensBeforeOperator.get(0));
+        }
+        
+        // Extract version. Version extracted will be the next token after operator.
+        String version = "";
+        if (tokensAfterOperator != null && !tokensAfterOperator.isEmpty()) {
+            version = formatToken(tokensAfterOperator.get(0));
+        }
+        
+        // Create a dependency entry and add it to the list
+        // Version can be an empty string but dependency name should always be non-empty
+        if (!dependency.isEmpty()) {
+             return new PythonDependency(dependency, version);
+        } else {
+            return null;
+        }
     }
 
     public List<List<String>> extractTokens(String formattedLine) {
