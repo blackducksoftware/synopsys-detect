@@ -4,13 +4,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.synopsys.integration.blackduck.api.generated.component.*;
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsComponentViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 
 public class RapidScanComponentGroupDetail {
@@ -208,6 +204,41 @@ public class RapidScanComponentGroupDetail {
             }
         }
         
+        addMessages(errorMessage, warningMessage);
+    }
+
+    // TODO rapid scans are now using the v5 developer-scans endpoint which no longer constructs
+    // warning and error messages. Until BlackDuck adds that back we have to construct our own messages.
+    // While it may be possible to reduce the overall message generation code in this class by pushing
+    // some common pieces into a parent class or interface, it is likely not worth altering the libraries
+    // as this may be temporary code.
+    public void addLViolatingPoliciesMessages(DeveloperScansScanView resultView,  List<DeveloperScansScanItemsViolatingPoliciesView> violatingPolicies) {
+        String baseMessage = getBaseMessage(resultView);
+
+        String errorMessage = "", warningMessage = "";
+
+        for (int i = 0; i < violatingPolicies.size(); i++) {
+            DeveloperScansScanItemsViolatingPoliciesView violation = violatingPolicies.get(i);
+
+            if (violation.getPolicySeverity().equals(POLICY_SEVERITY_CRITICAL) || violation.getPolicySeverity().equals(POLICY_SEVERITY_BLOCKER)) {
+                if (errorMessage.equals("")) {
+                    errorMessage = baseMessage;
+                } else {
+                    errorMessage += POLICY_SEPARATOR;
+                }
+
+                errorMessage += violation.getPolicyName();
+            } else {
+                if (warningMessage.equals("")) {
+                    warningMessage = baseMessage;
+                } else {
+                    warningMessage += POLICY_SEPARATOR;
+                }
+
+                warningMessage += violation.getPolicyName();
+            }
+        }
+
         addMessages(errorMessage, warningMessage);
     }
 

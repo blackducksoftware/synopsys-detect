@@ -28,11 +28,11 @@ public class RapidScanComponentDetail {
     }
 
     public boolean hasErrors() {
-        return componentDetails.hasErrors() || securityDetails.hasErrors() || licenseDetails.hasErrors();
+        return componentDetails.hasErrors() || securityDetails.hasErrors() || licenseDetails.hasErrors() || violatingPoliciesDetails.hasErrors();
     }
 
     public boolean hasWarnings() {
-        return componentDetails.hasWarnings() || securityDetails.hasWarnings() || licenseDetails.hasWarnings();
+        return componentDetails.hasWarnings() || securityDetails.hasWarnings() || licenseDetails.hasWarnings() || violatingPoliciesDetails.hasWarnings();
     }
 
     public String getComponent() {
@@ -84,6 +84,10 @@ public class RapidScanComponentDetail {
     public int getLicenseWarningCount() {
         return getGroupWarningCount(licenseDetails);
     }
+
+    public int getAllViolatingPoliciesErrorCount() { return getGroupErrorCount(violatingPoliciesDetails); }
+
+    public int getAllViolatingPoliciesWarningCount() { return getGroupWarningCount(violatingPoliciesDetails); }
 
     private int getGroupErrorCount(RapidScanComponentGroupDetail groupDetail) {
         return groupDetail.getErrorMessages().size();

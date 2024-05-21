@@ -5,7 +5,7 @@ public enum RapidScanDetailGroup {
     POLICY("Components"),
     SECURITY("Security"),
     TRANSITIVE("Upgrade Guidance For Transitive Components"),
-    VIOLATING_POLICIES("All violated policies");
+    VIOLATING_POLICIES("Other");
 
     private final String displayName;
 
