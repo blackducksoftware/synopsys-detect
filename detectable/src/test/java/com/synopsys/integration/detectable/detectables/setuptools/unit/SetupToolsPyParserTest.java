@@ -2,7 +2,6 @@ package com.synopsys.integration.detectable.detectables.setuptools.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 
-import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsCfgParser;
 import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsParsedResult;
 import com.synopsys.integration.detectable.detectables.setuptools.parse.SetupToolsPyParser;
 import com.synopsys.integration.detectable.python.util.PythonDependency;
@@ -49,7 +47,9 @@ public class SetupToolsPyParserTest {
 
         SetupToolsPyParser pyParser = new SetupToolsPyParser(result);
         pyParser.load(pyFile.toString());
-        SetupToolsParsedResult parsedResult = pyParser.parse();
+        
+        SetupToolsParsedResult parsedResult = new SetupToolsParsedResult();
+        pyParser.parse(parsedResult);
 
         assertEquals(1, parsedResult.getDirectDependencies().size());
         

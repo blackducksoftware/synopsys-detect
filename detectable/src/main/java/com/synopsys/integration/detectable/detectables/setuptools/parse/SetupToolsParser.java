@@ -4,6 +4,6 @@ import java.io.IOException;
 
 public interface SetupToolsParser {
 
-    public SetupToolsParsedResult parse() throws IOException;
+    public void parse(SetupToolsParsedResult parsedResult) throws IOException;
     
 }

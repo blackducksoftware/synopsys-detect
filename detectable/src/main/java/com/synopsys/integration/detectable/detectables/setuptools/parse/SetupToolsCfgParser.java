@@ -27,7 +27,7 @@ public class SetupToolsCfgParser implements SetupToolsParser {
     }
 
     @Override
-    public SetupToolsParsedResult parse() throws IOException {
+    public void parse(SetupToolsParsedResult parsedResult) throws IOException {
         String tomlProjectName = parsedToml.getString("project.name");
         String projectVersion = parsedToml.getString("project.version");
         
@@ -37,7 +37,9 @@ public class SetupToolsCfgParser implements SetupToolsParser {
         
         List<PythonDependency> parsedDirectDependencies = parseDirectDependencies();
         
-        return new SetupToolsParsedResult(finalProjectName, projectVersion, parsedDirectDependencies);
+        parsedResult.setProjectName(finalProjectName);
+        parsedResult.setProjectVersion(projectVersion);
+        parsedResult.getDirectDependencies().addAll(parsedDirectDependencies);
     }
 
     /**

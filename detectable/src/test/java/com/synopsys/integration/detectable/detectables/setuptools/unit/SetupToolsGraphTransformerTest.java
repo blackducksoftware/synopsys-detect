@@ -32,7 +32,10 @@ public class SetupToolsGraphTransformerTest {
         dependencies.add(new PythonDependency("numpy", "1.21.0"));
 
         // Create a SetupToolsParsedResult object
-        SetupToolsParsedResult parsedResult = new SetupToolsParsedResult("setuptools", "1.0.0", dependencies);
+        SetupToolsParsedResult parsedResult = new SetupToolsParsedResult();
+        parsedResult.setProjectName("setuptools");
+        parsedResult.setProjectVersion("1.0.0");
+        parsedResult.getDirectDependencies().addAll(dependencies);
 
         // Create an instance of SetupToolsGraphTransformer
         SetupToolsGraphTransformer graphTransformer = new SetupToolsGraphTransformer(null, new ExternalIdFactory(), null);
@@ -58,7 +61,10 @@ public class SetupToolsGraphTransformerTest {
         );
 
         // Create a SetupToolsParsedResult object
-        SetupToolsParsedResult parsedResult = new SetupToolsParsedResult("setuptools", "1.0.0", dependencies);
+        SetupToolsParsedResult parsedResult = new SetupToolsParsedResult();
+        parsedResult.setProjectName("setuptools");
+        parsedResult.setProjectVersion("1.0.0");
+        parsedResult.getDirectDependencies().addAll(dependencies);
 
         // Mock the DetectableExecutableRunner
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);

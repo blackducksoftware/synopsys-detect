@@ -49,7 +49,9 @@ public class SetupToolsCfgParserTest {
 
         SetupToolsCfgParser cfgParser = new SetupToolsCfgParser(result);
         cfgParser.load(cfgFile.toString());
-        SetupToolsParsedResult parsedResult = cfgParser.parse();
+        
+        SetupToolsParsedResult parsedResult = new SetupToolsParsedResult();
+        cfgParser.parse(parsedResult);
 
         assertEquals("setuptools", parsedResult.getProjectName());
         assertEquals(2, parsedResult.getDirectDependencies().size());

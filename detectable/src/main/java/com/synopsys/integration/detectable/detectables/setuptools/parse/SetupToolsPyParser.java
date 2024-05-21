@@ -26,7 +26,7 @@ public class SetupToolsPyParser implements SetupToolsParser {
     }
     
     @Override
-    public SetupToolsParsedResult parse() throws IOException {
+    public void parse(SetupToolsParsedResult parsedResult) throws IOException {
         // Use a name from the toml if we have it. Do not parse names and versions from the setup.py
         // as the project will not always have a string (it could have variables or method calls)
         String tomlProjectName = parsedToml.getString("project.name");
@@ -34,7 +34,16 @@ public class SetupToolsPyParser implements SetupToolsParser {
         
         List<PythonDependency> parsedDirectDependencies = parseDirectDependencies();
         
-        return new SetupToolsParsedResult(tomlProjectName, projectVersion, parsedDirectDependencies);
+        
+        if (parsedResult.getProjectName() == null || parsedResult.getProjectName().equals("")) {
+            parsedResult.setProjectName(tomlProjectName);
+        }
+        
+        if (parsedResult.getProjectVersion() == null || parsedResult.getProjectVersion().equals("")) {
+            parsedResult.setProjectVersion(projectVersion);
+        }
+        
+        parsedResult.getDirectDependencies().addAll(parsedDirectDependencies);
     }
     
     public List<String> load(String setupFile) throws IOException {
@@ -79,15 +88,6 @@ public class SetupToolsPyParser implements SetupToolsParser {
     }
     
     private void checkLineForDependency(String line, Pattern patternSingleQuotes, Pattern patternDoubleQuotes) {
-        // Using the pattern for single quotes to match the dependencies in the current line.
-        Matcher matcherSingleQuotes = patternSingleQuotes.matcher(line.trim());
-        if (matcherSingleQuotes.find()) {
-            // Extracting the dependency from the matched group.
-            String dependency = matcherSingleQuotes.group(1);
-            // Adding the dependency to the list.
-            dependencies.add(dependency);
-        }
-
         // Using the pattern for double quotes to match the dependencies in the current line.
         Matcher matcherDoubleQuotes = patternDoubleQuotes.matcher(line.trim());
         if (matcherDoubleQuotes.find()) {
@@ -95,6 +95,17 @@ public class SetupToolsPyParser implements SetupToolsParser {
             String dependency = matcherDoubleQuotes.group(1);
             // Adding the dependency to the list.
             dependencies.add(dependency);
+        } else {
+            // Fallback to use the pattern for single quotes to match the dependencies in the current
+            // line. We do this second as there are sometimes lines that use double quotes and then
+            // single quotes inside them to specify conditionals
+            Matcher matcherSingleQuotes = patternSingleQuotes.matcher(line.trim());
+            if (matcherSingleQuotes.find()) {
+                // Extracting the dependency from the matched group.
+                String dependency = matcherSingleQuotes.group(1);
+                // Adding the dependency to the list.
+                dependencies.add(dependency);
+            }
         }
     }
 

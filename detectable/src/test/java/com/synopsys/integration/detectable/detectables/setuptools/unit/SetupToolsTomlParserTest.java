@@ -24,7 +24,8 @@ public class SetupToolsTomlParserTest {
         TomlParseResult result = Toml.parse(tomlContent);
 
         SetupToolsTomlParser tomlParser = new SetupToolsTomlParser(result);
-        SetupToolsParsedResult parsedResult = tomlParser.parse();
+        SetupToolsParsedResult parsedResult = new SetupToolsParsedResult();
+        tomlParser.parse(parsedResult);
 
         assertEquals("setuptools", parsedResult.getProjectName());
         assertEquals("1.0.0", parsedResult.getProjectVersion());

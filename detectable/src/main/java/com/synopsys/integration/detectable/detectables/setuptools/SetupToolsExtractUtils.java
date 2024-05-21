@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.setuptools;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -51,13 +52,15 @@ public class SetupToolsExtractUtils {
         return false;
     }
 
-    public static SetupToolsParser findDependenciesFile(TomlParseResult parsedToml, FileFinder fileFinder, DetectableEnvironment environment) throws IOException {
+    public static List<SetupToolsParser> findDependenciesFile(TomlParseResult parsedToml, FileFinder fileFinder, DetectableEnvironment environment) throws IOException {
+        List<SetupToolsParser> parsers = new ArrayList<>();
+        
         // Dependencies, if they exist at all, will be in one of three files.
         // Step 1: Check the pyproject.toml
         TomlArray tomlDependencies = parsedToml.getArray(TOML_DEPENDENCIES);
         
         if (tomlDependencies != null && tomlDependencies.size() > 0) {
-            return new SetupToolsTomlParser(parsedToml);
+            parsers.add(new SetupToolsTomlParser(parsedToml));
         }
         
         // Step 2: Check the setup.cfg
@@ -70,7 +73,7 @@ public class SetupToolsExtractUtils {
             List<String> cfgDependencies = cfgParser.load(cfgFile.toString());
 
             if (cfgDependencies != null && cfgDependencies.size() > 0) {
-                return cfgParser;
+                parsers.add(cfgParser);
             }
         }
         
@@ -84,10 +87,10 @@ public class SetupToolsExtractUtils {
             List<String> pyDependencies = pyParser.load(pyFile.toString());
             
             if (pyDependencies != null && pyDependencies.size() > 0) {
-                return pyParser;
+                parsers.add(pyParser);
             }
         }
         
-        return null;
+        return parsers;
     }
 }

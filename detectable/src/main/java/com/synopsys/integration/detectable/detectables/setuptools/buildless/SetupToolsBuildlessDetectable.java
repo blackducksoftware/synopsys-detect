@@ -2,6 +2,7 @@ package com.synopsys.integration.detectable.detectables.setuptools.buildless;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -42,7 +43,7 @@ public class SetupToolsBuildlessDetectable extends Detectable {
     private File projectToml;
     private TomlParseResult parsedToml;
     
-    private SetupToolsParser setupToolsParser;
+    private List<SetupToolsParser> setupToolsParsers;
 
     public SetupToolsBuildlessDetectable(DetectableEnvironment environment, FileFinder fileFinder, SetupToolsExtractor setupToolsExtractor) {
         super(environment);
@@ -69,9 +70,9 @@ public class SetupToolsBuildlessDetectable extends Detectable {
             }
             
             // Ensure dependencies/requirements are specified in a toml, cfg, or py file.
-            setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(parsedToml, fileFinder, environment);
+            setupToolsParsers = SetupToolsExtractUtils.findDependenciesFile(parsedToml, fileFinder, environment);
             
-            if (setupToolsParser == null) {
+            if (setupToolsParsers == null || setupToolsParsers.size() == 0) {
                return new SetupToolsNoDependenciesDetectableResult(); 
             }
             
@@ -85,6 +86,6 @@ public class SetupToolsBuildlessDetectable extends Detectable {
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException,
             ExecutableFailedException, IOException, JsonSyntaxException, CycleDetectedException, DetectableException,
             MissingExternalIdException, ParserConfigurationException, SAXException {
-        return setupToolsExtractor.extract(setupToolsParser, null);
+        return setupToolsExtractor.extract(setupToolsParsers, null);
     }
 }

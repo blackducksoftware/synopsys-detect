@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.tomlj.TomlParseResult;
@@ -66,7 +67,10 @@ public class SetupToolsExtractUtilsTest {
         when(fileFinder.findFile(environment.getDirectory(), "setup.cfg")).thenReturn(null);
         when(fileFinder.findFile(environment.getDirectory(), "setup.py")).thenReturn(null);
         
-        SetupToolsParser setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(result, fileFinder, environment);
+        List<SetupToolsParser> parsers = SetupToolsExtractUtils.findDependenciesFile(result, fileFinder, environment);
+        assertTrue(parsers.size() == 1);
+        
+        SetupToolsParser setupToolsParser = parsers.get(0);
 
         assertNotNull(setupToolsParser);
         assertTrue(setupToolsParser instanceof SetupToolsTomlParser);
@@ -90,8 +94,11 @@ public class SetupToolsExtractUtilsTest {
         DetectableEnvironment environment = mock(DetectableEnvironment.class);
         when(fileFinder.findFile(environment.getDirectory(), "setup.cfg")).thenReturn(tempFileCfg.toFile());
         
-        SetupToolsParser setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(result, fileFinder, environment);
-
+        List<SetupToolsParser> parsers = SetupToolsExtractUtils.findDependenciesFile(result, fileFinder, environment);
+        assertTrue(parsers.size() == 1);
+        
+        SetupToolsParser setupToolsParser = parsers.get(0);
+        
         assertNotNull(setupToolsParser);
         assertTrue(setupToolsParser instanceof SetupToolsCfgParser);
 
@@ -115,8 +122,11 @@ public class SetupToolsExtractUtilsTest {
         DetectableEnvironment environment = mock(DetectableEnvironment.class);
         when(fileFinder.findFile(environment.getDirectory(), "setup.py")).thenReturn(tempFilePy.toFile());
         
-        SetupToolsParser setupToolsParser = SetupToolsExtractUtils.findDependenciesFile(result, fileFinder, environment);
-
+        List<SetupToolsParser> parsers = SetupToolsExtractUtils.findDependenciesFile(result, fileFinder, environment);
+        assertTrue(parsers.size() == 1);
+        
+        SetupToolsParser setupToolsParser = parsers.get(0);
+         
         assertNotNull(setupToolsParser);
         assertTrue(setupToolsParser instanceof SetupToolsPyParser);
 

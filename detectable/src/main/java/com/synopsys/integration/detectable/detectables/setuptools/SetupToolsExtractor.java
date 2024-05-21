@@ -1,5 +1,7 @@
 package com.synopsys.integration.detectable.detectables.setuptools;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -19,9 +21,13 @@ public class SetupToolsExtractor {
         this.setupToolsTransformer = setupToolsTransformer;
     }
 
-    public Extraction extract(SetupToolsParser parser, ExecutableTarget pipExe) {
+    public Extraction extract(List<SetupToolsParser> parsers, ExecutableTarget pipExe) {
         try {
-            SetupToolsParsedResult parsedResult = parser.parse();
+            SetupToolsParsedResult parsedResult = new SetupToolsParsedResult();
+            
+            for (SetupToolsParser setupToolsParser : parsers) {
+                setupToolsParser.parse(parsedResult);
+            }
             
             DependencyGraph dependencyGraph = setupToolsTransformer.transform(pipExe, parsedResult);
 

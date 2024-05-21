@@ -19,12 +19,14 @@ public class SetupToolsTomlParser implements SetupToolsParser {
     }
 
     @Override
-    public SetupToolsParsedResult parse() throws IOException {
+    public void parse(SetupToolsParsedResult parsedResult) throws IOException {
         List<PythonDependency> parsedDirectDependencies = parseDirectDependencies(parsedToml);
         String projectName = parsedToml.getString("project.name");
         String projectVersion = parsedToml.getString("project.version");
-        
-        return new SetupToolsParsedResult(projectName, projectVersion, parsedDirectDependencies);
+
+        parsedResult.setProjectName(projectName);
+        parsedResult.setProjectVersion(projectVersion);
+        parsedResult.getDirectDependencies().addAll(parsedDirectDependencies);
     }
 
     public List<PythonDependency> parseDirectDependencies(TomlParseResult tomlParseResult) throws IOException {
