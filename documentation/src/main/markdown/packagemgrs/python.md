@@ -8,6 +8,7 @@
 
 [company_name] [solution_name] detectors for discovery of dependencies in Python:
 
+* Setuptools detector
 * PIPENV detectors
 	* Pipenv lock detector
 	* Pipfile lock detector
@@ -15,7 +16,19 @@
 	* Pip Native Inspector
 	* Pip Requirements File Parse
 * Poetry detector
-* Setuptools detector
+
+## Setuptools detector
+
+Setuptools detector attempts to run on your project, prior to potential execution of other detectors, if a pyproject.toml file containing a build section with `requires = ["setuptools"]` or equivalent line is located and a pip installation is found. (Setuptools scans can be run in both build, if a pip installation is available, and buildless mode if not.)
+
+<note type="note">Setuptools build detector should be run in a virtual environment, or environment with a clean global pip cache, where a pip install has only been performed for the project being scanned.</note>
+
+[company_name] [solution_name] parses the pyproject.toml, setup.cfg, or setup.py files for dependencies if the `[build-system]` section has been configured for Setuptools via the `requries= ["setuptools"]` setting in pyproject.toml. If the setting is located and pip is installed in the environment, either in the default location or specified via the `--detect.pip.path` property, the detector will execute in a virtual environment. If the detector discovers a configured pyproject.toml file but not a pip executible, it will execute in buildless mode where it will parse dependencies from the pyproject.toml, setup.cfg, or setup.py files but may not be able to specify exact package versions.
+
+For setup.cfg and setup.py file parsing, the Setuptools detector supports direct mentioning of dependency files. For reference, see 
+[Dependency Management in Setuptools](https://setuptools.pypa.io/en/latest/userguide/dependency_management.html).
+
+<note type="tip">URL references, optional dependencies and `file: \<path to file\>` parameters found in setup.cfg are not supported. For setup.py files, programmatic population of the `install_requires` parameter is not supported.</note>
 
 ## PIPENV Detectors
 
@@ -101,16 +114,3 @@ The Poetry detector parses poetry.lock for dependency information. If the detect
 The Poetry detector extracts the project's name and version from the pyproject.toml file.  If it does not find a pyproject.toml file, it will defer to values derived by git, from the project's directory, or defaults.
 
 When the `--detect.poetry.dependency.groups.excluded` property is specified, presence of both poetry.lock and pyproject.toml files is required for this detector to run successfully.
-
-## Setuptools detector
-
-Setuptools detector attempts to run on your project, after potential execution of other detectors, if a pyproject.toml file containing a build section with `requires = ["setuptools"]` or equivalent line is located. Setuptools scans can be run in both build, if a pip installation is available, and buildless mode if not.
-
-<note type="note">Setuptools build detector should be run in a virtual environment, or environment with a clean global pip cache, where a pip install has only been performed for the project being scanned.</note>
-
-[company_name] [solution_name] parses the pyproject.toml file to determine if the `[build-system]` section has been configured for Setuptools via the `requries= ["setuptools"]` setting. If the setting is located and pip is installed in the environment, either in the default location or specified via the `--detect.pip.path` property, the detector will execute in a virtual environment. If the detector discovers a configured pyproject.toml file but not a pip executible, it will execute in buildless mode where it will parse dependencies from the pyproject.toml, setup.cfg, or setup.py files but may not be able to specify exact package versions.
-
-For setup.cfg and setup.py file parsing, the Setuptools detector supports direct mentioning of dependency files. For reference, see 
-[Dependency Management in Setuptools](https://setuptools.pypa.io/en/latest/userguide/dependency_management.html).
-
-<note type="tip">URL references, optional dependencies and `file: \<path to file\>` parameters found in setup.cfg are not supported. For setup.py files, programmatic population of the `install_requires` parameter is not supported.</note>
