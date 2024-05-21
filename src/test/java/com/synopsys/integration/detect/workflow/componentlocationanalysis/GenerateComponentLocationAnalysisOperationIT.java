@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,7 @@ import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunne
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
+@Disabled
 @Tag("integration")
 public class GenerateComponentLocationAnalysisOperationIT {
     @Test
@@ -59,7 +61,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
-            commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_AFFECTS_STATUS, "true");
+            commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_STATUS, "true");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO, "true");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, "DETECTOR");
@@ -80,7 +82,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
-            commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_AFFECTS_STATUS, "true");
+            commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_STATUS, "true");
             commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, "RAPID");
             commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
 

@@ -971,9 +971,9 @@ public class DetectProperties {
             .setGroups(DetectGroup.GENERAL)
             .build();
 
-    public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_AFFECTS_STATUS =
-        BooleanProperty.newBuilder("detect.component.location.analysis.affects.status", false)
-            .setInfo("Component Location Analysis Affects Status", DetectPropertyFromVersion.VERSION_9_7_0)
+    public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_STATUS =
+        BooleanProperty.newBuilder("detect.component.location.analysis.status", false)
+            .setInfo("Component Location Analysis Status", DetectPropertyFromVersion.VERSION_9_7_0)
             .setHelp("If set to true, Detect status and exit code will be affected by the status of the Component Location Analysis run.")
             .setGroups(DetectGroup.GENERAL)
             .build();
