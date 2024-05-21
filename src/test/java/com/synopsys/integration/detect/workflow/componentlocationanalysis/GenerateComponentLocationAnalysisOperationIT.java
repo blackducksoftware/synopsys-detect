@@ -23,6 +23,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO, "true");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, "DETECTOR");
+            commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
@@ -40,6 +41,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
             commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, "RAPID");
+            commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
@@ -61,6 +63,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO, "true");
             commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, "DETECTOR");
+            commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
@@ -79,6 +82,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_AFFECTS_STATUS, "true");
             commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, "RAPID");
+            commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
