@@ -841,7 +841,7 @@
 							<entry>PyPI</entry>
 							<entry>
 								<p>Files: pyproject.toml and optionally setup.cfg, or setup.py</p>
-								<p>Executables: python and pip, or python3 and pip3 specified via --detect.python.path and --detect.pip.path properties.</p>
+								<p>Executables: pip or pip3 specified via --detect.pip.path properties.</p>
 							</entry>
 							<entry>HIGH</entry>
 						</row>
@@ -852,7 +852,6 @@
 							<entry>PyPI</entry>
 							<entry>
 								<p>File: pyproject.toml and optionally setup.cfg, or setup.py</p>
-								<p>Executables: python or python3 specified via --detect.python.path property.</p>
 							</entry>
 							<entry>LOW</entry>
 						</row>
