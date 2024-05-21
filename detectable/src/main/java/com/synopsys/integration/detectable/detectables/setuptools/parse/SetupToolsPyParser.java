@@ -79,15 +79,6 @@ public class SetupToolsPyParser implements SetupToolsParser {
     }
     
     private void checkLineForDependency(String line, Pattern patternSingleQuotes, Pattern patternDoubleQuotes) {
-        // Using the pattern for single quotes to match the dependencies in the current line.
-        Matcher matcherSingleQuotes = patternSingleQuotes.matcher(line.trim());
-        if (matcherSingleQuotes.find()) {
-            // Extracting the dependency from the matched group.
-            String dependency = matcherSingleQuotes.group(1);
-            // Adding the dependency to the list.
-            dependencies.add(dependency);
-        }
-
         // Using the pattern for double quotes to match the dependencies in the current line.
         Matcher matcherDoubleQuotes = patternDoubleQuotes.matcher(line.trim());
         if (matcherDoubleQuotes.find()) {
@@ -95,6 +86,17 @@ public class SetupToolsPyParser implements SetupToolsParser {
             String dependency = matcherDoubleQuotes.group(1);
             // Adding the dependency to the list.
             dependencies.add(dependency);
+        } else {
+            // Fallback to use the pattern for single quotes to match the dependencies in the current
+            // line. We do this second as there are sometimes lines that use double quotes and then
+            // single quotes inside them to specify conditionals
+            Matcher matcherSingleQuotes = patternSingleQuotes.matcher(line.trim());
+            if (matcherSingleQuotes.find()) {
+                // Extracting the dependency from the matched group.
+                String dependency = matcherSingleQuotes.group(1);
+                // Adding the dependency to the list.
+                dependencies.add(dependency);
+            }
         }
     }
 
