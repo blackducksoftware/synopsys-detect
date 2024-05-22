@@ -836,7 +836,7 @@
 						</row>
 						<row>
 							<entry> </entry>
-							<entry>Setuptools Detector</entry>
+							<entry>Setuptools Pip Detector</entry>
 							<entry>Python</entry>
 							<entry>PyPI</entry>
 							<entry>
