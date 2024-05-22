@@ -77,13 +77,6 @@ public class PropertyConfiguration {
             return Optional.empty();
         }
     }
-    
-    @NotNull
-    public <V, R> void setValue(@NotNull NullableProperty<V, R> property, PropertyValue<V> value) throws InvalidPropertyException {
-        if (value.getValue().isPresent()) {
-            valueCache.put(property.getKey(), value);
-        }
-    }
 
     @NotNull
     public <V, R> R getValue(@NotNull ValuedProperty<V, R> property) throws InvalidPropertyException {
@@ -101,13 +94,6 @@ public class PropertyConfiguration {
         } else {
             V defaultValue = property.getDefaultValue();
             return property.convertValue(defaultValue);
-        }
-    }
-    
-    @NotNull
-    public <V, R> void setValue(@NotNull ValuedProperty<V, R> property,  PropertyValue<V> value) throws InvalidPropertyException {
-        if (value.getValue().isPresent()) {
-            valueCache.put(property.getKey(), value);
         }
     }
 

@@ -202,12 +202,17 @@ public class DetectBoot {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
         AutoScanTypeDecider autoDetectTool = new AutoScanTypeDecider();
-        autoDetectTool.decide(hasImageOrTar, detectConfiguration);
-        
         // For Auto Scan Mode.
-        List<DetectTool> autoIncludedTools = autoDetectTool.getAutoIncludedTools();
-        Map<Enum, Set<String>> scanTypeEvidenceMap = autoDetectTool.getScanTypeEvidenceMap();
-
+        Map<DetectTool, Set<String>> scanTypeEvidenceMap = autoDetectTool.decide(hasImageOrTar, detectConfiguration);
+        logger.info("Scan type and respective evidence paths:");
+        for (DetectTool detectTool : scanTypeEvidenceMap.keySet()) {
+            logger.info("{} scan type paths:", detectTool.toString());
+            for (String path : scanTypeEvidenceMap.get(detectTool)) {
+                logger.info(path);
+            }
+            logger.info("");
+        }
+        
         try {
             BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode();
             ProductDecider productDecider = new ProductDecider();
@@ -219,7 +224,7 @@ public class DetectBoot {
 
             // in order to know if docker is needed we have to have either detect.target.type=IMAGE or detect.docker.image
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE || hasImageOrTar, detectConfigurationFactory.createDetectTarget()); //TODO: Move to proper decision home. -jp
-            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision, autoIncludedTools);
+            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision, scanTypeEvidenceMap);
             oneRequiresTheOther(
                 detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
                 detectToolFilter.shouldInclude(DetectTool.DOCKER),
