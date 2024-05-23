@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDependencyTransformer;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
-import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
+import com.synopsys.integration.detectable.python.util.PythonDependencyTransformer;
 
 public class RequirementsFileExtractorTest {
     private static RequirementsFileExtractor requirementsFileExtractor;
@@ -21,7 +21,7 @@ public class RequirementsFileExtractorTest {
     @BeforeAll
     public static void setUp() {
         requirementsFile = new File("src/test/resources/detectables/functional/pip/requirements.txt");
-        RequirementsFileTransformer requirementsFileTransformer = new RequirementsFileTransformer();
+        PythonDependencyTransformer requirementsFileTransformer = new PythonDependencyTransformer();
         RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
         requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
     }

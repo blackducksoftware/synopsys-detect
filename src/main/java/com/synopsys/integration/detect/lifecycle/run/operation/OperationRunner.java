@@ -587,11 +587,11 @@ public class OperationRunner {
         });
     }
 
-    public List<DeveloperScansScanView> waitForFullRapidResults(BlackDuckRunData blackDuckRunData, List<HttpUrl> rapidScans, BlackduckScanMode mode) throws OperationException {
+    public List<DeveloperScansScanView> waitForRapidResults(BlackDuckRunData blackDuckRunData, List<HttpUrl> rapidScans, BlackduckScanMode mode) throws OperationException {
         return auditLog.namedInternal("Rapid Wait", () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             int fibonacciSequenceIndex = getFibonacciSequenceIndex();
-            return new RapidModeWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForFullScans(
+            return new RapidModeWaitOperation(blackDuckServicesFactory.getBlackDuckApiClient()).waitForScans(
                 rapidScans,
                 detectConfigurationFactory.findTimeoutInSeconds(),
                 RapidModeWaitOperation.DEFAULT_WAIT_INTERVAL_IN_SECONDS,
@@ -624,7 +624,10 @@ public class OperationRunner {
         logger.info(ReportConstants.RUN_SEPARATOR);
         auditLog.namedPublic(
                 OPERATION_NAME,
-                () -> new GenerateComponentLocationAnalysisOperation().failComponentLocationAnalysisOperation()
+                () -> {
+                    new GenerateComponentLocationAnalysisOperation(detectConfigurationFactory, statusEventPublisher, exitCodePublisher)
+                        .failComponentLocationAnalysisOperation();
+                }
         );
     }
 
@@ -647,7 +650,12 @@ public class OperationRunner {
                 } else {
                     auditLog.namedPublic(
                             OPERATION_NAME,
-                            () -> new GenerateComponentLocationAnalysisOperation().locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                            () -> {
+                                publishResult(
+                                    new GenerateComponentLocationAnalysisOperation(detectConfigurationFactory, statusEventPublisher, exitCodePublisher)
+                                        .locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                                );
+                            }
                     );
                 }
             }
@@ -657,23 +665,28 @@ public class OperationRunner {
     /**
      * Given a Rapid/Stateless Detector Scan result, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
      * every reported component's {@link ExternalId} along with its declaration location and upgrade guidance information when applicable.
-     * @param rapidFullResults
+     * @param rapidResults
      * @throws OperationException
      */
-    public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidFullResults, BdioResult bdio) throws OperationException {
+    public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidResults, BdioResult bdio) throws OperationException {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
-            if (rapidFullResults.isEmpty()) {
+            if (rapidResults.isEmpty()) {
                 failComponentLocationAnalysisOperationTask("Component Location Analysis requires non-empty Rapid/Stateless Scan results. Skipping location analysis.");
             } else if (!applicableDetectorsIncludeAtLeastOneSupportedDetector(bdio.getApplicableDetectorTypes())) {
                 failComponentLocationAnalysisOperationTask(SUPPORTED_DETECTORS_LOG_MSG);
             } else {
-                Set<Component> componentsSet = new ScanResultToComponentListTransformer().transformScanResultToComponentList(rapidFullResults);
+                Set<Component> componentsSet = new ScanResultToComponentListTransformer().transformScanResultToComponentList(rapidResults);
                 if (componentsSet.isEmpty()) {
                     failComponentLocationAnalysisOperationTask("Component Location Analysis requires at least one dependency in Rapid/Stateless Detector Scan results. Skipping location analysis.");
                 } else {
                     auditLog.namedPublic(
                             OPERATION_NAME,
-                            () -> (new GenerateComponentLocationAnalysisOperation()).locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                            () -> {
+                                publishResult(
+                                    new GenerateComponentLocationAnalysisOperation(detectConfigurationFactory, statusEventPublisher, exitCodePublisher)
+                                        .locateComponents(componentsSet, directoryManager.getScanOutputDirectory(), directoryManager.getSourceDirectory())
+                                );
+                            }
                     );
                 }
             }
@@ -707,7 +720,10 @@ public class OperationRunner {
         if (detectConfigurationFactory.isComponentLocationAnalysisEnabled()) {
             auditLog.namedPublic(
                     OPERATION_NAME,
-                    () -> (new GenerateComponentLocationAnalysisOperation()).locateComponentsForOnlineIntelligentScan()
+                    () -> publishResult(
+                        new GenerateComponentLocationAnalysisOperation(detectConfigurationFactory, statusEventPublisher, exitCodePublisher)
+                            .locateComponentsForOnlineIntelligentScan()
+                    )
             );
         }
     }

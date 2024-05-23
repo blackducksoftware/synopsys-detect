@@ -12,16 +12,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.blackduck.api.generated.component.*;
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsComponentViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsPolicyViolationVulnerabilitiesViolatingPoliciesView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsTransitiveUpgradeGuidanceLongTermUpgradeGuidanceView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsTransitiveUpgradeGuidanceShortTermUpgradeGuidanceView;
-import com.synopsys.integration.blackduck.api.generated.component.DeveloperScansScanItemsTransitiveUpgradeGuidanceView;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 
 public class RapidScanResultAggregator {
@@ -38,6 +31,7 @@ public class RapidScanResultAggregator {
         aggregatedDetails.put(RapidScanDetailGroup.POLICY, new RapidScanComponentGroupDetail(RapidScanDetailGroup.POLICY));
         aggregatedDetails.put(RapidScanDetailGroup.SECURITY, new RapidScanComponentGroupDetail(RapidScanDetailGroup.SECURITY));
         aggregatedDetails.put(RapidScanDetailGroup.LICENSE, new RapidScanComponentGroupDetail(RapidScanDetailGroup.LICENSE));
+        aggregatedDetails.put(RapidScanDetailGroup.VIOLATING_POLICIES, new RapidScanComponentGroupDetail(RapidScanDetailGroup.VIOLATING_POLICIES));
 
         RapidScanResultSummary.Builder summaryBuilder = new RapidScanResultSummary.Builder();
 
@@ -47,6 +41,7 @@ public class RapidScanResultAggregator {
             RapidScanComponentGroupDetail aggregatedSecurityDetail = aggregatedDetails.get(detail.getSecurityDetails().getGroup());
             RapidScanComponentGroupDetail aggregatedLicenseDetail = aggregatedDetails.get(detail.getLicenseDetails().getGroup());
             RapidScanComponentGroupDetail aggregatedComponentDetail = aggregatedDetails.get(detail.getComponentDetails().getGroup());
+            RapidScanComponentGroupDetail aggregatedViolatingPoliciesDetail = aggregatedDetails.get(detail.getViolatingPoliciesDetails().getGroup());
 
             aggregatedComponentDetail.addErrors(detail.getComponentDetails().getErrorMessages());
             aggregatedComponentDetail.addWarnings(detail.getComponentDetails().getWarningMessages());
@@ -54,6 +49,8 @@ public class RapidScanResultAggregator {
             aggregatedSecurityDetail.addWarnings(detail.getSecurityDetails().getWarningMessages());
             aggregatedLicenseDetail.addErrors(detail.getLicenseDetails().getErrorMessages());
             aggregatedLicenseDetail.addWarnings(detail.getLicenseDetails().getWarningMessages());
+            aggregatedViolatingPoliciesDetail.addErrors(detail.getViolatingPoliciesDetails().getErrorMessages());
+            aggregatedViolatingPoliciesDetail.addWarnings(detail.getViolatingPoliciesDetails().getWarningMessages());
         }
 
         List<String> transitiveGuidance = this.transitiveGuidanceDetails();
@@ -61,6 +58,7 @@ public class RapidScanResultAggregator {
         return new RapidScanAggregateResult(summaryBuilder.build(), aggregatedDetails.get(RapidScanDetailGroup.POLICY),
                 aggregatedDetails.get(RapidScanDetailGroup.SECURITY),
                 aggregatedDetails.get(RapidScanDetailGroup.LICENSE),
+                aggregatedDetails.get(RapidScanDetailGroup.VIOLATING_POLICIES),
                 transitiveGuidance);
     }
 
@@ -76,13 +74,24 @@ public class RapidScanResultAggregator {
             RapidScanComponentGroupDetail componentGroupDetail = componentDetail.getComponentDetails();
             RapidScanComponentGroupDetail securityGroupDetail = componentDetail.getSecurityDetails();
             RapidScanComponentGroupDetail licenseGroupDetail = componentDetail.getLicenseDetails();
-                  
-            List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolations = 
+            RapidScanComponentGroupDetail violatingPoliciesDetail = componentDetail.getViolatingPoliciesDetails();
+
+            List<DeveloperScansScanItemsComponentViolatingPoliciesView> componentViolations =
                     resultView.getComponentViolatingPolicies();
             List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilityViolations = resultView
                     .getPolicyViolationVulnerabilities();
             List<DeveloperScansScanItemsPolicyViolationLicensesView> licenseViolations = resultView
                     .getPolicyViolationLicenses();
+            List<DeveloperScansScanItemsViolatingPoliciesView> policyViolationsSuperset =
+                    resultView.getViolatingPolicies();
+
+            Set<String> allViolatedPolicyNames = policyViolationsSuperset.stream()
+                    .map(DeveloperScansScanItemsViolatingPoliciesView::getPolicyName)
+                    .collect(Collectors.toSet());
+
+           Set<String> componentPolicyNames = componentViolations.stream()
+                    .map(DeveloperScansScanItemsComponentViolatingPoliciesView::getPolicyName)
+                    .collect(Collectors.toSet());
 
             Set<String> vulnerabilityPolicyNames = vulnerabilityViolations.stream()
                     .map(DeveloperScansScanItemsPolicyViolationVulnerabilitiesView::getViolatingPolicies)
@@ -95,18 +104,16 @@ public class RapidScanResultAggregator {
                     .flatMap(Collection::stream)
                     .map(DeveloperScansScanItemsPolicyViolationLicensesViolatingPoliciesView::getPolicyName)
                     .collect(Collectors.toSet());
-            
-            Set<String> componentPolicyNames = componentViolations.stream()
-                    .map(DeveloperScansScanItemsComponentViolatingPoliciesView::getPolicyName)
-                    .collect(Collectors.toSet());
 
             componentGroupDetail.addPolicies(componentPolicyNames);
             securityGroupDetail.addPolicies(vulnerabilityPolicyNames);
             licenseGroupDetail.addPolicies(licensePolicyNames);
+            violatingPoliciesDetail.addPolicies(allViolatedPolicyNames);
 
             addComponentData(resultView, componentViolations, componentGroupDetail);
             addVulnerabilityData(resultView, vulnerabilityViolations, securityGroupDetail);
             addLicenseData(resultView, licenseViolations, licenseGroupDetail);
+            addViolatingPoliciesData(resultView, policyViolationsSuperset, violatingPoliciesDetail);
         }
         
         return componentDetails;
@@ -177,9 +184,10 @@ public class RapidScanResultAggregator {
         RapidScanComponentGroupDetail componentGroupDetail = new RapidScanComponentGroupDetail(RapidScanDetailGroup.POLICY);
         RapidScanComponentGroupDetail securityGroupDetail = new RapidScanComponentGroupDetail(RapidScanDetailGroup.SECURITY);
         RapidScanComponentGroupDetail licenseGroupDetail = new RapidScanComponentGroupDetail(RapidScanDetailGroup.LICENSE);
+        RapidScanComponentGroupDetail violatingPoliciesDetail = new RapidScanComponentGroupDetail(RapidScanDetailGroup.VIOLATING_POLICIES);
 
         return new RapidScanComponentDetail(componentName, componentVersion, componentIdentifier, componentGroupDetail,
-                securityGroupDetail, licenseGroupDetail);
+                securityGroupDetail, licenseGroupDetail, violatingPoliciesDetail);
     }
 
     private void addVulnerabilityData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsPolicyViolationVulnerabilitiesView> vulnerabilities, RapidScanComponentGroupDetail securityDetail) {
@@ -198,6 +206,10 @@ public class RapidScanResultAggregator {
         for (DeveloperScansScanItemsComponentViolatingPoliciesView componentPolicyViolation: componentViolations) {
             componentGroupDetail.addComponentMessages(resultView, componentPolicyViolation);
         }
+    }
+
+    private void addViolatingPoliciesData(DeveloperScansScanView resultView, List<DeveloperScansScanItemsViolatingPoliciesView> allPolicyViolations, RapidScanComponentGroupDetail violatingPoliciesDetail) {
+        violatingPoliciesDetail.addViolatingPoliciesMessages(resultView, allPolicyViolations);
     }
 
     /**
