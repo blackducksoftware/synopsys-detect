@@ -963,13 +963,20 @@ public class DetectProperties {
             .build();
 
     public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED =
-            BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
-                    .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
-                    .setHelp(
-                            "If set to true, Detect will save an output file named 'components-with-locations.json' in the Scan subdirectory detailing where in the project's source code OSS components are declared.",
-                            "All components will be included when using Synopsys Detect in offline mode. Only policy violating components will be included for Rapid and Stateless Scan modes.")
-                    .setGroups(DetectGroup.GENERAL)
-                    .build();
+        BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
+            .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
+            .setHelp(
+                    "If set to true, Detect will save an output file named 'components-with-locations.json' in the Scan subdirectory detailing where in the project's source code OSS components are declared.",
+                    "All components will be included when using Synopsys Detect in offline mode. Only policy violating components will be included for Rapid and Stateless Scan modes.")
+            .setGroups(DetectGroup.GENERAL)
+            .build();
+
+    public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_STATUS =
+        BooleanProperty.newBuilder("detect.component.location.analysis.status", false)
+            .setInfo("Component Location Analysis Status", DetectPropertyFromVersion.VERSION_9_7_0)
+            .setHelp("If set to true, Detect status and exit code will be affected by the status of the Component Location Analysis run.")
+            .setGroups(DetectGroup.GENERAL)
+            .build();
 
     public static final AllEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
         AllEnumListProperty.newBuilder("detect.included.detector.types", AllEnum.ALL, DetectorType.class)
