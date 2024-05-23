@@ -93,7 +93,9 @@ public class ToolPoetrySectionParser {
             if (dotIndex == -1) {
                 set.add(key);
             } else {
-                // remove the ".extras" part
+                // when an entry such as `fastapi = {version="^0.92.0", extras=["all"]}` is encountered, it results in two keys:
+                //   "fastapi.version", and "fastapi.extras"
+                // here we address this by removing the "version" and "extras" parts
                 set.add(key.substring(0, dotIndex));
             }
         }
