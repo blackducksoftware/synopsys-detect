@@ -30,6 +30,8 @@ For setup.cfg and setup.py file parsing, the Setuptools detector supports direct
 
 <note type="tip">URL references, optional dependencies and `file: \<path to file\>` parameters found in setup.cfg are not supported. For setup.py files, programmatic population of the `install_requires` parameter is not supported.</note>
 
+<note type="note">The `--detect.pip.only.project.tree`, `--detect.pip.project.name`, and `--detect.pip.project.version.name` properties do not apply to the Setuptools detector.</note>
+
 ## PIPENV Detectors
 
 ## Pipenv lock detector
