@@ -53,7 +53,6 @@ public class AutoScanTypeDecider {
                 }
                 if (!excludedTools.containsValue(DetectTool.SIGNATURE_SCAN)
                         && !includedTools.containsValue(DetectTool.SIGNATURE_SCAN)
-                        && includedTools.containsNone()
                         && !pathsCollection.signaturePaths.isEmpty()) {
                     scanTypeEvidenceMap.put(DetectTool.SIGNATURE_SCAN, pathsCollection.signaturePaths);
                 }

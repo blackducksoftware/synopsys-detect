@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScan;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatch;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
@@ -50,6 +52,8 @@ import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.AirGapType;
 import com.synopsys.integration.detect.workflow.airgap.AirGapTypeDecider;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticDecision;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -202,16 +206,25 @@ public class DetectBoot {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
         AutoScanTypeDecider autoDetectTool = new AutoScanTypeDecider();
-        // For Auto Scan Mode.
         Map<DetectTool, Set<String>> scanTypeEvidenceMap = autoDetectTool.decide(hasImageOrTar, detectConfiguration);
-        logger.info("Scan type and respective evidence paths:");
-        for (DetectTool detectTool : scanTypeEvidenceMap.keySet()) {
-            logger.info("{} scan type paths:", detectTool.toString());
-            for (String path : scanTypeEvidenceMap.get(detectTool)) {
-                logger.info(path);
-            }
-            logger.info("");
+        logger.info("signature scan:{}", scanTypeEvidenceMap.containsKey(DetectTool.SIGNATURE_SCAN));
+        // This code to be moved to DetectRun.
+        BinaryScanBatch binaryScanBatch = new BinaryScanBatch();
+        CodeLocationNameGenerator codeLocationNameGenerator = detectConfigurationFactory.createCodeLocationOverride()
+            .map(CodeLocationNameGenerator::withOverride)
+            .orElse(CodeLocationNameGenerator.withPrefixSuffix("prefix", "suffix"));// Temporary code - discard after move to DetectRun.
+        CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
+        for (String path : scanTypeEvidenceMap.get(DetectTool.BINARY_SCAN)) {
+            File binaryScanFile = new File(path);
+            String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(
+                binaryScanFile,
+                binaryScanFile.getName(),// should be project name?
+                "1"//should be project version?
+            );
+            binaryScanBatch.addBinaryScan(new BinaryScan(new File(path), binaryScanFile.getName(), "1", codeLocationName));
         }
+        // call BinaryUploadOperation.uploadBinaryScanFiles(...)
+
         
         try {
             BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode();
@@ -219,7 +232,7 @@ public class DetectBoot {
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
                 detectConfigurationFactory.createBlackDuckConnectionDetails(),
                 blackduckScanMode,
-                detectConfigurationFactory.createHasSignatureScan()
+                detectConfigurationFactory.createHasSignatureScan(scanTypeEvidenceMap.containsKey(DetectTool.SIGNATURE_SCAN))
             );
 
             // in order to know if docker is needed we have to have either detect.target.type=IMAGE or detect.docker.image

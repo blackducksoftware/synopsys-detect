@@ -209,10 +209,9 @@ public class DetectConfigurationFactory {
         return new PhoneHomeOptions(phoneHomePassthrough);
     }
 
-    public boolean createHasSignatureScan() {
-        boolean hss = false;
-        hss = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS).containsValue(DetectTool.SIGNATURE_SCAN);
-        return hss;
+    public boolean createHasSignatureScan(boolean signatureScanAutoDetected) {
+        return detectConfiguration.getValue(DetectProperties.DETECT_TOOLS).containsValue(DetectTool.SIGNATURE_SCAN) 
+                || signatureScanAutoDetected;
     }
 
     public Boolean isComponentLocationAnalysisEnabled() {
