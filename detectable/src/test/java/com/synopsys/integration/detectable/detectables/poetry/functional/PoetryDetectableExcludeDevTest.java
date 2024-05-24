@@ -35,10 +35,10 @@ public class PoetryDetectableExcludeDevTest extends DetectableFunctionalTest {
             "\n" + //
             "[tool.poetry.dependencies]\n" + //
             "Python = \"^3.11\"\n" + //
-            "\"PENDULUM.XYZ\" = \"^3.0.0\"\n" + //
+            "\"PENDULUM._-XYZ\" = \"^3.0.0\"\n" + //
             "\n" + //
             "[tool.poetry.group.dev.dependencies]\n" + //
-            "boost-histogram = \"^1.4.0\"\n" + //
+            "\"boost-_--.histogram\" = \"^1.4.0\"\n" + //
             "\n" + //
             "[build-system]\n" + //
             "requires = [\"poetry-core\"]\n" + //
@@ -72,7 +72,7 @@ public class PoetryDetectableExcludeDevTest extends DetectableFunctionalTest {
             "python-versions = \">=3.8\"\n" + //
             "\n" + //
             "[package.dependencies]\n" + //
-            "PYTHON-dateutil = \">=2.6\"\n" + //
+            "\"PYTHON---.dateutil\" = \">=2.6\"\n" + //
             "TZData = \">=2020.1\"\n" + //
             "\n" + //
             "[[package]]\n" + //

@@ -17,11 +17,11 @@ public class PoetryLockParserTest {
 
         String input = String.join(System.lineSeparator(), Arrays.asList(
             "[[package]]",
-            "name = \"Pytest_Cov\"",
+            "name = \"Pytest___Cov\"",
             "version = \"2.8.1\"",
             "",
             "[[package]]",
-            "name = \"pytest.mock\"",
+            "name = \"pytest.-_mock\"",
             "version = \"2.0.0\""
         ));
         PoetryLockParser poetryLockParser = new PoetryLockParser();

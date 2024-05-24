@@ -76,7 +76,7 @@ public class PoetryLockParser {
     }
 
     private String normalizePackageName(String packageName) {
-        return packageName.replaceAll("[_.]", "-").toLowerCase();
+        return packageName.replaceAll("[_.-]+", "-").toLowerCase();
     }
 
     private void populateDirectDependencies(DependencyGraph graph, Set<String> rootPackages) {
