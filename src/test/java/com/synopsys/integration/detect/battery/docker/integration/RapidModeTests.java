@@ -42,7 +42,7 @@ public class RapidModeTests {
         test.command.property(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, "RAPID");
 
         DockerAssertions dockerAssertions = test.run();
-        dockerAssertions.logContains("Critical and blocking policy violations");
+        dockerAssertions.logContains("Critical and blocking policy violations for");
         dockerAssertions.logContains("* Components: 0");
         dockerAssertions.successfulOperation("Generate Rapid Json File");
     }
