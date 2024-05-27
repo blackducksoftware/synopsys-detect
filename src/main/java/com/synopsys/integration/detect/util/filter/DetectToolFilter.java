@@ -74,4 +74,8 @@ public class DetectToolFilter {
         
         return excludedIncludedFilter.shouldInclude(detectTool);
     }
+    
+    public ExcludeIncludeEnumFilter<DetectTool> getExcludedIncludedFilter() {
+        return excludedIncludedFilter;
+    }
 }

@@ -56,4 +56,8 @@ public class ExcludeIncludeEnumFilter<T extends Enum<T>> {
     public boolean includeSpecified() {
         return !included.isEmpty() && !included.containsAll() && !included.containsNone();
     }
+    
+    public Map<T, Set<String>> getScanTypeEvidenceMap() {
+        return scanTypeEvidenceMap;
+    }
 }

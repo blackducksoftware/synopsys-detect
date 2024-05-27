@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.lifecycle.boot.decision;
+package com.synopsys.integration.detect.lifecycle.autonomous;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -25,7 +25,7 @@ import org.apache.tika.mime.MediaTypeRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AutoScanTypeDecider {
+public class ScanTypeDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     public Map<DetectTool, Set<String>> decide(boolean hasImageOrTar, DetectPropertyConfiguration detectConfiguration) {

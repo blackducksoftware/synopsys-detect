@@ -40,8 +40,8 @@ import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
 import com.synopsys.integration.detect.configuration.validation.DeprecationResult;
 import com.synopsys.integration.detect.configuration.validation.DetectConfigurationBootManager;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
-import com.synopsys.integration.detect.lifecycle.boot.decision.AutoScanTypeDecider;
-import com.synopsys.integration.detect.lifecycle.boot.autonomous.AutonomousManager;
+import com.synopsys.integration.detect.lifecycle.autonomous.ScanTypeDecider;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
@@ -169,7 +169,7 @@ public class DetectBoot {
         }
 
         // TODO Scan settings model obtained below is to be used by the delta-checking operations
-        AutonomousManager autonomousManager = new AutonomousManager(directoryManager);
+        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, detectConfigurationFactory, detectConfiguration);
         ScanSettings scanSettings = autonomousManager.getScanSettingsModel();
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
@@ -213,26 +213,8 @@ public class DetectBoot {
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
-        AutoScanTypeDecider autoDetectTool = new AutoScanTypeDecider();
-        Map<DetectTool, Set<String>> scanTypeEvidenceMap = autoDetectTool.decide(hasImageOrTar, detectConfiguration);
-        logger.info("signature scan:{}", scanTypeEvidenceMap.containsKey(DetectTool.SIGNATURE_SCAN));
-        // This code to be moved to DetectRun.
-        BinaryScanBatch binaryScanBatch = new BinaryScanBatch();
-        CodeLocationNameGenerator codeLocationNameGenerator = detectConfigurationFactory.createCodeLocationOverride()
-            .map(CodeLocationNameGenerator::withOverride)
-            .orElse(CodeLocationNameGenerator.withPrefixSuffix("prefix", "suffix"));// Temporary code - discard after move to DetectRun.
-        CodeLocationNameManager codeLocationNameManager = new CodeLocationNameManager(codeLocationNameGenerator);
-        for (String path : scanTypeEvidenceMap.get(DetectTool.BINARY_SCAN)) {
-            File binaryScanFile = new File(path);
-            String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(
-                binaryScanFile,
-                binaryScanFile.getName(),// should be project name?
-                "1"//should be project version?
-            );
-            binaryScanBatch.addBinaryScan(new BinaryScan(new File(path), binaryScanFile.getName(), "1", codeLocationName));
-        }
-        // call BinaryUploadOperation.uploadBinaryScanFiles(...)
-
+        
+        Map<DetectTool, Set<String>> scanTypeEvidenceMap = autonomousManager.getScanTypeMap(hasImageOrTar);
         
         try {
             BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode();

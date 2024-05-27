@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.lifecycle.boot.autonomous;
+package com.synopsys.integration.detect.lifecycle.autonomous;
 
 import java.io.File;
 import java.io.FileWriter;
