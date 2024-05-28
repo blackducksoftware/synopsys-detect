@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
+import com.synopsys.integration.detectable.detectables.git.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfig;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigBranch;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigRemote;

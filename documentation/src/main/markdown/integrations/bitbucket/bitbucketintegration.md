@@ -1,13 +1,13 @@
 # Bitbucket integration
-[solution_name] consolidates several scanning utilities and tools and can be used to scan artifacts in a [Bitbucket pipeline](https://bitbucket.org/product/features/pipelines). The following procedures provide guidance on setting up [solution_name] with your Bitbucket continuous integration builds.
+[company_name] [solution_name] consolidates several scanning utilities and tools and can be used to scan artifacts in a [Bitbucket pipeline](https://bitbucket.org/product/features/pipelines). The following procedures provide guidance on setting up [company_name] [solution_name] with your Bitbucket continuous integration builds.
 
 ## Prerequisites
 
-Integration with BitBucket requires a fully configured instance of [solution_name] and compatible instance of Java. For prerequisite information refer to [Requirements and release information](../../gettingstarted/requirements.md)
+Integration with BitBucket requires a fully configured instance of [company_name] [solution_name] and compatible instance of Java. For prerequisite information refer to [Requirements and release information](../../gettingstarted/requirements.md)
 
 ## Configuring with API tokens
 
-The recommended way of configuring [solution_name] with a Bitbucket pipeline is to use an API token.   
+The recommended way of configuring [company_name] [solution_name] with a Bitbucket pipeline is to use an API token.   
 
 1. In [blackduck_product_name], navigate to the profile of the user whose credentials are used to scan projects from the pipeline.
 2. Scroll down to the **User Access Token** section, and complete the fields to create a new token.
@@ -20,9 +20,9 @@ The recommended way of configuring [solution_name] with a Bitbucket pipeline is
     <figcaption>Creating the access token</figcaption>
     </figure>
 	
-## Configuring [solution_name] for Bitbucket with an API token
+## Configuring [company_name] [solution_name] for Bitbucket with an API token
 
-This section describes how to run [solution_name] with Bitbucket pipelines using an API token. 
+This section describes how to run [company_name] [solution_name] with Bitbucket pipelines using an API token. 
 
 1.	On the project's Bitbucket page, navigate to **Settings** and then click **Repository Variables** in the left navigation under **Pipelines**.
 
@@ -71,7 +71,7 @@ pipelines:
           - bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --blackduck.url="${BLACKDUCK_URL}" --blackduck.api.token="${BLACKDUCK_TOKEN} --blackduck.trust.cert=true"
 ```
 
-<note type="important">Configure [solution_name] as a command after the code-build step as it relies on access to the code tree and the build environment.</note>
+<note type="important">Configure [company_name] [solution_name] as a command after the code-build step as it relies on access to the code tree and the build environment.</note>
 
-When you commit the modified YAML file, the build is triggered. After the pipeline build with [solution_name] completes, you can view the complete scan results in your [blackduck_product_name] instance. For additional information and properties for [solution_name], refer to [Detect properties](../../properties/all-properties.md) for more details.
+When you commit the modified YAML file, the build is triggered. After the pipeline build with [company_name] [solution_name] completes, you can view the complete scan results in your [blackduck_product_name] instance. For additional information and properties for [company_name] [solution_name], refer to [Detect properties](../../properties/all-properties.md) for more details.
  	

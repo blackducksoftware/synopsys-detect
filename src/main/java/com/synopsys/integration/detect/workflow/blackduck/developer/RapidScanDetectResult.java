@@ -55,6 +55,7 @@ public class RapidScanDetectResult implements DetectResult {
         String policyGroupName = RapidScanDetailGroup.POLICY.getDisplayName();
         String securityGroupName = RapidScanDetailGroup.SECURITY.getDisplayName();
         String licenseGroupName = RapidScanDetailGroup.LICENSE.getDisplayName();
+        String violatingPoliciesSupersetGroupName = RapidScanDetailGroup.VIOLATING_POLICIES.getDisplayName();
         String countFormat = "\t\t* %s: %d";
         String indentedMessageFormat = "\t\t%s";
 
@@ -64,11 +65,13 @@ public class RapidScanDetectResult implements DetectResult {
         resultMessages.add(String.format(countFormat, policyGroupName, summary.getPolicyErrorCount()));
         resultMessages.add(String.format(countFormat, securityGroupName, summary.getSecurityErrorCount()));
         resultMessages.add(String.format(countFormat, licenseGroupName, summary.getLicenseErrorCount()));
+        resultMessages.add(String.format(countFormat, violatingPoliciesSupersetGroupName, summary.getAllOtherPolicyErrorCount()));
         resultMessages.add("");
         resultMessages.add("\tOther policy violations");
         resultMessages.add(String.format(countFormat, policyGroupName, summary.getPolicyWarningCount()));
         resultMessages.add(String.format(countFormat, securityGroupName, summary.getSecurityWarningCount()));
         resultMessages.add(String.format(countFormat, licenseGroupName, summary.getLicenseWarningCount()));
+        resultMessages.add(String.format(countFormat, violatingPoliciesSupersetGroupName, summary.getAllOtherPolicyWarningCount()));
         resultMessages.add("");
         resultMessages.add("\tPolicies Violated:");
         summary.getPolicyViolationNames().stream()

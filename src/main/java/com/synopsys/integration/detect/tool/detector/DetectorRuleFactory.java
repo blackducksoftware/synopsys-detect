@@ -6,8 +6,8 @@ import com.synopsys.integration.detectable.detectables.cargo.CargoLockDetectable
 import com.synopsys.integration.detectable.detectables.carthage.CarthageLockDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
-import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.Conan1CliDetectable;
+import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
@@ -38,6 +38,7 @@ import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetect
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectable;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
@@ -46,6 +47,8 @@ import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.buildless.SetupToolsBuildlessDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
@@ -224,6 +227,13 @@ public class DetectorRuleFactory {
                 .search().defaults();
         });
 
+        rules.addDetector(DetectorType.SETUPTOOLS, detector -> {
+            detector.entryPoint(SetupToolsBuildDetectable.class)
+                .search().defaults();
+            detector.entryPoint(SetupToolsBuildlessDetectable.class)
+                .search().defaults();
+         }).allEntryPointsFallbackToNext();
+
         rules.addDetector(DetectorType.POETRY, detector -> {
             detector.entryPoint(PoetryDetectable.class)
                 .search().defaults();
@@ -235,6 +245,8 @@ public class DetectorRuleFactory {
                 detector.entryPoint(PipInspectorDetectable.class)
                     .search().defaults();
                 detector.entryPoint(PipfileLockDetectable.class)
+                    .search().defaults();
+                detector.entryPoint(RequirementsFileDetectable.class)
                     .search().defaults();
             })
             .allEntryPointsFallbackToNext()

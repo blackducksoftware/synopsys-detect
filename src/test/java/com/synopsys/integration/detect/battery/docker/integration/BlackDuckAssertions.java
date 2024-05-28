@@ -1,9 +1,7 @@
 package com.synopsys.integration.detect.battery.docker.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +20,11 @@ import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class BlackDuckAssertions {
     private final ProjectService projectService;
@@ -111,6 +114,40 @@ public class BlackDuckAssertions {
                 .findFirst();
             assertTrue(blackDuckCommonComponent.isPresent());
         });
+    }
+
+    public void doesNotHaveComponents(String... componentNames) throws IntegrationException {
+        doesNotHaveComponents(Bds.of(componentNames).toSet());
+    }
+
+    public void doesNotHaveComponents(Set<String> componentNames) throws IntegrationException {
+        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
+        componentNames.forEach(componentName -> {
+            Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
+                    .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
+                    .findFirst();
+            assertFalse(blackDuckCommonComponent.isPresent());
+        });
+    }
+
+    public void checkComponentVersionExists(String componentName, String version) throws IntegrationException {
+        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
+        Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
+                .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
+                .findFirst();
+        assertTrue(blackDuckCommonComponent.isPresent());
+        String blackDuckCommonComponentVersion = blackDuckCommonComponent.get().getComponentVersionName();
+        assertEquals(version, blackDuckCommonComponentVersion);
+    }
+
+    public void checkComponentVersionNotExists(String componentName, String version) throws IntegrationException {
+        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
+        Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
+                .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
+                .findFirst();
+        assertTrue(blackDuckCommonComponent.isPresent());
+        String blackDuckCommonComponentVersion = blackDuckCommonComponent.get().getComponentVersionName();
+        assertNotEquals(version, blackDuckCommonComponentVersion);
     }
 
     public NameVersion getProjectNameVersion() {

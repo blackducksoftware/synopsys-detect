@@ -58,6 +58,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyT
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 import com.synopsys.integration.detectable.detectables.lerna.LernaPackageType;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
+import com.synopsys.integration.detectable.detectables.nuget.NugetDependencyType;
 import com.synopsys.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.synopsys.integration.detectable.detectables.pear.PearDependencyType;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipenvDependencyType;
@@ -201,6 +202,7 @@ public class DetectProperties {
         NullablePathProperty.newBuilder("detect.bazel.path")
             .setInfo("Bazel Executable", DetectPropertyFromVersion.VERSION_5_2_0)
             .setHelp("The path to the Bazel executable.")
+            .setExample("$HOME/bin/bazel")
             .setGroups(DetectGroup.BAZEL, DetectGroup.GLOBAL)
             .build();
 
@@ -278,6 +280,7 @@ public class DetectProperties {
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The path to the output directory for the generated BDIO file.", "If not set, the BDIO file will be placed in a 'BDIO' subdirectory of the output directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/home/<username>/blackduck/scan-outputs/bdio")
             .build();
 
     public static final NullableStringProperty DETECT_BDIO_FILE_NAME =
@@ -288,6 +291,7 @@ public class DetectProperties {
                 "If not set, the file name is generated from your project, version and code location names."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("Project1BDIO")
             .build();
 
     public static final NullablePathProperty DETECT_BINARY_SCAN_FILE =
@@ -323,6 +327,14 @@ public class DetectProperties {
                 "If specified, this file and this file only will be uploaded for container scan analysis. The CONTAINER_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the CONTAINER_SCAN tool is invoked.")
             .setGroups(DetectGroup.CONTAINER_SCANNER, DetectGroup.SOURCE_PATH)
             .build();
+
+    public static final NullableStringProperty DETECT_THREAT_INTEL_SCAN_FILE =
+            NullableStringProperty.newBuilder("detect.threatintel.scan.file.path")
+                .setInfo("Threat Intel Scan Target", DetectPropertyFromVersion.VERSION_9_6_0)
+                .setHelp(
+                    "If specified, this file and this file only will be uploaded for Threat Intel analysis.  The THREAT_INTEL tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the THREAT_INTEL tool is invoked.")
+                .setGroups(DetectGroup.THREAT_INTEL, DetectGroup.SOURCE_PATH)
+                .build();
 
     // TODO: Consider removing environment sourcing code in 9.0.0. IDETECT-3167
     public static final StringProperty DETECT_BITBAKE_BUILD_ENV_NAME =
@@ -371,8 +383,8 @@ public class DetectProperties {
         NullableStringProperty.newBuilder("detect.blackduck.signature.scanner.arguments")
             .setInfo("Signature Scanner Arguments", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
-                "A space-separated list of additional arguments to use when running the Black Duck signature scanner.",
-                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in the current working directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from ./excludes.txt'"
+                "A space-separated list of additional arguments to use when running the Black Duck signature scanner. Key-value pairs specified as arguments will replace the same entries specifed elswhere. Available signature scanner properties can be determined by specifying '--help' when executing the signature scanner jar file from the command line.",
+                "Example usage: Running in bash on Linux and you want signature scanner to read a list of directories to exclude from the scan (using the signature scanner '--exclude-from' option). Configure signature scanner to read excluded directories from a file named excludes.txt in the current working directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from ./excludes.txt'"
             )
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
             .setExample("--exclude-from ./excludes.txt")
@@ -479,7 +491,8 @@ public class DetectProperties {
             .setHelp(
                 "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .build();
+            .build().deprecateValue(SnippetMatching.FULL_SNIPPET_MATCHING,"Is deprecated and will be removed in the next major release")
+                .deprecateValue(SnippetMatching.FULL_SNIPPET_MATCHING_ONLY,"Is deprecated and will be removed in the next major release");
     
     public static final ExtendedEnumProperty<ExtendedReducedPersistanceMode, ReducedPersistence> DETECT_BLACKDUCK_SIGNATURE_SCANNER_REDUCED_PERSISTENCE =
             ExtendedEnumProperty.newBuilder(
@@ -772,6 +785,7 @@ public class DetectProperties {
             .setInfo("Git Executable", DetectPropertyFromVersion.VERSION_5_5_0)
             .setHelp("Path of the git executable")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/usr/bin/git")
             .build();
 
     public static final NullablePathProperty DETECT_GO_PATH =
@@ -949,13 +963,20 @@ public class DetectProperties {
             .build();
 
     public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED =
-            BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
-                    .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
-                    .setHelp(
-                            "If set to true, Detect will save an output file named 'components-with-locations.json' in the Scan subdirectory detailing where in the project's source code OSS components are declared.",
-                            "All components will be included when using Synopsys Detect in offline mode. Only policy violating components will be included for Rapid and Stateless Scan modes.")
-                    .setGroups(DetectGroup.GENERAL)
-                    .build();
+        BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
+            .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
+            .setHelp(
+                    "If set to true, Detect will save an output file named 'components-with-locations.json' in the Scan subdirectory detailing where in the project's source code OSS components are declared.",
+                    "All components will be included when using Synopsys Detect in offline mode. Only policy violating components will be included for Rapid and Stateless Scan modes.")
+            .setGroups(DetectGroup.GENERAL)
+            .build();
+
+    public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_STATUS =
+        BooleanProperty.newBuilder("detect.component.location.analysis.status", false)
+            .setInfo("Component Location Analysis Status", DetectPropertyFromVersion.VERSION_9_7_0)
+            .setHelp("If set to true, Detect status and exit code will be affected by the status of the Component Location Analysis run.")
+            .setGroups(DetectGroup.GENERAL)
+            .build();
 
     public static final AllEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
         AllEnumListProperty.newBuilder("detect.included.detector.types", AllEnum.ALL, DetectorType.class)
@@ -974,6 +995,7 @@ public class DetectProperties {
             .setInfo("Java Executable", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp("Path to the Java executable used by Docker Inspector.", "If set, Detect will use the given Java executable instead of searching for one.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/usr/lib/jvm/jdk-17/bin/java")
             .build();
 
     public static final CaseSensitiveStringListProperty DETECT_LERNA_EXCLUDED_PACKAGES =
@@ -1018,7 +1040,7 @@ public class DetectProperties {
             .setInfo("Maven Build Command", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "Maven command line arguments to add to the mvn/mvnw command line.",
-                "By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'"
+                "By default, Detect runs the mvn (or mvnw) command with two arguments: dependency:tree and -T1. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'. Please note that Detect will omit any thread-specifying arguments in order to ensure the accuracy of the dependency tree."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1072,6 +1094,16 @@ public class DetectProperties {
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
 
+    public static final BooleanProperty DETECT_MAVEN_INCLUDE_SHADED_DEPENDENCIES =
+            BooleanProperty.newBuilder("detect.maven.include.shaded.dependencies",false)
+                    .setInfo("Include Shaded Dependencies", DetectPropertyFromVersion.VERSION_9_5_0)
+                    .setHelp(
+                            "If set to true, Detect will include shaded dependencies as part of BOM.",
+                            "A shaded dependency is packaged inside the uber jar of the direct or transitive dependency referenced in the project. Detect will find the use of maven-shade-plugin from original POM file and based on that will derive information for these dependencies. This property will only be supported in build mode just like all other MAVEN properties."
+                    )
+                    .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
+                    .build();
+
     public static final BooleanProperty DETECT_NOTICES_REPORT =
         BooleanProperty.newBuilder("detect.notices.report", false)
             .setInfo("Generate Notices Report", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1121,7 +1153,7 @@ public class DetectProperties {
         CaseSensitiveStringListProperty.newBuilder("detect.nuget.excluded.modules")
             .setInfo("Nuget Projects Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "The projects within the solution to exclude. Detect will exclude all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$')")
+                "The projects within the solution to exclude. Detect will exclude all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$'). Note that the term 'modules' in the parameter name is synonymous with Nuget 'project'.")
             .setExample("^BaGet.Core$,^BaGet.Core.Tests$")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1137,9 +1169,9 @@ public class DetectProperties {
 
     public static final CaseSensitiveStringListProperty DETECT_NUGET_INCLUDED_MODULES =
         CaseSensitiveStringListProperty.newBuilder("detect.nuget.included.modules")
-            .setInfo("Nuget Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("Nuget Projects Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "The names of the projects in a solution to include (overrides exclude). Detect will include all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$')")
+                "The names of the projects in a solution to include (overrides exclude). Detect will include all projects with names that include any of the given regex patterns. To match a full project name (for example: 'BaGet.Core'), use a regular expression that matches only the full name ('^BaGet.Core$'). Note that the term 'modules' in the parameter name is synonymous with Nuget 'project'.")
             .setExample("^BaGet.Core$,^BaGet.Core.Tests$")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1155,6 +1187,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
             .build();
 
+    public static final NoneEnumListProperty<NugetDependencyType> DETECT_NUGET_DEPENDENCY_TYPES_EXCLUDED =
+        NoneEnumListProperty.newBuilder("detect.nuget.dependency.types.excluded", NoneEnum.NONE, NugetDependencyType.class)
+            .setInfo("Nuget Dependency Types Excluded", DetectPropertyFromVersion.VERSION_9_4_0)
+            .setHelp(createTypeFilterHelpText("Nuget dependency types"), "This property supports exclusion of dependencies in projects that use PackageReference, and packages.config for listing dependencies that are not stored in JSON files.")
+            .setExample(String.format("%s", NugetDependencyType.DEV.name()))
+            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .build();
+
     public static final NullablePathProperty DETECT_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.output.path")
             .setInfo("Detect Output Path", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1163,6 +1203,7 @@ public class DetectProperties {
                 "If set, Detect will use the given directory to store files that it downloads and creates, instead of using the default location (~/blackduck)."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/home/<username>/blackduck/scan-outputs")
             .build();
 
     public static final NullablePathProperty DETECT_TOOLS_OUTPUT_PATH =
@@ -1174,6 +1215,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
+            .setExample("/home/<username>/blackduck/scan-outputs/tools")
             .build();
 
     public static final NoneEnumListProperty<PackagistDependencyType> DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED =
@@ -1249,6 +1291,16 @@ public class DetectProperties {
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_11_0)
             .setHelp(createTypeFilterHelpText("pnpm dependency types"))
             .setGroups(DetectGroup.PNPM, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .build();
+
+    public static final CaseSensitiveStringListProperty DETECT_POETRY_DEPENDENCY_GROUPS_EXCLUDED =
+        CaseSensitiveStringListProperty.newBuilder("detect.poetry.dependency.groups.excluded")
+            .setInfo("Poetry dependency groups", DetectPropertyFromVersion.VERSION_9_7_0)
+            .setHelp(
+                createTypeFilterHelpText("Poetry dependency groups"),
+                "When specified, presence of both `poetry.lock` and `pyproject.toml` files is required for this detector to run successfully. Components and related dependencies that belong to excluded groups will not be in the BOM unless the component also belongs to a non-excluded group. For example, to recursively exclude all components under the `tool.poetry.group.dev.dependencies` and `tool.poetry.group.test.dependencies` sections of `pyproject.toml`: `detect.poetry.dependency.groups.excluded='dev,test'`. For Poetry pre-1.2.x style of specifying dev depenenicies (`tool.poetry.dev-dependencies` section), use `dev` as the group name."
+            )
+            .setGroups(DetectGroup.POETRY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
     public static final NullablePathProperty DETECT_SWIFT_PATH =
@@ -1652,6 +1704,13 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
+    public static final BooleanProperty DETECT_YARN_MONOREPO_MODE =
+        BooleanProperty.newBuilder("detect.yarn.ignore.all.workspaces", false)
+            .setInfo("Ignore All Workspaces", DetectPropertyFromVersion.VERSION_9_4_0)
+            .setHelp("All workspaces are ignored by the Yarn detector for increased performance and precision to scan a massive codebase.")
+            .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
+            .build();
+    
     public static final NoneEnumListProperty<YarnDependencyType> DETECT_YARN_DEPENDENCY_TYPES_EXCLUDED =
         NoneEnumListProperty.newBuilder("detect.yarn.dependency.types.excluded", NoneEnum.NONE, YarnDependencyType.class)
             .setInfo("Yarn Dependency Types Excluded", DetectPropertyFromVersion.VERSION_4_0_0)
@@ -1736,8 +1795,8 @@ public class DetectProperties {
         EnumProperty.newBuilder("detect.blackduck.scan.mode", BlackduckScanMode.INTELLIGENT, BlackduckScanMode.class)
             .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)
             .setHelp(
-                "Set the Black Duck scanning mode of Detect",
-                "Set the scanning mode of Detect to control how Detect will send data to Black Duck. RAPID will not persist the results and disables select Detect functionality for faster results. INTELLIGENT persists the results and permits all features of Detect"
+                "Set the Black Duck scanning mode of Detect.",
+                "Set the scanning mode to control how Detect will send data to Black Duck. RAPID will not persist the results and disables select Detect functionality for faster results. INTELLIGENT, referred to as 'Full' scan mode in Black Duck, persists the results and permits all features of Detect."
             )
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.RAPID_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1773,6 +1832,7 @@ public class DetectProperties {
                 "If set, Detect will use the given directory to store a copy of the status.json file."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/home/<username>/blackduck/scan-outputs/status")
             .build();
     
     public static final BooleanProperty BLACKDUCK_OFFLINE_MODE_FORCE_BDIO =

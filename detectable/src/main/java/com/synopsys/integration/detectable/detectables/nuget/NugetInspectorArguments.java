@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,6 +38,10 @@ public class NugetInspectorArguments {
         nugetInspectorOptions.getNugetConfigPath()
             .ifPresent(arg -> options.add("--nuget_config_path=" + arg.toString()));
 
+        if(!nugetInspectorOptions.getNugetExcludedDependencyTypes().isEmpty()){
+            options.add("--excluded_dependency_types=" + toCommaSeparatedStringSet(nugetInspectorOptions.getNugetExcludedDependencyTypes()));
+        }
+
         if (logger.isTraceEnabled()) {
             options.add("-v");
         }
@@ -45,6 +50,10 @@ public class NugetInspectorArguments {
     }
 
     private static String toCommaSeparatedString(List<String> list) {
+        return StringUtils.joinWith(",", list.toArray());
+    }
+
+    private static String toCommaSeparatedStringSet(Set<NugetDependencyType> list) {
         return StringUtils.joinWith(",", list.toArray());
     }
 }

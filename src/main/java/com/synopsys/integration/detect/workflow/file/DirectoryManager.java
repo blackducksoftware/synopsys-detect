@@ -46,6 +46,7 @@ public class DirectoryManager {
         SHARED("shared"),
         STATUS("status"),
         STATUS_COPY("status-copy"),
+        THREAT_INTEL("threat-intel"),
         IAC("iac");
 
         private final String directoryName;
@@ -173,6 +174,10 @@ public class DirectoryManager {
 
     public File getImpactAnalysisOutputDirectory() {
         return getRunDirectory(RunDirectory.IMPACT_ANALYSIS);
+    }
+    
+    public File getThreatIntelOutputDirectory() {
+        return getRunDirectory(RunDirectory.THREAT_INTEL);
     }
 
     public File getRelevantOutputDirectory() {

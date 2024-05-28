@@ -30,6 +30,8 @@ public enum DetectorStatusCode {
     PROPERTY_INSUFFICIENT("The properties are insufficient to run."),
     PUBSPEC_LOCK_NOT_FOUND("A pubspec.yaml file was found, but a pubspec.lock file was NOT found."),
     SECTION_NOT_FOUND("A necessary section was not found within a file within the target project."),
+    SETUP_TOOLS_REQUIRES_NOT_FOUND("The necessary requires setuptools statement is missing from the pyproject.toml."),
+    SETUP_TOOLS_NO_DEPENDENCIES("No dependencies found in pyproject.toml, setup.cfg, or setup.py."),
     SBT_PLUGIN_MISSING("A dependency graph plugin must be installed for the SBT detector to run."),
     UNKNOWN_DETECTOR_RESULT("There was an unknown result."),
     WRONG_OPERATING_SYSTEM_RESULT("Cannot run on the used operating system."),

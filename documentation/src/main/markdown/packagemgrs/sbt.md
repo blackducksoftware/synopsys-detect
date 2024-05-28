@@ -6,11 +6,11 @@
 
 ## Overview
 
-[solution_name] runs the dependecyDot task when it finds the following in your project
+[company_name] [solution_name] runs the dependecyDot task when it finds the following in your project
 
 * build.sbt
 
-The SBT detector requires a compatible dependency graph plugin and the "depedencyDot" task to generate dependency graphs for SBT projects. The plugin generates dot file graphs for each project and [solution_name] parses each dot graph into it's own code location.
+The SBT detector requires a compatible dependency graph plugin and the "depedencyDot" task to generate dependency graphs for SBT projects. The plugin generates dot file graphs for each project and [company_name] [solution_name] parses each dot graph into it's own code location.
 
 Starting with SBT 1.4.0, a dependency graph plugin comes with SBT and can be enabled by adding ```addDependencyTreePlugin``` to "project/plugins.sbt".
 
@@ -23,7 +23,7 @@ addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1")
 
 To install the plugin to a single project, add the same line to "src/project/plugins.sbt" where src is your project's source directory.
 
-[solution_name] verfies the plugin is installed by running "sbt plugins" and looking for any of the following plugin names in the output. You can also perform this check yourself by running the same command.
+[company_name] [solution_name] verfies the plugin is installed by running "sbt plugins" and looking for any of the following plugin names in the output. You can also perform this check yourself by running the same command.
 ```
 sbt.plugins.DependencyTreePlugin
 net.virtualvoid.sbt.graph.DependencyGraphPlugin
@@ -34,13 +34,13 @@ In some cases, the dot files are not generated in "./target" and while those gra
 
 **NOTE: Older SBT projects that generate a resolution cache are still supported but are being deprecated. You must install the plugin for SBT to continue working uninterrupted.
 
-As of 8.8.0 of [solution_name], evicted dependencies in Simple Build Tool(SBT) projects will not be included in the Bill of Materials(BoM) generated during the scan.
+As of 8.8.0 of [company_name] [solution_name], evicted dependencies in Simple Build Tool(SBT) projects will not be included in the Bill of Materials(BoM) generated during the scan.
 
 ## Background execution
 
 The sbt command line utility is known to suspend when run in the background (this may be limited to Linux and Mac systems):
 [https://github.com/sbt/sbt/issues/701](https://github.com/sbt/sbt/issues/701).
-This can cause [solution_name] to suspend, if [solution_name] is run in the background,
+This can cause [company_name] [solution_name] to suspend, if [company_name] [solution_name] is run in the background,
 and the SBT detector runs.
 You can apply the workaround suggested in that github issue using the
 *detect.sbt.arguments* property:

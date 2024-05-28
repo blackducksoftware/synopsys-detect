@@ -31,7 +31,7 @@ Examples
 | `**/foo/bar` | /projectRoot/dir/foo/bar & /projectRoot/directory/foo/bar | |
 | `/projectRoot/d*/*` | /projectRoot/dir/foo & /projectRoot/directory/bar | |
 
-[solution_name] uses FileSystem::getPatchMatcher and its glob syntax implementation to exclude path patterns. See [here](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)) for more info.
+[company_name] [solution_name] uses FileSystem::getPatchMatcher and its glob syntax implementation to exclude path patterns. See [here](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)) for more info.
 
 ### Wildcards in relative path patterns
 

@@ -1,0 +1,115 @@
+{
+  "Dir": "/Users/devmehta/Downloads/simple-java-maven-app",
+  "Modules": {
+    "/Users/devmehta/Downloads/simple-java-maven-app/pom.xml": {
+      "ModuleFile": "/Users/devmehta/Downloads/simple-java-maven-app/pom.xml",
+      "ModuleDir": "/Users/devmehta/Downloads/simple-java-maven-app",
+      "ModuleName": "simple-java-maven-app/pom",
+      "ModuleVersion": "Unknown",
+      "Dependencies": [
+        {
+          "Id": "52950397-c2b6-2579-55cc-b97166db97d9",
+          "Description": "org.junit.jupiter:junit-jupiter-api:jar:5.10.2:test"
+        }
+      ],
+      "Components": {
+        "519bc939-fd55-4a3e-f9f8-f938684fdab6": {
+          "IncludedBy": [
+            {
+              "Id": "52950397-c2b6-2579-55cc-b97166db97d9",
+              "Description": "org.junit.jupiter:junit-jupiter-api:jar:5.10.2:test"
+            }
+          ],
+          "InclusionType": "TRANSITIVE",
+          "MavenCoordinates": {
+            "GroupId": "org.opentest4j",
+            "ArtifactId": "opentest4j",
+            "Version": "1.3.0",
+            "ArtifactType": "jar"
+          },
+          "DependencyType": "MAVEN",
+          "DependencySource": "EXTERNAL",
+          "Name": "org.opentest4j:opentest4j:jar:1.3.0:compile",
+          "Version": "1.3.0",
+          "Present": "PRESENT",
+          "Artifacts": [
+            "/Users/devmehta/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar"
+          ],
+          "Scope": "compile"
+        },
+        "52950397-c2b6-2579-55cc-b97166db97d9": {
+          "IncludedBy": [],
+          "InclusionType": "DIRECT",
+          "MavenCoordinates": {
+            "GroupId": "org.junit.jupiter",
+            "ArtifactId": "junit-jupiter-api",
+            "Version": "5.10.2",
+            "ArtifactType": "jar"
+          },
+          "DependencyType": "MAVEN",
+          "DependencySource": "EXTERNAL",
+          "Name": "org.junit.jupiter:junit-jupiter-api:jar:5.10.2:test",
+          "Version": "5.10.2",
+          "Present": "PRESENT",
+          "Artifacts": [
+            "/Users/devmehta/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar"
+          ],
+          "Scope": "test"
+        },
+        "67d5592b-6e54-1c47-f40d-39ae3c47173c": {
+          "IncludedBy": [
+            {
+              "Id": "52950397-c2b6-2579-55cc-b97166db97d9",
+              "Description": "org.junit.jupiter:junit-jupiter-api:jar:5.10.2:test"
+            },
+            {
+              "Id": "ea9cb908-4acc-0971-ec01-368fe0bb389b",
+              "Description": "org.junit.platform:junit-platform-commons:jar:1.10.2:compile"
+            }
+          ],
+          "InclusionType": "TRANSITIVE",
+          "MavenCoordinates": {
+            "GroupId": "org.apiguardian",
+            "ArtifactId": "apiguardian-api",
+            "Version": "1.1.2",
+            "ArtifactType": "jar"
+          },
+          "DependencyType": "MAVEN",
+          "DependencySource": "EXTERNAL",
+          "Name": "org.apiguardian:apiguardian-api:jar:1.1.2:compile",
+          "Version": "1.1.2",
+          "Present": "PRESENT",
+          "Artifacts": [
+            "/Users/devmehta/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar"
+          ],
+          "Scope": "compile"
+        },
+        "ea9cb908-4acc-0971-ec01-368fe0bb389b": {
+          "IncludedBy": [
+            {
+              "Id": "52950397-c2b6-2579-55cc-b97166db97d9",
+              "Description": "org.junit.jupiter:junit-jupiter-api:jar:5.10.2:test"
+            }
+          ],
+          "InclusionType": "TRANSITIVE",
+          "MavenCoordinates": {
+            "GroupId": "org.junit.platform",
+            "ArtifactId": "junit-platform-commons",
+            "Version": "1.10.2",
+            "ArtifactType": "jar"
+          },
+          "DependencyType": "MAVEN",
+          "DependencySource": "EXTERNAL",
+          "Name": "org.junit.platform:junit-platform-commons:jar:1.10.2:compile",
+          "Version": "1.10.2",
+          "Present": "PRESENT",
+          "Artifacts": [
+            "/Users/devmehta/.m2/repository/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2.jar"
+          ],
+          "Scope": "compile"
+        }
+      },
+      "Strategy": "MAVEN"
+    }
+  }
+}

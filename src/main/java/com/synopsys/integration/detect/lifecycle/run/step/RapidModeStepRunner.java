@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
@@ -122,13 +120,13 @@ public class RapidModeStepRunner {
 
         // Get info about any scans that were done
         BlackduckScanMode mode = blackDuckRunData.getScanMode();
-        List<DeveloperScansScanView> rapidFullResults = operationRunner.waitForFullRapidResults(blackDuckRunData, parsedUrls, mode);
+        List<DeveloperScansScanView> rapidResults = operationRunner.waitForRapidResults(blackDuckRunData, parsedUrls, mode);
 
-        operationRunner.generateComponentLocationAnalysisIfEnabled(rapidFullResults, bdioResult);
+        operationRunner.generateComponentLocationAnalysisIfEnabled(rapidResults, bdioResult);
 
         // Generate a report, even an empty one if no scans were done as that is what previous detect versions did.
-        File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidFullResults);
-        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidFullResults, mode);
+        File jsonFile = operationRunner.generateRapidJsonFile(projectVersion, rapidResults);
+        RapidScanResultSummary summary = operationRunner.logRapidReport(rapidResults, mode);
 
         operationRunner.publishRapidResults(jsonFile, summary, mode);
         operationRunner.publishCodeLocationData(formattedCodeLocations);

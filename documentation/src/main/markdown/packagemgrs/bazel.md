@@ -6,25 +6,25 @@
 
 ## Overview
 
-[solution_name] provides limited support for Bazel projects.
+[company_name] [solution_name] provides limited support for Bazel projects.
 
-[solution_name] discovers dependencies specified in *maven_jar*, *maven_install*, *haskell_cabal_library* workspace rules.
+[company_name] [solution_name] discovers dependencies specified in *maven_jar*, *maven_install*, *haskell_cabal_library* workspace rules.
 It also discovers library dependencies that have a github released artifact location (URL) specified in an *http_archive* workspace rule (see below for details).
 
-The [solution_name] Bazel tool attempts to run on your project if you provide a Bazel build target using the Bazel target property.
+The [company_name] [solution_name] Bazel tool attempts to run on your project if you provide a Bazel build target using the Bazel target property.
 
 The Bazel tool also requires a bazel executable on $PATH.
 
-By default, [solution_name] determines the set of supported workspace rules that your project uses by parsing the WORKSPACE file,
+By default, [company_name] [solution_name] determines the set of supported workspace rules that your project uses by parsing the WORKSPACE file,
 and executes Bazel commands to discover dependencies for each supported workspace rule it finds.
-Alternatively, you can directly control the set of workspace rules [solution_name] uses by setting the Bazel workspace rule property.
+Alternatively, you can directly control the set of workspace rules [company_name] [solution_name] uses by setting the Bazel workspace rule property.
 Refer to [Properties](../properties/detectors/bazel.md) for details.
 
 ## Processing for the *maven_install* workspace rule
 
 The Bazel tool runs a bazel cquery on the given target to produce output from which it can parse artifact details such as group, artifact, and version for dependencies.
 
-[solution_name]'s Bazel detector uses commands very similar to the following
+[company_name] [solution_name]'s Bazel detector uses commands very similar to the following
 to discover *maven_install* dependencies.
 ```
 $ bazel cquery --noimplicit_deps 'kind(j.*import, deps(//tests/integration:ArtifactExclusionsTest))' --output build 2>&1 | grep maven_coordinates
@@ -44,7 +44,7 @@ Then, it parses the group/artifact/version details from the values of the maven_
 
 The Bazel tool runs a bazel query on the given target to get a list of jar dependencies. On each jar dependency, the Bazel tool runs another bazel query to get its artifact details: group, artifact, and version.
 
-The following is an example using the equivalent commands that [solution_name] runs, but from the command line, showing how [solution_name]'s Bazel detector currently identifies components.
+The following is an example using the equivalent commands that [company_name] [solution_name] runs, but from the command line, showing how [company_name] [solution_name]'s Bazel detector currently identifies components.
 First, it gets a list of dependencies:
 ```
 $ bazel cquery 'filter("@.*:jar", deps(//:ProjectRunner))'
@@ -72,7 +72,7 @@ Finally, it parses the group/artifact/version details from the value of the stri
 
 Requires Bazel 2.1.0 or later.
 
-[solution_name]'s Bazel detector runs a bazel cquery on the given target to produce output from which it can
+[company_name] [solution_name]'s Bazel detector runs a bazel cquery on the given target to produce output from which it can
 extract artifact project and version for dependencies.
 
 The Bazel detector uses a command very similar to the following
@@ -109,7 +109,7 @@ and extracts the name and version from the corresponding rule attributes.
 
 ## Processing for the *http_archive* workspace rule
 
-[solution_name] discovers library dependencies that have a github released artifact location (URL) specified in an *http_archive* workspace rule.
+[company_name] [solution_name] discovers library dependencies that have a github released artifact location (URL) specified in an *http_archive* workspace rule.
 
 One of the URLs provided in the *http_archve* rule must match one of the following two forms:
 
@@ -120,7 +120,7 @@ Supported extensions: .tar.gz, .zip, .gz
 
 The Bazel tool runs a bazel query on the given target to get a list of library dependencies. On each dependency in the output, the Bazel tool runs another bazel query to get its artifact details; specifically the github released artifact locations (URLs) within http_archive, go_repository, and git_repository rules.
 
-The following is an example using the equivalent commands that [solution_name] runs, but from the command line, showing how [solution_name]'s Bazel detector currently identifies components.
+The following is an example using the equivalent commands that [company_name] [solution_name] runs, but from the command line, showing how [company_name] [solution_name]'s Bazel detector currently identifies components.
 First, it gets a list of dependencies:
 ```
 # bazel query 'kind(.*library, deps(//:bd_bazel))'
@@ -147,14 +147,14 @@ Then, it gets details for each http_archive dependency. It prepends //external: 
 </query>
 Loading: 0 packages loaded
 ```
-Finally, for each http_archive, go_repository, and git_repository rule in the output, [solution_name] parses the github dependency name (organization/repo) and version from each github released artifact location (in the url field or urls list, whichever is present).
+Finally, for each http_archive, go_repository, and git_repository rule in the output, [company_name] [solution_name] parses the github dependency name (organization/repo) and version from each github released artifact location (in the url field or urls list, whichever is present).
 
 ## Examples
 
 ### mvn_install rule example
 
 The following example will (if you add your [blackduck_product_name] connection details
-to the [solution_name] command line) run the Bazel tool on the
+to the [company_name] [solution_name] command line) run the Bazel tool on the
 *//tests/integration:ArtifactExclusionsTest* target in the
 rules_jvm_external project and discover dependencies defined with the
 maven_install repository rule:
@@ -168,7 +168,7 @@ bash <(curl -s -L https://detect.synopsys.com/detect9.sh) --detect.bazel.target=
 ### haskell_cabal_library rule example
 
 The following example will (if you add your [blackduck_product_name] connection details
-to the [solution_name] command line) run the Bazel tool on the
+to the [company_name] [solution_name] command line) run the Bazel tool on the
 *//cat_hs/lib/args:args* target in the
 rules_haskell/examples project and discover dependencies defined with the
 haskell_cabal_library repository rule:

@@ -1,6 +1,7 @@
 import java.util.Optional
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import java.lang.String;
 
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -132,8 +133,16 @@ def findProjectOutputFile(Project project, String outputDirectoryPath) {
     File outputDirectory = createTaskOutputDirectory(outputDirectoryPath)
     String name = project.toString()
 
+    int depthCount = 0
+    for(char c: name.toCharArray()) {
+        if (c == ':') {
+            depthCount++
+        }
+    }
+    String depth = String.valueOf(depthCount)
+
     String nameForFile = name?.replaceAll(/[^\p{IsAlphabetic}\p{Digit}]/, "_")
-    File outputFile = new File(outputDirectory, "${nameForFile}_dependencyGraph.txt")
+    File outputFile = new File(outputDirectory, "${nameForFile}_depth${depth}_dependencyGraph.txt")
 
     outputFile
 }
@@ -179,6 +188,7 @@ def appendProjectMetadata(Project project, File projectOutputFile) {
     metaDataPieces.add("projectName:${name}")
     metaDataPieces.add("projectVersion:${version}")
     metaDataPieces.add("projectPath:${path}")
+    metaDataPieces.add("projectParent:${project.parent}")
     metaDataPieces.add('DETECT META DATA END')
     metaDataPieces.add('')
 

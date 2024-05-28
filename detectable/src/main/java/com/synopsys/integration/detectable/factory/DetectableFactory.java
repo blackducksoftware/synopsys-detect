@@ -1,5 +1,7 @@
 package com.synopsys.integration.detectable.factory;
 
+import java.io.File;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -88,8 +90,8 @@ import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectab
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockExtractor;
 import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockParser;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
-import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.Conan1CliDetectable;
+import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractor;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliOptions;
@@ -131,9 +133,9 @@ import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierGen
 import com.synopsys.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
 import com.synopsys.integration.detectable.detectables.git.GitCliDetectable;
 import com.synopsys.integration.detectable.detectables.git.GitParseDetectable;
+import com.synopsys.integration.detectable.detectables.git.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.detectables.git.cli.GitCommandRunner;
-import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
@@ -214,6 +216,10 @@ import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspecto
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.pip.inspector.parser.PipInspectorTreeParser;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDependencyTransformer;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectable;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvExtractor;
@@ -232,6 +238,7 @@ import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOpt
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParser;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryExtractor;
+import com.synopsys.integration.detectable.detectables.poetry.PoetryOptions;
 import com.synopsys.integration.detectable.detectables.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.detectables.poetry.parser.ToolPoetrySectionParser;
 import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorExtractor;
@@ -256,6 +263,10 @@ import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParse
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtGraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
+import com.synopsys.integration.detectable.detectables.setuptools.SetupToolsExtractor;
+import com.synopsys.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.buildless.SetupToolsBuildlessDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.transform.SetupToolsGraphTransformer;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftExtractor;
@@ -284,6 +295,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockDependencySpecParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockEntrySectionParserSet;
+import com.synopsys.integration.detectable.python.util.PythonDependencyTransformer;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 
 /*
@@ -472,16 +484,18 @@ public class DetectableFactory {
         return new IvyParseDetectable(environment, fileFinder, ivyParseExtractor());
     }
 
-    public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions) {
-        return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
+    public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment, MavenResolver mavenResolver, MavenCliExtractorOptions mavenCliExtractorOptions, ProjectInspectorOptions projectInspectorOptions, ProjectInspectorResolver projectInspectorResolver) {
+        return new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions, createMavenProjectInspectorDetectable(environment, projectInspectorResolver, projectInspectorOptions));
     }
 
     public MavenPomWrapperDetectable createMavenPomWrapperDetectable(
         DetectableEnvironment environment,
         MavenResolver mavenResolver,
-        MavenCliExtractorOptions mavenCliExtractorOptions
+        MavenCliExtractorOptions mavenCliExtractorOptions,
+        ProjectInspectorOptions projectInspectorOptions,
+        ProjectInspectorResolver projectInspectorResolver
     ) {
-        return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions);
+        return new MavenPomWrapperDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor(), mavenCliExtractorOptions, createMavenProjectInspectorDetectable(environment, projectInspectorResolver, projectInspectorOptions));
     }
 
     public MavenProjectInspectorDetectable createMavenProjectInspectorDetectable(
@@ -601,6 +615,16 @@ public class DetectableFactory {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
     }
 
+    public RequirementsFileDetectable createRequirementsFileDetectable(
+        DetectableEnvironment environment,
+        RequirementsFileDetectableOptions requirementsFileDetectableOptions
+    ) {
+        PythonDependencyTransformer requirementsFileTransformer = new PythonDependencyTransformer();
+        RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
+        RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
+        return new RequirementsFileDetectable(environment, fileFinder, requirementsFileExtractor, requirementsFileDetectableOptions);
+    }
+
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmLockOptions pnpmLockOptions) {
         PnpmLockYamlParser pnpmLockYamlParser = new PnpmLockYamlParser(pnpmLockOptions.getDependencyTypeFilter());
         PnpmLockExtractor pnpmLockExtractor = new PnpmLockExtractor(pnpmLockYamlParser, packageJsonFiles());
@@ -611,8 +635,8 @@ public class DetectableFactory {
         return new PodlockDetectable(environment, fileFinder, podlockExtractor());
     }
 
-    public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment) {
-        return new PoetryDetectable(environment, fileFinder, poetryExtractor(), toolPoetrySectionParser());
+    public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment, PoetryOptions poetryOptions) {
+        return new PoetryDetectable(environment, fileFinder, poetryExtractor(), toolPoetrySectionParser(), poetryOptions);
     }
 
     public RebarDetectable createRebarDetectable(DetectableEnvironment environment, Rebar3Resolver rebar3Resolver) {
@@ -668,6 +692,14 @@ public class DetectableFactory {
         XcodeWorkspaceExtractor xcodeWorkspaceExtractor = new XcodeWorkspaceExtractor(xcodeWorkspaceParser, xcodeWorkspaceFormatChecker, packageResolvedExtractor, fileFinder);
 
         return new XcodeWorkspaceDetectable(environment, fileFinder, packageResolvedExtractor, xcodeWorkspaceExtractor);
+    }
+    
+    public SetupToolsBuildDetectable createSetupToolsBuildDetectable(DetectableEnvironment environment, PipResolver pipResolver) {
+        return new SetupToolsBuildDetectable(environment, fileFinder, pipResolver, setupToolsExtractor(environment.getDirectory()));
+    }
+    
+    public SetupToolsBuildlessDetectable createSetupToolsBuildlessDetectable(DetectableEnvironment environment, PipResolver pipResolver) {
+        return new SetupToolsBuildlessDetectable(environment, fileFinder, setupToolsExtractor(environment.getDirectory()));
     }
 
     // Used by three Detectables
@@ -791,7 +823,7 @@ public class DetectableFactory {
     }
 
     private GitParseExtractor gitParseExtractor() {
-        return new GitParseExtractor(gitFileParser(), gitConfigNameVersionTransformer(), gitConfigNodeTransformer());
+        return new GitParseExtractor(gitFileParser(), gitConfigNameVersionTransformer(), gitConfigNodeTransformer(), gitUrlParser());
     }
 
     private GitUrlParser gitUrlParser() {
@@ -1072,6 +1104,14 @@ public class DetectableFactory {
 
     private SwiftExtractor swiftExtractor() {
         return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer(), toolVersionLogger);
+    }
+    
+    private SetupToolsGraphTransformer setupToolsGraphTransformer(File sourceDirectory) {
+        return new SetupToolsGraphTransformer(sourceDirectory, externalIdFactory, executableRunner);
+    }
+    
+    private SetupToolsExtractor setupToolsExtractor(File sourceDirectory) {
+        return new SetupToolsExtractor(setupToolsGraphTransformer(sourceDirectory));
     }
 
     //#endregion Utility

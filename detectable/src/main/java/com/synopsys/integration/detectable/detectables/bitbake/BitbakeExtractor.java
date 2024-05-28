@@ -163,10 +163,10 @@ public class BitbakeExtractor {
     private BitbakeEnvironment executeBitbakeForEnvironment(File sourceDirectory, ExecutableTarget bashExecutable, File buildEnvironmentFile) {
         try {
             List<String> bitbakeEnvironmentOutput = bitbakeCommandRunner.runBitbakeEnvironment(sourceDirectory, bashExecutable, buildEnvironmentFile);
-            return bitbakeEnvironmentParser.parseArchitecture(bitbakeEnvironmentOutput);
+            return bitbakeEnvironmentParser.parse(bitbakeEnvironmentOutput);
         } catch (ExecutableFailedException | IOException e) {
             logger.warn("Unable to get bitbake environment due to error executing {}: {}", "bitbake --environment", e.getMessage());
-            return new BitbakeEnvironment(null, null);
+            return new BitbakeEnvironment(null, null, null);
         }
     }
 

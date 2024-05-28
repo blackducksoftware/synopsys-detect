@@ -7,6 +7,7 @@ public class RapidScanComponentDetail {
     private final RapidScanComponentGroupDetail componentDetails;
     private final RapidScanComponentGroupDetail securityDetails;
     private final RapidScanComponentGroupDetail licenseDetails;
+    private final RapidScanComponentGroupDetail violatingPoliciesDetails;
 
     public RapidScanComponentDetail(
         String component,
@@ -14,7 +15,8 @@ public class RapidScanComponentDetail {
         String componentIdentifier,
         RapidScanComponentGroupDetail componentDetails,
         RapidScanComponentGroupDetail securityDetails,
-        RapidScanComponentGroupDetail licenseDetails
+        RapidScanComponentGroupDetail licenseDetails,
+        RapidScanComponentGroupDetail violatingPoliciesDetails
     ) {
         this.component = component;
         this.version = version;
@@ -22,14 +24,15 @@ public class RapidScanComponentDetail {
         this.componentDetails = componentDetails;
         this.securityDetails = securityDetails;
         this.licenseDetails = licenseDetails;
+        this.violatingPoliciesDetails = violatingPoliciesDetails;
     }
 
     public boolean hasErrors() {
-        return componentDetails.hasErrors() || securityDetails.hasErrors() || licenseDetails.hasErrors();
+        return componentDetails.hasErrors() || securityDetails.hasErrors() || licenseDetails.hasErrors() || violatingPoliciesDetails.hasErrors();
     }
 
     public boolean hasWarnings() {
-        return componentDetails.hasWarnings() || securityDetails.hasWarnings() || licenseDetails.hasWarnings();
+        return componentDetails.hasWarnings() || securityDetails.hasWarnings() || licenseDetails.hasWarnings() || violatingPoliciesDetails.hasWarnings();
     }
 
     public String getComponent() {
@@ -56,6 +59,8 @@ public class RapidScanComponentDetail {
         return licenseDetails;
     }
 
+    public RapidScanComponentGroupDetail getViolatingPoliciesDetails() { return violatingPoliciesDetails; }
+
     public int getComponentErrorCount() {
         return getGroupErrorCount(componentDetails);
     }
@@ -79,6 +84,10 @@ public class RapidScanComponentDetail {
     public int getLicenseWarningCount() {
         return getGroupWarningCount(licenseDetails);
     }
+
+    public int getAllViolatingPoliciesErrorCount() { return getGroupErrorCount(violatingPoliciesDetails); }
+
+    public int getAllViolatingPoliciesWarningCount() { return getGroupWarningCount(violatingPoliciesDetails); }
 
     private int getGroupErrorCount(RapidScanComponentGroupDetail groupDetail) {
         return groupDetail.getErrorMessages().size();

@@ -2,6 +2,8 @@ package com.synopsys.integration.detectable.detectables.maven.parsing;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -22,11 +24,13 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 @DetectableInfo(name = "Maven Project Inspector", language = "various", forge = "Maven Central", accuracy = DetectableAccuracyType.LOW, requirementsMarkdown = "File: pom.xml.")
 public class MavenProjectInspectorDetectable extends Detectable {
     private static final String POM_XML_FILENAME = "pom.xml";
-
+    private static final String INCLUDE_SHADED_DEPENDENCIES = "include_shaded_dependencies";
     private final FileFinder fileFinder;
     private final ProjectInspectorResolver projectInspectorResolver;
     private final ProjectInspectorExtractor projectInspectorExtractor;
     private final ProjectInspectorOptions projectInspectorOptions; // TODO: Options don't belong here
+    private boolean includeShadedDependencies = false;
+
 
     private ExecutableTarget inspector;
 
@@ -62,11 +66,19 @@ public class MavenProjectInspectorDetectable extends Detectable {
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException, IOException {
         return projectInspectorExtractor.extract(
             projectInspectorOptions,
-            Collections.emptyList(),
+            includeShadedDependencies ? Collections.singletonList(INCLUDE_SHADED_DEPENDENCIES) : Collections.emptyList(),
             environment.getDirectory(),
             extractionEnvironment.getOutputDirectory(),
             inspector
         );
+    }
+
+    public void setIncludeShadedDependencies(boolean includeShadedDependencies) {
+        this.includeShadedDependencies = includeShadedDependencies;
+    }
+
+    public Map<String, Set<String>> getShadedDependencies() {
+        return projectInspectorExtractor.getShadedDependencies();
     }
 
 }

@@ -47,6 +47,7 @@ import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetect
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectable;
+import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
@@ -55,6 +56,8 @@ import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.buildless.SetupToolsBuildlessDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
@@ -193,11 +196,11 @@ public class DetectDetectableFactory {
     }
 
     public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createMavenPomDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
+        return detectableFactory.createMavenPomDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions(), detectableOptionFactory.createProjectInspectorOptions(), projectInspectorResolver);
     }
 
     public MavenPomWrapperDetectable createMavenPomWrapperDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createMavenPomWrapperDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
+        return detectableFactory.createMavenPomWrapperDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions(), detectableOptionFactory.createProjectInspectorOptions(), projectInspectorResolver);
     }
 
     public Conan1CliDetectable createConanCliDetectable(DetectableEnvironment environment) {
@@ -262,6 +265,10 @@ public class DetectDetectableFactory {
         );
     }
 
+    public RequirementsFileDetectable createRequirementsFileDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createRequirementsFileDetectable(environment, detectableOptionFactory.createRequirementsFileDetectableOptions());
+    }
+
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment) {
         return detectableFactory.createPnpmLockDetectable(environment, detectableOptionFactory.createPnpmLockOptions());
     }
@@ -271,7 +278,7 @@ public class DetectDetectableFactory {
     }
 
     public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createPoetryDetectable(environment);
+        return detectableFactory.createPoetryDetectable(environment, detectableOptionFactory.createPoetryOptions());
     }
 
     public RebarDetectable createRebarDetectable(DetectableEnvironment environment) {
@@ -330,5 +337,13 @@ public class DetectDetectableFactory {
 
     public XcodeProjectDetectable createXcodeProjectDetectable(DetectableEnvironment environment) {
         return detectableFactory.createXcodeProjectDetectable(environment);
+    }
+    
+    public SetupToolsBuildDetectable createSetupToolsBuildDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createSetupToolsBuildDetectable(environment, detectExecutableResolver);
+    }
+    
+    public SetupToolsBuildlessDetectable createSetupToolsBuildlessDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createSetupToolsBuildlessDetectable(environment, detectExecutableResolver);
     }
 }

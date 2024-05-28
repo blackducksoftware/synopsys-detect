@@ -8,7 +8,7 @@ ENV SRC_DIR=/opt/project/src
 
 # Install git
 RUN apt-get update -y
-RUN apt-get install -y git bash
+RUN apt-get install -y git bash wget
 
 ## Install Go
 WORKDIR /usr/local

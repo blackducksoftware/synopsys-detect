@@ -1,6 +1,6 @@
 # Property wildcard support
 
-The values of the following [solution_name] properties can utilize filename globbing-style wildcards described below:
+The values of the following [company_name] [solution_name] properties can utilize filename globbing-style wildcards described below:
 
 * detect.maven.included.scopes
 * detect.maven.excluded.scopes
@@ -27,5 +27,5 @@ For example:
 
 Wildcard evaluation in these values is similar to Linux command line file globbing, and different from regular expression matching.
 
-[solution_name] uses the
+[company_name] [solution_name] uses the
 [Apache Commons IO FilenameUtils.wildcardMatch()](https://commons.apache.org/proper/commons-io/javadocs/api-release/org/apache/commons/io/FilenameUtils.html#wildcardMatch-java.lang.String-java.lang.String-) method to determine whether a string matches the given pattern.

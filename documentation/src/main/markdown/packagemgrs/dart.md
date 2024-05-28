@@ -6,7 +6,7 @@
 
 ## Overview
 
-[solution_name] has two detectors for Dart:
+[company_name] [solution_name] has two detectors for Dart:
 
 * Dart CLI detector
 * Dart PubSpec Lock detector
@@ -16,7 +16,7 @@ Both detectors will run if they find the following files:
 * pubspec.yaml
 * pubspeck.lock
 
-If [solution_name] cannot find a pubspec.lock file, but it finds a pubspec.yaml file, it will prompt the user to run the 'pub get' command to generate the pubspec.lock file, and then run [solution_name] again.
+If [company_name] [solution_name] cannot find a pubspec.lock file, but it finds a pubspec.yaml file, it will prompt the user to run the 'pub get' command to generate the pubspec.lock file, and then run [company_name] [solution_name] again.
 
 Both detectors parse the pubspec.yaml file to determine project name and version information.
 

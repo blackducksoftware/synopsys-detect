@@ -102,10 +102,10 @@ public class YarnLockParserTest {
         yarnLockText.add("");
         yarnLockText.add("async@0.9.0:");
         yarnLockText.add("  version \"0.9.0\"");
-        yarnLockText.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/async/-/async-0.9.0.tgz#ac3613b1da9bed1b47510bb4651b8931e47146c7\"");
+        yarnLockText.add("  resolved \"http://nexus.fr.generic.com/nexus3/repository/npm-all/async/-/async-0.9.0.tgz#ac3613b1da9bed1b47510bb4651b8931e47146c7\"");
         yarnLockText.add("colors@~1.0.3:");
         yarnLockText.add("  version \"1.0.3\"");
-        yarnLockText.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b\"");
+        yarnLockText.add("  resolved \"http://nexus.fr.generic.com/nexus3/repository/npm-all/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b\"");
 
         YarnLockParser yarnLockParser = createYarnLockParser();
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
@@ -164,13 +164,13 @@ public class YarnLockParserTest {
         List<String> yarnLockText = new ArrayList<>();
         yarnLockText.add("http-proxy@^1.8.1:");
         yarnLockText.add("  version \"1.16.2\"");
-        yarnLockText.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/http-proxy/-/http-proxy-1.16.2.tgz#06dff292952bf64dbe8471fa9df73066d4f37742\"");
+        yarnLockText.add("  resolved \"http://nexus.fr.generic.com/nexus3/repository/npm-all/http-proxy/-/http-proxy-1.16.2.tgz#06dff292952bf64dbe8471fa9df73066d4f37742\"");
         yarnLockText.add("  dependencies:");
         yarnLockText.add("    eventemitter3 \"1.x.x\"");
         yarnLockText.add("    requires-port \"1.x.x\"");
         yarnLockText.add("http-server@^0.9.0:");
         yarnLockText.add("  version \"0.9.0\"");
-        yarnLockText.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/http-server/-/http-server-0.9.0.tgz#8f1b06bdc733618d4dc42831c7ba1aff4e06001a\"");
+        yarnLockText.add("  resolved \"http://nexus.fr.generic.com/nexus3/repository/npm-all/http-server/-/http-server-0.9.0.tgz#8f1b06bdc733618d4dc42831c7ba1aff4e06001a\"");
 
         YarnLockParser yarnLockParser = createYarnLockParser();
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);

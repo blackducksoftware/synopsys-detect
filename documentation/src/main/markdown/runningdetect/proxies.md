@@ -4,13 +4,13 @@ When running behind a proxy:
 
 1. The one-liner cannot be used to download the scripts, they are not proxy aware. The scripts must already be downloaded.
 2. The script ([bash_script_name] or [powershell_script_name]) requires proxy details to do a version
-check on, and/or download the [solution_name] .jar file.
-3. [solution_name]; the code in the .jar file, requires proxy details to download inspectors and
+check on, and/or download the [company_name] [solution_name] .jar file.
+3. [company_name] [solution_name]; the code in the .jar file, requires proxy details to download inspectors and
 connect to [blackduck_product_name].
 
-## Providing proxy details to [solution_name]
+## Providing proxy details to [company_name] [solution_name]
 
-[solution_name] looks for proxy details in the properties whose names start with `blackduck.proxy`,
+[company_name] [solution_name] looks for proxy details in the properties whose names start with `blackduck.proxy`,
 including:
 
 * `blackduck.proxy.host` (proxy hostname)
@@ -30,7 +30,7 @@ Refer to [properties](../properties/configuration/proxy.md) for more information
 
 ## Providing proxy details to [bash_script_name]
 
-The curl commands executed by [bash_script_name] to do a version check on, and/or download the [solution_name]
+The curl commands executed by [bash_script_name] to do a version check on, and/or download the [company_name] [solution_name]
 .jar file, require additional command line options when run behind a proxy. For more information
 on curl options, refer to the [curl documentation](https://curl.haxx.se/docs/manpage.html).
 
@@ -41,13 +41,13 @@ when it executes curl, set the environment variable DETECT_CURL_OPTS before runn
     export DETECT_CURL_OPTS=--proxy http://myproxy:3128
     ./[bash_script_name]
 
-When using [bash_script_name] to execute [solution_name] you must set proxy properties
-for [solution_name] as previously described.
+When using [bash_script_name] to execute [company_name] [solution_name] you must set proxy properties
+for [company_name] [solution_name] as previously described.
 
 ## Providing proxy details to [powershell_script_name]
 
 [powershell_script_name] derives proxy details from environment variables
-whose names match the [solution_name] proxy property names.
+whose names match the [company_name] [solution_name] proxy property names.
 Configuring [powershell_script_name] for your proxy involves
 setting those environment variables before running [powershell_script_name].
 Note that typically, the PowerShell script is run from a Command window, using "powershell script.ps1" so these should be run in that Command window.
@@ -61,7 +61,7 @@ For example:
 
 For additional information on these properties, including alternate key formats, see the [Shell script configuration reference](../scripts/overview.md).
 
-When using [powershell_script_name] to execute [solution_name], [solution_name] also receives the proxy details
-from these environment variables, so no additional configuration is required for [solution_name].
+When using [powershell_script_name] to execute [company_name] [solution_name], [company_name] [solution_name] also receives the proxy details
+from these environment variables, so no additional configuration is required for [company_name] [solution_name].
 
 

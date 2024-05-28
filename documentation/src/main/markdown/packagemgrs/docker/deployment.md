@@ -14,8 +14,8 @@ involved in deploying [docker_inspector_name]. They are not intended to be used 
 You should understand the code before you use it. They do not represent the only way to deploy in each environment.
 At a minimum, before using a sample, you should update it to the latest versions of the software it uses.
 
-Your deployment approach is the same whether you are invoking [docker_inspector_name] directly, or invoking it using [solution_name].
-Most of the sample deployments use [solution_name] simply because that is the most common use case.
+Your deployment approach is the same whether you are invoking [docker_inspector_name] directly, or invoking it using [company_name] [solution_name].
+Most of the sample deployments use [company_name] [solution_name] simply because that is the most common use case.
 
 ## Using host mode on a server or VM with Docker
 
@@ -43,8 +43,8 @@ three container-based services which you must start. These four containers must:
 Because in this mode you (not [docker_inspector_name]) are deploying the image inspector services,
 you must ensure that you deploy the correct version of the image inspector images for the
 version of [docker_inspector_name] that you run. This is easier if you explicitly control the version of
-[docker_inspector_name], rather than letting [solution_name] auto-update [docker_inspector_name].
-See the [solution_name] for details.
+[docker_inspector_name], rather than letting [company_name] [solution_name] auto-update [docker_inspector_name].
+See the [company_name] [solution_name] for details.
  
 ## Image Inspector Services
 
@@ -120,7 +120,7 @@ Deployment notes:
 
 Download: curl -O [source_raw_content_url_base]/[source_repo_organization]/[docker_inspector_project_name]/master/deployment/circleci/config.yml
 
-## Deployment sample for Docker with [solution_name] running in a container
+## Deployment sample for Docker with [company_name] [solution_name] running in a container
 
 Approach: Toolkit
 
@@ -146,13 +146,13 @@ and [docker_inspector_name] for your Docker registry, refer to the configuration
 [docker_inspector_name] does not override any of the configuration settings in the code,
 so any of the other methods (properties, system properties, system environment) work.
 
-If you choose to use environment variables, and you are calling [docker_inspector_name] from [solution_name],
+If you choose to use environment variables, and you are calling [docker_inspector_name] from [company_name] [solution_name],
 you must prefix the environment variable names with *DETECT_DOCKER_PASSTHROUGH_* to
-instruct [solution_name] to pass them on to [docker_inspector_name].
+instruct [company_name] [solution_name] to pass them on to [docker_inspector_name].
 In that scenario, instead of *export SOMENAME=value*, use *export DETECT_DOCKER_PASSTHROUGH_SOMENAME=value*.
 
 If you choose to use system properties which are normally set using *java -D*,
-and you are calling [docker_inspector_name] from [solution_name], you must
+and you are calling [docker_inspector_name] from [company_name] [solution_name], you must
 put the properties in a file; for example, *mydockerproperties.properties*, and use 
 ```
 --detect.docker.passthrough.system.properties.path=mydockerproperties.properties

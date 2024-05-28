@@ -1,8 +1,5 @@
 package com.synopsys.integration.detect.workflow.blackduck.developer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +18,8 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.Ra
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.log.BufferedIntLogger;
 import com.synopsys.integration.log.LogLevel;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RapidScanResultAggregatorTest {
     @Test
@@ -54,6 +53,10 @@ public class RapidScanResultAggregatorTest {
         assertEquals(1, summary.getSecurityWarningCount());
         assertEquals(1, summary.getLicenseErrorCount());
         assertEquals(1, summary.getLicenseWarningCount());
+        assertEquals(1, summary.getAllOtherPolicyErrorCount());
+        assertEquals(1, summary.getAllOtherPolicyWarningCount());
+        assertTrue(summary.getPolicyViolationNames().contains("other_policy"));
+        assertEquals(7, summary.getPolicyViolationNames().size());
         assertFalse(logger.getOutputList(LogLevel.INFO).isEmpty());
     }
 
@@ -111,10 +114,14 @@ public class RapidScanResultAggregatorTest {
                 DeveloperScansScanItemsViolatingPoliciesView view3 = new DeveloperScansScanItemsViolatingPoliciesView();
                 view3.setPolicyName("license_policy");
                 view3.setPolicySeverity("MINOR");
+                DeveloperScansScanItemsViolatingPoliciesView view4 = new DeveloperScansScanItemsViolatingPoliciesView();
+                view4.setPolicyName("other_policy");
+                view4.setPolicySeverity("BLOCKER");
 
                 violatingPolicies.add(view);
                 violatingPolicies.add(view2);
                 violatingPolicies.add(view3);
+                violatingPolicies.add(view4);
                 return violatingPolicies;
             }
 

@@ -36,4 +36,19 @@ public class YarnPackager {
             return YarnResult.failure(exception);
         }
     }
+    
+    public YarnResult generateCodeLocation(
+        NullSafePackageJson rootPackageJson,
+        YarnLock yarnLock,
+        List<NameVersion> externalDependencies
+    ) {
+        YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, yarnLock);
+
+        try {
+            List<CodeLocation> codeLocations = yarnTransformer.generateCodeLocations(yarnLockResult, externalDependencies);
+            return YarnResult.success(rootPackageJson.getName().orElse(null), rootPackageJson.getVersion().orElse(null), codeLocations);
+        } catch (MissingExternalIdException exception) {
+            return YarnResult.failure(exception);
+        }
+    }
 }

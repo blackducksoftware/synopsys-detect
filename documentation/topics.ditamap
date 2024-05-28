@@ -7,7 +7,7 @@
 		<prodinfo>
 			<prodname>Synopsys Detect</prodname>
 			<vrmlist>
-				<vrm version="9.2.0"/>
+				<vrm version="9.7.0"/>
 			</vrmlist>
 		</prodinfo>
 		<!-- zoomin bundle name -->
@@ -34,17 +34,17 @@
 	<topicref href="gettingstarted/quickstart.md" format="markdown"/>
 	<topicref href="gettingstarted/overview.md" format="markdown">
 		<topicref href="gettingstarted/terms/intro.md" format="markdown">
-			<topicref href="gettingstarted/terms/sca.md" format="markdown"/>
-			<topicref href="gettingstarted/terms/run.md" format="markdown"/>
-			<topicref href="gettingstarted/terms/script.md" format="markdown"/>
-			<topicref href="gettingstarted/terms/jar.md" format="markdown"/>
-			<topicref href="gettingstarted/terms/tools.md" format="markdown"/>
-			<topicref href="gettingstarted/terms/detectors.md" format="markdown"/>
-			<topicref href="gettingstarted/terms/properties.md" format="markdown"/>
-			<topicref href="gettingstarted/terms/inspectors.md" format="markdown"/>
-			<topicref href="gettingstarted/terms/scans.md" format="markdown"/>
 			<topicref href="gettingstarted/terms/bdio.md" format="markdown"/>
+			<topicref href="gettingstarted/terms/detectors.md" format="markdown"/>
 			<topicref href="gettingstarted/terms/impactanalysis.md" format="markdown"/>
+			<topicref href="gettingstarted/terms/inspectors.md" format="markdown"/>
+			<topicref href="gettingstarted/terms/jar.md" format="markdown"/>
+			<topicref href="gettingstarted/terms/properties.md" format="markdown"/>
+			<topicref href="gettingstarted/terms/run.md" format="markdown"/>
+			<topicref href="gettingstarted/terms/sca.md" format="markdown"/>
+			<topicref href="gettingstarted/terms/scans.md" format="markdown"/>
+			<topicref href="gettingstarted/terms/script.md" format="markdown"/>
+			<topicref href="gettingstarted/terms/tools.md" format="markdown"/>
 		</topicref>
 		<topicref href="gettingstarted/howitworks.md" format="markdown"/>
 		<topicref href="gettingstarted/workflow.md" format="markdown"/>
@@ -70,7 +70,6 @@
 		<topicref href="naming/aggregation.md" format="markdown"/>
 	</topicref>
 	<topicref href="runningdetect/intro.md" format="markdown">
-		<topicref href="runningdetect/basics/intro.md" format="markdown">
 			<topicref href="runningdetect/basics/decidinghowtouse.md" format="markdown"/>
 			<topicref href="runningdetect/basics/positioning.md" format="markdown"/>
 			<topicref href="runningdetect/basics/choosingworkingdir.md" format="markdown"/>
@@ -80,28 +79,29 @@
 			<topicref href="runningdetect/basics/runningjar.md" format="markdown"/>
 			<topicref href="runningdetect/basics/choosingtargettype.md" format="markdown"/>
 			<topicref href="runningdetect/basics/runningwithblackduck.md" format="markdown"/>
-		</topicref>
+		
 		<topicref href="runningdetect/includingexcluding/intro.md" format="markdown">
 			<topicref href="runningdetect/includingexcluding/tools.md" format="markdown"/>
 			<topicref href="runningdetect/includingexcluding/detectors.md" format="markdown"/>
 			<topicref href="runningdetect/includingexcluding/pkgmgrs.md" format="markdown"/>
 			<topicref href="runningdetect/includingexcluding/directories.md" format="markdown"/>
 		</topicref>
-		<topicref href="runningdetect/detectorcascade.md" format="markdown"/>
-		<topicref href="runningdetect/statelessscan.md" format="markdown"/>
-		<topicref href="runningdetect/rapidscan.md" format="markdown"/>
-		<topicref href="runningdetect/iacscan.md" format="markdown"/>
-		<topicref href="runningdetect/runningairgap.md" format="markdown"/>
-		<topicref href="runningdetect/status-file.md" format="markdown"/>
-		<topicref href="runningdetect/proxies.md" format="markdown"/>
+		<topicref href="runningdetect/component-location-analysis.md" format="markdown"/>
 		<topicref href="runningdetect/concurrent.md" format="markdown"/>
 		<topicref href="runningdetect/containerscanning.md" format="markdown"/>
+		<topicref href="runningdetect/detectorcascade.md" format="markdown"/>
+		<topicref href="runningdetect/iacscan.md" format="markdown"/>
+		<topicref href="runningdetect/proxies.md" format="markdown"/>
+		<topicref href="runningdetect/rapidscan.md" format="markdown"/>
 		<topicref href="runningdetect/runincontainer.md" format="markdown"/>
-		<topicref href="runningdetect/component-location-analysis.md" format="markdown"/>
+		<topicref href="runningdetect/runningairgap.md" format="markdown"/>
+		<topicref href="runningdetect/statelessscan.md" format="markdown"/>
+		<topicref href="runningdetect/status-file.md" format="markdown"/>
+		<topicref href="runningdetect/threatintelscan.md" format="markdown"/>
 	</topicref>
 	<topicref href="components/overview.md" format="markdown">
 		<topicref href="components/tools.md" format="markdown"/>
-		<topicref href="components/detectors.md" format="markdown"/>
+		<topicref href="components/detectors.dita" format="dita"/>
 		<topicref href="components/inspectors.md" format="markdown"/>
 	</topicref>
 	<topicref href="packagemgrs/overview.md" format="markdown">
@@ -115,6 +115,7 @@
 		<topicref href="packagemgrs/cpan.md" format="markdown"/>
 		<topicref href="packagemgrs/dart.md" format="markdown"/>
 		<topicref href="packagemgrs/docker/intro.md" format="markdown">
+			<topicref href="packagemgrs/docker/releasenotes.md" format="markdown"/>
 			<topicref href="packagemgrs/docker/formats.md" format="markdown"/>
 			<topicref href="packagemgrs/docker/workflow.md" format="markdown"/>
 			<topicref href="packagemgrs/docker/filepermissions.md" format="markdown"/>
@@ -127,7 +128,6 @@
 			<topicref href="packagemgrs/docker/advanced-properties.md" format="markdown"/>
 			<topicref href="packagemgrs/docker/deployment.md" format="markdown"/>
 			<topicref href="packagemgrs/docker/troubleshooting.md" format="markdown"/>
-			<topicref href="packagemgrs/docker/releasenotes.md" format="markdown"/>
 		</topicref>
 		<topicref href="packagemgrs/git.md" format="markdown"/>
 		<topicref href="packagemgrs/golang.md" format="markdown"/>
