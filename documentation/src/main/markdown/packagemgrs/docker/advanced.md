@@ -289,11 +289,9 @@ passed to it via the [company_name] [solution_name] `detect.docker.tar` property
 [docker_inspector_name] derives the image repo:tag value for each manifest in the index.json file from an
 annotation with key `org.opencontainers.image.ref.name` if present.
 
-If insufficient information exists in the image's manifest.json for the repo name and tag, [docker_inspector_name] will default to using the image name, (without the .tar extension), as the project name and "latest" as the project version in the BOM.
-These default values can be overridden by using the `detect.project.name` and `detect.project.version.name` properties respectively.
+If insufficient information exists in the image's manifest.json for the repo name and tag, [docker_inspector_name] will default to using the image name, (without the .tar extension), as the project name and "latest" as the project version in the BOM. These default values can be overridden by using the `detect.project.name` and `detect.project.version.name` properties respectively.
 
-If the OCI archive contains multiple images, [docker_inspector_name] constructs the target repo:tag from the values of [company_name] [solution_name] properties d`etect.docker.passthrough.docker.image.repo`
+If the OCI archive contains multiple images, [docker_inspector_name] constructs the target repo:tag from the values of [company_name] [solution_name] properties `detect.docker.passthrough.docker.image.repo`
 and `detect.docker.passthrough.docker.image.tag` (if `detect.docker.passthrough.docker.image.tag` is not set it defaults to "latest"), and looks for a manifest annotation with key `org.opencontainers.image.ref.name`
 that has value matching the constructed target repo:tag. If a match is found, [docker_inspector_name] inspects the matching image. If no match is found, or `detect.docker.passthrough.docker.image.repo`
 is not set, [docker_inspector_name] fails.
-

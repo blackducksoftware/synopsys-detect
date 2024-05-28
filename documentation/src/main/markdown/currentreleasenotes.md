@@ -6,7 +6,7 @@
 * Support for GoLang is now extended to Go 1.22.2.
 * [company_name] [solution_name] now allows exclusion of development dependencies when using the Poetry detector. See the [detect.poetry.dependency.groups.excluded](properties/detectors/poetry.md#detect.poetry.dependency.groups.excluded) property for more information.
 * Support has been added for Python package detection via [Setuptools](https://setuptools.pypa.io/en/latest/index.html), versions 47.0.0 through 69.4.2. See the [Python Package Managers](packagemgrs/python.md) page for further details.
-* Added Docker 25 and 26 support to [Docker Inspector](packagemgrs\docker\releasenotes.md).
+* Added Docker 25 and 26 support to [Docker Inspector](packagemgrs/docker/releasenotes.md).
 
 ### Resolved issues
 * (IDETECT-4341) The Poetry detector will now recognize Python components with case insensitivity.
