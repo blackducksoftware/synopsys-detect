@@ -1,5 +1,11 @@
 # [docker_inspector_name] Release notes
 
+## Version 10.2.0
+
+### Changed features
+
+* (IDOCKER-785) [docker_inspector_name] now supports Docker Versions 25 and 26.
+
 ## Version 10.1.1
 
 ### Resolved issue
