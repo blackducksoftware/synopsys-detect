@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.poetry.parser;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
@@ -70,32 +71,28 @@ public class ToolPoetrySectionParser {
         TomlTable table = parseResult.getTable(key);
 
         if (key.equals(MAIN_DEPENDENCY_GROUP_KEY)) {
-            addAllTableKeysToSet(result, table);
+            addAllPackageNamesToSet(result, table);
         } else if (key.equals(LEGACY_DEV_DEPENDENCY_GROUP_KEY)) { // in Poetry 1.0 to 1.2 this was the way of specifying dev dependencies
             if (!options.getExcludedGroups().contains(DEFAULT_DEV_GROUP_NAME)) {
-                addAllTableKeysToSet(result, table);
+                addAllPackageNamesToSet(result, table);
             }
         } else if (key.startsWith(DEPENDENCY_GROUP_KEY_PREFIX) && key.endsWith(DEPENDENCY_GROUP_KEY_SUFFIX)) {
             String group = key.substring(DEPENDENCY_GROUP_KEY_PREFIX.length(), key.length() - DEPENDENCY_GROUP_KEY_SUFFIX.length());
 
             if (!options.getExcludedGroups().contains(group)) {
-                addAllTableKeysToSet(result, table);
+                addAllPackageNamesToSet(result, table);
             }
         }
     }
 
-    private void addAllTableKeysToSet(Set<String> set, TomlTable table) {
-        for (String key : table.dottedKeySet()) {
-            if (key.equalsIgnoreCase(PYTHON_COMPONENT_NAME))
+    private void addAllPackageNamesToSet(Set<String> set, TomlTable table) {
+        for (List<String> key : table.keyPathSet()) {
+            String packageName = key.get(0);
+
+            if (packageName.equalsIgnoreCase(PYTHON_COMPONENT_NAME))
                 continue;
 
-            int dotIndex = key.indexOf('.', 0);
-            if (dotIndex == -1) {
-                set.add(key);
-            } else {
-                // remove the ".extras" part
-                set.add(key.substring(0, dotIndex));
-            }
+            set.add(packageName);
         }
     }
 }

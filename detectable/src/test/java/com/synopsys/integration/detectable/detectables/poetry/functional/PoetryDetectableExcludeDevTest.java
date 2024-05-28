@@ -35,10 +35,10 @@ public class PoetryDetectableExcludeDevTest extends DetectableFunctionalTest {
             "\n" + //
             "[tool.poetry.dependencies]\n" + //
             "Python = \"^3.11\"\n" + //
-            "PENDULUM = \"^3.0.0\"\n" + //
+            "\"PENDULUM._-XYZ\" = \"^3.0.0\"\n" + //
             "\n" + //
             "[tool.poetry.group.dev.dependencies]\n" + //
-            "boost-histogram = \"^1.4.0\"\n" + //
+            "\"boost-_--.histogram\" = \"^1.4.0\"\n" + //
             "\n" + //
             "[build-system]\n" + //
             "requires = [\"poetry-core\"]\n" + //
@@ -65,18 +65,18 @@ public class PoetryDetectableExcludeDevTest extends DetectableFunctionalTest {
             "python-versions = \">=3.9\"\n" + //
             "\n" + //
             "[[package]]\n" + //
-            "name = \"pendulum\"\n" + //
+            "name = \"pendulum_XYZ\"\n" + //
             "version = \"3.0.0\"\n" + //
             "description = \"Python datetimes made easy\"\n" + //
             "optional = false\n" + //
             "python-versions = \">=3.8\"\n" + //
             "\n" + //
             "[package.dependencies]\n" + //
-            "python-dateutil = \">=2.6\"\n" + //
+            "\"PYTHON---.dateutil\" = \">=2.6\"\n" + //
             "TZData = \">=2020.1\"\n" + //
             "\n" + //
             "[[package]]\n" + //
-            "name = \"python-dateutil\"\n" + //
+            "name = \"python-DATEUTIL\"\n" + //
             "version = \"2.9.0.post0\"\n" + //
             "description = \"Extensions to the standard Python datetime module\"\n" + //
             "optional = false\n" + //
@@ -115,9 +115,9 @@ public class PoetryDetectableExcludeDevTest extends DetectableFunctionalTest {
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, codeLocations.get(0).getDependencyGraph());
 
         graphAssert.hasRootSize(1);
-        graphAssert.hasRootDependency("pendulum", "3.0.0");
-        graphAssert.hasParentChildRelationship("pendulum", "3.0.0", "python-dateutil", "2.9.0.post0");
-        graphAssert.hasParentChildRelationship("pendulum", "3.0.0", "tzdata", "2024.1");
+        graphAssert.hasRootDependency("pendulum-xyz", "3.0.0");
+        graphAssert.hasParentChildRelationship("pendulum-xyz", "3.0.0", "python-dateutil", "2.9.0.post0");
+        graphAssert.hasParentChildRelationship("pendulum-xyz", "3.0.0", "tzdata", "2024.1");
         graphAssert.hasParentChildRelationship("python-dateutil", "2.9.0.post0", "six", "1.16.0");
     }
 }
