@@ -62,7 +62,7 @@ public class ScanTypeDecider {
         return Collections.EMPTY_MAP;
     }
     
-    private final Set<String> avoidAbsolutley = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+    private final Set<String> avoidAbsolutely = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             ".gitattributes", 
             ".gitignore", 
             ".github", 
@@ -87,7 +87,7 @@ public class ScanTypeDecider {
     private final MediaTypeRegistry mediaTypeRegistry = MediaTypeRegistry.getDefaultRegistry();
     
     private boolean shouldAvoidDirectory(String name) {
-        return avoidAbsolutley.contains(name);
+        return avoidAbsolutely.contains(name);
     }
     
     private boolean isEligibleFile(String name) {
