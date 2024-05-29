@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanSettings;
+import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;

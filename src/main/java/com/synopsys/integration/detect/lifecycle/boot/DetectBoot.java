@@ -42,7 +42,7 @@ import com.synopsys.integration.detect.configuration.validation.DetectConfigurat
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.lifecycle.autonomous.ScanTypeDecider;
 import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
-import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanSettings;
+import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
