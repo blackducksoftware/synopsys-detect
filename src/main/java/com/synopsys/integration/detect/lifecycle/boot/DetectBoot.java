@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScan;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatch;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
@@ -38,8 +40,9 @@ import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
 import com.synopsys.integration.detect.configuration.validation.DeprecationResult;
 import com.synopsys.integration.detect.configuration.validation.DetectConfigurationBootManager;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
-import com.synopsys.integration.detect.lifecycle.boot.autonomous.AutonomousManager;
-import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanSettings;
+import com.synopsys.integration.detect.lifecycle.autonomous.ScanTypeDecider;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
+import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
@@ -52,6 +55,8 @@ import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.AirGapType;
 import com.synopsys.integration.detect.workflow.airgap.AirGapTypeDecider;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticDecision;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -60,6 +65,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
+import java.util.Set;
 
 public class DetectBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -163,7 +169,7 @@ public class DetectBoot {
         }
 
         // TODO Scan settings model obtained below is to be used by the delta-checking operations
-        AutonomousManager autonomousManager = new AutonomousManager(directoryManager);
+        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, detectConfigurationFactory, detectConfiguration);
         ScanSettings scanSettings = autonomousManager.getScanSettingsModel();
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
@@ -193,7 +199,7 @@ public class DetectBoot {
         ProductRunData productRunData;
 
         // store the result of hasImageOrTar... we will need this in more than one place.
-        boolean hasImageOrTar = false;
+        boolean hasImageOrTar;
         DetectableOptionFactory detectableOptionFactory;
         try {
             ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
@@ -207,19 +213,21 @@ public class DetectBoot {
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
-
+        
+        Map<DetectTool, Set<String>> scanTypeEvidenceMap = autonomousManager.getScanTypeMap(hasImageOrTar);
+        
         try {
             BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode();
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
                 detectConfigurationFactory.createBlackDuckConnectionDetails(),
                 blackduckScanMode,
-                detectConfigurationFactory.createHasSignatureScan()
+                detectConfigurationFactory.createHasSignatureScan(scanTypeEvidenceMap.containsKey(DetectTool.SIGNATURE_SCAN))
             );
 
             // in order to know if docker is needed we have to have either detect.target.type=IMAGE or detect.docker.image
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE || hasImageOrTar, detectConfigurationFactory.createDetectTarget()); //TODO: Move to proper decision home. -jp
-            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
+            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision, scanTypeEvidenceMap);
             oneRequiresTheOther(
                 detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
                 detectToolFilter.shouldInclude(DetectTool.DOCKER),
@@ -273,5 +281,4 @@ public class DetectBoot {
     private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues) {
         eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new TreeMap<>(maskedRawPropertyValues));
     }
-
 }

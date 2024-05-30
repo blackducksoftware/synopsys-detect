@@ -39,7 +39,6 @@ public class DetectToolFilter {
         RunDecision runDecision,
         BlackDuckDecision blackDuckDecision
     ) {
-
         this.excludedIncludedFilter = excludedIncludedFilter;
         this.impactEnabled = impactEnabled;
         this.iacEnabled = iacEnabled;
@@ -74,5 +73,9 @@ public class DetectToolFilter {
         }
         
         return excludedIncludedFilter.shouldInclude(detectTool);
+    }
+    
+    public ExcludeIncludeEnumFilter<DetectTool> getExcludedIncludedFilter() {
+        return excludedIncludedFilter;
     }
 }
