@@ -56,6 +56,8 @@ import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.sbt.SbtDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.buildless.SetupToolsBuildlessDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
 import com.synopsys.integration.detectable.detectables.xcode.XcodeProjectDetectable;
@@ -335,5 +337,13 @@ public class DetectDetectableFactory {
 
     public XcodeProjectDetectable createXcodeProjectDetectable(DetectableEnvironment environment) {
         return detectableFactory.createXcodeProjectDetectable(environment);
+    }
+    
+    public SetupToolsBuildDetectable createSetupToolsBuildDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createSetupToolsBuildDetectable(environment, detectExecutableResolver);
+    }
+    
+    public SetupToolsBuildlessDetectable createSetupToolsBuildlessDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createSetupToolsBuildlessDetectable(environment, detectExecutableResolver);
     }
 }

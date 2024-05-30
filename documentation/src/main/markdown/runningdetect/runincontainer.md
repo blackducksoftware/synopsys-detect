@@ -52,10 +52,10 @@ The format of "iac" image names is: `blackducksoftware/detect:[detect_version]-i
 
 `docker run -it --rm -v [/path/to/source]:/source -v [/path/to/outputDir]:/output blackducksoftware/detect:[detect_image_tag] [detect_arguments]`
 
-`docker run -it --rm -v /Home/my/gradle/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:7.0.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
+`docker run -it --rm -v /home/my/gradle/project:/source -v /home/for/detect/output/files:/output blackducksoftware/detect:9.6.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 
-`docker run -it --rm -v /Home/my/maven/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:7 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
+`docker run -it --rm -v /home/my/maven/project:/source -v /home/for/detect/output/files:/output blackducksoftware/detect:9 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 
-`docker run -it --rm -v /Home/my/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:7.0.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.detector.buildless=true`
+`docker run -it --rm -v /home/my/project:/source -v /home/for/detect/output/files:/output blackducksoftware/detect:9.6.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.accuracy.required=NONE`
 
-`docker run -it --rm -v /Home/my/project:/source -v /Home/where/I/want/detect/output/files:/output blackducksoftware/detect:6.9.1 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.tools=SIGNATURE_SCAN,BINARY_SCAN`
+`docker run -it --rm -v /home/my/project:/source -v /home/for/detect/output/files:/output blackducksoftware/detect:8.11.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn --detect.tools=SIGNATURE_SCAN,BINARY_SCAN`

@@ -212,6 +212,7 @@ public class DetectProperties {
         NullablePathProperty.newBuilder("detect.bazel.path")
             .setInfo("Bazel Executable", DetectPropertyFromVersion.VERSION_5_2_0)
             .setHelp("The path to the Bazel executable.")
+            .setExample("$HOME/bin/bazel")
             .setGroups(DetectGroup.BAZEL, DetectGroup.GLOBAL)
             .build();
 
@@ -289,6 +290,7 @@ public class DetectProperties {
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The path to the output directory for the generated BDIO file.", "If not set, the BDIO file will be placed in a 'BDIO' subdirectory of the output directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/home/<username>/blackduck/scan-outputs/bdio")
             .build();
 
     public static final NullableStringProperty DETECT_BDIO_FILE_NAME =
@@ -299,6 +301,7 @@ public class DetectProperties {
                 "If not set, the file name is generated from your project, version and code location names."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("Project1BDIO")
             .build();
 
     public static final NullablePathProperty DETECT_BINARY_SCAN_FILE =
@@ -792,6 +795,7 @@ public class DetectProperties {
             .setInfo("Git Executable", DetectPropertyFromVersion.VERSION_5_5_0)
             .setHelp("Path of the git executable")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/usr/bin/git")
             .build();
 
     public static final NullablePathProperty DETECT_GO_PATH =
@@ -969,13 +973,20 @@ public class DetectProperties {
             .build();
 
     public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED =
-            BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
-                    .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
-                    .setHelp(
-                            "If set to true, Detect will save an output file named 'components-with-locations.json' in the Scan subdirectory detailing where in the project's source code OSS components are declared.",
-                            "All components will be included when using Synopsys Detect in offline mode. Only policy violating components will be included for Rapid and Stateless Scan modes.")
-                    .setGroups(DetectGroup.GENERAL)
-                    .build();
+        BooleanProperty.newBuilder("detect.component.location.analysis.enabled", false)
+            .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
+            .setHelp(
+                    "If set to true, Detect will save an output file named 'components-with-locations.json' in the Scan subdirectory detailing where in the project's source code OSS components are declared.",
+                    "All components will be included when using Synopsys Detect in offline mode. Only policy violating components will be included for Rapid and Stateless Scan modes.")
+            .setGroups(DetectGroup.GENERAL)
+            .build();
+
+    public static final BooleanProperty DETECT_COMPONENT_LOCATION_ANALYSIS_STATUS =
+        BooleanProperty.newBuilder("detect.component.location.analysis.status", false)
+            .setInfo("Component Location Analysis Status", DetectPropertyFromVersion.VERSION_9_7_0)
+            .setHelp("If set to true, Detect status and exit code will be affected by the status of the Component Location Analysis run.")
+            .setGroups(DetectGroup.GENERAL)
+            .build();
 
     public static final AllEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
         AllEnumListProperty.newBuilder("detect.included.detector.types", AllEnum.ALL, DetectorType.class)
@@ -994,6 +1005,7 @@ public class DetectProperties {
             .setInfo("Java Executable", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp("Path to the Java executable used by Docker Inspector.", "If set, Detect will use the given Java executable instead of searching for one.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/usr/lib/jvm/jdk-17/bin/java")
             .build();
 
     public static final CaseSensitiveStringListProperty DETECT_LERNA_EXCLUDED_PACKAGES =
@@ -1201,6 +1213,7 @@ public class DetectProperties {
                 "If set, Detect will use the given directory to store files that it downloads and creates, instead of using the default location (~/blackduck)."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/home/<username>/blackduck/scan-outputs")
             .build();
 
     public static final NullablePathProperty DETECT_TOOLS_OUTPUT_PATH =
@@ -1212,6 +1225,7 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
+            .setExample("/home/<username>/blackduck/scan-outputs/tools")
             .build();
 
     public static final NoneEnumListProperty<PackagistDependencyType> DETECT_PACKAGIST_DEPENDENCY_TYPES_EXCLUDED =
@@ -1294,7 +1308,7 @@ public class DetectProperties {
             .setInfo("Poetry dependency groups", DetectPropertyFromVersion.VERSION_9_7_0)
             .setHelp(
                 createTypeFilterHelpText("Poetry dependency groups"),
-                "When specified, presence of both poetry.lock and pyproject.toml files is required for this detector to run successfully. Components that belong to excluded groups as well as their dependencies will be excluded from the BOM. If a component also belongs to a non-excluded group, it will be included in the BOM together with its dependencies."
+                "When specified, presence of both `poetry.lock` and `pyproject.toml` files is required for this detector to run successfully. Components and related dependencies that belong to excluded groups will not be in the BOM unless the component also belongs to a non-excluded group. For example, to recursively exclude all components under the `tool.poetry.group.dev.dependencies` and `tool.poetry.group.test.dependencies` sections of `pyproject.toml`: `detect.poetry.dependency.groups.excluded='dev,test'`. For Poetry pre-1.2.x style of specifying dev depenenicies (`tool.poetry.dev-dependencies` section), use `dev` as the group name."
             )
             .setGroups(DetectGroup.POETRY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1817,6 +1831,7 @@ public class DetectProperties {
                 "If set, Detect will use the given directory to store a copy of the status.json file."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setExample("/home/<username>/blackduck/scan-outputs/status")
             .build();
     
     public static final BooleanProperty BLACKDUCK_OFFLINE_MODE_FORCE_BDIO =

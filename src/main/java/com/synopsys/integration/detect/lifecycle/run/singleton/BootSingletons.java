@@ -6,7 +6,7 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
-import com.synopsys.integration.detect.lifecycle.boot.autonomous.AutonomousManager;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;

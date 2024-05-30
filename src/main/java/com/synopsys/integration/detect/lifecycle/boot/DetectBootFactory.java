@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.SortedMap;
 
-import com.synopsys.integration.detect.lifecycle.boot.autonomous.AutonomousManager;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

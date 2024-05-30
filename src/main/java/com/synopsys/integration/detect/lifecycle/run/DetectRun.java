@@ -3,16 +3,22 @@ package com.synopsys.integration.detect.lifecycle.run;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.Arrays;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detect.lifecycle.boot.autonomous.AutonomousManager;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
@@ -60,6 +66,9 @@ public class DetectRun {
             operationSystem = Optional.of(utilitySingletons.getOperationSystem());
 
             ProductRunData productRunData = bootSingletons.getProductRunData(); //TODO: Remove run data from boot singletons
+
+            Map<DetectTool, Set<String>> scanTypeEvidenceMap = productRunData.getDetectToolFilter().getExcludedIncludedFilter().getScanTypeEvidenceMap();
+
             OperationRunner operationRunner = createOperationFactory(bootSingletons, utilitySingletons, eventSingletons);
             StepHelper stepHelper = new StepHelper(utilitySingletons.getOperationSystem(), utilitySingletons.getOperationWrapper(), productRunData.getDetectToolFilter());
             AutonomousManager autonomousManager = bootSingletons.getAutonomousManager();
@@ -85,10 +94,14 @@ public class DetectRun {
             }
 
             if(autonomousManager.getAutonomousScanEnabled()) {
-                SortedMap<String, SortedSet<String>> scanTargets = stepRunner.getScanTargets(universalToolsResult);
-                autonomousManager.updateScanTargets(scanTargets);
+                SortedMap<String, SortedSet<String>> packageManagerTargets = stepRunner.getScanTargets(universalToolsResult);
+                autonomousManager.updateScanTargets(packageManagerTargets, scanTypeEvidenceMap);
+                AllEnumList<DetectTool> givenScanTypes = bootSingletons.getDetectConfiguration().getValue(DetectProperties.DETECT_TOOLS);
+                List<String> scanTypes = new ArrayList<>();
+                scanTypeEvidenceMap.keySet().forEach(tool -> scanTypes.add(tool.toString()));
+                givenScanTypes.representedValues().forEach(tool -> scanTypes.add(tool.toString()));
                 SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
-                autonomousManager.updateScanSettingsProperties(defaultValueMap, Arrays.asList("DETECTOR","BINARY_SCAN","GRADLE"));
+                autonomousManager.updateScanSettingsProperties(defaultValueMap, scanTypes);
                 autonomousManager.writeScanSettingsModelToTarget();
             }
 

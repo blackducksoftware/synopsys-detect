@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.lifecycle.boot.autonomous.model;
+package com.synopsys.integration.detect.lifecycle.autonomous.model;
 
 import java.util.SortedMap;
 import java.util.SortedSet;

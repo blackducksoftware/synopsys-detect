@@ -14,7 +14,6 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConfigFactory;
-import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityResult;
 import com.synopsys.integration.log.SilentIntLogger;
