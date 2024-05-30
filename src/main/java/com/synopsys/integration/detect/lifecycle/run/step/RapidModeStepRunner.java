@@ -62,11 +62,13 @@ public class RapidModeStepRunner {
         List<HttpUrl> parsedUrls = new ArrayList<>();
         Set<FormattedCodeLocation> formattedCodeLocations = new HashSet<>();
 
-        List<HttpUrl> uploadResultsUrls = operationRunner.performRapidUpload(blackDuckRunData, bdioResult, rapidScanConfig.orElse(null));
+        stepHelper.runToolIfIncluded(DetectTool.DETECTOR, "Detector Scan", () -> {
+            List<HttpUrl> uploadResultsUrls = operationRunner.performRapidUpload(blackDuckRunData, bdioResult, rapidScanConfig.orElse(null));
         
-        if (uploadResultsUrls != null && uploadResultsUrls.size() > 0) {
-            processScanResults(uploadResultsUrls, parsedUrls, formattedCodeLocations, DetectTool.DETECTOR.name());
-        }
+            if (uploadResultsUrls != null && uploadResultsUrls.size() > 0) {
+                processScanResults(uploadResultsUrls, parsedUrls, formattedCodeLocations, DetectTool.DETECTOR.name());
+            }
+        });
 
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             logger.debug("Stateless scan signature scan detected.");
