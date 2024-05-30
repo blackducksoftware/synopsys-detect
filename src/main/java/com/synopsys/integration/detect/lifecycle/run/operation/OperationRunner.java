@@ -1191,7 +1191,7 @@ public class OperationRunner {
     public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException {
         return auditLog.namedPublic("Binary Upload", "Binary",
-            () -> new BinaryUploadOperation(statusEventPublisher, codeLocationNameManager, calculateBinaryScanOptions())
+            () -> new BinaryUploadOperation(statusEventPublisher, codeLocationNameManager)
                 .uploadBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), projectNameVersion)
         );
     }

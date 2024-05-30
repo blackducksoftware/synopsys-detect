@@ -28,12 +28,10 @@ public class BinaryUploadOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final CodeLocationNameManager codeLocationNameManager;
-    private final BinaryScanOptions binaryScanOptions;
     private final StatusEventPublisher statusEventPublisher;
 
-    public BinaryUploadOperation(StatusEventPublisher statusEventPublisher, CodeLocationNameManager codeLocationNameManager, BinaryScanOptions binaryScanOptions) {
+    public BinaryUploadOperation(StatusEventPublisher statusEventPublisher, CodeLocationNameManager codeLocationNameManager) {
         this.codeLocationNameManager = codeLocationNameManager;
-        this.binaryScanOptions = binaryScanOptions;
         this.statusEventPublisher = statusEventPublisher;
     }
 

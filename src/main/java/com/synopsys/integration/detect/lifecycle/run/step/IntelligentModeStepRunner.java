@@ -127,6 +127,14 @@ public class IntelligentModeStepRunner {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
             Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationData = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
             
+            // TODO can potentially get rid of this. If we can get the scanId somehow we don't need to wait on the code location data
+            // and this block is only used for waiting.
+            // From doc:
+            // The initial upload returns a scan ID that subsequent uploads use to upload
+            // the BDIO part files. Once all the pieces of the BDIO file have been uploaded
+            // then the client waits for a scan result using the scan ID returned from the
+            // initial request.
+            // So we might either get the scan ID and can wait or they might wait for us
             if (codeLocationData.isPresent()) {
                 codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
                 mustWaitAtBomSummaryLevel.set(true);
