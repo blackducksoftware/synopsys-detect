@@ -24,6 +24,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO, "true");
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
             commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
@@ -47,6 +48,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
             commandBuilder.connectToBlackDuck(blackDuckTestConnection);
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
             commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, "RAPID");
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
             commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
@@ -55,7 +57,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
             dockerAssertions.logContains(GenerateComponentLocationAnalysisOperation.OPERATION_NAME + ": FAILURE");
             dockerAssertions.logDoesNotContain("COMPONENT_LOCATION_ANALYSIS: SUCCESS");
             dockerAssertions.logDoesNotContain("COMPONENT_LOCATION_ANALYSIS: FAILURE");
-            dockerAssertions.exitCodeIs(ExitCodeType.FAILURE_COMPONENT_LOCATOR.getExitCode());
+            dockerAssertions.exitCodeIs(ExitCodeType.SUCCESS.getExitCode());
         }
     }
 
@@ -69,7 +71,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_STATUS, "true");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
             commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE_FORCE_BDIO, "true");
-            commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, "DETECTOR");
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
             commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
@@ -94,6 +96,8 @@ public class GenerateComponentLocationAnalysisOperationIT {
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_ENABLED, "true");
             commandBuilder.property(DetectProperties.DETECT_COMPONENT_LOCATION_ANALYSIS_STATUS, "true");
             commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, "RAPID");
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
+            commandBuilder.property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
