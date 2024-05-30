@@ -1,5 +1,7 @@
 package com.synopsys.integration.detectable.factory;
 
+import java.io.File;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -88,8 +90,8 @@ import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectab
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockExtractor;
 import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockParser;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
-import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.Conan1CliDetectable;
+import com.synopsys.integration.detectable.detectables.conan.cli.Conan2CliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractor;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanCliOptions;
@@ -218,7 +220,6 @@ import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFi
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectable;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
-import com.synopsys.integration.detectable.detectables.pip.parser.RequirementsFileTransformer;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pipenv.build.PipenvExtractor;
@@ -262,6 +263,10 @@ import com.synopsys.integration.detectable.detectables.sbt.dot.SbtDotOutputParse
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtGraphParserTransformer;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
 import com.synopsys.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
+import com.synopsys.integration.detectable.detectables.setuptools.SetupToolsExtractor;
+import com.synopsys.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.buildless.SetupToolsBuildlessDetectable;
+import com.synopsys.integration.detectable.detectables.setuptools.transform.SetupToolsGraphTransformer;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftCliParser;
 import com.synopsys.integration.detectable.detectables.swift.cli.SwiftExtractor;
@@ -290,6 +295,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockDependencySpecParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockEntrySectionParserSet;
+import com.synopsys.integration.detectable.python.util.PythonDependencyTransformer;
 import com.synopsys.integration.detectable.util.ToolVersionLogger;
 
 /*
@@ -613,7 +619,7 @@ public class DetectableFactory {
         DetectableEnvironment environment,
         RequirementsFileDetectableOptions requirementsFileDetectableOptions
     ) {
-        RequirementsFileTransformer requirementsFileTransformer = new RequirementsFileTransformer();
+        PythonDependencyTransformer requirementsFileTransformer = new PythonDependencyTransformer();
         RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
         RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
         return new RequirementsFileDetectable(environment, fileFinder, requirementsFileExtractor, requirementsFileDetectableOptions);
@@ -686,6 +692,14 @@ public class DetectableFactory {
         XcodeWorkspaceExtractor xcodeWorkspaceExtractor = new XcodeWorkspaceExtractor(xcodeWorkspaceParser, xcodeWorkspaceFormatChecker, packageResolvedExtractor, fileFinder);
 
         return new XcodeWorkspaceDetectable(environment, fileFinder, packageResolvedExtractor, xcodeWorkspaceExtractor);
+    }
+    
+    public SetupToolsBuildDetectable createSetupToolsBuildDetectable(DetectableEnvironment environment, PipResolver pipResolver) {
+        return new SetupToolsBuildDetectable(environment, fileFinder, pipResolver, setupToolsExtractor(environment.getDirectory()));
+    }
+    
+    public SetupToolsBuildlessDetectable createSetupToolsBuildlessDetectable(DetectableEnvironment environment, PipResolver pipResolver) {
+        return new SetupToolsBuildlessDetectable(environment, fileFinder, setupToolsExtractor(environment.getDirectory()));
     }
 
     // Used by three Detectables
@@ -1090,6 +1104,14 @@ public class DetectableFactory {
 
     private SwiftExtractor swiftExtractor() {
         return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer(), toolVersionLogger);
+    }
+    
+    private SetupToolsGraphTransformer setupToolsGraphTransformer(File sourceDirectory) {
+        return new SetupToolsGraphTransformer(sourceDirectory, externalIdFactory, executableRunner);
+    }
+    
+    private SetupToolsExtractor setupToolsExtractor(File sourceDirectory) {
+        return new SetupToolsExtractor(setupToolsGraphTransformer(sourceDirectory));
     }
 
     //#endregion Utility

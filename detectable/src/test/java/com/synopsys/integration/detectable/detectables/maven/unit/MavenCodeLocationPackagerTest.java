@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.synopsys.integration.bdio.model.Forge;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.model.dependency.Dependency;
@@ -174,6 +175,19 @@ public class MavenCodeLocationPackagerTest {
         assertTrue(mavenCodeLocationPackager.isGav("group:artifact:type:classifier:version:scope"));
 
         assertTrue(mavenCodeLocationPackager.isGav("group:artifact:type:classifier:version:scope:garbage"));
+    }
+
+    @Test
+    public void testIsEclipsePackage() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory());
+
+        String line = "[INFO] +- p2.eclipse-plugin:org.eclipse.core.runtime:jar:3.17.100.v20200203-0917:system";
+        line = mavenCodeLocationPackager.trimLogLevel(line);
+        String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
+        Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
+        assertEquals("org.eclipse.core.runtime/3.17.100.v20200203-0917", dependency.getExternalId().createExternalId());
+        assertEquals(Forge.ECLIPSE, dependency.getExternalId().getForge());
+        assertEquals(1, mavenCodeLocationPackager.getEclipsePackageExternalIdModifiedCounter());
     }
 
     @Test

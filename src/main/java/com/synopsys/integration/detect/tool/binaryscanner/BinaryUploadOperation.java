@@ -66,6 +66,26 @@ public class BinaryUploadOperation {
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
         }
     }
+    
+    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFiles(
+        BinaryScanBatch binaryScanBatch,
+        BinaryScanUploadService binaryScanUploadService,
+        NameVersion projectNameVersion
+    )
+        throws DetectUserFriendlyException {
+        try {
+            CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = binaryScanUploadService.uploadBinaryScan(binaryScanBatch);
+
+            BinaryScanBatchOutput binaryScanBatchOutput = codeLocationCreationData.getOutput();
+            // The throwExceptionForError() in BinaryScanBatchOutput has a bug, so doing that work here
+            throwExceptionForError(binaryScanBatchOutput);
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
+            return codeLocationCreationData;
+        } catch (IntegrationException e) {
+            statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+            throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+        }
+    }
 
     // BinaryScanBatchOutput used to do this, but our understanding of what needs to happen has been
     // changing rapidly. Once we're confident we know what it should do, it should presumably move back there.

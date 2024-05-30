@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
-public class PoetryDetectableExcludeDevTest  extends DetectableFunctionalTest {
+public class PoetryDetectableExcludeDevTest extends DetectableFunctionalTest {
 
     PoetryDetectableExcludeDevTest() throws IOException {
         super("poetry_exclude_dev");
@@ -34,8 +34,8 @@ public class PoetryDetectableExcludeDevTest  extends DetectableFunctionalTest {
             "authors = [\"Some Author\"]\n" + //
             "\n" + //
             "[tool.poetry.dependencies]\n" + //
-            "python = \"^3.11\"\n" + //
-            "pendulum = \"^3.0.0\"\n" + //
+            "Python = \"^3.11\"\n" + //
+            "PENDULUM = \"^3.0.0\"\n" + //
             "\n" + //
             "[tool.poetry.group.dev.dependencies]\n" + //
             "boost-histogram = \"^1.4.0\"\n" + //
@@ -55,7 +55,7 @@ public class PoetryDetectableExcludeDevTest  extends DetectableFunctionalTest {
             "python-versions = \">=3.7\"\n" + //
             "\n" + //
             "[package.dependencies]\n" + //
-            "numpy = \"*\"\n" + //
+            "NumPy = \"*\"\n" + //
             "\n" + //
             "[[package]]\n" + //
             "name = \"numpy\"\n" + //
@@ -73,7 +73,7 @@ public class PoetryDetectableExcludeDevTest  extends DetectableFunctionalTest {
             "\n" + //
             "[package.dependencies]\n" + //
             "python-dateutil = \">=2.6\"\n" + //
-            "tzdata = \">=2020.1\"\n" + //
+            "TZData = \">=2020.1\"\n" + //
             "\n" + //
             "[[package]]\n" + //
             "name = \"python-dateutil\"\n" + //

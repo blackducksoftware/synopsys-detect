@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.lifecycle.boot.autonomous;
+package com.synopsys.integration.detect.lifecycle.autonomous;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.detect.lifecycle.boot.autonomous.model.ScanSettings;
+import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 
 public class ScanSettingsSerializer {
 
