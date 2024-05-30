@@ -105,7 +105,7 @@ public class GenerateComponentLocationAnalysisOperationIT {
             dockerAssertions.logContains(GenerateComponentLocationAnalysisOperation.OPERATION_NAME + ": FAILURE");
             dockerAssertions.logDoesNotContain("COMPONENT_LOCATION_ANALYSIS: SUCCESS");
             dockerAssertions.logContains("COMPONENT_LOCATION_ANALYSIS: FAILURE");
-            dockerAssertions.exitCodeIs(ExitCodeType.FAILURE_COMPONENT_LOCATOR.getExitCode());
+            dockerAssertions.exitCodeIs(ExitCodeType.FAILURE_COMPONENT_LOCATION_ANALYSIS.getExitCode());
         }
     }
 }
