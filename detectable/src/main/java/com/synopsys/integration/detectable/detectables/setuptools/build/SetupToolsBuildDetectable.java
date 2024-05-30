@@ -43,7 +43,6 @@ public class SetupToolsBuildDetectable extends Detectable {
     private final SetupToolsExtractor setupToolsExtractor;
     private final PipResolver pipResolver;
 
-    private File projectToml;
     private TomlParseResult parsedToml;
     
     private ExecutableTarget pipExe;
@@ -59,10 +58,26 @@ public class SetupToolsBuildDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
+        // Ensure there is a pyproject.toml
         Requirements fileResolver = new Requirements(fileFinder, environment);
-        projectToml = fileResolver.file(PY_PROJECT_TOML);
+        File projectToml = fileResolver.file(PY_PROJECT_TOML);
         
-        return fileResolver.result();
+        if (fileResolver.isAlreadyFailed()) {
+            return fileResolver.result();
+        }
+        
+        try {
+            parsedToml = SetupToolsExtractUtils.extractToml(projectToml);
+
+            // Ensure the pyproject.toml file has a requires setuptools line.
+            if (parsedToml == null || !SetupToolsExtractUtils.checkTomlRequiresSetupTools(parsedToml)) {
+                return new SetupToolsRequiresNotFoundDetectableResult();
+            }
+        } catch (IOException e){
+            return new ExceptionDetectableResult(e);
+        }
+        
+        return new PassedDetectableResult();
     }
 
     @Override
@@ -72,13 +87,6 @@ public class SetupToolsBuildDetectable extends Detectable {
             pipExe = pipResolver.resolvePip();
             if (pipExe == null) {
                 return new ExecutableNotFoundDetectableResult("pip");
-            }
-        
-            parsedToml = SetupToolsExtractUtils.extractToml(projectToml);
-
-            // Ensure an existing pyproject.toml with a requires setuptools line.
-            if (parsedToml == null || !SetupToolsExtractUtils.checkTomlRequiresSetupTools(parsedToml)) {
-                return new SetupToolsRequiresNotFoundDetectableResult();
             }
             
             // Ensure dependencies/requirements are specified in a toml, cfg, or py file.

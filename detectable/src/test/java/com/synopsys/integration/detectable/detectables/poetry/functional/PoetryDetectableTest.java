@@ -43,11 +43,11 @@ public class PoetryDetectableTest extends DetectableFunctionalTest {
             "version = \"1.4.0\"",
             "",
             "[package.dependencies]",
-            "importlib-metadata = \"*\"",
+            "importLib-metadata = \"*\"",
             "",
             "[[package]]",
             "category = \"dev\"",
-            "name = \"importlib-metadata\"",
+            "name = \"Importlib_Metadata\"",
             "python-versions = \"!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7\"",
             "version = \"1.6.0\""
         );
