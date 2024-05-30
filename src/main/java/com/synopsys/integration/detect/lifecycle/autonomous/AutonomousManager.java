@@ -8,7 +8,11 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.UUID;
+import java.util.Set;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.SortedMap;
 
 import org.apache.commons.lang3.StringUtils;
 
