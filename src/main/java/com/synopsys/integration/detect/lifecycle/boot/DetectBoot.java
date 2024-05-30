@@ -4,15 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.Collections;
+import java.util.*;
 
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.help.yaml.HelpYamlWriter;
 import org.slf4j.Logger;
@@ -226,9 +220,7 @@ public class DetectBoot {
         try {
             boolean blackduckScanModeSpecified = detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
             BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
-
-
-            BlackduckScanMode blackduckScanMode = decideScanMode(blackDuckConnectionDetails, scanTypeEvidenceMap, blackduckScanModeSpecified, detectConfigurationFactory, autonomousScanEnabled);
+            BlackduckScanMode blackduckScanMode = decideScanMode(blackDuckConnectionDetails, scanTypeEvidenceMap, blackduckScanModeSpecified, detectConfigurationFactory, autonomousScanEnabled, detectConfiguration);
 
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
@@ -274,16 +266,18 @@ public class DetectBoot {
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
-    private BlackduckScanMode decideScanMode(BlackDuckConnectionDetails blackDuckConnectionDetails, Map<DetectTool, Set<String>> adoptedScanType, boolean blackduckScanModeSpecified, DetectConfigurationFactory detectConfigurationFactory, boolean autonomousScanEnabled) {
+    private BlackduckScanMode decideScanMode(BlackDuckConnectionDetails blackDuckConnectionDetails, Map<DetectTool, Set<String>> scanTypeEvidenceMap, boolean blackduckScanModeSpecified, DetectConfigurationFactory detectConfigurationFactory, boolean autonomousScanEnabled, DetectPropertyConfiguration detectConfiguration) {
         if(!blackduckScanModeSpecified && autonomousScanEnabled) {
             Optional<String> scaasFilePath = detectConfigurationFactory.getScaaasFilePath();
             Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
 
+            AllEnumList<DetectTool> detectTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
+
             if (blackDuckUrl.isPresent()) {
-                boolean isNotRapid = adoptedScanType.keySet().stream().anyMatch(tool -> !rapidTools.contains(tool));
-                if (!adoptedScanType.isEmpty() && !isNotRapid && scaasFilePath.isPresent()) {
+                boolean isNotRapid = detectTools.representedValues().stream().anyMatch(tool -> !rapidTools.contains(tool)) || scanTypeEvidenceMap.keySet().stream().anyMatch(tool -> !rapidTools.contains(tool));
+                if (!scanTypeEvidenceMap.isEmpty() && !isNotRapid && scaasFilePath.isPresent()) {
                     return BlackduckScanMode.RAPID;
-                } else if (!adoptedScanType.isEmpty() && scaasFilePath.isPresent()) {
+                } else if (!scanTypeEvidenceMap.isEmpty() && scaasFilePath.isPresent()) {
                     return BlackduckScanMode.STATELESS;
                 }
             }
