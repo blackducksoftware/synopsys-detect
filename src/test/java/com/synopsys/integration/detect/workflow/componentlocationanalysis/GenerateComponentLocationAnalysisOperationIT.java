@@ -11,6 +11,7 @@ import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 
 @Tag("integration")
 public class GenerateComponentLocationAnalysisOperationIT {
@@ -29,12 +30,14 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             dockerAssertions.successfulOperation(GenerateComponentLocationAnalysisOperation.OPERATION_NAME);
             dockerAssertions.logContainsPattern("Component Location Analysis File: .*components-with-locations\\.json");
-            dockerAssertions.logDoesNotContain("COMPONENT_LOCATOR: SUCCESS");
+            dockerAssertions.logDoesNotContain("COMPONENT_LOCATION_ANALYSIS: SUCCESS");
+            dockerAssertions.logDoesNotContain("COMPONENT_LOCATION_ANALYSIS: FAILURE");
+            dockerAssertions.exitCodeIs(ExitCodeType.SUCCESS.getExitCode());
         }
     }
 
     @Test
-    void onlineRapidPkgMngrScan_analysisEnabled() throws IOException {
+    void testOnlineRapidPkgMngrScan_analysisEnabled() throws IOException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("component-location-analysis-test", "gradle-simple:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle.dockerfile"));
 
@@ -48,10 +51,11 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulOperation(GenerateComponentLocationAnalysisOperation.OPERATION_NAME);
-            dockerAssertions.logContainsPattern("Component Location Analysis File: .*components-with-locations\\.json");
-            dockerAssertions.logDoesNotContain("COMPONENT_LOCATOR: SUCCESS");
-
+            // currently this operation fails because in RAPID mode with no matching policies in BD, Component Locator does not get any components to look up
+            dockerAssertions.logContains(GenerateComponentLocationAnalysisOperation.OPERATION_NAME + ": FAILURE");
+            dockerAssertions.logDoesNotContain("COMPONENT_LOCATION_ANALYSIS: SUCCESS");
+            dockerAssertions.logDoesNotContain("COMPONENT_LOCATION_ANALYSIS: FAILURE");
+            dockerAssertions.exitCodeIs(ExitCodeType.FAILURE_COMPONENT_LOCATOR.getExitCode());
         }
     }
 
@@ -72,12 +76,14 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             dockerAssertions.successfulOperation(GenerateComponentLocationAnalysisOperation.OPERATION_NAME);
             dockerAssertions.logContainsPattern("Component Location Analysis File: .*components-with-locations\\.json");
-            dockerAssertions.logContains("COMPONENT_LOCATOR: SUCCESS");
+            dockerAssertions.logContains("COMPONENT_LOCATION_ANALYSIS: SUCCESS");
+            dockerAssertions.logDoesNotContain("COMPONENT_LOCATION_ANALYSIS: FAILURE");
+            dockerAssertions.exitCodeIs(ExitCodeType.SUCCESS.getExitCode());
         }
     }
 
     @Test
-    void onlineRapidPkgMngrScan_analysisEnabled_affectsStatus() throws IOException {
+    void testOnlineRapidPkgMngrScan_analysisEnabled_affectsStatus() throws IOException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("component-location-analysis-test", "gradle-simple:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle.dockerfile"));
 
@@ -91,9 +97,11 @@ public class GenerateComponentLocationAnalysisOperationIT {
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.successfulOperation(GenerateComponentLocationAnalysisOperation.OPERATION_NAME);
-            dockerAssertions.logContainsPattern("Component Location Analysis File: .*components-with-locations\\.json");
-            dockerAssertions.logContains("COMPONENT_LOCATOR: SUCCESS");
+            // currently this operation fails because in RAPID mode with no matching policies in BD, Component Locator does not get any components to look up
+            dockerAssertions.logContains(GenerateComponentLocationAnalysisOperation.OPERATION_NAME + ": FAILURE");
+            dockerAssertions.logDoesNotContain("COMPONENT_LOCATION_ANALYSIS: SUCCESS");
+            dockerAssertions.logContains("COMPONENT_LOCATION_ANALYSIS: FAILURE");
+            dockerAssertions.exitCodeIs(ExitCodeType.FAILURE_COMPONENT_LOCATOR.getExitCode());
         }
     }
 }
