@@ -105,7 +105,7 @@ public class DetectRun {
                 packageManagerTargets.keySet().forEach(tool -> scanTypes.add(tool));
                 SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
                 autonomousManager.updateScanSettingsProperties(defaultValueMap, scanTypes);
-                autonomousManager.writeScanSettingsModelToTarget();
+                autonomousManager.writeScanSettingsModelToTarget(); //TODO - Move this call to Detect shutdown
             }
 
             if (productRunData.shouldUseBlackDuckProduct()) {
