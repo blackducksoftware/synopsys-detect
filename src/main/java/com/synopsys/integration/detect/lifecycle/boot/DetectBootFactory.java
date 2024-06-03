@@ -82,7 +82,6 @@ public class DetectBootFactory {
     private final EventSystem eventSystem;
     private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
     private final FileFinder fileFinder;
-    private DirectoryManager directoryManager;
 
     public DetectBootFactory(DetectRunId detectRunId, DetectInfo detectInfo, Gson gson, EventSystem eventSystem, FileFinder fileFinder) {
         this.detectRunId = detectRunId;
