@@ -28,6 +28,7 @@ import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
@@ -135,6 +136,7 @@ public class Application implements ApplicationRunner {
             installedToolManager,
             exceptionUtility
         );
+        Optional<AutonomousManager> autonomousManagerOptional = null;
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
@@ -161,13 +163,19 @@ public class Application implements ApplicationRunner {
             detectBootResult.getDirectoryManager().ifPresent(directoryManager -> createOrUpdateInstalledToolsFile(installedToolManager, directoryManager.getPermanentDirectory()));
 
             shutdownApplication(detectBootResult, exitCodeManager);
+
+            if (detectBootResult.getBootSingletons().isPresent()) {
+                autonomousManagerOptional = Optional.ofNullable(detectBootResult.getBootSingletons().get().getAutonomousManager());
+            }
+
         } else {
             logger.info("Will not create status file, detect did not boot.");
         }
 
         logger.debug("All Detect actions completed.");
 
-        exitApplication(exitManager, startTime, shouldForceSuccess);
+
+        exitApplication(exitManager, startTime, shouldForceSuccess, autonomousManagerOptional);
     }
 
     private Optional<DetectBootResult> bootApplication(
@@ -272,9 +280,9 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    private void exitApplication(ExitManager exitManager, long startTime, boolean shouldForceSuccess) {
+    private void exitApplication(ExitManager exitManager, long startTime, boolean shouldForceSuccess, Optional<AutonomousManager> autonomousManagerOptional) {
         ExitOptions exitOptions = new ExitOptions(startTime, shouldForceSuccess, SHOULD_EXIT);
-        ExitResult exitResult = exitManager.exit(exitOptions);
+        ExitResult exitResult = exitManager.exit(exitOptions, autonomousManagerOptional);
 
         if (exitResult.shouldForceSuccess()) {
             System.exit(0);

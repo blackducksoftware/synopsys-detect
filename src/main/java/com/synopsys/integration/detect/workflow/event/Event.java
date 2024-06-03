@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.SortedMap;
 
+import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.executable.ExecutedExecutable;
@@ -35,4 +36,5 @@ public class Event {
     public static final EventType<UnrecognizedPaths> UnrecognizedPaths = new EventType<>(UnrecognizedPaths.class);
     public static final EventType<SortedMap<String, String>> RawMaskedPropertyValuesCollected = new EventType(SortedMap.class);
     public static final EventType<Collection<Operation>> DetectOperationsComplete = new EventType(Collection.class);
+//    public static final EventType<Collection<ScanSettings>> AutonomousScanDecisionsCompleted = new EventType(Collection.class);
 }

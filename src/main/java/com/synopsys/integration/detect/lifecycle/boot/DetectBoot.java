@@ -267,7 +267,8 @@ public class DetectBoot {
                 directoryManager,
                 freemarkerConfiguration,
                 installedToolManager,
-                installedToolLocator
+                installedToolLocator,
+                autonomousManager
             );
 
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));

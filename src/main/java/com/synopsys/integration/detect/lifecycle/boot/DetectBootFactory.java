@@ -29,6 +29,7 @@ import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
 import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
 import com.synopsys.integration.detect.interactive.InteractiveWriter;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
@@ -99,7 +100,8 @@ public class DetectBootFactory {
         DirectoryManager directoryManager,
         Configuration configuration,
         InstalledToolManager installedToolManager,
-        InstalledToolLocator installedToolLocator
+        InstalledToolLocator installedToolLocator,
+        AutonomousManager autonomousManager
     ) {
         return new BootSingletons(
             productRunData,
@@ -115,7 +117,8 @@ public class DetectBootFactory {
             directoryManager,
             configuration,
             installedToolManager,
-            installedToolLocator
+            installedToolLocator,
+            autonomousManager
         );
     }
 
