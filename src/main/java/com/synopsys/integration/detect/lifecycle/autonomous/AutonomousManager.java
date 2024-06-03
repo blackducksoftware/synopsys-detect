@@ -179,7 +179,8 @@ public class AutonomousManager {
     }
 
     private boolean isDetectorTypeProperty(String propertyKey, String propertyValue) {
-        return (propertyKey.contains("detector") || propertyKey.equals("detect.accuracy.required")) && !propertyValue.isEmpty();
+        boolean isDetectorToolIncluded = scanSettings.getScanTypes().stream().anyMatch(scanType -> scanType.getScanTypeName().equals("DETECTOR"));
+        return (propertyKey.contains("detector") || propertyKey.equals("detect.accuracy.required")) && !propertyValue.isEmpty() && isDetectorToolIncluded;
     }
 
     private void updateDetectorProperties(String propertyKey, String propertyValue, boolean userProvidedProperty) {
