@@ -14,13 +14,10 @@ import java.util.TreeMap;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.UUID;
-import java.util.Optional;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.Map;
 
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanType;
 import com.synopsys.integration.detector.base.DetectorType;
 import org.apache.commons.lang3.StringUtils;
@@ -40,14 +37,11 @@ public class AutonomousManager {
     private boolean autonomousScanEnabled;
     private final DetectConfigurationFactory detectConfigurationFactory;
     private final DetectPropertyConfiguration detectConfiguration;
-
     private SortedMap<String, String> userProvidedProperties = new TreeMap<>();
-
     private SortedMap<String, String> globalProperties = new TreeMap<>();
-
     private SortedMap<String, String> detectorSharedProperties = new TreeMap<>();
-
-    private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic");
+    private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic", "detect.blackduck.scan.mode", "detect.source.path", "detect.tools");
+    private static final List<String> autonomousTools = Arrays.asList("BINARY_SCAN", "DOCKER", "DETECTOR", "CONTAINER_SCAN");
 
     public AutonomousManager(
             DirectoryManager directoryManager,
@@ -83,7 +77,7 @@ public class AutonomousManager {
         return scanSettingsTargetFile != null && scanSettingsTargetFile.exists();
     }
 
-    public void writeScanSettingsModelToTarget() throws IOException {;
+    public void writeScanSettingsModelToTarget() throws IOException {
         String serializedScanSettings = ScanSettingsSerializer.serializeScanSettingsModel(scanSettings);
         try (FileWriter fw = new FileWriter(scanSettingsTargetFile)) {
             fw.write(serializedScanSettings);
@@ -173,8 +167,8 @@ public class AutonomousManager {
     }
 
     public void updateScanTargets(SortedMap<String, SortedSet<String>> packageManagerTargets, Map<DetectTool, Set<String>> scanTypeTargets) {
-        packageManagerTargets.forEach((scanType, scanTargets) -> {
-            ScanType scanType1 = scanSettings.getScanTypeWithName(scanType);
+        packageManagerTargets.forEach((packageManager, scanTargets) -> {
+            ScanType scanType1 = scanSettings.getScanTypeWithName(packageManager);
             scanType1.getScanTargets().addAll(scanTargets);
         });
 

@@ -39,6 +39,8 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.util.NameVersion;
+import java.util.Map;
+import java.util.Set;
 
 public class DetectRun {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -100,6 +102,7 @@ public class DetectRun {
                 List<String> scanTypes = new ArrayList<>();
                 scanTypeEvidenceMap.keySet().forEach(tool -> scanTypes.add(tool.toString()));
                 givenScanTypes.representedValues().forEach(tool -> scanTypes.add(tool.toString()));
+                packageManagerTargets.keySet().forEach(tool -> scanTypes.add(tool));
                 SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
                 autonomousManager.updateScanSettingsProperties(defaultValueMap, scanTypes);
                 autonomousManager.writeScanSettingsModelToTarget();

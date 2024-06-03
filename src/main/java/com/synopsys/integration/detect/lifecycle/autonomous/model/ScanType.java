@@ -1,12 +1,12 @@
 package com.synopsys.integration.detect.lifecycle.autonomous.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
-import org.jetbrains.annotations.NotNull;
 
 public class ScanType implements Comparable<ScanType> {
     /**
