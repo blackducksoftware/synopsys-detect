@@ -9,6 +9,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.Set;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.SortedMap;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,8 +20,6 @@ import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import java.util.Map;
-import java.util.Set;
 
 public class AutonomousManager {
 
@@ -26,21 +28,28 @@ public class AutonomousManager {
     private String hashedScanSettingsFileName;
     private File scanSettingsTargetFile;
     private ScanSettings scanSettings;
+    private boolean autonomousScanEnabled;
     private final DetectConfigurationFactory detectConfigurationFactory;
     private final DetectPropertyConfiguration detectConfiguration;
 
     public AutonomousManager(
             DirectoryManager directoryManager,
             DetectConfigurationFactory detectConfigurationFactory,
-            DetectPropertyConfiguration detectConfiguration) {
+            DetectPropertyConfiguration detectConfiguration,
+            boolean autonomousScanEnabled) {
         this.detectConfiguration = detectConfiguration;
         this.detectConfigurationFactory = detectConfigurationFactory;
         this.directoryManager = directoryManager;
+        this.autonomousScanEnabled = autonomousScanEnabled;
         detectSourcePath = directoryManager.getSourceDirectory().getPath();
         hashedScanSettingsFileName = StringUtils.join(UUID.nameUUIDFromBytes(detectSourcePath.getBytes()).toString(), ".json");
         File scanSettingsTargetDir = directoryManager.getScanSettingsOutputDirectory();
         scanSettingsTargetFile = new File(scanSettingsTargetDir, hashedScanSettingsFileName);
         scanSettings = initializeScanSettingsModel();
+    }
+
+    public boolean getAutonomousScanEnabled() {
+        return autonomousScanEnabled;
     }
 
     public ScanSettings getScanSettingsModel() {
@@ -99,5 +108,16 @@ public class AutonomousManager {
         }
         // scan mode needed to determine binary batch upload process
         // default - call BinaryUploadOperation.uploadBinaryScanFiles(...)
+    }
+
+    public SortedMap<String, String> getAllScanSettingsProperties() {
+        SortedMap<String, String> scanSettingsProperties = new TreeMap<>();
+        scanSettingsProperties.putAll(scanSettings.getDetectorSharedProperties());
+        scanSettingsProperties.putAll(scanSettings.getGlobalDetectProperties());
+        scanSettings.getScanTypes().forEach(scanType ->  {
+            scanSettingsProperties.putAll(scanType.getScanProperties());
+        });
+
+        return scanSettingsProperties;
     }
 }

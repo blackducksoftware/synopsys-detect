@@ -1,12 +1,14 @@
 package com.synopsys.integration.detect.lifecycle.autonomous.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-public class ScanType {
+public class ScanType implements Comparable<ScanType> {
     /**
      * Name of the scan tool or detector that is applicable.
      * Example: "SIGNATURE_SCAN" or "MAVEN".
@@ -26,6 +28,12 @@ public class ScanType {
      * <br>Example 1: <code>scanTargets.add("/path/to/build.gradle")</code>
      * <br>Example 2: <code>scanTargets.add("/path/to/binary_1.exe")</code>
      */
+
+    @Override
+    public int compareTo(@NotNull ScanType o) {
+        return scanTypeName.compareTo(o.scanTypeName);
+    }
+
     private SortedSet<String> scanTargets = new TreeSet<>();
 
     public String getScanTypeName() {

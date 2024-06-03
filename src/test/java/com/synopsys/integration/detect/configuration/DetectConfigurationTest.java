@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,7 @@ public class DetectConfigurationTest {
         values.put(givenKeyFull, givenValue);
         List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
-        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources, Collections.emptySortedMap());
 
         Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH);
         assertEquals(givenValue, phoneHomePropertiesMap.get(givenKeyPhoneHomePart));
@@ -40,7 +41,7 @@ public class DetectConfigurationTest {
         values.put(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX.getKey(), "some_prefix");
         List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
-        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources, Collections.emptySortedMap());
         DetectPropertyConfiguration detectPropertyConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectPropertyConfiguration, new Gson());
         BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
