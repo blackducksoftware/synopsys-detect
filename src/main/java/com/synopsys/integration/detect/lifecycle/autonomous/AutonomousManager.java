@@ -32,7 +32,63 @@ public class AutonomousManager {
     private final DetectConfigurationFactory detectConfigurationFactory;
     private final DetectPropertyConfiguration detectConfiguration;
 
+    public AutonomousManager(
+            DirectoryManager directoryManager,
+            DetectConfigurationFactory detectConfigurationFactory,
+            DetectPropertyConfiguration detectConfiguration,
+            boolean autonomousScanEnabled) {
+        this.detectConfiguration = detectConfiguration;
+        this.detectConfigurationFactory = detectConfigurationFactory;
+        this.directoryManager = directoryManager;
+        this.autonomousScanEnabled = autonomousScanEnabled;
+        detectSourcePath = directoryManager.getSourceDirectory().getPath();
+        createScanSettingsTargetFile();
+        scanSettings = initializeScanSettingsModel();
+    }
 
+    public boolean getAutonomousScanEnabled() {
+        return autonomousScanEnabled;
+    }
+
+    public ScanSettings getScanSettingsModel() {
+        return scanSettings;
+    }
+
+    public void updateScanSettingsModel(ScanSettings scanSettings) {
+        this.scanSettings = scanSettings;
+    }
+
+    public String getHashedScanSettingsFileName() {
+        return hashedScanSettingsFileName;
+    }
+
+    public boolean isScanSettingsFilePresent() {
+        return scanSettingsTargetFile != null && scanSettingsTargetFile.exists();
+    }
+
+    public void writeScanSettingsModelToTarget(ScanSettings scanSettings) throws IOException {
+        updateScanSettingsModel(scanSettings);
+        String serializedScanSettings = ScanSettingsSerializer.serializeScanSettingsModel(scanSettings);
+        try (FileWriter fw = new FileWriter(scanSettingsTargetFile)) {
+            fw.write(serializedScanSettings);
+            fw.flush();
+        } catch (IOException e) {
+            throw e;
+        }
+    }
+
+    private ScanSettings initializeScanSettingsModel() {
+        if (isScanSettingsFilePresent()) {
+            return ScanSettingsSerializer.deserializeScanSettingsFile(scanSettingsTargetFile);
+        }
+        return new ScanSettings();
+    }
+
+    private void createScanSettingsTargetFile() {
+        hashedScanSettingsFileName = StringUtils.join(UUID.nameUUIDFromBytes(detectSourcePath.getBytes()).toString(), ".json");
+        File scanSettingsTargetDir = directoryManager.getScanSettingsOutputDirectory();
+        scanSettingsTargetFile = new File(scanSettingsTargetDir, hashedScanSettingsFileName);
+    }
     
     public Map<DetectTool, Set<String>> getScanTypeMap(boolean hasImageOrTar) {
         ScanTypeDecider autoDetectTool = new ScanTypeDecider();
