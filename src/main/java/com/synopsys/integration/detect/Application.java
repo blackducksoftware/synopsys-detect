@@ -136,7 +136,7 @@ public class Application implements ApplicationRunner {
             installedToolManager,
             exceptionUtility
         );
-        Optional<AutonomousManager> autonomousManagerOptional = null;
+        Optional<AutonomousManager> autonomousManagerOptional;
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
@@ -150,25 +150,30 @@ public class Application implements ApplicationRunner {
                 .flatMap(BlackDuckRunData::getPhoneHomeManager)
                 .ifPresent(PhoneHomeManager::phoneHomeOperations);
 
-            //Create status output file.  If we've gotten this far the 
+            if (detectBootResult.getBootSingletons().isPresent()) {
+                autonomousManagerOptional = Optional.ofNullable(detectBootResult.getBootSingletons().get().getAutonomousManager());
+            } else {
+                autonomousManagerOptional = null;
+            }
+
+            // Create status output file.  If we've gotten this far the
             // system must now know or be able to compute the winning exit
-            // code.  We'll pass this to FormattedOPutput.createFormattedOutput 
+            // code.  We'll pass this to FormattedOutput.createFormattedOutput
             // via Application.createStatusOutputFile.
             ExitCodeType exitCodeType = exitCodeManager.getWinningExitCode();
             logger.info("");
             detectBootResult.getDirectoryManager()
-                .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager, exitCodeType));
+                .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager, exitCodeType, autonomousManagerOptional));
 
             //Create installed tool data file.
             detectBootResult.getDirectoryManager().ifPresent(directoryManager -> createOrUpdateInstalledToolsFile(installedToolManager, directoryManager.getPermanentDirectory()));
 
             shutdownApplication(detectBootResult, exitCodeManager);
 
-            if (detectBootResult.getBootSingletons().isPresent()) {
-                autonomousManagerOptional = Optional.ofNullable(detectBootResult.getBootSingletons().get().getAutonomousManager());
-            }
+
 
         } else {
+            autonomousManagerOptional = null;
             logger.info("Will not create status file, detect did not boot.");
         }
 
@@ -228,14 +233,14 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    private void createStatusOutputFile(FormattedOutputManager formattedOutputManager, DetectInfo detectInfo, DirectoryManager directoryManager, ExitCodeType exitCodeType) {
+    private void createStatusOutputFile(FormattedOutputManager formattedOutputManager, DetectInfo detectInfo, DirectoryManager directoryManager, ExitCodeType exitCodeType, Optional<AutonomousManager> autonomousManagerOptional) {
         logger.info("");
         try {
             File statusFile = new File(directoryManager.getStatusOutputDirectory(), STATUS_JSON_FILE_NAME);
             logger.info("Creating status file: {}", statusFile);
 
             Gson formattedGson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-            String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo, exitCodeType));
+            String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo, exitCodeType, autonomousManagerOptional));
             FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
             
             if (directoryManager.getJsonStatusOutputDirectory() != null) {

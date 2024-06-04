@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.report.detectable.AttemptedDetectableReport;
 import com.synopsys.integration.detect.tool.detector.report.detectable.ExtractedDetectableReport;
@@ -59,7 +61,7 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.DetectOperationsComplete, detectOperations::addAll);
     }
 
-    public FormattedOutput createFormattedOutput(DetectInfo detectInfo, ExitCodeType exitCodeType) {
+    public FormattedOutput createFormattedOutput(DetectInfo detectInfo, ExitCodeType exitCodeType, Optional<AutonomousManager> autonomousManagerOptional) {
         FormattedOutput formattedOutput = new FormattedOutput();
         formattedOutput.formatVersion = "0.5.0";
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
@@ -110,6 +112,12 @@ public class FormattedOutputManager {
         unrecognizedPaths.keySet().forEach(key -> formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList())));
 
         formattedOutput.propertyValues = rawMaskedPropertyValues;
+        if (autonomousManagerOptional.isPresent()) {
+            AutonomousManager autonomousManager = autonomousManagerOptional.get();
+            if (autonomousManager.getAutonomousScanEnabled()) {
+                formattedOutput.propertyValues = autonomousManager.getAllScanSettingsProperties();
+            }
+        }
 
         return formattedOutput;
     }
