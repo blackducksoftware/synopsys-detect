@@ -41,7 +41,6 @@ public class AutonomousManager {
     private SortedMap<String, String> globalProperties = new TreeMap<>();
     private SortedMap<String, String> detectorSharedProperties = new TreeMap<>();
     private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic", "detect.blackduck.scan.mode", "detect.source.path", "detect.tools");
-    private static final List<String> autonomousTools = Arrays.asList("BINARY_SCAN", "DOCKER", "DETECTOR", "CONTAINER_SCAN");
 
     public AutonomousManager(
             DirectoryManager directoryManager,
@@ -129,12 +128,12 @@ public class AutonomousManager {
         return scanSettingsProperties;
     }
 
-    public void updateScanSettingsProperties(SortedMap<String, String> propertiesMap, List<String> adoptedScanTypes) {
+    public void updateScanSettingsProperties(SortedMap<String, String> defaultPropertiesMap, List<String> adoptedScanTypes) {
         userProvidedProperties.forEach((propertyKey, propertyValue) -> {
             Optional<String> scanTypeValue = findScanType(adoptedScanTypes, propertyKey);
             determinePropertyTypeAndUpdate(propertyKey, propertyValue, scanTypeValue, true);
         });
-        propertiesMap.forEach((propertyKey, propertyValue) -> {
+        defaultPropertiesMap.forEach((propertyKey, propertyValue) -> {
             Optional<String> scanTypeValue = findScanType(adoptedScanTypes, propertyKey);
             determinePropertyTypeAndUpdate(propertyKey, propertyValue, scanTypeValue, false);
         });
@@ -192,8 +191,9 @@ public class AutonomousManager {
     }
 
     private boolean isGlobalTypeProperty(String propertyKey, String propertyValue) {
-        boolean detectorProperty = Arrays.stream(DetectorType.values()).anyMatch(value -> propertyKey.contains(value.toString().toLowerCase()));
-        return !propertiesNotAutonomous.contains(propertyKey) && !detectorProperty && !propertyValue.isEmpty();
+        String tempKey = propertyKey.replace(".","_");
+        boolean detectorProperty = Arrays.stream(DetectorType.values()).anyMatch(value -> propertyKey.contains(value.toString().toLowerCase()) || tempKey.contains(value.toString().toLowerCase()));
+        return !propertiesNotAutonomous.contains(propertyKey) && !detectorProperty && !propertyValue.isEmpty() && !propertyKey.contains("detector") && !propertyKey.contains("ruby");
     }
 
     private void updateGlobalProperties(String propertyKey, String propertyValue, boolean userProvidedProperty) {
