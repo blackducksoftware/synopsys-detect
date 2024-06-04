@@ -4,6 +4,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Optional;
 
 /**
  * ScanSettings is a data model used to store the properties and scan targets used by Detect for the given or
@@ -56,5 +57,17 @@ public class ScanSettings {
 
     public void setScanTypes(final SortedSet<ScanType> scanTypes) {
         this.scanTypes = scanTypes;
+    }
+
+    public ScanType getScanTypeWithName(String scanTypeName) {
+        Optional<ScanType> scanType = scanTypes.stream().filter(scanTool -> scanTool.getScanTypeName().equals(scanTypeName)).findFirst();
+
+        if(scanType.isPresent()) {
+            return scanType.get();
+        } else {
+            ScanType newScanType = new ScanType(scanTypeName, new TreeMap<>(), new TreeSet<>());
+            scanTypes.add(newScanType);
+            return newScanType;
+        }
     }
 }
