@@ -161,7 +161,7 @@ public class DetectBoot {
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
 
         // TODO Scan settings model obtained below is to be used by the delta-checking operations
-        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, detectConfigurationFactory, detectConfiguration, autonomousScanEnabled);
+        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, detectConfigurationFactory, detectConfiguration, autonomousScanEnabled, maskedRawPropertyValues);
 
         if(autonomousScanEnabled) {
             scanSettingsProperties = autonomousManager.getAllScanSettingsProperties();
@@ -179,7 +179,6 @@ public class DetectBoot {
                 maskedRawPropertyValues
             );
         }
-
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
@@ -228,7 +227,6 @@ public class DetectBoot {
             boolean blackduckScanModeSpecified = detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
             BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
             BlackduckScanMode blackduckScanMode = decideScanMode(blackDuckConnectionDetails, scanTypeEvidenceMap, blackduckScanModeSpecified, detectConfigurationFactory, autonomousScanEnabled, detectConfiguration);
-
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
                 blackDuckConnectionDetails,

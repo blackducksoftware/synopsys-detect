@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.SortedMap;
 
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -200,7 +201,7 @@ public class DetectBootFactory {
     }
 
     public DirectoryManager createDirectoryManager(DetectConfigurationFactory detectConfigurationFactory) throws IOException {
-        return new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRunId);
+       return new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRunId);
     }
 
     public DetectConfigurationBootManager createDetectConfigurationBootManager(PropertyConfiguration detectConfiguration) {

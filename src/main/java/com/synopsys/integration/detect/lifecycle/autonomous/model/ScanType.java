@@ -28,13 +28,18 @@ public class ScanType implements Comparable<ScanType> {
      * <br>Example 1: <code>scanTargets.add("/path/to/build.gradle")</code>
      * <br>Example 2: <code>scanTargets.add("/path/to/binary_1.exe")</code>
      */
+    private SortedSet<String> scanTargets = new TreeSet<>();
 
     @Override
     public int compareTo(@NotNull ScanType o) {
         return scanTypeName.compareTo(o.scanTypeName);
     }
 
-    private SortedSet<String> scanTargets = new TreeSet<>();
+    public ScanType(String scanTypeName, SortedMap<String, String> scanProperties, SortedSet<String> scanTargets) {
+        this.scanTypeName = scanTypeName;
+        this.scanTargets = scanTargets;
+        this.scanProperties = scanProperties;
+    }
 
     public String getScanTypeName() {
         return scanTypeName;

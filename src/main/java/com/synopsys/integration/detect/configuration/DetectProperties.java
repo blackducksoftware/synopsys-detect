@@ -1877,6 +1877,18 @@ public class DetectProperties {
         return new Properties(properties);
     }
 
+    public static SortedMap<String, String> getDefaultValues() {
+        SortedMap<String, String> defaultValueMap = new TreeMap<>();
+
+        for (Property property : allProperties().getProperties()) {
+            if (property.describeDefault() != null) {
+                defaultValueMap.put(property.getKey(), property.describeDefault());
+            }
+        }
+
+        return defaultValueMap;
+    }
+
     public static List<TypedProperty<?, ?>> allTypedProperties() {
         return allProperties().getProperties().stream()
             .filter(property -> TypedProperty.class.isAssignableFrom(property.getClass()))
