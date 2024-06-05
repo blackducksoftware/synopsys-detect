@@ -422,11 +422,10 @@ public class OperationRunner {
         });
     }
 
-    // TODO should be called at the end of Detect Run. Can consider checking if autonomous scan is enabled before the call itself.
-    public void saveAutonomousScanSettingsFile(AutonomousManager autonomousManager, ScanSettings scanSettings) throws OperationException {
+    public void saveAutonomousScanSettingsFile(AutonomousManager autonomousManager) throws OperationException {
         if (autonomousManager.getAutonomousScanEnabled()) {
             auditLog.namedPublic("Generate Autonomous Scan Settings File", () -> {
-                autonomousManager.writeScanSettingsModelToTarget(scanSettings);
+                autonomousManager.writeScanSettingsModelToTarget();
             });
         }
     }
