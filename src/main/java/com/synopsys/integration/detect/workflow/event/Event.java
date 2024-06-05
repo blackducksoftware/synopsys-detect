@@ -36,5 +36,4 @@ public class Event {
     public static final EventType<UnrecognizedPaths> UnrecognizedPaths = new EventType<>(UnrecognizedPaths.class);
     public static final EventType<SortedMap<String, String>> RawMaskedPropertyValuesCollected = new EventType(SortedMap.class);
     public static final EventType<Collection<Operation>> DetectOperationsComplete = new EventType(Collection.class);
-//    public static final EventType<Collection<ScanSettings>> AutonomousScanDecisionsCompleted = new EventType(Collection.class);
 }

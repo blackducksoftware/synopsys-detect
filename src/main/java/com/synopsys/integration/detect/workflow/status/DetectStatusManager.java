@@ -23,7 +23,6 @@ public class DetectStatusManager {
         eventSystem.registerListener(Event.Issue, this::addIssue);
         eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
         eventSystem.registerListener(Event.DetectOperationsComplete, detectOperations::addAll);
-//        eventSystem.registerListener(Event.AutonomousScanDecisionsCompleted, );
     }
 
     public void addStatusSummary(Status status) {
