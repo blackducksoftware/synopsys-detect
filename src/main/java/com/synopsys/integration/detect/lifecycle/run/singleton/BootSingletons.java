@@ -130,7 +130,5 @@ public class BootSingletons {
         return installedToolLocator;
     }
 
-    public AutonomousManager getAutonomousManager() {
-        return autonomousManager;
-    }
+    public AutonomousManager getAutonomousManager() { return autonomousManager; }
 }

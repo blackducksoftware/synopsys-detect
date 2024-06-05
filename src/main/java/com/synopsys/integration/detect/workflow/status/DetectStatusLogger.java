@@ -7,7 +7,10 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javax.swing.text.html.Option;
+
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.log.IntLogger;
 
@@ -31,7 +34,8 @@ public class DetectStatusLogger {
         List<DetectResult> detectResults,
         List<DetectIssue> detectIssues,
         List<Operation> detectOperations,
-        ExitCodeType exitCodeType
+        ExitCodeType exitCodeType,
+        Optional<AutonomousManager> autonomousManagerOptional
     ) {
         logger.info("");
         logger.info("");
@@ -39,6 +43,9 @@ public class DetectStatusLogger {
         logger.debug("");
         logDetectOperations(logger, detectOperations);
         logger.debug("");
+        if (autonomousManagerOptional.isPresent()) {
+            logAutonomousDecisions(logger, autonomousManagerOptional.get());
+        }
 
         logDetectIssues(logger, detectIssues);
         logDetectResults(logger, detectResults);
@@ -155,6 +162,20 @@ public class DetectStatusLogger {
         logger.debug("");
         logger.debug("===============================");
         logger.debug("");
+    }
+
+    private void logAutonomousDecisions(IntLogger logger, AutonomousManager autonomousManager) {
+        if (autonomousManager.getAutonomousScanEnabled()) {
+            logger.debug("====== Autonomous Scan ======");
+            logger.debug("");
+            logger.debug(String.format("Autonomous Scan Settings File Location: %s", autonomousManager.getHashedScanSettingsFileName()));
+            logger.debug("");
+            logger.debug("Autonomous Scan Decisions:");
+            logger.debug(autonomousManager.getScanSettingsModel().toString());
+            logger.debug("");
+            logger.debug("===============================");
+            logger.debug("");
+        }
     }
 
     private Optional<String> getAdvice(ExitCodeType exitCode) {

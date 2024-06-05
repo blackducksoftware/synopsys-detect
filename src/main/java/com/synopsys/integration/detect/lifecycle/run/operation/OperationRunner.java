@@ -69,6 +69,8 @@ import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMo
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.OperationException;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
+import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.run.DetectFontLoaderFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -418,6 +420,14 @@ public class OperationRunner {
             }
             return containerImageFile;
         });
+    }
+
+    public void saveAutonomousScanSettingsFile(AutonomousManager autonomousManager) throws OperationException {
+        if (autonomousManager.getAutonomousScanEnabled()) {
+            auditLog.namedPublic("Generate Autonomous Scan Settings File", () -> {
+                autonomousManager.writeScanSettingsModelToTarget();
+            });
+        }
     }
 
     public JsonObject createContainerScanImageMetadata(UUID scanId, NameVersion projectNameVersion) {

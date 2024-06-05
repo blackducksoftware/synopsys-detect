@@ -54,9 +54,7 @@ public class AutonomousManager {
         this.autonomousScanEnabled = autonomousScanEnabled;
         this.userProvidedProperties = userProvidedProperties;
         detectSourcePath = directoryManager.getSourceDirectory().getPath();
-        hashedScanSettingsFileName = StringUtils.join(UUID.nameUUIDFromBytes(detectSourcePath.getBytes()).toString(), ".json");
-        File scanSettingsTargetDir = directoryManager.getScanSettingsOutputDirectory();
-        scanSettingsTargetFile = new File(scanSettingsTargetDir, hashedScanSettingsFileName);
+        createScanSettingsTargetFile();
         scanSettings = initializeScanSettingsModel();
     }
 
@@ -91,6 +89,12 @@ public class AutonomousManager {
             return ScanSettingsSerializer.deserializeScanSettingsFile(scanSettingsTargetFile);
         }
         return new ScanSettings();
+    }
+
+    private void createScanSettingsTargetFile() {
+        hashedScanSettingsFileName = StringUtils.join(UUID.nameUUIDFromBytes(detectSourcePath.getBytes()).toString(), ".json");
+        File scanSettingsTargetDir = directoryManager.getScanSettingsOutputDirectory();
+        scanSettingsTargetFile = new File(scanSettingsTargetDir, hashedScanSettingsFileName);
     }
     
     public Map<DetectTool, Set<String>> getScanTypeMap(boolean hasImageOrTar) {
