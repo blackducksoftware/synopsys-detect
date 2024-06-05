@@ -153,7 +153,7 @@ public class Application implements ApplicationRunner {
             if (detectBootResult.getBootSingletons().isPresent()) {
                 autonomousManagerOptional = Optional.ofNullable(detectBootResult.getBootSingletons().get().getAutonomousManager());
             } else {
-                autonomousManagerOptional = null;
+                autonomousManagerOptional = Optional.empty();
             }
 
             // Create status output file.  If we've gotten this far the
