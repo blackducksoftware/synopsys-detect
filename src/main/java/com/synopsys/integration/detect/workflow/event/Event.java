@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.SortedMap;
 
-import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.executable.ExecutedExecutable;
