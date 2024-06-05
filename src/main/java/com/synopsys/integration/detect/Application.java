@@ -169,11 +169,8 @@ public class Application implements ApplicationRunner {
             detectBootResult.getDirectoryManager().ifPresent(directoryManager -> createOrUpdateInstalledToolsFile(installedToolManager, directoryManager.getPermanentDirectory()));
 
             shutdownApplication(detectBootResult, exitCodeManager);
-
-
-
         } else {
-            autonomousManagerOptional = null;
+            autonomousManagerOptional = Optional.empty();
             logger.info("Will not create status file, detect did not boot.");
         }
 
