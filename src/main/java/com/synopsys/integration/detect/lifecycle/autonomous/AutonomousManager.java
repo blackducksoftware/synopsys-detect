@@ -123,8 +123,10 @@ public class AutonomousManager {
 
     public SortedMap<String, String> getAllScanSettingsProperties() {
         SortedMap<String, String> scanSettingsProperties = new TreeMap<>();
-        scanSettingsProperties.putAll(scanSettings.getDetectorSharedProperties());
-        scanSettingsProperties.putAll(scanSettings.getGlobalDetectProperties());
+        detectorSharedProperties = scanSettings.getDetectorSharedProperties();
+        globalProperties = scanSettings.getGlobalDetectProperties();
+        scanSettingsProperties.putAll(detectorSharedProperties);
+        scanSettingsProperties.putAll(globalProperties);
         scanSettings.getScanTypes().forEach(scanType ->  {
             scanSettingsProperties.putAll(scanType.getScanProperties());
         });
