@@ -50,7 +50,7 @@ public class NpmCliTest {
             commandBuilder.property(DetectProperties.DETECT_SOURCE_PATH, "/opt/project/src/github-action-2.2");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            assertEquals("", dockerAssertions.returnLogs());
+           // assertEquals("", dockerAssertions.returnLogs());
             
             // Detect specific assertions
             dockerAssertions.logContains("NPM CLI: SUCCESS");

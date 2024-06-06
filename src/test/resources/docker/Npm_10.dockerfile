@@ -1,6 +1,8 @@
-FROM node:latest
+FROM node:22
 
 RUN npm install -g npm@10
+
+RUN apt-get update && apt-get install -y openjdk-17-jdk
 
 RUN mkdir -p /opt/project/src
 
