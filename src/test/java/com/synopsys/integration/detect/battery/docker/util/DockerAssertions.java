@@ -118,6 +118,10 @@ public class DockerAssertions {
     public void logDoesNotContain(String thing) {
         Assertions.assertFalse(dockerDetectResult.getDetectLogs().contains(thing), "Expected logs to NOT contain '" + thing + "' but they did.");
     }
+    
+    public String returnLogs() {
+        return dockerDetectResult.getDetectLogs();
+    }
 
     public void successfulOperation(String operationName) {
         successfulOperationStatusJson(operationName);

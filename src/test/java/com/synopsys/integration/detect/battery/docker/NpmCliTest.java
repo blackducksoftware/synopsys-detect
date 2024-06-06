@@ -1,6 +1,8 @@
 
 package com.synopsys.integration.detect.battery.docker;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.exception.IntegrationException;
+import org.junit.jupiter.api.Assertions;
 
 public class NpmCliTest {
     
@@ -47,6 +50,8 @@ public class NpmCliTest {
             commandBuilder.property(DetectProperties.DETECT_SOURCE_PATH, "/opt/project/src/github-action-2.2");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
+            assertEquals("", dockerAssertions.returnLogs());
+            
             // Detect specific assertions
             dockerAssertions.logContains("NPM CLI: SUCCESS");
             dockerAssertions.logContains("NPM: SUCCESS");
