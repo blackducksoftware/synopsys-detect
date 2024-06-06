@@ -91,7 +91,7 @@ public class ProductBootTest {
     private ProductRunData testBoot(BlackDuckDecision blackDuckDecision, ProductBootOptions productBootOptions, BlackDuckConnectivityResult blackDuckconnectivityResult)
         throws DetectUserFriendlyException, IOException, IntegrationException {
         ProductBootFactory productBootFactory = Mockito.mock(ProductBootFactory.class);
-        Mockito.when(productBootFactory.createPhoneHomeManager(Mockito.any())).thenReturn(null);
+        Mockito.when(productBootFactory.createPhoneHomeManager(Mockito.any(), Mockito.any())).thenReturn(null);
 
         BlackDuckVersionChecker blackDuckVersionChecker = Mockito.mock(BlackDuckVersionChecker.class);
         Mockito.when(blackDuckVersionChecker.check(Mockito.anyString())).thenReturn(BlackDuckVersionCheckerResult.passed());
