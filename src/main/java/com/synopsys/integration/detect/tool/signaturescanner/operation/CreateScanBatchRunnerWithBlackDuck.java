@@ -46,7 +46,7 @@ public class CreateScanBatchRunnerWithBlackDuck {
         ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(
             slf4jIntLogger,
             signatureScannerClient,
-            blackDuckRegistrationService,
+            blackDuckHttpClient,
             cleanupZipExpander,
             scanPathsUtility,
             keyStoreHelper,
