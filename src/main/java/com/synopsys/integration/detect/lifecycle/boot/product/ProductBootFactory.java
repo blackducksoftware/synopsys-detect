@@ -30,10 +30,8 @@ public class ProductBootFactory {
 
     public PhoneHomeManager createPhoneHomeManager(BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeSecrets phoneHomeSecrets) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        // TODO: use phoneHomeSecrets to create BlackDuckPhoneHomeHelper
         BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(
                 blackDuckServicesFactory, phoneHomeSecrets.getApiSecret(), phoneHomeSecrets.getMeasurementId(), executorService);
-//        BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
         PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(
             detectConfigurationFactory.createPhoneHomeOptions().getPassthrough(),
             detectInfo,
