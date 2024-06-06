@@ -1190,6 +1190,13 @@ public class OperationRunner {
 
     public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException {
+        // TODO likely put library here as we have the single zip in binaryUpload and we have the codeLocationNameManager here.
+        // TODO if we need the code location name we can likely do
+//      String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(
+//              binaryScanFile,
+//              projectNameVersion.getName(),
+//              projectNameVersion.getVersion()
+//          );
         return auditLog.namedPublic("Binary Upload", "Binary",
             () -> new BinaryUploadOperation(statusEventPublisher, codeLocationNameManager)
                 .uploadBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), projectNameVersion)
