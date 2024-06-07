@@ -38,8 +38,8 @@ public class ScanTypeDecider {
             } else {
                 // This map has individual paths to files grouped under types.
                 PathsCollection pathsCollection = search(detectSourcePath);
-                logger.info("includedTools: {}", includedTools.toPresentValues());
-                logger.info("excludedTools: {}", excludedTools.toPresentValues());
+                logger.debug("includedTools: {}", includedTools.toPresentValues());
+                logger.debug("excludedTools: {}", excludedTools.toPresentValues());
                 final Map<DetectTool, Set<String>> scanTypeEvidenceMap = new HashMap<>();
                 if (!excludedTools.containsValue(DetectTool.BINARY_SCAN)
                         && (includedTools.containsValue(DetectTool.BINARY_SCAN)
