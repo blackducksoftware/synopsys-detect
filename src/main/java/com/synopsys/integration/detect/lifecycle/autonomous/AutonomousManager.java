@@ -35,6 +35,7 @@ public class AutonomousManager {
     private File scanSettingsTargetFile;
     private ScanSettings scanSettings;
     private boolean autonomousScanEnabled;
+    private String blackDuckScanMode;
     private final DetectConfigurationFactory detectConfigurationFactory;
     private final DetectPropertyConfiguration detectConfiguration;
     private SortedMap<String, String> userProvidedProperties = new TreeMap<>();
@@ -74,6 +75,10 @@ public class AutonomousManager {
 
     public boolean isScanSettingsFilePresent() {
         return scanSettingsTargetFile != null && scanSettingsTargetFile.exists();
+    }
+
+    public void setBlackDuckScanMode(String scanMode) {
+        this.blackDuckScanMode = scanMode;
     }
 
     public void writeScanSettingsModelToTarget() throws IOException {
@@ -205,7 +210,10 @@ public class AutonomousManager {
     }
 
     private void updateGlobalProperties(String propertyKey, String propertyValue, boolean userProvidedProperty) {
-        if(userProvidedProperty) {
+        if(propertyKey.equals("detect.blackduck.scan.mode")) {
+            propertyValue = blackDuckScanMode;
+            globalProperties.put(propertyKey, propertyValue);
+        } else if(userProvidedProperty) {
             globalProperties.put(propertyKey, propertyValue);
         } else {
             globalProperties.putIfAbsent(propertyKey, propertyValue);
