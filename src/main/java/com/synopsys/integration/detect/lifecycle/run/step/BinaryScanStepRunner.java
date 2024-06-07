@@ -39,7 +39,7 @@ public class BinaryScanStepRunner {
         }
     }
 
-    public Optional<File> determineBinaryScanFileTarget(DockerTargetData dockerTargetData, Set<String> targets) throws OperationException {
+    public Optional<File> determineBinaryScanFileTarget(DockerTargetData dockerTargetData, Set<String> binaryTargets) throws OperationException {
         BinaryScanOptions binaryScanOptions = operationRunner.calculateBinaryScanOptions();
         File binaryUpload = null;
         if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {
@@ -60,8 +60,8 @@ public class BinaryScanStepRunner {
             logger.info("Binary Scanner will upload docker container file system.");
             binaryUpload = dockerTargetData.getContainerFilesystem()
                 .get();// Very important not to binary scan the same Docker output that we sig scanned (=codelocation name collision)
-        } else if (!targets.isEmpty()) {
-            binaryUpload = operationRunner.collectBinaryTargets(targets).get();
+        } else if (!binaryTargets.isEmpty()) {
+            binaryUpload = operationRunner.collectBinaryTargets(binaryTargets).get();
         }
 
         if (binaryUpload == null) {
