@@ -40,7 +40,7 @@ public class AutonomousManager {
     private SortedMap<String, String> userProvidedProperties = new TreeMap<>();
     private SortedMap<String, String> globalProperties = new TreeMap<>();
     private SortedMap<String, String> detectorSharedProperties = new TreeMap<>();
-    private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic", "detect.blackduck.scan.mode", "detect.source.path", "detect.tools");
+    private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic", "detect.source.path", "detect.tools");
 
     public AutonomousManager(
             DirectoryManager directoryManager,
@@ -54,8 +54,10 @@ public class AutonomousManager {
         this.autonomousScanEnabled = autonomousScanEnabled;
         this.userProvidedProperties = userProvidedProperties;
         detectSourcePath = directoryManager.getSourceDirectory().getPath();
-        createScanSettingsTargetFile();
-        scanSettings = initializeScanSettingsModel();
+        if(autonomousScanEnabled) {
+            createScanSettingsTargetFile();
+            scanSettings = initializeScanSettingsModel();
+        }
     }
 
     public boolean getAutonomousScanEnabled() {
