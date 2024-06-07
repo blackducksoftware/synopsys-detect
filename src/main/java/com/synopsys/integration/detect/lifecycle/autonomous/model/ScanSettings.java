@@ -23,12 +23,13 @@ public class ScanSettings {
      * <br>Example: <code>globalDetectProperties.put("detect.tools", "BINARY_SCAN,DETECTOR")</code>
      */
     private SortedMap<String, String> globalDetectProperties = new TreeMap<>();
+
     /**
-     * Sorted property-value hash map for properties that are shared across all detectors.
-     * Accepts property name and value as a <code>String</code>.
-     * <br>Example: <code>globalDetectProperties.put("detect.detector.search.depth", "3")</code>
+     * Sorted set of {@link DetectorType} objects.
+     * Each <code>DetectorType</code> object stores properties that are only applicable to that detector type.
      */
-    private SortedMap<String, String> detectorSharedProperties = new TreeMap<>();
+    private SortedSet<DetectorType> detectorTypes = new TreeSet<>();
+
     /**
      * Sorted set of {@link ScanType} objects.
      * Each <code>ScanType</code> object stores properties that are only applicable to that scan type.
@@ -43,12 +44,12 @@ public class ScanSettings {
         this.globalDetectProperties = globalDetectProperties;
     }
 
-    public SortedMap<String, String> getDetectorSharedProperties() {
-        return detectorSharedProperties;
+    public SortedSet<DetectorType> getDetectorTypes() {
+        return detectorTypes;
     }
 
-    public void setDetectorSharedProperties(final SortedMap<String, String> detectorSharedProperties) {
-        this.detectorSharedProperties = detectorSharedProperties;
+    public void setDetectorTypes(final SortedSet<DetectorType> detectorTypes) {
+        this.detectorTypes = detectorTypes;
     }
 
     public SortedSet<ScanType> getScanTypes() {
