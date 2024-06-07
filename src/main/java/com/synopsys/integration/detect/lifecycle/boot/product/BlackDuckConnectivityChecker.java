@@ -55,17 +55,16 @@ public class BlackDuckConnectivityChecker {
             logger.info(String.format("Successfully connected to Black Duck (version %s)!", version));
 
             if (logger.isDebugEnabled()) {
-                // These (particularly fetching roles) can be very slow operations
                 UserView userView = userService.findCurrentUser();
                 logger.debug("Connected as: " + userView.getUserName());
 
                 UserGroupService userGroupService = blackDuckServicesFactory.createUserGroupService();
-                List<RoleAssignmentView> roles = userGroupService.getRolesForUser(userView);
-                logger.debug("Roles: " + roles.stream().map(RoleAssignmentView::getName).distinct().collect(Collectors.joining(", ")));
+                List<RoleAssignmentView> roles = userGroupService.getServerRolesForUser(userView);
+                logger.debug("Server Roles: " + roles.stream().map(RoleAssignmentView::getName).distinct().collect(Collectors.joining(", ")));
 
                 BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
                 List<UserGroupView> groups = blackDuckApiClient.getAllResponses(userView.metaMultipleResponses(USERGROUPS));
-                logger.debug("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
+                logger.debug("Groups: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
             }
         } catch (IntegrationException e) {
             throw new DetectUserFriendlyException(
