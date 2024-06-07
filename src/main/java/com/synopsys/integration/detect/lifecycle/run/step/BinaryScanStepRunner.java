@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,11 @@ public class BinaryScanStepRunner {
     public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runBinaryScan(
         DockerTargetData dockerTargetData,
         NameVersion projectNameVersion,
-        BlackDuckRunData blackDuckRunData
+        BlackDuckRunData blackDuckRunData,
+        Set<String> binaryTargets
     )
         throws OperationException {
-        Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData);
+        Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
         if (binaryScanFile.isPresent()) {
             return Optional.of(operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData));
         } else {
@@ -37,7 +39,7 @@ public class BinaryScanStepRunner {
         }
     }
 
-    public Optional<File> determineBinaryScanFileTarget(DockerTargetData dockerTargetData) throws OperationException {
+    public Optional<File> determineBinaryScanFileTarget(DockerTargetData dockerTargetData, Set<String> targets) throws OperationException {
         BinaryScanOptions binaryScanOptions = operationRunner.calculateBinaryScanOptions();
         File binaryUpload = null;
         if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {
@@ -58,6 +60,8 @@ public class BinaryScanStepRunner {
             logger.info("Binary Scanner will upload docker container file system.");
             binaryUpload = dockerTargetData.getContainerFilesystem()
                 .get();// Very important not to binary scan the same Docker output that we sig scanned (=codelocation name collision)
+        } else if (!targets.isEmpty()) {
+            binaryUpload = operationRunner.collectBinaryTargets(targets).get();
         }
 
         if (binaryUpload == null) {

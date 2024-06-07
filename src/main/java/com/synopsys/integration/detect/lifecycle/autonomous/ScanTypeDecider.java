@@ -42,17 +42,23 @@ public class ScanTypeDecider {
                 logger.info("excludedTools: {}", excludedTools.toPresentValues());
                 final Map<DetectTool, Set<String>> scanTypeEvidenceMap = new HashMap<>();
                 if (!excludedTools.containsValue(DetectTool.BINARY_SCAN)
-                        && !includedTools.containsValue(DetectTool.BINARY_SCAN)
+                        && (includedTools.containsValue(DetectTool.BINARY_SCAN)
+                        || includedTools.isEmpty()
+                        || includedTools.containsAll())
                         && !pathsCollection.binaryPaths.isEmpty()) {
                     scanTypeEvidenceMap.put(DetectTool.BINARY_SCAN, pathsCollection.binaryPaths);
                 }
                 if (!excludedTools.containsValue(DetectTool.DETECTOR)
-                        && !includedTools.containsValue(DetectTool.DETECTOR)
+                        && (includedTools.containsValue(DetectTool.DETECTOR)
+                        || includedTools.isEmpty()
+                        || includedTools.containsAll())
                         && !pathsCollection.detectorPaths.isEmpty()) {
                     scanTypeEvidenceMap.put(DetectTool.DETECTOR, pathsCollection.detectorPaths);
                 }
                 if (!excludedTools.containsValue(DetectTool.SIGNATURE_SCAN)
-                        && !includedTools.containsValue(DetectTool.SIGNATURE_SCAN)
+                        && (includedTools.containsValue(DetectTool.SIGNATURE_SCAN)
+                        || includedTools.isEmpty()
+                        || includedTools.containsAll())
                         && !pathsCollection.signaturePaths.isEmpty()) {
                     scanTypeEvidenceMap.put(DetectTool.SIGNATURE_SCAN, pathsCollection.signaturePaths);
                 }
@@ -67,8 +73,9 @@ public class ScanTypeDecider {
             ".gitignore", 
             ".github", 
             ".git",
-            "__MACOSX",
-            ".DS_Store")));
+            ".gradle",
+            ".idea",
+            "__MACOSX")));
     
     /**
      * This should be replaced with an intuitive binary reader that can zip and upload a stream of image formats
@@ -82,7 +89,13 @@ public class ScanTypeDecider {
             ".ico",
             ".bmp",
             ".jpeg",
-            ".jpg")));
+            ".jpg",
+            ".class",
+            "DS_Store",
+            ".bdio",
+            ".txt",
+            ".java",
+            ".manifest")));
     
     private final MediaTypeRegistry mediaTypeRegistry = MediaTypeRegistry.getDefaultRegistry();
     
