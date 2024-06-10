@@ -47,6 +47,7 @@ public class NpmCliTest {
             // Set up Detect properties
             commandBuilder.tools(DetectTool.DETECTOR);
             commandBuilder.property(DetectProperties.DETECT_SOURCE_PATH, "/opt/project/src/github-action-2.2");
+            String what = commandBuilder.buildCommand();
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             assertEquals("", dockerAssertions.returnLogs());

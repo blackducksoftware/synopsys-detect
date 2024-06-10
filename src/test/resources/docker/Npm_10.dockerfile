@@ -30,3 +30,5 @@ RUN npm install .
 # We have to remove the new package lock or else the package lock detector will run
 # instead of the CLI one.
 RUN rm package-lock.json
+
+WORKDIR /opt/project/src
