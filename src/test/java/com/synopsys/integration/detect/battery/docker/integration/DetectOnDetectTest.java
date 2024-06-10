@@ -140,6 +140,32 @@ public class DetectOnDetectTest {
         }
     }
 
+    @Test
+    public void testRunWithAutonomousEnabled() throws Exception {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("autonomous-scan-test", "detect-9.8.0:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-9.8.0.dockerfile"));
+
+            BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
+            BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions("autonomous-scan-test", "happy-path");
+            blackduckAssertions.emptyOnBlackDuck();
+
+            DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
+            commandBuilder.connectToBlackDuck(blackDuckTestConnection);
+            commandBuilder.projectNameVersion(blackduckAssertions);
+            commandBuilder.waitForResults();
+
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
+
+            dockerAssertions.bdioFiles(1); //7 code locations, 6 bdio, 1 signature scanner
+
+            blackduckAssertions.hasCodeLocations(
+                    "src/detect-on-detect-docker/happy-path signature"
+            );
+
+            blackduckAssertions.hasComponents("jackson-core");
+        }
+    }
+
     private long assertEmptyRiskReport(File reportDirectory, ProjectVersionWrapper projectVersionWrapper, ReportService reportService) throws IntegrationException {
         List<File> pdfFiles = getPdfFiles(reportDirectory);
         assertEquals(0, pdfFiles.size());
