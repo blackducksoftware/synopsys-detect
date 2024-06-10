@@ -55,6 +55,7 @@ public class DetectDockerTestRunner implements Closeable {
         }
         try {
             File detectJar = DetectJar.findJar();
+            System.out.println("path to jar*******" + detectJar.toString());
             String cmd = "java -jar /opt/detect/" + detectJar.getName() + detectCommandBuilder.buildCommand();
             this.dockerTestDirectories.withBinding(detectJar.getParentFile(), "/opt/detect/");
             HostConfig hostConfig = new HostConfig().withBinds(this.dockerTestDirectories.getBindings());
