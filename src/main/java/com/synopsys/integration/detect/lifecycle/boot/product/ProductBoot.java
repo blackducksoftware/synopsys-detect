@@ -126,6 +126,8 @@ public class ProductBoot {
                     );
                 } catch (IOException | InterruptedException e) {
                     logger.debug("Failed to fetch Analytics credentials. Skipping phone home.");
+                } catch (Exception e) {
+                    logger.debug("Skipping phone home due to {}.", e.getClass().getName());
                 } finally {
                     if (bdRunData == null)
                         bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult, waitAtScanLevel);
