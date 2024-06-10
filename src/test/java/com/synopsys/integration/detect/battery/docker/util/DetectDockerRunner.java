@@ -27,12 +27,13 @@ public class DetectDockerRunner {
             "detect-test%s",
             java.util.UUID.randomUUID()
         ); // this will identify any containers left behind on build server by Detect Docker tests
-
+System.out.println("****1");
         CreateContainerCmd command = dockerClient.createContainerCmd(image)
             .withHostConfig(hostConfig)
             .withCmd(cmd.split(" "))
             .withWorkingDir(workdir)
             .withName(detectContainerName);
+        System.out.println("****2");
 
         String username = System.getProperty("DETECT_DOCKER_USERNAME");
         if (StringUtils.isNotBlank(username)) {
