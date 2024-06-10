@@ -10,21 +10,22 @@ import java.util.TreeSet;
 
 public class ScanType implements Comparable<ScanType> {
     /**
-     * Name of the scan tool or detector that is applicable.
-     * Example: "SIGNATURE_SCAN" or "MAVEN".
+     * Name of the scan tool that is applicable.
+     * Example: "SIGNATURE_SCAN", "BINARY_SCAN", "DETECTOR".
      */
     private String scanTypeName;
     /**
      * Sorted property-value hash map for properties that are applicable only to the current scan type.
      * Accepts property name and value as a <code>String</code>.
-     * Example: <code>scanProperties.put("detect.maven.path", "/path/to/maven/executable")</code>
+     * For detector scan type, the scanProperties represent properties shared by all detectorTypes applicable.
+     * Example: <code>scanProperties.put("detect.blackduck.signature.scanner.memory", "4096")</code>
      */
     private SortedMap<String, String> scanProperties = new TreeMap<>();
     /**
      * Sorted set of the absolute paths to the target that is being scanned.
      * Accepts a <code>String</code> value for the target's path.
-     * For detectors, this is the set of path(s) to the package manager file(s).
-     * For binary/container scan, this is the set of path(s) to the binary/image to be scanned.
+     * For detector/signature scan type, this is the detect.source.path value
+     * For binary/container scan type, this is the set of path(s) to the binary/image to be scanned.
      * <br>Example 1: <code>scanTargets.add("/path/to/build.gradle")</code>
      * <br>Example 2: <code>scanTargets.add("/path/to/binary_1.exe")</code>
      */
