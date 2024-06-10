@@ -67,6 +67,7 @@ public class DetectDockerTestRunner implements Closeable {
 
     public DockerAssertions run(DetectCommandBuilder commandBuilder) {
         DockerDetectResult result = runContainer(commandBuilder);
+        System.out.println(result.getDetectLogs());
         return new DockerAssertions(this.dockerTestDirectories, result);
     }
 
