@@ -25,10 +25,10 @@ public class ScanSettings {
     private SortedMap<String, String> globalDetectProperties = new TreeMap<>();
 
     /**
-     * Sorted set of {@link DetectorType} objects.
+     * Sorted set of {@link PackageManagerType} objects.
      * Each <code>DetectorType</code> object stores properties that are only applicable to that detector type.
      */
-    private SortedSet<DetectorType> detectorTypes = new TreeSet<>();
+    private SortedSet<PackageManagerType> detectorTypes = new TreeSet<>();
 
     /**
      * Sorted set of {@link ScanType} objects.
@@ -44,11 +44,11 @@ public class ScanSettings {
         this.globalDetectProperties = globalDetectProperties;
     }
 
-    public SortedSet<DetectorType> getDetectorTypes() {
+    public SortedSet<PackageManagerType> getDetectorTypes() {
         return detectorTypes;
     }
 
-    public void setDetectorTypes(final SortedSet<DetectorType> detectorTypes) {
+    public void setDetectorTypes(final SortedSet<PackageManagerType> detectorTypes) {
         this.detectorTypes = detectorTypes;
     }
 
