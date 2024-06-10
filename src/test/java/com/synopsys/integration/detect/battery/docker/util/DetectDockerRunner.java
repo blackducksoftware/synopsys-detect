@@ -69,7 +69,8 @@ System.out.println("****1");
             .exec(new LogContainerTestCallback()).awaitCompletion().toString();
         
         try {
-            dockerClient.stopContainerCmd(containerId).exec();
+            System.out.println("container id*****" + containerId);
+            //dockerClient.stopContainerCmd(containerId).exec();
         } catch (NotModifiedException e) {
             //Container already stopped, we do not care.
         }
