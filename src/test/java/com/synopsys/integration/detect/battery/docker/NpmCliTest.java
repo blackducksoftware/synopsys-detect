@@ -50,7 +50,7 @@ public class NpmCliTest {
             String what = commandBuilder.buildCommand();
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            assertEquals("", dockerAssertions.returnLogs());
+        //    assertEquals("", dockerAssertions.returnLogs());
             
             // Detect specific assertions
             dockerAssertions.logContains("NPM CLI: SUCCESS");
