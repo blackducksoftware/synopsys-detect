@@ -161,7 +161,7 @@ public class DetectBoot {
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
 
         // TODO Scan settings model obtained below is to be used by the delta-checking operations
-        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, detectConfigurationFactory, detectConfiguration, autonomousScanEnabled, maskedRawPropertyValues);
+        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, detectConfiguration, autonomousScanEnabled, maskedRawPropertyValues);
 
         if(autonomousScanEnabled) {
             scanSettingsProperties = autonomousManager.getAllScanSettingsProperties();

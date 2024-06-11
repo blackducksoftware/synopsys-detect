@@ -1,17 +1,16 @@
 package com.synopsys.integration.detect.lifecycle.run;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.Set;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +38,6 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.util.NameVersion;
-import java.util.Map;
-import java.util.Set;
 
 public class DetectRun {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -94,7 +91,8 @@ public class DetectRun {
             } else {
                 bdio = BdioResult.none();
             }
-
+            
+            final Set<String> binaryTargets;
             if(autonomousManager.getAutonomousScanEnabled()) {
                 SortedMap<String, SortedSet<String>> packageManagerTargets = stepRunner.getScanTargets(universalToolsResult);
                 autonomousManager.updateScanTargets(packageManagerTargets, scanTypeEvidenceMap);
@@ -103,9 +101,12 @@ public class DetectRun {
                 scanTypeEvidenceMap.keySet().forEach(tool -> scanTypes.add(tool.toString()));
                 givenScanTypes.representedValues().forEach(tool -> scanTypes.add(tool.toString()));
                 packageManagerTargets.keySet().forEach(tool -> scanTypes.add(tool));
+                binaryTargets = scanTypeEvidenceMap.get(DetectTool.BINARY_SCAN);
                 SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
                 autonomousManager.updateScanSettingsProperties(defaultValueMap, scanTypes);
                 autonomousManager.writeScanSettingsModelToTarget(); //TODO - Move this call to Detect shutdown
+            } else {
+                binaryTargets = Collections.EMPTY_SET;
             }
 
             if (productRunData.shouldUseBlackDuckProduct()) {
@@ -120,7 +121,7 @@ public class DetectRun {
                     logger.info("Rapid Scan is offline, nothing to do.");
                 } else if (blackDuckRunData.isOnline()) {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
-                    intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
+                    intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData(), binaryTargets);
                 } else {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
                     intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData(), bdio);
