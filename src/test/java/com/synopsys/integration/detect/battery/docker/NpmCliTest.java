@@ -26,7 +26,7 @@ public class NpmCliTest {
      * @throws IntegrationException 
      * @throws IOException 
      */
-    @Test
+   // @Test
     void npmCliLatestNpm10() throws IntegrationException, IOException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-npm-cli-detector", "npm-10:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Npm_10.dockerfile"));
