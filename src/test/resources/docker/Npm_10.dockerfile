@@ -11,6 +11,8 @@ RUN apt-get update && \
 
 #RUN apt-get update && apt-get install -y openjdk-17-jdk
 
+ENV SRC_DIR=/opt/project/src
+
 RUN mkdir -p /opt/project/src
 
 RUN wget -q https://github.com/blackducksoftware/github-action/archive/refs/tags/v2.2.zip -O v2.2.zip
