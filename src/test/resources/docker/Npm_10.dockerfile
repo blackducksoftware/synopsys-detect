@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk-slim
+FROM openjdk:8-jdk-slim
 #FROM node:22
 
 RUN apt-get update && \

@@ -1,8 +1,6 @@
 
 package com.synopsys.integration.detect.battery.docker;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
@@ -17,6 +15,7 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.exception.IntegrationException;
 
+//@Tag("integration")
 public class NpmCliTest {
     
     public static String PROJECT_NAME = "npm10";
@@ -45,7 +44,8 @@ public class NpmCliTest {
             commandBuilder.waitForResults();
 
             // Set up Detect properties
-            commandBuilder.tools(DetectTool.DETECTOR);
+            //commandBuilder.tools(DetectTool.DETECTOR);
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, DetectTool.DETECTOR.toString());
             commandBuilder.property(DetectProperties.DETECT_SOURCE_PATH, "/opt/project/src/github-action-2.2");
             String what = commandBuilder.buildCommand();
             DockerAssertions dockerAssertions = test.run(commandBuilder);
