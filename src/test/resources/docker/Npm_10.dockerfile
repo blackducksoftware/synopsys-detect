@@ -17,8 +17,8 @@ RUN wget -q https://github.com/blackducksoftware/github-action/archive/refs/tags
 RUN unzip v2.2.zip -d /opt/project/src
 RUN rm v2.2.zip
 
-ENV JAVA_HOME=/usr/local/openjdk-11/bin/java
-ENV PATH="$JAVA_HOME/bin:${PATH}"
+#ENV JAVA_HOME=/usr/local/openjdk-8/bin/java
+#ENV PATH="$JAVA_HOME/bin:${PATH}"
 
 WORKDIR /opt/project/src/github-action-2.2
 RUN rm package-lock.json
