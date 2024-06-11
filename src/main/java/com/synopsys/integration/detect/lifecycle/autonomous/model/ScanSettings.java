@@ -71,4 +71,16 @@ public class ScanSettings {
             return newScanType;
         }
     }
+
+    public PackageManagerType getDetectorTypeWithName(String detectorTypeName) {
+        Optional<PackageManagerType> detectorType = detectorTypes.stream().filter(detector -> detector.getDetectorTypeName().equals(detectorTypeName)).findFirst();
+
+        if(detectorType.isPresent()) {
+            return detectorType.get();
+        } else {
+            PackageManagerType newDetectorType = new PackageManagerType(detectorTypeName, new TreeMap<>(), new TreeSet<>());
+            detectorTypes.add(newDetectorType);
+            return newDetectorType;
+        }
+    }
 }

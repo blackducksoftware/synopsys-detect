@@ -3,21 +3,21 @@ package com.synopsys.integration.detect.lifecycle.run;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.Map;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
@@ -102,9 +102,9 @@ public class DetectRun {
                 givenScanTypes.representedValues().forEach(tool -> scanTypes.add(tool.toString()));
                 packageManagerTargets.keySet().forEach(tool -> scanTypes.add(tool));
                 binaryTargets = scanTypeEvidenceMap.get(DetectTool.BINARY_SCAN);
+                List<String> detectorTypes = new ArrayList<>(packageManagerTargets.keySet());
                 SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
-                autonomousManager.updateScanSettingsProperties(defaultValueMap, scanTypes);
-                operationRunner.saveAutonomousScanSettingsFile(autonomousManager);
+                autonomousManager.updateScanSettingsProperties(defaultValueMap, scanTypes, detectorTypes);
             } else {
                 binaryTargets = Collections.EMPTY_SET;
             }
@@ -126,6 +126,9 @@ public class DetectRun {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
                     intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData(), bdio);
                 }
+            }
+            if(autonomousManager.getAutonomousScanEnabled()) {
+                operationRunner.saveAutonomousScanSettingsFile(autonomousManager);
             }
         } catch (Exception e) {
             logger.error(ReportConstants.RUN_SEPARATOR);

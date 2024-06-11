@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
@@ -238,6 +239,8 @@ public class OperationRunner {
     private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
     public static final ImmutableList<Integer> RETRYABLE_AFTER_WAIT_HTTP_EXCEPTIONS = ImmutableList.of(408, 429, 502, 503, 504);
     public static final ImmutableList<Integer> RETRYABLE_WITH_BACKOFF_HTTP_EXCEPTIONS = ImmutableList.of(425, 500);
+    private List<File> binaryUserTargets = new ArrayList<>();
+    BinaryScanFindMultipleTargetsOperation binaryScanFindMultipleTargetsOperation;
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -421,7 +424,15 @@ public class OperationRunner {
         });
     }
 
+    public List<File> getMultiBinaryTargets() {
+        return binaryScanFindMultipleTargetsOperation.getMultipleBinaryTargets();
+    }
+    public void updateBinaryUserTargets(File file) {
+        binaryUserTargets.add(file);
+    }
+
     public void saveAutonomousScanSettingsFile(AutonomousManager autonomousManager) throws OperationException {
+        autonomousManager.updateUserProvidedBinaryScanTargets(binaryUserTargets);
         if (autonomousManager.getAutonomousScanEnabled()) {
             auditLog.namedPublic("Generate Autonomous Scan Settings File", () -> {
                 autonomousManager.writeScanSettingsModelToTarget();
@@ -1155,9 +1166,10 @@ public class OperationRunner {
     }
 
     public Optional<File> searchForBinaryTargets(Predicate<File> fileFilter, int searchDepth, boolean followSymLinks) throws OperationException {
+        binaryScanFindMultipleTargetsOperation = new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager);
         return auditLog.namedInternal(
             "Binary Search For Targets",
-            () -> new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager)
+            () -> binaryScanFindMultipleTargetsOperation
                 .searchForMultipleTargets(fileFilter, followSymLinks, searchDepth)
         );
     }
