@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.battery.docker;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.docker.integration.BlackDuckAssertions;
@@ -15,7 +16,7 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.exception.IntegrationException;
 
-//@Tag("integration")
+@Tag("integration")
 public class NpmCliTest {
     
     public static String PROJECT_NAME = "npm10";
@@ -26,7 +27,7 @@ public class NpmCliTest {
      * @throws IntegrationException 
      * @throws IOException 
      */
-   // @Test
+    @Test
     void npmCliLatestNpm10() throws IntegrationException, IOException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-npm-cli-detector", "npm-10:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Npm_10.dockerfile"));
