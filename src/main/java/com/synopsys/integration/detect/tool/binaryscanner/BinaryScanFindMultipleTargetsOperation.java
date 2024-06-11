@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -28,10 +30,25 @@ public class BinaryScanFindMultipleTargetsOperation {
         this.fileFinder = fileFinder;
         this.directoryManager = directoryManager;
     }
+    
+    public BinaryScanFindMultipleTargetsOperation(DirectoryManager directoryManager) {
+        this.fileFinder = null;
+        this.directoryManager = directoryManager;
+    }
 
     public Optional<File> searchForMultipleTargets(Predicate<File> fileFilter, boolean followSymLinks, int depth) throws DetectUserFriendlyException {
         List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), fileFilter, followSymLinks, depth, false);
-        if (multipleTargets.size() > 0) {
+        if (!multipleTargets.isEmpty()) {
+            logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
+            return Optional.of(zipFilesForUpload(directoryManager.getSourceDirectory(), multipleTargets));
+        } else {
+            return Optional.empty();
+        }
+    }
+    
+    public Optional<File> collectAutonomousTargets(Set<String> binaryTargets) throws DetectUserFriendlyException {
+        List<File> multipleTargets = binaryTargets.stream().map(target -> new File(target)).collect(Collectors.toList());
+        if (!multipleTargets.isEmpty()) {
             logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
             return Optional.of(zipFilesForUpload(directoryManager.getSourceDirectory(), multipleTargets));
         } else {

@@ -70,7 +70,6 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
-import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.run.DetectFontLoaderFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -676,6 +675,7 @@ public class OperationRunner {
      * Given a Rapid/Stateless Detector Scan result, creates a JSON file called {@value GenerateComponentLocationAnalysisOperation#DETECT_OUTPUT_FILE_NAME} containing
      * every reported component's {@link ExternalId} along with its declaration location and upgrade guidance information when applicable.
      * @param rapidResults
+     * @param bdio
      * @throws OperationException
      */
     public void generateComponentLocationAnalysisIfEnabled(List<DeveloperScansScanView> rapidResults, BdioResult bdio) throws OperationException {
@@ -1159,6 +1159,14 @@ public class OperationRunner {
             "Binary Search For Targets",
             () -> new BinaryScanFindMultipleTargetsOperation(fileFinder, directoryManager)
                 .searchForMultipleTargets(fileFilter, followSymLinks, searchDepth)
+        );
+    }
+    
+    public Optional<File> collectBinaryTargets(Set<String> targets) throws OperationException {
+        return auditLog.namedInternal(
+            "Binary Collection of Targets",
+            () -> new BinaryScanFindMultipleTargetsOperation(directoryManager)
+                .collectAutonomousTargets(targets)
         );
     }
 
