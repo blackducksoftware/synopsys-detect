@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class PnpmYamlTransformerv6 {
 
     public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYamlv6 pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver)
         throws IntegrationException {
-        return generateCodeLocation(sourcePath, convertPnpmLockYamlToPnpmProjectPackage(pnpmLockYaml), null, projectNameVersion, pnpmLockYaml.packages, linkedPackageResolver);
+        return generateCodeLocation(sourcePath, convertPnpmLockYamlToPnpmProjectPackage(pnpmLockYaml), null, projectNameVersion, pnpmLockYaml.packages, linkedPackageResolver, pnpmLockYaml.snapshots);
     }
 
     public CodeLocation generateCodeLocation(
@@ -50,11 +51,16 @@ public class PnpmYamlTransformerv6 {
         @Nullable String reportingProjectPackagePath,
         @Nullable NameVersion projectNameVersion,
         @Nullable Map<String, PnpmPackageInfov6> packageMap,
-        PnpmLinkedPackageResolver linkedPackageResolver
+        PnpmLinkedPackageResolver linkedPackageResolver, 
+        @Nullable Map<String, PnpmPackageInfov6> snapshots
     ) throws IntegrationException {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
         List<String> rootPackageIds = extractRootPackageIds(projectPackage, reportingProjectPackagePath, linkedPackageResolver);
-        buildGraph(dependencyGraph, rootPackageIds, packageMap, linkedPackageResolver, reportingProjectPackagePath);
+        
+        // TODO strip leading / in v9 so we can do matches. Can't do it in common function as it 
+        // is needed for kb stuff?
+        
+        buildGraph(dependencyGraph, rootPackageIds, packageMap, linkedPackageResolver, reportingProjectPackagePath, snapshots);
 
         if (projectNameVersion != null) {
             return new CodeLocation(
@@ -71,7 +77,8 @@ public class PnpmYamlTransformerv6 {
         List<String> rootPackageIds,
         @Nullable Map<String, PnpmPackageInfov6> packageMap,
         PnpmLinkedPackageResolver linkedPackageResolver,
-        @Nullable String reportingProjectPackagePath
+        @Nullable String reportingProjectPackagePath, 
+        @Nullable Map<String, PnpmPackageInfov6> snapshots
     ) throws IntegrationException {
         if (packageMap == null) {
             throw new DetectableException("Could not parse 'packages' section of the pnpm-lock.yaml file.");
@@ -89,11 +96,21 @@ public class PnpmYamlTransformerv6 {
                 graphBuilder.addChildToRoot(pnpmPackage.get());
             }
 
-            PnpmPackageInfov6 packageInfo = packageEntry.getValue();            
+            PnpmPackageInfov6 packageInfo = getDependencyInformation(packageEntry, snapshots);            
             
             processTransitiveDependencies(graphBuilder, linkedPackageResolver, reportingProjectPackagePath, pnpmPackage,
                     packageInfo);
         }
+    }
+
+    private PnpmPackageInfov6 getDependencyInformation(Entry<String, PnpmPackageInfov6> packageEntry, Map<String, PnpmPackageInfov6> snapshots) {
+        PnpmPackageInfov6 packageWithDependencyInfo = packageEntry.getValue();
+        
+        if (packageWithDependencyInfo.getDependencies().isEmpty() && packageWithDependencyInfo.getDevDependencies().isEmpty() && packageWithDependencyInfo.getOptionalDependencies().isEmpty()) {
+            return snapshots.get(packageEntry.getKey());
+        }
+        
+        return packageWithDependencyInfo;
     }
 
     private void processTransitiveDependencies(DependencyGraph graphBuilder,

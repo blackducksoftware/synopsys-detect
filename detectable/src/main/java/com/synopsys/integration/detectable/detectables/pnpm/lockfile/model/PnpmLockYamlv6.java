@@ -18,5 +18,8 @@ public class PnpmLockYamlv6 extends PnpmLockYaml {
     public Map<String, PnpmDependencyInfo> devDependencies;
 
     @Nullable
-    public Map<String, PnpmDependencyInfo> optionalDependencies;  
+    public Map<String, PnpmDependencyInfo> optionalDependencies;
+    
+    @Nullable
+    public Map<String, PnpmPackageInfov6> snapshots;
 }

@@ -66,7 +66,7 @@ public class PnpmLockYamlParserv6 {
             File generatedSourcePath = generateCodeLocationSourcePath(sourcePath, reportingProjectPackagePath);
 
             codeLocations.add(pnpmTransformer.generateCodeLocation(generatedSourcePath, projectPackage,
-                    reportingProjectPackagePath, extractedNameVersion, pnpmLockYaml.packages, linkedPackageResolver));
+                    reportingProjectPackagePath, extractedNameVersion, pnpmLockYaml.packages, linkedPackageResolver, pnpmLockYaml.snapshots));
         }
 
         return codeLocations;
