@@ -103,7 +103,17 @@ public class PnpmYamlTransformerv6 {
                 graphBuilder.addChildToRoot(pnpmPackage.get());
             }
 
-            PnpmPackageInfov6 packageInfo = getDependencyInformation(packageEntry, snapshots);            
+            PnpmPackageInfov6 packageInfo = getDependencyInformation(packageEntry, snapshots);  
+            
+            // We should be able to find a corresponding value in snapshots for v9 but in case we can't skip this package
+            if (packageInfo == null) {
+                continue;
+            }
+            
+            // TODO remove
+            if (pnpmPackage.get().getName().equals("@babel/helper-module-transforms")) {
+                String breakHere = "";
+            }
             
             processTransitiveDependencies(graphBuilder, linkedPackageResolver, reportingProjectPackagePath, pnpmPackage,
                     packageInfo);
@@ -114,10 +124,19 @@ public class PnpmYamlTransformerv6 {
         PnpmPackageInfov6 packageWithDependencyInfo = packageEntry.getValue();
         
         if (packageWithDependencyInfo.getDependencies().isEmpty() && packageWithDependencyInfo.getDevDependencies().isEmpty() && packageWithDependencyInfo.getOptionalDependencies().isEmpty()) {
-            return snapshots.get(packageEntry.getKey());
+            return getFlexibleValue(packageEntry.getKey(), snapshots);
         }
         
         return packageWithDependencyInfo;
+    }
+
+    private PnpmPackageInfov6 getFlexibleValue(String desiredKey, Map<String, PnpmPackageInfov6> snapshots) {
+        for (String key: snapshots.keySet()) {
+            if (key.startsWith(desiredKey)) {
+                return snapshots.get(key);
+            }
+        }
+        return null;
     }
 
     private void processTransitiveDependencies(DependencyGraph graphBuilder,
