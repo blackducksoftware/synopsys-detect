@@ -28,7 +28,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService;
 import com.synopsys.integration.exception.IntegrationException;
 
-@Tag("integration")
+//@Tag("integration")
 public class DetectOnDetectTest {
     @Test
     void detectOnDetect() throws IOException, IntegrationException {
@@ -146,7 +146,7 @@ public class DetectOnDetectTest {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-9.8.0.dockerfile"));
 
             BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-            BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions("autonomous-scan-test", "happy-path");
+            BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions("autonomous-scan-test", "autonomous-scan");
             blackduckAssertions.emptyOnBlackDuck();
 
             DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
@@ -154,12 +154,14 @@ public class DetectOnDetectTest {
             commandBuilder.projectNameVersion(blackduckAssertions);
             commandBuilder.waitForResults();
 
+            commandBuilder.property(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED, String.valueOf(true));
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.bdioFiles(1); //7 code locations, 6 bdio, 1 signature scanner
+            dockerAssertions.locateScanSettingsFile();
 
             blackduckAssertions.hasCodeLocations(
-                    "src/detect-on-detect-docker/happy-path signature"
+                    "src/autonomous-scan-test/autonomous-scan signature"
             );
 
             blackduckAssertions.hasComponents("jackson-core");
