@@ -32,10 +32,14 @@ public class AutonomousManager {
     private boolean autonomousScanEnabled;
     private String blackDuckScanMode;
     private final DetectPropertyConfiguration detectConfiguration;
-    private SortedMap<String, String> userProvidedProperties = new TreeMap<>();
+    private SortedMap<String, String> userProvidedProperties;
     private SortedMap<String, String> globalProperties = new TreeMap<>();
     private SortedMap<String, String> detectorSharedProperties = new TreeMap<>();
     private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic", "detect.source.path", "detect.tools");
+
+    public File getScanSettingsTargetFile() {
+        return scanSettingsTargetFile;
+    }
 
     public AutonomousManager(
             DirectoryManager directoryManager,
@@ -65,6 +69,10 @@ public class AutonomousManager {
         return hashedScanSettingsFileName;
     }
 
+    public String getDetectSourcePath() {
+        return detectSourcePath;
+    }
+
     public boolean isScanSettingsFilePresent() {
         return scanSettingsTargetFile != null && scanSettingsTargetFile.exists();
     }
@@ -90,8 +98,8 @@ public class AutonomousManager {
         return new ScanSettings();
     }
 
-    private void createScanSettingsTargetFile() {
-        hashedScanSettingsFileName = StringUtils.join(UUID.nameUUIDFromBytes(detectSourcePath.getBytes()).toString(), ".json");
+    public void createScanSettingsTargetFile() {
+        hashedScanSettingsFileName = StringUtils.join(UUID.nameUUIDFromBytes(getDetectSourcePath().getBytes()).toString(), ".json");
         File scanSettingsTargetDir = directoryManager.getScanSettingsOutputDirectory();
         scanSettingsTargetFile = new File(scanSettingsTargetDir, hashedScanSettingsFileName);
     }
