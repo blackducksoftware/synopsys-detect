@@ -97,10 +97,10 @@ public class DockerAssertions {
     }
 
     public void locateScanSettingsFile() {
-        File runs = new File(outputDirectory,"scan-settings");
-        File[] scanSettingsDirectories = runs.listFiles();
-        Assertions.assertNotNull(scanSettingsDirectories, "Could not find any run directories, looked in: " + runs);
-        Assertions.assertEquals(1, scanSettingsDirectories.length, "There should be exactly one run directory (from this latest run).");
+        File scanSettingsDirectory = new File(outputDirectory,"scan-settings");
+        File[] scanSettingsFiles = scanSettingsDirectory.listFiles();
+        Assertions.assertNotNull(scanSettingsFiles, "Could not find any run directories, looked in: " + scanSettingsDirectory);
+        Assertions.assertEquals(1, scanSettingsFiles.length, "There should be exactly one run directory (from this latest run).");
     }
 
     public void atLeastOneBdioFile() {
@@ -156,10 +156,6 @@ public class DockerAssertions {
                 .findAny().isPresent(),
             String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename)
         );
-    }
-
-    public void scanSettingsFiles(int scanSetttingsCount) {
-
     }
 
     public File getOutputDirectory() {
