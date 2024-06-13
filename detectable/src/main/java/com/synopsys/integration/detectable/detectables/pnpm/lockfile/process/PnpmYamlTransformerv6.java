@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile.process;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,12 @@ public class PnpmYamlTransformerv6 {
         
         // TODO strip leading / in v9 so we can do matches. Can't do it in common function as it 
         // is needed for kb stuff?
+//        List<String> updatedRootPackages = new ArrayList<>();
+//        for (String rootPackage : rootPackageIds) {
+//            if (rootPackage.startsWith("/")) {
+//                updatedRootPackages.add(rootPackage.substring(1));
+//            }
+//        }
         
         buildGraph(dependencyGraph, rootPackageIds, packageMap, linkedPackageResolver, reportingProjectPackagePath, snapshots);
 
@@ -179,7 +186,8 @@ public class PnpmYamlTransformerv6 {
             // a linked project package's version will be referenced in the format: <linkPrefix><pathToLinkedPackageRelativeToReportingProjectPackage>
             version = linkedPackageResolver.resolveVersionOfLinkedPackage(reportingProjectPackagePath, version.replace(LINKED_PACKAGE_PREFIX, ""));
         }
-        return String.format("/%s@%s", name, version);
+        // TODO likely need to remove the leading / for v9. Eventually have to juggle both.
+        return String.format("%s@%s", name, version);
     }
 
     private Optional<NameVersion> parseNameVersionFromId(String id) {
@@ -191,7 +199,9 @@ public class PnpmYamlTransformerv6 {
             }
 
             int indexOfLastSlash = id.lastIndexOf("@");
-            String name = id.substring(1, indexOfLastSlash);
+            // TODO this needs to be 0 as we don't want to eat the no longer there / in v9
+            String name = id.substring(0, indexOfLastSlash);
+           // String name = id.substring(1, indexOfLastSlash);
             String version = id.substring(indexOfLastSlash + 1);
             return Optional.of(new NameVersion(name, version));
         } catch (Exception e) {
