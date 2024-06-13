@@ -149,20 +149,20 @@ public class AutonomousManager {
         }).findFirst();
     }
 
-    private void updateScanOrDetectorProperty(String propertyType, Boolean userProvidedProperty, String propertyTypeName, String propertyKey, String propertyValue) {
+    private void updateScanOrDetectorProperty(String propertyType, boolean userProvidedProperty, String propertyTypeName, String propertyKey, String propertyValue) {
         if(propertyType.equals("Detector")) {
             PackageManagerType packageManagerType = scanSettings.getDetectorTypeWithName(propertyTypeName);
             if(userProvidedProperty && !propertyValue.isEmpty()) {
                 packageManagerType.getDetectorProperties().put(propertyKey, propertyValue);
-            } else if(!packageManagerType.getDetectorProperties().containsKey(propertyKey) && !propertyValue.isEmpty()) {
-                packageManagerType.getDetectorProperties().put(propertyKey, propertyValue);
+            } else if(!propertyValue.isEmpty()) {
+                packageManagerType.getDetectorProperties().putIfAbsent(propertyKey, propertyValue);
             }
         } else {
             ScanType scanType = scanSettings.getScanTypeWithName(propertyTypeName);
             if(userProvidedProperty && !propertyValue.isEmpty()) {
                 scanType.getScanProperties().put(propertyKey, propertyValue);
-            } else if(!scanType.getScanProperties().containsKey(propertyKey) && !propertyValue.isEmpty()) {
-                scanType.getScanProperties().put(propertyKey, propertyValue);
+            } else if(!propertyValue.isEmpty()) {
+                scanType.getScanProperties().putIfAbsent(propertyKey, propertyValue);
             }
         }
     }
