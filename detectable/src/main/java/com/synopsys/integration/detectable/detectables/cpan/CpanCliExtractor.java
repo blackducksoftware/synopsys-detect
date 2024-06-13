@@ -29,6 +29,8 @@ public class CpanCliExtractor {
     }
 
     public Extraction extract(ExecutableTarget cpanExe, ExecutableTarget cpanmExe, File workingDirectory) throws ExecutableRunnerException {
+        toolVersionLogger.log(workingDirectory, cpanmExe);
+
         List<String> listText = generateCpanListOutput(workingDirectory, cpanExe);
 
         ExecutableOutput showdepsOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, cpanmExe, "--showdeps", "."));
