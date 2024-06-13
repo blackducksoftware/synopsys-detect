@@ -91,7 +91,7 @@ public class ScanTypeDecider {
             ".jpeg",
             ".jpg",
             ".class",
-            "DS_Store",
+            ".DS_Store",
             ".bdio",
             ".txt",
             ".java",
