@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.Map;
 
+import com.synopsys.integration.detect.lifecycle.autonomous.model.PackageManagerType;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanType;
 import com.synopsys.integration.detector.base.DetectorType;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +34,6 @@ public class AutonomousManager {
     private final DetectPropertyConfiguration detectConfiguration;
     private SortedMap<String, String> userProvidedProperties = new TreeMap<>();
     private SortedMap<String, String> globalProperties = new TreeMap<>();
-    private SortedMap<String, String> detectorSharedProperties = new TreeMap<>();
     private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic", "detect.blackduck.scan.mode", "detect.source.path", "detect.tools");
 
     public AutonomousManager(
@@ -96,42 +96,40 @@ public class AutonomousManager {
 
     public SortedMap<String, String> getAllScanSettingsProperties() {
         SortedMap<String, String> scanSettingsProperties = new TreeMap<>();
-        detectorSharedProperties = scanSettings.getDetectorSharedProperties();
         globalProperties = scanSettings.getGlobalDetectProperties();
-        scanSettingsProperties.putAll(detectorSharedProperties);
         scanSettingsProperties.putAll(globalProperties);
         scanSettings.getScanTypes().forEach(scanType ->  {
             scanSettingsProperties.putAll(scanType.getScanProperties());
+        });
+        scanSettings.getDetectorTypes().forEach(detectorType -> {
+            scanSettingsProperties.putAll(detectorType.getDetectorProperties());
         });
 
         return scanSettingsProperties;
     }
 
-    public void updateScanSettingsProperties(SortedMap<String, String> defaultPropertiesMap, List<String> adoptedScanTypes) {
+    public void updateScanSettingsProperties(SortedMap<String, String> defaultPropertiesMap, List<String> adoptedScanTypes, List<String> detectorTypes) {
         userProvidedProperties.forEach((propertyKey, propertyValue) -> {
             Optional<String> scanTypeValue = findScanType(adoptedScanTypes, propertyKey);
-            determinePropertyTypeAndUpdate(propertyKey, propertyValue, scanTypeValue, true);
+            Optional<String> detectorTypeValue = findDetectorType(detectorTypes, propertyKey);
+            determinePropertyTypeAndUpdate(propertyKey, propertyValue, detectorTypeValue, scanTypeValue, true);
         });
         defaultPropertiesMap.forEach((propertyKey, propertyValue) -> {
             Optional<String> scanTypeValue = findScanType(adoptedScanTypes, propertyKey);
-            determinePropertyTypeAndUpdate(propertyKey, propertyValue, scanTypeValue, false);
+            Optional<String> detectorTypeValue = findDetectorType(detectorTypes, propertyKey);
+            determinePropertyTypeAndUpdate(propertyKey, propertyValue, detectorTypeValue, scanTypeValue, false);
         });
 
-        scanSettings.setDetectorSharedProperties(detectorSharedProperties);
         scanSettings.setGlobalDetectProperties(globalProperties);
     }
 
-    private void determinePropertyTypeAndUpdate(String propertyKey, String propertyValue, Optional<String> scanTypeValue, boolean userProvidedProperty) {
-        if(isDetectorTypeProperty(propertyKey, propertyValue)) {
-            updateDetectorProperties(propertyKey, propertyValue, userProvidedProperty);
+    private void determinePropertyTypeAndUpdate(String propertyKey, String propertyValue, Optional<String> detectorTypeValue, Optional<String> scanTypeValue, boolean userProvidedProperty) {
+        if(detectorTypeValue.isPresent()) {
+            updateScanOrDetectorProperty("Detector", userProvidedProperty, detectorTypeValue.get(), propertyKey, propertyValue);
         } else if (scanTypeValue.isPresent()) {
-            String scanTypeName = scanTypeValue.get();
-            ScanType scanType = scanSettings.getScanTypeWithName(scanTypeName);
-            if(userProvidedProperty && !propertyValue.isEmpty()) {
-                scanType.getScanProperties().put(propertyKey, propertyValue);
-            } else if(!scanType.getScanProperties().containsKey(propertyKey) && !propertyValue.isEmpty()) {
-                scanType.getScanProperties().put(propertyKey, propertyValue);
-            }
+            updateScanOrDetectorProperty("Scantype", userProvidedProperty, scanTypeValue.get(), propertyKey, propertyValue);
+        } else if(propertyKey.equals("detect.accuracy.required")) {
+            updateScanOrDetectorProperty("Scantype", userProvidedProperty, "DETECTOR", propertyKey, propertyValue);
         } else if(isGlobalTypeProperty(propertyKey, propertyValue)) {
             updateGlobalProperties(propertyKey, propertyValue, userProvidedProperty);
         }
@@ -144,29 +142,41 @@ public class AutonomousManager {
         }).findFirst();
     }
 
+    private Optional<String> findDetectorType(List<String> detectorTypes, String key) {
+        return detectorTypes.stream().filter(detector -> {
+            String tempKey = key.replace(".","_");
+            return tempKey.contains(detector.toLowerCase());
+        }).findFirst();
+    }
+
+    private void updateScanOrDetectorProperty(String propertyType, boolean userProvidedProperty, String propertyTypeName, String propertyKey, String propertyValue) {
+        if(propertyType.equals("Detector")) {
+            PackageManagerType packageManagerType = scanSettings.getDetectorTypeWithName(propertyTypeName);
+            if(userProvidedProperty && !propertyValue.isEmpty()) {
+                packageManagerType.getDetectorProperties().put(propertyKey, propertyValue);
+            } else if(!propertyValue.isEmpty()) {
+                packageManagerType.getDetectorProperties().putIfAbsent(propertyKey, propertyValue);
+            }
+        } else {
+            ScanType scanType = scanSettings.getScanTypeWithName(propertyTypeName);
+            if(userProvidedProperty && !propertyValue.isEmpty()) {
+                scanType.getScanProperties().put(propertyKey, propertyValue);
+            } else if(!propertyValue.isEmpty()) {
+                scanType.getScanProperties().putIfAbsent(propertyKey, propertyValue);
+            }
+        }
+    }
+
     public void updateScanTargets(SortedMap<String, SortedSet<String>> packageManagerTargets, Map<DetectTool, Set<String>> scanTypeTargets) {
         packageManagerTargets.forEach((packageManager, scanTargets) -> {
-            ScanType scanType1 = scanSettings.getScanTypeWithName(packageManager);
-            scanType1.getScanTargets().addAll(scanTargets);
+            PackageManagerType packageManagerType = scanSettings.getDetectorTypeWithName(packageManager);
+            packageManagerType.getDetectorScanTargets().addAll(scanTargets);
         });
 
         scanTypeTargets.forEach((scanType, scanTargets) -> {
             ScanType scanType1 = scanSettings.getScanTypeWithName(scanType.toString());
             scanType1.getScanTargets().addAll(scanTargets);
         });
-    }
-
-    private boolean isDetectorTypeProperty(String propertyKey, String propertyValue) {
-        boolean isDetectorToolIncluded = scanSettings.getScanTypes().stream().anyMatch(scanType -> scanType.getScanTypeName().equals("DETECTOR"));
-        return (propertyKey.contains("detector") || propertyKey.equals("detect.accuracy.required")) && !propertyValue.isEmpty() && isDetectorToolIncluded;
-    }
-
-    private void updateDetectorProperties(String propertyKey, String propertyValue, boolean userProvidedProperty) {
-        if(userProvidedProperty) {
-            detectorSharedProperties.put(propertyKey, propertyValue);
-        } else {
-            detectorSharedProperties.putIfAbsent(propertyKey, propertyValue);
-        }
     }
 
     private boolean isGlobalTypeProperty(String propertyKey, String propertyValue) {
@@ -181,5 +191,10 @@ public class AutonomousManager {
         } else {
             globalProperties.putIfAbsent(propertyKey, propertyValue);
         }
+    }
+
+    public void updateUserProvidedBinaryScanTargets(List<File> binaryScanTargets) {
+        ScanType scanType = scanSettings.getScanTypeWithName("BINARY_SCAN");
+        binaryScanTargets.forEach(file -> scanType.getScanTargets().add(file.getAbsolutePath()));
     }
 }

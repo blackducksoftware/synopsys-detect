@@ -7,7 +7,7 @@ import java.util.TreeSet;
 
 import org.jetbrains.annotations.NotNull;
 
-public class DetectorType implements Comparable<DetectorType> {
+public class PackageManagerType implements Comparable<PackageManagerType> {
     /**
      * Name of the detector that is applicable.
      * Example: "GRADLE", "MAVEN", "CONAN".
@@ -27,11 +27,11 @@ public class DetectorType implements Comparable<DetectorType> {
     private SortedSet<String> detectorScanTargets = new TreeSet<>();
 
     @Override
-    public int compareTo(@NotNull DetectorType o) {
+    public int compareTo(@NotNull PackageManagerType o) {
         return detectorTypeName.compareTo(o.detectorTypeName);
     }
 
-    public DetectorType(String detectorTypeName, SortedMap<String, String> detectorProperties, SortedSet<String> detectorScanTargets) {
+    public PackageManagerType(String detectorTypeName, SortedMap<String, String> detectorProperties, SortedSet<String> detectorScanTargets) {
         this.detectorTypeName = detectorTypeName;
         this.detectorProperties = detectorProperties;
         this.detectorScanTargets = detectorScanTargets;
