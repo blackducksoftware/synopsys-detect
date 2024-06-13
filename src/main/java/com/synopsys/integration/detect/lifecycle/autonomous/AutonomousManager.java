@@ -24,17 +24,18 @@ import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 
 public class AutonomousManager {
-
     private final DirectoryManager directoryManager;
     private final String detectSourcePath;
     private String hashedScanSettingsFileName;
     private File scanSettingsTargetFile;
-    private final ScanSettings scanSettings;
-    private final boolean autonomousScanEnabled;
+    private ScanSettings scanSettings;
+    private boolean autonomousScanEnabled;
+    private String blackDuckScanMode;
     private final DetectPropertyConfiguration detectConfiguration;
     private SortedMap<String, String> userProvidedProperties = new TreeMap<>();
     private SortedMap<String, String> globalProperties = new TreeMap<>();
-    private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic", "detect.blackduck.scan.mode", "detect.source.path", "detect.tools");
+    private SortedMap<String, String> detectorSharedProperties = new TreeMap<>();
+    private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic", "detect.source.path", "detect.tools");
 
     public AutonomousManager(
             DirectoryManager directoryManager,
@@ -46,8 +47,10 @@ public class AutonomousManager {
         this.autonomousScanEnabled = autonomousScanEnabled;
         this.userProvidedProperties = userProvidedProperties;
         detectSourcePath = directoryManager.getSourceDirectory().getPath();
-        createScanSettingsTargetFile();
-        scanSettings = initializeScanSettingsModel();
+        if(autonomousScanEnabled) {
+            createScanSettingsTargetFile();
+            scanSettings = initializeScanSettingsModel();
+        }
     }
 
     public boolean getAutonomousScanEnabled() {
@@ -64,6 +67,10 @@ public class AutonomousManager {
 
     public boolean isScanSettingsFilePresent() {
         return scanSettingsTargetFile != null && scanSettingsTargetFile.exists();
+    }
+
+    public void setBlackDuckScanMode(String scanMode) {
+        this.blackDuckScanMode = scanMode;
     }
 
     public void writeScanSettingsModelToTarget() throws IOException {
@@ -186,7 +193,10 @@ public class AutonomousManager {
     }
 
     private void updateGlobalProperties(String propertyKey, String propertyValue, boolean userProvidedProperty) {
-        if(userProvidedProperty) {
+        if(propertyKey.equals("detect.blackduck.scan.mode")) {
+            propertyValue = blackDuckScanMode;
+            globalProperties.put(propertyKey, propertyValue);
+        } else if(userProvidedProperty) {
             globalProperties.put(propertyKey, propertyValue);
         } else {
             globalProperties.putIfAbsent(propertyKey, propertyValue);
