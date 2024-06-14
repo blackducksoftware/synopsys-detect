@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.blackduck.upload.rest.model.response.UploadFinishResponse;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.detect.lifecycle.OperationException;
@@ -13,6 +14,7 @@ import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class BinaryScanStepRunner {
@@ -23,12 +25,12 @@ public class BinaryScanStepRunner {
         this.operationRunner = operationRunner;
     }
 
-    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runBinaryScan(
+    public Optional<UploadFinishResponse> runBinaryScan(
         DockerTargetData dockerTargetData,
         NameVersion projectNameVersion,
         BlackDuckRunData blackDuckRunData
     )
-        throws OperationException {
+        throws OperationException, IntegrationException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData);
         if (binaryScanFile.isPresent()) {
             return Optional.of(operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData));

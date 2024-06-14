@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.synopsys.blackduck.upload.rest.model.response.UploadFinishResponse;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
@@ -125,7 +126,10 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
-            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationData = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
+            
+            // TODO read location and extract to scanIdsToWaitFor
+            // TODO handle an array of these somehow?
+            Optional<UploadFinishResponse> runBinaryScan = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
             
             // TODO can potentially get rid of this. If we can get the scanId somehow we don't need to wait on the code location data
             // and this block is only used for waiting.
@@ -135,10 +139,10 @@ public class IntelligentModeStepRunner {
             // then the client waits for a scan result using the scan ID returned from the
             // initial request.
             // So we might either get the scan ID and can wait or they might wait for us
-            if (codeLocationData.isPresent()) {
-                codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
-                mustWaitAtBomSummaryLevel.set(true);
-            }
+//            if (codeLocationData.isPresent()) {
+//                codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
+//                mustWaitAtBomSummaryLevel.set(true);
+//            }
         });
 
         stepHelper.runToolIfIncluded(

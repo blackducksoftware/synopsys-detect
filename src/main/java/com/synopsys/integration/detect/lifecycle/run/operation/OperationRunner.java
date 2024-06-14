@@ -1195,60 +1195,46 @@ public class OperationRunner {
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.IMPACT_ANALYSIS, StatusType.SUCCESS));
     }
 
-    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
-        throws OperationException {
-        // TODO likely put library here as we have the single zip in binaryUpload and we have the codeLocationNameManager here.
-        // TODO if we need the code location name we can likely do
-
-        // TODO likely put library here as we have the single zip in binaryUpload and we have the codeLocationNameManager here.
-        // TODO if we need the code location name we can likely do
-    String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(
-            binaryUpload,
-        projectNameVersion.getName(),
-        projectNameVersion.getVersion()
-    );
-
-            try {
-                File uploadDirectory = new File(directoryManager.getBinaryOutputDirectory(), "binarychunks");
-                boolean isCreated = uploadDirectory.mkdirs();
-                if (!isCreated) {
-                    // TODO fix and see how team wants to handle
-                    System.out.println("Failed to create directory: " + uploadDirectory);
-                    return null;
-                }
-   
-                // TODO test how to send in a real proxy if user specified
-                UploaderConfig.Builder uploaderConfigBuilder = UploaderConfig.createConfigFromProperties(
-                        //ProxyInfo.NO_PROXY_INFO,
-                        blackDuckRunData.getBlackDuckServerConfig().getProxyInfo(),
-                        new Properties())
-                // TODO probably eventually more performant to put these in the properties object
-                .setUploadChunkSize(5242880)
-                .setUploadOutputDirectory(uploadDirectory.toPath())
-                .setTimeoutInSeconds(blackDuckRunData.getBlackDuckServerConfig().getTimeout())
-                .setAlwaysTrustServerCertificate(blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
-                .setBlackDuckUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl())
-                .setApiToken(blackDuckRunData.getBlackDuckServerConfig().getApiToken().get());
-                
-                UploaderConfig uploaderConfig = uploaderConfigBuilder.build();
-                UploaderFactory uploadFactory = new UploaderFactory(uploaderConfig, new Slf4jIntLogger(logger), new Gson());
-                
-                BinaryScanRequestData binaryData = new BinaryScanRequestData(projectNameVersion.getName(), projectNameVersion.getVersion(), "", "");
-                
-                BinaryUploader binaryUploader = uploadFactory.createBinaryUploader("/api/uploads", binaryData);
-                
-                UploadFinishResponse response = binaryUploader.upload(binaryUpload.toPath());
-                
-                String breakHere = "";
-            } catch (IntegrationException | IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+    public UploadFinishResponse uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+        throws OperationException, IntegrationException {
         
+        String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(
+                binaryUpload,
+                projectNameVersion.getName(),
+                projectNameVersion.getVersion()
+            );
+        
+        File uploadDirectory = new File(directoryManager.getBinaryOutputDirectory(), "binarychunks");
+        boolean isCreated = uploadDirectory.mkdirs();
+        if (!isCreated) {
+            // TODO fix and see how team wants to handle
+            System.out.println("Failed to create directory: " + uploadDirectory);
+            return null;
+        }
+
+        // TODO test how to send in a real proxy if user specified
+        UploaderConfig.Builder uploaderConfigBuilder = UploaderConfig.createConfigFromProperties(
+                //ProxyInfo.NO_PROXY_INFO,
+                blackDuckRunData.getBlackDuckServerConfig().getProxyInfo(),
+                new Properties())
+        // TODO probably eventually more performant to put these in the properties object
+        .setUploadChunkSize(5242880)
+        .setUploadOutputDirectory(uploadDirectory.toPath())
+        .setTimeoutInSeconds(blackDuckRunData.getBlackDuckServerConfig().getTimeout())
+        .setAlwaysTrustServerCertificate(blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
+        .setBlackDuckUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl())
+        .setApiToken(blackDuckRunData.getBlackDuckServerConfig().getApiToken().get());
+        
+        UploaderConfig uploaderConfig = uploaderConfigBuilder.build();
+        UploaderFactory uploadFactory = new UploaderFactory(uploaderConfig, new Slf4jIntLogger(logger), new Gson());
+        
+        BinaryScanRequestData binaryData = new BinaryScanRequestData(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocationName, "");
+        
+        BinaryUploader binaryUploader = uploadFactory.createBinaryUploader("/api/uploads", binaryData);
         
         return auditLog.namedPublic("Binary Upload", "Binary",
             () -> new BinaryUploadOperation(statusEventPublisher, codeLocationNameManager)
-                .uploadBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), projectNameVersion)
+                .uploadBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), projectNameVersion, binaryUploader)
         );
     }
 
