@@ -1,7 +1,7 @@
 package com.synopsys.integration.detect.workflow;
 
 public class ArtifactoryConstants {
-    public static final String ARTIFACTORY_URL = "https://sig-repo.synopsys.com/";
+    public static final String ARTIFACTORY_URL = Objects.requireNonNullElse(System.getenv("ARTIFACTORY_URL"), "https://sig-repo.synopsys.com/");
     public static final String VERSION_PLACEHOLDER = "<VERSION>";
 
     public static final String GRADLE_INSPECTOR_MAVEN_REPO = ARTIFACTORY_URL + "bds-integration-public-cache/";
