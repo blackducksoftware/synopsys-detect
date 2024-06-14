@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.lifecycle.boot.product;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeSecretsFactory;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -126,6 +127,8 @@ public class ProductBoot {
                     );
                 } catch (IOException | InterruptedException e) {
                     logger.debug("Failed to fetch Analytics credentials. Skipping phone home.");
+                } catch (JsonSyntaxException e) {
+                    logger.debug("Analytics credentials file syntax is invalid. Skipping phone home.");
                 } catch (Exception e) {
                     logger.debug("Skipping phone home due to {}.", e.getClass().getName());
                 } finally {

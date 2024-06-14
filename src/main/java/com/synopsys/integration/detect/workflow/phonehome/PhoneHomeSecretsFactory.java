@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.workflow.phonehome;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class PhoneHomeSecretsFactory {
     private final static String PRODUCTION_CREDENTIALS_PATH = "/detect/analytics/prod/creds.json";
     private final static String TEST_CREDENTIALS_PATH = "/detect/analytics/test/creds.json";
 
-    public PhoneHomeSecrets getGa4Credentials() throws IOException, InterruptedException {
+    public PhoneHomeSecrets getGa4Credentials() throws IOException, InterruptedException, JsonSyntaxException {
         String fileUrl = STATIC_RESOURCE_HOST;
         if (isProduction())
             fileUrl += PRODUCTION_CREDENTIALS_PATH;
