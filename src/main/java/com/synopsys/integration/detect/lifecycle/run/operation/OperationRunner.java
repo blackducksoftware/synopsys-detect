@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -33,6 +34,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.synopsys.blackduck.upload.client.UploaderConfig;
+import com.synopsys.blackduck.upload.client.model.BinaryScanRequestData;
+import com.synopsys.blackduck.upload.client.uploaders.BinaryUploader;
+import com.synopsys.blackduck.upload.client.uploaders.UploaderFactory;
+import com.synopsys.blackduck.upload.rest.model.response.UploadFinishResponse;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
@@ -198,6 +204,7 @@ import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.body.FileBodyContent;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
@@ -1192,11 +1199,53 @@ public class OperationRunner {
         throws OperationException {
         // TODO likely put library here as we have the single zip in binaryUpload and we have the codeLocationNameManager here.
         // TODO if we need the code location name we can likely do
-//      String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(
-//              binaryScanFile,
-//              projectNameVersion.getName(),
-//              projectNameVersion.getVersion()
-//          );
+
+        // TODO likely put library here as we have the single zip in binaryUpload and we have the codeLocationNameManager here.
+        // TODO if we need the code location name we can likely do
+    String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(
+            binaryUpload,
+        projectNameVersion.getName(),
+        projectNameVersion.getVersion()
+    );
+
+            try {
+                File uploadDirectory = new File(directoryManager.getBinaryOutputDirectory(), "binarychunks");
+                boolean isCreated = uploadDirectory.mkdirs();
+                if (!isCreated) {
+                    // TODO fix and see how team wants to handle
+                    System.out.println("Failed to create directory: " + uploadDirectory);
+                    return null;
+                }
+   
+                // TODO test how to send in a real proxy if user specified
+                UploaderConfig.Builder uploaderConfigBuilder = UploaderConfig.createConfigFromProperties(
+                        //ProxyInfo.NO_PROXY_INFO,
+                        blackDuckRunData.getBlackDuckServerConfig().getProxyInfo(),
+                        new Properties())
+                // TODO probably eventually more performant to put these in the properties object
+                .setUploadChunkSize(5242880)
+                .setUploadOutputDirectory(uploadDirectory.toPath())
+                .setTimeoutInSeconds(blackDuckRunData.getBlackDuckServerConfig().getTimeout())
+                .setAlwaysTrustServerCertificate(blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
+                .setBlackDuckUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl())
+                .setApiToken(blackDuckRunData.getBlackDuckServerConfig().getApiToken().get());
+                
+                UploaderConfig uploaderConfig = uploaderConfigBuilder.build();
+                UploaderFactory uploadFactory = new UploaderFactory(uploaderConfig, new Slf4jIntLogger(logger), new Gson());
+                
+                BinaryScanRequestData binaryData = new BinaryScanRequestData(projectNameVersion.getName(), projectNameVersion.getVersion(), "", "");
+                
+                BinaryUploader binaryUploader = uploadFactory.createBinaryUploader("/api/uploads", binaryData);
+                
+                UploadFinishResponse response = binaryUploader.upload(binaryUpload.toPath());
+                
+                String breakHere = "";
+            } catch (IntegrationException | IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        
+        
         return auditLog.namedPublic("Binary Upload", "Binary",
             () -> new BinaryUploadOperation(statusEventPublisher, codeLocationNameManager)
                 .uploadBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), projectNameVersion)

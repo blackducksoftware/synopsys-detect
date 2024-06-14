@@ -85,6 +85,9 @@ repositories {
         url "${externalRepoHost}/bds-bdio-release"
         content { excludeModule(locatorGroup, locatorModule) }
     }
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 tasks.named("bootJar") {
@@ -141,6 +144,8 @@ dependencies {
     implementation project(':configuration')
     implementation project(':detectable')
     implementation project(':detector')
+    
+    implementation name: 'blackduck-upload-common-0.0.1-SNAPSHOT'
 
     implementation 'ch.qos.logback:logback-classic:1.2.11'
 
