@@ -1198,6 +1198,8 @@ public class OperationRunner {
     public UploadFinishResponse uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException, IntegrationException {
         
+        // TODO it might be possible to place this inside the uploadBinaryScanFile call like the pervious
+        // uploaded but for now it's fine here.
         BinaryUploader binaryUploader = createMultipartBinaryScanUploader(binaryUpload, projectNameVersion,
                 blackDuckRunData);
         
