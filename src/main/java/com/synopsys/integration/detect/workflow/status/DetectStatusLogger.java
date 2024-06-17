@@ -11,6 +11,7 @@ import javax.swing.text.html.Option;
 
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
+import com.synopsys.integration.detect.lifecycle.autonomous.ScanSettingsSerializer;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.log.IntLogger;
 
@@ -168,10 +169,10 @@ public class DetectStatusLogger {
         if (autonomousManager.getAutonomousScanEnabled()) {
             logger.debug("====== Autonomous Scan ======");
             logger.debug("");
-            logger.debug(String.format("Autonomous Scan Settings File Location: %s", autonomousManager.getHashedScanSettingsFileName()));
+            logger.debug(String.format("Autonomous Scan Settings File Location: %s", autonomousManager.getScanSettingsTargetFile().getPath()));
             logger.debug("");
             logger.debug("Autonomous Scan Decisions:");
-            logger.debug(autonomousManager.getScanSettingsModel().toString());
+            logger.debug(ScanSettingsSerializer.serializeScanSettingsModel(autonomousManager.getScanSettingsModel()));
             logger.debug("");
             logger.debug("===============================");
             logger.debug("");

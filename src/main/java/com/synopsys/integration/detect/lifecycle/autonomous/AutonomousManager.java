@@ -62,6 +62,10 @@ public class AutonomousManager {
         return scanSettings;
     }
 
+    public File getScanSettingsTargetFile() {
+        return scanSettingsTargetFile;
+    }
+
     public String getHashedScanSettingsFileName() {
         return hashedScanSettingsFileName;
     }
