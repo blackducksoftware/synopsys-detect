@@ -85,9 +85,7 @@ repositories {
         url "${externalRepoHost}/bds-bdio-release"
         content { excludeModule(locatorGroup, locatorModule) }
     }
-    flatDir {
-        dirs 'libs'
-    }
+    maven { url "https://artifactory.internal.synopsys.com/artifactory/bds-integrations-snapshot" }
 }
 
 tasks.named("bootJar") {
@@ -145,7 +143,7 @@ dependencies {
     implementation project(':detectable')
     implementation project(':detector')
     
-    implementation name: 'blackduck-upload-common-0.0.1-SNAPSHOT'
+    implementation 'com.synopsys.integration:blackduck-upload-common:0.0.1-SNAPSHOT'
 
     implementation 'ch.qos.logback:logback-classic:1.2.11'
 
