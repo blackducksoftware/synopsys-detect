@@ -5,6 +5,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -98,7 +99,7 @@ public class AutonomousManager {
     
     public Map<DetectTool, Set<String>> getScanTypeMap(boolean hasImageOrTar) {
         ScanTypeDecider autoDetectTool = new ScanTypeDecider();
-        return autoDetectTool.decide(hasImageOrTar, detectConfiguration);
+        return autoDetectTool.decide(hasImageOrTar, detectConfiguration, Paths.get(detectSourcePath));
     }
 
     public SortedMap<String, String> getAllScanSettingsProperties() {
