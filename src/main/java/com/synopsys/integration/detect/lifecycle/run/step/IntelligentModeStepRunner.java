@@ -129,7 +129,7 @@ public class IntelligentModeStepRunner {
             
             // TODO read location and extract to scanIdsToWaitFor
             // TODO handle an array of these somehow?
-            Optional<UploadFinishResponse> runBinaryScan = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
+            Optional<String> scanId = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
             
             // TODO can potentially get rid of this. If we can get the scanId somehow we don't need to wait on the code location data
             // and this block is only used for waiting.
@@ -142,7 +142,10 @@ public class IntelligentModeStepRunner {
 //            if (codeLocationData.isPresent()) {
 //                codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
 //                mustWaitAtBomSummaryLevel.set(true);
-//            }
+//            } 
+            if (scanId.isPresent()) {
+                scanIdsToWaitFor.add(scanId.get());
+            }
         });
 
         stepHelper.runToolIfIncluded(

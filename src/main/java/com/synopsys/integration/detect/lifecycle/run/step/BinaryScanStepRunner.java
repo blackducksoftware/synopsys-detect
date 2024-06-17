@@ -1,6 +1,8 @@
 package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -25,7 +27,7 @@ public class BinaryScanStepRunner {
         this.operationRunner = operationRunner;
     }
 
-    public Optional<UploadFinishResponse> runBinaryScan(
+    public Optional<String> runBinaryScan(
         DockerTargetData dockerTargetData,
         NameVersion projectNameVersion,
         BlackDuckRunData blackDuckRunData
@@ -33,7 +35,8 @@ public class BinaryScanStepRunner {
         throws OperationException, IntegrationException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData);
         if (binaryScanFile.isPresent()) {
-            return Optional.of(operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData));
+            UploadFinishResponse response = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData);
+            return extractBinaryScanId(response);
         } else {
             return Optional.empty();
         }
@@ -69,6 +72,18 @@ public class BinaryScanStepRunner {
             return Optional.of(binaryUpload);
         } else {
             operationRunner.publishBinaryFailure("Binary scan file did not exist, is not a file or can't be read.");
+            return Optional.empty();
+        }
+    }
+    
+    private Optional<String> extractBinaryScanId(UploadFinishResponse response) {     
+        try {
+            String location = response.getLocation();
+            URI uri = new URI(location);
+            String path = uri.getPath();
+            String scanId = path.substring(path.lastIndexOf('/') + 1);
+            return Optional.of(scanId);
+        } catch (Exception e) {
             return Optional.empty();
         }
     }
