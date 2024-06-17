@@ -126,8 +126,7 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
-            
-            // TODO read location and extract to scanIdsToWaitFor
+
             // TODO handle an array of these somehow?
             Optional<String> scanId = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
             

@@ -46,8 +46,8 @@ public class BinaryUploadOperation {
 
     public UploadFinishResponse uploadBinaryScanFile(
         File binaryScanFile,
-        BinaryScanUploadService binaryScanUploadService,
-        NameVersion projectNameVersion, BinaryUploader binaryUploader
+        BinaryUploader binaryUploader,
+        NameVersion projectNameVersion
     )
         throws DetectUserFriendlyException {
         String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(
