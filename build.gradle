@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.8.0-SIGQA2-autonomous-scanning-SNAPSHOT'
+version = '9.8.0-SIGQA2-autonomous-scanning'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
