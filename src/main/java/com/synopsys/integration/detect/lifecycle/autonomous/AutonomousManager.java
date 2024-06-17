@@ -116,6 +116,24 @@ public class AutonomousManager {
         return scanSettingsProperties;
     }
 
+    public void removeDeprecatedProperties(List<String> allPropertyKeys) {
+        scanSettings.getGlobalDetectProperties().keySet().forEach(key -> {
+            if(!allPropertyKeys.contains(key)) {
+                scanSettings.getGlobalDetectProperties().remove(key);
+            }
+        });
+        scanSettings.getScanTypes().forEach(scanType -> scanType.getScanProperties().keySet().forEach(key -> {
+            if(!allPropertyKeys.contains(key)) {
+                scanSettings.getGlobalDetectProperties().remove(key);
+            }
+        }));
+        scanSettings.getDetectorTypes().forEach(detectorType -> detectorType.getDetectorProperties().keySet().forEach(key -> {
+            if(!allPropertyKeys.contains(key)) {
+                scanSettings.getGlobalDetectProperties().remove(key);
+            }
+        }));
+    }
+
     public void updateScanSettingsProperties(SortedMap<String, String> defaultPropertiesMap, List<String> adoptedScanTypes, List<String> detectorTypes) {
         userProvidedProperties.forEach((propertyKey, propertyValue) -> {
             Optional<String> scanTypeValue = findScanType(adoptedScanTypes, propertyKey);

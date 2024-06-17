@@ -105,6 +105,8 @@ public class DetectRun {
                 List<String> detectorTypes = new ArrayList<>(packageManagerTargets.keySet());
                 SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
                 autonomousManager.updateScanSettingsProperties(defaultValueMap, scanTypes, detectorTypes);
+                List<String> allPropertyKeys = DetectProperties.allProperties().getPropertyKeys();
+                autonomousManager.removeDeprecatedProperties(allPropertyKeys);
             } else {
                 binaryTargets = Collections.EMPTY_SET;
             }
