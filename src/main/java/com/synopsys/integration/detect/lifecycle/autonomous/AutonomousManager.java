@@ -39,8 +39,8 @@ public class AutonomousManager {
     private final DetectPropertyConfiguration detectConfiguration;
     private SortedMap<String, String> userProvidedProperties = new TreeMap<>();
     private SortedMap<String, String> allProperties = new TreeMap<>();
-    private List<String> ranScanTypes = new ArrayList<>();
-    private List<String> ranDetectorTypes = new ArrayList<>();
+    private List<String> decidedScanTypes = new ArrayList<>();
+    private List<String> decidedDetectorTypes = new ArrayList<>();
     private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic", "detect.source.path", "detect.tools", "blackduck.proxy.password");
 
     public AutonomousManager(
@@ -146,8 +146,8 @@ public class AutonomousManager {
             }
         });
 
-        ranScanTypes = adoptedScanTypes;
-        ranDetectorTypes = detectorTypes;
+        decidedScanTypes = adoptedScanTypes;
+        decidedDetectorTypes = detectorTypes;
     }
 
     public void savePropertiesToModel() {
@@ -171,14 +171,14 @@ public class AutonomousManager {
     }
 
     private Optional<String> findScanType(String key) {
-        return ranScanTypes.stream().filter(tool -> {
+        return decidedScanTypes.stream().filter(tool -> {
             String tempKey = key.replace(".","_");
             return tempKey.contains(tool.toLowerCase());
         }).findFirst();
     }
 
     private Optional<String> findDetectorType(String key) {
-        return ranDetectorTypes.stream().filter(detector -> {
+        return decidedDetectorTypes.stream().filter(detector -> {
             String tempKey = key.replace(".","_");
             return tempKey.contains(detector.toLowerCase());
         }).findFirst();
