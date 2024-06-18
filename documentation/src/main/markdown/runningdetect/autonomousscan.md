@@ -35,12 +35,12 @@ The scan settings file name is a hash generated from the scanned folder(s). An i
     * --blackduck.api.token
 
 ## Invocation without [blackduck_product_name]
-To invoke an Autonomous scan in Intelligent Mode, the following must be provided at a minimum:   
+To invoke an Autonomous scan without [blackduck_product_name] integration, the following must be provided at a minimum:   
  ```
 --detect.autonomous.scan.enabled=true
 ```
 ## Invocation with [blackduck_product_name]
-To invoke an Autonomous scan in Rapid Mode with [blackduck_product_name], the following must be provided at a minimum:   
+To invoke an Autonomous scan with [blackduck_product_name], the following must be provided at a minimum:   
  ```
 --detect.autonomous.scan.enabled=true
 --blackduck.url=<https://my.blackduck.url>
