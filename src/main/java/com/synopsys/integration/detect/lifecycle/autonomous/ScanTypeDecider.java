@@ -28,9 +28,8 @@ import org.slf4j.LoggerFactory;
 public class ScanTypeDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
-    public Map<DetectTool, Set<String>> decide(boolean hasImageOrTar, DetectPropertyConfiguration detectConfiguration) {
+    public Map<DetectTool, Set<String>> decide(boolean hasImageOrTar, DetectPropertyConfiguration detectConfiguration, Path detectSourcePath) {
         if (!hasImageOrTar && detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED)) {
-            Path detectSourcePath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_SOURCE_PATH);
             AllNoneEnumCollection<DetectTool> includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
             AllNoneEnumCollection<DetectTool> excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
             if (detectSourcePath == null) {
@@ -103,7 +102,10 @@ public class ScanTypeDecider {
         return avoidAbsolutely.contains(name);
     }
     
-    private boolean isEligibleFile(String name) {
+    private boolean isEligibleFile(String name, long size) {
+        if (size<=0L) {
+            return false;
+        }
         for(String extension : ignoreReluctantly) {
             if (name.toLowerCase().endsWith(extension)) {
                 return false;
@@ -129,10 +131,11 @@ public class ScanTypeDecider {
         try {
             Files.walkFileTree(pathToSearch, new FileVisitor<Path>() {
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (isEligibleFile(file.toFile().getName())) {
-                        if (isBinary(file.toFile())) {
-                            pathsCollection.binaryPaths.add(file.toAbsolutePath().toString());
+                public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+                    String fileName = path.getFileName().toString();
+                    if (isEligibleFile(fileName, attrs.size())) {
+                        if (isBinary(path.toFile())) {
+                            pathsCollection.binaryPaths.add(path.toAbsolutePath().toString());
                         } else if (pathsCollection.detectorPaths.isEmpty()) {
                             pathsCollection.detectorPaths.add(pathToSearch.toAbsolutePath().toString());
                         }
@@ -165,7 +168,7 @@ public class ScanTypeDecider {
         } catch (IOException ex) {
             logger.error("Failure when attempting to locate build config files.", ex);
         } finally {
-            logger.debug("Done. Seconds: {}", (System.currentTimeMillis()-t1)/1000D);
+            logger.info("Search for binary files is done. Seconds: {}", (System.currentTimeMillis()-t1)/1000D);
         }
         return pathsCollection;
     }

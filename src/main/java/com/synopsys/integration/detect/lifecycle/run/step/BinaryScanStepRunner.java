@@ -67,7 +67,7 @@ public class BinaryScanStepRunner {
                 .get();// Very important not to binary scan the same Docker output that we sig scanned (=codelocation name collision)
         }
 
-        if (!binaryTargets.isEmpty()) {
+        if (binaryTargets != null && !binaryTargets.isEmpty()) {
             binaryUpload = operationRunner.collectBinaryTargets(binaryTargets).get();
         }
 
