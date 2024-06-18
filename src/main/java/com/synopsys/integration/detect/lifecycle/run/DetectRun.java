@@ -104,9 +104,8 @@ public class DetectRun {
                 binaryTargets = scanTypeEvidenceMap.get(DetectTool.BINARY_SCAN);
                 List<String> detectorTypes = new ArrayList<>(packageManagerTargets.keySet());
                 SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
-                autonomousManager.updateScanSettingsProperties(defaultValueMap, scanTypes, detectorTypes);
                 List<String> allPropertyKeys = DetectProperties.allProperties().getPropertyKeys();
-                autonomousManager.removeDeprecatedProperties(allPropertyKeys);
+                autonomousManager.updateScanSettingsProperties(defaultValueMap, scanTypes, detectorTypes, allPropertyKeys);
             } else {
                 binaryTargets = Collections.EMPTY_SET;
             }
