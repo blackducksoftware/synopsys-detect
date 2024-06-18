@@ -53,14 +53,15 @@ public class DockerAssertions {
         Assertions.assertEquals("SUCCESS", detector.get().status);
     }
 
+
     public void successfulOperationStatusJson(String operationKey) {
         FormattedOutput statusJson = locateStatusJson();
-        Optional<FormattedOperationOutput> detector = statusJson.operations.stream().filter(it -> it.descriptionKey.equals(operationKey))
+        Optional<FormattedOperationOutput> operation = statusJson.operations.stream().filter(it -> it.descriptionKey.equals(operationKey))
             .findFirst();
 
-        Assertions.assertTrue(detector.isPresent(), "Could not find required operation '" + operationKey + "' in status json detector list.");
+        Assertions.assertTrue(operation.isPresent(), "Could not find required operation '" + operationKey + "' in status json detector list.");
 
-        Assertions.assertEquals("SUCCESS", detector.get().status);
+        Assertions.assertEquals("SUCCESS", operation.get().status);
     }
 
     public void successfulToolStatusJson(String detectorType) {
@@ -149,6 +150,10 @@ public class DockerAssertions {
                 .findAny().isPresent(),
             String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename)
         );
+    }
+
+    public void exitCodeIs(int expected) {
+        Assertions.assertEquals(expected, dockerDetectResult.getExitCode());
     }
 
     public File getOutputDirectory() {
