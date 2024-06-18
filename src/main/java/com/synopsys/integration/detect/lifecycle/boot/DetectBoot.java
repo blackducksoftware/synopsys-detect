@@ -227,7 +227,9 @@ public class DetectBoot {
             boolean blackduckScanModeSpecified = detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
             BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
             BlackduckScanMode blackduckScanMode = decideScanMode(blackDuckConnectionDetails, scanTypeEvidenceMap, blackduckScanModeSpecified, detectConfigurationFactory, autonomousScanEnabled, detectConfiguration);
-            autonomousManager.setBlackDuckScanMode(blackduckScanMode.toString());
+            if (autonomousScanEnabled) {
+                autonomousManager.setBlackDuckScanMode(blackduckScanMode.toString());
+            }
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
                 blackDuckConnectionDetails,

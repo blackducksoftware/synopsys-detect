@@ -54,6 +54,7 @@ public class AutonomousManager {
         this.userProvidedProperties = userProvidedProperties;
         detectSourcePath = directoryManager.getSourceDirectory().getPath();
         if(autonomousScanEnabled) {
+            logger.info("Autonomous Scan mode is enabled.");
             createScanSettingsTargetFile();
             scanSettings = initializeScanSettingsModel();
             initializeProperties();
@@ -97,7 +98,7 @@ public class AutonomousManager {
 
     private ScanSettings initializeScanSettingsModel() {
         if (isScanSettingsFilePresent()) {
-            logger.info("Found Scan Settings file at "+scanSettingsTargetFile.getAbsolutePath()+" and will be used for all further decisions.");
+            logger.debug("Found previous scan settings file at " + scanSettingsTargetFile.getAbsolutePath() + " and will be used for making autonomous scan decisions.");
             return ScanSettingsSerializer.deserializeScanSettingsFile(scanSettingsTargetFile);
         }
         return new ScanSettings();
