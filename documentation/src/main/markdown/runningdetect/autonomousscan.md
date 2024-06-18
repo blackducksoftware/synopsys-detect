@@ -2,7 +2,7 @@
 
 Autonomous Scanning allows for [company_name] [solution_name] to run scans with a minimum amount of user provided parameters. Autonomous scans store configuration and related parameters in a .json file that can be shared between users working with the same code. This reduces the user input required to effectively analyze source code and binary files, along with simplifying repeat analysis and delta reporting.
 
-Autonomous Scanning will accept a user provided local or remote file path to source of binary files. This file may be a single executable, a directory of source files, or a combination thereof.
+Autonomous Scanning will accept a user provided local file path or remote HTTP/HTTPS URL to fetch content for scanning. The content may be a single executable, a directory of source files, or a combination thereof.
 
 The scan settings file name is a hash generated from the scanned folder(s). An initial scan with user provided parameters will populate this file and subsequent scans of the same folder structure will update it. After the initial scan, unless you wish to override previous scan parameters, [company_name] [solution_name] can be run in Autonomous mode by simply providing the `--detect.autonomous.scan.enabled=true` parameter.
 <note type="note">The scan settings json file is generated and updated automatically by [company_name] [solution_name] and should not be manually modified.</note>
