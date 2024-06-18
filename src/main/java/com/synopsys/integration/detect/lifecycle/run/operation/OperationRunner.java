@@ -1460,8 +1460,6 @@ public class OperationRunner {
         // TODO test how to send in a real proxy if user specified
         UploaderConfig.Builder uploaderConfigBuilder = UploaderConfig.createConfigFromProperties(
                 blackDuckRunData.getBlackDuckServerConfig().getProxyInfo(), new Properties())
-                // TODO probably eventually more performant to put these in the properties
-                // object
                 // TODO make configurable? They are both 5mb right now
                 .setUploadChunkSize(5242880)
                 .setMultipartUploadThreshold(5242880L)
