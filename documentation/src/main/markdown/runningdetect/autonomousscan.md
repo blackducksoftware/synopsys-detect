@@ -5,7 +5,7 @@ Autonomous Scanning allows for [company_name] [solution_name] to run scans with 
 Autonomous Scanning will accept a user provided local file path or remote HTTP/HTTPS URL to fetch content for scanning. The content may be a single executable, a directory of source files, or a combination thereof.
 
 The scan settings file name is a hash generated from the scanned folder(s). An initial scan with user provided parameters will populate this file and subsequent scans of the same folder structure will update it. After the initial scan, unless you wish to override previous scan parameters, [company_name] [solution_name] can be run in Autonomous mode by simply providing the `--detect.autonomous.scan.enabled=true` parameter.
-<note type="note">The scan settings json file is generated and updated automatically by [company_name] [solution_name] and should not be manually modified.</note>
+<note type="warning">The scan settings json file is generated and updated automatically by [company_name] [solution_name] and should not be manually modified.</note>
 
 ## Initial Scan Workflow
 
@@ -48,7 +48,7 @@ To invoke an Autonomous scan with [blackduck_product_name], the following must b
 ```
 
 ## Results
-Autonomous scan findings will be stored in the [BDIO](../properties/configuration/paths.html#ariaid-title4) file when run without [blackduck_product_name].
+Autonomous scan findings will be stored in a [BDIO](../properties/configuration/paths.html#ariaid-title4) file when run without [blackduck_product_name].
 
 Autonomous scan findings will appear in the [blackduck_product_name] user interface if [blackduck_product_name] is configured.
 
