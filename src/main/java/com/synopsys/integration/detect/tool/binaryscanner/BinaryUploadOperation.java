@@ -10,7 +10,6 @@ import com.synopsys.blackduck.upload.client.uploaders.BinaryUploader;
 import com.synopsys.blackduck.upload.rest.model.response.UploadFinishResponse;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusEventPublisher;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -21,12 +20,9 @@ public class BinaryUploadOperation {
     private static final String STATUS_KEY = "BINARY_SCAN";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // TODO might not need this depends on how I finalize sending the uploader around
-    private final CodeLocationNameManager codeLocationNameManager;
     private final StatusEventPublisher statusEventPublisher;
 
-    public BinaryUploadOperation(StatusEventPublisher statusEventPublisher, CodeLocationNameManager codeLocationNameManager) {
-        this.codeLocationNameManager = codeLocationNameManager;
+    public BinaryUploadOperation(StatusEventPublisher statusEventPublisher) {
         this.statusEventPublisher = statusEventPublisher;
     }
 
@@ -45,7 +41,6 @@ public class BinaryUploadOperation {
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
             return response;
         } catch (IntegrationException | IOException e) {
-            // TODO need to test how the errors look when there is an exception
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
         }
