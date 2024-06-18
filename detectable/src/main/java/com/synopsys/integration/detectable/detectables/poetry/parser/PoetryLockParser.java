@@ -42,6 +42,8 @@ public class PoetryLockParser {
         Set<String> lockFileRootPackages = populatePackageMapAndGetRootPackages(lockPackages);
         if (rootPackages == null) {
             rootPackages = lockFileRootPackages;
+        } else {
+            rootPackages = normalizePackageNames(rootPackages);
         }
 
         populateDirectDependencies(graph, rootPackages);
@@ -64,6 +66,19 @@ public class PoetryLockParser {
         return graph;
     }
 
+    private Set<String> normalizePackageNames(Set<String> packages) {
+        Set<String> normalized = new HashSet<>();
+
+        for (String name : packages) {
+            normalized.add(normalizePackageName(name));
+        }
+        return normalized;
+    }
+
+    private String normalizePackageName(String packageName) {
+        return packageName.replaceAll("[_.-]+", "-").toLowerCase();
+    }
+
     private void populateDirectDependencies(DependencyGraph graph, Set<String> rootPackages) {
         for (String rootPackage : rootPackages) {
             Dependency dependency = getPackage(rootPackage);
@@ -84,11 +99,11 @@ public class PoetryLockParser {
             TomlTable lockPackage = lockPackages.getTable(i);
 
             if (lockPackage != null) {
-                String projectName = lockPackage.getString(NAME_KEY);
+                String projectName = normalizePackageName(lockPackage.getString(NAME_KEY));
                 String projectVersion = lockPackage.getString(VERSION_KEY);
 
                 putPackage(projectName, Dependency.FACTORY.createNameVersionDependency(Forge.PYPI, projectName, projectVersion));
-                rootPackages.add(projectName.toLowerCase());
+                rootPackages.add(projectName);
 
                 if (lockPackage.getTable(DEPENDENCIES_KEY) != null) {
                     List<String> dependencies = extractFromDependencyList(lockPackage.getTable(DEPENDENCIES_KEY));
@@ -103,11 +118,11 @@ public class PoetryLockParser {
     }
 
     private void putPackage(String name, Dependency dependency) {
-        packageMap.put(name.toLowerCase(), dependency);
+        packageMap.put(normalizePackageName(name), dependency);
     }
 
     private Dependency getPackage(String name) {
-        return packageMap.get(name.toLowerCase());
+        return packageMap.get(normalizePackageName(name));
     }
 
     private List<String> extractFromDependencyList(@Nullable TomlTable dependencyList) {

@@ -1,18 +1,13 @@
 package com.synopsys.integration.detect.lifecycle.run;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.Map;
+import java.util.*;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
+import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
+import com.synopsys.integration.detector.base.DetectorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,15 +91,12 @@ public class DetectRun {
             if(autonomousManager.getAutonomousScanEnabled()) {
                 SortedMap<String, SortedSet<String>> packageManagerTargets = stepRunner.getScanTargets(universalToolsResult);
                 autonomousManager.updateScanTargets(packageManagerTargets, scanTypeEvidenceMap);
-                AllEnumList<DetectTool> givenScanTypes = bootSingletons.getDetectConfiguration().getValue(DetectProperties.DETECT_TOOLS);
-                List<String> scanTypes = new ArrayList<>();
-                scanTypeEvidenceMap.keySet().forEach(tool -> scanTypes.add(tool.toString()));
-                givenScanTypes.representedValues().forEach(tool -> scanTypes.add(tool.toString()));
-                packageManagerTargets.keySet().forEach(tool -> scanTypes.add(tool));
                 binaryTargets = scanTypeEvidenceMap.get(DetectTool.BINARY_SCAN);
-                List<String> detectorTypes = new ArrayList<>(packageManagerTargets.keySet());
+                Map<String, Set<String>> decidedTools = getDecidedTools(bootSingletons, scanTypeEvidenceMap, packageManagerTargets);
                 SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
-                autonomousManager.updateScanSettingsProperties(defaultValueMap, scanTypes, detectorTypes);
+                List<String> allPropertyKeys = DetectProperties.allProperties().getPropertyKeys();
+                autonomousManager.updateScanSettingsProperties(defaultValueMap, decidedTools.get("scanTypes"), decidedTools.get("detectorTypes"), allPropertyKeys);
+                autonomousManager.removeExcludedToolsAndDetectors(decidedTools.get("excludedScanTypes"), decidedTools.get("excludedDetectorTypes"));
             } else {
                 binaryTargets = Collections.EMPTY_SET;
             }
@@ -141,6 +133,26 @@ public class DetectRun {
         } finally {
             operationSystem.ifPresent(OperationSystem::publishOperations);
         }
+    }
+
+    private Map<String, Set<String>> getDecidedTools(BootSingletons bootSingletons, Map<DetectTool, Set<String>> scanTypeEvidenceMap, SortedMap<String, SortedSet<String>> packageManagerTargets) {
+        Map<String, Set<String>> decidedTools = new HashMap<>();
+        decidedTools.put("scanTypes", new HashSet<>());
+        decidedTools.put("detectorTypes", new HashSet<>(packageManagerTargets.keySet()));
+        decidedTools.put("excludedScanTypes", new HashSet<>());
+        decidedTools.put("excludedDetectorTypes", new HashSet<>());
+
+        AllEnumList<DetectTool> userProvidedScanTypes = bootSingletons.getDetectConfiguration().getValue(DetectProperties.DETECT_TOOLS);
+        NoneEnumList<DetectTool> userExcludedScanTypes = bootSingletons.getDetectConfiguration().getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
+
+        scanTypeEvidenceMap.keySet().forEach(tool -> decidedTools.get("scanTypes").add(tool.toString()));
+        userProvidedScanTypes.representedValues().forEach(tool -> decidedTools.get("scanTypes").add(tool.toString()));
+        userExcludedScanTypes.representedValues().forEach(tool -> decidedTools.get("excludedScanTypes").add(tool.toString()));
+
+        NoneEnumList<DetectorType> excludedDetectorTypes = bootSingletons.getDetectConfiguration().getValue(DetectProperties.DETECT_EXCLUDED_DETECTOR_TYPES);
+        excludedDetectorTypes.representedValues().forEach(tool -> decidedTools.get("excludedDetectorTypes").add(tool.toString()));
+
+        return decidedTools;
     }
 
     /**
