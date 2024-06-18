@@ -1194,14 +1194,15 @@ public class OperationRunner {
     }
 
     public UploadFinishResponse uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
-        throws OperationException, IntegrationException {
-        BinaryUploader binaryUploader = createMultipartBinaryScanUploader(binaryUpload, projectNameVersion,
-                blackDuckRunData);
-        
+        throws OperationException {        
         return auditLog.namedPublic("Binary Upload", "Binary",
-            () -> new BinaryUploadOperation(statusEventPublisher)
-                .uploadBinaryScanFile(binaryUpload, binaryUploader, projectNameVersion)
-        );
+            () -> {
+                BinaryUploader binaryUploader = createMultipartBinaryScanUploader(binaryUpload, projectNameVersion,
+                        blackDuckRunData);
+                
+                return new BinaryUploadOperation(statusEventPublisher)
+                        .uploadBinaryScanFile(binaryUpload, binaryUploader, projectNameVersion);
+            });
     }
 
     public ProjectVersionWrapper syncProjectVersion(
@@ -1456,24 +1457,16 @@ public class OperationRunner {
         String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryUpload,
                 projectNameVersion.getName(), projectNameVersion.getVersion());
 
-        File uploadDirectory = new File(directoryManager.getBinaryOutputDirectory(), "binarychunks");
-        boolean isCreated = uploadDirectory.mkdirs();
-        if (!isCreated) {
-            // TODO fix and see how team wants to handle
-            System.out.println("Failed to create directory: " + uploadDirectory);
-            return null;
-        }
-
         // TODO test how to send in a real proxy if user specified
         UploaderConfig.Builder uploaderConfigBuilder = UploaderConfig.createConfigFromProperties(
-                // ProxyInfo.NO_PROXY_INFO,
                 blackDuckRunData.getBlackDuckServerConfig().getProxyInfo(), new Properties())
                 // TODO probably eventually more performant to put these in the properties
                 // object
-                .setUploadChunkSize(5242880).setUploadOutputDirectory(uploadDirectory.toPath())
+                // TODO make configurable? They are both 5mb right now
+                .setUploadChunkSize(5242880)
+                .setMultipartUploadThreshold(5242880L)
                 .setTimeoutInSeconds(blackDuckRunData.getBlackDuckServerConfig().getTimeout())
-                .setAlwaysTrustServerCertificate(
-                        blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
+                .setAlwaysTrustServerCertificate(blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
                 .setBlackDuckUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl())
                 .setApiToken(blackDuckRunData.getBlackDuckServerConfig().getApiToken().get());
 
