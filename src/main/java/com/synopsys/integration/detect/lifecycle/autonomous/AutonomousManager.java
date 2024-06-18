@@ -15,7 +15,7 @@ import java.util.UUID;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.Map;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import com.synopsys.integration.detect.lifecycle.autonomous.model.PackageManagerType;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanType;
@@ -39,9 +39,9 @@ public class AutonomousManager {
     private final DetectPropertyConfiguration detectConfiguration;
     private SortedMap<String, String> userProvidedProperties = new TreeMap<>();
     private SortedMap<String, String> allProperties = new TreeMap<>();
-    private List<String> decidedScanTypes = new ArrayList<>();
-    private List<String> decidedDetectorTypes = new ArrayList<>();
-    private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic", "detect.source.path", "detect.tools", "blackduck.proxy.password");
+    private Set<String> decidedScanTypes = new HashSet<>();
+    private Set<String> decidedDetectorTypes = new HashSet<>();
+    private static final List<String> propertiesNotAutonomous = Arrays.asList("blackduck.api.token", "detect.diagnostic", "detect.source.path", "blackduck.proxy.password");
 
     public AutonomousManager(
             DirectoryManager directoryManager,
@@ -132,11 +132,16 @@ public class AutonomousManager {
         return allProperties;
     }
 
-    public void removeDeletedProperties(List<String> allPropertyKeys) {
+    private void removeDeletedProperties(List<String> allPropertyKeys) {
         allProperties.entrySet().removeIf(entry -> !allPropertyKeys.contains(entry.getKey()));
     }
 
-    public void updateScanSettingsProperties(SortedMap<String, String> defaultPropertiesMap, List<String> adoptedScanTypes, List<String> detectorTypes, List<String> allPropertyKeys) {
+    public void removeExcludedToolsAndDetectors(Set<String> excludedScanTypes, Set<String> excludedDetectorTypes) {
+        scanSettings.getScanTypes().removeIf(scanType -> excludedScanTypes.contains(scanType.getScanTypeName()));
+        scanSettings.getDetectorTypes().removeIf(detectorType -> excludedDetectorTypes.contains(detectorType.getDetectorTypeName()));
+    }
+
+    public void updateScanSettingsProperties(SortedMap<String, String> defaultPropertiesMap, Set<String> adoptedScanTypes, Set<String> detectorTypes, List<String> allPropertyKeys) {
         removeDeletedProperties(allPropertyKeys);
 
         allProperties.putAll(userProvidedProperties);
