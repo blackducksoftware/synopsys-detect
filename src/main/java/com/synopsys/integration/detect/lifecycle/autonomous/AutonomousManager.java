@@ -6,7 +6,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Optional;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.UUID;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.Map;
+import java.util.HashSet;
 
 import com.synopsys.integration.detect.lifecycle.autonomous.model.PackageManagerType;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanType;
