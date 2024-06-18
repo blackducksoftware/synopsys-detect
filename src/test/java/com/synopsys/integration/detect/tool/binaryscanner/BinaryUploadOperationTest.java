@@ -41,7 +41,7 @@ public class BinaryUploadOperationTest {
         Mockito.when(operationRunner.calculateBinaryScanOptions()).thenReturn(binaryScanOptions);
 
         BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
-        Optional<File> result = binaryScanStepRunner.determineBinaryScanFileTarget(DockerTargetData.NO_DOCKER_TARGET);
+        Optional<File> result = binaryScanStepRunner.determineBinaryScanFileTarget(DockerTargetData.NO_DOCKER_TARGET, Collections.EMPTY_SET);
 
         Mockito.verify(operationRunner).publishBinaryFailure(Mockito.anyString());
         Assertions.assertFalse(result.isPresent());

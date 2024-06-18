@@ -3,6 +3,7 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +11,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Collections;
 
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
+import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.help.yaml.HelpYamlWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +41,7 @@ import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
 import com.synopsys.integration.detect.configuration.validation.DeprecationResult;
 import com.synopsys.integration.detect.configuration.validation.DetectConfigurationBootManager;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.RunDecision;
@@ -57,6 +62,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
+import java.util.Set;
 
 public class DetectBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -69,6 +75,7 @@ public class DetectBoot {
     private final DetectArgumentState detectArgumentState;
     private final List<PropertySource> propertySources;
     private final InstalledToolManager installedToolManager;
+    private final List<DetectTool> rapidTools = Arrays.asList(DetectTool.DOCKER, DetectTool.DETECTOR);
 
     public DetectBoot(
         EventSystem eventSystem,
@@ -86,7 +93,8 @@ public class DetectBoot {
         this.installedToolManager = installedToolManager;
     }
 
-    public Optional<DetectBootResult> boot(String detectVersion, String detectBuildDate) throws IOException, IllegalAccessException {
+    public Optional<DetectBootResult> boot(String detectVersion, String detectBuildDate) throws IOException, IllegalAccessException, NoSuchAlgorithmException {
+
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             HelpPrinter helpPrinter = new HelpPrinter();
             helpPrinter.printAppropriateHelpMessage(
@@ -96,19 +104,19 @@ public class DetectBoot {
                 DetectGroup.BLACKDUCK_SERVER,
                 detectArgumentState
             );
-            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources, Collections.emptySortedMap())));
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
             HelpJsonManager helpJsonManager = detectBootFactory.createHelpJsonManager();
             helpJsonManager.createHelpJsonDocument(String.format("synopsys-detect-%s-help.json", detectVersion));
-            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources, Collections.emptySortedMap())));
         }
 
         if (detectArgumentState.isHelpYamlDocument()) {
             HelpYamlWriter helpYamlWriter = new HelpYamlWriter();
             helpYamlWriter.createHelpYamlDocument(String.format("synopsys-detect-%s-template-application.yml", detectVersion));
-            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources, Collections.emptySortedMap())));
         }
 
         DEFAULT_PRINT_STREAM.println();
@@ -121,7 +129,9 @@ public class DetectBoot {
             propertySources.add(0, interactivePropertySource);
         }
 
-        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
+        SortedMap<String, String> scanSettingsProperties = new TreeMap<>();
+
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources, scanSettingsProperties);
 
         SortedMap<String, String> maskedRawPropertyValues = collectMaskedRawPropertyValues(propertyConfiguration);
 
@@ -145,7 +155,19 @@ public class DetectBoot {
         DetectPropertyConfiguration detectConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
 
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, gson);
+
+        boolean autonomousScanEnabled = detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED);
+
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
+
+        // TODO Scan settings model obtained below is to be used by the delta-checking operations
+        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, detectConfiguration, autonomousScanEnabled, maskedRawPropertyValues);
+
+        if(autonomousScanEnabled) {
+            scanSettingsProperties = autonomousManager.getAllScanSettingsProperties();
+            propertyConfiguration.setScanSettingsProperties(scanSettingsProperties);
+        }
+
         InstalledToolLocator installedToolLocator = new InstalledToolLocator(directoryManager.getPermanentDirectory().toPath(), gson);
 
         DiagnosticSystem diagnosticSystem = null;
@@ -157,7 +179,6 @@ public class DetectBoot {
                 maskedRawPropertyValues
             );
         }
-
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
@@ -185,7 +206,7 @@ public class DetectBoot {
         ProductRunData productRunData;
 
         // store the result of hasImageOrTar... we will need this in more than one place.
-        boolean hasImageOrTar = false;
+        boolean hasImageOrTar;
         DetectableOptionFactory detectableOptionFactory;
         try {
             ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
@@ -199,19 +220,26 @@ public class DetectBoot {
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
         }
+        
+        Map<DetectTool, Set<String>> scanTypeEvidenceMap = autonomousManager.getScanTypeMap(hasImageOrTar);
 
         try {
-            BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode();
+            boolean blackduckScanModeSpecified = detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
+            BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
+            BlackduckScanMode blackduckScanMode = decideScanMode(blackDuckConnectionDetails, scanTypeEvidenceMap, blackduckScanModeSpecified, detectConfigurationFactory, autonomousScanEnabled, detectConfiguration);
+            if (autonomousScanEnabled) {
+                autonomousManager.setBlackDuckScanMode(blackduckScanMode.toString());
+            }
             ProductDecider productDecider = new ProductDecider();
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
-                detectConfigurationFactory.createBlackDuckConnectionDetails(),
+                blackDuckConnectionDetails,
                 blackduckScanMode,
-                detectConfigurationFactory.createHasSignatureScan()
+                detectConfigurationFactory.createHasSignatureScan(scanTypeEvidenceMap.containsKey(DetectTool.SIGNATURE_SCAN))
             );
 
             // in order to know if docker is needed we have to have either detect.target.type=IMAGE or detect.docker.image
             RunDecision runDecision = new RunDecision(detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE || hasImageOrTar, detectConfigurationFactory.createDetectTarget()); //TODO: Move to proper decision home. -jp
-            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision);
+            DetectToolFilter detectToolFilter = detectConfigurationFactory.createToolFilter(runDecision, blackDuckDecision, scanTypeEvidenceMap);
             oneRequiresTheOther(
                 detectConfigurationFactory.createDetectTarget() == DetectTargetType.IMAGE,
                 detectToolFilter.shouldInclude(DetectTool.DOCKER),
@@ -240,9 +268,31 @@ public class DetectBoot {
                 directoryManager,
                 freemarkerConfiguration,
                 installedToolManager,
-                installedToolLocator
+                installedToolLocator,
+                autonomousManager
             );
+
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
+    }
+
+    private BlackduckScanMode decideScanMode(BlackDuckConnectionDetails blackDuckConnectionDetails, Map<DetectTool, Set<String>> scanTypeEvidenceMap, boolean blackduckScanModeSpecified, DetectConfigurationFactory detectConfigurationFactory, boolean autonomousScanEnabled, DetectPropertyConfiguration detectConfiguration) {
+        if(!blackduckScanModeSpecified && autonomousScanEnabled) {
+            Optional<String> scaasFilePath = detectConfigurationFactory.getScaaasFilePath();
+            Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
+
+            AllEnumList<DetectTool> detectTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
+
+            if (blackDuckUrl.isPresent()) {
+                boolean isNotRapid = detectTools.representedValues().stream().anyMatch(tool -> !rapidTools.contains(tool)) || scanTypeEvidenceMap.keySet().stream().anyMatch(tool -> !rapidTools.contains(tool));
+                if (!scanTypeEvidenceMap.isEmpty() && !isNotRapid && scaasFilePath.isPresent()) {
+                    return BlackduckScanMode.RAPID;
+                } else if (!scanTypeEvidenceMap.isEmpty() && scaasFilePath.isPresent()) {
+                    return BlackduckScanMode.STATELESS;
+                }
+            }
+            return BlackduckScanMode.INTELLIGENT;
+        }
+        return detectConfigurationFactory.createScanMode();
     }
 
     private void oneRequiresTheOther(boolean firstCondition, boolean secondCondition, String errorMessageIfNot) throws DetectUserFriendlyException {
@@ -264,5 +314,4 @@ public class DetectBoot {
     private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues) {
         eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new TreeMap<>(maskedRawPropertyValues));
     }
-
 }

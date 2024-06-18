@@ -1,6 +1,7 @@
 package com.synopsys.integration.configuration.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ class SpringConfigurationPropertySourceTests {
         m.setProperty("example.key", "value");
 
         List<PropertySource> sources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(m, true));
-        PropertyConfiguration config = new PropertyConfiguration(sources);
+        PropertyConfiguration config = new PropertyConfiguration(sources, Collections.emptySortedMap());
 
         NullableAlikeProperty<String> property = new NullableStringProperty("example.key");
         Assertions.assertEquals(Optional.of("value"), config.getValue(property));

@@ -41,7 +41,7 @@ public class DetectFontInstallerTestIT {
     @Test
     public void testFontInstall() throws Exception {
         Gson gson = new Gson();
-        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList());
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList(), Collections.emptySortedMap());
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(
             new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver()),
             gson

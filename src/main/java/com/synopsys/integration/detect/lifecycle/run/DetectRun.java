@@ -1,7 +1,18 @@
 package com.synopsys.integration.detect.lifecycle.run;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.Map;
 
+import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
+import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,8 +65,12 @@ public class DetectRun {
             operationSystem = Optional.of(utilitySingletons.getOperationSystem());
 
             ProductRunData productRunData = bootSingletons.getProductRunData(); //TODO: Remove run data from boot singletons
+
+            Map<DetectTool, Set<String>> scanTypeEvidenceMap = productRunData.getDetectToolFilter().getExcludedIncludedFilter().getScanTypeEvidenceMap();
+
             OperationRunner operationRunner = createOperationFactory(bootSingletons, utilitySingletons, eventSingletons);
             StepHelper stepHelper = new StepHelper(utilitySingletons.getOperationSystem(), utilitySingletons.getOperationWrapper(), productRunData.getDetectToolFilter());
+            AutonomousManager autonomousManager = bootSingletons.getAutonomousManager();
 
             UniversalStepRunner stepRunner = new UniversalStepRunner(operationRunner, stepHelper); //Product independent tools
             UniversalToolsResult universalToolsResult = stepRunner.runUniversalTools();
@@ -76,6 +91,25 @@ public class DetectRun {
             } else {
                 bdio = BdioResult.none();
             }
+            
+            final Set<String> binaryTargets;
+            if(autonomousManager.getAutonomousScanEnabled()) {
+                SortedMap<String, SortedSet<String>> packageManagerTargets = stepRunner.getScanTargets(universalToolsResult);
+                autonomousManager.updateScanTargets(packageManagerTargets, scanTypeEvidenceMap);
+                AllEnumList<DetectTool> givenScanTypes = bootSingletons.getDetectConfiguration().getValue(DetectProperties.DETECT_TOOLS);
+                List<String> scanTypes = new ArrayList<>();
+                scanTypeEvidenceMap.keySet().forEach(tool -> scanTypes.add(tool.toString()));
+                givenScanTypes.representedValues().forEach(tool -> scanTypes.add(tool.toString()));
+                packageManagerTargets.keySet().forEach(tool -> scanTypes.add(tool));
+                binaryTargets = scanTypeEvidenceMap.get(DetectTool.BINARY_SCAN);
+                List<String> detectorTypes = new ArrayList<>(packageManagerTargets.keySet());
+                SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
+                List<String> allPropertyKeys = DetectProperties.allProperties().getPropertyKeys();
+                autonomousManager.updateScanSettingsProperties(defaultValueMap, scanTypes, detectorTypes, allPropertyKeys);
+            } else {
+                binaryTargets = Collections.EMPTY_SET;
+            }
+
             if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
                 if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) {
@@ -88,11 +122,14 @@ public class DetectRun {
                     logger.info("Rapid Scan is offline, nothing to do.");
                 } else if (blackDuckRunData.isOnline()) {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
-                    intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
+                    intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData(), binaryTargets);
                 } else {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
                     intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData(), bdio);
                 }
+            }
+            if(autonomousManager.getAutonomousScanEnabled()) {
+                operationRunner.saveAutonomousScanSettingsFile(autonomousManager);
             }
         } catch (Exception e) {
             logger.error(ReportConstants.RUN_SEPARATOR);
