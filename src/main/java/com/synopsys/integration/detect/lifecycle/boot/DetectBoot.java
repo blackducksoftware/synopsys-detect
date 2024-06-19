@@ -277,14 +277,15 @@ public class DetectBoot {
         if(!blackduckScanModeSpecified && autonomousScanEnabled) {
             Optional<String> scaasFilePath = detectConfigurationFactory.getScaaasFilePath();
             Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
+            BlackduckScanMode blackduckScanMode = detectConfigurationFactory.createScanMode(); // getting scan mode from previous scan
 
             AllEnumList<DetectTool> detectTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
 
             if (blackDuckUrl.isPresent()) {
                 boolean isNotRapid = detectTools.representedValues().stream().anyMatch(tool -> !rapidTools.contains(tool)) || scanTypeEvidenceMap.keySet().stream().anyMatch(tool -> !rapidTools.contains(tool));
-                if (!scanTypeEvidenceMap.isEmpty() && !isNotRapid && scaasFilePath.isPresent()) {
+                if ((!scanTypeEvidenceMap.isEmpty() && !isNotRapid && scaasFilePath.isPresent()) || blackduckScanMode.displayName().equals("Rapid")) {
                     return BlackduckScanMode.RAPID;
-                } else if (!scanTypeEvidenceMap.isEmpty() && scaasFilePath.isPresent()) {
+                } else if ((!scanTypeEvidenceMap.isEmpty() && scaasFilePath.isPresent()) || blackduckScanMode.displayName().equals("Stateless")) {
                     return BlackduckScanMode.STATELESS;
                 }
             }
