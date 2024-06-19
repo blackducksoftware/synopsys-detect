@@ -104,7 +104,6 @@ public class DetectRun {
                 List<String> allPropertyKeys = DetectProperties.allProperties().getPropertyKeys();
                 Set<String> decidedScanTypes = getDecidedTools(bootSingletons, scanTypeEvidenceMap);
                 autonomousManager.updateScanSettingsProperties(defaultValueMap, decidedScanTypes, packageManagerTargets.keySet(), allPropertyKeys);
-                autonomousManager.removeExcludedToolsAndDetectors();
             } else {
                 binaryTargets = Collections.EMPTY_SET;
             }

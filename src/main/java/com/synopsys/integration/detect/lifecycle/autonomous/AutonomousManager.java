@@ -138,7 +138,7 @@ public class AutonomousManager {
         allProperties.entrySet().removeIf(entry -> !allPropertyKeys.contains(entry.getKey()));
     }
 
-    public void removeExcludedToolsAndDetectors() {
+    private void removeExcludedToolsAndDetectors() {
         scanSettings.getScanTypes().removeIf(scanType -> !decidedScanTypes.contains(scanType.getScanTypeName()));
         scanSettings.getDetectorTypes().removeIf(detectorType -> !decidedDetectorTypes.contains(detectorType.getDetectorTypeName()));
     }
@@ -154,6 +154,7 @@ public class AutonomousManager {
         });
         decidedScanTypes = adoptedScanTypes;
         decidedDetectorTypes = detectorTypes;
+        removeExcludedToolsAndDetectors();
     }
 
     public void savePropertiesToModel() {
