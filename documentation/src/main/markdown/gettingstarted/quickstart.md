@@ -2,6 +2,8 @@
 
 The following is a simple example to help you get started using [company_name] [solution_name].
 
+<note type="hint">For a quick path to scanning with [company_name] [solution_name], see also [Autonomous Scanning](../runningdetect/autonomousscan.md)
+
 ## Step 1: Locate or acquire a source code project on which you will run [company_name] [solution_name].
 
 To run [company_name] [solution_name] on junit4, which is an open source project written in Java and built with Maven, you could acquire
@@ -57,6 +59,6 @@ Point your browser to the Black Duck Project BOM URL to see the Bill Of Material
 
 ## Next steps
 
-[company_name] [solution_name] can be used on a variety of project types, and in a variety of ways, requiring its behavior to be highly configurable.
+[company_name] [solution_name] can be used on a variety of project types, and in a variety of ways, due to it's behavior being highly configurable.
 For more detailed information on how to configure [company_name] [solution_name] for your needs, see [Configuring Synopsys Detect](../configuring/overview.md).
 
