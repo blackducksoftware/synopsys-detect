@@ -1,6 +1,14 @@
 package com.synopsys.integration.detect.lifecycle.run;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;

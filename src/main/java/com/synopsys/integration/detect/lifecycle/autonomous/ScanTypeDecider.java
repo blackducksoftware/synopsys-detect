@@ -40,33 +40,28 @@ public class ScanTypeDecider {
                 logger.debug("includedTools: {}", includedTools.toPresentValues());
                 logger.debug("excludedTools: {}", excludedTools.toPresentValues());
                 final Map<DetectTool, Set<String>> scanTypeEvidenceMap = new HashMap<>();
-                if (!excludedTools.containsValue(DetectTool.BINARY_SCAN)
-                        && (includedTools.containsValue(DetectTool.BINARY_SCAN)
-                        || includedTools.isEmpty()
-                        || includedTools.containsAll())
-                        && !pathsCollection.binaryPaths.isEmpty()) {
-                    scanTypeEvidenceMap.put(DetectTool.BINARY_SCAN, pathsCollection.binaryPaths);
-                }
-                if (!excludedTools.containsValue(DetectTool.DETECTOR)
-                        && (includedTools.containsValue(DetectTool.DETECTOR)
-                        || includedTools.isEmpty()
-                        || includedTools.containsAll())
-                        && !pathsCollection.detectorPaths.isEmpty()) {
-                    scanTypeEvidenceMap.put(DetectTool.DETECTOR, pathsCollection.detectorPaths);
-                }
-                if (!excludedTools.containsValue(DetectTool.SIGNATURE_SCAN)
-                        && (includedTools.containsValue(DetectTool.SIGNATURE_SCAN)
-                        || includedTools.isEmpty()
-                        || includedTools.containsAll())
-                        && !pathsCollection.signaturePaths.isEmpty()) {
-                    scanTypeEvidenceMap.put(DetectTool.SIGNATURE_SCAN, pathsCollection.signaturePaths);
-                }
+                decideTool(scanTypeEvidenceMap, pathsCollection.binaryPaths, includedTools, excludedTools, DetectTool.BINARY_SCAN);
+                decideTool(scanTypeEvidenceMap, pathsCollection.detectorPaths, includedTools, excludedTools, DetectTool.DETECTOR);
+                decideTool(scanTypeEvidenceMap, pathsCollection.signaturePaths, includedTools, excludedTools, DetectTool.SIGNATURE_SCAN);
                 return scanTypeEvidenceMap;
             }
         }
         return Collections.EMPTY_MAP;
     }
-    
+
+    private void decideTool(Map<DetectTool, Set<String>> scanTypeEvidenceMap,
+            Set<String> pathsForTool,
+            AllNoneEnumCollection<DetectTool> includedTools, 
+            AllNoneEnumCollection<DetectTool> excludedTools,
+            DetectTool candidateTool) {
+        if (!excludedTools.containsValue(candidateTool)
+                && (includedTools.containsValue(candidateTool)
+                || includedTools.isEmpty()
+                || includedTools.containsAll())
+                && !pathsForTool.isEmpty()) {
+            scanTypeEvidenceMap.put(candidateTool, pathsForTool);
+        }
+    }
     private final Set<String> avoidAbsolutely = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             ".gitattributes", 
             ".gitignore", 

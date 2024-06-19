@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.lifecycle.autonomous.model;
 
-import org.jetbrains.annotations.NotNull;
+import com.drew.lang.annotations.NotNull;
 
 import java.util.Map;
 import java.util.SortedMap;
