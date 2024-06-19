@@ -82,7 +82,9 @@ public class AutonomousManager {
     }
 
     public void setBlackDuckScanMode(String scanMode) {
-        this.blackDuckScanMode = scanMode;
+        if(autonomousScanEnabled) {
+            this.blackDuckScanMode = scanMode;
+        }
     }
 
     public void writeScanSettingsModelToTarget() throws IOException {
