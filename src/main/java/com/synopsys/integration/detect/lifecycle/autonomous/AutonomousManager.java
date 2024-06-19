@@ -138,9 +138,9 @@ public class AutonomousManager {
         allProperties.entrySet().removeIf(entry -> !allPropertyKeys.contains(entry.getKey()));
     }
 
-    public void removeExcludedToolsAndDetectors(Set<String> excludedScanTypes, Set<String> excludedDetectorTypes) {
-        scanSettings.getScanTypes().removeIf(scanType -> excludedScanTypes.contains(scanType.getScanTypeName()));
-        scanSettings.getDetectorTypes().removeIf(detectorType -> excludedDetectorTypes.contains(detectorType.getDetectorTypeName()));
+    public void removeExcludedToolsAndDetectors() {
+        scanSettings.getScanTypes().removeIf(scanType -> !decidedScanTypes.contains(scanType.getScanTypeName()));
+        scanSettings.getDetectorTypes().removeIf(detectorType -> !decidedDetectorTypes.contains(detectorType.getDetectorTypeName()));
     }
 
     public void updateScanSettingsProperties(SortedMap<String, String> defaultPropertiesMap, Set<String> adoptedScanTypes, Set<String> detectorTypes, List<String> allPropertyKeys) {
@@ -152,7 +152,6 @@ public class AutonomousManager {
                 allProperties.putIfAbsent(propertyKey, propertyValue);
             }
         });
-
         decidedScanTypes = adoptedScanTypes;
         decidedDetectorTypes = detectorTypes;
     }
@@ -229,7 +228,9 @@ public class AutonomousManager {
     }
 
     public void updateUserProvidedBinaryScanTargets(List<File> binaryScanTargets) {
-        ScanType scanType = scanSettings.getScanTypeWithName("BINARY_SCAN");
-        binaryScanTargets.forEach(file -> scanType.getScanTargets().add(file.getAbsolutePath()));
+        if(decidedScanTypes.contains("BINARY_SCAN")) {
+            ScanType scanType = scanSettings.getScanTypeWithName("BINARY_SCAN");
+            binaryScanTargets.forEach(file -> scanType.getScanTargets().add(file.getAbsolutePath()));
+        }
     }
 }

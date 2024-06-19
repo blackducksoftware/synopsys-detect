@@ -100,11 +100,11 @@ public class DetectRun {
                 SortedMap<String, SortedSet<String>> packageManagerTargets = stepRunner.getScanTargets(universalToolsResult);
                 autonomousManager.updateScanTargets(packageManagerTargets, scanTypeEvidenceMap);
                 binaryTargets = scanTypeEvidenceMap.get(DetectTool.BINARY_SCAN);
-                Map<String, Set<String>> decidedTools = getDecidedTools(bootSingletons, scanTypeEvidenceMap, packageManagerTargets);
                 SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
                 List<String> allPropertyKeys = DetectProperties.allProperties().getPropertyKeys();
-                autonomousManager.updateScanSettingsProperties(defaultValueMap, decidedTools.get("scanTypes"), decidedTools.get("detectorTypes"), allPropertyKeys);
-                autonomousManager.removeExcludedToolsAndDetectors(decidedTools.get("excludedScanTypes"), decidedTools.get("excludedDetectorTypes"));
+                Set<String> decidedScanTypes = getDecidedTools(bootSingletons, scanTypeEvidenceMap);
+                autonomousManager.updateScanSettingsProperties(defaultValueMap, decidedScanTypes, packageManagerTargets.keySet(), allPropertyKeys);
+                autonomousManager.removeExcludedToolsAndDetectors();
             } else {
                 binaryTargets = Collections.EMPTY_SET;
             }
@@ -143,24 +143,13 @@ public class DetectRun {
         }
     }
 
-    private Map<String, Set<String>> getDecidedTools(BootSingletons bootSingletons, Map<DetectTool, Set<String>> scanTypeEvidenceMap, SortedMap<String, SortedSet<String>> packageManagerTargets) {
-        Map<String, Set<String>> decidedTools = new HashMap<>();
-        decidedTools.put("scanTypes", new HashSet<>());
-        decidedTools.put("detectorTypes", new HashSet<>(packageManagerTargets.keySet()));
-        decidedTools.put("excludedScanTypes", new HashSet<>());
-        decidedTools.put("excludedDetectorTypes", new HashSet<>());
-
+    private Set<String> getDecidedTools(BootSingletons bootSingletons, Map<DetectTool, Set<String>> scanTypeEvidenceMap) {
         AllEnumList<DetectTool> userProvidedScanTypes = bootSingletons.getDetectConfiguration().getValue(DetectProperties.DETECT_TOOLS);
-        NoneEnumList<DetectTool> userExcludedScanTypes = bootSingletons.getDetectConfiguration().getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
+        Set<String> decidedScanTypes = new HashSet<>();
+        scanTypeEvidenceMap.keySet().forEach(tool -> decidedScanTypes.add(tool.toString()));
+        userProvidedScanTypes.representedValues().forEach(tool -> decidedScanTypes.add(tool.toString()));
 
-        scanTypeEvidenceMap.keySet().forEach(tool -> decidedTools.get("scanTypes").add(tool.toString()));
-        userProvidedScanTypes.representedValues().forEach(tool -> decidedTools.get("scanTypes").add(tool.toString()));
-        userExcludedScanTypes.representedValues().forEach(tool -> decidedTools.get("excludedScanTypes").add(tool.toString()));
-
-        NoneEnumList<DetectorType> excludedDetectorTypes = bootSingletons.getDetectConfiguration().getValue(DetectProperties.DETECT_EXCLUDED_DETECTOR_TYPES);
-        excludedDetectorTypes.representedValues().forEach(tool -> decidedTools.get("excludedDetectorTypes").add(tool.toString()));
-
-        return decidedTools;
+        return decidedScanTypes;
     }
 
     /**
