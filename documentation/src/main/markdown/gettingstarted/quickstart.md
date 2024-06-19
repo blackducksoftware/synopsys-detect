@@ -2,7 +2,7 @@
 
 The following is a simple example to help you get started using [company_name] [solution_name].
 
-<note type="hint">For a quick path to scanning with [company_name] [solution_name], see also [Autonomous Scanning](../runningdetect/autonomousscan.md)
+<note type="hint">For another quick path to scanning with [company_name] [solution_name], see [Autonomous Scanning](../runningdetect/autonomousscan.md).
 
 ## Step 1: Locate or acquire a source code project on which you will run [company_name] [solution_name].
 
