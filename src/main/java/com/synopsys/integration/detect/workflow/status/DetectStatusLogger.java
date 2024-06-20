@@ -7,14 +7,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import javax.swing.text.html.Option;
-
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
-<<<<<<< HEAD
-=======
 import com.synopsys.integration.detect.lifecycle.autonomous.ScanSettingsSerializer;
->>>>>>> 9.8.z
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.log.IntLogger;
 

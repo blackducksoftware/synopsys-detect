@@ -96,7 +96,7 @@ public class AutonomousManager {
         }
     }
 
-    public ScanSettings initializeScanSettingsModel() {
+    private ScanSettings initializeScanSettingsModel() {
         if (isScanSettingsFilePresent()) {
             logger.debug("Found previous scan settings file at " + scanSettingsTargetFile.getAbsolutePath() + " and will be used for making autonomous scan decisions.");
             return ScanSettingsSerializer.deserializeScanSettingsFile(scanSettingsTargetFile);
