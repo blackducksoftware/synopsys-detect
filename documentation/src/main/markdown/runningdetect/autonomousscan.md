@@ -26,7 +26,7 @@ The scan settings file name is a hash generated from the scanned folder(s). An i
 1. Once complete, scan findings can be viewed in the BDIO file produced, or in the [blackduck_product_name] UI if [blackduck_product_name] has been configured.
 ## Scan mode scenarios
 
-- [ONLINE mode](properties/configuration/blackduck-server.md): With [blackduck_product_name] configuration or proxy configuration set and `blackduck.offline.mode` set to false, or overridden as false in the scan settings file, the scan will run online.
+- [ONLINE mode](../properties/configuration/blackduck-server.md): With [blackduck_product_name] configuration or proxy configuration set and `blackduck.offline.mode` set to false, or overridden as false in the scan settings file, the scan will run online.
 
 	- [Rapid](rapidscan.md): Will run if the [scan path](../properties/configuration/paths.html#scaaas-scan-target) `--scaaas.scan.path` is provided and `--detect.tools=DETECTOR` is set, or `--detect.blackduck.scan.mode` is set to RAPID.
 
@@ -34,11 +34,11 @@ The scan settings file name is a hash generated from the scanned folder(s). An i
 
 	- Intelligent scan: Runs when [scan mode](../properties/configuration/blackduck-server.html#ariaid-title7) is not set to RAPID or STATELESS, or `--detect.blackduck.scan.mode` is explicitly set to INTELLIGENT.
 
-- [OFFLINE mode](properties/configuration/blackduck-server.md#offline-mode): When `--blackduck.offline.mode` is true or there is no [blackduck_product_name] url or [blackduck_product_name] proxy information provided. (Warning messages will be logged for binary and signature scans.)
+- [OFFLINE mode](../properties/configuration/blackduck-server.md#offline-mode): When `--blackduck.offline.mode` is true or there is no [blackduck_product_name] url or [blackduck_product_name] proxy information provided. (Warning messages will be logged for binary and signature scans.)
 
-	- Binary scan: Will run if one or more binary files exist in the scan directory and [blackduck_product_name] configuration is completed.
+	- [Binary scan](https://sig-product-docs.synopsys.com/bundle/bd-hub/page/BinaryAnalysis/Overview.html): Will run if one or more binary files exist in the scan directory and [blackduck_product_name] configuration is completed.
 
-	- Signature scan: Will run against source files if scan cli is available. If scan cli is not locally available, it will need to be downloaded from [blackduck_product_name].
+	- Signature scan: Will run against source files if scan cli is available. If [scan cli](https://sig-product-docs.synopsys.com/bundle/bd-hub/page/ComponentDiscovery/DownloadAndInstall.html) is not locally available, it will need to be downloaded from [blackduck_product_name].
 
 ## Requirements and Limitations
 
