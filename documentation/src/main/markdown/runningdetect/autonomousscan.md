@@ -34,9 +34,9 @@ The scan settings file name is a hash generated from the scanned folder(s). An i
 
 	- Intelligent scan: Runs when [scan mode](../properties/configuration/blackduck-server.html#ariaid-title7) is not set to RAPID or STATELESS, or `--detect.blackduck.scan.mode` is explicitly set to INTELLIGENT.
 
-- [OFFLINE mode](properties/configuration/blackduck-server.html#offline-mode): When `--blackduck.offline.mode` is true or there is no [blackduck_product_name] url or [blackduck_product_name] proxy information provided. (Warning messages will be logged for binary and signature scans.)
+- [OFFLINE mode](properties/configuration/blackduck-server.md#offline-mode): When `--blackduck.offline.mode` is true or there is no [blackduck_product_name] url or [blackduck_product_name] proxy information provided. (Warning messages will be logged for binary and signature scans.)
 
-	- Binary scan: Will run if a binary file exists in the scan directory and [blackduck_product_name] configuration is completed.
+	- Binary scan: Will run if one or more binary files exist in the scan directory and [blackduck_product_name] configuration is completed.
 
 	- Signature scan: Will run against source files if scan cli is available. If scan cli is not locally available, it will need to be downloaded from [blackduck_product_name].
 
