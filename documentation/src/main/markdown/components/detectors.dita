@@ -432,7 +432,7 @@
 							<entry>various</entry>
 							<entry>Maven Central</entry>
 							<entry>
-								<p>File: build.gradle</p>
+								<p>Files: build.gradle, *.gradle</p>
 							</entry>
 							<entry>LOW</entry>
 						</row>
