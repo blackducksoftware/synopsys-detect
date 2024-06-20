@@ -38,8 +38,7 @@ public class SetupToolsBuildlessDetectable extends Detectable {
     private final SetupToolsExtractor setupToolsExtractor;
     
     private static final String PY_PROJECT_TOML = "pyproject.toml";
-    
-    private File projectToml;
+
     private TomlParseResult parsedToml;
     
     private SetupToolsParser setupToolsParser;
@@ -52,22 +51,31 @@ public class SetupToolsBuildlessDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
+        // Ensure there is a pyproject.toml
         Requirements fileResolver = new Requirements(fileFinder, environment);
-        projectToml = fileResolver.file(PY_PROJECT_TOML);
+        File projectToml = fileResolver.file(PY_PROJECT_TOML);
         
-        return fileResolver.result();
+        if (fileResolver.isAlreadyFailed()) {
+            return fileResolver.result();
+        }
+        
+        try {
+            parsedToml = SetupToolsExtractUtils.extractToml(projectToml);
+
+            // Ensure the pyproject.toml file has a requires setuptools line.
+            if (parsedToml == null || !SetupToolsExtractUtils.checkTomlRequiresSetupTools(parsedToml)) {
+                return new SetupToolsRequiresNotFoundDetectableResult();
+            }
+        } catch (IOException e){
+            return new ExceptionDetectableResult(e);
+        }
+        
+        return new PassedDetectableResult();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        try {
-            parsedToml = SetupToolsExtractUtils.extractToml(projectToml);
-
-            // Ensure an existing pyproject.toml with a requires setuptools line.
-            if (parsedToml == null || !SetupToolsExtractUtils.checkTomlRequiresSetupTools(parsedToml)) {
-                return new SetupToolsRequiresNotFoundDetectableResult();
-            }
-            
+        try {            
             // Ensure dependencies/requirements are specified in a toml, cfg, or py file.
             setupToolsParser = SetupToolsExtractUtils.resolveSetupToolsParser(parsedToml, fileFinder, environment);
             

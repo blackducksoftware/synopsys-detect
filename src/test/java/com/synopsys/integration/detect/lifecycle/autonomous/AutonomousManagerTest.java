@@ -1,5 +1,7 @@
 package com.synopsys.integration.detect.lifecycle.autonomous;
 
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.SortedMap;
@@ -19,6 +21,15 @@ import com.synopsys.integration.detect.lifecycle.autonomous.model.PackageManager
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanType;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.TreeSet;
+import java.util.HashSet;
 
 public class AutonomousManagerTest {
 
@@ -80,6 +91,7 @@ public class AutonomousManagerTest {
         Assertions.assertEquals(postRunScanSettingsTestFile.getPath(), String.join("/", POST_RUN_SCAN_SETTINGS_TEST_DIR.getPath(), TEST_HASHED_SCAN_SETTINGS_FILE_NAME));
     }
 
+<<<<<<< Updated upstream
     @Test
     public void testNoPreviousScanSettingsFile() {
         setUpNoScanSettingsMock();
@@ -136,5 +148,19 @@ public class AutonomousManagerTest {
         Assertions.assertEquals(testScanType.getScanTypeName(), "BINARY_SCAN");
         Assertions.assertEquals(testScanType.getScanProperties().get("detect.binary.scan.search.depth"), "4");
         Assertions.assertEquals(testScanType.getScanTargets().first(), "/Users/username/project-name/binary1.exe");
+=======
+    public void scanTargetsTest() {
+        DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
+        DetectPropertyConfiguration detectPropertyConfiguration = Mockito.mock(DetectPropertyConfiguration.class);
+        AutonomousManager autonomousManager = new AutonomousManager(directoryManager, detectPropertyConfiguration, true, Collections.emptySortedMap());
+
+        SortedMap<String, SortedSet<String>> packageManagerTargets = new TreeMap<>();
+        Map<DetectTool, Set<String>> scanTypeTargets = new HashMap<>();
+
+        packageManagerTargets.put("MAVEN", new TreeSet<String>() {{
+            add("/mock/path/maven1");
+            add("mock/path/maven2");
+        }});
+>>>>>>> Stashed changes
     }
 }

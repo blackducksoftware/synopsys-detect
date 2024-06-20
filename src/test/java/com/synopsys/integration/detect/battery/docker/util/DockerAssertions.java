@@ -7,7 +7,12 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.Set;
 
+import com.synopsys.integration.common.util.Bds;
+import com.synopsys.integration.detect.lifecycle.autonomous.model.PackageManagerType;
+import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
+import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanType;
 import org.junit.jupiter.api.Assertions;
 
 import com.google.gson.Gson;
@@ -22,6 +27,7 @@ public class DockerAssertions {
     private final File outputDirectory;
     private final File bdioDirectory;
     private FormattedOutput statusJson = null;
+    private ScanSettings scanSettingsJson = null;
 
     public DockerAssertions(DockerTestDirectories testDirectories, DockerDetectResult dockerDetectResult) {
         this.dockerDetectResult = dockerDetectResult;
@@ -53,14 +59,15 @@ public class DockerAssertions {
         Assertions.assertEquals("SUCCESS", detector.get().status);
     }
 
+
     public void successfulOperationStatusJson(String operationKey) {
         FormattedOutput statusJson = locateStatusJson();
-        Optional<FormattedOperationOutput> detector = statusJson.operations.stream().filter(it -> it.descriptionKey.equals(operationKey))
+        Optional<FormattedOperationOutput> operation = statusJson.operations.stream().filter(it -> it.descriptionKey.equals(operationKey))
             .findFirst();
 
-        Assertions.assertTrue(detector.isPresent(), "Could not find required operation '" + operationKey + "' in status json detector list.");
+        Assertions.assertTrue(operation.isPresent(), "Could not find required operation '" + operationKey + "' in status json detector list.");
 
-        Assertions.assertEquals("SUCCESS", detector.get().status);
+        Assertions.assertEquals("SUCCESS", operation.get().status);
     }
 
     public void successfulToolStatusJson(String detectorType) {
@@ -98,9 +105,37 @@ public class DockerAssertions {
 
     public void locateScanSettingsFile() {
         File scanSettingsDirectory = new File(outputDirectory,"scan-settings");
+        Assertions.assertNotNull(scanSettingsDirectory, "Could not find any scanSettings directories, looked in: " + outputDirectory);
         File[] scanSettingsFiles = scanSettingsDirectory.listFiles();
-        Assertions.assertNotNull(scanSettingsFiles, "Could not find any run directories, looked in: " + scanSettingsDirectory);
-        Assertions.assertEquals(1, scanSettingsFiles.length, "There should be exactly one run directory (from this latest run).");
+        Assertions.assertNotNull(scanSettingsFiles, "There are no scan-settings file inside scan-settings directory");
+        Assertions.assertEquals(1, scanSettingsFiles.length, "There should be exactly one scan settings file (from this latest run).");
+
+        File scanSettings = scanSettingsFiles[0];
+        Assertions.assertTrue(scanSettings.exists(), "Could not find scan-settings json in the directory!");
+
+        try {
+            scanSettingsJson = new Gson().fromJson(new FileReader(scanSettings), ScanSettings.class);
+        } catch (FileNotFoundException e) {
+            Assertions.fail("Unable to parse scans-settings json file", e);
+        }
+    }
+
+    public void autonomousScanModeAssertions(String scanMode) {
+        String scanModeInFile = scanSettingsJson.getGlobalDetectProperties().get("detect.blackduck.scan.mode");
+        Assertions.assertEquals(scanModeInFile, scanMode, "Expected Blackduck scan mode to be " + scanMode + " but it is actually " + scanModeInFile);
+    }
+
+    public void autonomousDetectorAssertions(String detectorType, String... propertiesPresent) {
+        Optional<PackageManagerType> detectorTypeInFile = scanSettingsJson.getDetectorTypes().stream().filter(detector -> detector.getDetectorTypeName().equals(detectorType)).findFirst();
+        Assertions.assertTrue(detectorTypeInFile.isPresent(), "Expected Scan Settings File to contain Detector Type: " + detectorType);
+
+        Set<String> propertiesToCheck = Bds.setOf(propertiesPresent);
+
+        if(!propertiesToCheck.isEmpty()) {
+            propertiesToCheck.forEach(property -> {
+                detectorTypeInFile.get().getDetectorProperties().containsKey(property);
+            });
+        }
     }
 
     public void atLeastOneBdioFile() {
@@ -156,6 +191,10 @@ public class DockerAssertions {
                 .findAny().isPresent(),
             String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename)
         );
+    }
+
+    public void exitCodeIs(int expected) {
+        Assertions.assertEquals(expected, dockerDetectResult.getExitCode());
     }
 
     public File getOutputDirectory() {

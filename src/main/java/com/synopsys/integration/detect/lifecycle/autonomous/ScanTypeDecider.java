@@ -27,10 +27,9 @@ import org.slf4j.LoggerFactory;
 
 public class ScanTypeDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
-    public Map<DetectTool, Set<String>> decide(boolean hasImageOrTar, DetectPropertyConfiguration detectConfiguration) {
+
+    public Map<DetectTool, Set<String>> decide(boolean hasImageOrTar, DetectPropertyConfiguration detectConfiguration, Path detectSourcePath) {
         if (!hasImageOrTar && detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED)) {
-            Path detectSourcePath = detectConfiguration.getPathOrNull(DetectProperties.DETECT_SOURCE_PATH);
             AllNoneEnumCollection<DetectTool> includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
             AllNoneEnumCollection<DetectTool> excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
             if (detectSourcePath == null) {
@@ -41,33 +40,29 @@ public class ScanTypeDecider {
                 logger.debug("includedTools: {}", includedTools.toPresentValues());
                 logger.debug("excludedTools: {}", excludedTools.toPresentValues());
                 final Map<DetectTool, Set<String>> scanTypeEvidenceMap = new HashMap<>();
-                if (!excludedTools.containsValue(DetectTool.BINARY_SCAN)
-                        && (includedTools.containsValue(DetectTool.BINARY_SCAN)
-                        || includedTools.isEmpty()
-                        || includedTools.containsAll())
-                        && !pathsCollection.binaryPaths.isEmpty()) {
-                    scanTypeEvidenceMap.put(DetectTool.BINARY_SCAN, pathsCollection.binaryPaths);
-                }
-                if (!excludedTools.containsValue(DetectTool.DETECTOR)
-                        && (includedTools.containsValue(DetectTool.DETECTOR)
-                        || includedTools.isEmpty()
-                        || includedTools.containsAll())
-                        && !pathsCollection.detectorPaths.isEmpty()) {
-                    scanTypeEvidenceMap.put(DetectTool.DETECTOR, pathsCollection.detectorPaths);
-                }
-                if (!excludedTools.containsValue(DetectTool.SIGNATURE_SCAN)
-                        && (includedTools.containsValue(DetectTool.SIGNATURE_SCAN)
-                        || includedTools.isEmpty()
-                        || includedTools.containsAll())
-                        && !pathsCollection.signaturePaths.isEmpty()) {
-                    scanTypeEvidenceMap.put(DetectTool.SIGNATURE_SCAN, pathsCollection.signaturePaths);
-                }
+                decideTool(scanTypeEvidenceMap, pathsCollection.binaryPaths, includedTools, excludedTools, DetectTool.BINARY_SCAN);
+                decideTool(scanTypeEvidenceMap, pathsCollection.detectorPaths, includedTools, excludedTools, DetectTool.DETECTOR);
+                decideTool(scanTypeEvidenceMap, pathsCollection.signaturePaths, includedTools, excludedTools, DetectTool.SIGNATURE_SCAN);
                 return scanTypeEvidenceMap;
             }
         }
         return Collections.EMPTY_MAP;
     }
-    
+
+    private void decideTool(Map<DetectTool, Set<String>> scanTypeEvidenceMap,
+            Set<String> pathsForTool,
+            AllNoneEnumCollection<DetectTool> includedTools, 
+            AllNoneEnumCollection<DetectTool> excludedTools,
+            DetectTool candidateTool) {
+        if (!excludedTools.containsValue(candidateTool)
+                && (includedTools.containsValue(candidateTool)
+                || includedTools.isEmpty()
+                || includedTools.containsAll())
+                && !pathsForTool.isEmpty()) {
+            scanTypeEvidenceMap.put(candidateTool, pathsForTool);
+        }
+    }
+
     private final Set<String> avoidAbsolutely = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             ".gitattributes", 
             ".gitignore", 
@@ -102,8 +97,11 @@ public class ScanTypeDecider {
     private boolean shouldAvoidDirectory(String name) {
         return avoidAbsolutely.contains(name);
     }
-    
-    private boolean isEligibleFile(String name) {
+
+    private boolean isEligibleFile(String name, long size) {
+        if (size<=0L) {
+            return false;
+        }
         for(String extension : ignoreReluctantly) {
             if (name.toLowerCase().endsWith(extension)) {
                 return false;
@@ -129,10 +127,11 @@ public class ScanTypeDecider {
         try {
             Files.walkFileTree(pathToSearch, new FileVisitor<Path>() {
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (isEligibleFile(file.toFile().getName())) {
-                        if (isBinary(file.toFile())) {
-                            pathsCollection.binaryPaths.add(file.toAbsolutePath().toString());
+                public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+                    String fileName = path.getFileName().toString();
+                    if (isEligibleFile(fileName, attrs.size())) {
+                        if (isBinary(path.toFile())) {
+                            pathsCollection.binaryPaths.add(path.toAbsolutePath().toString());
                         } else if (pathsCollection.detectorPaths.isEmpty()) {
                             pathsCollection.detectorPaths.add(pathToSearch.toAbsolutePath().toString());
                         }
@@ -165,7 +164,7 @@ public class ScanTypeDecider {
         } catch (IOException ex) {
             logger.error("Failure when attempting to locate build config files.", ex);
         } finally {
-            logger.debug("Done. Seconds: {}", (System.currentTimeMillis()-t1)/1000D);
+            logger.info("Search for binary files is done. Seconds: {}", (System.currentTimeMillis()-t1)/1000D);
         }
         return pathsCollection;
     }
