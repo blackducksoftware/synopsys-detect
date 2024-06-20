@@ -73,7 +73,7 @@ public class BinaryScanStepRunner {
         }
     }
     
-    private Optional<String> extractBinaryScanId(UploadFinishResponse response) {     
+    public Optional<String> extractBinaryScanId(UploadFinishResponse response) {     
         try {
             String location = response.getLocation();
             URI uri = new URI(location);

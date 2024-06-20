@@ -1457,7 +1457,6 @@ public class OperationRunner {
         String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryUpload,
                 projectNameVersion.getName(), projectNameVersion.getVersion());
 
-        // TODO test how to send in a real proxy if user specified
         UploaderConfig.Builder uploaderConfigBuilder = UploaderConfig.createConfigFromProperties(
                 blackDuckRunData.getBlackDuckServerConfig().getProxyInfo(), new Properties())
                 // TODO make configurable? They are both 5mb right now
@@ -1474,7 +1473,6 @@ public class OperationRunner {
         BinaryScanRequestData binaryData = new BinaryScanRequestData(projectNameVersion.getName(),
                 projectNameVersion.getVersion(), codeLocationName, "");
 
-        BinaryUploader binaryUploader = uploadFactory.createBinaryUploader("/api/uploads", binaryData);
-        return binaryUploader;
+        return uploadFactory.createBinaryUploader("/api/uploads", binaryData);
     }
 }
