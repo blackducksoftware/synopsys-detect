@@ -286,9 +286,9 @@ public class DetectBoot {
 
             if (blackDuckUrl.isPresent()) {
                 boolean isNotRapid = detectTools.representedValues().stream().anyMatch(tool -> !rapidTools.contains(tool)) || scanTypeEvidenceMap.keySet().stream().anyMatch(tool -> !rapidTools.contains(tool));
-                if ((!scanTypeEvidenceMap.isEmpty() && !isNotRapid && scaasFilePath.isPresent()) || blackduckScanMode.displayName().equals("Rapid")) {
+                if ((!scanTypeEvidenceMap.isEmpty() && !isNotRapid && scaasFilePath.isPresent()) || blackduckScanMode.equals(BlackduckScanMode.RAPID)) {
                     return BlackduckScanMode.RAPID;
-                } else if ((!scanTypeEvidenceMap.isEmpty() && scaasFilePath.isPresent()) || blackduckScanMode.displayName().equals("Stateless")) {
+                } else if ((!scanTypeEvidenceMap.isEmpty() && scaasFilePath.isPresent()) || blackduckScanMode.equals(BlackduckScanMode.STATELESS)) {
                     return BlackduckScanMode.STATELESS;
                 } else {
                     return BlackduckScanMode.INTELLIGENT;
