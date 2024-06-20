@@ -169,19 +169,19 @@ dependencies {
     implementation 'org.apache.tika:tika-parsers:1.28.5'
     constraints {
         implementation('org.apache.cxf:cxf-rt-security:4.0.4') {
-            because 'previous versions has a vulnerability'
+            because 'previous version has a vulnerability'
         }
         implementation('org.apache.cxf:cxf-rt-rs-client:4.0.4') {
-            because 'previous versions has a vulnerability'
+            because 'previous version has a vulnerability'
         }
         implementation('org.apache.cxf:cxf-rt-transports-http:4.0.4') {
-            because 'previous versions has a vulnerability'
+            because 'previous version has a vulnerability'
         }
         implementation('org.apache.cxf:cxf-core:4.0.4') {
-            because 'previous versions has a vulnerability'
+            because 'previous version has a vulnerability'
         }
         implementation('org.apache.cxf:cxf-rt-frontend-jaxrs:4.0.4') {
-            because 'previous versions has a vulnerability'
+            because 'previous version has a vulnerability'
         }
     }
 
