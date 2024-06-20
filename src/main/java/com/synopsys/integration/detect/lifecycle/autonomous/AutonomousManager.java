@@ -91,7 +91,7 @@ public class AutonomousManager {
         }
     }
 
-    private ScanSettings initializeScanSettingsModel() {
+    public ScanSettings initializeScanSettingsModel() {
         if (isScanSettingsFilePresent()) {
             return ScanSettingsSerializer.deserializeScanSettingsFile(scanSettingsTargetFile);
         }
