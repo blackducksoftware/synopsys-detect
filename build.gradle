@@ -166,7 +166,7 @@ dependencies {
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.apache.pdfbox:pdfbox:2.0.27'
 
-    implementation 'org.apache.tika:tika-parsers:1.28.5'
+    implementation 'org.apache.tika:tika-parsers:1.11'
 
     // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
     testImplementation 'org.assertj:assertj-core:3.13.2'

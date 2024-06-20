@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import java.util.Collections;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
+import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.help.yaml.HelpYamlWriter;
 import org.slf4j.Logger;
@@ -225,10 +226,12 @@ public class DetectBoot {
 
         try {
             boolean blackduckScanModeSpecified = detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
+            boolean blackduckUrlSpecified = detectConfiguration.wasPropertyProvided(DetectProperties.BLACKDUCK_URL);
+            boolean blackduckOfflineModeSpecified = detectConfiguration.wasPropertyProvided(DetectProperties.BLACKDUCK_OFFLINE_MODE);
             BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
             BlackduckScanMode blackduckScanMode = decideScanMode(blackDuckConnectionDetails, scanTypeEvidenceMap, blackduckScanModeSpecified, detectConfigurationFactory, autonomousScanEnabled, detectConfiguration);
             autonomousManager.setBlackDuckScanMode(blackduckScanMode.toString());
-            ProductDecider productDecider = new ProductDecider();
+            ProductDecider productDecider = new ProductDecider(autonomousScanEnabled, blackduckUrlSpecified, blackduckOfflineModeSpecified);
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
                 blackDuckConnectionDetails,
                 blackduckScanMode,
@@ -273,7 +276,7 @@ public class DetectBoot {
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
-    private BlackduckScanMode decideScanMode(BlackDuckConnectionDetails blackDuckConnectionDetails, Map<DetectTool, Set<String>> scanTypeEvidenceMap, boolean blackduckScanModeSpecified, DetectConfigurationFactory detectConfigurationFactory, boolean autonomousScanEnabled, DetectPropertyConfiguration detectConfiguration) {
+    private BlackduckScanMode decideScanMode(BlackDuckConnectionDetails blackDuckConnectionDetails, Map<DetectTool, Set<String>> scanTypeEvidenceMap, boolean blackduckScanModeSpecified, DetectConfigurationFactory detectConfigurationFactory, boolean autonomousScanEnabled, DetectPropertyConfiguration detectConfiguration) throws DetectUserFriendlyException {
         if(!blackduckScanModeSpecified && autonomousScanEnabled) {
             Optional<String> scaasFilePath = detectConfigurationFactory.getScaaasFilePath();
             Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
@@ -287,7 +290,18 @@ public class DetectBoot {
                     return BlackduckScanMode.RAPID;
                 } else if ((!scanTypeEvidenceMap.isEmpty() && scaasFilePath.isPresent()) || blackduckScanMode.displayName().equals("Stateless")) {
                     return BlackduckScanMode.STATELESS;
+                } else {
+                    return BlackduckScanMode.INTELLIGENT;
                 }
+            }
+
+            PathValue scanCLiPath = detectConfiguration.getNullableValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH);
+
+            if(scanTypeEvidenceMap.containsKey(DetectTool.BINARY_SCAN) || detectTools.containsValue(DetectTool.BINARY_SCAN) || detectTools.containsAll()) {
+                logger.warn("Blackduck Url should be provided in order to run BINARY_SCAN or CONTAINER_SCAN in offline mode.");
+            }
+            if (scanTypeEvidenceMap.containsKey(DetectTool.SIGNATURE_SCAN) && scanCLiPath == null) {
+                logger.warn("Signature Scan Local Path should be provided in order to run SIGNATURE_SCAN in offline mode or Scan CLI tool should be present in your blackduck directory");
             }
             return BlackduckScanMode.INTELLIGENT;
         }
