@@ -24,12 +24,28 @@ The scan settings file name is a hash generated from the scanned folder(s). An i
 1. Run [company_name] [solution_name] by providing the `--detect.autonomous.scan.enabled=true` parameter.
 1. [company_name] [solution_name] will determine if any user provided arguments or properties should take precedence over values in the existing scan settings file, and run the appropriate available tools and detectors.
 1. Once complete, scan findings can be viewed in the BDIO file produced, or in the [blackduck_product_name] UI if [blackduck_product_name] has been configured.
+## Scan mode scenarios
+
+- [ONLINE mode](properties/configuration/blackduck-server.md): With [blackduck_product_name] configuration or proxy configuration set and `blackduck.offline.mode` set to false, or overridden as false in the scan settings file, the scan will run online.
+
+	- [Rapid](rapidscan.md): Will run if the [scan path](../properties/configuration/paths.html#scaaas-scan-target) `--scaaas.scan.path` is provided and `--detect.tools=DETECTOR` is set, or `--detect.blackduck.scan.mode` is set to RAPID.
+
+	- [Stateless](statelessscan.md)): Will run if `--scaaas.scan.path` is provided and `--detect.tools=(any value`) other than DETECTOR, or `--detect.blackduck.scan.mode` is set to STATELESS.
+
+	- Intelligent scan: Runs when [scan mode](../properties/configuration/blackduck-server.html#ariaid-title7) is not set to RAPID or STATELESS, or `--detect.blackduck.scan.mode` is explicitly set to INTELLIGENT.
+
+- [OFFLINE mode](properties/configuration/blackduck-server.html#offline-mode): When `--blackduck.offline.mode` is true or there is no [blackduck_product_name] url or [blackduck_product_name] proxy information provided. (Warning messages will be logged for binary and signature scans.)
+
+	- Binary scan: Will run if a binary file exists in the scan directory and [blackduck_product_name] configuration is completed.
+
+	- Signature scan: Will run against source files if scan cli is available. If scan cli is not locally available, it will need to be downloaded from [blackduck_product_name].
 
 ## Requirements and Limitations
 
 ### General Requirements
 
  * Scans require local network connectivity when used with [blackduck_product_name] or if the scan location is remote, remote network connectivity is required.
+ * [blackduck_product_name] must be configured for binary scans.
  
  ### Limitations
  * Autonomous scanning does not support flags.
