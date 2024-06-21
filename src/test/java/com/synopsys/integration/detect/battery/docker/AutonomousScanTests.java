@@ -23,6 +23,7 @@ public class AutonomousScanTests {
 
             commandBuilder.property(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED, String.valueOf(true));
             commandBuilder.property(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE, scanMode);
+            commandBuilder.property(DetectProperties.DETECT_TOOLS,"DETECTOR");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.bdioFiles(1);
