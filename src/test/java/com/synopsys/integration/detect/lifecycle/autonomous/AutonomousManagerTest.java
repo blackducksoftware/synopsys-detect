@@ -95,7 +95,6 @@ public class AutonomousManagerTest {
         setUpPreviousRunScanSettingsMock();
         AutonomousManager autonomousManager = new AutonomousManager(directoryManagerMock, detectPropertyConfigurationMock, autonomousScanEnabled, userProvidedProperties);
 
-        autonomousManager.initializeScanSettingsModel();
         ScanSettings scanSettingsModel = autonomousManager.getScanSettingsModel();
         SortedMap<String, String> globalDetectProperties = scanSettingsModel.getGlobalDetectProperties();
         SortedSet<PackageManagerType> detectorTypes = scanSettingsModel.getDetectorTypes();

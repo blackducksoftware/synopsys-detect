@@ -119,10 +119,17 @@ public class AutonomousManager {
         allProperties.putAll(scanSettings.getGlobalDetectProperties());
         scanSettings.getScanTypes().forEach(scanType ->  {
             allProperties.putAll(scanType.getScanProperties());
-            scanType.getScanProperties().clear();
         });
         scanSettings.getDetectorTypes().forEach(detectorType -> {
             allProperties.putAll(detectorType.getDetectorProperties());
+        });
+    }
+
+    private void clearScanSettingsProperties() {
+        scanSettings.getScanTypes().forEach(scanType ->  {
+            scanType.getScanProperties().clear();
+        });
+        scanSettings.getDetectorTypes().forEach(detectorType -> {
             detectorType.getDetectorProperties().clear();
         });
         scanSettings.getGlobalDetectProperties().clear();
@@ -137,6 +144,7 @@ public class AutonomousManager {
     }
 
     public void updateScanSettingsProperties(SortedMap<String, String> defaultPropertiesMap, List<String> adoptedScanTypes, List<String> detectorTypes, List<String> allPropertyKeys) {
+        clearScanSettingsProperties();
         removeDeletedProperties(allPropertyKeys);
 
         allProperties.putAll(userProvidedProperties);
