@@ -17,6 +17,8 @@ import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusLogger {
 
+    private static final String EQUAL_SEPARATOR = "===============================";
+
     private static final List<ExitCodeType> doNotRequireAdvice = Arrays.asList(
         ExitCodeType.SUCCESS,
         ExitCodeType.FAILURE_POLICY_VIOLATION,
@@ -66,7 +68,7 @@ public class DetectStatusLogger {
             logger.info(gettingSupportAdvice.get());
         }
         logger.info("");
-        logger.info("===============================");
+        logger.info(EQUAL_SEPARATOR);
         logger.info("");
     }
 
@@ -161,7 +163,7 @@ public class DetectStatusLogger {
             logger.debug(String.format("%s: %s", operation.getName(), operation.getStatusType().toString()));
         }
         logger.debug("");
-        logger.debug("===============================");
+        logger.debug(EQUAL_SEPARATOR);
         logger.debug("");
     }
 
@@ -174,7 +176,7 @@ public class DetectStatusLogger {
             logger.debug("Autonomous Scan Decisions:");
             logger.debug(ScanSettingsSerializer.serializeScanSettingsModel(autonomousManager.getScanSettingsModel()));
             logger.debug("");
-            logger.debug("===============================");
+            logger.debug(EQUAL_SEPARATOR);
             logger.debug("");
         }
     }

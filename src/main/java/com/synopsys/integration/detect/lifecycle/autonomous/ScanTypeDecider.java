@@ -48,7 +48,7 @@ public class ScanTypeDecider {
         }
         return Collections.EMPTY_MAP;
     }
-    
+
     private void decideTool(Map<DetectTool, Set<String>> scanTypeEvidenceMap,
             Set<String> pathsForTool,
             AllNoneEnumCollection<DetectTool> includedTools, 
@@ -62,7 +62,6 @@ public class ScanTypeDecider {
             scanTypeEvidenceMap.put(candidateTool, pathsForTool);
         }
     }
-    
     private final Set<String> avoidAbsolutely = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             ".gitattributes", 
             ".gitignore", 
