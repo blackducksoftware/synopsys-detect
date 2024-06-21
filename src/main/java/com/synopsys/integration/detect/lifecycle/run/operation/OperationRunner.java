@@ -242,7 +242,7 @@ public class OperationRunner {
     private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
     public static final ImmutableList<Integer> RETRYABLE_AFTER_WAIT_HTTP_EXCEPTIONS = ImmutableList.of(408, 429, 502, 503, 504);
     public static final ImmutableList<Integer> RETRYABLE_WITH_BACKOFF_HTTP_EXCEPTIONS = ImmutableList.of(425, 500);
-    private static final int MULTIUPLOAD_CHUNK_SIZE = 5242880;
+    private static final int MULTIUPLOAD_CHUNK_SIZE = 5242880; // 5 MB chunks specified in bytes
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
