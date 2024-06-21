@@ -115,7 +115,7 @@ public class AutonomousManager {
         return autoDetectTool.decide(hasImageOrTar, detectConfiguration, Paths.get(detectSourcePath));
     }
 
-    private void initializeProperties() {
+    public void initializeProperties() {
         allProperties.putAll(scanSettings.getGlobalDetectProperties());
         scanSettings.getScanTypes().forEach(scanType ->  {
             allProperties.putAll(scanType.getScanProperties());

@@ -2,6 +2,8 @@ package com.synopsys.integration.detect.lifecycle.autonomous;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.PackageManagerType;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
@@ -22,7 +25,6 @@ public class AutonomousManagerTest {
     private static final File POST_RUN_SCAN_SETTINGS_TEST_DIR = new File("src/test/resources/lifecycle/autonomous/post-run-scan-settings");
     private static boolean autonomousScanEnabled;
     private static SortedMap<String, String> userProvidedProperties;
-
     private static DirectoryManager directoryManagerMock;
     private static DetectPropertyConfiguration detectPropertyConfigurationMock;
 
@@ -39,13 +41,16 @@ public class AutonomousManagerTest {
         detectPropertyConfigurationMock = Mockito.mock(DetectPropertyConfiguration.class);
         autonomousScanEnabled = true;
         userProvidedProperties = new TreeMap<>();
-        userProvidedProperties.put("detect.tools", "DETECTOR");
+//        userProvidedProperties.put("detect.tools", "DETECTOR");
         userProvidedProperties.put("blackduck.url", "https://blackduck.test.url.com");
         userProvidedProperties.put("blackduck.api.token", "test-token");
         userProvidedProperties.put("detect.autonomous.scan.enabled", String.valueOf(autonomousScanEnabled));
         userProvidedProperties.put("detect.source.path", TEST_DETECT_SOURCE_PATH);
+        userProvidedProperties.put("detect.cleanup", "true");
+        userProvidedProperties.put("detect.binary.scan.search.depth", "10");
 
         Mockito.doReturn(new File(TEST_DETECT_SOURCE_PATH)).when(directoryManagerMock).getSourceDirectory();
+        setUpNoScanSettingsMock();
     }
 
     private void setUpPreviousRunScanSettingsMock() {
@@ -133,4 +138,57 @@ public class AutonomousManagerTest {
         Assertions.assertEquals(testScanType.getScanProperties().get("detect.binary.scan.search.depth"), "4");
         Assertions.assertEquals(testScanType.getScanTargets().first(), "/Users/username/project-name/binary1.exe");
     }
+
+    @Test
+    public void testDeltaCheckingOperations() {
+        setUpPreviousRunScanSettingsMock();
+        AutonomousManager autonomousManager = new AutonomousManager(directoryManagerMock, detectPropertyConfigurationMock, autonomousScanEnabled, userProvidedProperties);
+
+        SortedMap<String, String> defaultValueMap = DetectProperties.getDefaultValues();
+        List<String> allPropertyKeys = DetectProperties.allProperties().getPropertyKeys();
+
+        // Remove one property from all properties
+        defaultValueMap.remove("detect.timeout");
+        allPropertyKeys.remove("detect.timeout");
+
+        // Only adopt DETECTOR and BINARY_SCAN - SIGNATURE_SCAN should not appear in the model
+        List<String> adoptedScanTypes = Arrays.asList("DETECTOR", "BINARY_SCAN");
+
+        // Only adopt GRADLE detector type, MAVEN should not appear in the model
+        List<String> adoptedDetectorTypes = Arrays.asList("GRADLE");
+
+        // Perform delta-checking operations and update allProperties in Autonomous Manager
+        autonomousManager.updateScanSettingsProperties(defaultValueMap, adoptedScanTypes, adoptedDetectorTypes, allPropertyKeys);
+
+        // Save the post-delta-checking results to the model
+        autonomousManager.savePropertiesToModel();
+
+        ScanSettings scanSettingsModel = autonomousManager.getScanSettingsModel();
+
+        SortedMap<String, String> globalDetectProperties = scanSettingsModel.getGlobalDetectProperties();
+        SortedSet<PackageManagerType> detectorTypes = scanSettingsModel.getDetectorTypes();
+        SortedSet<ScanType> scanTypes = scanSettingsModel.getScanTypes();
+
+        // Should not be empty
+        Assertions.assertFalse(scanSettingsModel.isEmpty());
+
+        // Verify updated global property values
+        Assertions.assertEquals(globalDetectProperties.get("detect.cleanup"), "true");
+        Assertions.assertEquals(globalDetectProperties.get("detect.timeout"), null);
+
+        // Only GRADLE detector type should be present
+        Assertions.assertEquals(detectorTypes.size(), 1); // TODO: Test should pass after merging latest bug fix. Remove comment.
+        PackageManagerType testDetector = detectorTypes.first();
+        Assertions.assertEquals(testDetector.getDetectorTypeName(), "GRADLE");
+
+        // Only DETECTOR and BINARY_SCAN scan types should be present in the model
+        Assertions.assertEquals(scanTypes.size(), 2);
+        ScanType testScanType = scanTypes.first();
+        Assertions.assertEquals(testScanType.getScanTypeName(), "BINARY_SCAN");
+        Assertions.assertEquals(testScanType.getScanProperties().get("detect.binary.scan.search.depth"), "10");
+
+        // Scan target values should be same as found in the previous file
+        Assertions.assertEquals(testScanType.getScanTargets().first(), "/Users/username/project-name/binary1.exe");
+    }
+
 }
