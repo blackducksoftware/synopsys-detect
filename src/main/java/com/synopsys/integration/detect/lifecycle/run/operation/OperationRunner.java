@@ -242,6 +242,7 @@ public class OperationRunner {
     private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
     public static final ImmutableList<Integer> RETRYABLE_AFTER_WAIT_HTTP_EXCEPTIONS = ImmutableList.of(408, 429, 502, 503, 504);
     public static final ImmutableList<Integer> RETRYABLE_WITH_BACKOFF_HTTP_EXCEPTIONS = ImmutableList.of(425, 500);
+    private static final int MULTIUPLOAD_CHUNK_SIZE = 5242880;
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -1459,9 +1460,7 @@ public class OperationRunner {
 
         UploaderConfig.Builder uploaderConfigBuilder = UploaderConfig.createConfigFromProperties(
                 blackDuckRunData.getBlackDuckServerConfig().getProxyInfo(), new Properties())
-                // TODO make configurable? They are both 5mb right now
-                .setUploadChunkSize(5242880)
-                .setMultipartUploadThreshold(5242880L)
+                .setUploadChunkSize(MULTIUPLOAD_CHUNK_SIZE)
                 .setTimeoutInSeconds(blackDuckRunData.getBlackDuckServerConfig().getTimeout())
                 .setAlwaysTrustServerCertificate(blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
                 .setBlackDuckUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl())
