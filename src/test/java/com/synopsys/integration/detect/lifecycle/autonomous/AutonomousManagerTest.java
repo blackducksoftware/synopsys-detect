@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -152,10 +154,10 @@ public class AutonomousManagerTest {
         allPropertyKeys.remove("detect.timeout");
 
         // Only adopt DETECTOR and BINARY_SCAN - SIGNATURE_SCAN should not appear in the model
-        List<String> adoptedScanTypes = Arrays.asList("DETECTOR", "BINARY_SCAN");
+        Set<String> adoptedScanTypes = new HashSet<>(Arrays.asList("DETECTOR", "BINARY_SCAN"));
 
         // Only adopt GRADLE detector type, MAVEN should not appear in the model
-        List<String> adoptedDetectorTypes = Arrays.asList("GRADLE");
+        Set<String> adoptedDetectorTypes = new HashSet<>(Arrays.asList("GRADLE"));
 
         // Perform delta-checking operations and update allProperties in Autonomous Manager
         autonomousManager.updateScanSettingsProperties(defaultValueMap, adoptedScanTypes, adoptedDetectorTypes, allPropertyKeys);

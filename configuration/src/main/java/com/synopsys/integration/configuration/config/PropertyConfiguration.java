@@ -35,6 +35,7 @@ public class PropertyConfiguration {
     private final Map<String, PropertyValue<?>> valueCache = new HashMap<>();
     private final List<PropertySource> orderedPropertySources;
     private SortedMap<String, String> scanSettingsProperties;
+    private static final String SCAN_SETTINGS_FAILURE_MSG = "There was an error parsing the value from Scan Settings File";
 
     public PropertyConfiguration(@NotNull List<PropertySource> orderedPropertySources, SortedMap<String, String> scanSettingsProperties) {
         this.orderedPropertySources = orderedPropertySources;
@@ -86,7 +87,7 @@ public class PropertyConfiguration {
                 V returnValue = property.getValueParser().parse(scanSettingsValue);
                 return Optional.of(property.convertValue(returnValue));
             } catch (ValueParseException e) {
-                throw new RuntimeException("There was an error parsing the value from Scan Settings File", e);
+                throw new RuntimeException(SCAN_SETTINGS_FAILURE_MSG, e);
             }
         } else {
             return Optional.empty();
@@ -112,7 +113,7 @@ public class PropertyConfiguration {
                 V returnValue = property.getValueParser().parse(scanSettingsValue);
                 return property.convertValue(returnValue);
             } catch (ValueParseException e) {
-                throw new RuntimeException("There was an error parsing the value from Scan Settings File", e);
+                throw new RuntimeException(SCAN_SETTINGS_FAILURE_MSG, e);
             }
         } else {
             V defaultValue = property.getDefaultValue();
@@ -137,7 +138,7 @@ public class PropertyConfiguration {
             try {
                 return Optional.of(property.getValueParser().parse(scanSettingsValue));
             } catch (ValueParseException e) {
-                throw new RuntimeException("There was an error parsing the value from Scan Settings File", e);
+                throw new RuntimeException(SCAN_SETTINGS_FAILURE_MSG, e);
             }
         } else {
             return Optional.empty();

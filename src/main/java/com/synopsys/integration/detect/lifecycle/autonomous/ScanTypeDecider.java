@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 public class ScanTypeDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public Map<DetectTool, Set<String>> decide(boolean hasImageOrTar, DetectPropertyConfiguration detectConfiguration, Path detectSourcePath) {
         if (!hasImageOrTar && detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED)) {
             AllNoneEnumCollection<DetectTool> includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
