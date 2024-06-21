@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -34,10 +33,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.synopsys.blackduck.upload.client.UploaderConfig;
-import com.synopsys.blackduck.upload.client.model.BinaryScanRequestData;
-import com.synopsys.blackduck.upload.client.uploaders.BinaryUploader;
-import com.synopsys.blackduck.upload.client.uploaders.UploaderFactory;
 import com.synopsys.blackduck.upload.rest.model.response.UploadFinishResponse;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -242,7 +237,6 @@ public class OperationRunner {
     private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
     public static final ImmutableList<Integer> RETRYABLE_AFTER_WAIT_HTTP_EXCEPTIONS = ImmutableList.of(408, 429, 502, 503, 504);
     public static final ImmutableList<Integer> RETRYABLE_WITH_BACKOFF_HTTP_EXCEPTIONS = ImmutableList.of(425, 500);
-    private static final int MULTIUPLOAD_CHUNK_SIZE = 5242880; // 5 MB chunks specified in bytes
 
     //Internal: Operation -> Action
     //Leave OperationSystem, but it becomes 'user facing groups of actions or steps'
@@ -1197,12 +1191,9 @@ public class OperationRunner {
     public UploadFinishResponse uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException {        
         return auditLog.namedPublic("Binary Upload", "Binary",
-            () -> {
-                BinaryUploader binaryUploader = createMultipartBinaryScanUploader(binaryUpload, projectNameVersion,
-                        blackDuckRunData);
-                
+            () -> {                
                 return new BinaryUploadOperation(statusEventPublisher)
-                        .uploadBinaryScanFile(binaryUpload, binaryUploader, projectNameVersion);
+                        .uploadBinaryScanFile(binaryUpload, projectNameVersion, codeLocationNameManager, blackDuckRunData);
             });
     }
 
@@ -1451,27 +1442,5 @@ public class OperationRunner {
     
     public DetectConfigurationFactory getDetectConfigurationFactory() {
         return this.detectConfigurationFactory;
-    }
-
-    private BinaryUploader createMultipartBinaryScanUploader(File binaryUpload, NameVersion projectNameVersion,
-            BlackDuckRunData blackDuckRunData) throws IntegrationException {
-        String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryUpload,
-                projectNameVersion.getName(), projectNameVersion.getVersion());
-
-        UploaderConfig.Builder uploaderConfigBuilder = UploaderConfig.createConfigFromProperties(
-                blackDuckRunData.getBlackDuckServerConfig().getProxyInfo(), new Properties())
-                .setUploadChunkSize(MULTIUPLOAD_CHUNK_SIZE)
-                .setTimeoutInSeconds(blackDuckRunData.getBlackDuckServerConfig().getTimeout())
-                .setAlwaysTrustServerCertificate(blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
-                .setBlackDuckUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl())
-                .setApiToken(blackDuckRunData.getBlackDuckServerConfig().getApiToken().get());
-
-        UploaderConfig uploaderConfig = uploaderConfigBuilder.build();
-        UploaderFactory uploadFactory = new UploaderFactory(uploaderConfig, new Slf4jIntLogger(logger), new Gson());
-
-        BinaryScanRequestData binaryData = new BinaryScanRequestData(projectNameVersion.getName(),
-                projectNameVersion.getVersion(), codeLocationName, "");
-
-        return uploadFactory.createBinaryUploader("/api/uploads", binaryData);
     }
 }

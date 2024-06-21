@@ -81,6 +81,7 @@ public class BinaryScanStepRunner {
             String scanId = path.substring(path.lastIndexOf('/') + 1);
             return Optional.of(scanId);
         } catch (Exception e) {
+            logger.warn("Unexpected response uploading binary, will be unable to wait for scan completion.");
             return Optional.empty();
         }
     }
