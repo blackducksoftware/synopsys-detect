@@ -86,7 +86,7 @@ repositories {
         content { excludeModule(locatorGroup, locatorModule) }
     }
     // TODO remove once library is published
-    maven { url "https://artifactory.internal.synopsys.com/artifactory/bds-integrations-snapshot" }
+    maven { url "${internalRepoHost}/artifactory/bds-integrations-snapshot" }
 }
 
 tasks.named("bootJar") {
