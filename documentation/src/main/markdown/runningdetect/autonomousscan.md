@@ -30,7 +30,7 @@ The scan settings file name is a hash generated from the scanned folder(s). An i
 
 	- [Rapid](rapidscan.md): Will run if the [scan path](../properties/configuration/paths.html#scaaas-scan-target) `--scaaas.scan.path` is provided and `--detect.tools=DETECTOR` is set, or `--detect.blackduck.scan.mode` is set to RAPID.
 
-	- [Stateless](statelessscan.md)): Will run if `--scaaas.scan.path` is provided and `--detect.tools=(any value`) other than DETECTOR, or `--detect.blackduck.scan.mode` is set to STATELESS.
+	- [Stateless](statelessscan.md): Will run if `--scaaas.scan.path` is provided and `--detect.tools=<any value>` other than DETECTOR, or `--detect.blackduck.scan.mode` is set to STATELESS.
 
 	- Intelligent scan: Runs when [scan mode](../properties/configuration/blackduck-server.html#ariaid-title7) is not set to RAPID or STATELESS, or `--detect.blackduck.scan.mode` is explicitly set to INTELLIGENT.
 
