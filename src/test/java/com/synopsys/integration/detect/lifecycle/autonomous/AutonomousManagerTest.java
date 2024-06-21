@@ -1,7 +1,5 @@
 package com.synopsys.integration.detect.lifecycle.autonomous;
 
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.SortedMap;
@@ -9,27 +7,14 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.StringUtils;
 import org.mockito.Mockito;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.sun.tools.jdeprscan.scan.Scan;
 import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.PackageManagerType;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanType;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.HashMap;
-import java.util.TreeSet;
-import java.util.HashSet;
 
 public class AutonomousManagerTest {
 
