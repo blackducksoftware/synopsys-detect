@@ -98,15 +98,15 @@
                     <ul>
                         <li>
                             <p><xref href="rapidscan.md" format="markdown">Rapid</xref>: Will run if
-                                the <xref href="../properties/configuration/paths.html#scaaas-scan-target" format="html">scan path</xref>
+                                the <xref href="../properties/configuration/paths.html#scaaas-scan-target" format="html">SCAAS scan path</xref>
                                 <codeph>--scaaas.scan.path</codeph> is provided and
-                                    <codeph>--detect.tools=DETECTOR</codeph> is set, or
+                                    <codeph>--detect.tools=DETECTOR</codeph> is set, or Detect Scan Mode 
                                     <codeph>--detect.blackduck.scan.mode</codeph> is set to
                                 RAPID.</p>
                         </li>
                         <li>
                             <p><xref href="statelessscan.md" format="markdown">Stateless</xref>:
-                                Will run if <codeph>--scaaas.scan.path</codeph> is provided and
+                                Will run if <codeph>--scaaas.scan.path</codeph> is provided and Tools Configuration 
                                     <codeph>--detect.tools=</codeph> has any value other than
                                 DETECTOR, or <codeph>--detect.blackduck.scan.mode</codeph> is set to
                                 STATELESS.</p>
@@ -149,12 +149,11 @@
                 <colspec colname="c7" colnum="7" colwidth="1*"/>
                     <thead>
                         <row>
-                            <entry><b>Offline Mode</b> (blackduck.offline.mode)</entry>
-                            <entry><b>Black Duck Configured</b>
-                                (blackduck.url/blackduck.proxy)</entry>
-                            <entry><b>SCAAS Path Set</b> (scaaas.scan.path)</entry>
-                            <entry><b>Detect Scan Mode</b> (detect.blackduck.scan.mode)</entry>
-                            <entry><b>Tools Configuration</b> (detect.tools)</entry>
+                            <entry><b>Offline Mode</b></entry>
+                            <entry><b>Black Duck Configured</b></entry>
+                            <entry><b>SCAAS Path Set</b></entry>
+                            <entry><b>Detect Scan Mode</b></entry>
+                            <entry><b>Tools Configuration</b></entry>
                             <entry>
                                 <b>Autonomous Scan Mode</b>
                             </entry>
