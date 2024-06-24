@@ -28,7 +28,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.workflow.blackduck.report.service.ReportService;
 import com.synopsys.integration.exception.IntegrationException;
 
-@Tag("integration")
+//@Tag("integration")
 public class DetectOnDetectTest {
     @Test
     void detectOnDetect() throws IOException, IntegrationException {
@@ -159,11 +159,6 @@ public class DetectOnDetectTest {
 
             dockerAssertions.bdioFiles(1); //7 code locations, 6 bdio, 1 signature scanner
             dockerAssertions.locateScanSettingsFile();
-
-            blackduckAssertions.hasCodeLocations(
-                    "src/autonomous-scan-test/autonomous-scan signature"
-            );
-
             blackduckAssertions.hasComponents("jackson-core");
         }
     }

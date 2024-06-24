@@ -131,9 +131,26 @@ public class DockerAssertions {
 
         Set<String> propertiesToCheck = Bds.setOf(propertiesPresent);
 
+        PackageManagerType packageManager = detectorTypeInFile.get();
+
         if(!propertiesToCheck.isEmpty()) {
             propertiesToCheck.forEach(property -> {
-                detectorTypeInFile.get().getDetectorProperties().containsKey(property);
+                Assertions.assertTrue(packageManager.getDetectorProperties().containsKey(property),"Expected property " + property + " to be present in the scan settings file.");
+            });
+        }
+    }
+
+    public void autonomousScanTypeAssertions(String scanType, String... propertiesPresent) {
+        Optional<ScanType> scanTypeOptional = scanSettingsJson.getScanTypes().stream().filter(scanTool -> scanTool.getScanTypeName().equals(scanType)).findFirst();
+        Assertions.assertTrue(scanTypeOptional.isPresent(), "Expected Scan Settings File to contain Detector Type: " + scanType);
+
+        Set<String> propertiesToCheck = Bds.setOf(propertiesPresent);
+
+        ScanType scanType1 = scanTypeOptional.get();
+
+        if(!propertiesToCheck.isEmpty()) {
+            propertiesToCheck.forEach(property -> {
+                Assertions.assertTrue(scanType1.getScanProperties().containsKey(property),"Expected property " + property + " to be present in the scan settings file.");
             });
         }
     }
