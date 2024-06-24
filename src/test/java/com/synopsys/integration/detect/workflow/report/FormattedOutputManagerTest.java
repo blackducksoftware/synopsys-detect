@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.workflow.report;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +33,7 @@ public class FormattedOutputManagerTest {
         eventSystem.publishEvent(Event.CodeLocationsCompleted, codeLocationExpected);
         
         DetectInfo detectInfo = new DetectInfo("", null, "");
-        FormattedOutput formattedOutput = formattedOutputManager.createFormattedOutput(detectInfo, ExitCodeType.SUCCESS);
+        FormattedOutput formattedOutput = formattedOutputManager.createFormattedOutput(detectInfo, ExitCodeType.SUCCESS, Optional.empty());
         
         List<FormattedCodeLocationOutput> codeLocationActual = formattedOutput.codeLocations;
         Assertions.assertEquals(1, codeLocationActual.size());

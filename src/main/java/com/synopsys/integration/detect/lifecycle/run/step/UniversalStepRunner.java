@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.SortedSet;
+import java.util.SortedMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +81,16 @@ public class UniversalStepRunner {
             operationRunner.publishDetectorFailure();
         }
         return result;
+    }
+
+    public SortedMap<String, SortedSet<String>> getScanTargets(UniversalToolsResult universalToolsResult) {
+        SortedMap<String, SortedSet<String>> scanTargetMap = new TreeMap<>();
+        for(DetectCodeLocation detectCodeLocation: universalToolsResult.getDetectCodeLocations()) {
+            if(detectCodeLocation.getCreatorName().isPresent()) {
+                scanTargetMap.computeIfAbsent(detectCodeLocation.getCreatorName().get(), value -> new TreeSet<>()).add(detectCodeLocation.getSourcePath().toString());
+            }
+        }
+        return scanTargetMap;
     }
 
     public BdioResult generateBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws OperationException {

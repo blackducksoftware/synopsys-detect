@@ -39,7 +39,7 @@ public class FontLoaderTestIT {
     @BeforeEach
     public void createTempDirectory() throws Exception {
         fontDirectory = Files.createTempDirectory("junit_test_font_loader").toFile();
-        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList());
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.emptyList(), Collections.emptySortedMap());
         Gson gson = new Gson();
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(
             new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver()),

@@ -81,7 +81,8 @@ public class IntelligentModeStepRunner {
         BdioResult bdioResult,
         NameVersion projectNameVersion,
         DetectToolFilter detectToolFilter,
-        DockerTargetData dockerTargetData
+        DockerTargetData dockerTargetData,
+        Set<String> binaryTargets
     ) throws OperationException {
 
         ProjectVersionWrapper projectVersion = stepHelper.runAsGroup(
@@ -124,7 +125,7 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
-            Optional<String> scanId = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
+            Optional<String> scanId = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
 
             if (scanId.isPresent()) {
                 scanIdsToWaitFor.add(scanId.get());

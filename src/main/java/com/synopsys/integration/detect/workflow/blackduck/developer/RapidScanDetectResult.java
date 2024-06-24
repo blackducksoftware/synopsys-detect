@@ -61,13 +61,13 @@ public class RapidScanDetectResult implements DetectResult {
 
         List<String> resultMessages = new LinkedList<>();
         resultMessages.add("");
-        resultMessages.add("\tCritical and blocking policy violations");
+        resultMessages.add("\tCritical and blocking policy violations for");
         resultMessages.add(String.format(countFormat, policyGroupName, summary.getPolicyErrorCount()));
         resultMessages.add(String.format(countFormat, securityGroupName, summary.getSecurityErrorCount()));
         resultMessages.add(String.format(countFormat, licenseGroupName, summary.getLicenseErrorCount()));
         resultMessages.add(String.format(countFormat, violatingPoliciesSupersetGroupName, summary.getAllOtherPolicyErrorCount()));
         resultMessages.add("");
-        resultMessages.add("\tLower severity policy violations");
+        resultMessages.add("\tOther policy violations");
         resultMessages.add(String.format(countFormat, policyGroupName, summary.getPolicyWarningCount()));
         resultMessages.add(String.format(countFormat, securityGroupName, summary.getSecurityWarningCount()));
         resultMessages.add(String.format(countFormat, licenseGroupName, summary.getLicenseWarningCount()));

@@ -19,7 +19,8 @@ public class DirectoryManager {
 
     private enum OutputDirectory {
         RUNS("runs"),
-        TOOLS("tools");
+        TOOLS("tools"),
+        SCAN_SETTINGS("scan-settings");
 
         private final String directoryName;
 
@@ -160,6 +161,10 @@ public class DirectoryManager {
         return getOutputDirectory(OutputDirectory.RUNS);
     }
 
+    public File getScanSettingsOutputDirectory() {
+        return getOutputDirectory(OutputDirectory.SCAN_SETTINGS);
+    }
+
     public File getScanOutputDirectory() {
         return getRunDirectory(RunDirectory.SCAN);
     }
@@ -231,6 +236,7 @@ public class DirectoryManager {
         }
         return actualDirectory;
     }
+
 
     public File getSharedDirectory(String name) { // shared across this invocation of detect (inspectors), returns 'shared/name'
         File newSharedFile = new File(getRunDirectory(RunDirectory.SHARED), name);

@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -24,7 +26,7 @@ public class ExitManagerTest {
         ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);
 
         ExitOptions exitOptions = new ExitOptions(startTime, false, true);
-        ExitResult exitResult = exitManager.exit(exitOptions);
+        ExitResult exitResult = exitManager.exit(exitOptions, Optional.empty());
 
         assertEquals(startTime, exitOptions.getStartTime());
         assertFalse(exitResult.shouldForceSuccess());
@@ -43,7 +45,7 @@ public class ExitManagerTest {
         ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);
 
         ExitOptions exitOptions = new ExitOptions(startTime, true, true);
-        ExitResult exitResult = exitManager.exit(exitOptions);
+        ExitResult exitResult = exitManager.exit(exitOptions, Optional.empty());
 
         assertEquals(startTime, exitOptions.getStartTime());
         assertTrue(exitResult.shouldForceSuccess());
@@ -62,7 +64,7 @@ public class ExitManagerTest {
         ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);
 
         ExitOptions exitOptions = new ExitOptions(startTime, false, false);
-        ExitResult exitResult = exitManager.exit(exitOptions);
+        ExitResult exitResult = exitManager.exit(exitOptions, Optional.empty());
 
         assertEquals(startTime, exitOptions.getStartTime());
         assertFalse(exitResult.shouldForceSuccess());
