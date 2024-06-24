@@ -174,7 +174,7 @@
                         </row>
                         <row>
                             <entry/>
-                            <entry>Not configured</entry>
+                            <entry>not configured</entry>
                             <entry/>
                             <entry/>
                             <entry/>
@@ -183,7 +183,7 @@
                         </row>
                         <row>
                             <entry/>
-                            <entry>Configured</entry>
+                            <entry>configured</entry>
                             <entry>true</entry>
                             <entry/>
                             <entry>DETECTOR</entry>
@@ -201,7 +201,7 @@
                         </row>
                         <row>
                             <entry/>
-                            <entry>Configured</entry>
+                            <entry>configured</entry>
                             <entry>true</entry>
                             <entry/>
                             <entry>DETECTOR BINARY_SCAN SIGNATURE_SCAN</entry>
@@ -219,7 +219,7 @@
                         </row>
                         <row>
                             <entry/>
-                            <entry>Configured</entry>
+                            <entry>configured</entry>
                             <entry>false</entry>
                             <entry/>
                             <entry>Any Value</entry>
