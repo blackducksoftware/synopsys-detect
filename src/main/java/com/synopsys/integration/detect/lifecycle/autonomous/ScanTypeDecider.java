@@ -16,33 +16,55 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.exception.TikaException;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MediaTypeRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 public class ScanTypeDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final String tikaConfig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        "<properties>\n" +
+        "  <parsers>\n" +
+        "    <!-- Default Parser for most things, except for 2 mime types, and never\n" +
+        "         use the Executable Parser -->\n" +
+        "    <parser class=\"org.apache.tika.parser.DefaultParser\">\n" +
+        "      <mime-exclude>image/jpeg</mime-exclude>\n" +
+        "      <mime-exclude>image/jp2</mime-exclude>\n" +
+        "      <mime-exclude>application/pdf</mime-exclude>\n" +
+        "      <parser-exclude class=\"org.apache.tika.parser.executable.ExecutableParser\"/>\n" +
+        "    </parser>\n" +
+        "  </parsers>\n" +
+        "  <service-loader loadErrorHandler=\"WARN\"/>\n" +
+        "</properties>";
     
     public Map<DetectTool, Set<String>> decide(boolean hasImageOrTar, DetectPropertyConfiguration detectConfiguration, Path detectSourcePath) {
         if (!hasImageOrTar && detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED)) {
             AllNoneEnumCollection<DetectTool> includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
             AllNoneEnumCollection<DetectTool> excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED);
+            List<String> fileInclusionPatterns = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS);
             if (detectSourcePath == null) {
                 logger.error("Detect autonomous scan mode requires Detect Source Path (--detect.source.path) to be set.");
             } else {
                 // This map has individual paths to files grouped under types.
-                PathsCollection pathsCollection = search(detectSourcePath);
                 logger.debug("includedTools: {}", includedTools.toPresentValues());
                 logger.debug("excludedTools: {}", excludedTools.toPresentValues());
+                Set<String> rootPathMonoSet = new HashSet<>();
+                rootPathMonoSet.add(detectSourcePath.toAbsolutePath().toString());
                 final Map<DetectTool, Set<String>> scanTypeEvidenceMap = new HashMap<>();
-                decideTool(scanTypeEvidenceMap, pathsCollection.binaryPaths, includedTools, excludedTools, DetectTool.BINARY_SCAN);
-                decideTool(scanTypeEvidenceMap, pathsCollection.detectorPaths, includedTools, excludedTools, DetectTool.DETECTOR);
-                decideTool(scanTypeEvidenceMap, pathsCollection.signaturePaths, includedTools, excludedTools, DetectTool.SIGNATURE_SCAN);
+                if (fileInclusionPatterns.isEmpty()) {
+                    decideBinary(scanTypeEvidenceMap, includedTools, excludedTools, detectSourcePath);
+                }
+                decideTool(scanTypeEvidenceMap, rootPathMonoSet, includedTools, excludedTools, DetectTool.DETECTOR);
+                decideTool(scanTypeEvidenceMap, rootPathMonoSet, includedTools, excludedTools, DetectTool.SIGNATURE_SCAN);
                 return scanTypeEvidenceMap;
             }
         }
@@ -57,11 +79,26 @@ public class ScanTypeDecider {
         if (!excludedTools.containsValue(candidateTool)
                 && (includedTools.containsValue(candidateTool)
                 || includedTools.isEmpty()
-                || includedTools.containsAll())
-                && !pathsForTool.isEmpty()) {
+                || includedTools.containsAll())) {
             scanTypeEvidenceMap.put(candidateTool, pathsForTool);
         }
     }
+    
+    private void decideBinary(Map<DetectTool, Set<String>> scanTypeEvidenceMap,
+            AllNoneEnumCollection<DetectTool> includedTools, 
+            AllNoneEnumCollection<DetectTool> excludedTools,
+            Path detectSourcePath) {
+        if (!excludedTools.containsValue(DetectTool.BINARY_SCAN)
+                && (includedTools.containsValue(DetectTool.BINARY_SCAN)
+                || includedTools.isEmpty()
+                || includedTools.containsAll())) {
+            Set<String> pathsForTool = searchForBinaryFiles(detectSourcePath);
+            if (!pathsForTool.isEmpty()) {
+                scanTypeEvidenceMap.put(DetectTool.BINARY_SCAN, pathsForTool);
+            }
+        }
+    }
+    
     private final Set<String> avoidAbsolutely = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             ".gitattributes", 
             ".gitignore", 
@@ -109,9 +146,13 @@ public class ScanTypeDecider {
         return true;
     }
     
-    private boolean isBinary(File file) throws IOException {
+    private boolean isBinary(File file) throws IOException, TikaException, SAXException {
+        if (file.isDirectory()) {
+            return false;
+        }
         Set<MediaType> mediaTypes = new HashSet<>();
-        MediaType mediaType = MediaType.parse(new Tika().detect(new ByteArrayInputStream(FileUtils.readFileToByteArray(file))));
+        MediaType mediaType = MediaType.parse(new Tika()
+                .detect(new ByteArrayInputStream(FileUtils.readFileToByteArray(file))));
         while(mediaType != null) {
             mediaTypes.addAll(mediaTypeRegistry.getAliases(mediaType));
             mediaTypes.add(mediaType);
@@ -120,8 +161,8 @@ public class ScanTypeDecider {
         return mediaTypes.stream().noneMatch(x -> x.getType().equals("text"));
     }
     
-    private PathsCollection search(Path pathToSearch) {
-        PathsCollection pathsCollection = new PathsCollection();
+    private Set<String> searchForBinaryFiles(Path pathToSearch) {
+        Set<String> binaryFilePaths = new HashSet<>();
         long t1 = System.currentTimeMillis();
         try {
             Files.walkFileTree(pathToSearch, new FileVisitor<Path>() {
@@ -129,10 +170,12 @@ public class ScanTypeDecider {
                 public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
                     String fileName = path.getFileName().toString();
                     if (isEligibleFile(fileName, attrs.size())) {
-                        if (isBinary(path.toFile())) {
-                            pathsCollection.binaryPaths.add(path.toAbsolutePath().toString());
-                        } else if (pathsCollection.detectorPaths.isEmpty()) {
-                            pathsCollection.detectorPaths.add(pathToSearch.toAbsolutePath().toString());
+                        try {
+                            if (isBinary(path.toFile())) {
+                                binaryFilePaths.add(path.toAbsolutePath().toString());
+                            }
+                        } catch (TikaException | SAXException ex) {
+                            logger.error("Failed to parse a file during binary file search.", ex);
                         }
                     }
                     return FileVisitResult.CONTINUE;
@@ -159,18 +202,12 @@ public class ScanTypeDecider {
                 }
                 
             });
-            pathsCollection.signaturePaths.add(pathToSearch.toAbsolutePath().toString());
+            
         } catch (IOException ex) {
             logger.error("Failure when attempting to locate build config files.", ex);
         } finally {
             logger.info("Search for binary files is done. Seconds: {}", (System.currentTimeMillis()-t1)/1000D);
         }
-        return pathsCollection;
-    }
-    
-    class PathsCollection {
-        private final Set<String> binaryPaths = new HashSet<>();
-        private final Set<String> detectorPaths = new HashSet<>(); 
-        private final Set<String> signaturePaths = new HashSet<>();
+        return binaryFilePaths;
     }
 }
