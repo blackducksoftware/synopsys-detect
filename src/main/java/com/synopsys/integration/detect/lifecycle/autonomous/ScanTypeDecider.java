@@ -140,8 +140,8 @@ public class ScanTypeDecider {
                 
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                    String directoryName = dir.getFileName().toString().trim().toLowerCase();
-                    if(shouldAvoidDirectory(directoryName)){
+                    Path fileName = dir.getFileName();
+                    if(fileName==null || shouldAvoidDirectory(fileName.toString().trim().toLowerCase())){
                         return FileVisitResult.SKIP_SUBTREE;
                     }
                     return FileVisitResult.CONTINUE;
