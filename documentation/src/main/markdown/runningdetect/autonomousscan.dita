@@ -10,8 +10,7 @@
         to effectively analyze source code and binary files, along with simplifying repeat analysis
         and delta reporting.</shortdesc>
     <body>
-        <p>Autonomous Scanning will accept a user provided local file path or remote HTTP/HTTPS URL
-            to fetch content for scanning. The content may be a single executable, a directory of
+        <p>Autonomous Scanning will accept a user provided local file path for scanning. The content may be a single executable, a directory of
             source files, or a combination thereof.</p>
         <p>The scan settings file name is a hash generated from the scanned folder(s). An initial
             scan with user provided parameters will populate this file and subsequent scans of the
@@ -149,16 +148,31 @@
                 <colspec colname="c7" colnum="7" colwidth="1*"/>
                     <thead>
                         <row>
-                            <entry><b>Offline Mode</b></entry>
-                            <entry><b>Black Duck Configured</b></entry>
-                            <entry><b>SCAAS Path Setting</b></entry>
-                            <entry><b>Detect Scan Mode</b></entry>
-                            <entry><b>Tools Configuration</b></entry>
                             <entry>
-                                <b>Autonomous Scan Mode</b>
+							<p><b>Offline Mode</b></p>
+							<p><sub>blackduck.offline.mode</sub></p>
+							</entry>
+                            <entry>
+							<p><b>Black Duck Configured</b></p>
+							<p><sub>URL or Proxy</sub></p>
+							</entry>
+                            <entry>
+							<p><b>SCAAS Path Setting</b></p>
+							<p><sub>scaaas.scan.path</sub></p>
+							</entry>
+                            <entry>
+							<p><b>Detect Scan Mode</b></p>
+							<p><sub>detect.blackduck.scan.mode</sub></p>
+							</entry>
+                            <entry>
+							<p><b>Tools Configuration</b></p>
+							<p><sub>detect.tools</sub></p>
+							</entry>
+                            <entry>
+                                <p><b>Autonomous Scan Mode</b></p>
                             </entry>
                             <entry>
-                                <b>Black Duck Scan Mode</b>
+                                <p><b>Black Duck Scan Mode</b></p>
                             </entry>
                         </row>
                     </thead>
