@@ -4,7 +4,7 @@
 
 ### New features
 * Autonomous Scanning - this new feature simplifies default analysis of source and binary files by allowing [company_name] [solution_name] to handle, and easily repeat, basic analysis decisions.
-	See [Autonomous Scanning](/runningdetect/autonomous.md) for further information.
+	See [Autonomous Scanning](runningdetect/autonomousscan.dita) for further information.
 
 ### Changed features
 *

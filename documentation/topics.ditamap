@@ -93,7 +93,7 @@
 		<topicref href="runningdetect/runincontainer.md" format="markdown"/>
 		<topicref href="runningdetect/runningairgap.md" format="markdown"/>
 		<topicref href="runningdetect/status-file.md" format="markdown"/>
-		<topicref href="runningdetect/autonomousscan.md" format="markdown"/>
+		<topicref href="runningdetect/autonomousscan.dita" format="dita"/>
 		<topicref href="runningdetect/containerscanning.md" format="markdown"/>
 		<topicref href="runningdetect/iacscan.md" format="markdown"/>
 		<topicref href="runningdetect/rapidscan.md" format="markdown"/>
