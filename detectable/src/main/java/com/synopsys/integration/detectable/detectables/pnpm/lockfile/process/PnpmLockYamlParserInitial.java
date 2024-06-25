@@ -50,7 +50,7 @@ public class PnpmLockYamlParserInitial {
     }
 
     /**
-     * This method reads the pnpm-lock.yaml. It first tries to read it in v6 format
+     * This method reads the pnpm-lock.yaml. It first tries to read it in the current format
      * and then tries v5 if that fails. This is usually faster than first cracking
      * open the yaml file, checking what version it is, and then calling the
      * appropriate reader.
@@ -66,12 +66,12 @@ public class PnpmLockYamlParserInitial {
 
         LoaderOptions loaderOptions = new LoaderOptions();
         try {
-            // Try to read the lockfile into the v6 Yaml classes. It's more common and 
+            // Try to read the lockfile into the current Yaml classes. It's more common and 
             // should hopefully work more of the time.
             Yaml yaml = new Yaml(new Constructor(PnpmLockYaml.class, loaderOptions), representer);
             return yaml.load(new FileReader(pnpmLockYamlFile));
         } catch (ConstructorException e) {
-            // If the v6 reading fails try to read a v5 Yaml. 
+            // If the reading fails try to read a v5 Yaml. 
             Yaml yaml = new Yaml(new Constructor(PnpmLockYamlv5.class, loaderOptions), representer);
             return yaml.load(new FileReader(pnpmLockYamlFile));
         }
