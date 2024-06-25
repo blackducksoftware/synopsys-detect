@@ -96,18 +96,13 @@
                         as false in the scan settings file, the scan will run online.</p>
                     <ul>
                         <li>
-                            <p><xref href="rapidscan.md" format="markdown">Rapid</xref>: Will run if
-                                the <xref href="../properties/configuration/paths.html#scaaas-scan-target" format="html">SCAAS scan path</xref>
-                                <codeph>--scaaas.scan.path</codeph> is provided and
-                                    <codeph>--detect.tools=DETECTOR</codeph> is set, or Detect Scan Mode 
+                            <p><xref href="rapidscan.md" format="markdown">Rapid</xref>: Will run if Detect Scan Mode 
                                     <codeph>--detect.blackduck.scan.mode</codeph> is set to
                                 RAPID.</p>
                         </li>
                         <li>
                             <p><xref href="statelessscan.md" format="markdown">Stateless</xref>:
-                                Will run if <codeph>--scaaas.scan.path</codeph> is provided and Tools Configuration 
-                                    <codeph>--detect.tools=</codeph> has any value other than
-                                DETECTOR, or <codeph>--detect.blackduck.scan.mode</codeph> is set to
+                                Will run if <keyword keyref="blackduck_product_name"/> is configured and <codeph>--detect.blackduck.scan.mode</codeph> is set to
                                 STATELESS.</p>
                         </li>
                         <li>
@@ -138,14 +133,13 @@
             </ul>
             <table frame="all" rowsep="1" colsep="1" id="table_1">
             <title>Scan Mode Scenarios</title>
-                <tgroup cols="7">
+                <tgroup cols="6">
                 <colspec colname="c1" colnum="1" colwidth="1*"/>
                 <colspec colname="c2" colnum="2" colwidth="1*"/>
                 <colspec colname="c3" colnum="3" colwidth="1*"/>
                 <colspec colname="c4" colnum="4" colwidth="1*"/>
                 <colspec colname="c5" colnum="5" colwidth="1*"/>
                 <colspec colname="c6" colnum="6" colwidth="1*"/>
-                <colspec colname="c7" colnum="7" colwidth="1*"/>
                     <thead>
                         <row>
                             <entry>
@@ -155,10 +149,6 @@
                             <entry>
 							<p><b>Black Duck Configured</b></p>
 							<p><sub>URL or Proxy</sub></p>
-							</entry>
-                            <entry>
-							<p><b>SCAAS Scan Path</b></p>
-							<p><sub>scaaas.scan.path</sub></p>
 							</entry>
                             <entry>
 							<p><b>Detect Scan Mode</b></p>
@@ -182,7 +172,6 @@
                             <entry/>
                             <entry/>
                             <entry/>
-                            <entry/>
                             <entry>Offline</entry>
                             <entry>INTELLIGENT</entry>
                         </row>
@@ -191,14 +180,12 @@
                             <entry>not configured</entry>
                             <entry/>
                             <entry/>
-                            <entry/>
                             <entry>Offline</entry>
                             <entry>INTELLIGENT</entry>
                         </row>
                         <row>
                             <entry/>
                             <entry>configured</entry>
-                            <entry>set</entry>
                             <entry/>
                             <entry>DETECTOR</entry>
                             <entry>Online</entry>
@@ -207,7 +194,6 @@
                         <row>
                             <entry/>
                             <entry/>
-                            <entry/>
                             <entry>RAPID</entry>
                             <entry/>
                             <entry>Online</entry>
@@ -216,7 +202,6 @@
                         <row>
                             <entry/>
                             <entry>configured</entry>
-                            <entry>set</entry>
                             <entry/>
                             <entry>DETECTOR BINARY_SCAN SIGNATURE_SCAN</entry>
                             <entry>Online</entry>
@@ -225,7 +210,6 @@
                         <row>
                             <entry/>
                             <entry/>
-                            <entry/>
                             <entry>STATELESS</entry>
                             <entry/>
                             <entry>Online</entry>
@@ -234,14 +218,12 @@
                         <row>
                             <entry/>
                             <entry>configured</entry>
-                            <entry>not set</entry>
                             <entry/>
                             <entry>any value</entry>
                             <entry>Online</entry>
                             <entry>INTELLIGENT</entry>
                         </row>
                         <row>
-                            <entry/>
                             <entry/>
                             <entry/>
                             <entry>INTELLIGENT</entry>
