@@ -268,27 +268,19 @@
                     <li>
                         <p>The value of the following settings will not be used or persisted by <keyword keyref="company_name"/>
                             <keyword keyref="solution_name"/> when running in Autonomous mode:</p>
-                        <ul>
-                            <li>
                                 <p>--detect.output.path</p>
-								<p>--detect.bdio.output.path</p>
-								<p>--detect.scan.output.path</p>
-								<p>--detect.tools.output.path</p>
-								<p>--detect.impact.analysis.output.path</p>
-								<p>--detect.status.json.output.path</p>
-                            </li>
-                        </ul>
+                                <p>--detect.bdio.output.path</p>
+                                <p>--detect.scan.output.path</p>
+                                <p>--detect.tools.output.path</p>
+                                <p>--detect.impact.analysis.output.path</p>
+                                <p>--detect.status.json.output.path</p>
                     </li>
                     <li>
                         <p>The following settings will not be persisted by <keyword keyref="company_name"/>
                             <keyword keyref="solution_name"/> when running in Autonomous mode:</p>
-                        <ul>
-                            <li>
                                 <p>--blackduck.api.token</p>
-								<p>--blackduck.proxy.password</p>
-								<p>--detect.diagnostic</p>
-                            </li>
-                        </ul>
+                                <p>--blackduck.proxy.password</p>
+                                <p>--detect.diagnostic</p>
                     </li>
                 </ul>
             </body>
