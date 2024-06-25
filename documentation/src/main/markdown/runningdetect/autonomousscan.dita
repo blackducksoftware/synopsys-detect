@@ -92,7 +92,7 @@
             <ul>
                 <li>
                     <p><xref href="../properties/configuration/blackduck-server.md" format="markdown">ONLINE mode</xref>: With <keyword keyref="blackduck_product_name"/> configuration or proxy configuration
-                        set and <codeph>blackduck.offline.mode</codeph> set to false, or overridden
+                        set and <codeph>blackduck.offline.mode</codeph> not set to true, or overridden
                         as false in the scan settings file, the scan will run online.</p>
                     <ul>
                         <li>
@@ -284,7 +284,7 @@
                             supported.</p>
                     </li>
                     <li>
-                        <p>The following settings will not be used or persisted by <keyword keyref="company_name"/>
+                        <p>The value of the following setting will not be used or persisted by <keyword keyref="company_name"/>
                             <keyword keyref="solution_name"/> when running in Autonomous mode:</p>
                         <ul>
                             <li>
@@ -293,7 +293,7 @@
                         </ul>
                     </li>
                     <li>
-                        <p>The following setting will not be persisted by <keyword keyref="company_name"/>
+                        <p>The following settings will not be persisted by <keyword keyref="company_name"/>
                             <keyword keyref="solution_name"/> when running in Autonomous mode:</p>
                         <ul>
                             <li>
