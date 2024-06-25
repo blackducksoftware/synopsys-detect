@@ -179,7 +179,7 @@ public class AutonomousManagerTest {
         Assertions.assertEquals(globalDetectProperties.get("detect.timeout"), null);
 
         // Only GRADLE detector type should be present
-        Assertions.assertEquals(detectorTypes.size(), 1); // TODO: Test should pass after merging latest bug fix. Remove comment.
+        Assertions.assertEquals(detectorTypes.size(), 1);
         PackageManagerType testDetector = detectorTypes.first();
         Assertions.assertEquals(testDetector.getDetectorTypeName(), "GRADLE");
 
