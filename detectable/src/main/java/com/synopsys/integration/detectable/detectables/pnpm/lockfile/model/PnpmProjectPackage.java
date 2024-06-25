@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-public class PnpmProjectPackagev6 {
+public class PnpmProjectPackage {
     @Nullable
     public Map<String, PnpmDependencyInfo> dependencies;
 

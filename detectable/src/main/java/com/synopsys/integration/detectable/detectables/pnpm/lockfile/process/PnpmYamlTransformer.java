@@ -24,12 +24,12 @@ import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyInfo;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfov6;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackagev6;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-public class PnpmYamlTransformerv6 {
+public class PnpmYamlTransformer {
     private static final String LINKED_PACKAGE_PREFIX = "link:";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -38,7 +38,7 @@ public class PnpmYamlTransformerv6 {
     
     private final Double lockfileVersion;
 
-    public PnpmYamlTransformerv6(EnumListFilter<PnpmDependencyType> dependencyTypeFilter, String lockfileVersion) {
+    public PnpmYamlTransformer(EnumListFilter<PnpmDependencyType> dependencyTypeFilter, String lockfileVersion) {
         this.dependencyTypeFilter = dependencyTypeFilter;
         this.lockfileVersion = Double.valueOf(lockfileVersion);
     }
@@ -50,12 +50,12 @@ public class PnpmYamlTransformerv6 {
 
     public CodeLocation generateCodeLocation(
         File sourcePath,
-        PnpmProjectPackagev6 projectPackage,
+        PnpmProjectPackage projectPackage,
         @Nullable String reportingProjectPackagePath,
         @Nullable NameVersion projectNameVersion,
-        @Nullable Map<String, PnpmPackageInfov6> packageMap,
+        @Nullable Map<String, PnpmPackageInfo> packageMap,
         PnpmLinkedPackageResolver linkedPackageResolver, 
-        @Nullable Map<String, PnpmPackageInfov6> snapshots
+        @Nullable Map<String, PnpmPackageInfo> snapshots
     ) throws IntegrationException {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
         List<String> rootPackageIds = extractRootPackageIds(projectPackage, reportingProjectPackagePath, linkedPackageResolver);        
@@ -74,15 +74,15 @@ public class PnpmYamlTransformerv6 {
     private void buildGraph(
         DependencyGraph graphBuilder,
         List<String> rootPackageIds,
-        @Nullable Map<String, PnpmPackageInfov6> packageMap,
+        @Nullable Map<String, PnpmPackageInfo> packageMap,
         PnpmLinkedPackageResolver linkedPackageResolver,
         @Nullable String reportingProjectPackagePath, 
-        @Nullable Map<String, PnpmPackageInfov6> snapshots
+        @Nullable Map<String, PnpmPackageInfo> snapshots
     ) throws IntegrationException {
         if (packageMap == null) {
             throw new DetectableException("Could not parse 'packages' section of the pnpm-lock.yaml file.");
         }
-        for (Map.Entry<String, PnpmPackageInfov6> packageEntry : packageMap.entrySet()) {
+        for (Map.Entry<String, PnpmPackageInfo> packageEntry : packageMap.entrySet()) {
             String packageId = packageEntry.getKey();
             Optional<Dependency> pnpmPackage = buildDependencyFromPackageEntry(packageEntry);
             if (!pnpmPackage.isPresent()) {
@@ -95,7 +95,7 @@ public class PnpmYamlTransformerv6 {
                 graphBuilder.addChildToRoot(pnpmPackage.get());
             }
 
-            PnpmPackageInfov6 packageInfo = getDependencyInformation(packageEntry, snapshots);  
+            PnpmPackageInfo packageInfo = getDependencyInformation(packageEntry, snapshots);  
             
             // Give up if we can't find any dependencies for this package and move onto processing others.
             if (packageInfo == null) {
@@ -107,8 +107,8 @@ public class PnpmYamlTransformerv6 {
         }
     }
 
-    private PnpmPackageInfov6 getDependencyInformation(Entry<String, PnpmPackageInfov6> packageEntry, Map<String, PnpmPackageInfov6> snapshots) {
-        PnpmPackageInfov6 packageWithDependencyInfo = packageEntry.getValue();
+    private PnpmPackageInfo getDependencyInformation(Entry<String, PnpmPackageInfo> packageEntry, Map<String, PnpmPackageInfo> snapshots) {
+        PnpmPackageInfo packageWithDependencyInfo = packageEntry.getValue();
         
         // In the v9 lockfile dependencies are in the snapshots object, look there.
         if (packageWithDependencyInfo.getDependencies().isEmpty() && packageWithDependencyInfo.getDevDependencies().isEmpty() && packageWithDependencyInfo.getOptionalDependencies().isEmpty()) {
@@ -118,7 +118,7 @@ public class PnpmYamlTransformerv6 {
         return packageWithDependencyInfo;
     }
 
-    private PnpmPackageInfov6 getFlexibleValue(String desiredKey, Map<String, PnpmPackageInfov6> snapshots) {
+    private PnpmPackageInfo getFlexibleValue(String desiredKey, Map<String, PnpmPackageInfo> snapshots) {
         if (snapshots != null) {
             for (String key: snapshots.keySet()) {
                 if (key.startsWith(desiredKey)) {
@@ -132,7 +132,7 @@ public class PnpmYamlTransformerv6 {
 
     private void processTransitiveDependencies(DependencyGraph graphBuilder,
             PnpmLinkedPackageResolver linkedPackageResolver, String reportingProjectPackagePath,
-            Optional<Dependency> pnpmPackage, PnpmPackageInfov6 packageInfo) {
+            Optional<Dependency> pnpmPackage, PnpmPackageInfo packageInfo) {
         if (!packageInfo.getDependencyType().isPresent() || dependencyTypeFilter.shouldInclude(packageInfo.getDependencyType().get())) {
             for (Map.Entry<String, String> packageDependency : packageInfo.getDependencies().entrySet()) {
                 addTransitiveDependencyToGraph(graphBuilder, linkedPackageResolver, reportingProjectPackagePath,
@@ -163,8 +163,8 @@ public class PnpmYamlTransformerv6 {
         child.ifPresent(c -> graphBuilder.addChildWithParent(child.get(), pnpmPackage.get()));
     }
 
-    private PnpmProjectPackagev6 convertPnpmLockYamlToPnpmProjectPackage(PnpmLockYaml pnpmLockYaml) {
-        PnpmProjectPackagev6 pnpmProjectPackage = new PnpmProjectPackagev6();
+    private PnpmProjectPackage convertPnpmLockYamlToPnpmProjectPackage(PnpmLockYaml pnpmLockYaml) {
+        PnpmProjectPackage pnpmProjectPackage = new PnpmProjectPackage();
 
         pnpmProjectPackage.dependencies = pnpmLockYaml.dependencies;
         pnpmProjectPackage.devDependencies = pnpmLockYaml.devDependencies;
@@ -174,7 +174,7 @@ public class PnpmYamlTransformerv6 {
     }
 
     private List<String> extractRootPackageIds(
-        PnpmProjectPackagev6 pnpmProjectPackage,
+        PnpmProjectPackage pnpmProjectPackage,
         @Nullable String reportingProjectPackagePath,
         PnpmLinkedPackageResolver linkedPackageResolver
     ) {
@@ -231,8 +231,8 @@ public class PnpmYamlTransformerv6 {
         }
     }
 
-    private Optional<Dependency> buildDependencyFromPackageEntry(Map.Entry<String, PnpmPackageInfov6> packageEntry) {
-        PnpmPackageInfov6 packageInfo = packageEntry.getValue();
+    private Optional<Dependency> buildDependencyFromPackageEntry(Map.Entry<String, PnpmPackageInfo> packageEntry) {
+        PnpmPackageInfo packageInfo = packageEntry.getValue();
         if (packageInfo.name != null) {
             return Optional.of(Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, packageInfo.name, packageInfo.version));
         }

@@ -13,16 +13,16 @@ import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackagev6;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class PnpmLockYamlParser {
     private static final Predicate<String> isNodeRoot = "."::equals;
 
-    private PnpmYamlTransformerv6 pnpmTransformer;
+    private PnpmYamlTransformer pnpmTransformer;
 
-    public PnpmLockYamlParser(PnpmYamlTransformerv6 pnpmTransformer) {
+    public PnpmLockYamlParser(PnpmYamlTransformer pnpmTransformer) {
         this.pnpmTransformer = pnpmTransformer;
     }
 
@@ -53,9 +53,9 @@ public class PnpmLockYamlParser {
         }
 
         List<CodeLocation> codeLocations = new LinkedList<>();
-        for (Map.Entry<String, PnpmProjectPackagev6> projectPackageInfo : pnpmLockYaml.importers.entrySet()) {
+        for (Map.Entry<String, PnpmProjectPackage> projectPackageInfo : pnpmLockYaml.importers.entrySet()) {
             String projectKey = projectPackageInfo.getKey();
-            PnpmProjectPackagev6 projectPackage = projectPackageInfo.getValue();
+            PnpmProjectPackage projectPackage = projectPackageInfo.getValue();
             NameVersion extractedNameVersion = extractProjectInfo(projectPackageInfo, linkedPackageResolver,
                     projectNameVersion);
 
@@ -72,7 +72,7 @@ public class PnpmLockYamlParser {
         return codeLocations;
     }
 
-    private NameVersion extractProjectInfo(Map.Entry<String, PnpmProjectPackagev6> projectPackageInfo,
+    private NameVersion extractProjectInfo(Map.Entry<String, PnpmProjectPackage> projectPackageInfo,
             PnpmLinkedPackageResolver linkedPackageResolver, @Nullable NameVersion projectNameVersion) {
         if (isNodeRoot.evaluate(projectPackageInfo.getKey()) && projectNameVersion != null
                 && projectNameVersion.getName() != null) {

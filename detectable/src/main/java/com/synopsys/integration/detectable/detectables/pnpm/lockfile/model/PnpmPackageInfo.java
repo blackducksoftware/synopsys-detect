@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.apache.commons.collections4.MapUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class PnpmPackageInfov6 {
+public class PnpmPackageInfo {
     @Nullable
     public Boolean dev;
     @Nullable

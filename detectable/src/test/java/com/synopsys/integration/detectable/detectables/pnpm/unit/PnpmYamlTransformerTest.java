@@ -21,7 +21,7 @@ import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmL
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfov5;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformerv5;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformerv6;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
