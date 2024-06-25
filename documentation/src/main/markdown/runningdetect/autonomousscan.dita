@@ -157,7 +157,7 @@
 							<p><sub>URL or Proxy</sub></p>
 							</entry>
                             <entry>
-							<p><b>SCAAS Path Setting</b></p>
+							<p><b>SCAAS Path</b></p>
 							<p><sub>scaaas.scan.path</sub></p>
 							</entry>
                             <entry>
@@ -198,7 +198,7 @@
                         <row>
                             <entry/>
                             <entry>configured</entry>
-                            <entry>true</entry>
+                            <entry>set</entry>
                             <entry/>
                             <entry>DETECTOR</entry>
                             <entry>Online</entry>
@@ -216,7 +216,7 @@
                         <row>
                             <entry/>
                             <entry>configured</entry>
-                            <entry>true</entry>
+                            <entry>set</entry>
                             <entry/>
                             <entry>DETECTOR BINARY_SCAN SIGNATURE_SCAN</entry>
                             <entry>Online</entry>
@@ -234,7 +234,7 @@
                         <row>
                             <entry/>
                             <entry>configured</entry>
-                            <entry>false</entry>
+                            <entry>not set</entry>
                             <entry/>
                             <entry>any value</entry>
                             <entry>Online</entry>
