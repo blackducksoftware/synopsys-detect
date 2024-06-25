@@ -2,6 +2,8 @@ package com.synopsys.integration.detect.configuration;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.mockito.Mockito;
@@ -25,6 +27,14 @@ public class DetectConfigurationFactoryTestUtils {
         Map<String, String> propertyMap = Bds.of(properties).toMap(pair -> pair.getLeft().getKey(), Pair::getRight);
         PropertySource inMemoryPropertySource = new MapPropertySource("test", propertyMap);
         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.singletonList(inMemoryPropertySource), Collections.emptySortedMap());
+        DetectPropertyConfiguration detectPropertyConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
+        return new DetectConfigurationFactory(detectPropertyConfiguration, new Gson());
+    }
+    public static DetectConfigurationFactory scanSettingsFactoryOf(Map<String, String> propertyMap, Pair<Property, String>... scanSettingsProperties) {
+        Map<String, String> scanSettingsPropertyMap = Bds.of(scanSettingsProperties).toMap(pair -> pair.getLeft().getKey(), Pair::getRight);
+        SortedMap<String, String> scanSettingsMap = new TreeMap<>(scanSettingsPropertyMap);
+        PropertySource inMemoryPropertySource = new MapPropertySource("test", propertyMap);
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(Collections.singletonList(inMemoryPropertySource), scanSettingsMap);
         DetectPropertyConfiguration detectPropertyConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
         return new DetectConfigurationFactory(detectPropertyConfiguration, new Gson());
     }

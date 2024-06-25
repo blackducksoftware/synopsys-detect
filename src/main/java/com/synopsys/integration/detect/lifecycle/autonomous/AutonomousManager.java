@@ -98,7 +98,7 @@ public class AutonomousManager {
         }
     }
 
-    private ScanSettings initializeScanSettingsModel() {
+    public ScanSettings initializeScanSettingsModel() {
         if (isScanSettingsFilePresent()) {
             logger.debug("Found previous scan settings file at " + scanSettingsTargetFile.getAbsolutePath() + " and will be used for making autonomous scan decisions.");
             return ScanSettingsSerializer.deserializeScanSettingsFile(scanSettingsTargetFile);
@@ -117,14 +117,21 @@ public class AutonomousManager {
         return autoDetectTool.decide(hasImageOrTar, detectConfiguration, Paths.get(detectSourcePath));
     }
 
-    private void initializeProperties() {
+    public void initializeProperties() {
         allProperties.putAll(scanSettings.getGlobalDetectProperties());
         scanSettings.getScanTypes().forEach(scanType ->  {
             allProperties.putAll(scanType.getScanProperties());
-            scanType.getScanProperties().clear();
         });
         scanSettings.getDetectorTypes().forEach(detectorType -> {
             allProperties.putAll(detectorType.getDetectorProperties());
+        });
+    }
+
+    private void clearScanSettingsProperties() {
+        scanSettings.getScanTypes().forEach(scanType ->  {
+            scanType.getScanProperties().clear();
+        });
+        scanSettings.getDetectorTypes().forEach(detectorType -> {
             detectorType.getDetectorProperties().clear();
         });
         scanSettings.getGlobalDetectProperties().clear();
@@ -137,14 +144,14 @@ public class AutonomousManager {
     private void removeDeletedProperties(List<String> allPropertyKeys) {
         allProperties.entrySet().removeIf(entry -> !allPropertyKeys.contains(entry.getKey()));
     }
-
     private void removeExcludedToolsAndDetectors() {
         scanSettings.getScanTypes().removeIf(scanType -> !decidedScanTypes.contains(scanType.getScanTypeName()));
         scanSettings.getDetectorTypes().removeIf(detectorType -> !decidedDetectorTypes.contains(detectorType.getDetectorTypeName()));
     }
 
     public void updateScanSettingsProperties(SortedMap<String, String> defaultPropertiesMap, Set<String> adoptedScanTypes, Set<String> detectorTypes, List<String> allPropertyKeys) {
-        removeDeletedProperties(allPropertyKeys);
+    clearScanSettingsProperties();
+    removeDeletedProperties(allPropertyKeys);
 
         allProperties.putAll(userProvidedProperties);
         defaultPropertiesMap.forEach((propertyKey, propertyValue) -> {

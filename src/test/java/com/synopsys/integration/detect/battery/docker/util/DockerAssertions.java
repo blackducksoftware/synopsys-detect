@@ -7,7 +7,12 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.Set;
 
+import com.synopsys.integration.common.util.Bds;
+import com.synopsys.integration.detect.lifecycle.autonomous.model.PackageManagerType;
+import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
+import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanType;
 import org.junit.jupiter.api.Assertions;
 
 import com.google.gson.Gson;
@@ -22,6 +27,7 @@ public class DockerAssertions {
     private final File outputDirectory;
     private final File bdioDirectory;
     private FormattedOutput statusJson = null;
+    private ScanSettings scanSettingsJson = null;
 
     public DockerAssertions(DockerTestDirectories testDirectories, DockerDetectResult dockerDetectResult) {
         this.dockerDetectResult = dockerDetectResult;
@@ -95,6 +101,58 @@ public class DockerAssertions {
             Assertions.fail("Unable to parse status json with gson.", e);
         }
         return statusJson;
+    }
+
+    public void locateScanSettingsFile() {
+        File scanSettingsDirectory = new File(outputDirectory,"scan-settings");
+        Assertions.assertNotNull(scanSettingsDirectory, "Could not find any scanSettings directories, looked in: " + outputDirectory);
+        File[] scanSettingsFiles = scanSettingsDirectory.listFiles();
+        Assertions.assertNotNull(scanSettingsFiles, "There are no scan-settings file inside scan-settings directory");
+        Assertions.assertEquals(1, scanSettingsFiles.length, "There should be exactly one scan settings file (from this latest run).");
+
+        File scanSettings = scanSettingsFiles[0];
+        Assertions.assertTrue(scanSettings.exists(), "Could not find scan-settings json in the directory!");
+
+        try {
+            scanSettingsJson = new Gson().fromJson(new FileReader(scanSettings), ScanSettings.class);
+        } catch (FileNotFoundException e) {
+            Assertions.fail("Unable to parse scans-settings json file", e);
+        }
+    }
+
+    public void autonomousScanModeAssertions(String scanMode) {
+        String scanModeInFile = scanSettingsJson.getGlobalDetectProperties().get("detect.blackduck.scan.mode");
+        Assertions.assertEquals(scanModeInFile, scanMode, "Expected Blackduck scan mode to be " + scanMode + " but it is actually " + scanModeInFile);
+    }
+
+    public void autonomousDetectorAssertions(String detectorType, String... propertiesPresent) {
+        Optional<PackageManagerType> detectorTypeInFile = scanSettingsJson.getDetectorTypes().stream().filter(detector -> detector.getDetectorTypeName().equals(detectorType)).findFirst();
+        Assertions.assertTrue(detectorTypeInFile.isPresent(), "Expected Scan Settings File to contain Detector Type: " + detectorType);
+
+        Set<String> propertiesToCheck = Bds.setOf(propertiesPresent);
+
+        PackageManagerType packageManager = detectorTypeInFile.get();
+
+        if(!propertiesToCheck.isEmpty()) {
+            propertiesToCheck.forEach(property -> {
+                Assertions.assertTrue(packageManager.getDetectorProperties().containsKey(property),"Expected property " + property + " to be present in the scan settings file.");
+            });
+        }
+    }
+
+    public void autonomousScanTypeAssertions(String scanType, String... propertiesPresent) {
+        Optional<ScanType> scanTypeOptional = scanSettingsJson.getScanTypes().stream().filter(scanTool -> scanTool.getScanTypeName().equals(scanType)).findFirst();
+        Assertions.assertTrue(scanTypeOptional.isPresent(), "Expected Scan Settings File to contain Detector Type: " + scanType);
+
+        Set<String> propertiesToCheck = Bds.setOf(propertiesPresent);
+
+        ScanType scanType1 = scanTypeOptional.get();
+
+        if(!propertiesToCheck.isEmpty()) {
+            propertiesToCheck.forEach(property -> {
+                Assertions.assertTrue(scanType1.getScanProperties().containsKey(property),"Expected property " + property + " to be present in the scan settings file.");
+            });
+        }
     }
 
     public void atLeastOneBdioFile() {
