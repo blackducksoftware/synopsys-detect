@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParser;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParserInitial;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformerv5;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformerv6;
 import com.synopsys.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
@@ -48,7 +48,7 @@ public class PnpmLockYamlParserTest {
     private void evaluatePnpmLockYamlParsing(File pnpmLockYaml)
             throws IOException, IntegrationException, MultipleFailuresError {
         EnumListFilter<PnpmDependencyType> dependencyTypeFilter = EnumListFilter.excludeNone();
-        PnpmLockYamlParser pnpmLockYamlParser = new PnpmLockYamlParser(dependencyTypeFilter);
+        PnpmLockYamlParserInitial pnpmLockYamlParser = new PnpmLockYamlParserInitial(dependencyTypeFilter);
         PnpmLinkedPackageResolver pnpmLinkedPackageResolver = new PnpmLinkedPackageResolver(
             FunctionalTestFiles.asFile("/pnpm"),
             new PackageJsonFiles(new PackageJsonReader(new Gson()))

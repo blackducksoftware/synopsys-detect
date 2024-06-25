@@ -16,7 +16,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlBase;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv5;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfov5;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;

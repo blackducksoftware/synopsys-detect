@@ -1,7 +1,6 @@
 package com.synopsys.integration.detectable.detectables.pnpm.lockfile.process;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyInfo;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv6;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfov6;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackagev6;
 import com.synopsys.integration.exception.IntegrationException;
@@ -41,7 +40,7 @@ public class PnpmYamlTransformerv6 {
         this.dependencyTypeFilter = dependencyTypeFilter;
     }
 
-    public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYamlv6 pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver)
+    public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver)
         throws IntegrationException {
         return generateCodeLocation(sourcePath, convertPnpmLockYamlToPnpmProjectPackage(pnpmLockYaml), null, projectNameVersion, pnpmLockYaml.packages, linkedPackageResolver, pnpmLockYaml.snapshots);
     }
@@ -56,17 +55,7 @@ public class PnpmYamlTransformerv6 {
         @Nullable Map<String, PnpmPackageInfov6> snapshots
     ) throws IntegrationException {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
-        List<String> rootPackageIds = extractRootPackageIds(projectPackage, reportingProjectPackagePath, linkedPackageResolver);
-        
-        // TODO strip leading / in v9 so we can do matches. Can't do it in common function as it 
-        // is needed for kb stuff?
-//        List<String> updatedRootPackages = new ArrayList<>();
-//        for (String rootPackage : rootPackageIds) {
-//            if (rootPackage.startsWith("/")) {
-//                updatedRootPackages.add(rootPackage.substring(1));
-//            }
-//        }
-        
+        List<String> rootPackageIds = extractRootPackageIds(projectPackage, reportingProjectPackagePath, linkedPackageResolver);        
         buildGraph(dependencyGraph, rootPackageIds, packageMap, linkedPackageResolver, reportingProjectPackagePath, snapshots);
 
         if (projectNameVersion != null) {
@@ -105,14 +94,9 @@ public class PnpmYamlTransformerv6 {
 
             PnpmPackageInfov6 packageInfo = getDependencyInformation(packageEntry, snapshots);  
             
-            // We should be able to find a corresponding value in snapshots for v9 but in case we can't skip this package
+            // Give up if we can't find any dependencies for this package and move onto processing others.
             if (packageInfo == null) {
                 continue;
-            }
-            
-            // TODO remove
-            if (pnpmPackage.get().getName().equals("@babel/helper-module-transforms")) {
-                String breakHere = "";
             }
             
             processTransitiveDependencies(graphBuilder, linkedPackageResolver, reportingProjectPackagePath, pnpmPackage,
@@ -123,6 +107,7 @@ public class PnpmYamlTransformerv6 {
     private PnpmPackageInfov6 getDependencyInformation(Entry<String, PnpmPackageInfov6> packageEntry, Map<String, PnpmPackageInfov6> snapshots) {
         PnpmPackageInfov6 packageWithDependencyInfo = packageEntry.getValue();
         
+        // In the v9 lockfile dependencies are in the snapshots object, look there.
         if (packageWithDependencyInfo.getDependencies().isEmpty() && packageWithDependencyInfo.getDevDependencies().isEmpty() && packageWithDependencyInfo.getOptionalDependencies().isEmpty()) {
             return getFlexibleValue(packageEntry.getKey(), snapshots);
         }
@@ -131,11 +116,14 @@ public class PnpmYamlTransformerv6 {
     }
 
     private PnpmPackageInfov6 getFlexibleValue(String desiredKey, Map<String, PnpmPackageInfov6> snapshots) {
-        for (String key: snapshots.keySet()) {
-            if (key.startsWith(desiredKey)) {
-                return snapshots.get(key);
+        if (snapshots != null) {
+            for (String key: snapshots.keySet()) {
+                if (key.startsWith(desiredKey)) {
+                    return snapshots.get(key);
+                }
             }
         }
+
         return null;
     }
 
@@ -172,7 +160,7 @@ public class PnpmYamlTransformerv6 {
         child.ifPresent(c -> graphBuilder.addChildWithParent(child.get(), pnpmPackage.get()));
     }
 
-    private PnpmProjectPackagev6 convertPnpmLockYamlToPnpmProjectPackage(PnpmLockYamlv6 pnpmLockYaml) {
+    private PnpmProjectPackagev6 convertPnpmLockYamlToPnpmProjectPackage(PnpmLockYaml pnpmLockYaml) {
         PnpmProjectPackagev6 pnpmProjectPackage = new PnpmProjectPackagev6();
 
         pnpmProjectPackage.dependencies = pnpmLockYaml.dependencies;
