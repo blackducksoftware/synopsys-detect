@@ -266,11 +266,16 @@
                             supported.</p>
                     </li>
                     <li>
-                        <p>The value of the following setting will not be used or persisted by <keyword keyref="company_name"/>
+                        <p>The value of the following settings will not be used or persisted by <keyword keyref="company_name"/>
                             <keyword keyref="solution_name"/> when running in Autonomous mode:</p>
                         <ul>
                             <li>
-                                <p>--detect.tools</p>
+                                <p>--detect.output.path</p>
+								<p>--detect.bdio.output.path</p>
+								<p>--detect.scan.output.path</p>
+								<p>--detect.tools.output.path</p>
+								<p>--detect.impact.analysis.output.path</p>
+								<p>--detect.status.json.output.path</p>
                             </li>
                         </ul>
                     </li>
