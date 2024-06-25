@@ -6,7 +6,7 @@
     <shortdesc>Autonomous Scanning allows for <keyword keyref="company_name"/>
         <keyword keyref="solution_name"/> to run scans with a minimum amount of user provided
         parameters. Autonomous scans store configuration and related parameters in a .json file that
-        can be shared between users working with the same code. This reduces the user input required
+        will be reused when working with the same code. This reduces the user input required
         to effectively analyze source code and binary files, along with simplifying repeat analysis
         and delta reporting.</shortdesc>
     <body>
