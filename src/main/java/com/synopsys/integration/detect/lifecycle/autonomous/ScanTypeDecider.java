@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
-import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MediaTypeRegistry;
@@ -31,20 +30,6 @@ import org.xml.sax.SAXException;
 
 public class ScanTypeDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final String tikaConfig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-        "<properties>\n" +
-        "  <parsers>\n" +
-        "    <!-- Default Parser for most things, except for 2 mime types, and never\n" +
-        "         use the Executable Parser -->\n" +
-        "    <parser class=\"org.apache.tika.parser.DefaultParser\">\n" +
-        "      <mime-exclude>image/jpeg</mime-exclude>\n" +
-        "      <mime-exclude>image/jp2</mime-exclude>\n" +
-        "      <mime-exclude>application/pdf</mime-exclude>\n" +
-        "      <parser-exclude class=\"org.apache.tika.parser.executable.ExecutableParser\"/>\n" +
-        "    </parser>\n" +
-        "  </parsers>\n" +
-        "  <service-loader loadErrorHandler=\"WARN\"/>\n" +
-        "</properties>";
     
     public Map<DetectTool, Set<String>> decide(boolean hasImageOrTar, DetectPropertyConfiguration detectConfiguration, Path detectSourcePath) {
         if (!hasImageOrTar && detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED)) {
