@@ -290,9 +290,6 @@
                             <li>
                                 <p>--detect.tools</p>
                             </li>
-                            <li>
-                                <p>--detect.diagnostic</p>
-                            </li>
                         </ul>
                     </li>
                     <li>
@@ -301,6 +298,8 @@
                         <ul>
                             <li>
                                 <p>--blackduck.api.token</p>
+								<p>--blackduck.proxy.password</p>
+								<p>--detect.diagnostic</p>
                             </li>
                         </ul>
                     </li>
