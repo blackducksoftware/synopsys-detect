@@ -155,7 +155,9 @@ public class AutonomousManager {
 
         allProperties.putAll(userProvidedProperties);
         defaultPropertiesMap.forEach((propertyKey, propertyValue) -> {
-            if(!propertyValue.isEmpty()) {
+            if(propertyKey.equals("detect.blackduck.scan.mode")) {
+                allProperties.put(propertyKey, blackDuckScanMode);
+            } else if(!propertyValue.isEmpty()) {
                 allProperties.putIfAbsent(propertyKey, propertyValue);
             }
         });
@@ -227,12 +229,7 @@ public class AutonomousManager {
     }
 
     private void updateGlobalProperties(String propertyKey, String propertyValue) {
-        if(propertyKey.equals("detect.blackduck.scan.mode")) {
-            propertyValue = blackDuckScanMode;
-            scanSettings.getGlobalDetectProperties().put(propertyKey, propertyValue);
-        } else {
-            scanSettings.getGlobalDetectProperties().put(propertyKey, propertyValue);
-        }
+        scanSettings.getGlobalDetectProperties().put(propertyKey, propertyValue);
     }
 
     public void updateUserProvidedBinaryScanTargets(List<File> binaryScanTargets) {
