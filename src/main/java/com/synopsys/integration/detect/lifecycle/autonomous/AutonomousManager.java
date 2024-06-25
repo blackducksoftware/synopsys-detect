@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.lifecycle.autonomous;
 
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import java.io.File;
@@ -155,7 +156,7 @@ public class AutonomousManager {
 
         allProperties.putAll(userProvidedProperties);
         defaultPropertiesMap.forEach((propertyKey, propertyValue) -> {
-            if(propertyKey.equals("detect.blackduck.scan.mode")) {
+            if(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE.getKey().equals(propertyKey)) {
                 allProperties.put(propertyKey, blackDuckScanMode);
             } else if(!propertyValue.isEmpty()) {
                 allProperties.putIfAbsent(propertyKey, propertyValue);
