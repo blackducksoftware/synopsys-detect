@@ -39,7 +39,7 @@ public class PnpmLockYamlParserInitial {
         PnpmLockYamlBase pnpmLockYaml = parseYamlFile(pnpmLockYamlFile);
         
         if (pnpmLockYaml instanceof PnpmLockYaml) {
-            PnpmYamlTransformerv6 pnpmYamlTransformer = new PnpmYamlTransformerv6(dependencyFilter);
+            PnpmYamlTransformerv6 pnpmYamlTransformer = new PnpmYamlTransformerv6(dependencyFilter, pnpmLockYaml.lockfileVersion);
             PnpmLockYamlParser pnpmYamlParser = new PnpmLockYamlParser(pnpmYamlTransformer);
             return pnpmYamlParser.parse(pnpmLockYamlFile.getParentFile(), (PnpmLockYaml) pnpmLockYaml, linkedPackageResolver, projectNameVersion);
         } else {

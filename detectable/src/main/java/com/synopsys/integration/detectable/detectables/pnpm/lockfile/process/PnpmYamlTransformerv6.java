@@ -35,9 +35,12 @@ public class PnpmYamlTransformerv6 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final EnumListFilter<PnpmDependencyType> dependencyTypeFilter;
+    
+    private final Double lockfileVersion;
 
-    public PnpmYamlTransformerv6(EnumListFilter<PnpmDependencyType> dependencyTypeFilter) {
+    public PnpmYamlTransformerv6(EnumListFilter<PnpmDependencyType> dependencyTypeFilter, String lockfileVersion) {
         this.dependencyTypeFilter = dependencyTypeFilter;
+        this.lockfileVersion = Double.valueOf(lockfileVersion);
     }
 
     public CodeLocation generateCodeLocation(File sourcePath, PnpmLockYaml pnpmLockYaml, @Nullable NameVersion projectNameVersion, PnpmLinkedPackageResolver linkedPackageResolver)
@@ -193,12 +196,18 @@ public class PnpmYamlTransformerv6 {
             // a linked project package's version will be referenced in the format: <linkPrefix><pathToLinkedPackageRelativeToReportingProjectPackage>
             version = linkedPackageResolver.resolveVersionOfLinkedPackage(reportingProjectPackagePath, version.replace(LINKED_PACKAGE_PREFIX, ""));
         }
-        // TODO likely need to remove the leading / for v9. Eventually have to juggle both.
-        return String.format("%s@%s", name, version);
+        // v6 needs a leading / to find packages, v9 does not.
+        String packageFormat = "%s@%s";
+        
+        if (lockfileVersion.intValue() == 6) {
+            packageFormat = "/%s@%s";
+        }
+
+        return String.format(packageFormat, name, version);
     }
 
     private Optional<NameVersion> parseNameVersionFromId(String id) {
-        // ids follow format: /name@version
+        // ids follow format: /name@version in v6, name@version in v9
         try {
             // It seems critical not to send this extra information in () or the kb will fail matching it.
             if (id.contains("(")) {
@@ -206,9 +215,14 @@ public class PnpmYamlTransformerv6 {
             }
 
             int indexOfLastSlash = id.lastIndexOf("@");
-            // TODO this needs to be 0 as we don't want to eat the no longer there / in v9
-            String name = id.substring(0, indexOfLastSlash);
-           // String name = id.substring(1, indexOfLastSlash);
+            // v9 lockfile does not have names starting with /, v 6 does
+            String name = "";
+            if (id.startsWith("/")) {
+                name = id.substring(1, indexOfLastSlash);
+            } else {
+                name = id.substring(0, indexOfLastSlash);
+            }
+
             String version = id.substring(indexOfLastSlash + 1);
             return Optional.of(new NameVersion(name, version));
         } catch (Exception e) {
