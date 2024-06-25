@@ -2,10 +2,15 @@ package com.synopsys.integration.detect.configuration;
 
 import static com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.factoryOf;
 import static com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.spyFactoryOf;
+import static com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.scanSettingsFactoryOf;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Collections;
+import java.util.Map;
+import java.util.HashMap;
 
+import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -116,5 +121,36 @@ public class DetectConfigurationFactoryTests {
         Assertions.assertFalse(containerScanFilePath.toString().startsWith("http"));
         Assertions.assertFalse(containerScanFilePath.toString().startsWith("/"));
         Assertions.assertFalse(containerScanFilePath.toString().endsWith("/"));
+    }
+
+    public void testScanSettingsPropertyIfProvided() throws DetectUserFriendlyException {
+        String blackduckUrl = "https://testblackduckurl.com";
+        String scaasScanPath = "User/detectuser/scaasFile.txt";
+        DetectConfigurationFactory factory = scanSettingsFactoryOf(Collections.emptyMap(), Pair.of(DetectProperties.BLACKDUCK_URL, blackduckUrl), Pair.of(DetectProperties.DETECT_SCAAAS_SCAN_PATH, scaasScanPath));
+        BlackDuckConnectionDetails blackDuckConnectionDetails = factory.createBlackDuckConnectionDetails();
+
+        Optional<String> blackduckUrlString = blackDuckConnectionDetails.getBlackDuckUrl();
+
+        Assertions.assertTrue(blackduckUrlString.isPresent());
+        blackduckUrlString.ifPresent(str -> Assertions.assertEquals(str, blackduckUrl));
+
+        Optional<String> scaasFilePathString = factory.getScaaasFilePath();
+
+        Assertions.assertTrue(scaasFilePathString.isPresent());
+        scaasFilePathString.ifPresent(str -> Assertions.assertEquals(str, scaasScanPath));
+    }
+
+    public void testScanSettingsPropertyIfUserProvided() throws DetectUserFriendlyException {
+        String blackduckUrl = "https://testblackduckurl.com";
+        String blackduckUserUrl = "User/detectuser/scaasFile.txt";
+        Map<String, String> propertyMap = new HashMap<>();
+        propertyMap.put("blackduck.url", blackduckUserUrl);
+        DetectConfigurationFactory factory = scanSettingsFactoryOf(propertyMap, Pair.of(DetectProperties.BLACKDUCK_URL, blackduckUrl));
+        BlackDuckConnectionDetails blackDuckConnectionDetails = factory.createBlackDuckConnectionDetails();
+
+        Optional<String> blackduckUrlString = blackDuckConnectionDetails.getBlackDuckUrl();
+
+        Assertions.assertTrue(blackduckUrlString.isPresent());
+        blackduckUrlString.ifPresent(str -> Assertions.assertEquals(str, blackduckUserUrl));
     }
 }

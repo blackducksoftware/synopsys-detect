@@ -83,4 +83,8 @@ public class ScanSettings {
             return newDetectorType;
         }
     }
+
+    public boolean isEmpty() {
+        return globalDetectProperties.isEmpty() && detectorTypes.isEmpty() && scanTypes.isEmpty();
+    }
 }

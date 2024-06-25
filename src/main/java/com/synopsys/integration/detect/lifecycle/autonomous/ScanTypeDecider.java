@@ -30,7 +30,6 @@ import org.xml.sax.SAXException;
 
 public class ScanTypeDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
     public Map<DetectTool, Set<String>> decide(boolean hasImageOrTar, DetectPropertyConfiguration detectConfiguration, Path detectSourcePath) {
         if (!hasImageOrTar && detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED)) {
             AllNoneEnumCollection<DetectTool> includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
@@ -83,7 +82,7 @@ public class ScanTypeDecider {
             }
         }
     }
-    
+
     private final Set<String> avoidAbsolutely = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             ".gitattributes", 
             ".gitignore", 
@@ -118,7 +117,7 @@ public class ScanTypeDecider {
     private boolean shouldAvoidDirectory(String name) {
         return avoidAbsolutely.contains(name);
     }
-    
+
     private boolean isEligibleFile(String name, long size) {
         if (size<=0L) {
             return false;

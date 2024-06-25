@@ -7,8 +7,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import javax.swing.text.html.Option;
-
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.synopsys.integration.detect.lifecycle.autonomous.ScanSettingsSerializer;
