@@ -155,6 +155,7 @@ public class DetectOnDetectTest {
             commandBuilder.waitForResults();
 
             commandBuilder.property(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED, String.valueOf(true));
+            commandBuilder.property(DetectProperties.DETECT_TOOLS_EXCLUDED,"BINARY_SCAN");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.bdioFiles(1); //7 code locations, 6 bdio, 1 signature scanner

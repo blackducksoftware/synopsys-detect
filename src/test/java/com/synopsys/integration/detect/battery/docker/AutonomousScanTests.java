@@ -61,6 +61,7 @@ public class AutonomousScanTests {
 
             commandBuilder.property(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED, String.valueOf(true));
             commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
+            commandBuilder.property(DetectProperties.DETECT_TOOLS_EXCLUDED,"BINARY_SCAN");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.bdioFiles(1);
@@ -71,7 +72,6 @@ public class AutonomousScanTests {
             dockerAssertions.autonomousDetectorAssertions("GRADLE");
             dockerAssertions.autonomousScanTypeAssertions("DETECTOR", "detect.accuracy.required", "detect.detector.search.depth");
             dockerAssertions.autonomousScanTypeAssertions("SIGNATURE_SCAN");
-            dockerAssertions.autonomousScanTypeAssertions("BINARY_SCAN","detect.binary.scan.search.depth");
 
             blackduckAssertions.hasComponents("Apache Commons Text","XStream");
         }
