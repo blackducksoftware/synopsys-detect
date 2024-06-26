@@ -23,9 +23,7 @@
             configurations enabled at run time will take precedence over values stored in the scan
             settings file.</p>
         <p>
-            <note type="warning">The scan settings json file is generated and updated automatically
-                by <keyword keyref="company_name"/>
-                <keyword keyref="solution_name"/> and should not be manually modified.</note>
+            <note type="warning">The scan settings json file is generated and updated automatically and should not be manually modified.</note>
         </p>
         <p><keyword keyref="company_name"/>
             <keyword keyref="solution_name"/> will determine appropriate tools and/or Detectors to run
@@ -96,9 +94,7 @@
                         as false in the scan settings file, the scan will run online.</p>
                     <ul>
                         <li>
-                            <p><xref href="rapidscan.md" format="markdown">Rapid</xref>: Will run if Detect Scan Mode 
-                                    <codeph>--detect.blackduck.scan.mode</codeph> is set to
-                                RAPID.</p>
+                            <p><xref href="rapidscan.md" format="markdown">Rapid</xref>: Will run if <keyword keyref="blackduck_product_name"/> is configured and <keyword keyref="solution_name"/> Scan Mode <codeph>--detect.blackduck.scan.mode</codeph> is set to RAPID.</p>
                         </li>
                         <li>
                             <p><xref href="statelessscan.md" format="markdown">Stateless</xref>:
@@ -184,48 +180,64 @@
                             <entry>INTELLIGENT</entry>
                         </row>
                         <row>
+                            <entry>true</entry>
                             <entry/>
-                            <entry>configured</entry>
                             <entry/>
-                            <entry>DETECTOR</entry>
-                            <entry>Online</entry>
-                            <entry>RAPID</entry>
+                            <entry>BINARY_SCAN or CONTAINER_SCAN</entry>
+                            <entry>Offline</entry>
+                            <entry>Configuration warning logged</entry>
                         </row>
                         <row>
                             <entry/>
+                            <entry>not configured</entry>
                             <entry/>
-                            <entry>RAPID</entry>
-                            <entry/>
-                            <entry>Online</entry>
-                            <entry>RAPID</entry>
-                        </row>
-                        <row>
-                            <entry/>
-                            <entry>configured</entry>
-                            <entry/>
-                            <entry>DETECTOR BINARY_SCAN SIGNATURE_SCAN</entry>
-                            <entry>Online</entry>
-                            <entry>STATELESS</entry>
-                        </row>
-                        <row>
-                            <entry/>
-                            <entry/>
-                            <entry>STATELESS</entry>
-                            <entry/>
-                            <entry>Online</entry>
-                            <entry>STATELESS</entry>
+                            <entry>BINARY_SCAN or CONTAINER_SCAN</entry>
+                            <entry>Offline</entry>
+                            <entry>Configuration warning logged</entry>
                         </row>
                         <row>
                             <entry/>
                             <entry>configured</entry>
                             <entry/>
-                            <entry>any value</entry>
+                            <entry>CONTAINER_SCAN</entry>
                             <entry>Online</entry>
                             <entry>INTELLIGENT</entry>
                         </row>
                         <row>
                             <entry/>
+                            <entry>configured</entry>
                             <entry/>
+                            <entry/>
+                            <entry>Online</entry>
+                            <entry>INTELLIGENT</entry>
+                        </row>
+                        <row>
+                            <entry/>
+                            <entry>configured</entry>
+                            <entry>RAPID</entry>
+                            <entry/>
+                            <entry>Online</entry>
+                            <entry>RAPID</entry>
+                        </row>
+                        <row>
+                            <entry/>
+                            <entry>configured</entry>
+                            <entry>STATELESS</entry>
+                            <entry/>
+                            <entry>Online</entry>
+                            <entry>STATELESS</entry>
+                        </row>
+                        <row>
+                            <entry/>
+                            <entry>configured</entry>
+                            <entry>STATELESS</entry>
+                            <entry>CONTAINER_SCAN</entry>
+                            <entry>Online</entry>
+                            <entry>STATELESS</entry>
+                        </row>
+                        <row>
+                            <entry/>
+                            <entry>configured</entry>
                             <entry>INTELLIGENT</entry>
                             <entry/>
                             <entry>Online</entry>
@@ -234,6 +246,7 @@
                     </tbody>
                 </tgroup>
             </table>
+			<note type="note">Blank table fields represent scenarios where the parameter is not provided as user input.</note>
         </body>
     </topic>
     <topic id="requirements-and-limitations">
@@ -266,21 +279,17 @@
                             supported.</p>
                     </li>
                     <li>
-                        <p>The value of the following settings will not be used or persisted by <keyword keyref="company_name"/>
+                        <p>The following settings will not be persisted by <keyword keyref="company_name"/>
                             <keyword keyref="solution_name"/> when running in Autonomous mode:</p>
+                                <p>--blackduck.api.token</p>
+                                <p>--blackduck.proxy.password</p>
+                                <p>--detect.diagnostic</p>
                                 <p>--detect.output.path</p>
                                 <p>--detect.bdio.output.path</p>
                                 <p>--detect.scan.output.path</p>
                                 <p>--detect.tools.output.path</p>
                                 <p>--detect.impact.analysis.output.path</p>
                                 <p>--detect.status.json.output.path</p>
-                    </li>
-                    <li>
-                        <p>The following settings will not be persisted by <keyword keyref="company_name"/>
-                            <keyword keyref="solution_name"/> when running in Autonomous mode:</p>
-                                <p>--blackduck.api.token</p>
-                                <p>--blackduck.proxy.password</p>
-                                <p>--detect.diagnostic</p>
                     </li>
                 </ul>
             </body>
