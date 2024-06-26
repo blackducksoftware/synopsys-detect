@@ -7,6 +7,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -14,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +31,9 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 public class ScanTypeDecider {
+    
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     public Map<DetectTool, Set<String>> decide(boolean hasImageOrTar, DetectPropertyConfiguration detectConfiguration, Path detectSourcePath) {
         if (!hasImageOrTar && detectConfiguration.getValue(DetectProperties.DETECT_AUTONOMOUS_SCAN_ENABLED)) {
             AllNoneEnumCollection<DetectTool> includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
@@ -149,17 +153,28 @@ public class ScanTypeDecider {
         Set<String> binaryFilePaths = new HashSet<>();
         long t1 = System.currentTimeMillis();
         try {
-            Files.walkFileTree(pathToSearch, new FileVisitor<Path>() {
+            Files.walkFileTree(pathToSearch, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new FileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
                     String fileName = path.getFileName().toString();
-                    if (isEligibleFile(fileName, attrs.size())) {
-                        try {
-                            if (isBinary(path.toFile())) {
-                                binaryFilePaths.add(path.toAbsolutePath().toString());
-                            }
-                        } catch (TikaException | SAXException ex) {
+                    try {
+                        if (Files.exists(path) 
+                                && isEligibleFile(fileName, attrs.size())
+                                && isBinary(path.toFile())) {
+                            binaryFilePaths.add(path.toAbsolutePath().toString());
+                        }
+                    } catch (TikaException | SAXException  ex) {
+                        if (logger.isDebugEnabled()) {
                             logger.error("Failed to parse a file during binary file search.", ex);
+                        } else {
+                            logger.warn("Failed to parse a file during binary file search. Skipped the file.");
+                        }
+                        
+                    } catch (SecurityException ex) {
+                        if (logger.isDebugEnabled()) {
+                            logger.error("Failed to access a file through a likely symbolic link during binary file search.", ex);
+                        } else {
+                            logger.warn("Failed to access a file through a likely symbolic link during binary file search. Skipped the file.");
                         }
                     }
                     return FileVisitResult.CONTINUE;
