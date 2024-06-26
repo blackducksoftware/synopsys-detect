@@ -198,6 +198,22 @@
                         <row>
                             <entry/>
                             <entry>configured</entry>
+                            <entry/>
+                            <entry>CONTAINER_SCAN</entry>
+                            <entry>Online</entry>
+                            <entry>INTELLIGENT</entry>
+                        </row>
+                        <row>
+                            <entry/>
+                            <entry>configured</entry>
+                            <entry/>
+                            <entry/>
+                            <entry>Online</entry>
+                            <entry>INTELLIGENT</entry>
+                        </row>
+                        <row>
+                            <entry/>
+                            <entry>configured</entry>
                             <entry>RAPID</entry>
                             <entry/>
                             <entry>Online</entry>
@@ -214,15 +230,15 @@
                         <row>
                             <entry/>
                             <entry>configured</entry>
-                            <entry>INTELLIGENT</entry>
-                            <entry/>
+                            <entry>STATELESS</entry>
+                            <entry>CONTAINER_SCAN</entry>
                             <entry>Online</entry>
-                            <entry>INTELLIGENT</entry>
+                            <entry>STATELESS</entry>
                         </row>
                         <row>
                             <entry/>
                             <entry>configured</entry>
-                            <entry/>
+                            <entry>INTELLIGENT</entry>
                             <entry/>
                             <entry>Online</entry>
                             <entry>INTELLIGENT</entry>
