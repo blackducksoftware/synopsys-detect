@@ -23,9 +23,7 @@
             configurations enabled at run time will take precedence over values stored in the scan
             settings file.</p>
         <p>
-            <note type="warning">The scan settings json file is generated and updated automatically
-                by <keyword keyref="company_name"/>
-                <keyword keyref="solution_name"/> and should not be manually modified.</note>
+            <note type="warning">The scan settings json file is generated and updated automatically and should not be manually modified.</note>
         </p>
         <p><keyword keyref="company_name"/>
             <keyword keyref="solution_name"/> will determine appropriate tools and/or Detectors to run
