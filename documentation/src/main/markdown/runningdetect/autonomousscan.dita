@@ -180,6 +180,14 @@
                             <entry>INTELLIGENT</entry>
                         </row>
                         <row>
+                            <entry>true</entry>
+                            <entry/>
+                            <entry/>
+                            <entry>BINARY_SCAN or CONTAINER_SCAN</entry>
+                            <entry>Offline</entry>
+                            <entry>Configuration warning logged</entry>
+                        </row>
+                        <row>
                             <entry/>
                             <entry>configured</entry>
                             <entry/>
