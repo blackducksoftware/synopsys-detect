@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.lifecycle.autonomous;
 
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import java.io.File;
@@ -155,7 +156,9 @@ public class AutonomousManager {
 
         allProperties.putAll(userProvidedProperties);
         defaultPropertiesMap.forEach((propertyKey, propertyValue) -> {
-            if(!propertyValue.isEmpty()) {
+            if(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE.getKey().equals(propertyKey) && blackDuckScanMode != null) {
+                allProperties.put(propertyKey, blackDuckScanMode);
+            } else if(!propertyValue.isEmpty()) {
                 allProperties.putIfAbsent(propertyKey, propertyValue);
             }
         });
@@ -227,12 +230,7 @@ public class AutonomousManager {
     }
 
     private void updateGlobalProperties(String propertyKey, String propertyValue) {
-        if(propertyKey.equals("detect.blackduck.scan.mode")) {
-            propertyValue = blackDuckScanMode;
-            scanSettings.getGlobalDetectProperties().put(propertyKey, propertyValue);
-        } else {
-            scanSettings.getGlobalDetectProperties().put(propertyKey, propertyValue);
-        }
+        scanSettings.getGlobalDetectProperties().put(propertyKey, propertyValue);
     }
 
     public void updateUserProvidedBinaryScanTargets(List<File> binaryScanTargets) {
