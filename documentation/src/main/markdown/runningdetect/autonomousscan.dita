@@ -94,9 +94,7 @@
                         as false in the scan settings file, the scan will run online.</p>
                     <ul>
                         <li>
-                            <p><xref href="rapidscan.md" format="markdown">Rapid</xref>: Will run if Detect Scan Mode 
-                                    <codeph>--detect.blackduck.scan.mode</codeph> is set to
-                                RAPID.</p>
+                            <p><xref href="rapidscan.md" format="markdown">Rapid</xref>: Will run if Will run if <keyword keyref="blackduck_product_name"/> is configured and <keyword keyref="solution_name"/> Scan Mode <codeph>--detect.blackduck.scan.mode</codeph> is set to RAPID.</p>
                         </li>
                         <li>
                             <p><xref href="statelessscan.md" format="markdown">Stateless</xref>:
@@ -191,7 +189,7 @@
                         </row>
                         <row>
                             <entry/>
-                            <entry/>
+                            <entry>configured</entry>
                             <entry>RAPID</entry>
                             <entry/>
                             <entry>Online</entry>
@@ -234,6 +232,8 @@
             </table>
         </body>
     </topic>
+<note type="note">Blank table fields represent scenarios where the parameter is not provided as user input.</note>"
+
     <topic id="requirements-and-limitations">
         <title>Requirements and Limitations</title>
         <body/>
@@ -264,21 +264,17 @@
                             supported.</p>
                     </li>
                     <li>
-                        <p>The value of the following settings will not be used or persisted by <keyword keyref="company_name"/>
+                        <p>The following settings will not be persisted by <keyword keyref="company_name"/>
                             <keyword keyref="solution_name"/> when running in Autonomous mode:</p>
+                                <p>--blackduck.api.token</p>
+                                <p>--blackduck.proxy.password</p>
+                                <p>--detect.diagnostic</p>
                                 <p>--detect.output.path</p>
                                 <p>--detect.bdio.output.path</p>
                                 <p>--detect.scan.output.path</p>
                                 <p>--detect.tools.output.path</p>
                                 <p>--detect.impact.analysis.output.path</p>
                                 <p>--detect.status.json.output.path</p>
-                    </li>
-                    <li>
-                        <p>The following settings will not be persisted by <keyword keyref="company_name"/>
-                            <keyword keyref="solution_name"/> when running in Autonomous mode:</p>
-                                <p>--blackduck.api.token</p>
-                                <p>--blackduck.proxy.password</p>
-                                <p>--detect.diagnostic</p>
                     </li>
                 </ul>
             </body>
