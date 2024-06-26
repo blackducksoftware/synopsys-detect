@@ -198,22 +198,14 @@
                         <row>
                             <entry/>
                             <entry>configured</entry>
+                            <entry>RAPID</entry>
                             <entry/>
-                            <entry>DETECTOR</entry>
                             <entry>Online</entry>
                             <entry>RAPID</entry>
                         </row>
                         <row>
                             <entry/>
                             <entry>configured</entry>
-                            <entry>RAPID</entry>
-                            <entry/>
-                            <entry>Online</entry>
-                            <entry>RAPID</entry>
-                        </row>
-                        <row>
-                            <entry/>
-                            <entry/>
                             <entry>STATELESS</entry>
                             <entry/>
                             <entry>Online</entry>
