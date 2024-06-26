@@ -156,7 +156,7 @@ public class AutonomousManager {
 
         allProperties.putAll(userProvidedProperties);
         defaultPropertiesMap.forEach((propertyKey, propertyValue) -> {
-            if(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE.getKey().equals(propertyKey)) {
+            if(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE.getKey().equals(propertyKey) && blackDuckScanMode != null) {
                 allProperties.put(propertyKey, blackDuckScanMode);
             } else if(!propertyValue.isEmpty()) {
                 allProperties.putIfAbsent(propertyKey, propertyValue);
