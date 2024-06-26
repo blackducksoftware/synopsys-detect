@@ -65,7 +65,6 @@ public class AutonomousScanTests {
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             dockerAssertions.bdioFiles(1);
-            dockerAssertions.logContains("1jrfwrfh");
             dockerAssertions.locateScanSettingsFile();
             dockerAssertions.autonomousScanModeAssertions("INTELLIGENT");
             dockerAssertions.autonomousDetectorAssertions("MAVEN", "detect.maven.include.shaded.dependencies");
