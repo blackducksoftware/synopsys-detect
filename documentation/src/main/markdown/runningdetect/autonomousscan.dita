@@ -94,7 +94,7 @@
                         as false in the scan settings file, the scan will run online.</p>
                     <ul>
                         <li>
-                            <p><xref href="rapidscan.md" format="markdown">Rapid</xref>: Will run if Will run if <keyword keyref="blackduck_product_name"/> is configured and <keyword keyref="solution_name"/> Scan Mode <codeph>--detect.blackduck.scan.mode</codeph> is set to RAPID.</p>
+                            <p><xref href="rapidscan.md" format="markdown">Rapid</xref>: Will run if <keyword keyref="blackduck_product_name"/> is configured and <keyword keyref="solution_name"/> Scan Mode <codeph>--detect.blackduck.scan.mode</codeph> is set to RAPID.</p>
                         </li>
                         <li>
                             <p><xref href="statelessscan.md" format="markdown">Stateless</xref>:
@@ -215,7 +215,7 @@
                             <entry/>
                             <entry>configured</entry>
                             <entry/>
-                            <entry>any value</entry>
+                            <entry/>
                             <entry>Online</entry>
                             <entry>INTELLIGENT</entry>
                         </row>
@@ -230,10 +230,9 @@
                     </tbody>
                 </tgroup>
             </table>
+			<note type="note">Blank table fields represent scenarios where the parameter is not provided as user input.</note>
         </body>
     </topic>
-<note type="note">Blank table fields represent scenarios where the parameter is not provided as user input.</note>"
-
     <topic id="requirements-and-limitations">
         <title>Requirements and Limitations</title>
         <body/>
