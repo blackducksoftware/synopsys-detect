@@ -35,3 +35,5 @@ download/
 # spring configuration file(s)
 application.properties
 application.yml
+!/src/test/resources/lifecycle/autonomous/sample-project/only-text/build.gradle
+!/src/test/resources/lifecycle/autonomous/sample-project/text-and-binary/build.gradle
