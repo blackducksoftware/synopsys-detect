@@ -1,0 +1,385 @@
+import com.synopsys.integration.detect.battery.UpdateBatteryTask
+import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
+
+
+buildscript {
+    apply from: 'shared-version.properties'
+    ext {
+        springBootVersion = gradle.ext.springBootVersion
+        blackDuckCommonVersion = gradle.ext.blackDuckCommonVersion
+        junitPlatformCustomTestTags = 'docker, battery'
+        javaTargetCompatibility = 8
+        javaSourceCompatibility = 8
+    }
+
+    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
+
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+}
+
+group = 'com.synopsys.integration'
+
+version = '9.8.0-SIGQA9-SNAPSHOT'
+
+apply plugin: 'com.synopsys.integration.solution'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+final def resources = new File("${projectDir}/src/main/resources")
+final def versionFile = new File(resources, "version.txt")
+resources.mkdirs()
+versionFile.delete()
+versionFile << "version=" << version << "\n" << "builddate=" << new Date().format('yyyy-MM-dd')
+
+// By default, starting in 2.5.0, spring boot creates an extra "plain" .jar that we don't want
+jar {
+    enabled = false
+}
+
+def createArtifactName() {
+    return "${buildDir}/libs/${project.name}-${version}.jar"
+}
+
+def createBatteryPath() {
+    return "${buildDir}/battery/"
+}
+
+def final locatorGroup = "com.synopsys.integration"
+def final locatorModule = "component-locator"
+final def externalRepoHost = "https://sig-repo.synopsys.com"
+final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
+
+repositories {
+    println "Checking if environment property SNPS_INTERNAL_ARTIFACTORY is configured: ${internalRepoHost}"
+    maven {
+        url = uri("${internalRepoHost}/artifactory/bds-integrations-release")
+        content { includeModule(locatorGroup, locatorModule) }
+    }
+    maven {
+        url = uri("${internalRepoHost}/artifactory/bds-integrations-snapshot")
+        content { includeModule(locatorGroup, locatorModule) }
+    }
+    maven {
+        url = uri("${internalRepoHost}/artifactory/bds-integration-placeholder-release")
+        content { includeModule(locatorGroup, locatorModule) }
+    }
+    maven {
+        url = uri("${externalRepoHost}/artifactory/bds-integration-placeholder-release")
+        content { includeModule(locatorGroup, locatorModule) }
+    }
+    maven {
+        url "${internalRepoHost}/artifactory/bds-bdio-release"
+        content { excludeModule(locatorGroup, locatorModule) }
+    }
+    maven {
+        url "${internalRepoHost}/artifactory/bds-bdio-nightly"
+        content { excludeModule(locatorGroup, locatorModule) }
+    }
+    maven {
+        url "${internalRepoHost}/artifactory/bds-bdio-snapshot"
+        content { excludeModule(locatorGroup, locatorModule) }
+    }
+    maven {
+        url "${externalRepoHost}/bds-bdio-release"
+        content { excludeModule(locatorGroup, locatorModule) }
+    }
+}
+
+tasks.named("bootJar") {
+    version = rootProject.version
+    manifest {
+        attributes 'Main-Class': "org.springframework.boot.loader.JarLauncher"
+        attributes 'Start-Class': "com.synopsys.integration.detect.Application"
+    }
+    classpath sourceSets.main.runtimeClasspath
+}
+
+subprojects {
+    group = rootProject.group
+    version = rootProject.version
+    apply plugin: 'com.synopsys.integration.simple'
+}
+
+allprojects {
+    dependencies {
+        implementation "com.google.guava:guava:32.1.2-jre"
+        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0'
+
+        implementation 'org.freemarker:freemarker:2.3.31'
+        implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.14'
+
+        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
+        testImplementation 'org.mockito:mockito-core:2.+'
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            def jarName = createArtifactName()
+            artifact(jarName)
+        }
+    }
+}
+
+artifactory {
+    publish {
+        defaults { publications('mavenJava') }
+    }
+}
+
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+dependencies {
+    implementation project(':common')
+    implementation project(':configuration')
+    implementation project(':detectable')
+    implementation project(':detector')
+
+    implementation 'ch.qos.logback:logback-classic:1.2.11'
+
+    implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.10'
+    implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
+    implementation 'com.synopsys:method-analyzer-core:0.2.9'
+    implementation "${locatorGroup}:${locatorModule}:1.1.12"
+
+    implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
+
+    // Below direct inclusions of corresponding transitive dependencies
+    // were added to resolve CVE-2024-22259 appearing in 5.3.27 of springframework libraries.
+    // The below changes can be reverted in the future after comprehensively testing with an updated spring boot version
+    implementation "org.springframework:spring-jcl:5.3.34"
+    implementation("org.springframework:spring-core:5.3.34")
+    implementation "org.springframework:spring-aop:5.3.34"
+    implementation "org.springframework:spring-beans:5.3.34"
+    implementation "org.springframework:spring-expression:5.3.34"
+    implementation("org.springframework:spring-context:5.3.34")
+    implementation("org.springframework.boot:spring-boot")
+
+    implementation 'org.yaml:snakeyaml:2.0'
+    implementation 'org.zeroturnaround:zt-zip:1.13'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.27'
+    implementation 'org.xerial:sqlite-jdbc:3.42.0.0'
+
+    implementation 'org.apache.tika:tika-parsers:1.28.5'
+    constraints {
+        implementation('org.apache.cxf:cxf-rt-security:4.0.4') {
+            because 'previous version has a vulnerability'
+        }
+        implementation('org.apache.cxf:cxf-rt-rs-client:4.0.4') {
+            because 'previous version has a vulnerability'
+        }
+        implementation('org.apache.cxf:cxf-rt-transports-http:4.0.4') {
+            because 'previous version has a vulnerability'
+        }
+        implementation('org.apache.cxf:cxf-core:4.0.4') {
+            because 'previous version has a vulnerability'
+        }
+        implementation('org.apache.cxf:cxf-rt-frontend-jaxrs:4.0.4') {
+            because 'previous version has a vulnerability'
+        }
+    }
+
+    // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
+    testImplementation 'org.assertj:assertj-core:3.13.2'
+    testImplementation 'org.skyscreamer:jsonassert:1.5.0'
+    testImplementation 'org.mockito:mockito-inline:2.+'
+
+    testImplementation project(':configuration').sourceSets.test.output
+    testImplementation project(':common-test')
+    testImplementation 'com.github.docker-java:docker-java-core:3.2.13'
+    testImplementation 'com.github.docker-java:docker-java-transport-httpclient5:3.3.0'
+}
+
+springBoot { mainClass = 'com.synopsys.integration.detect.Application' }
+
+if (project.tasks.findByName('testBattery')) {
+    tasks['testBattery'].doFirst {
+        def batteryPath = new File(createBatteryPath())
+        batteryPath.mkdirs()
+        environment 'BATTERY_TESTS_DETECT_JAR_PATH', createArtifactName()
+        environment 'BATTERY_TESTS_PATH', batteryPath.getCanonicalPath()
+        environment 'BATTERY_TESTS_JAVA_PATH', org.gradle.internal.jvm.Jvm.current().javaExecutable.getCanonicalPath()
+    }
+}
+
+task updateBattery(type: UpdateBatteryTask) {}
+
+task runDetect(type: JavaExec) {
+    dependsOn build
+
+    classpath = files(createArtifactName())
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'com.synopsys.integration.detect.Application'
+    args = ['--detect.risk.report.pdf=true']
+}
+
+task verifyBlackDuckDetect(type: VerifyBlackDuckDetectTask) {
+    dependsOn runDetect
+    task verifyDetect() {
+        dependsOn verifyBlackDuckDetect
+    }
+}
+
+String parseAirGapZipPath(ByteArrayOutputStream standardOutput) {
+    String marker = 'Detect Air Gap Zip: '
+    String line = standardOutput.toString().split('\n').find { it.contains(marker) }
+    String path = line.substring(line.lastIndexOf(marker) + marker.length()).trim()
+    println "Found Air Gap Zip: ${path}"
+    return path
+}
+
+String findGradle() {
+    return System.getProperty("os.name").toLowerCase().contains("windows") ? '--detect.gradle.path=gradlew.bat' : '--detect.gradle.path=gradlew';
+}
+
+task signJar() {
+    dependsOn build
+    finalizedBy 'verifyJar'
+    doLast {
+        exec {
+            commandLine 'jarsigner', '-tsa', 'http://rfc3161timestamp.globalsign.com/advanced', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
+        }
+    }
+}
+
+task createAirGapZip(type: JavaExec) {
+    dependsOn signJar
+
+    classpath = files(createArtifactName())
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'com.synopsys.integration.detect.Application'
+    args = [findGradle(), "--detect.output.path=${buildDir}/libs/", '-z']
+    standardOutput = new ByteArrayOutputStream()
+    doLast {
+        createAirGapZip.ext.airGapPath = parseAirGapZipPath(standardOutput)
+    }
+}
+
+task publishAirGapZip() {
+    dependsOn createAirGapZip
+
+    doLast {
+        def airGapZipName = "${project.name}-${version}-air-gap.zip"
+        def airGapZipLocation = createAirGapZip.ext.airGapPath
+        exec {
+            commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
+        }
+    }
+}
+
+task createAirGapZipWithoutDocker(type: JavaExec) {
+    dependsOn signJar
+
+    classpath = files(createArtifactName())
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'com.synopsys.integration.detect.Application'
+    standardOutput = new ByteArrayOutputStream()
+    doLast {
+        createAirGapZipWithoutDocker.ext.airGapPath = parseAirGapZipPath(standardOutput)
+    }
+    args = [findGradle(), '-z', 'NO_DOCKER']
+}
+
+task publishAirGapZipWithoutDocker() {
+    dependsOn createAirGapZipWithoutDocker
+
+    doLast {
+        def airGapZipName = "${project.name}-${version}-air-gap-no-docker.zip"
+        //MUST remain for down-stream projects until late 2022
+        def airGapZipLocation = createAirGapZipWithoutDocker.ext.airGapPath
+        exec {
+            commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
+        }
+    }
+}
+
+task verifyJar() {
+    dependsOn signJar
+    doLast {
+        exec {
+            // returns 0 if successfully verified as signed; non-0 if not
+            commandLine 'jarsigner', '-verify', '-strict', "${createArtifactName()}"
+        }
+    }
+}
+
+task helpJson(type: JavaExec) {
+    dependsOn build
+
+    classpath = files(createArtifactName())
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'com.synopsys.integration.detect.Application'
+    args = ['--helpjson']
+}
+
+task buildPlatform1 () {
+    dependsOn createAirGapZip
+
+    doFirst {
+        copy {
+            from ("${projectDir}/platform-1/") {
+                include "*"
+            }
+            into "${buildDir}/platform-1"
+        }
+    }
+
+    doLast {
+        def airGapZipLocation = createAirGapZip.ext.airGapPath
+        exec {
+            workingDir "${buildDir}/platform-1"
+
+            executable = 'bash'
+            environment("RELEASE_VERSION", "${version}")
+            environment("AIR_GAP_ZIP_LOCATION", "${airGapZipLocation}")
+            args = ["./build.sh"]
+        }
+    }
+}
+
+task submitToPlatform1 (type: Exec, dependsOn: [buildPlatform1]){
+  doFirst {
+        copy {
+            from ("${projectDir}/platform-1/") {
+                include "*"
+            }
+            into "${buildDir}/platform-1"
+        }
+    }
+    def branch = System.getenv('BRANCH') ?: ''
+
+    workingDir "${buildDir}/platform-1"
+    if (branch.startsWith('origin/')){
+      branch=branch.replaceFirst('origin/', '')
+    }
+
+    boolean isRelease = System.getenv('RUN_RELEASE') ? System.getenv('RUN_RELEASE').toBoolean() : false
+    if (isRelease){
+        branch="update.${version}"
+    }
+    else{
+      def new_version = version.split('-')[0]
+      branch="update.${new_version}"
+    }
+
+    executable 'bash'
+    environment("RELEASE_VERSION", "${version}")
+    environment("BRANCH", branch)
+    environment("REPO1_URL", System.getenv('REPO1_ACCESS_URL'))
+    environment("ARTIFACTORY_USERNAME", System.getenv('ARTIFACTORY_DEPLOYER_USER'))
+    environment("ARTIFACTORY_PASSWORD", System.getenv('ARTIFACTORY_DEPLOYER_PASSWORD'))
+    environment("ARTIFACTORY_HOST", System.getenv('ARTIFACTORY_HOST'))
+    args = ["./submit.sh"]
+}
+
+artifactoryPublish.dependsOn ':documentation:publishDitaSource'
+artifactoryPublish.dependsOn signJar
