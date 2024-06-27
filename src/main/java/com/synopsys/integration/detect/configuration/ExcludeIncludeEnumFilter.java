@@ -2,7 +2,6 @@ package com.synopsys.integration.detect.configuration;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
