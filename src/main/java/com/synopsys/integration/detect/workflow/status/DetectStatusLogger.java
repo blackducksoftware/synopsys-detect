@@ -7,8 +7,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import javax.swing.text.html.Option;
-
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.synopsys.integration.detect.lifecycle.autonomous.ScanSettingsSerializer;
@@ -16,6 +14,8 @@ import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusLogger {
+
+    private static final String EQUAL_SEPARATOR = "===============================";
 
     private static final List<ExitCodeType> doNotRequireAdvice = Arrays.asList(
         ExitCodeType.SUCCESS,
@@ -66,7 +66,7 @@ public class DetectStatusLogger {
             logger.info(gettingSupportAdvice.get());
         }
         logger.info("");
-        logger.info("===============================");
+        logger.info(EQUAL_SEPARATOR);
         logger.info("");
     }
 
@@ -161,7 +161,7 @@ public class DetectStatusLogger {
             logger.debug(String.format("%s: %s", operation.getName(), operation.getStatusType().toString()));
         }
         logger.debug("");
-        logger.debug("===============================");
+        logger.debug(EQUAL_SEPARATOR);
         logger.debug("");
     }
 
@@ -174,7 +174,7 @@ public class DetectStatusLogger {
             logger.debug("Autonomous Scan Decisions:");
             logger.debug(ScanSettingsSerializer.serializeScanSettingsModel(autonomousManager.getScanSettingsModel()));
             logger.debug("");
-            logger.debug("===============================");
+            logger.debug(EQUAL_SEPARATOR);
             logger.debug("");
         }
     }

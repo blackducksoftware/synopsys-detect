@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.9.0-SNAPSHOT'
+version = '9.8.0-SIGQA9-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -165,12 +165,9 @@ dependencies {
     implementation 'org.yaml:snakeyaml:2.0'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.apache.pdfbox:pdfbox:2.0.27'
+    implementation 'org.xerial:sqlite-jdbc:3.42.0.0'
 
-    // autonomous
-    implementation 'org.apache.tika:tika-core:2.9.0'
-    implementation 'org.apache.tika:tika-parsers-standard-package:2.9.0'
-    implementation 'org.apache.logging.log4j:log4j-to-slf4j:2.23.1'
-
+    implementation 'org.apache.tika:tika-parsers:1.28.5'
     constraints {
         implementation('org.apache.cxf:cxf-rt-security:4.0.4') {
             because 'previous version has a vulnerability'
