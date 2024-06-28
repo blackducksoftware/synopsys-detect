@@ -196,6 +196,13 @@ public class PnpmYamlTransformer {
             // a linked project package's version will be referenced in the format: <linkPrefix><pathToLinkedPackageRelativeToReportingProjectPackage>
             version = linkedPackageResolver.resolveVersionOfLinkedPackage(reportingProjectPackagePath, version.replace(LINKED_PACKAGE_PREFIX, ""));
         }
+        
+        // Remove extra information from the version string, there will often be hashes and other
+        // information that is not related to the package version.
+        if (version != null && version.contains("(")) {
+            version = version.split("\\(")[0];
+        }
+        
         // v6 needs a leading / to find packages, v9 does not.
         String packageFormat = "%s@%s";
         
@@ -244,7 +251,7 @@ public class PnpmYamlTransformer {
             .map(nameVersion -> Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()));
     }
 
-    private boolean isRootPackage(String id, List<String> rootIds) {
+    private boolean isRootPackage(String id, List<String> rootIds) { 
         return rootIds.contains(id) ||
             rootIds.stream()
                 .map(this::parseNameVersionFromId)
