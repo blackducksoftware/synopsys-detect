@@ -143,13 +143,12 @@ dependencies {
     implementation project(':configuration')
     implementation project(':detectable')
     implementation project(':detector')
-    
-    implementation 'com.synopsys.integration:blackduck-upload-common:0.0.2-SNAPSHOT'
 
     implementation 'ch.qos.logback:logback-classic:1.2.11'
 
     implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.10'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
+        implementation 'com.synopsys.integration:blackduck-upload-common:0.0.3-SNAPSHOT'
     implementation 'com.synopsys:method-analyzer-core:0.2.9'
     implementation "${locatorGroup}:${locatorModule}:1.1.12"
 
