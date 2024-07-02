@@ -29,7 +29,7 @@ public class PnpmYamlTransformerTestv9 {
         Map<String, PnpmPackageInfo> snapshots = new HashMap<>();
         PnpmPackageInfo snapshotEntry = new PnpmPackageInfo();
         Map<String, String> dependencies = new HashMap<>();
-        dependencies.put("@jridgewell/gen-mapping", "0.3.5");
+        dependencies.put("random/dependency", "0.3.5");
         snapshotEntry.dependencies = dependencies;
         snapshots.put("@ampproject/remapping@2.3.0", snapshotEntry);
 
