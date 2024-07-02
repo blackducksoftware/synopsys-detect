@@ -2,15 +2,15 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.List;
 
-import com.synopsys.integration.detect.util.DetectZipUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.blackduck.upload.rest.model.response.UploadFinishResponse;
+import com.synopsys.blackduck.upload.rest.model.response.BinaryFinishResponseContent;
+import com.synopsys.blackduck.upload.rest.status.BinaryUploadStatus;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -36,8 +36,8 @@ public class BinaryScanStepRunner {
         throws OperationException, IntegrationException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
         if (binaryScanFile.isPresent()) {
-            UploadFinishResponse response = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData);
-            return extractBinaryScanId(response);
+            BinaryUploadStatus status = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData);
+            return extractBinaryScanId(status);
         } else {
             return Optional.empty();
         }
@@ -84,8 +84,10 @@ public class BinaryScanStepRunner {
         }
     }
     
-    public Optional<String> extractBinaryScanId(UploadFinishResponse response) {     
+    public Optional<String> extractBinaryScanId(BinaryUploadStatus status) {
         try {
+            BinaryFinishResponseContent response = status.getResponseContent().get();
+
             String location = response.getLocation();
             URI uri = new URI(location);
             String path = uri.getPath();

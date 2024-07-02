@@ -35,6 +35,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.synopsys.blackduck.upload.rest.model.response.UploadFinishResponse;
+import com.synopsys.blackduck.upload.rest.status.BinaryUploadStatus;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
@@ -1218,7 +1219,7 @@ public class OperationRunner {
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.IMPACT_ANALYSIS, StatusType.SUCCESS));
     }
 
-    public UploadFinishResponse uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+    public BinaryUploadStatus uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException {        
         return auditLog.namedPublic("Binary Upload", "Binary",
             () -> {                

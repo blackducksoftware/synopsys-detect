@@ -12,7 +12,7 @@ import com.synopsys.blackduck.upload.client.UploaderConfig;
 import com.synopsys.blackduck.upload.client.model.BinaryScanRequestData;
 import com.synopsys.blackduck.upload.client.uploaders.BinaryUploader;
 import com.synopsys.blackduck.upload.client.uploaders.UploaderFactory;
-import com.synopsys.blackduck.upload.rest.model.response.UploadFinishResponse;
+import com.synopsys.blackduck.upload.rest.status.BinaryUploadStatus;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -35,7 +35,7 @@ public class BinaryUploadOperation {
         this.statusEventPublisher = statusEventPublisher;
     }
 
-    public UploadFinishResponse uploadBinaryScanFile(
+    public BinaryUploadStatus uploadBinaryScanFile(
         File binaryScanFile,
         NameVersion projectNameVersion, 
         CodeLocationNameManager codeLocationNameManager, 
@@ -49,15 +49,31 @@ public class BinaryUploadOperation {
             
             logger.info("Preparing to upload binary scan file: " + binaryScanFile.getAbsolutePath());       
 
-            UploadFinishResponse response = binaryUploader.upload(binaryScanFile.toPath());
+            BinaryUploadStatus status = binaryUploader.upload(binaryScanFile.toPath());
+            
+            if (status.isError()) {
+                handleUploadError(status);
+            }
                     
             logger.info("Successfully uploaded binary scan file: " + binaryScanFile.getAbsolutePath());
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.SUCCESS));
-            return response;
+            return status;
         } catch (IntegrationException | IOException e) {
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
         }
+    }
+
+    private void handleUploadError(BinaryUploadStatus status) throws DetectUserFriendlyException {
+        statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
+        
+        IntegrationException exception = null;
+        
+        if (status.getException().isPresent()) {
+            exception = status.getException().get();      
+        }
+        
+        throw new DetectUserFriendlyException("Failed to upload binary scan file.", exception, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
     }
     
     private BinaryUploader createMultipartBinaryScanUploader(File binaryUpload, NameVersion projectNameVersion,
