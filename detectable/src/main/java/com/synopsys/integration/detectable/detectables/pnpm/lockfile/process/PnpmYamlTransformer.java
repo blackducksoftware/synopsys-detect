@@ -197,8 +197,8 @@ public class PnpmYamlTransformer {
             version = linkedPackageResolver.resolveVersionOfLinkedPackage(reportingProjectPackagePath, version.replace(LINKED_PACKAGE_PREFIX, ""));
         }
         
-        // Remove extra information from the version string, there will often be hashes and other
-        // information that is not related to the package version.
+        // Remove extra information from the version string, there will often be peer
+        // dependency information that we do not support and is not related to the package version.
         if (version != null && version.contains("(")) {
             version = version.split("\\(")[0];
         }
