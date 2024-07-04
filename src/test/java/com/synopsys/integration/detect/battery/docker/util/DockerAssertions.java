@@ -217,7 +217,8 @@ public class DockerAssertions {
         try {
             Assertions.assertTrue(dockerDetectResult.getDetectLogs().contains(thing), "Expected logs to contain '" + thing + "' but they did not.");
         } catch (Throwable t) {
-            wrapAndThrowWithDetectLogs(t);        }
+            wrapAndThrowWithDetectLogs(t);
+        }
     }
 
     public void logDoesNotContain(String thing) {
