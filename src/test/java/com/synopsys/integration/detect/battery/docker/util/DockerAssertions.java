@@ -49,7 +49,7 @@ public class DockerAssertions {
         try {
             Assertions.assertTrue(dockerDetectResult.getDetectLogs().contains(detectorType + ": SUCCESS"));
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -63,7 +63,7 @@ public class DockerAssertions {
 
             Assertions.assertEquals("SUCCESS", detector.get().status);
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -78,7 +78,7 @@ public class DockerAssertions {
 
             Assertions.assertEquals("SUCCESS", operation.get().status);
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -92,7 +92,7 @@ public class DockerAssertions {
 
             Assertions.assertEquals("SUCCESS", tool.get().status);
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -118,7 +118,7 @@ public class DockerAssertions {
                 Assertions.fail("Unable to parse status json with gson.", e);
             }
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
         return statusJson;
     }
@@ -140,7 +140,7 @@ public class DockerAssertions {
                 Assertions.fail("Unable to parse scans-settings json file", e);
             }
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -149,7 +149,7 @@ public class DockerAssertions {
             String scanModeInFile = scanSettingsJson.getGlobalDetectProperties().get("detect.blackduck.scan.mode");
             Assertions.assertEquals(scanModeInFile, scanMode, "Expected Blackduck scan mode to be " + scanMode + " but it is actually " + scanModeInFile);
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -168,7 +168,7 @@ public class DockerAssertions {
                 });
             }
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -187,7 +187,7 @@ public class DockerAssertions {
                 });
             }
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -197,7 +197,7 @@ public class DockerAssertions {
             Assertions.assertNotNull(bdioDirectory.listFiles(), "Expected at least one bdio file!");
             Assertions.assertTrue(Objects.requireNonNull(bdioDirectory.listFiles()).length > 0, "Expected at least one bdio file!");
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -207,7 +207,7 @@ public class DockerAssertions {
             Pattern regex = Pattern.compile("(?s).*" + pattern + ".*", Pattern.MULTILINE);
             Assertions.assertTrue(regex.matcher(dockerDetectResult.getDetectLogs()).matches(), "Expected logs to contain '" + regex + "' but they did not.");
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -217,15 +217,14 @@ public class DockerAssertions {
         try {
             Assertions.assertTrue(dockerDetectResult.getDetectLogs().contains(thing), "Expected logs to contain '" + thing + "' but they did not.");
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
-        }
+            wrapAndThrowWithDetectLogs(t);        }
     }
 
     public void logDoesNotContain(String thing) {
         try {
            Assertions.assertFalse(dockerDetectResult.getDetectLogs().contains(thing), "Expected logs to NOT contain '" + thing + "' but they did.");
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -243,11 +242,11 @@ public class DockerAssertions {
             FormattedOutput statusJson = locateStatusJson();
             Assertions.assertEquals(project, statusJson.projectName);
             Assertions.assertEquals(version, statusJson.projectVersion);
-            logContains("Project name: " + project); //Should we rely solely on the status json?
-            logContains("Project version: " + version);
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
+        logContains("Project name: " + project); //Should we rely solely on the status json?
+        logContains("Project version: " + version);
     }
 
     public void bdioFiles(int bdioCount) {
@@ -255,7 +254,7 @@ public class DockerAssertions {
         try {
             Assertions.assertEquals(bdioCount, Objects.requireNonNull(bdioDirectory.listFiles()).length);
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -270,7 +269,7 @@ public class DockerAssertions {
                 String.format("Expected BDIO file %s, but it was not created", requiredBdioFilename)
             );
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -278,7 +277,7 @@ public class DockerAssertions {
         try {
             Assertions.assertEquals(expected, dockerDetectResult.getExitCode());
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -290,7 +289,7 @@ public class DockerAssertions {
         try {
             Assertions.assertTrue(locateStatusJson().results.stream().anyMatch(result -> result.location.equals(location)), "Unable to find result: " + location);
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
     }
 
@@ -299,7 +298,17 @@ public class DockerAssertions {
             Assertions.assertNotNull(bdioDirectory, "Bdio directory did not exist!");
             Assertions.assertNotNull(bdioDirectory.listFiles(), "Bdio directory list files was null.");
         } catch (Throwable t) {
-            Assertions.assertEquals("", dockerDetectResult.getDetectLogs());
+            wrapAndThrowWithDetectLogs(t);
         }
+    }
+
+    /**
+     * Throw a throwable which contains the original error as well as the Detect log for easier test troubleshooting.
+     * @param t encountered throwable, usually an assertion error
+     */
+    private void wrapAndThrowWithDetectLogs(Throwable t) {
+        throw new AssertionError(
+            "Prepending Detect log output to underlying throwable for easier troubleshooting:\n" + dockerDetectResult.getDetectLogs(), t
+        );
     }
 }
