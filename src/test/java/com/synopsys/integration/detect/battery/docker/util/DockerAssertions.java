@@ -309,7 +309,7 @@ public class DockerAssertions {
      */
     private void wrapAndThrowWithDetectLogs(Throwable t) {
         throw new AssertionError(
-            "Prepending Detect log output to underlying throwable for easier troubleshooting:\n" + dockerDetectResult.getDetectLogs(), t
+            "Underlying Detect log:\n" + dockerDetectResult.getDetectLogs(), t
         );
     }
 }
