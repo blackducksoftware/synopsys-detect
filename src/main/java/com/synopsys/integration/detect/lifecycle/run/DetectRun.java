@@ -71,16 +71,18 @@ public class DetectRun {
             operationRunner.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio;
             Boolean forceBdio = bootSingletons.getDetectConfigurationFactory().forceBdio();
+            logger.debug("Integrated Matching Correlation ID: {}", bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId());
+            String correlationId = operationRunner.getDetectConfigurationFactory().isIntegratedMatchingEnabled()? bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId():null;
             if (!universalToolsResult.getDetectCodeLocations().isEmpty()
                     || (productRunData.shouldUseBlackDuckProduct() && !productRunData.getBlackDuckRunData().isOnline() && forceBdio && !universalToolsResult.didAnyFail() && exitCodeManager.getWinningExitCode().isSuccess())) {
-                bdio = stepRunner.generateBdio(bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId(), universalToolsResult, nameVersion);
+                bdio = stepRunner.generateBdio(correlationId, universalToolsResult, nameVersion);
             } else {
                 bdio = BdioResult.none();
             }
             if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
                 if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) {
-                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId(), bootSingletons.getDirectoryManager());
+                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), correlationId, bootSingletons.getDirectoryManager());
                     
                     Optional<String> scaaasFilePath = bootSingletons.getDetectConfigurationFactory().getScaaasFilePath();
                     rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData(), scaaasFilePath);
@@ -92,7 +94,7 @@ public class DetectRun {
                             stepHelper, 
                             bootSingletons.getGson(), 
                             new ScanCountsPayloadCreator(),
-                            bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId());
+                            correlationId);
                     intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData());
                 } else {
                     IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(
@@ -100,7 +102,7 @@ public class DetectRun {
                             stepHelper, 
                             bootSingletons.getGson(), 
                             new ScanCountsPayloadCreator(), 
-                            bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId());
+                            correlationId);
                     intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData(), bdio);
                 }
             }

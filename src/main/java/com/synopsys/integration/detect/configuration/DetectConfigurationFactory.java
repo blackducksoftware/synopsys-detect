@@ -424,6 +424,10 @@ public class DetectConfigurationFactory {
             compareMode
         );
     }
+    
+    public boolean isIntegratedMatchingEnabled() {
+        return detectConfiguration.getValue(DetectProperties.DETECT_INTEGRATED_MATCHING_ENABLED);
+    }
 
     public BlackDuckPostOptions createBlackDuckPostOptions() {
         Boolean waitForResults = detectConfiguration.getValue(DetectProperties.DETECT_WAIT_FOR_RESULTS);
