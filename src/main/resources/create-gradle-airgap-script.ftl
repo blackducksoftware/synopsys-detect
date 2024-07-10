@@ -1,6 +1,6 @@
 repositories {
     maven {
-        url 'https://sig-repo.synopsys.com/bds-integration-public-cache/'
+        url 'https://sig-repo-dev.synopsys.com/bds-integration-public-cache/'
     }
 }
 
