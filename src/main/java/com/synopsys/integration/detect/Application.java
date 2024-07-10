@@ -28,6 +28,7 @@ import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
@@ -135,6 +136,7 @@ public class Application implements ApplicationRunner {
             installedToolManager,
             exceptionUtility
         );
+        Optional<AutonomousManager> autonomousManagerOptional;
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
@@ -148,26 +150,34 @@ public class Application implements ApplicationRunner {
                 .flatMap(BlackDuckRunData::getPhoneHomeManager)
                 .ifPresent(PhoneHomeManager::phoneHomeOperations);
 
-            //Create status output file.  If we've gotten this far the 
+            if (detectBootResult.getBootSingletons().isPresent()) {
+                autonomousManagerOptional = Optional.ofNullable(detectBootResult.getBootSingletons().get().getAutonomousManager());
+            } else {
+                autonomousManagerOptional = Optional.empty();
+            }
+
+            // Create status output file.  If we've gotten this far the
             // system must now know or be able to compute the winning exit
-            // code.  We'll pass this to FormattedOPutput.createFormattedOutput 
+            // code.  We'll pass this to FormattedOutput.createFormattedOutput
             // via Application.createStatusOutputFile.
             ExitCodeType exitCodeType = exitCodeManager.getWinningExitCode();
             logger.info("");
             detectBootResult.getDirectoryManager()
-                .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager, exitCodeType));
+                .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager, exitCodeType, autonomousManagerOptional));
 
             //Create installed tool data file.
             detectBootResult.getDirectoryManager().ifPresent(directoryManager -> createOrUpdateInstalledToolsFile(installedToolManager, directoryManager.getPermanentDirectory()));
 
             shutdownApplication(detectBootResult, exitCodeManager);
         } else {
+            autonomousManagerOptional = Optional.empty();
             logger.info("Will not create status file, detect did not boot.");
         }
 
         logger.debug("All Detect actions completed.");
 
-        exitApplication(exitManager, startTime, shouldForceSuccess);
+
+        exitApplication(exitManager, startTime, shouldForceSuccess, autonomousManagerOptional);
     }
 
     private Optional<DetectBootResult> bootApplication(
@@ -220,14 +230,14 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    private void createStatusOutputFile(FormattedOutputManager formattedOutputManager, DetectInfo detectInfo, DirectoryManager directoryManager, ExitCodeType exitCodeType) {
+    private void createStatusOutputFile(FormattedOutputManager formattedOutputManager, DetectInfo detectInfo, DirectoryManager directoryManager, ExitCodeType exitCodeType, Optional<AutonomousManager> autonomousManagerOptional) {
         logger.info("");
         try {
             File statusFile = new File(directoryManager.getStatusOutputDirectory(), STATUS_JSON_FILE_NAME);
             logger.info("Creating status file: {}", statusFile);
 
             Gson formattedGson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-            String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo, exitCodeType));
+            String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo, exitCodeType, autonomousManagerOptional));
             FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
 
             if (directoryManager.getJsonStatusOutputDirectory() != null) {
@@ -272,9 +282,9 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    private void exitApplication(ExitManager exitManager, long startTime, boolean shouldForceSuccess) {
+    private void exitApplication(ExitManager exitManager, long startTime, boolean shouldForceSuccess, Optional<AutonomousManager> autonomousManagerOptional) {
         ExitOptions exitOptions = new ExitOptions(startTime, shouldForceSuccess, SHOULD_EXIT);
-        ExitResult exitResult = exitManager.exit(exitOptions);
+        ExitResult exitResult = exitManager.exit(exitOptions, autonomousManagerOptional);
 
         if (exitResult.shouldForceSuccess()) {
             System.exit(0);

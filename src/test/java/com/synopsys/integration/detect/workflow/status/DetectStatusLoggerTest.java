@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ public class DetectStatusLoggerTest {
         List<DetectResult> detectResults = createResults();
         List<DetectIssue> detectIssues = createIssues();
         List<Operation> detectOperations = createOperations();
-        statusLogger.logDetectStatus(loggerActual, statusSummaries, detectResults, detectIssues, detectOperations, ExitCodeType.SUCCESS);
+        statusLogger.logDetectStatus(loggerActual, statusSummaries, detectResults, detectIssues, detectOperations, ExitCodeType.SUCCESS, Optional.empty());
         String actualOutput = loggerActual.getOutputString(LogLevel.INFO);
         assertEquals(expectedOutput.trim().replaceAll("\r?\n", "\n"), actualOutput.trim().replaceAll("\r?\n", "\n"));
     }
@@ -48,7 +49,7 @@ public class DetectStatusLoggerTest {
         List<DetectResult> detectResults = createResults();
         List<DetectIssue> detectIssues = createIssues();
         List<Operation> detectOperations = createOperations();
-        statusLogger.logDetectStatus(loggerActual, statusSummaries, detectResults, detectIssues, detectOperations, ExitCodeType.SUCCESS);
+        statusLogger.logDetectStatus(loggerActual, statusSummaries, detectResults, detectIssues, detectOperations, ExitCodeType.SUCCESS, Optional.empty());
         String actualOutput = loggerActual.getOutputString(LogLevel.DEBUG);
         assertEquals(expectedOutput.trim().replaceAll("\r?\n", "\n"), actualOutput.trim().replaceAll("\r?\n", "\n"));
     }

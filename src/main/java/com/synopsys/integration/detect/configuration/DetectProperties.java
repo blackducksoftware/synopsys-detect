@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
@@ -180,6 +182,14 @@ public class DetectProperties {
             .setExample("ALL,NONE")
             .setCategory(DetectCategory.Advanced)
             .build();
+
+    public static final BooleanProperty DETECT_AUTONOMOUS_SCAN_ENABLED =
+            BooleanProperty.newBuilder("detect.autonomous.scan.enabled", false)
+                    .setInfo("Autonomous Scan Enabled", DetectPropertyFromVersion.VERSION_9_8_0)
+                    .setHelp("If true, Detect will enable autonomous scanning feature.")
+                    .setGroups(DetectGroup.GLOBAL)
+                    .setCategory(DetectCategory.Advanced)
+                    .build();
 
     public static final IntegerProperty DETECT_PARALLEL_PROCESSORS =
         IntegerProperty.newBuilder("detect.parallel.processors", 1)
@@ -1876,6 +1886,18 @@ public class DetectProperties {
             }
         }
         return new Properties(properties);
+    }
+
+    public static SortedMap<String, String> getDefaultValues() {
+        SortedMap<String, String> defaultValueMap = new TreeMap<>();
+
+        for (Property property : allProperties().getProperties()) {
+            if (property.describeDefault() != null) {
+                defaultValueMap.put(property.getKey(), property.describeDefault());
+            }
+        }
+
+        return defaultValueMap;
     }
 
     public static List<TypedProperty<?, ?>> allTypedProperties() {

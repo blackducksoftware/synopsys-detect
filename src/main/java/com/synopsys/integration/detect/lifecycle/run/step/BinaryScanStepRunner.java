@@ -2,7 +2,10 @@ package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
 import java.util.Optional;
+import java.util.Set;
+import java.util.List;
 
+import com.synopsys.integration.detect.util.DetectZipUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +29,11 @@ public class BinaryScanStepRunner {
     public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runBinaryScan(
         DockerTargetData dockerTargetData,
         NameVersion projectNameVersion,
-        BlackDuckRunData blackDuckRunData
+        BlackDuckRunData blackDuckRunData,
+        Set<String> binaryTargets
     )
         throws OperationException {
-        Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData);
+        Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
         if (binaryScanFile.isPresent()) {
             return Optional.of(operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData));
         } else {
@@ -37,12 +41,13 @@ public class BinaryScanStepRunner {
         }
     }
 
-    public Optional<File> determineBinaryScanFileTarget(DockerTargetData dockerTargetData) throws OperationException {
+    public Optional<File> determineBinaryScanFileTarget(DockerTargetData dockerTargetData, Set<String> binaryTargets) throws OperationException {
         BinaryScanOptions binaryScanOptions = operationRunner.calculateBinaryScanOptions();
         File binaryUpload = null;
         if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {
             logger.info("Binary upload will upload single file.");
             binaryUpload = binaryScanOptions.getSingleTargetFilePath().get().toFile();
+            operationRunner.updateBinaryUserTargets(binaryUpload);
         } else if (binaryScanOptions.getFileFilter().isPresent()) {
             Optional<File> multipleUploadTarget = operationRunner.searchForBinaryTargets(
                 binaryScanOptions.getFileFilter().get(),
@@ -51,6 +56,8 @@ public class BinaryScanStepRunner {
             );
             if (multipleUploadTarget.isPresent()) {
                 binaryUpload = multipleUploadTarget.get();
+                List<File> multiTargets = operationRunner.getMultiBinaryTargets();
+                multiTargets.forEach(operationRunner::updateBinaryUserTargets);
             } else {
                 operationRunner.publishBinaryFailure("Binary scanner did not find any files matching any pattern.");
             }
@@ -58,6 +65,10 @@ public class BinaryScanStepRunner {
             logger.info("Binary Scanner will upload docker container file system.");
             binaryUpload = dockerTargetData.getContainerFilesystem()
                 .get();// Very important not to binary scan the same Docker output that we sig scanned (=codelocation name collision)
+        }
+
+        if (binaryTargets != null && !binaryTargets.isEmpty()) {
+            binaryUpload = operationRunner.collectBinaryTargets(binaryTargets).get();
         }
 
         if (binaryUpload == null) {

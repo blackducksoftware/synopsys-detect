@@ -8,10 +8,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
+import com.synopsys.integration.detect.lifecycle.autonomous.ScanSettingsSerializer;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusLogger {
+
+    private static final String EQUAL_SEPARATOR = "===============================";
 
     private static final List<ExitCodeType> doNotRequireAdvice = Arrays.asList(
         ExitCodeType.SUCCESS,
@@ -31,7 +35,8 @@ public class DetectStatusLogger {
         List<DetectResult> detectResults,
         List<DetectIssue> detectIssues,
         List<Operation> detectOperations,
-        ExitCodeType exitCodeType
+        ExitCodeType exitCodeType,
+        Optional<AutonomousManager> autonomousManagerOptional
     ) {
         logger.info("");
         logger.info("");
@@ -39,6 +44,9 @@ public class DetectStatusLogger {
         logger.debug("");
         logDetectOperations(logger, detectOperations);
         logger.debug("");
+        if (autonomousManagerOptional.isPresent()) {
+            logAutonomousDecisions(logger, autonomousManagerOptional.get());
+        }
 
         logDetectIssues(logger, detectIssues);
         logDetectResults(logger, detectResults);
@@ -58,7 +66,7 @@ public class DetectStatusLogger {
             logger.info(gettingSupportAdvice.get());
         }
         logger.info("");
-        logger.info("===============================");
+        logger.info(EQUAL_SEPARATOR);
         logger.info("");
     }
 
@@ -153,8 +161,22 @@ public class DetectStatusLogger {
             logger.debug(String.format("%s: %s", operation.getName(), operation.getStatusType().toString()));
         }
         logger.debug("");
-        logger.debug("===============================");
+        logger.debug(EQUAL_SEPARATOR);
         logger.debug("");
+    }
+
+    private void logAutonomousDecisions(IntLogger logger, AutonomousManager autonomousManager) {
+        if (autonomousManager.getAutonomousScanEnabled()) {
+            logger.debug("====== Autonomous Scan ======");
+            logger.debug("");
+            logger.debug(String.format("Autonomous Scan Settings File Location: %s", autonomousManager.getScanSettingsTargetFile().getPath()));
+            logger.debug("");
+            logger.debug("Autonomous Scan Decisions:");
+            logger.debug(ScanSettingsSerializer.serializeScanSettingsModel(autonomousManager.getScanSettingsModel()));
+            logger.debug("");
+            logger.debug(EQUAL_SEPARATOR);
+            logger.debug("");
+        }
     }
 
     private Optional<String> getAdvice(ExitCodeType exitCode) {

@@ -41,15 +41,17 @@ Rich version declarations allow a user to define rules around which version of a
 [company_name] [solution_name] derives this information from the dependency graph that Gradle Native Inspector generates as described above. If the information is not mentioned in the graph then [company_name] [solution_name] will not support those declarations.
 See Gradle documentation: [Rich Version Declaration](https://docs.gradle.org/current/userguide/rich_versions.html).
 
-### Running the Gradle inspector with a proxy
+### Running the Gradle Native Inspector with a proxy
 
 [company_name] [solution_name] will pass along supplied [proxy host](../properties/configuration/proxy.md#proxy-host-advanced) and [proxy port](../properties/configuration/proxy.md#proxy-port-advanced) properties to the Gradle daemon if applicable.
 
-### Gradle detector buildless
+### Gradle Project Inspector (Buildless)
 
-The buildless gradle detector uses Project Inspector to find dependencies and does not support dependency exclusions.
+For buildless detection, the gradle detector uses Project Inspector to find dependencies.
 
-It currently supports "build.gradle" and does not support Kotlin build files.
+Currently supports capturing dependencies from files with the pattern `*.gradle`, including the standard `build.gradle` file. 
+
+<note type="note">Does not support Kotlin build files or dependency exclusions.</note>
 
 As of [company_name] [solution_name] 9.5.0 the version of Project Inspector in use supports the `--build-system GRADLE` argument in place of `--strategy GRADLE`.
 The `--force-gradle-repos "url"` argument will be removed from support in the next [company_name] [solution_name] major release and replaced with the `--conf "maven.repo:url"` argument.

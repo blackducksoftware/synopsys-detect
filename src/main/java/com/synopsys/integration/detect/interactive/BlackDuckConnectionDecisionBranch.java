@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.interactive;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -53,7 +54,7 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
                     List<PropertySource> propertySources = new ArrayList<>(this.existingPropertySources);
                     propertySources.add(0, interactivePropertySource);
 
-                    PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
+                    PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources, Collections.emptySortedMap());
                     DetectPropertyConfiguration detectConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
                     DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, gson);
                     BlackDuckConfigFactory blackDuckConfigFactory = new BlackDuckConfigFactory(detectInfo, detectConfigurationFactory.createBlackDuckConnectionDetails());

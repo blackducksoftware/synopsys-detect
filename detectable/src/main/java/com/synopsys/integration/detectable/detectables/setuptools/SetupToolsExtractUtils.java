@@ -60,22 +60,8 @@ public class SetupToolsExtractUtils {
             return new SetupToolsTomlParser(parsedToml);
         }
         
-        // Step 2: Check the setup.cfg
+        // Step 2: Check the setup.py
         Requirements fileResolver = new Requirements(fileFinder, environment);
-        File cfgFile = fileResolver.file(SETUP_CFG);
-        
-        if (cfgFile != null) {
-            SetupToolsCfgParser cfgParser = new SetupToolsCfgParser(parsedToml);
-
-            List<String> cfgDependencies = cfgParser.load(cfgFile.toString());
-
-            if (cfgDependencies != null && !cfgDependencies.isEmpty()) {
-                return cfgParser;
-            }
-        }
-        
-        // Step 3: Check the setup.py
-        fileResolver = new Requirements(fileFinder, environment);
         File pyFile = fileResolver.file(SETUP_PY);
         
         if (pyFile != null) {
@@ -85,6 +71,20 @@ public class SetupToolsExtractUtils {
             
             if (pyDependencies != null && !pyDependencies.isEmpty()) {
                 return pyParser;
+            }
+        }
+        
+        // Step 3: Check the setup.cfg
+        fileResolver = new Requirements(fileFinder, environment);
+        File cfgFile = fileResolver.file(SETUP_CFG);
+        
+        if (cfgFile != null) {
+            SetupToolsCfgParser cfgParser = new SetupToolsCfgParser(parsedToml);
+
+            List<String> cfgDependencies = cfgParser.load(cfgFile.toString());
+
+            if (cfgDependencies != null && !cfgDependencies.isEmpty()) {
+                return cfgParser;
             }
         }
         

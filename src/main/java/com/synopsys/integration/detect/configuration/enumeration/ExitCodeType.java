@@ -28,7 +28,7 @@ public enum ExitCodeType {
 
     FAILURE_IMAGE_NOT_AVAILABLE(20, "Image scan attempted but no return data available."),
 
-    FAILURE_COMPONENT_LOCATOR(25, "Component Locator failed."),
+    FAILURE_COMPONENT_LOCATION_ANALYSIS(25, "Component Location Analysis failed."),
 
     FAILURE_GENERAL_ERROR(99, "Detect encountered a known error, details of the error are provided."),
     FAILURE_UNKNOWN_ERROR(100, "Detect encountered an unknown error.");

@@ -1,14 +1,25 @@
 package com.synopsys.integration.detect.configuration;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 public class ExcludeIncludeEnumFilter<T extends Enum<T>> {
     private final AllNoneEnumCollection<T> excluded;
     private final AllNoneEnumCollection<T> included;
+    private final Map<T, Set<String>> scanTypeEvidenceMap;
 
+    public ExcludeIncludeEnumFilter(AllNoneEnumCollection<T> excluded, AllNoneEnumCollection<T> included, Map<T, Set<String>> scanTypeEvidenceMap) {
+        this.excluded = excluded;
+        this.included = included;
+        this.scanTypeEvidenceMap = scanTypeEvidenceMap;
+    }
+    
     public ExcludeIncludeEnumFilter(AllNoneEnumCollection<T> excluded, AllNoneEnumCollection<T> included) {
         this.excluded = excluded;
         this.included = included;
+        this.scanTypeEvidenceMap = Collections.EMPTY_MAP;
     }
 
     private boolean willExclude(T value) {
@@ -22,14 +33,14 @@ public class ExcludeIncludeEnumFilter<T extends Enum<T>> {
     }
 
     private boolean willInclude(T value) {
-        if (included.isEmpty()) {
+        if (included.isEmpty() && scanTypeEvidenceMap.isEmpty()) {
             return true;
         } else if (included.containsAll()) {
             return true;
-        } else if (included.containsNone()) {
+        } else if (included.containsNone() && scanTypeEvidenceMap.isEmpty()) {
             return false;
         } else {
-            return included.containsValue(value);
+            return included.containsValue(value) || scanTypeEvidenceMap.containsKey(value);
         }
     }
 
@@ -43,5 +54,9 @@ public class ExcludeIncludeEnumFilter<T extends Enum<T>> {
     
     public boolean includeSpecified() {
         return !included.isEmpty() && !included.containsAll() && !included.containsNone();
+    }
+    
+    public Map<T, Set<String>> getScanTypeEvidenceMap() {
+        return scanTypeEvidenceMap;
     }
 }
