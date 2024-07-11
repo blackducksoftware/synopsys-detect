@@ -1815,7 +1815,7 @@ public class DetectProperties {
     // TODO check/adjust from version once we know
     public static final BooleanProperty DETECT_INTEGRATED_MATCHING_ENABLED =
         BooleanProperty.newBuilder("detect.blackduck.integrated.matching.enabled", false)
-            .setInfo("Integrated Matching Enabled", DetectPropertyFromVersion.VERSION_8_2_0)
+            .setInfo("Integrated Matching Enabled", DetectPropertyFromVersion.VERSION_9_9_0)
             .setHelp(
                 "When enabled, Synopsys Detect activates the Black Duck integrated matching capability to enhance match accuracy.",
                 "The integrated matching capability must be present and enabled in your Black Duck server before you enable the integrated matching feature in Synopsys Detect."
