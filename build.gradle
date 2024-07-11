@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.9.0-SIGQA10-test-sig-repo-change'
+version = '9.9.0-SIGQA11-test-sig-repo-change-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
