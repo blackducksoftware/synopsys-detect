@@ -3,7 +3,7 @@
 By default, all detection tools are eligible to run; the set of tools that will run
 depends on your configuration, type of files you are scanning, and the properties you set.   
 
-When no `--detect.tools=` parameter or the `--detect.tools=ALL` parameter is provided, [company_name] [solution_name] will attempt to run all tools for which the tool itself is available, the configuration parameters are set, and any required dependencies are met. The existence of applicable file types (for scanning), will alo determine whether some tools return results when they run.   
+When no `--detect.tools=` parameter or the `--detect.tools=ALL` parameter is provided, [company_name] [solution_name] will attempt to run all tools for which the tool itself is available, the configuration parameters are set, and any required dependencies are met. The existence of applicable file types (for scanning), will also determine whether tools return results when they run.   
 
 If you wish to specifically determine which tools are run, use the following command to list the tools:
 
