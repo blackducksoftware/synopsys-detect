@@ -23,4 +23,4 @@ Refer to [Tools](../../components/tools.md) for the list of tool names.
 
 Refer to [Properties](../../properties/all-properties.md) for additional details.
 
-<note type="note">Some [company_name] [solution_name] tools are appropriate to run independantly of others or require a specific license and will not be executed when `--detect.tools=ALL`.</note>
+<note type="note">Some [company_name] [solution_name] tools may be appropriate to run independantly of others for reporting purposes, or require a specific [blackduck_product_name] license.</note>
