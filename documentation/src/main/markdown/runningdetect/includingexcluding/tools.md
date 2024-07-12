@@ -23,8 +23,8 @@ Refer to [Tools](../../components/tools.md) for the list of tool names.
 
 Refer to [Properties](../../properties/all-properties.md) for additional details.
 
-## Exclusive Tools
+## Exclusive or specially licensed Tools
 
-Some [company_name] [solution_name] tools run independantly of others and will not be executed when `--detect.tools=ALL`.    
+Some [company_name] [solution_name] tools run independantly of others or require a specific license and will not be executed when `--detect.tools=ALL`.    
 
 * Infrastructure as Code [IaC](../iacscan.md)
