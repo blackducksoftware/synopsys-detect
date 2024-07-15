@@ -31,4 +31,9 @@ public class ScanCounts extends Stringable {
     public int getBinary() {
         return binary;
     }
+    
+    @Override
+    public String toString() {
+        return "PACKAGE_MANAGER: " + packageManager + ", SIGNATURE: " + signature;
+    }
 }
