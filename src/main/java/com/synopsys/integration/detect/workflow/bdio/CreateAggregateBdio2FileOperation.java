@@ -34,7 +34,8 @@ public class CreateAggregateBdio2FileOperation {
         this.detectInfo = detectInfo;
     }
 
-    public void writeAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation, Bdio.ScanType scanType) throws DetectUserFriendlyException {
+    public void writeAggregateBdio2File(String integratedMatchingCorrelationId, AggregateCodeLocation aggregateCodeLocation, Bdio.ScanType scanType)
+        throws DetectUserFriendlyException {
         String detectVersion = detectInfo.getDetectVersion();
         SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
 
@@ -51,6 +52,7 @@ public class CreateAggregateBdio2FileOperation {
             ZonedDateTime.now(),
             new Product.Builder().name(detectCreator.getIdentifier()).build()
         );
+        bdioMetadata.correlationId(integratedMatchingCorrelationId);
         bdioMetadata.scanType(scanType);
 
         Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, aggregateCodeLocation.getAggregateDependencyGraph());

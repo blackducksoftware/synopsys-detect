@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.synopsys.integration.blackduck.version.BlackDuckVersion;
-import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 
@@ -36,6 +35,12 @@ public class BlackDuckMinimumVersionChecks {
                 "Stateless signature scan",
                 o -> o.getDetectToolFilter().shouldInclude(DetectTool.SIGNATURE_SCAN) && o.getBlackDuckScanMode() == BlackduckScanMode.STATELESS,
                 new BlackDuckVersion(2022, 10, 0)
+        ));
+        
+        checks.add(new BlackDuckMinimumVersionCheck(
+                "Integrated match correlation",
+                o -> o.isIsIntegratedMatchingEnabled(),
+                new BlackDuckVersion(2024, 7, 0)
         ));
     }
 

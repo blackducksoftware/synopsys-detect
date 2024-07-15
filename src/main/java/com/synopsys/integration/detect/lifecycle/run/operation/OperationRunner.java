@@ -144,6 +144,8 @@ import com.synopsys.integration.detect.workflow.blackduck.developer.RapidScanOpt
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.synopsys.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
 import com.synopsys.integration.detect.workflow.blackduck.developer.blackduck.DetectRapidScanService;
+import com.synopsys.integration.detect.workflow.blackduck.integratedmatching.CorrelatedScanCountUploadService;
+import com.synopsys.integration.detect.workflow.blackduck.integratedmatching.model.ScanCountsPayload;
 import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
 import com.synopsys.integration.detect.workflow.blackduck.project.AddTagsToProjectOperation;
 import com.synopsys.integration.detect.workflow.blackduck.project.AddUserGroupsToProjectOperation;
@@ -872,6 +874,14 @@ public class OperationRunner {
         });
     }
 
+    public void uploadCorrelatedScanCounts(BlackDuckRunData blackDuckRunData, String correlationId, ScanCountsPayload scanCountsPayload) throws OperationException {
+        auditLog.namedPublic("Upload Correlated Scan Counts by Detect tool", "UploadCorrelatedScanCounts", () -> {
+
+            CorrelatedScanCountUploadService correlatedScanCountUploadService = createCorrelatedScanCountUploadService(blackDuckRunData);
+            correlatedScanCountUploadService.uploadCorrelatedScanCounts(correlationId, scanCountsPayload);
+        });
+    }
+
     public File createNoticesReportFile(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion, File noticesDirectory) throws OperationException {
         return auditLog.namedPublic("Create Notices Report File", "NoticesReport", () -> {
             ReportService reportService = creatReportService(blackDuckRunData);
@@ -891,6 +901,19 @@ public class OperationRunner {
             long reportServiceTimeout = detectConfigurationFactory.findTimeoutInSeconds() * 1000;
             return new ReportService(gson, blackDuckUrl, blackDuckApiClient,
                 apiDiscovery, reportServiceLogger, integrationEscapeUtil, reportServiceTimeout
+            );
+        });
+    }
+
+    private CorrelatedScanCountUploadService createCorrelatedScanCountUploadService(BlackDuckRunData blackDuckRunData) throws OperationException {
+        return auditLog.namedInternal("Create Correlated Scan Count Upload Service", () -> {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+            Gson gson = blackDuckServicesFactory.getGson();
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+            ApiDiscovery apiDiscovery = blackDuckServicesFactory.getApiDiscovery();
+            IntLogger countUploadServiceLogger = blackDuckServicesFactory.getLogger();
+            return new CorrelatedScanCountUploadService(gson, blackDuckApiClient,
+                apiDiscovery, countUploadServiceLogger
             );
         });
     }
@@ -917,19 +940,25 @@ public class OperationRunner {
         );
     }
 
-    public ScanBatch createScanBatchOnline(List<SignatureScanPath> scanPaths, NameVersion projectNameVersion, DockerTargetData dockerTargetData, BlackDuckRunData blackDuckRunData)
+    public ScanBatch createScanBatchOnline(
+        String detectRunUuid,
+        List<SignatureScanPath> scanPaths,
+        NameVersion projectNameVersion,
+        DockerTargetData dockerTargetData,
+        BlackDuckRunData blackDuckRunData
+    )
         throws OperationException {
         return auditLog.namedPublic("Create Online Signature Scan Batch", "OnlineSigScan",
             () -> new CreateScanBatchOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, codeLocationNameManager)
-                .createScanBatchWithBlackDuck(projectNameVersion, scanPaths, blackDuckRunData.getBlackDuckServerConfig(), dockerTargetData)
+                .createScanBatchWithBlackDuck(detectRunUuid, projectNameVersion, scanPaths, blackDuckRunData.getBlackDuckServerConfig(), dockerTargetData)
         );
     }
 
-    public ScanBatch createScanBatchOffline(List<SignatureScanPath> scanPaths, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
+    public ScanBatch createScanBatchOffline(String detectRunUuid, List<SignatureScanPath> scanPaths, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
         throws OperationException {
         return auditLog.namedPublic("Create Offline Signature Scan Batch", "OfflineSigScan",
             () -> new CreateScanBatchOperation(detectConfigurationFactory.createBlackDuckSignatureScannerOptions(), directoryManager, codeLocationNameManager)
-                .createScanBatchWithoutBlackDuck(projectNameVersion, scanPaths, dockerTargetData)
+                .createScanBatchWithoutBlackDuck(detectRunUuid, projectNameVersion, scanPaths, dockerTargetData)
         );
     }
 
@@ -1146,10 +1175,10 @@ public class OperationRunner {
         );
     }
 
-    public void createAggregateBdio2File(AggregateCodeLocation aggregateCodeLocation, Bdio.ScanType scanType) throws OperationException {
+    public void createAggregateBdio2File(String integratedMatchingCorrelationid, AggregateCodeLocation aggregateCodeLocation, Bdio.ScanType scanType) throws OperationException {
         auditLog.namedInternal(
             "Create Bdio Code Locations",
-            () -> new CreateAggregateBdio2FileOperation(new Bdio2Factory(), detectInfo).writeAggregateBdio2File(aggregateCodeLocation, scanType)
+            () -> new CreateAggregateBdio2FileOperation(new Bdio2Factory(), detectInfo).writeAggregateBdio2File(integratedMatchingCorrelationid, aggregateCodeLocation, scanType)
         );
     }
 
