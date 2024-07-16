@@ -30,29 +30,22 @@ public class CreateScanBatchOperation {
     }
 
     public ScanBatch createScanBatchWithBlackDuck(
-        String detectRunUuid,
         NameVersion projectNameVersion,
         List<SignatureScanPath> signatureScanPaths,
         BlackDuckServerConfig blackDuckServerConfig,
         @Nullable DockerTargetData dockerTargetData
     )
         throws DetectUserFriendlyException {
-        return createScanBatch(detectRunUuid, projectNameVersion, signatureScanPaths, blackDuckServerConfig, dockerTargetData);
+        return createScanBatch(projectNameVersion, signatureScanPaths, blackDuckServerConfig, dockerTargetData);
     }
 
-    public ScanBatch createScanBatchWithoutBlackDuck(
-        String detectRunUuid,
-        NameVersion projectNameVersion,
-        List<SignatureScanPath> signatureScanPaths,
-        @Nullable DockerTargetData dockerTargetData
-    )
+    public ScanBatch createScanBatchWithoutBlackDuck(NameVersion projectNameVersion, List<SignatureScanPath> signatureScanPaths, @Nullable DockerTargetData dockerTargetData)
         throws DetectUserFriendlyException {
         //when offline, we must still call this with 'null' as a workaround for library issues, so offline scanner must be created with this set to null.
-        return createScanBatch(detectRunUuid, projectNameVersion, signatureScanPaths, null, dockerTargetData);
+        return createScanBatch(projectNameVersion, signatureScanPaths, null, dockerTargetData);
     }
 
     private ScanBatch createScanBatch(
-        String detectRunUuid,
         NameVersion projectNameVersion,
         List<SignatureScanPath> signatureScanPaths,
         @Nullable BlackDuckServerConfig blackDuckServerConfig,
@@ -70,6 +63,7 @@ public class CreateScanBatchOperation {
         scanJobBuilder.uploadSource(signatureScannerOptions.getUploadSource());
         scanJobBuilder.licenseSearch(signatureScannerOptions.getLicenseSearch());
         scanJobBuilder.copyrightSearch(signatureScannerOptions.getCopyrightSearch());
+
         signatureScannerOptions.getAdditionalArguments().ifPresent(scanJobBuilder::additionalScanArguments);
         
         scanJobBuilder.rapid(signatureScannerOptions.getIsStateless());
@@ -85,12 +79,6 @@ public class CreateScanBatchOperation {
         
         signatureScannerOptions.getReducedPersistence()
             .ifPresent(scanJobBuilder::reducedPersistence);
-
-        // Someday the integrated matching enabled option will (we think) go away, and we'll always provide
-        // detectRunUuid as correlationId, but for now it's optional.
-        if (Boolean.TRUE.equals(signatureScannerOptions.isIntegratedMatchingEnabled())) {
-            scanJobBuilder.correlationId(detectRunUuid);
-        }
 
         File sourcePath = directoryManager.getSourceDirectory();
 

@@ -42,14 +42,12 @@ public class RapidModeStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StepHelper stepHelper;
     private final Gson gson;
-    private final String detectRunUuid;
     private final DirectoryManager directoryManager;
 
-    public RapidModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson, String detectRunUuid, DirectoryManager directoryManager) {
+    public RapidModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson, DirectoryManager directoryManager) {
         this.operationRunner = operationRunner;
         this.stepHelper = stepHelper;
         this.gson = gson;
-        this.detectRunUuid = detectRunUuid;
         this.directoryManager = directoryManager;
     }
 
@@ -75,7 +73,7 @@ public class RapidModeStepRunner {
 
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationRunner);
             SignatureScanOuputResult signatureScanOutputResult = signatureScanStepRunner
-                    .runRapidSignatureScannerOnline(detectRunUuid, blackDuckRunData, projectVersion, dockerTargetData);
+                    .runRapidSignatureScannerOnline(blackDuckRunData, projectVersion, dockerTargetData);
 
             List<HttpUrl> parseScanUrls = parseScanUrls(scanMode, signatureScanOutputResult, blackDuckUrl);
             processScanResults(parseScanUrls, parsedUrls, formattedCodeLocations, DetectTool.SIGNATURE_SCAN.name());

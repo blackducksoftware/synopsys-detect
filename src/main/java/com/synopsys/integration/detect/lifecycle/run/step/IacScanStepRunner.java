@@ -24,19 +24,23 @@ import com.synopsys.integration.detect.tool.iac.IacScanReport;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.synopsys.integration.detectable.util.ExternalIdCreator;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
 public class IacScanStepRunner {
+    private static final String SCAN_CREATOR = "IaC";
 
     private final OperationRunner operationRunner;
+    private final IntegrationEscapeUtil integrationEscapeUtil; //TODO- IntegrationEscapeUtil's methods should be static
 
     public IacScanStepRunner(
         OperationRunner operationRunner
     ) {
         this.operationRunner = operationRunner;
+        this.integrationEscapeUtil = new IntegrationEscapeUtil();
     }
 
-    public IacScanCodeLocationData runIacScanOnline(String detectRunUuid, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+    public IacScanCodeLocationData runIacScanOnline(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException, IntegrationException, InterruptedException {
         List<File> iacScanTargets = operationRunner.calculateIacScanScanTargets();
 
@@ -52,7 +56,7 @@ public class IacScanStepRunner {
         List<IacScanReport> iacScanReports = new LinkedList<>();
         int count = 0;
         for (File scanTarget : iacScanTargets) {
-            IacScanReport iacScanReport = performOnlineScan(detectRunUuid, projectNameVersion, blackDuckRunData, iacScanExe, scanTarget, count++);
+            IacScanReport iacScanReport = performOnlineScan(projectNameVersion, blackDuckRunData, iacScanExe, scanTarget, count++);
             iacScanReports.add(iacScanReport);
         }
         operationRunner.publishIacScanReport(iacScanReports);
@@ -85,8 +89,7 @@ public class IacScanStepRunner {
         }
     }
 
-    private IacScanReport performOnlineScan(
-        String detectRunUuid,
+    public IacScanReport performOnlineScan(
         NameVersion projectNameVersion,
         BlackDuckRunData blackDuckRunData,
         File iacScanExe,
@@ -96,8 +99,7 @@ public class IacScanStepRunner {
         try {
             File resultsFile = operationRunner.performIacScanScan(scanTarget, iacScanExe, count);
             String codeLocationName = operationRunner.createIacScanCodeLocationName(scanTarget, projectNameVersion);
-            String scanId = initiateScan(detectRunUuid, projectNameVersion, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService(), codeLocationName
-            );
+            String scanId = initiateScan(projectNameVersion, blackDuckRunData.getBlackDuckServicesFactory().createBdio2FileUploadService(), codeLocationName);
             operationRunner.uploadIacScanResults(blackDuckRunData, resultsFile, scanId);
             return IacScanReport.SUCCESS_ONLINE(scanTarget, codeLocationName);
         } catch (Exception e) {
@@ -121,10 +123,7 @@ public class IacScanStepRunner {
     //TODO- look into extracting scan initiation to another class
 
     //TODO- this should only be necessary if we didn't already upload BDIO during DETECTORS phase
-    private String initiateScan(
-        String detectRunUuid,
-        NameVersion projectNameVersion, Bdio2FileUploadService bdio2FileUploadService, String codeLocationNameOverride
-    )
+    public String initiateScan(NameVersion projectNameVersion, Bdio2FileUploadService bdio2FileUploadService, String codeLocationNameOverride)
         throws OperationException, IntegrationException, InterruptedException {
 
         ExternalId externalId = ExternalIdCreator.nameVersion(CodeLocationConverter.DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion());
@@ -133,7 +132,7 @@ public class IacScanStepRunner {
             codeLocationNameOverride,
             operationRunner.createAggregateCodeLocation(new ProjectDependencyGraph(projectDependency), projectNameVersion, GitInfo.none())
         );
-        operationRunner.createAggregateBdio2File(detectRunUuid, codeLocation, Bdio.ScanType.INFRASTRUCTURE_AS_CODE);
+        operationRunner.createAggregateBdio2File(codeLocation, Bdio.ScanType.INFRASTRUCTURE_AS_CODE);
         UploadTarget uploadTarget = UploadTarget.createDefault(codeLocation.getProjectNameVersion(), codeLocation.getCodeLocationName(), codeLocation.getAggregateFile());
         return bdio2FileUploadService.uploadFile(uploadTarget, operationRunner.calculateDetectTimeout(), false, false, Application.START_TIME).getScanId();
     }

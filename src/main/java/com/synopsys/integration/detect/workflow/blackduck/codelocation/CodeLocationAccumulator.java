@@ -7,14 +7,13 @@ import java.util.Set;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 
 public class CodeLocationAccumulator {
     private final List<WaitableCodeLocationData> waitableCodeLocationData = new ArrayList<>();
     private final Set<String> nonWaitableCodeLocations = new HashSet<>();
 
-    public void addWaitableCodeLocations(DetectTool detectTool, CodeLocationCreationData<? extends CodeLocationBatchOutput<?>> creationData) {
-        addWaitableCodeLocations(new WaitableCodeLocationData(detectTool,
+    public void addWaitableCodeLocations(CodeLocationCreationData<? extends CodeLocationBatchOutput<?>> creationData) {
+        addWaitableCodeLocations(new WaitableCodeLocationData(
             creationData.getOutput().getExpectedNotificationCount(),
             creationData.getOutput().getSuccessfulCodeLocationNames(),
             creationData.getNotificationTaskRange()
