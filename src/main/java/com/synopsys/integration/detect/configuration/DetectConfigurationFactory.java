@@ -397,7 +397,7 @@ public class DetectConfigurationFactory {
         Boolean treatSkippedScansAsSuccess = detectConfiguration.getValue(DetectProperties.DETECT_FORCE_SUCCESS_ON_SKIP);
         Boolean isStateless = BlackduckScanMode.STATELESS.equals(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE));
         RapidCompareMode compareMode = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_RAPID_COMPARE_MODE);
-        
+        Boolean csvArchive = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_CSV_ARCHIVE);       
 
         return new BlackDuckSignatureScannerOptions(
             signatureScannerPaths,
@@ -417,7 +417,8 @@ public class DetectConfigurationFactory {
             treatSkippedScansAsSuccess,
             isStateless,
             findReducedPersistence(),
-            compareMode
+            compareMode,
+            csvArchive
         );
     }
 
