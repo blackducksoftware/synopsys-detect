@@ -10,11 +10,26 @@ import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMo
 
 public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private boolean autonomousScanEnabled = false;
+    private boolean blackduckUrlSpecified = false;
+    private boolean blackduckOfflineModeSpecified = false;
+
+    public ProductDecider(boolean autonomousScanEnabled, boolean blackduckUrlSpecified, boolean blackduckOfflineModeSpecified) {
+        this.autonomousScanEnabled = autonomousScanEnabled;
+        this.blackduckUrlSpecified = blackduckUrlSpecified;
+        this.blackduckOfflineModeSpecified = blackduckOfflineModeSpecified;
+    }
+
+    public ProductDecider() {}
 
     public BlackDuckDecision decideBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackduckScanMode scanMode, boolean hasSigScan) {
         boolean offline = blackDuckConnectionDetails.getOffline();
         Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
-        if (offline && (BlackduckScanMode.RAPID.equals(scanMode) || BlackduckScanMode.STATELESS.equals(scanMode))) {
+
+        if(autonomousScanEnabled && blackduckUrlSpecified && !blackduckOfflineModeSpecified) {
+            logger.debug("Black Duck will run ONLINE: A Black Duck url was found.");
+            return BlackDuckDecision.runOnline(scanMode, hasSigScan);
+        } else if (offline && (BlackduckScanMode.RAPID.equals(scanMode) || BlackduckScanMode.STATELESS.equals(scanMode))) {
             logger.debug("Black Duck will NOT run: Rapid mode cannot be run offline.");
             return BlackDuckDecision.skip();
         } else if (offline) {
@@ -24,6 +39,10 @@ public class ProductDecider {
             logger.debug("Black Duck will run ONLINE: A Black Duck url was found.");
             return BlackDuckDecision.runOnline(scanMode, hasSigScan);
         } else {
+            if(autonomousScanEnabled) {
+                logger.debug("Black Duck will run offline as determined by autonomous scan mode.");
+                return BlackDuckDecision.runOffline();
+            }
             logger.debug("Black Duck will NOT run: The Black Duck url must be provided or offline mode must be set to true.");
             return BlackDuckDecision.skip();
         }
