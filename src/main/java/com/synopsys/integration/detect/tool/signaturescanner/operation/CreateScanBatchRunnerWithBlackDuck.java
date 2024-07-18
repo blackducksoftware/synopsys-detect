@@ -20,7 +20,7 @@ import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.OperatingSystemType;
 
-import static com.synopsys.integration.blackduck.codelocation.signaturescanner.command.NewApiScannerInstaller.MIN_BLACK_DUCK_VERSION;
+import static com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ToolsApiScannerInstaller.MIN_BLACK_DUCK_VERSION;
 
 public class CreateScanBatchRunnerWithBlackDuck {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -50,7 +50,7 @@ public class CreateScanBatchRunnerWithBlackDuck {
 
         if (shouldUseNewApiScannerInstaller(blackDuckVersion)) {
             logger.trace("Using new Scan CLI download API.");
-            scannerInstallerVariant = new NewApiScannerInstaller(
+            scannerInstallerVariant = new ToolsApiScannerInstaller(
                     slf4jIntLogger,
                     blackDuckHttpClient,
                     cleanupZipExpander,
@@ -61,7 +61,7 @@ public class CreateScanBatchRunnerWithBlackDuck {
             );
         } else {
             logger.trace("Using old Scan CLI download API.");
-            scannerInstallerVariant = new ScannerZipInstaller(
+            scannerInstallerVariant = new ZipApiScannerInstaller(
                     slf4jIntLogger,
                     signatureScannerClient,
                     blackDuckRegistrationService,
