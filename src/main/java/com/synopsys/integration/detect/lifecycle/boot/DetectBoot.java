@@ -285,14 +285,7 @@ public class DetectBoot {
             AllEnumList<DetectTool> detectTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS);
 
             if (blackDuckUrl.isPresent()) {
-                boolean isNotRapid = detectTools.representedValues().stream().anyMatch(tool -> !rapidTools.contains(tool)) || scanTypeEvidenceMap.keySet().stream().anyMatch(tool -> !rapidTools.contains(tool));
-                if ((!scanTypeEvidenceMap.isEmpty() && !isNotRapid && scaasFilePath.isPresent()) || blackduckScanMode.equals(BlackduckScanMode.RAPID)) {
-                    return BlackduckScanMode.RAPID;
-                } else if ((!scanTypeEvidenceMap.isEmpty() && scaasFilePath.isPresent()) || blackduckScanMode.equals(BlackduckScanMode.STATELESS)) {
-                    return BlackduckScanMode.STATELESS;
-                } else {
-                    return BlackduckScanMode.INTELLIGENT;
-                }
+                return getModeIfBdUrlIsPresent(detectTools, scanTypeEvidenceMap, scaasFilePath, blackduckScanMode);
             }
 
             PathValue scanCLiPath = detectConfiguration.getNullableValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH);
@@ -306,6 +299,20 @@ public class DetectBoot {
             return BlackduckScanMode.INTELLIGENT;
         }
         return detectConfigurationFactory.createScanMode();
+    }
+    
+    private BlackduckScanMode getModeIfBdUrlIsPresent(AllEnumList<DetectTool> detectTools,
+            Map<DetectTool, Set<String>> scanTypeEvidenceMap,
+            Optional<String> scaasFilePath,
+            BlackduckScanMode blackduckScanMode) {
+        boolean isNotRapid = detectTools.representedValues().stream().anyMatch(tool -> !rapidTools.contains(tool)) || scanTypeEvidenceMap.keySet().stream().anyMatch(tool -> !rapidTools.contains(tool));
+        if ((!scanTypeEvidenceMap.isEmpty() && !isNotRapid && scaasFilePath.isPresent()) || blackduckScanMode.equals(BlackduckScanMode.RAPID)) {
+            return BlackduckScanMode.RAPID;
+        } else if ((!scanTypeEvidenceMap.isEmpty() && scaasFilePath.isPresent()) || blackduckScanMode.equals(BlackduckScanMode.STATELESS)) {
+            return BlackduckScanMode.STATELESS;
+        } else {
+            return BlackduckScanMode.INTELLIGENT;
+        }
     }
 
     private void oneRequiresTheOther(boolean firstCondition, boolean secondCondition, String errorMessageIfNot) throws DetectUserFriendlyException {
