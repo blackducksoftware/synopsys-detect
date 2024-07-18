@@ -1,15 +1,15 @@
 package com.synopsys.integration.detect.tool.signaturescanner.operation;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.*;
+import com.synopsys.integration.blackduck.version.BlackDuckVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
 import com.synopsys.integration.blackduck.http.client.SignatureScannerClient;
@@ -19,6 +19,8 @@ import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerLog
 import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.OperatingSystemType;
+
+import static com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ToolsApiScannerInstaller.MIN_BLACK_DUCK_VERSION;
 
 public class CreateScanBatchRunnerWithBlackDuck {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -33,7 +35,7 @@ public class CreateScanBatchRunnerWithBlackDuck {
         this.executorService = executorService;
     }
 
-    public ScanBatchRunner createScanBatchRunner(BlackDuckServerConfig blackDuckServerConfig, File installDirectory) {
+    public ScanBatchRunner createScanBatchRunner(BlackDuckServerConfig blackDuckServerConfig, File installDirectory, Optional<BlackDuckVersion> blackDuckVersion) {
         logger.debug("Signature scanner will use the Black Duck server to download/update the scanner - this is the most likely situation.");
         SignatureScannerLogger slf4jIntLogger = new SignatureScannerLogger(logger);
         ScanPathsUtility scanPathsUtility = new ScanPathsUtility(slf4jIntLogger, intEnvironmentVariables, operatingSystemType);
@@ -43,18 +45,40 @@ public class CreateScanBatchRunnerWithBlackDuck {
         SignatureScannerClient signatureScannerClient = new SignatureScannerClient(blackDuckHttpClient);
         BlackDuckRegistrationService blackDuckRegistrationService = blackDuckServerConfig.createBlackDuckServicesFactory(slf4jIntLogger).createBlackDuckRegistrationService();
         KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger);
-        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(
-            slf4jIntLogger,
-            signatureScannerClient,
-            blackDuckRegistrationService,
-            cleanupZipExpander,
-            scanPathsUtility,
-            keyStoreHelper,
-            blackDuckServerConfig.getBlackDuckUrl(),
-            operatingSystemType,
-            installDirectory
-        );
-        return ScanBatchRunner.createComplete(intEnvironmentVariables, scanPathsUtility, scanCommandRunner, scannerZipInstaller);
+
+        ScannerInstaller scannerInstallerVariant;
+
+        if (shouldUseNewApiScannerInstaller(blackDuckVersion)) {
+            logger.trace("Using new Scan CLI download API.");
+            scannerInstallerVariant = new ToolsApiScannerInstaller(
+                    slf4jIntLogger,
+                    blackDuckHttpClient,
+                    cleanupZipExpander,
+                    scanPathsUtility,
+                    blackDuckServerConfig.getBlackDuckUrl(),
+                    operatingSystemType,
+                    installDirectory
+            );
+        } else {
+            logger.trace("Using old Scan CLI download API.");
+            scannerInstallerVariant = new ZipApiScannerInstaller(
+                    slf4jIntLogger,
+                    signatureScannerClient,
+                    blackDuckRegistrationService,
+                    cleanupZipExpander,
+                    scanPathsUtility,
+                    keyStoreHelper,
+                    blackDuckServerConfig.getBlackDuckUrl(),
+                    operatingSystemType,
+                    installDirectory
+            );
+        }
+
+        return ScanBatchRunner.createComplete(intEnvironmentVariables, scanPathsUtility, scanCommandRunner, scannerInstallerVariant);
+    }
+
+    private boolean shouldUseNewApiScannerInstaller(Optional<BlackDuckVersion> blackDuckVersion) {
+        return blackDuckVersion.isPresent() && blackDuckVersion.get().isAtLeast(MIN_BLACK_DUCK_VERSION);
     }
 
 }

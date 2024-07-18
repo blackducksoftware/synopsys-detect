@@ -954,7 +954,8 @@ public class OperationRunner {
             IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.includeSystemEnv();
             return new CreateScanBatchRunnerWithBlackDuck(intEnvironmentVariables, OperatingSystemType.determineFromSystem(), executorService).createScanBatchRunner(
                 blackDuckRunData.getBlackDuckServerConfig(),
-                installDirectory
+                installDirectory,
+                blackDuckRunData.getBlackDuckServerVersion()
             );
         });
     }
