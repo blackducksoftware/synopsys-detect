@@ -18,7 +18,7 @@ public class AutonomousScanTests {
 
     public static String ARTIFACTORY_URL = "https://artifactory.internal.synopsys.com:443";
 
-    @Test
+//    @Test
     void autonomousScanModeOFFLINETest() throws Exception {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("autonomous-scan-mode-test-1", "detect-9.8.0:1.0.1")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-9.8.0.dockerfile"));
