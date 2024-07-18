@@ -1,21 +1,22 @@
 package com.synopsys.integration.detect.lifecycle.run.step;
 
 import java.io.File;
+import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.List;
 
-import com.synopsys.integration.detect.util.DetectZipUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
+import com.synopsys.blackduck.upload.rest.model.response.BinaryFinishResponseContent;
+import com.synopsys.blackduck.upload.rest.status.BinaryUploadStatus;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class BinaryScanStepRunner {
@@ -26,16 +27,17 @@ public class BinaryScanStepRunner {
         this.operationRunner = operationRunner;
     }
 
-    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runBinaryScan(
+    public Optional<String> runBinaryScan(
         DockerTargetData dockerTargetData,
         NameVersion projectNameVersion,
         BlackDuckRunData blackDuckRunData,
         Set<String> binaryTargets
     )
-        throws OperationException {
+        throws OperationException, IntegrationException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
         if (binaryScanFile.isPresent()) {
-            return Optional.of(operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData));
+            BinaryUploadStatus status = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData);
+            return extractBinaryScanId(status);
         } else {
             return Optional.empty();
         }
@@ -78,6 +80,21 @@ public class BinaryScanStepRunner {
             return Optional.of(binaryUpload);
         } else {
             operationRunner.publishBinaryFailure("Binary scan file did not exist, is not a file or can't be read.");
+            return Optional.empty();
+        }
+    }
+    
+    public Optional<String> extractBinaryScanId(BinaryUploadStatus status) {
+        try {
+            BinaryFinishResponseContent response = status.getResponseContent().get();
+
+            String location = response.getLocation();
+            URI uri = new URI(location);
+            String path = uri.getPath();
+            String scanId = path.substring(path.lastIndexOf('/') + 1);
+            return Optional.of(scanId);
+        } catch (Exception e) {
+            logger.warn("Unexpected response uploading binary, will be unable to wait for scan completion.");
             return Optional.empty();
         }
     }
