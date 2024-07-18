@@ -156,27 +156,7 @@ public class ScanTypeDecider {
             Files.walkFileTree(pathToSearch, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new FileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-                    String fileName = path.getFileName().toString();
-                    try {
-                        if (Files.exists(path) 
-                                && isEligibleFile(fileName, attrs.size())
-                                && isBinary(path.toFile())) {
-                            binaryFilePaths.add(path.toAbsolutePath().toString());
-                        }
-                    } catch (TikaException | SAXException  ex) {
-                        if (logger.isDebugEnabled()) {
-                            logger.error("Failed to parse a file during binary file search.", ex);
-                        } else {
-                            logger.warn("Failed to parse a file during binary file search. Skipped the file.");
-                        }
-                        
-                    } catch (SecurityException ex) {
-                        if (logger.isDebugEnabled()) {
-                            logger.error("Failed to access a file through a likely symbolic link during binary file search.", ex);
-                        } else {
-                            logger.warn("Failed to access a file through a likely symbolic link during binary file search. Skipped the file.");
-                        }
-                    }
+                    checkFile(binaryFilePaths, path, attrs);
                     return FileVisitResult.CONTINUE;
                 }
                 
@@ -208,5 +188,28 @@ public class ScanTypeDecider {
             logger.info("Search for binary files is done. Seconds: {}", (System.currentTimeMillis()-t1)/1000D);
         }
         return binaryFilePaths;
+    }
+    
+    private void checkFile(Set<String> binaryFilePaths, Path path, BasicFileAttributes attrs) throws IOException {
+        String fileName = path.getFileName().toString();
+        try {
+            if (Files.exists(path) 
+                    && isEligibleFile(fileName, attrs.size())
+                    && isBinary(path.toFile())) {
+                binaryFilePaths.add(path.toAbsolutePath().toString());
+            }
+        } catch (TikaException | SAXException  ex) {
+            if (logger.isDebugEnabled()) {
+                logger.error("Failed to parse a file during binary file search.", ex);
+            } else {
+                logger.warn("Failed to parse a file during binary file search. Skipped the file.");
+            }
+        } catch (SecurityException ex) {
+            if (logger.isDebugEnabled()) {
+                logger.error("Failed to access a file through a likely symbolic link during binary file search.", ex);
+            } else {
+                logger.warn("Failed to access a file through a likely symbolic link during binary file search. Skipped the file.");
+            }
+        }
     }
 }
