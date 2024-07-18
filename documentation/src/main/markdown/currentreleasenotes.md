@@ -7,11 +7,6 @@
 * [solution_name] now supports binary scanning of files up to 100GB via a chunking method employed during upload.    
     <note type="note">This feature requires [blackduck_product_name] 2024.7.0 or later.</note>
 
-### Dependency updates
-
-* Component Location Analysis version updated to 1.1.13.
-* Logback Core version updated to 1.2.13.
-
 ### Changed features
 
 ### Resolved issues
