@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -23,15 +26,35 @@ public class BinaryScanFindMultipleTargetsOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final FileFinder fileFinder;
     private final DirectoryManager directoryManager;
+    private List<File> multipleBinaryTargets = new ArrayList<>();
 
     public BinaryScanFindMultipleTargetsOperation(FileFinder fileFinder, DirectoryManager directoryManager) {
         this.fileFinder = fileFinder;
         this.directoryManager = directoryManager;
     }
+    
+    public BinaryScanFindMultipleTargetsOperation(DirectoryManager directoryManager) {
+        this.fileFinder = null;
+        this.directoryManager = directoryManager;
+    }
 
     public Optional<File> searchForMultipleTargets(Predicate<File> fileFilter, boolean followSymLinks, int depth) throws DetectUserFriendlyException {
-        List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), fileFilter, followSymLinks, depth, false);
-        if (multipleTargets.size() > 0) {
+        multipleBinaryTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), fileFilter, followSymLinks, depth, false);
+        if (!multipleBinaryTargets.isEmpty()) {
+            logger.info("Binary scan found {} files to archive for binary scan upload.", multipleBinaryTargets.size());
+            return Optional.of(zipFilesForUpload(directoryManager.getSourceDirectory(), multipleBinaryTargets));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public List<File> getMultipleBinaryTargets() {
+        return multipleBinaryTargets;
+    }
+    
+    public Optional<File> collectAutonomousTargets(Set<String> binaryTargets) throws DetectUserFriendlyException {
+        List<File> multipleTargets = binaryTargets.stream().map(target -> new File(target)).collect(Collectors.toList());
+        if (!multipleTargets.isEmpty()) {
             logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
             return Optional.of(zipFilesForUpload(directoryManager.getSourceDirectory(), multipleTargets));
         } else {

@@ -1,4 +1,4 @@
-# Stateless Scan LCA
+# Stateless Scan
 
 Stateless Scan, or Stateless Scan Mode, is a way of running [company_name] [solution_name] with [blackduck_product_name]. This mode is designed to be as fast as possible and does not persist any data on [blackduck_product_name]. Stateless Scan Mode has a unique set of restrictions, mode of configuration, and set of results.  It is similar to Rapid Scan Mode, however it differs in that it supports usage of the SIGNATURE_SCAN, BINARY_SCAN, and CONTAINER_SCAN tools.
 
@@ -7,7 +7,6 @@ Enable this feature by adding [--detect.blackduck.scan.mode=STATELESS](../proper
 ## Requirements and Limitations
 
 ### General Requirements
- * Stateless scanning is available under [blackduck_product_name] “Limited Customer Availability (LCA)”.
  * Must have Match as a Service (MaaS) enabled within [blackduck_product_name], a feature available as of the [blackduck_product_name] 2022.10.0 release.
  * Stateless Scan requires [blackduck_product_name] policies retrieved via communication with [blackduck_product_name]. 
 
@@ -69,13 +68,13 @@ The results of a Stateless Scan are also printed in the logs:
 ```
 2021-07-20 13:25:18 EDT INFO  [main] --- Stateless Scan Result: (for more detail look in the log for Stateless Scan Result Details)
 2021-07-20 13:25:18 EDT INFO  [main] ---
-2021-07-20 13:25:18 EDT INFO  [main] --- 		Critical and blocking policy violations
+2021-07-20 13:25:18 EDT INFO  [main] --- 		Critical and blocking policy violations for
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* Components: 0
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* Security: 5
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* License: 0
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* Other: 0
 2021-07-20 13:25:18 EDT INFO  [main] ---
-2021-07-20 13:25:18 EDT INFO  [main] --- 		Lower severity policy violations
+2021-07-20 13:25:18 EDT INFO  [main] --- 		Other policy violations
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* Components: 101
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* Security: 0
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* License: 0

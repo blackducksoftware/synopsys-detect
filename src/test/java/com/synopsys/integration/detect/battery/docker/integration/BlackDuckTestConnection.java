@@ -19,7 +19,7 @@ public class BlackDuckTestConnection {
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final String blackduckUrl;
     private final String blackduckApiToken;
-    private static final boolean trustCert = true; //for now we just force trust cert. we could read this from the env like the url or token - jp
+    private static final boolean TRUST_CERT = true; //for now we just force trust cert. we could read this from the env like the url or token - jp
 
     private BlackDuckTestConnection(String blackduckUrl, String blackduckApiToken, BlackDuckServicesFactory blackDuckServicesFactory) {
         this.blackduckUrl = blackduckUrl;
@@ -38,7 +38,7 @@ public class BlackDuckTestConnection {
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
         blackDuckServerConfigBuilder.setUrl(blackduckUrl);
         blackDuckServerConfigBuilder.setApiToken(blackduckApiToken);
-        blackDuckServerConfigBuilder.setTrustCert(trustCert);
+        blackDuckServerConfigBuilder.setTrustCert(TRUST_CERT);
         blackDuckServerConfigBuilder.setTimeoutInSeconds(5 * 60);
 
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(new BufferedIntLogger());
@@ -77,7 +77,7 @@ public class BlackDuckTestConnection {
     }
 
     public boolean trustCert() {
-        return trustCert;
+        return TRUST_CERT;
     }
 
     public ProjectService createProjectService() {

@@ -1,10 +1,13 @@
 package com.synopsys.integration.detect.lifecycle.exit;
 
+import java.util.Optional;
+
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -24,7 +27,7 @@ public class ExitManager {
         this.statusManager = statusManager;
     }
 
-    public ExitResult exit(ExitOptions exitOptions) {
+    public ExitResult exit(ExitOptions exitOptions, Optional<AutonomousManager> autonomousManagerOptional) {
         long startTime = exitOptions.getStartTime();
         boolean forceSuccessExit = exitOptions.shouldForceSuccessExit();
         boolean shouldExit = exitOptions.shouldExit();
@@ -38,7 +41,7 @@ public class ExitManager {
         ExitCodeType finalExitCode = exitCodeManager.getWinningExitCode();
 
         //Print detect's status
-        statusManager.logDetectResults(new Slf4jIntLogger(logger), finalExitCode);
+        statusManager.logDetectResults(new Slf4jIntLogger(logger), finalExitCode, autonomousManagerOptional);
 
         //Print duration of run
         long endTime = System.currentTimeMillis();

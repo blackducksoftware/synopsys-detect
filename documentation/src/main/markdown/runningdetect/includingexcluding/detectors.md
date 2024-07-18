@@ -1,7 +1,8 @@
 # Detectors
 
-By default, all detectors are eligible to run.  The set of detectors that actually
-run depends on the files existing in your project directory.
+By default, all detectors are eligible to run to find and extract dependencies from supported package managers.
+The set of detectors that actually run depends on the files existing in your project directory, the properties you set, and whether the detector requirements are met.
+
 To limit the eligible detectors to a given list, use:
 
 ````
@@ -14,7 +15,7 @@ To exclude specific detectors, use:
 --detect.excluded.detector.types={comma-separated list of detector names}
 ````
 
-Exclusions take precedence over inclusions.
+<note type="note">Exclusions take precedence over inclusions.</note>
 
 Refer to [Detectors](../../components/detectors.dita) for the list of detector names.
 

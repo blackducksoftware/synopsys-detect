@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
@@ -180,6 +182,14 @@ public class DetectProperties {
             .setExample("ALL,NONE")
             .setCategory(DetectCategory.Advanced)
             .build();
+
+    public static final BooleanProperty DETECT_AUTONOMOUS_SCAN_ENABLED =
+            BooleanProperty.newBuilder("detect.autonomous.scan.enabled", false)
+                    .setInfo("Autonomous Scan Enabled", DetectPropertyFromVersion.VERSION_9_8_0)
+                    .setHelp("If true, Detect will enable autonomous scanning feature.")
+                    .setGroups(DetectGroup.GLOBAL)
+                    .setCategory(DetectCategory.Advanced)
+                    .build();
 
     public static final IntegerProperty DETECT_PARALLEL_PROCESSORS =
         IntegerProperty.newBuilder("detect.parallel.processors", 1)
@@ -1686,7 +1696,7 @@ public class DetectProperties {
         NoneEnumListProperty.newBuilder("detect.tools.excluded", emptyList(), DetectTool.class)
             .setInfo("Detect Tools Excluded", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
-                "The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.",
+                "The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always take precedence.",
                 "This property and detect.tools provide control over which tools Detect runs. " +
                     "If neither detect.tools nor detect.tools.excluded are set, Detect will allow (run if applicable, based on the values of other properties) all Detect tools. If detect.tools is set, and detect.tools.excluded is not set, Detect will only allow to run those tools that are specified in the detect.tools list. If detect.tools.excluded is set, Detect will only allow those tools that are not specified in the detect.tools.excluded list."
             )
@@ -1697,9 +1707,9 @@ public class DetectProperties {
         AllEnumListProperty.newBuilder("detect.tools", emptyList(), DetectTool.class)
             .setInfo("Detect Tools Included", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
-                "The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.",
+                "The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not in the excluded list) will run if all criteria of the tool are met. Exclusion rules always take precedence.",
                 "This property and detect.tools.excluded provide control over which tools Detect runs. " +
-                    "If neither detect.tools nor detect.tools.excluded are set, Detect will allow (run if applicable, based on the values of other properties) all Detect tools. If detect.tools is set, and detect.tools.excluded is not set, Detect will only allow to run those tools that are specified in the detect.tools list. If detect.tools.excluded is set, Detect will only allow those tools that are not specified in the detect.tools.excluded list."
+                    "If neither detect.tools nor detect.tools.excluded are set, Detect will allow (run if applicable, based on the values of other properties) all non-exclusive Detect tools. If detect.tools is set, and detect.tools.excluded is not set, Detect will run those tools that are specified in the detect.tools list. If detect.tools.excluded is set, Detect will only allow those tools that are not specified in the detect.tools.excluded list."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
@@ -1865,6 +1875,18 @@ public class DetectProperties {
             }
         }
         return new Properties(properties);
+    }
+
+    public static SortedMap<String, String> getDefaultValues() {
+        SortedMap<String, String> defaultValueMap = new TreeMap<>();
+
+        for (Property property : allProperties().getProperties()) {
+            if (property.describeDefault() != null) {
+                defaultValueMap.put(property.getKey(), property.describeDefault());
+            }
+        }
+
+        return defaultValueMap;
     }
 
     public static List<TypedProperty<?, ?>> allTypedProperties() {

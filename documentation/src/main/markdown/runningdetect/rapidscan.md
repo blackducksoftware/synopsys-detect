@@ -59,13 +59,13 @@ The results are also printed in the logs:
 ```
 2021-07-20 13:25:18 EDT INFO  [main] --- Rapid Scan Result: (for more detail look in the log for Rapid Scan Result Details)
 2021-07-20 13:25:18 EDT INFO  [main] ---
-2021-07-20 13:25:18 EDT INFO  [main] --- 		Critical and blocking policy violations
+2021-07-20 13:25:18 EDT INFO  [main] --- 		Critical and blocking policy violations for
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* Components: 0
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* Security: 5
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* License: 0
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* Other: 0
 2021-07-20 13:25:18 EDT INFO  [main] ---
-2021-07-20 13:25:18 EDT INFO  [main] --- 		Lower severity policy violations
+2021-07-20 13:25:18 EDT INFO  [main] --- 		Other policy violations
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* Components: 101
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* Security: 0
 2021-07-20 13:25:18 EDT INFO  [main] --- 			* License: 0

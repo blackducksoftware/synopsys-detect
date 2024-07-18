@@ -1,13 +1,17 @@
 # Current Release notes
 
-## Version 9.7.0
+## Version 9.9.0
 
 ### New features
-* Support for GoLang is now extended to Go 1.22.2.
-* [company_name] [solution_name] now allows exclusion of development dependencies when using the Poetry detector. See the [detect.poetry.dependency.groups.excluded](properties/detectors/poetry.md#detect.poetry.dependency.groups.excluded) property for more information.
-* Support has been added for Python package detection via [Setuptools](https://setuptools.pypa.io/en/latest/index.html),versions 47.0.0 through 69.4.2. See the [Python Package Managers](packagemgrs/python.md) page for further details.
+
+* [solution_name] now supports binary scanning of files up to 100GB via a chunking method employed during upload.    
+    <note type="note">This feature requires [blackduck_product_name] 2024.7.0 or later.</note>
 
 ### Resolved issues
-* (IDETECT-4341) The Poetry detector will now recognize Python components with case insensitivity.
-* (IDETECT-3181) Improved Eclipse component matching implementation through better handling of external identifiers.
-* (IDETECT-3989) Complete set of policy violations, regardless of category, now printed to console output. 
+
+* (IDETECT-4408) - Remediated vulnerability in Logback-Core library to resolve high severity issues [CVE-2023-6378](https://nvd.nist.gov/vuln/detail/CVE-2023-6378) and [CVE-2023-6481](https://nvd.nist.gov/vuln/detail/CVE-2023-6481).
+
+### Dependency updates
+
+* Component Location Analysis version updated to 1.1.13.
+* Logback Core version updated to 1.2.13.
