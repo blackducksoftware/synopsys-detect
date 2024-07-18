@@ -16,4 +16,11 @@
 
 ### Resolved issues
 
-* (IDETECT-4408) - Remediated vulnerability in Logback-Core library.
+* (IDETECT-4408) - Remediated vulnerability in Logback-Core library: 
+https://nvd.nist.gov/vuln/detail/CVE-2023-6378
+https://nvd.nist.gov/vuln/detail/CVE-2023-6481
+
+### Dependency updates
+
+* Component Location Analysis version updated to 1.1.13.
+* Logback Core version updated to 1.2.13.
