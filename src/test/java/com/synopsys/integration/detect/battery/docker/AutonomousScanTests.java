@@ -39,7 +39,7 @@ public class AutonomousScanTests {
         }
     }
 
-//    @Test
+    @Test
     void autonomousScanModeONLINETest() throws Exception {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("autonomous-scan-mode-test-3", "autonomous-test:1.0.0")) {
 
