@@ -27,6 +27,10 @@ dependencyManagement {
     }
 }
 
+repositories {
+    maven { url "https://artifactory.internal.synopsys.com/artifactory/jcenter" }
+}
+
 dependencies {
     implementation "org.freemarker:freemarker:2.3.31"
     implementation("com.synopsys.integration:common-gradle-plugin:${managedCgpVersion}") {

@@ -103,6 +103,10 @@ subprojects {
 }
 
 allprojects {
+    repositories {
+        maven { url "https://artifactory.internal.synopsys.com/artifactory/jcenter" }
+    }
+
     dependencies {
         implementation "com.google.guava:guava:32.1.2-jre"
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0'
