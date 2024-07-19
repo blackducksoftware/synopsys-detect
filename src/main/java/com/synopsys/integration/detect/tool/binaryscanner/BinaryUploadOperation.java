@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +70,11 @@ public class BinaryUploadOperation {
         
         IntegrationException exception = null;
         
-        if (status.getException().isPresent()) {
+        if (status.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+            // This is a special case until we support only 2024.7 and later BlackDuck's that have
+            // the multipart upload endpoint.
+            exception = new IntegrationException("File exceeds the per file upload limit of 5 GB.");
+        } else if (status.getException().isPresent()) {
             exception = status.getException().get();      
         }
         
