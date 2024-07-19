@@ -73,7 +73,7 @@ public class BinaryUploadOperation {
         if (status.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
             // This is a special case until we support only 2024.7 and later BlackDuck's that have
             // the multipart upload endpoint.
-            exception = new IntegrationException("File exceeds the per file upload limit of 5 GB.");
+            exception = new IntegrationException("Submitted file exceeds the file size upload limit.");
         } else if (status.getException().isPresent()) {
             exception = status.getException().get();      
         }
