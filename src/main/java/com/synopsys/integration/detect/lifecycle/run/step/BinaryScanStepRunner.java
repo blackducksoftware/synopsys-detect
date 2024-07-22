@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.blackduck.upload.rest.model.response.BinaryFinishResponseContent;
 import com.synopsys.blackduck.upload.rest.status.BinaryUploadStatus;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -38,6 +40,21 @@ public class BinaryScanStepRunner {
         if (binaryScanFile.isPresent()) {
             BinaryUploadStatus status = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData);
             return extractBinaryScanId(status);
+        } else {
+            return Optional.empty();
+        }
+    }
+    
+    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runLegacyBinaryScan(
+        DockerTargetData dockerTargetData,
+        NameVersion projectNameVersion,
+        BlackDuckRunData blackDuckRunData,
+        Set<String> binaryTargets
+    )
+        throws OperationException {
+        Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
+        if (binaryScanFile.isPresent()) {
+            return Optional.of(operationRunner.uploadLegacyBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData));
         } else {
             return Optional.empty();
         }
