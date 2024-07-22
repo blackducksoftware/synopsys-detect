@@ -30,6 +30,8 @@ dependencyManagement {
 final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
 
 repositories {
+    println "Checking if environment property SNPS_INTERNAL_ARTIFACTORY is configured for the buildSrc project: ${internalRepoHost}"
+
     maven { url "${internalRepoHost}/artifactory/jcenter" }
 }
 
