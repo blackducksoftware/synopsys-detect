@@ -104,7 +104,7 @@ subprojects {
 
 allprojects {
     repositories {
-        maven { url "https://artifactory.internal.synopsys.com/artifactory/jcenter" }
+        maven { url "${internalRepoHost}/artifactory/jcenter" }
     }
 
     dependencies {
