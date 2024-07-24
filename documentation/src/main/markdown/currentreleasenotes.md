@@ -19,6 +19,6 @@
 
 ### Dependency updates
 
-* Component Location Analysis version updated to 1.1.13.
+* Component Location Analysis version updated to 1.1.13
 * Project Inspector version updated to 2024.9.0
-* Logback Core version updated to 1.2.13.
+* Logback Core version updated to 1.2.13
