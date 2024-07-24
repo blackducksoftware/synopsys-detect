@@ -1,16 +1,20 @@
 package com.synopsys.integration.detectable.detectables.nuget.parse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.detectables.nuget.model.NugetPackageId;
 import com.synopsys.integration.detectable.detectables.nuget.model.NugetPackageSet;
 
 public class NugetDependencyNodeBuilder {
+    private static Map<ExternalId, Dependency> externalIdToDependencyMap = new HashMap<>();
     private final List<NugetPackageSet> packageSets = new ArrayList<>();
     
     public void addPackageSets(List<NugetPackageSet> sets) {
@@ -38,6 +42,14 @@ public class NugetDependencyNodeBuilder {
     }
 
     private Dependency convertPackageId(NugetPackageId id) {
-        return Dependency.FACTORY.createNameVersionDependency(Forge.NUGET, id.name, id.version);
+        Dependency d  = Dependency.FACTORY.createNameVersionDependency(Forge.NUGET, id.name, id.version);
+        ExternalId ei = d.getExternalId();
+
+        if (externalIdToDependencyMap.containsKey(ei)) {
+            d = externalIdToDependencyMap.get(ei);
+        } else {
+            externalIdToDependencyMap.put(ei, d);
+        }
+        return d;
     }
 }
