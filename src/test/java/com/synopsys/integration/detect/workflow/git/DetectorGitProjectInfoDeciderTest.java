@@ -23,8 +23,8 @@ import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 class DetectorGitProjectInfoDeciderTest {
-    private static final int rootLevel = 0;
-    private static final int nestedLevel = 2;
+    private static final int ROOT_LEVEL = 0;
+    private static final int NESTED_LEVEL = 2;
     private final DetectorGitProjectInfoDecider gitProjectInfoDecider = new DetectorGitProjectInfoDecider();
 
     private final GitInfo rootGitInfo = new GitInfo(
@@ -42,8 +42,8 @@ class DetectorGitProjectInfoDeciderTest {
     @Test
     void testFindsMin() {
         DetectorRule gitRule = mockGitRule();
-        DetectorDirectoryReport rootDirectoryReport = mockDetectorDirectoryReportForGitRule(gitRule, rootGitInfo, rootLevel);
-        DetectorDirectoryReport nestedDirectoryReport = mockDetectorDirectoryReportForGitRule(gitRule, nestedGitInfo, nestedLevel);
+        DetectorDirectoryReport rootDirectoryReport = mockDetectorDirectoryReportForGitRule(gitRule, rootGitInfo, ROOT_LEVEL);
+        DetectorDirectoryReport nestedDirectoryReport = mockDetectorDirectoryReportForGitRule(gitRule, nestedGitInfo, NESTED_LEVEL);
 
         Optional<GitInfo> decidedGitInfo = gitProjectInfoDecider.decideSuggestion(Arrays.asList(
             rootDirectoryReport,
@@ -56,10 +56,10 @@ class DetectorGitProjectInfoDeciderTest {
 
     @Test
     void testFindsNested() {
-        DetectorDirectoryReport rootDirectoryReport = mockDetectorDirectoryReportForNpm(rootLevel);
+        DetectorDirectoryReport rootDirectoryReport = mockDetectorDirectoryReportForNpm(ROOT_LEVEL);
 
         DetectorRule gitRule = mockGitRule();
-        DetectorDirectoryReport nestedDirectoryReport = mockDetectorDirectoryReportForGitRule(gitRule, nestedGitInfo, nestedLevel);
+        DetectorDirectoryReport nestedDirectoryReport = mockDetectorDirectoryReportForGitRule(gitRule, nestedGitInfo, NESTED_LEVEL);
 
         Optional<GitInfo> decidedGitInfo = gitProjectInfoDecider.decideSuggestion(Arrays.asList(
             rootDirectoryReport,
@@ -72,8 +72,8 @@ class DetectorGitProjectInfoDeciderTest {
 
     @Test
     void testNoGitInfo() {
-        DetectorDirectoryReport rootDirectoryReport = mockDetectorDirectoryReportForNpm(rootLevel);
-        DetectorDirectoryReport nestedDirectoryReport = mockDetectorDirectoryReportForNpm(nestedLevel);
+        DetectorDirectoryReport rootDirectoryReport = mockDetectorDirectoryReportForNpm(ROOT_LEVEL);
+        DetectorDirectoryReport nestedDirectoryReport = mockDetectorDirectoryReportForNpm(NESTED_LEVEL);
 
         Optional<GitInfo> decidedGitInfo = gitProjectInfoDecider.decideSuggestion(Arrays.asList(
             rootDirectoryReport,

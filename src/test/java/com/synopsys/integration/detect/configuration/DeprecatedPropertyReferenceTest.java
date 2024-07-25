@@ -39,9 +39,6 @@ public class DeprecatedPropertyReferenceTest {
         .map(key -> key.replace(".", "_"))
         .toList();
 
-    public DeprecatedPropertyReferenceTest() throws IllegalAccessException {
-    }
-
     @Test
     public void testCodeReferencesToDeprecatedProperties() throws IOException {
         File rootDir = new File("src");

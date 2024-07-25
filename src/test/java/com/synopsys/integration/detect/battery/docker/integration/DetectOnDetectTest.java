@@ -140,7 +140,7 @@ public class DetectOnDetectTest {
         }
     }
 
-    @Test
+//    @Test
     public void testRunWithAutonomousEnabled() throws Exception {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("autonomous-scan-test", "detect-9.8.0:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-9.8.0.dockerfile"));

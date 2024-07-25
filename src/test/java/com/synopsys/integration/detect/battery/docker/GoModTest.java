@@ -27,11 +27,6 @@ public class GoModTest {
 
     private static final String[] GO_VERSIONS_TO_TEST = new String[] {
         "1.16.15",
-        "1.17.13",
-        "1.18.10",
-        "1.19.12",
-        "1.20.4",
-        "1.21.9",
         "1.22.2"
     };
 

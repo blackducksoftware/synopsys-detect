@@ -12,12 +12,12 @@ import com.synopsys.integration.detect.commontest.FileUtil;
 import com.synopsys.integration.util.ResourceUtil;
 
 public class FunctionalTestFiles {
-    private static final String resourcePrefix = "/detectables/functional";
+    private static final String RESOURCE_PREFIX = "/detectables/functional";
 
     public static String asString(String relativeResourcePath) {
         String data;
         try {
-            data = ResourceUtil.getResourceAsString(FunctionalTestFiles.class, resourcePrefix + relativeResourcePath, StandardCharsets.UTF_8);
+            data = ResourceUtil.getResourceAsString(FunctionalTestFiles.class, RESOURCE_PREFIX + relativeResourcePath, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -33,7 +33,7 @@ public class FunctionalTestFiles {
     }
 
     public static InputStream asInputStream(String relativeResourcePath) {
-        return FunctionalTestFiles.class.getResourceAsStream(resourcePrefix + relativeResourcePath);
+        return FunctionalTestFiles.class.getResourceAsStream(RESOURCE_PREFIX + relativeResourcePath);
     }
 
     public static String resolvePath(String relativeResourcePath) {
@@ -41,7 +41,7 @@ public class FunctionalTestFiles {
     }
 
     public static File asFile(String relativeResourcePath) {
-        return FileUtil.asFile(FunctionalTestFiles.class, relativeResourcePath, resourcePrefix);
+        return FileUtil.asFile(FunctionalTestFiles.class, relativeResourcePath, RESOURCE_PREFIX);
     }
 
 }

@@ -27,6 +27,12 @@ dependencyManagement {
     }
 }
 
+final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
+
+repositories {
+    maven { url "${internalRepoHost}/artifactory/jcenter" }
+}
+
 dependencies {
     implementation "org.freemarker:freemarker:2.3.31"
     implementation("com.synopsys.integration:common-gradle-plugin:${managedCgpVersion}") {
