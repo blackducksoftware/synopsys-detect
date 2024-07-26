@@ -55,6 +55,7 @@ public class CreateScanBatchRunnerWithBlackDuck {
                     blackDuckHttpClient,
                     cleanupZipExpander,
                     scanPathsUtility,
+                    keyStoreHelper,
                     blackDuckServerConfig.getBlackDuckUrl(),
                     operatingSystemType,
                     installDirectory
