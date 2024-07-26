@@ -52,7 +52,7 @@ public class SignatureScanStepRunner {
         ScanBatch scanBatch = operationRunner.createScanBatchOnline(scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
 
         NotificationTaskRange notificationTaskRange = operationRunner.createCodeLocationRange(blackDuckRunData);
-        List<SignatureScannerReport> reports = executeScan(scanBatch, scanBatchRunner, scanPaths, scanIdsToWaitFor, gson, blackDuckRunData.shouldWaitAtScanLevel());
+        List<SignatureScannerReport> reports = executeScan(scanBatch, scanBatchRunner, scanPaths, scanIdsToWaitFor, gson, blackDuckRunData.shouldWaitAtScanLevel(), true);
 
         SignatureScannerCodeLocationResult signatureScannerCodeLocationResult = operationRunner.calculateWaitableSignatureScannerCodeLocations(notificationTaskRange, reports);
         codeLocationAccumulator.addWaitableCodeLocations(signatureScannerCodeLocationResult.getWaitableCodeLocationData());
@@ -81,10 +81,10 @@ public class SignatureScanStepRunner {
         List<SignatureScanPath> scanPaths = operationRunner.createScanPaths(projectNameVersion, dockerTargetData);
         ScanBatch scanBatch = operationRunner.createScanBatchOffline(scanPaths, projectNameVersion, dockerTargetData);
 
-        executeScan(scanBatch, scanBatchRunner, scanPaths, null, null, false);
+        executeScan(scanBatch, scanBatchRunner, scanPaths, null, null, false, false);
     }
 
-    private List<SignatureScannerReport> executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths, Set<String> scanIdsToWaitFor, Gson gson, boolean shouldWaitAtScanLevel) throws OperationException, IOException {
+    private List<SignatureScannerReport> executeScan(ScanBatch scanBatch, ScanBatchRunner scanBatchRunner, List<SignatureScanPath> scanPaths, Set<String> scanIdsToWaitFor, Gson gson, boolean shouldWaitAtScanLevel, boolean isOnline) throws OperationException, IOException {
         SignatureScanOuputResult scanOuputResult = operationRunner.signatureScan(scanBatch, scanBatchRunner);
         
         // Do not attempt to gather additional information, and parse files that are potentially not
@@ -93,8 +93,10 @@ public class SignatureScanStepRunner {
             addScansToWaitFor(scanIdsToWaitFor, scanOuputResult, gson);
         }
         
-        // Check if we need to copy csv files
-        if (scanBatch.isCsvArchive()) {
+        // Check if we need to copy csv files. Only do this if the user asked for it and we are not
+        // connected to BlackDuck. If we are collected to BlackDuck the scanner is responsible for 
+        // sending the csv there.
+        if (scanBatch.isCsvArchive() && !isOnline) {
             for (ScanCommandOutput output : scanOuputResult.getScanBatchOutput().getOutputs()) {
                 copyCsvFiles(output.getSpecificRunOutputDirectory(), operationRunner.getDirectoryManager().getCsvOutputDirectory());
             }
