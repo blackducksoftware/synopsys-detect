@@ -48,7 +48,7 @@ public class CreateScanBatchRunnerWithBlackDuck {
 
         ScannerInstaller scannerInstallerVariant;
 
-        if (shouldUseNewApiScannerInstaller(blackDuckVersion)) {
+        if (shouldUseToolsApiScannerInstaller(blackDuckVersion)) {
             logger.trace("Using new Scan CLI download API.");
             scannerInstallerVariant = new ToolsApiScannerInstaller(
                     slf4jIntLogger,
@@ -78,7 +78,7 @@ public class CreateScanBatchRunnerWithBlackDuck {
         return ScanBatchRunner.createComplete(intEnvironmentVariables, scanPathsUtility, scanCommandRunner, scannerInstallerVariant);
     }
 
-    private boolean shouldUseNewApiScannerInstaller(Optional<BlackDuckVersion> blackDuckVersion) {
+    private boolean shouldUseToolsApiScannerInstaller(Optional<BlackDuckVersion> blackDuckVersion) {
         return blackDuckVersion.isPresent() && blackDuckVersion.get().isAtLeast(MIN_BLACK_DUCK_VERSION);
     }
 
