@@ -147,6 +147,7 @@ dependencies {
     implementation project(':detector')
 
     implementation 'ch.qos.logback:logback-classic:1.2.13'
+    implementation 'ch.qos.logback:logback-core:1.2.13'
 
     implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.10'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
@@ -192,11 +193,10 @@ dependencies {
         implementation('org.apache.cxf:cxf-rt-frontend-jaxrs:4.0.4') {
             because 'previous version has a vulnerability'
         }
-        implementation('ch.qos.logback:logback-core:1.2.13') {
+        implementation('ch.qos.logback:logback-classic:1.2.13') {
             because 'previous version has a vulnerability'
         }
-
-        implementation('ch.qos.logback:logback-classic:1.2.13') {
+        implementation('ch.qos.logback:logback-core:1.2.13') {
             because 'previous version has a vulnerability'
         }
     }
