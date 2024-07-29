@@ -4,7 +4,7 @@
 
 ### New features
 
-* [solution_name] now supports binary scanning of large files via a chunking method employed during upload. Testing has confirmed 20 GB files perform well. We are looking at expanding testing of larger files in the future.
+* [solution_name] now supports binary scanning of large files via a chunking method employed during upload. Testing has confirmed successful upload of 20GB files.
     <note type="note">This feature requires [blackduck_product_name] 2024.7.0 or later.</note>
 
 ### Changed features
