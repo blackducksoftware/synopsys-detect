@@ -11,7 +11,7 @@ buildscript {
         javaTargetCompatibility = 8
         javaSourceCompatibility = 8
     }
-
+    ext['logback.version'] = '1.2.13'
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
 
     dependencies {
@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.9.0-SIGQA2-SNAPSHOT'
+version = '9.10.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -103,6 +103,10 @@ subprojects {
 }
 
 allprojects {
+    repositories {
+        maven { url "${internalRepoHost}/artifactory/jcenter" }
+    }
+
     dependencies {
         implementation "com.google.guava:guava:32.1.2-jre"
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0'
@@ -142,12 +146,13 @@ dependencies {
     implementation project(':detectable')
     implementation project(':detector')
 
-    implementation 'ch.qos.logback:logback-classic:1.2.11'
+    implementation 'ch.qos.logback:logback-classic:1.2.13'
 
     implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.10'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
+    implementation 'com.synopsys.integration:blackduck-upload-common:1.0.2'
     implementation 'com.synopsys:method-analyzer-core:0.2.9'
-    implementation "${locatorGroup}:${locatorModule}:1.1.12"
+    implementation "${locatorGroup}:${locatorModule}:1.1.13"
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
 
@@ -185,6 +190,9 @@ dependencies {
             because 'previous version has a vulnerability'
         }
         implementation('org.apache.cxf:cxf-rt-frontend-jaxrs:4.0.4') {
+            because 'previous version has a vulnerability'
+        }
+        implementation('ch.qos.logback:logback-core:1.2.13') {
             because 'previous version has a vulnerability'
         }
     }

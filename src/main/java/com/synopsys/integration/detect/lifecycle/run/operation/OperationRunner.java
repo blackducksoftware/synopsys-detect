@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,6 @@ import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
@@ -34,6 +34,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.synopsys.blackduck.upload.rest.status.BinaryUploadStatus;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
@@ -954,7 +955,8 @@ public class OperationRunner {
             IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.includeSystemEnv();
             return new CreateScanBatchRunnerWithBlackDuck(intEnvironmentVariables, OperatingSystemType.determineFromSystem(), executorService).createScanBatchRunner(
                 blackDuckRunData.getBlackDuckServerConfig(),
-                installDirectory
+                installDirectory,
+                blackDuckRunData.getBlackDuckServerVersion()
             );
         });
     }
@@ -1217,13 +1219,22 @@ public class OperationRunner {
     public void publishImpactSuccess() {
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.IMPACT_ANALYSIS, StatusType.SUCCESS));
     }
-
-    public CodeLocationCreationData<BinaryScanBatchOutput> uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+    
+    public CodeLocationCreationData<BinaryScanBatchOutput> uploadLegacyBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
         throws OperationException {
         return auditLog.namedPublic("Binary Upload", "Binary",
-            () -> new BinaryUploadOperation(statusEventPublisher, codeLocationNameManager, calculateBinaryScanOptions())
-                .uploadBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), projectNameVersion)
+            () -> new BinaryUploadOperation(statusEventPublisher)
+                .uploadLegacyBinaryScanFile(binaryUpload, blackDuckRunData.getBlackDuckServicesFactory().createBinaryScanUploadService(), codeLocationNameManager, projectNameVersion)
         );
+    }
+
+    public BinaryUploadStatus uploadBinaryScanFile(File binaryUpload, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData)
+        throws OperationException {        
+        return auditLog.namedPublic("Binary Upload", "Binary",
+            () -> {                
+                return new BinaryUploadOperation(statusEventPublisher)
+                        .uploadBinaryScanFile(binaryUpload, projectNameVersion, codeLocationNameManager, blackDuckRunData);
+            });
     }
 
     public ProjectVersionWrapper syncProjectVersion(
