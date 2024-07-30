@@ -235,7 +235,7 @@ import com.synopsys.integration.detectable.detectables.pipenv.parse.PipfileLockT
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockExtractor;
 import com.synopsys.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;
-import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParser;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParserInitial;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryExtractor;
 import com.synopsys.integration.detectable.detectables.poetry.PoetryOptions;
@@ -626,7 +626,7 @@ public class DetectableFactory {
     }
 
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment, PnpmLockOptions pnpmLockOptions) {
-        PnpmLockYamlParser pnpmLockYamlParser = new PnpmLockYamlParser(pnpmLockOptions.getDependencyTypeFilter());
+        PnpmLockYamlParserInitial pnpmLockYamlParser = new PnpmLockYamlParserInitial(pnpmLockOptions.getDependencyTypeFilter());
         PnpmLockExtractor pnpmLockExtractor = new PnpmLockExtractor(pnpmLockYamlParser, packageJsonFiles());
         return new PnpmLockDetectable(environment, fileFinder, pnpmLockExtractor, packageJsonFiles());
     }

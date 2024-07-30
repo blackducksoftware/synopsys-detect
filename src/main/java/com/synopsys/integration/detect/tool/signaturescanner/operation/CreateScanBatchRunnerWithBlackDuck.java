@@ -48,19 +48,20 @@ public class CreateScanBatchRunnerWithBlackDuck {
 
         ScannerInstaller scannerInstallerVariant;
 
-        if (shouldUseNewApiScannerInstaller(blackDuckVersion)) {
-            logger.trace("Using new Scan CLI download API.");
+        if (shouldUseToolsApiScannerInstaller(blackDuckVersion)) {
+            logger.debug("Using Tools Scan CLI download API (new).");
             scannerInstallerVariant = new ToolsApiScannerInstaller(
                     slf4jIntLogger,
                     blackDuckHttpClient,
                     cleanupZipExpander,
                     scanPathsUtility,
+                    keyStoreHelper,
                     blackDuckServerConfig.getBlackDuckUrl(),
                     operatingSystemType,
                     installDirectory
             );
         } else {
-            logger.trace("Using old Scan CLI download API.");
+            logger.debug("Using Zip Scan CLI download API (old).");
             scannerInstallerVariant = new ZipApiScannerInstaller(
                     slf4jIntLogger,
                     signatureScannerClient,
@@ -77,7 +78,7 @@ public class CreateScanBatchRunnerWithBlackDuck {
         return ScanBatchRunner.createComplete(intEnvironmentVariables, scanPathsUtility, scanCommandRunner, scannerInstallerVariant);
     }
 
-    private boolean shouldUseNewApiScannerInstaller(Optional<BlackDuckVersion> blackDuckVersion) {
+    private boolean shouldUseToolsApiScannerInstaller(Optional<BlackDuckVersion> blackDuckVersion) {
         return blackDuckVersion.isPresent() && blackDuckVersion.get().isAtLeast(MIN_BLACK_DUCK_VERSION);
     }
 
