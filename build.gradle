@@ -11,7 +11,7 @@ buildscript {
         javaTargetCompatibility = 8
         javaSourceCompatibility = 8
     }
-
+    ext['logback.version'] = '1.2.13'
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
 
     dependencies {
@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.9.0-SIGQA8-SNAPSHOT'
+version = '9.9.0-SIGQA10-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -190,6 +190,9 @@ dependencies {
             because 'previous version has a vulnerability'
         }
         implementation('org.apache.cxf:cxf-rt-frontend-jaxrs:4.0.4') {
+            because 'previous version has a vulnerability'
+        }
+        implementation('ch.qos.logback:logback-core:1.2.13') {
             because 'previous version has a vulnerability'
         }
     }

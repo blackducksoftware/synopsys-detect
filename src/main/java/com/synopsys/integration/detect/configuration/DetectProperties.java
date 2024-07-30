@@ -513,7 +513,7 @@ public class DetectProperties {
                 )
                 .setInfo("Reduced Persistence", DetectPropertyFromVersion.VERSION_8_3_0)
                 .setHelp(
-                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to <xref href=\"https://sig-product-docs.synopsys.com/bundle/bd-hub/page/ComponentDiscovery/about_reduced_persistence_signature_scanning.html\" scope=\"external\" outputclass=\"external\" format=\"html\" target=\"_blank\">about reduced persistence signature scanning.</xref>")
+                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to <xref href=\"https://sig%2Dproduct%2Ddocs%2Esynopsys%2Ecom/bundle/bd%2Dhub/page/ComponentDiscovery/about%5Freduced%5Fpersistence%5Fsignature%5Fscanning%2Ehtml\" scope=\"external\" outputclass=\"external\" format=\"html\" target=\"_blank\">about reduced persistence signature scanning.</xref>")
                 .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
                 .build();
 
@@ -650,9 +650,10 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.diagnostic", false)
             .setInfo("Diagnostic Mode", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp(
-                "When enabled, diagnostic mode collects files valuable for troubleshooting (logs, BDIO file, extraction files, reports, etc.), writes them to a zip file, and logs the path to the zip file.")
+                "When enabled, diagnostic mode collects files valuable for troubleshooting (logs, BDIO file, extraction files, reports, etc.), writes them to a zip file, and logs the path to the zip file.",
+                "See the following for more <xref href=\"https://sig%2Dproduct%2Ddocs%2Esynopsys%2Ecom/bundle/integrations%2Ddetect/page/troubleshooting/diagnosticmode%2Ehtml\" scope=\"external\" format=\"html\" target=\"_blank\">Diagnostic Mode information.</xref>")
             .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
-            .build();
+            .build(); 
 
     public static final BooleanProperty DETECT_IGNORE_CONNECTION_FAILURES =
         BooleanProperty.newBuilder("detect.ignore.connection.failures", false)
@@ -880,7 +881,7 @@ public class DetectProperties {
             .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
                 createTypeFilterHelpText("Gradle configuration types"),
-                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/8.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
+                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See Gradle docs <xref href=\"https://docs%2Egradle%2Eorg/8%2E2/userguide/declaring%5Fdependencies%2Ehtml\" scope=\"external\" format=\"html\" target=\"_blank\">for more information.</xref>"
             )
             .setExample(GradleConfigurationType.UNRESOLVED.name())
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
@@ -1758,7 +1759,7 @@ public class DetectProperties {
             .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
             .setHelp(
                 "The logging level of Detect.",
-                "To keep the log file size manageable, use INFO level logging for normal use. Use DEBUG or TRACE for troubleshooting.<p/>" +
+                "To keep the log file size manageable, use INFO level logging for normal use and DEBUG or TRACE for troubleshooting.<p/>" +
                     "Detect logging uses Spring Boot logging, which uses Logback (https://logback.qos.ch). " +
                     "The format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
                     "The property name shown above specifies package <i>com.synopsys.integration</i> because that is the name of Detect's top-level package. " +
@@ -1767,7 +1768,7 @@ public class DetectProperties {
                     "However, you can use this property to set the logging level for some of the non-Synopsys libraries that Detect uses by using the appropriate package name. " +
                     "For example, <i>logging.level.org.apache.http=TRACE</i> sets the logging level to TRACE for the Apache HTTP client library. " +
                     "<p/>" +
-                    "For log message format, Detect uses a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i>. "
+                    "For log message format, a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i> is used. "
                     +
                     "You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. " +
                     "<p/>" +
