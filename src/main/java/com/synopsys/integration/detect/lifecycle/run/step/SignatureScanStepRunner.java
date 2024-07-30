@@ -94,7 +94,7 @@ public class SignatureScanStepRunner {
         }
         
         // Check if we need to copy csv files. Only do this if the user asked for it and we are not
-        // connected to BlackDuck. If we are collected to BlackDuck the scanner is responsible for 
+        // connected to BlackDuck. If we are connected to BlackDuck the scanner is responsible for 
         // sending the csv there.
         if (scanBatch.isCsvArchive() && !isOnline) {
             for (ScanCommandOutput output : scanOuputResult.getScanBatchOutput().getOutputs()) {
