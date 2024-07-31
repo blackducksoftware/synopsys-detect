@@ -1,8 +1,6 @@
 package com.synopsys.integration.detectable.detectables.npm.packagejson;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
