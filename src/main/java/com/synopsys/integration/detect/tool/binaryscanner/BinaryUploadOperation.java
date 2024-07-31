@@ -90,13 +90,17 @@ public class BinaryUploadOperation {
         String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryUpload,
                 projectNameVersion.getName(), projectNameVersion.getVersion());
 
-        UploaderConfig.Builder uploaderConfigBuilder = UploaderConfig.createConfigFromProperties(
-                blackDuckRunData.getBlackDuckServerConfig().getProxyInfo(), new Properties())
-                .setUploadChunkSize(MULTIUPLOAD_CHUNK_SIZE)
+        UploaderConfig.Builder uploaderConfigBuilder = UploaderConfig.createConfigFromEnvironment(
+                blackDuckRunData.getBlackDuckServerConfig().getProxyInfo())
                 .setTimeoutInSeconds(blackDuckRunData.getBlackDuckServerConfig().getTimeout())
                 .setAlwaysTrustServerCertificate(blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
                 .setBlackDuckUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl())
                 .setApiToken(blackDuckRunData.getBlackDuckServerConfig().getApiToken().get());
+
+        // TODO: Uncomment after blackduck-upload-common 1.1.0 released
+//        if(uploaderConfigBuilder.getUploadChunkSize() < MULTIUPLOAD_CHUNK_SIZE) {
+//            uploaderConfigBuilder.setUploadChunkSize(MULTIUPLOAD_CHUNK_SIZE);
+//        }
 
         UploaderConfig uploaderConfig = uploaderConfigBuilder.build();
         UploaderFactory uploadFactory = new UploaderFactory(uploaderConfig, new Slf4jIntLogger(logger), new Gson());
