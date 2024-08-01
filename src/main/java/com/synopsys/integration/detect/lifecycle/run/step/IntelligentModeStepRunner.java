@@ -152,7 +152,6 @@ public class IntelligentModeStepRunner {
                         binaryScanStepRunner.runLegacyBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
 
                 if (codeLocationData.isPresent()) {
-                    //codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
                     mustWaitAtBomSummaryLevel.set(true);
                 }
             }

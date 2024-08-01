@@ -88,7 +88,7 @@ public class CreateScanBatchOperation {
 
         // Someday the integrated matching enabled option will (we think) go away, and we'll always provide
         // detectRunUuid as correlationId, but for now it's optional.
-        if (Boolean.TRUE.equals(signatureScannerOptions.isIntegratedMatchingEnabled())) {
+        if (signatureScannerOptions.isIntegratedMatchingEnabled()) {
             scanJobBuilder.correlationId(detectRunUuid);
         }
 
