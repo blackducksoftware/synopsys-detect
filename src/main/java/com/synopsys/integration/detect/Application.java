@@ -239,11 +239,11 @@ public class Application implements ApplicationRunner {
             Gson formattedGson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
             String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo, exitCodeType, autonomousManagerOptional));
             FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
-            
+
             if (directoryManager.getJsonStatusOutputDirectory() != null) {
                 File statusCopyFile = new File(directoryManager.getJsonStatusOutputDirectory(), STATUS_JSON_FILE_NAME);
                 logger.info("Creating copy of status file: {}", statusCopyFile);
-                FileUtils.writeStringToFile(statusCopyFile, json, Charset.defaultCharset());  
+                FileUtils.writeStringToFile(statusCopyFile, json, Charset.defaultCharset());
             }
         } catch (Exception e) {
             logger.warn("There was a problem writing the status output file. The detect run was not affected.");
