@@ -80,7 +80,6 @@ public class PackageJsonExtractor {
     }
     
     private Dependency entryToDependency(String key, String value) {
-        // Extract the lowest version from the value
         String version = extractLowestVersion(value);
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, key, version);
         return new Dependency(externalId);
@@ -96,7 +95,7 @@ public class PackageJsonExtractor {
             .map(part -> part.replaceAll("[>=<~^]", ""))
             // Filter out parts that don't match the version pattern
             .filter(part -> part.matches("\\d+\\.\\d+\\.\\d+|\\d+\\.\\d+|\\d+"))
-            // Use the compareVersions method to find smallest version in each value
+            // Use compareSemVerVersions method to find smallest version in each value
             .min(this::compareSemVerVersions)
             // If no part matches the version pattern, return the original value.
             .orElse(value);
