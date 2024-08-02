@@ -78,11 +78,6 @@ public class PackageJsonExtractor {
             .map(entry -> entryToDependency(entry.getKey(), entry.getValue()))
             .collect(Collectors.toList());
     }
-
-//    private Dependency entryToDependency(String key, String value) {
-//        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, key, value);
-//        return new Dependency(externalId);
-//    }
     
     private Dependency entryToDependency(String key, String value) {
         // Extract the lowest version from the value
@@ -92,22 +87,46 @@ public class PackageJsonExtractor {
     }
 
     private String extractLowestVersion(String value) {
-        // If the value starts with "http", "file", or is "latest", return the value as is.
-        if (value.startsWith("http") || value.startsWith("file") || value.equals("latest")) {
-            return value;
-        }
-
         // Split the value into parts by spaces, "||", or "-".
         String[] parts = value.split("\\s+|\\|\\||-");
         String lowestVersion = Arrays.stream(parts)
-            .map(part -> part.replaceAll("x|\\*", "0")) // Replace "x" or "*" with "0"
-            .map(part -> part.replaceAll("[^0-9.]", "")) // Remove all non-digit and non-period characters
-            .filter(part -> part.matches("\\d+\\.\\d+\\.\\d+")) // Filter out parts that don't match the version pattern
-            // TODO need to read doc, test the below two lines
-            .min(Comparator.naturalOrder()) // Find the smallest part
-            .orElse(value); // If no part matches the version pattern, return the original value
+             // Replace "x" or "*" with "0"
+            .map(part -> part.replaceAll("x|\\*", "0"))
+            // Remove npm version selection characters that the KB won't match on
+            .map(part -> part.replaceAll("[>=<~^]", ""))
+            // Filter out parts that don't match the version pattern
+            .filter(part -> part.matches("\\d+\\.\\d+\\.\\d+|\\d+\\.\\d+|\\d+"))
+            // Use the compareVersions method to find smallest version in each value
+            .min(this::compareSemVerVersions)
+            // If no part matches the version pattern, return the original value.
+            .orElse(value);
 
         return lowestVersion;
+    }
+    
+    private int compareSemVerVersions(String v1, String v2) {
+        // Split each version string into parts
+        String[] v1Parts = v1.split("\\.");
+        String[] v2Parts = v2.split("\\.");
+
+        // Determine the maximum length to iterate over
+        int maxLength = Math.max(v1Parts.length, v2Parts.length);
+
+        // Compare each part until we know which string is smallest
+        for (int i = 0; i < maxLength; i++) {
+            int part1 = (i < v1Parts.length) ? Integer.parseInt(v1Parts[i]) : 0;
+            int part2 = (i < v2Parts.length) ? Integer.parseInt(v2Parts[i]) : 0;
+
+            int comparison = Integer.compare(part1, part2);
+
+            // If the parts are not equal, return the comparison result
+            if (comparison != 0) {
+                return comparison;
+            }
+        }
+
+        // If all parts are equal, return 0
+        return 0;
     }
 
 }
