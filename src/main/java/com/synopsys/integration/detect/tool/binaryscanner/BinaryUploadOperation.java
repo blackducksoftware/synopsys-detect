@@ -2,7 +2,6 @@ package com.synopsys.integration.detect.tool.binaryscanner;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,7 +34,6 @@ import com.synopsys.integration.util.NameVersion;
 
 public class BinaryUploadOperation {
     private static final String STATUS_KEY = "BINARY_SCAN";
-    private static final int MULTIUPLOAD_CHUNK_SIZE = 5242880; // 5 MB chunks specified in bytes
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final StatusEventPublisher statusEventPublisher;
@@ -90,16 +88,17 @@ public class BinaryUploadOperation {
         String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryUpload,
                 projectNameVersion.getName(), projectNameVersion.getVersion());
 
-        UploaderConfig.Builder uploaderConfigBuilder = UploaderConfig.createConfigFromProperties(
-                blackDuckRunData.getBlackDuckServerConfig().getProxyInfo(), new Properties())
-                .setUploadChunkSize(MULTIUPLOAD_CHUNK_SIZE)
+        UploaderConfig.Builder uploaderConfigBuilder =  UploaderConfig.createConfigFromEnvironment(
+                blackDuckRunData.getBlackDuckServerConfig().getProxyInfo())
                 .setTimeoutInSeconds(blackDuckRunData.getBlackDuckServerConfig().getTimeout())
                 .setAlwaysTrustServerCertificate(blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
                 .setBlackDuckUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl())
                 .setApiToken(blackDuckRunData.getBlackDuckServerConfig().getApiToken().get());
-
+        
         UploaderConfig uploaderConfig = uploaderConfigBuilder.build();
         UploaderFactory uploadFactory = new UploaderFactory(uploaderConfig, new Slf4jIntLogger(logger), new Gson());
+        
+        int uploadChunkSize = uploaderConfig.getUploadChunkSize();
 
         BinaryScanRequestData binaryData = new BinaryScanRequestData(projectNameVersion.getName(),
                 projectNameVersion.getVersion(), codeLocationName, "");
