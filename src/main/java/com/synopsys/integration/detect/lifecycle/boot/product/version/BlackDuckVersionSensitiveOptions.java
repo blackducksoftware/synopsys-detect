@@ -6,12 +6,12 @@ import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMo
 public class BlackDuckVersionSensitiveOptions {
     private final DetectToolFilter detectToolFilter;
     private final BlackduckScanMode blackDuckScanMode;
-    private final boolean isIntegratedMatchingEnabled;
+    private final boolean integratedMatchingEnabled;
 
-    public BlackDuckVersionSensitiveOptions(final DetectToolFilter detectToolFilter, final BlackduckScanMode blackDuckScanMode, boolean isIntegratedMatchingEnabled) {
+    public BlackDuckVersionSensitiveOptions(final DetectToolFilter detectToolFilter, final BlackduckScanMode blackDuckScanMode, boolean integratedMatchingEnabled) {
         this.detectToolFilter = detectToolFilter;
         this.blackDuckScanMode = blackDuckScanMode;
-        this.isIntegratedMatchingEnabled = isIntegratedMatchingEnabled;
+        this.integratedMatchingEnabled = integratedMatchingEnabled;
     }
 
     public DetectToolFilter getDetectToolFilter() {
@@ -22,7 +22,7 @@ public class BlackDuckVersionSensitiveOptions {
         return blackDuckScanMode;
     }
 
-    public boolean isIsIntegratedMatchingEnabled() {
-        return isIntegratedMatchingEnabled;
+    public boolean isIntegratedMatchingEnabled() {
+        return integratedMatchingEnabled;
     }
 }

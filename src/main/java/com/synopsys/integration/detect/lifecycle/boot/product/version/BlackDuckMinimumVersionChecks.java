@@ -39,7 +39,7 @@ public class BlackDuckMinimumVersionChecks {
         
         checks.add(new BlackDuckMinimumVersionCheck(
                 "Integrated match correlation",
-                o -> o.isIsIntegratedMatchingEnabled(),
+                o -> o.isIntegratedMatchingEnabled(),
                 new BlackDuckVersion(2024, 7, 1)
         ));
     }
