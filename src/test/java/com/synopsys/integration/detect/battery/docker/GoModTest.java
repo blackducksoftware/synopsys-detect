@@ -27,7 +27,7 @@ public class GoModTest {
 
     private static final String[] GO_VERSIONS_TO_TEST = new String[] {
         "1.16.15",
-        "1.22.2"
+        "1.22.5"
     };
 
     private static final String PROJECT_NAME = "go-mod-docker";
