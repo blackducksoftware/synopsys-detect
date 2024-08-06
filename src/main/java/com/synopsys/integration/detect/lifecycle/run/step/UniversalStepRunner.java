@@ -82,7 +82,7 @@ public class UniversalStepRunner {
         }
         return result;
     }
-
+    
     public SortedMap<String, SortedSet<String>> getScanTargets(UniversalToolsResult universalToolsResult) {
         SortedMap<String, SortedSet<String>> scanTargetMap = new TreeMap<>();
         for(DetectCodeLocation detectCodeLocation: universalToolsResult.getDetectCodeLocations()) {
@@ -93,7 +93,7 @@ public class UniversalStepRunner {
         return scanTargetMap;
     }
 
-    public BdioResult generateBdio(UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws OperationException {
+    public BdioResult generateBdio(String integratedMatchingCorrelationId, UniversalToolsResult universalToolsResult, NameVersion projectNameVersion) throws OperationException {
         ProjectDependencyGraph aggregateDependencyGraph = operationRunner.aggregateSubProject(projectNameVersion, universalToolsResult.getDetectCodeLocations());
 
         AggregateCodeLocation aggregateCodeLocation = operationRunner.createAggregateCodeLocation(
@@ -101,7 +101,7 @@ public class UniversalStepRunner {
             projectNameVersion,
             universalToolsResult.getDetectToolGitInfo()
         );
-        operationRunner.createAggregateBdio2File(aggregateCodeLocation, Bdio.ScanType.PACKAGE_MANAGER);
+        operationRunner.createAggregateBdio2File(integratedMatchingCorrelationId, aggregateCodeLocation, Bdio.ScanType.PACKAGE_MANAGER);
 
         List<UploadTarget> uploadTargets = new ArrayList<>();
         Map<DetectCodeLocation, String> codeLocationNamesResult = new HashMap<>();

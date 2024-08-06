@@ -1,7 +1,6 @@
 package com.synopsys.integration.detect.battery.docker.integration;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,6 +30,10 @@ public class BlackDuckAssertions {
     private final BlackDuckApiClient blackDuckApiClient;
     private final ProjectBomService projectBomService;
     private final NameVersion projectNameVersion;
+
+    private Set<String> codeLocationNames;
+    private ProjectVersionWrapper projectVersionWrapper;
+    private List<ProjectVersionComponentVersionView> bomComponents;
 
     public BlackDuckAssertions(BlackDuckServicesFactory blackDuckServicesFactory, NameVersion projectNameVersion) {
         projectService = blackDuckServicesFactory.createProjectService();
@@ -74,15 +77,15 @@ public class BlackDuckAssertions {
         blackDuckApiClient.delete(projectVersionWrapper.getProjectView());
     }
 
-    public ProjectVersionWrapper retrieveProjectVersionWrapper() throws IntegrationException {
-        return projectService.getProjectVersion(projectNameVersion).orElseThrow(() -> new RuntimeException("Project Version expected but could not be found on Black Duck."));
+    public ProjectVersionWrapper getProjectVersionWrapper() throws IntegrationException {
+        if (projectVersionWrapper == null) {
+            projectVersionWrapper = projectService.getProjectVersion(projectNameVersion).orElseThrow(() -> new RuntimeException("Project Version expected but could not be found on Black Duck."));
+        }
+        return projectVersionWrapper;
     }
 
     public void assertExactCodeLocations(Set<String> codeLocationNames) throws IntegrationException {
-        List<CodeLocationView> codeLocationsToDelete = blackDuckApiClient.getAllResponses(retrieveProjectVersionWrapper().getProjectVersionView().metaCodelocationsLink());
-        Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
-
-        SetAssertionUtil.assertSetDifferences(createdCodeLocationNames, codeLocationNames,
+        SetAssertionUtil.assertSetDifferences(getCodeLocationNames(), codeLocationNames,
             expectedMissing -> Assertions.fail(String.format("Expected code location %s but could not find it!", expectedMissing)),
             extraActual -> Assertions.fail(String.format("An additional code location %s was found but was not expected!", extraActual))
         );
@@ -93,10 +96,7 @@ public class BlackDuckAssertions {
     }
 
     public void hasCodeLocations(Set<String> codeLocationNames) throws IntegrationException {
-        List<CodeLocationView> codeLocationsToDelete = blackDuckApiClient.getAllResponses(retrieveProjectVersionWrapper().getProjectVersionView().metaCodelocationsLink());
-        Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
-
-        SetAssertionUtil.assertSetDifferences(createdCodeLocationNames, codeLocationNames,
+        SetAssertionUtil.assertSetDifferences(getCodeLocationNames(), codeLocationNames,
             expectedMissing -> Assertions.fail(String.format("Expected code location %s but could not find it!", expectedMissing)),
             extraActual -> {/* no-op, extra code locations fine, only checking it HAS the given. */}
         );
@@ -107,7 +107,7 @@ public class BlackDuckAssertions {
     }
 
     public void hasComponents(Set<String> componentNames) throws IntegrationException {
-        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
+        List<ProjectVersionComponentVersionView> bomComponents = getBomComponents();
         componentNames.forEach(componentName -> {
             Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
                 .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
@@ -121,7 +121,7 @@ public class BlackDuckAssertions {
     }
 
     public void doesNotHaveComponents(Set<String> componentNames) throws IntegrationException {
-        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
+        List<ProjectVersionComponentVersionView> bomComponents = getBomComponents();
         componentNames.forEach(componentName -> {
             Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
                     .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
@@ -131,7 +131,7 @@ public class BlackDuckAssertions {
     }
 
     public void checkComponentVersionExists(String componentName, String version) throws IntegrationException {
-        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
+        List<ProjectVersionComponentVersionView> bomComponents = getBomComponents();
         Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
                 .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
                 .findFirst();
@@ -141,7 +141,7 @@ public class BlackDuckAssertions {
     }
 
     public void checkComponentVersionNotExists(String componentName, String version) throws IntegrationException {
-        List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(retrieveProjectVersionWrapper().getProjectVersionView());
+        List<ProjectVersionComponentVersionView> bomComponents = getBomComponents();
         Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
                 .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
                 .findFirst();
@@ -155,10 +155,25 @@ public class BlackDuckAssertions {
     }
 
     public ProjectView retrieveProjectView() throws IntegrationException {
-        return retrieveProjectVersionWrapper().getProjectView();
+        return getProjectVersionWrapper().getProjectView();
     }
 
     public void codeLocationCount(int codeLocationCount) throws IntegrationException {
-        Assertions.assertEquals(codeLocationCount, blackDuckApiClient.getAllResponses(retrieveProjectVersionWrapper().getProjectVersionView().metaCodelocationsLink()).size());
+        Assertions.assertEquals(codeLocationCount, blackDuckApiClient.getAllResponses(getProjectVersionWrapper().getProjectVersionView().metaCodelocationsLink()).size());
+    }
+
+    private Set<String> getCodeLocationNames() throws IntegrationException {
+        if (codeLocationNames == null) {
+            List<CodeLocationView> codeLocations = blackDuckApiClient.getAllResponses(getProjectVersionWrapper().getProjectVersionView().metaCodelocationsLink());
+            codeLocationNames = codeLocations.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
+        }
+        return codeLocationNames;
+    }
+
+    private List<ProjectVersionComponentVersionView> getBomComponents() throws IntegrationException {
+        if (bomComponents == null) {
+            bomComponents = projectBomService.getComponentsForProjectVersion(getProjectVersionWrapper().getProjectVersionView());
+        }
+        return bomComponents;
     }
 }

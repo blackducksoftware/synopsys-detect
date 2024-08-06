@@ -18,7 +18,7 @@ class BlackDuckVersionCheckerTest {
         Mockito.when(detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)).thenReturn(true);
         Mockito.when(detectToolFilter.shouldInclude(DetectTool.IAC_SCAN)).thenReturn(false);
         BlackduckScanMode blackduckScanMode = BlackduckScanMode.STATELESS;
-        BlackDuckVersionSensitiveOptions blackDuckVersionSensitiveOptions = new BlackDuckVersionSensitiveOptions(detectToolFilter, blackduckScanMode);
+        BlackDuckVersionSensitiveOptions blackDuckVersionSensitiveOptions = new BlackDuckVersionSensitiveOptions(detectToolFilter, blackduckScanMode, false);
 
         BlackDuckMinimumVersionChecks blackDuckMinimumVersionChecks = new BlackDuckMinimumVersionChecks();
         BlackDuckVersionChecker blackDuckVersionChecker = new BlackDuckVersionChecker(new BlackDuckVersionParser(), blackDuckMinimumVersionChecks, blackDuckVersionSensitiveOptions);
@@ -42,7 +42,7 @@ class BlackDuckVersionCheckerTest {
         Mockito.when(detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)).thenReturn(false);
         Mockito.when(detectToolFilter.shouldInclude(DetectTool.IAC_SCAN)).thenReturn(false);
         BlackduckScanMode blackduckScanMode = BlackduckScanMode.RAPID;
-        BlackDuckVersionSensitiveOptions blackDuckVersionSensitiveOptions = new BlackDuckVersionSensitiveOptions(detectToolFilter, blackduckScanMode);
+        BlackDuckVersionSensitiveOptions blackDuckVersionSensitiveOptions = new BlackDuckVersionSensitiveOptions(detectToolFilter, blackduckScanMode, false);
 
         BlackDuckMinimumVersionChecks blackDuckMinimumVersionChecks = new BlackDuckMinimumVersionChecks();
         BlackDuckVersionChecker blackDuckVersionChecker = new BlackDuckVersionChecker(new BlackDuckVersionParser(), blackDuckMinimumVersionChecks, blackDuckVersionSensitiveOptions);
@@ -58,7 +58,7 @@ class BlackDuckVersionCheckerTest {
         Mockito.when(detectToolFilter.shouldInclude(DetectTool.IAC_SCAN)).thenReturn(true);
         Mockito.when(detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)).thenReturn(false);
         BlackduckScanMode blackduckScanMode = BlackduckScanMode.INTELLIGENT;
-        BlackDuckVersionSensitiveOptions blackDuckVersionSensitiveOptions = new BlackDuckVersionSensitiveOptions(detectToolFilter, blackduckScanMode);
+        BlackDuckVersionSensitiveOptions blackDuckVersionSensitiveOptions = new BlackDuckVersionSensitiveOptions(detectToolFilter, blackduckScanMode, false);
 
         BlackDuckMinimumVersionChecks blackDuckMinimumVersionChecks = new BlackDuckMinimumVersionChecks();
         BlackDuckVersionChecker blackDuckVersionChecker = new BlackDuckVersionChecker(new BlackDuckVersionParser(), blackDuckMinimumVersionChecks, blackDuckVersionSensitiveOptions);
