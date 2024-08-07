@@ -94,11 +94,9 @@ public class BinaryUploadOperation {
                 .setAlwaysTrustServerCertificate(blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
                 .setBlackDuckUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl())
                 .setApiToken(blackDuckRunData.getBlackDuckServerConfig().getApiToken().get());
-        
+
         UploaderConfig uploaderConfig = uploaderConfigBuilder.build();
         UploaderFactory uploadFactory = new UploaderFactory(uploaderConfig, new Slf4jIntLogger(logger), new Gson());
-        
-        int uploadChunkSize = uploaderConfig.getUploadChunkSize();
 
         BinaryScanRequestData binaryData = new BinaryScanRequestData(projectNameVersion.getName(),
                 projectNameVersion.getVersion(), codeLocationName, "");
