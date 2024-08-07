@@ -2,8 +2,6 @@ package com.synopsys.integration.detectable.detectables.npm.packagejson.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashMap;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +17,6 @@ import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 

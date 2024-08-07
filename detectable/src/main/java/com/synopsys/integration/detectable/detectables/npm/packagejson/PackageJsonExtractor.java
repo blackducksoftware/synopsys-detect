@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +21,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectable.util.SemVerComparator;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
@@ -86,6 +86,8 @@ public class PackageJsonExtractor {
     }
 
     private String extractLowestVersion(String value) {
+        SemVerComparator semVerComparator = new SemVerComparator();
+        
         // Split the value into parts by spaces, "||", or "-".
         String[] parts = value.split("\\s+|\\|\\||-");
         String lowestVersion = Arrays.stream(parts)
@@ -96,36 +98,10 @@ public class PackageJsonExtractor {
             // Filter out parts that don't match the version pattern
             .filter(part -> part.matches("\\d+\\.\\d+\\.\\d+|\\d+\\.\\d+|\\d+"))
             // Use compareSemVerVersions method to find smallest version in each value
-            .min(this::compareSemVerVersions)
+            .min(semVerComparator)
             // If no part matches the version pattern, return the original value.
             .orElse(value);
 
         return lowestVersion;
     }
-    
-    private int compareSemVerVersions(String v1, String v2) {
-        // Split each version string into parts
-        String[] v1Parts = v1.split("\\.");
-        String[] v2Parts = v2.split("\\.");
-
-        // Determine the maximum length to iterate over
-        int maxLength = Math.max(v1Parts.length, v2Parts.length);
-
-        // Compare each part until we know which string is smallest
-        for (int i = 0; i < maxLength; i++) {
-            int part1 = (i < v1Parts.length) ? Integer.parseInt(v1Parts[i]) : 0;
-            int part2 = (i < v2Parts.length) ? Integer.parseInt(v2Parts[i]) : 0;
-
-            int comparison = Integer.compare(part1, part2);
-
-            // If the parts are not equal, return the comparison result
-            if (comparison != 0) {
-                return comparison;
-            }
-        }
-
-        // If all parts are equal, return 0
-        return 0;
-    }
-
 }
