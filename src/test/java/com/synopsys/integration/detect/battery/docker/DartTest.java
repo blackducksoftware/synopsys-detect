@@ -16,7 +16,7 @@ import com.synopsys.integration.detector.base.DetectorType;
 public class DartTest {
     @Test
     void smokeTest() throws IOException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-dart-smoke", "detect-dart-smoke:3.5.0")) {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-dart-smoke", "detect-dart-smoke:3.5.0-1")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dart.dockerfile"));
 
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
