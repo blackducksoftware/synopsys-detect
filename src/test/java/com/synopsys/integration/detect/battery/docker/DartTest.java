@@ -9,25 +9,23 @@ import com.synopsys.integration.detect.battery.docker.provider.BuildDockerImageP
 import com.synopsys.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
-import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detector.base.DetectorType;
 
 @Tag("integration")
-public class YoctoTest {
+public class DartTest {
     @Test
     void smokeTest() throws IOException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-yocto-smoke", "detect-yocto-smoke:5.0.2")) {
-            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Yocto.dockerfile"));
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-dart-smoke", "detect-dart-smoke:3.5.0-1")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Dart.dockerfile"));
 
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
             commandBuilder.tools(DetectTool.DETECTOR);
-            commandBuilder.property(DetectProperties.DETECT_BITBAKE_PACKAGE_NAMES, "core-image-minimal");
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.logContains("Bitbake CLI: SUCCESS");
-            dockerAssertions.successfulDetectorType(DetectorType.BITBAKE.toString());
+            dockerAssertions.logContains("Dart CLI: SUCCESS");
+            dockerAssertions.successfulDetectorType(DetectorType.DART.toString());
             dockerAssertions.atLeastOneBdioFile();
         }
     }
