@@ -17,7 +17,7 @@ import com.synopsys.integration.detector.base.DetectorType;
 public class YoctoTest {
     @Test
     void smokeTest() throws IOException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-yocto-smoke", "detect-yocto-smoke:1.0.0")) {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-yocto-smoke", "detect-yocto-smoke:5.0.2")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Yocto.dockerfile"));
 
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
