@@ -1,6 +1,6 @@
 FROM debian:bookworm-20240110-slim
 
-RUN apt-get update && apt-get -y install wget unzip
+RUN apt-get update && apt-get -y install wget unzip openjdk-17-jdk
 
 RUN wget https://storage.googleapis.com/dart-archive/channels/stable/release/3.5.0/linux_packages/dart_3.5.0-1_amd64.deb
 
