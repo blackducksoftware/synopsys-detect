@@ -1,5 +1,10 @@
 # [docker_inspector_name] Release notes
 
+## Version 10.2.1
+
+### Dependency update
+* Logback Core updated to 1.2.13 to resolve high severity issues [CVE-2023-6378](https://nvd.nist.gov/vuln/detail/CVE-2023-6378) and [CVE-2023-6481](https://nvd.nist.gov/vuln/detail/CVE-2023-6481).
+
 ## Version 10.2.0
 
 ### Changed features

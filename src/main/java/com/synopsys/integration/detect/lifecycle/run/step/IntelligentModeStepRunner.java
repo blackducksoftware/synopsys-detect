@@ -19,6 +19,7 @@ import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanB
 import com.synopsys.integration.blackduck.codelocation.upload.UploadOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.blackduck.version.BlackDuckVersion;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.OperationException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -48,6 +49,7 @@ public class IntelligentModeStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final StepHelper stepHelper;
     private final Gson gson;
+    private static final BlackDuckVersion MIN_MULTIPART_BINARY_VERSION = new BlackDuckVersion(2024, 7, 0);
 
     public IntelligentModeStepRunner(OperationRunner operationRunner, StepHelper stepHelper, Gson gson) {
         this.operationRunner = operationRunner;
@@ -82,7 +84,8 @@ public class IntelligentModeStepRunner {
         BdioResult bdioResult,
         NameVersion projectNameVersion,
         DetectToolFilter detectToolFilter,
-        DockerTargetData dockerTargetData
+        DockerTargetData dockerTargetData,
+        Set<String> binaryTargets
     ) throws OperationException {
 
         ProjectVersionWrapper projectVersion = stepHelper.runAsGroup(
@@ -125,11 +128,22 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
-            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationData = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData);
-            
-            if (codeLocationData.isPresent()) {
-                codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
-                mustWaitAtBomSummaryLevel.set(true);
+
+            if (isMultipartUploadPossible(blackDuckRunData)) {
+                Optional<String> scanId = 
+                        binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
+
+                if (scanId.isPresent()) {
+                    scanIdsToWaitFor.add(scanId.get());
+                }
+            } else {
+                Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationData = 
+                        binaryScanStepRunner.runLegacyBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
+
+                if (codeLocationData.isPresent()) {
+                    codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
+                    mustWaitAtBomSummaryLevel.set(true);
+                }
             }
         });
 
@@ -343,5 +357,10 @@ public class IntelligentModeStepRunner {
             operationRunner.publishReport(new ReportDetectResult("Notices Report", noticesFile.getCanonicalPath()));
 
         }
+    }
+    
+    private boolean isMultipartUploadPossible(BlackDuckRunData blackDuckRunData) {
+        Optional<BlackDuckVersion> blackDuckVersion = blackDuckRunData.getBlackDuckServerVersion();
+        return blackDuckVersion.isPresent() && blackDuckVersion.get().isAtLeast(MIN_MULTIPART_BINARY_VERSION);
     }
 }

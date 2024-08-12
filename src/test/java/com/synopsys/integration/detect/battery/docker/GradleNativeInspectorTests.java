@@ -60,6 +60,25 @@ public class GradleNativeInspectorTests {
     }
 
     @Test
+    void gradleInspector_8_8() throws IOException, InterruptedException {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-gradle-native-inspector", "gradle-simple-8-8:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle_8_8.dockerfile"));
+
+            DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
+            commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");
+            commandBuilder.property(DetectProperties.BLACKDUCK_OFFLINE_MODE, "true");
+            commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
+            commandBuilder.property(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH, "1");
+            commandBuilder.property(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES, DetectorType.GRADLE.toString());
+            DockerAssertions dockerAssertions = test.run(commandBuilder);
+
+            dockerAssertions.logContains("Gradle Native Inspector: SUCCESS");
+            dockerAssertions.logContains("GRADLE: SUCCESS");
+            dockerAssertions.atLeastOneBdioFile();
+        }
+    }
+
+    @Test
     void gradleRichVersions() throws IntegrationException, IOException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("gradle-rich-version", "gradle-rich-version:1.0.0")) {
 
@@ -95,7 +114,7 @@ public class GradleNativeInspectorTests {
             blackduckAssertions.checkComponentVersionNotExists("Apache Log4j", "2.22.1");
             blackduckAssertions.checkComponentVersionExists("graphql-java", "18.2");
             blackduckAssertions.checkComponentVersionNotExists("SLF4J API Module", "2.0.4");
-            blackduckAssertions.checkComponentVersionExists("google-guava", "v29.0");
+            blackduckAssertions.checkComponentVersionExists("googleguava", "v29.0");
             blackduckAssertions.checkComponentVersionNotExists("Apache Log4J API", "2.22.1");
 
         }

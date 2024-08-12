@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
@@ -44,6 +46,7 @@ import com.synopsys.integration.configuration.property.types.string.StringProper
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
+import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVersion;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
@@ -180,6 +183,14 @@ public class DetectProperties {
             .setExample("ALL,NONE")
             .setCategory(DetectCategory.Advanced)
             .build();
+
+    public static final BooleanProperty DETECT_AUTONOMOUS_SCAN_ENABLED =
+            BooleanProperty.newBuilder("detect.autonomous.scan.enabled", false)
+                    .setInfo("Autonomous Scan Enabled", DetectPropertyFromVersion.VERSION_9_8_0)
+                    .setHelp("If true, Detect will enable autonomous scanning feature.")
+                    .setGroups(DetectGroup.GLOBAL)
+                    .setCategory(DetectCategory.Advanced)
+                    .build();
 
     public static final IntegerProperty DETECT_PARALLEL_PROCESSORS =
         IntegerProperty.newBuilder("detect.parallel.processors", 1)
@@ -503,7 +514,7 @@ public class DetectProperties {
                 )
                 .setInfo("Reduced Persistence", DetectPropertyFromVersion.VERSION_8_3_0)
                 .setHelp(
-                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to <xref href=\"https://sig-product-docs.synopsys.com/bundle/bd-hub/page/ComponentDiscovery/about_reduced_persistence_signature_scanning.html\" scope=\"external\" outputclass=\"external\" format=\"html\" target=\"_blank\">about reduced persistence signature scanning.</xref>")
+                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to <xref href=\"https://sig%2Dproduct%2Ddocs%2Esynopsys%2Ecom/bundle/bd%2Dhub/page/ComponentDiscovery/about%5Freduced%5Fpersistence%5Fsignature%5Fscanning%2Ehtml\" scope=\"external\" outputclass=\"external\" format=\"html\" target=\"_blank\">about reduced persistence signature scanning.</xref>")
                 .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
                 .build();
 
@@ -640,9 +651,10 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.diagnostic", false)
             .setInfo("Diagnostic Mode", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp(
-                "When enabled, diagnostic mode collects files valuable for troubleshooting (logs, BDIO file, extraction files, reports, etc.), writes them to a zip file, and logs the path to the zip file.")
+                "When enabled, diagnostic mode collects files valuable for troubleshooting (logs, BDIO file, extraction files, reports, etc.), writes them to a zip file, and logs the path to the zip file.",
+                "See the following for more <xref href=\"https://sig%2Dproduct%2Ddocs%2Esynopsys%2Ecom/bundle/integrations%2Ddetect/page/troubleshooting/diagnosticmode%2Ehtml\" scope=\"external\" format=\"html\" target=\"_blank\">Diagnostic Mode information.</xref>")
             .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
-            .build();
+            .build(); 
 
     public static final BooleanProperty DETECT_IGNORE_CONNECTION_FAILURES =
         BooleanProperty.newBuilder("detect.ignore.connection.failures", false)
@@ -870,7 +882,7 @@ public class DetectProperties {
             .setInfo("Gradle Configuration Types Excluded", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp(
                 createTypeFilterHelpText("Gradle configuration types"),
-                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See https://docs.gradle.org/8.2/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs"
+                "Including dependencies from unresolved Gradle configurations could lead to false positives. Dependency versions from an unresolved configuration may differ from a resolved one. See Gradle docs <xref href=\"https://docs%2Egradle%2Eorg/8%2E2/userguide/declaring%5Fdependencies%2Ehtml\" scope=\"external\" format=\"html\" target=\"_blank\">for more information.</xref>"
             )
             .setExample(GradleConfigurationType.UNRESOLVED.name())
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
@@ -1686,7 +1698,7 @@ public class DetectProperties {
         NoneEnumListProperty.newBuilder("detect.tools.excluded", emptyList(), DetectTool.class)
             .setInfo("Detect Tools Excluded", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
-                "The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.",
+                "The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always take precedence.",
                 "This property and detect.tools provide control over which tools Detect runs. " +
                     "If neither detect.tools nor detect.tools.excluded are set, Detect will allow (run if applicable, based on the values of other properties) all Detect tools. If detect.tools is set, and detect.tools.excluded is not set, Detect will only allow to run those tools that are specified in the detect.tools list. If detect.tools.excluded is set, Detect will only allow those tools that are not specified in the detect.tools.excluded list."
             )
@@ -1697,9 +1709,9 @@ public class DetectProperties {
         AllEnumListProperty.newBuilder("detect.tools", emptyList(), DetectTool.class)
             .setInfo("Detect Tools Included", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
-                "The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.",
+                "The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not in the excluded list) will run if all criteria of the tool are met. Exclusion rules always take precedence.",
                 "This property and detect.tools.excluded provide control over which tools Detect runs. " +
-                    "If neither detect.tools nor detect.tools.excluded are set, Detect will allow (run if applicable, based on the values of other properties) all Detect tools. If detect.tools is set, and detect.tools.excluded is not set, Detect will only allow to run those tools that are specified in the detect.tools list. If detect.tools.excluded is set, Detect will only allow those tools that are not specified in the detect.tools.excluded list."
+                    "If neither detect.tools nor detect.tools.excluded are set, Detect will allow (run if applicable, based on the values of other properties) all non-exclusive Detect tools. If detect.tools is set, and detect.tools.excluded is not set, Detect will run those tools that are specified in the detect.tools list. If detect.tools.excluded is set, Detect will only allow those tools that are not specified in the detect.tools.excluded list."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
@@ -1743,36 +1755,26 @@ public class DetectProperties {
             .setExample("workspaces/workspace-a,workspaces/workspace-b")
             .build();
 
-    public static final EnumProperty<LogLevel> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION =
-        EnumProperty.newBuilder("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class)
-            .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
-            .setHelp(
-                "The logging level of Detect.",
-                "To keep the log file size manageable, use INFO level logging for normal use. Use DEBUG or TRACE for troubleshooting.<p/>" +
-                    "Detect logging uses Spring Boot logging, which uses Logback (https://logback.qos.ch). " +
-                    "The format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
-                    "The property name shown above specifies package <i>com.synopsys.integration</i> because that is the name of Detect's top-level package. " +
-                    "Changing the logging level for that package changes the logging level for all Detect code, as well as Synopsys integration libraries that Detect uses. " +
-                    "Non-Synopsys libraries that Detect uses are not affected. " +
-                    "However, you can use this property to set the logging level for some of the non-Synopsys libraries that Detect uses by using the appropriate package name. " +
-                    "For example, <i>logging.level.org.apache.http=TRACE</i> sets the logging level to TRACE for the Apache HTTP client library. " +
-                    "<p/>" +
-                    "For log message format, Detect uses a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i>. "
-                    +
-                    "You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. " +
-                    "<p/>" +
-                    "Refer to the Spring Boot logging and Logback Project documentation for more details."
-            )
-            .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL)
-            .build();
-
     public static final EnumProperty<LogLevel> LOGGING_LEVEL_DETECT =
         EnumProperty.newBuilder("logging.level.detect", LogLevel.INFO, LogLevel.class)
-            .setInfo("Logging Level Shorthand", DetectPropertyFromVersion.VERSION_5_5_0)
+            .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_5_0)
             .setHelp(
-                "Shorthand for the logging level of detect. Equivalent to setting <i>logging.level.com.synopsys.integration</i>.",
-                "Refer to the description of property <i>logging.level.com.synopsys.integration</i> for additional details."
-            )
+                    "The logging level of Detect.",
+                    "To keep the log file size manageable, use INFO level logging for normal use and DEBUG or TRACE for troubleshooting.<p/>" +
+                        "Detect logging uses Spring Boot logging, which uses Logback (https://logback.qos.ch). " +
+                        "The format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
+                        "The property name shown above specifies package <i>com.synopsys.integration</i> because that is the name of Detect's top-level package. " +
+                        "Changing the logging level for that package changes the logging level for all Detect code, as well as Synopsys integration libraries that Detect uses. " +
+                        "Non-Synopsys libraries that Detect uses are not affected. " +
+                        "However, you can use this property to set the logging level for some of the non-Synopsys libraries that Detect uses by using the appropriate package name. " +
+                        "For example, <i>logging.level.org.apache.http=TRACE</i> sets the logging level to TRACE for the Apache HTTP client library. " +
+                        "<p/>" +
+                        "For log message format, a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i> is used. "
+                        +
+                        "You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. " +
+                        "<p/>" +
+                        "Refer to the Spring Boot logging and Logback Project documentation for more details."
+                )
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL)
             .build();
 
@@ -1843,6 +1845,19 @@ public class DetectProperties {
     //#endregion Active Properties
 
     //#region Deprecated Properties
+    
+    @Deprecated
+    public static final EnumProperty<LogLevel> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION = 
+            EnumProperty.newBuilder("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class)
+            .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
+            .setHelp("Equivalent to setting <i>logging.level.detect</i>.",
+                    "Refer to the description of property <i>logging.level.detect</i> for additional details.")
+            .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL)
+            .setDeprecated(
+                    "This property is being removed. Use property logging.level.detect instead. There is no distinction between the two properties.",
+                    DetectMajorVersion.TEN
+                )
+            .build();
 
     // Can't take in the DetectProperty<?> due to an illegal forward reference :(
     private static String createTypeFilterHelpText(String exclusionTypePlural) {
@@ -1865,6 +1880,18 @@ public class DetectProperties {
             }
         }
         return new Properties(properties);
+    }
+
+    public static SortedMap<String, String> getDefaultValues() {
+        SortedMap<String, String> defaultValueMap = new TreeMap<>();
+
+        for (Property property : allProperties().getProperties()) {
+            if (property.describeDefault() != null) {
+                defaultValueMap.put(property.getKey(), property.describeDefault());
+            }
+        }
+
+        return defaultValueMap;
     }
 
     public static List<TypedProperty<?, ?>> allTypedProperties() {

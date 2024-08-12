@@ -8,7 +8,7 @@ To enable diagnostic mode, add any one of the following to the command line:
 
 * -d
 * --diagnostic
-* [--detect.diagnostic](../properties/configuration/debug.md#diagnostic-mode)
+* [--detect.diagnostic=true](../properties/configuration/debug.md#diagnostic-mode)
 
 A diagnostic zip includes many files valuable for troubleshooting, such as:
 

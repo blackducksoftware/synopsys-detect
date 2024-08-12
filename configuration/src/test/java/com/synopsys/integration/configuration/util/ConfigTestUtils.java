@@ -1,6 +1,7 @@
 package com.synopsys.integration.configuration.util;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySortedMap;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -16,7 +17,7 @@ import com.synopsys.integration.configuration.source.PropertySource;
 public class ConfigTestUtils {
     @NotNull
     public static PropertyConfiguration emptyConfig() {
-        return new PropertyConfiguration(emptyList());
+        return new PropertyConfiguration(emptyList(), emptySortedMap());
     }
 
     @SafeVarargs
@@ -39,6 +40,6 @@ public class ConfigTestUtils {
 
     @NotNull
     public static PropertyConfiguration configOf(@NotNull PropertySource... propertySources) {
-        return new PropertyConfiguration(Arrays.asList(propertySources));
+        return new PropertyConfiguration(Arrays.asList(propertySources), emptySortedMap());
     }
 }
