@@ -17,17 +17,14 @@ import java.time.temporal.ChronoUnit;
 
 public class PhoneHomeSecretsFactory {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final static String STATIC_RESOURCE_HOST = "https://static-content.app.blackduck.com";
-    private final static String PRODUCTION_CREDENTIALS_PATH = "/detect/analytics/prod/creds.json";
-    private final static String TEST_CREDENTIALS_PATH = "/detect/analytics/test/creds.json";
+    private final static String CREDENTIALS_PATH = "https://static-content.app.blackduck.com/detect/analytics/creds.json";
+    private final static String TEST_CREDENTIALS_PATH = "https://static-content.saas-staging.blackduck.com/detect/analytics/creds.json";
 
     public PhoneHomeSecrets getGa4Credentials() throws IOException, InterruptedException, JsonSyntaxException {
-        String fileUrl = STATIC_RESOURCE_HOST;
-        if (isProduction())
-            fileUrl += PRODUCTION_CREDENTIALS_PATH;
-        else
-            fileUrl += TEST_CREDENTIALS_PATH;
-
+        String fileUrl = TEST_CREDENTIALS_PATH;
+        if (isProduction()) {
+            fileUrl = CREDENTIALS_PATH;
+        }
         logger.debug("Downloading phone home credentials.");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(fileUrl))
