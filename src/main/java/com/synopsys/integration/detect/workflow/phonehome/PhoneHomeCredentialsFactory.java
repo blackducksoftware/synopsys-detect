@@ -24,7 +24,7 @@ public class PhoneHomeCredentialsFactory {
         String fileUrl = CREDENTIALS_PATH;
         if (isTestEnvironment()) {
             fileUrl = TEST_CREDENTIALS_PATH;
-            logger.debug("Phone homing is operational for a test environment.");
+            logger.debug("Phone home is operational for a test environment.");
         }
         logger.debug("Downloading phone home credentials.");
         HttpRequest request = HttpRequest.newBuilder()
