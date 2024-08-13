@@ -15,15 +15,16 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-public class PhoneHomeSecretsFactory {
+public class PhoneHomeCredentialsFactory {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final static String CREDENTIALS_PATH = "https://static-content.app.blackduck.com/detect/analytics/creds.json";
     private final static String TEST_CREDENTIALS_PATH = "https://static-content.saas-staging.blackduck.com/detect/analytics/creds.json";
 
-    public PhoneHomeSecrets getGa4Credentials() throws IOException, InterruptedException, JsonSyntaxException {
-        String fileUrl = TEST_CREDENTIALS_PATH;
-        if (isProduction()) {
-            fileUrl = CREDENTIALS_PATH;
+    public PhoneHomeCredentials getGa4Credentials() throws IOException, InterruptedException, JsonSyntaxException {
+        String fileUrl = CREDENTIALS_PATH;
+        if (isTestEnvironment()) {
+            fileUrl = TEST_CREDENTIALS_PATH;
+            logger.debug("Phone homing is operational for a test environment.");
         }
         logger.debug("Downloading phone home credentials.");
         HttpRequest request = HttpRequest.newBuilder()
@@ -33,12 +34,12 @@ public class PhoneHomeSecretsFactory {
                 .build();
         HttpResponse<String> response = HttpClient.newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString());
-        return new Gson().fromJson(response.body(), PhoneHomeSecrets.class);
+        return new Gson().fromJson(response.body(), PhoneHomeCredentials.class);
     }
 
-    private boolean isProduction() {
+    private boolean isTestEnvironment() {
         String detectVersion = new DetectInfoUtility().createDetectInfo().getDetectVersion();
-        return !(StringUtils.contains(detectVersion, "SIGQA")
+        return (StringUtils.contains(detectVersion, "SIGQA")
                 || StringUtils.contains(detectVersion, "SNAPSHOT"));
     }
 }

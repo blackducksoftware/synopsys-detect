@@ -14,7 +14,7 @@ import com.synopsys.integration.detect.configuration.connection.BlackDuckConnect
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.phonehome.OnlinePhoneHomeManager;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
-import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeSecrets;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeCredentials;
 import com.synopsys.integration.log.SilentIntLogger;
 
 public class ProductBootFactory {
@@ -28,10 +28,10 @@ public class ProductBootFactory {
         this.detectConfigurationFactory = detectConfigurationFactory;
     }
 
-    public PhoneHomeManager createPhoneHomeManager(BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeSecrets phoneHomeSecrets) {
+    public PhoneHomeManager createPhoneHomeManager(BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeCredentials phoneHomeCredentials) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(
-                blackDuckServicesFactory, phoneHomeSecrets.getApiSecret(), phoneHomeSecrets.getMeasurementId(), executorService);
+                blackDuckServicesFactory, phoneHomeCredentials.getApiSecret(), phoneHomeCredentials.getMeasurementId(), executorService);
         PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(
             detectConfigurationFactory.createPhoneHomeOptions().getPassthrough(),
             detectInfo,

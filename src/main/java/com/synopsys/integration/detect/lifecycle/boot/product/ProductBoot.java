@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.google.gson.JsonSyntaxException;
-import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeSecretsFactory;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeCredentialsFactory;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,7 +117,7 @@ public class ProductBoot {
             if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getBlackDuckApiClient())) {
                 try {
                     PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory,
-                            new PhoneHomeSecretsFactory().getGa4Credentials());
+                            new PhoneHomeCredentialsFactory().getGa4Credentials());
                     bdRunData = BlackDuckRunData.online(
                         blackDuckDecision.scanMode(),
                         blackDuckServicesFactory,
