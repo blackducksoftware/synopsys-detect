@@ -199,9 +199,9 @@ public class PnpmYamlTransformer {
         
         // Remove extra information from the version string, there will often be peer
         // dependency information that we do not support and is not related to the package version.
-        if (version != null && version.contains("(")) {
-            version = version.split("\\(")[0];
-        }
+//        if (version != null && version.contains("(")) {
+//            version = version.split("\\(")[0];
+//        }
         
         // v6 needs a leading / to find packages, v9 does not.
         String packageFormat = "%s@%s";
