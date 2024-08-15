@@ -40,7 +40,6 @@ public class BlackDuckSignatureScannerOptions {
     private final Boolean treatSkippedScansAsSuccess;
     private final Boolean isStateless;
     private final RapidCompareMode bomCompareMode;
-    private final Boolean csvArchive;
 
     public BlackDuckSignatureScannerOptions(
         List<Path> signatureScannerPaths,
@@ -60,8 +59,7 @@ public class BlackDuckSignatureScannerOptions {
         Boolean treatSkippedScansAsSuccess,
         Boolean isStateless, 
         ReducedPersistence reducedPersistence, 
-        RapidCompareMode bomCompareMode,
-        Boolean csvArchive
+        RapidCompareMode bomCompareMode
     ) {
 
         this.signatureScannerPaths = signatureScannerPaths;
@@ -82,7 +80,6 @@ public class BlackDuckSignatureScannerOptions {
         this.isStateless = isStateless;
         this.reducedPersistence = reducedPersistence;
         this.bomCompareMode = bomCompareMode;
-        this.csvArchive = csvArchive;
     }
 
     public List<Path> getSignatureScannerPaths() {
@@ -155,9 +152,5 @@ public class BlackDuckSignatureScannerOptions {
 
     public RapidCompareMode getBomCompareMode() {
         return bomCompareMode;
-    }
-    
-    public Boolean getCsvArchive() {
-        return csvArchive;
     }
 }

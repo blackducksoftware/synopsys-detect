@@ -37,14 +37,6 @@ public class ShutdownDeciderTest {
         assertTrue(decision.shouldPreserveBdio());
         assertTrue(decision.shouldPreserveScan());
     }
-    
-    @Test
-    public void shouldPreserveCsvIfSpecifiedAndOffline() {
-        ProductRunData productRunData = new ProductRunData(BlackDuckRunData.offline(), null);
-        PropertyConfiguration configuration = ConfigTestUtils.configOf(Pair.of(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_CSV_ARCHIVE.getKey(), "true"));
-        CleanupDecision decision = new ShutdownDecider().decideCleanup(configuration, productRunData, null);
-        assertTrue(decision.shouldPreserveCsv());
-    }
 
     @Test
     public void shouldPreserveScanIfDryRun() {
