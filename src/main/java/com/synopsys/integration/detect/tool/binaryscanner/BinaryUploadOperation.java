@@ -91,6 +91,7 @@ public class BinaryUploadOperation {
         UploaderConfig.Builder uploaderConfigBuilder =  UploaderConfig.createConfigFromEnvironment(
                 blackDuckRunData.getBlackDuckServerConfig().getProxyInfo())
                 .setTimeoutInSeconds(blackDuckRunData.getBlackDuckServerConfig().getTimeout())
+                .setMultipartUploadTimeoutInMinutes(blackDuckRunData.getBlackDuckServerConfig().getTimeout() /  60)
                 .setAlwaysTrustServerCertificate(blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
                 .setBlackDuckUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl())
                 .setApiToken(blackDuckRunData.getBlackDuckServerConfig().getApiToken().get());
