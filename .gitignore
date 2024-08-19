@@ -37,3 +37,4 @@ application.properties
 application.yml
 !/src/test/resources/lifecycle/autonomous/sample-project/only-text/build.gradle
 !/src/test/resources/lifecycle/autonomous/sample-project/text-and-binary/build.gradle
+src/test/resources/lifecycle/autonomous/post-run-scan-settings/a9cedd7c-bed3-3fa1-b4b3-18f3c8a6869a.json
