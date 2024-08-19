@@ -31,6 +31,7 @@ public class PhoneHomeCredentialsFactory {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final static String CREDENTIALS_PATH = "https://static-content.app.blackduck.com/detect/analytics/creds.json";
     private final static String TEST_CREDENTIALS_PATH = "https://static-content.saas-staging.blackduck.com/detect/analytics/creds.json";
+    private final static int TIMEOUT_IN_SECONDS = 20;
     private IntHttpClient httpClient;
     private Gson gson;
 
@@ -39,7 +40,7 @@ public class PhoneHomeCredentialsFactory {
         httpClient = new IntHttpClient(
             new SilentIntLogger(),
             gson,
-            20,
+            TIMEOUT_IN_SECONDS,
             true,
             ProxyInfo.NO_PROXY_INFO
         );
