@@ -125,12 +125,10 @@ public class ProductBoot {
                         blackDuckConnectivityResult,
                         waitAtScanLevel
                     );
-                } catch (IOException | InterruptedException e) {
-                    logger.debug("Failed to fetch Analytics credentials. Skipping phone home.");
+                } catch (IntegrationException e) {
+                    logger.debug("Failed to fetch Analytics credentials. Skipping phone home. Exception: " + e.getMessage());
                 } catch (JsonSyntaxException e) {
-                    logger.debug("Analytics credentials file syntax is invalid. Skipping phone home.");
-                } catch (Exception e) {
-                    logger.debug("Skipping phone home due to {}.", e.getClass().getName());
+                    logger.debug("Analytics credentials file syntax is invalid. Skipping phone home. Exception: " + e.getMessage());
                 } finally {
                     if (bdRunData == null)
                         bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult, waitAtScanLevel);
