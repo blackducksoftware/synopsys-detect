@@ -3,6 +3,8 @@ package com.synopsys.integration.detect.lifecycle.boot.product;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.google.gson.JsonSyntaxException;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeCredentialsFactory;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,14 +115,26 @@ public class ProductBoot {
             boolean waitAtScanLevel = shouldWaitAtScanLevel(blackDuckConnectivityResult);
             
             if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getBlackDuckApiClient())) {
-                PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
-                bdRunData = BlackDuckRunData.online(
-                    blackDuckDecision.scanMode(),
-                    blackDuckServicesFactory,
-                    phoneHomeManager,
-                    blackDuckConnectivityResult,
-                    waitAtScanLevel
-                );
+                try {
+                    PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory,
+                            new PhoneHomeCredentialsFactory().getGa4Credentials());
+                    bdRunData = BlackDuckRunData.online(
+                        blackDuckDecision.scanMode(),
+                        blackDuckServicesFactory,
+                        phoneHomeManager,
+                        blackDuckConnectivityResult,
+                        waitAtScanLevel
+                    );
+                } catch (IOException | InterruptedException e) {
+                    logger.debug("Failed to fetch Analytics credentials. Skipping phone home.");
+                } catch (JsonSyntaxException e) {
+                    logger.debug("Analytics credentials file syntax is invalid. Skipping phone home.");
+                } catch (Exception e) {
+                    logger.debug("Skipping phone home due to {}.", e.getClass().getName());
+                } finally {
+                    if (bdRunData == null)
+                        bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult, waitAtScanLevel);
+                }
             } else {
                 logger.debug("Skipping phone home due to Black Duck global settings.");
                 bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult, waitAtScanLevel);
