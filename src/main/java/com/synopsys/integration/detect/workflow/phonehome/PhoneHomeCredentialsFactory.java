@@ -37,7 +37,7 @@ public class PhoneHomeCredentialsFactory {
         );
     }
 
-    public PhoneHomeCredentials getGa4Credentials() throws IOException, InterruptedException, JsonSyntaxException, IntegrationException {
+    public PhoneHomeCredentials getGa4Credentials()  throws JsonSyntaxException, IntegrationException {
         String fileUrl = CREDENTIALS_PATH;
         if (isTestEnvironment()) {
             fileUrl = TEST_CREDENTIALS_PATH;
