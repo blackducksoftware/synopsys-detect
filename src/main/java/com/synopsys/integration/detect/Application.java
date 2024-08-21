@@ -95,7 +95,12 @@ public class Application implements ApplicationRunner {
             staticLogger.debug("Reason: ", ex);
         }
         if (!selfUpdated) {
-            builder.run(args);
+            try {
+                builder.run(args);
+            } catch (Throwable t) {
+                // ensure the process does not "hang" in case of some non-shutdown Executor(s) and an unhandled error
+                System.exit(ExitCodeType.FAILURE_UNKNOWN_ERROR.getExitCode());
+            }
         }
     }
 
