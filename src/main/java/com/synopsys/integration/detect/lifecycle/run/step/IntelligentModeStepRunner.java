@@ -128,23 +128,7 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
-
-            if (isMultipartUploadPossible(blackDuckRunData)) {
-                Optional<String> scanId = 
-                        binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
-
-                if (scanId.isPresent()) {
-                    scanIdsToWaitFor.add(scanId.get());
-                }
-            } else {
-                Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationData = 
-                        binaryScanStepRunner.runLegacyBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
-
-                if (codeLocationData.isPresent()) {
-                    codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
-                    mustWaitAtBomSummaryLevel.set(true);
-                }
-            }
+            invokeBinaryScanningWorkflow(binaryScanStepRunner, dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets, scanIdsToWaitFor, codeLocationAccumulator, mustWaitAtBomSummaryLevel);
         });
 
         stepHelper.runToolIfIncluded(
@@ -216,7 +200,39 @@ public class IntelligentModeStepRunner {
             publishPostResults(bdioResult, projectVersion, detectToolFilter);
         });
     }
-    
+
+    private void invokeBinaryScanningWorkflow(
+        BinaryScanStepRunner binaryScanStepRunner,
+        DockerTargetData dockerTargetData,
+        NameVersion projectNameVersion,
+        BlackDuckRunData blackDuckRunData,
+        Set<String> binaryTargets,
+        Set<String> scanIdsToWaitFor,
+        CodeLocationAccumulator codeLocationAccumulator,
+        AtomicBoolean mustWaitAtBomSummaryLevel
+    )
+        throws IntegrationException, OperationException {
+
+        if (isMultipartUploadPossible(blackDuckRunData)) {
+            Optional<String> scanId =
+                binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
+
+            if (scanId.isPresent()) {
+                scanIdsToWaitFor.add(scanId.get());
+            }
+        } else {
+            Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationData =
+                binaryScanStepRunner.runLegacyBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
+
+            if (codeLocationData.isPresent()) {
+                codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
+                mustWaitAtBomSummaryLevel.set(true);
+            }
+        }
+
+
+    }
+
     private void pollForBomScanCompletion(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion,
             Set<String> scanIdsToWaitFor) throws IntegrationException, OperationException {
         HttpUrl bomToSearchFor = projectVersion.getProjectVersionView().getFirstLink(ProjectVersionView.BOM_STATUS_LINK);
