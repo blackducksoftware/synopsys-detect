@@ -44,7 +44,7 @@ public class RiskReportServiceTestIT {
         BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
         ReportService reportService = blackDuckTestConnection.createReportService();
 
-        ProjectVersionWrapper projectVersionWrapper = blackDuckTestConnection.projectVersionAssertions(PROJECT_NAME, PROJECT_VERSION_NAME).retrieveProjectVersionWrapper();
+        ProjectVersionWrapper projectVersionWrapper = blackDuckTestConnection.projectVersionAssertions(PROJECT_NAME, PROJECT_VERSION_NAME).getProjectVersionWrapper();
 
         File folder = folderForReport.toFile();
         File pdfFile = reportService.createReportPdfFile(folder, projectVersionWrapper.getProjectView(), projectVersionWrapper.getProjectVersionView());
@@ -58,7 +58,7 @@ public class RiskReportServiceTestIT {
         BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
         ReportService reportService = blackDuckTestConnection.createReportService();
 
-        ProjectVersionWrapper projectVersionWrapper = blackDuckTestConnection.projectVersionAssertions(PROJECT_NAME, PROJECT_VERSION_NAME).retrieveProjectVersionWrapper();
+        ProjectVersionWrapper projectVersionWrapper = blackDuckTestConnection.projectVersionAssertions(PROJECT_NAME, PROJECT_VERSION_NAME).getProjectVersionWrapper();
 
         File noticeReportFile = reportService.createNoticesReportFile(
             folderForReport.toFile(),
@@ -81,7 +81,7 @@ public class RiskReportServiceTestIT {
         final String localPathForPdfReport = "/Users/ekerwin/Documents/working/riskreport_pdf";
         final String localPathForNoticesReport = "/Users/ekerwin/Documents/working/notices";
 
-        ProjectVersionWrapper projectVersionWrapper = blackDuckTestConnection.projectVersionAssertions(PROJECT_NAME, PROJECT_VERSION_NAME).retrieveProjectVersionWrapper();
+        ProjectVersionWrapper projectVersionWrapper = blackDuckTestConnection.projectVersionAssertions(PROJECT_NAME, PROJECT_VERSION_NAME).getProjectVersionWrapper();
 
         File pdfReportFolder = new File(localPathForPdfReport);
         File noticesReportFolder = new File(localPathForNoticesReport);
