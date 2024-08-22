@@ -34,6 +34,7 @@ import com.synopsys.integration.util.NameVersion;
 
 public class BinaryUploadOperation {
     private static final String STATUS_KEY = "BINARY_SCAN";
+    private static final String BINARY_UPLOAD_FAILURE_MESSAGE = "Failed to upload binary scan file.";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final StatusEventPublisher statusEventPublisher;
@@ -67,7 +68,7 @@ public class BinaryUploadOperation {
             return status;
         } catch (IntegrationException | IOException e) {
             statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-            throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+            throw new DetectUserFriendlyException(BINARY_UPLOAD_FAILURE_MESSAGE, e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
         }
     }
 
@@ -75,12 +76,11 @@ public class BinaryUploadOperation {
         statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
         
         IntegrationException exception = null;
-        
         if (status.getException().isPresent()) {
             exception = status.getException().get();      
         }
         
-        throw new DetectUserFriendlyException("Failed to upload binary scan file.", exception, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+        throw new DetectUserFriendlyException(BINARY_UPLOAD_FAILURE_MESSAGE, exception, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
     }
     
     private BinaryUploader createMultipartBinaryScanUploader(File binaryUpload, NameVersion projectNameVersion,
@@ -132,7 +132,7 @@ public class BinaryUploadOperation {
                 return codeLocationCreationData;
             } catch (IntegrationException e) {
                 statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-                throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+                throw new DetectUserFriendlyException(BINARY_UPLOAD_FAILURE_MESSAGE, e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
 
@@ -152,7 +152,7 @@ public class BinaryUploadOperation {
                 return codeLocationCreationData;
             } catch (IntegrationException e) {
                 statusEventPublisher.publishStatusSummary(new Status(STATUS_KEY, StatusType.FAILURE));
-                throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+                throw new DetectUserFriendlyException(BINARY_UPLOAD_FAILURE_MESSAGE, e, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
             }
         }
 

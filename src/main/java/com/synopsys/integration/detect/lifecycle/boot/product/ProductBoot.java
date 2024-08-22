@@ -110,34 +110,9 @@ public class ProductBoot {
             
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
             setBlackDuckVersionLevel(blackDuckServicesFactory, blackDuckConnectivityResult);
-            BlackDuckRunData bdRunData = null;
-            
             boolean waitAtScanLevel = shouldWaitAtScanLevel(blackDuckConnectivityResult);
-            
-            if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getBlackDuckApiClient())) {
-                try {
-                    PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory,
-                            new PhoneHomeCredentialsFactory().getGa4Credentials());
-                    bdRunData = BlackDuckRunData.online(
-                        blackDuckDecision.scanMode(),
-                        blackDuckServicesFactory,
-                        phoneHomeManager,
-                        blackDuckConnectivityResult,
-                        waitAtScanLevel
-                    );
-                } catch (IntegrationException e) {
-                    logger.debug("Failed to fetch Analytics credentials. Skipping phone home. Exception: " + e.getMessage());
-                } catch (JsonSyntaxException e) {
-                    logger.debug("Analytics credentials file syntax is invalid. Skipping phone home. Exception: " + e.getMessage());
-                } finally {
-                    if (bdRunData == null)
-                        bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult, waitAtScanLevel);
-                }
-            } else {
-                logger.debug("Skipping phone home due to Black Duck global settings.");
-                bdRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult, waitAtScanLevel);
-            }
-            return bdRunData;
+
+            return createBlackDuckRunDataBasedOnPhoneHomeDecision(blackDuckDecision, blackDuckServicesFactory, blackDuckConnectivityResult, waitAtScanLevel);
         } else {
             if (productBootOptions.isIgnoreConnectionFailures()) {
                 logger.info(String.format("Failed to connect to Black Duck: %s", blackDuckConnectivityResult.getFailureReason()));
@@ -153,6 +128,29 @@ public class ProductBoot {
                 );
             }
         }
+    }
+
+    private BlackDuckRunData createBlackDuckRunDataBasedOnPhoneHomeDecision(BlackDuckDecision blackDuckDecision, BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckConnectivityResult blackDuckConnectivityResult, boolean waitAtScanLevel) {
+        if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getApiDiscovery(), blackDuckServicesFactory.getBlackDuckApiClient())) {
+            try {
+                PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory,
+                    new PhoneHomeCredentialsFactory().getGa4Credentials());
+                return BlackDuckRunData.online(
+                    blackDuckDecision.scanMode(),
+                    blackDuckServicesFactory,
+                    phoneHomeManager,
+                    blackDuckConnectivityResult,
+                    waitAtScanLevel
+                );
+            } catch (IntegrationException e) {
+                logger.debug("Failed to fetch Analytics credentials. Skipping phone home. Exception: " + e.getMessage());
+            } catch (JsonSyntaxException e) {
+                logger.debug("Analytics credentials file syntax is invalid. Skipping phone home. Exception: " + e.getMessage());
+            }
+        } else {
+            logger.debug("Skipping phone home due to Black Duck global settings.");
+        }
+        return BlackDuckRunData.onlineNoPhoneHome(blackDuckDecision.scanMode(), blackDuckServicesFactory, blackDuckConnectivityResult, waitAtScanLevel);
     }
 
     private void setBlackDuckVersionLevel(BlackDuckServicesFactory blackDuckServicesFactory,
