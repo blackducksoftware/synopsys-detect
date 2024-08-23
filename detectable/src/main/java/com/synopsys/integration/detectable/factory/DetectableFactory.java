@@ -6,8 +6,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import com.synopsys.integration.detectable.detectables.opam.build.OpamBuildDetectable;
-import com.synopsys.integration.detectable.detectables.opam.build.OpamBuildExtractor;
+import com.synopsys.integration.detectable.detectables.opam.buildexe.OpamBuildDetectable;
+import com.synopsys.integration.detectable.detectables.opam.buildexe.OpamBuildExtractor;
+import com.synopsys.integration.detectable.detectables.opam.buildexe.parse.OpamTreeParser;
 import com.synopsys.integration.detectable.detectables.opam.lockfile.OpamLockFileDetectable;
 import com.synopsys.integration.detectable.detectables.opam.lockfile.OpamLockFileExtractor;
 import com.synopsys.integration.detectable.detectables.opam.transform.OpamGraphTransformer;
@@ -1132,8 +1133,12 @@ public class DetectableFactory {
         return new OpamGraphTransformer(sourceDirectory,externalIdFactory,executableRunner);
     }
 
+    private OpamTreeParser opamTreeParser(File sourceDirectory) {
+        return new OpamTreeParser(sourceDirectory, externalIdFactory);
+    }
+
     private OpamBuildExtractor opamBuildExtractor(File sourceDirectory) {
-        return new OpamBuildExtractor(opamGraphTransformer(sourceDirectory));
+        return new OpamBuildExtractor(opamGraphTransformer(sourceDirectory), opamTreeParser(sourceDirectory), executableRunner, sourceDirectory);
     }
 
     private OpamLockFileExtractor opamLockFileExtractor(File sourceDirectory) {

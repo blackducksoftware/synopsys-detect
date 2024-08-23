@@ -8,6 +8,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.opam.parse.OpamFileParser;
 import com.synopsys.integration.detectable.detectables.opam.parse.OpamParsedResult;
@@ -23,12 +24,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OpamGraphTransformer {
 
-    private static final String version = "version";
-    private static final String depends = "depends";
-
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String VERSION = "version";
+    private static final String DEPENDS = "depends";
     private final File sourceDirectory;
     private final ExternalIdFactory externalIdFactory;
     private final DetectableExecutableRunner executableRunner;
@@ -39,37 +42,47 @@ public class OpamGraphTransformer {
         this.executableRunner = executableRunner;
     }
 
-    public DependencyGraph transform(ExecutableTarget opamExe, OpamParsedResult opamParsedResult) throws ExecutableRunnerException {
+    public CodeLocation transform(ExecutableTarget opamExe, OpamParsedResult opamParsedResult) throws ExecutableRunnerException {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
 
         if(opamExe != null) {
             for(String dependency: opamParsedResult.getParsedDirectDependencies()) {
-                findTransitiveDependencies(dependency, opamExe, dependencyGraph, new OpamFileParser(), null);
+                findTransitiveDependencies(dependency, opamExe, dependencyGraph, new OpamFileParser(), null); // recursively run opam show to get all dependencies
+            }
+            if(opamParsedResult.getProjectVersion().isEmpty() && !opamParsedResult.getProjectName().isEmpty()) {
+                opamParsedResult.setProjectVersion(getProjectVersion(opamExe, opamParsedResult.getProjectName())); // if version is empty, try to find version with opam exe and project name
             }
         } else {
             addDirectDependenciesToGraph(opamParsedResult, dependencyGraph); // no transitive dependencies will be detected
+            if(opamParsedResult.getProjectVersion().isEmpty()) {
+                opamParsedResult.setProjectVersion(opamParsedResult.getProjectName());
+            }
         }
 
-        return dependencyGraph;
+        ExternalId projectId = createExternalId(opamParsedResult.getProjectName(), opamParsedResult.getProjectVersion()).getExternalId();
+
+        return new CodeLocation(dependencyGraph, projectId, opamParsedResult.getSourceCode());
     }
 
     public String getProjectVersion(ExecutableTarget opamExe, String projectName) throws ExecutableRunnerException {
         List<String> arguments = new ArrayList<>();
         arguments.add("show");
         arguments.add(projectName);
-        arguments.add("--field=version");
+        arguments.add("--field=version"); // command to get just version
 
         String version = "";
 
+        //run opam show on project to get version
         ExecutableOutput executableOutput = executableRunner.execute(ExecutableUtils.createFromTarget(sourceDirectory, opamExe, arguments));
 
         if(executableOutput.getReturnCode() == 0) {
             List<String> output = executableOutput.getStandardOutputAsList();
             if(!output.isEmpty()) {
-                return output.get(0);
+                return output.get(0); // parse the single line version output
             }
         } else {
-            throw new ExecutableRunnerException(new Exception("There was an error running opam show on the "+ projectName +" package. Please run opam install . and try running the scan again."));
+            logger.warn("Did not get the version successfully, please include version in the opam file.");
+            return projectName;
         }
         return version;
     }
@@ -78,21 +91,25 @@ public class OpamGraphTransformer {
         List<String> directDependencies = opamParsedResult.getParsedDirectDependencies();
         Map<String, String> opamLockDependencies = opamParsedResult.getLockFileDependencies();
 
+        //match direct dependencies found in opam files with all the resolved packages from lock files to generate graph
         for(String dependency: opamLockDependencies.keySet()) {
             if(directDependencies.contains(dependency)) {
                 String packageVersion = opamLockDependencies.get(dependency);
-                //convert to OPAM dependency
-                //add Dependency to root
+                Dependency directDependency = createExternalId(dependency, packageVersion); //convert to OPAM dependency
+                dependencyGraph.addDirectDependency(directDependency); //add Dependency to root
             }
         }
     }
 
     private void findTransitiveDependencies(String dependency, ExecutableTarget opamExe, DependencyGraph dependencyGraph, OpamFileParser parser, Dependency parentDependency) throws ExecutableRunnerException {
-        Optional<Dependency> dependencyOptional = visitedDependenciesGraph.keySet().stream().filter(dep -> dep.getName().equals(dependency)).findFirst();
-        if(dependencyOptional.isPresent() && visitedDependenciesGraph.containsKey(dependencyOptional.get())) {
-            Dependency dependency1 = dependencyOptional.get();
-            dependencyGraph.addParentWithChildren(dependency1, visitedDependenciesGraph.get(dependency1));
-            addChildDependencies(dependencyGraph, visitedDependenciesGraph.get(dependency1));
+        Optional<Dependency> visitedDependencyOptional = visitedDependenciesGraph.keySet().stream().filter(dep -> dep.getName().equals(dependency)).findFirst(); // check if the dependency is already been visited first
+        if(visitedDependencyOptional.isPresent() && visitedDependenciesGraph.containsKey(visitedDependencyOptional.get())) {
+            Dependency visitedDependency = visitedDependencyOptional.get();
+            if(parentDependency == null) {
+                dependencyGraph.addDirectDependency(visitedDependency);
+            }
+            dependencyGraph.addParentWithChildren(visitedDependency, visitedDependenciesGraph.get(visitedDependency)); // add child of that dependency in the graph
+            addChildDependencies(dependencyGraph, visitedDependenciesGraph.get(visitedDependency)); // add child dependencies for all the transitives already visited in the graph to skip running show
         } else {
             List<String> output = runOpamShow(opamExe, dependency);
 
@@ -100,23 +117,24 @@ public class OpamGraphTransformer {
                 return;
             }
 
-            Map<String, String> parsedOutput = parser.parseData(output);
+            Map<String, String> parsedOutput = parser.parseData(output); // parse opam show output
 
-            String versionOutput = parsedOutput.get(version);
+            String version = parsedOutput.get(VERSION);
 
-            Dependency createdDependency = createExternalId(dependency, versionOutput);
+            Dependency createdDependency = createExternalId(dependency, version); // create dependency with name and version
 
-            visitedDependenciesGraph.put(createdDependency, new HashSet<>());
+            visitedDependenciesGraph.put(createdDependency, new HashSet<>()); // put dependency in graph
 
             if (parentDependency == null) {
                 dependencyGraph.addDirectDependency(createdDependency);
             } else {
                 dependencyGraph.addChildWithParent(createdDependency, parentDependency);
-                visitedDependenciesGraph.get(parentDependency).add(createdDependency);
+                visitedDependenciesGraph.get(parentDependency).add(createdDependency); // put current dependency as child of parent to memoize
             }
 
-            if (parsedOutput.containsKey(depends)) {
-                String[] dependentPackages = parsedOutput.get(depends).split(", ");
+            //parse the chain of dependencies to get transitives
+            if (parsedOutput.containsKey(DEPENDS)) {
+                String[] dependentPackages = parsedOutput.get(DEPENDS).split(", ");
                 for (String dependencyPackage : dependentPackages) {
                     findTransitiveDependencies(dependencyPackage, opamExe, dependencyGraph, parser, createdDependency);
                 }
@@ -146,6 +164,7 @@ public class OpamGraphTransformer {
 
     private void addChildDependencies(DependencyGraph dependencyGraph, Set<Dependency> setOfChildren) {
         for(Dependency childDependency: setOfChildren) {
+            // recursively add visited child dependencies in the graph
             if(visitedDependenciesGraph.containsKey(childDependency) && !visitedDependenciesGraph.get(childDependency).isEmpty()) {
                 dependencyGraph.addParentWithChildren(childDependency, visitedDependenciesGraph.get(childDependency));
                 addChildDependencies(dependencyGraph, visitedDependenciesGraph.get(childDependency));

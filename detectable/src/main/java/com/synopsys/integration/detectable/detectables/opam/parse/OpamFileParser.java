@@ -19,15 +19,17 @@ import java.util.stream.Collectors;
 
 public class OpamFileParser {
 
-    private static final String version = "version";
-    private static final String depends = "depends";
+    private static final String VERSION = "version";
+    private static final String DEPENDS = "depends";
+    private static final String NAME = "name";
 
     public OpamFileParser() {
     }
 
+    //have a separate parseData and parse method to use for parsing opam show command, as it gives output in file format
     public OpamParsedResult parse(File opamFile) {
         List<String> parsedOpamDependencies = new ArrayList<>();
-        String projectName = opamFile.getName().split("\\.")[0]; // get the file name from path "filename".opam
+        String projectName = "";
         String projectVersion = "";
 
         try (BufferedReader reader = new BufferedReader(new FileReader(opamFile))) {
@@ -37,19 +39,23 @@ public class OpamFileParser {
 
             Map<String, String> parsedOutput = parseData(fileData);
 
-            if(parsedOutput.containsKey(version)) {
-                projectVersion = parsedOutput.get(version); // get the version from parsed file
+            if(parsedOutput.containsKey(VERSION)) {
+                projectVersion = parsedOutput.get(VERSION); // get the version from parsed file
             }
 
-            if(parsedOutput.containsKey(depends)) {
-                parsedOpamDependencies = Arrays.asList(parsedOutput.get(depends).split(", ")); // get the depends section from parsed file
+            if(parsedOutput.containsKey(NAME)) {
+                projectName = parsedOutput.get(NAME); // get the project name from parsed File
+            }
+
+            if(parsedOutput.containsKey(DEPENDS)) {
+                parsedOpamDependencies = Arrays.asList(parsedOutput.get(DEPENDS).split(", ")); // get the depends section from parsed file
             }
 
         } catch (IOException e) {
             throw new RuntimeException("There was an error while parsing the opam file.", e);
         }
 
-        return new OpamParsedResult(projectName, projectVersion, parsedOpamDependencies);
+        return new OpamParsedResult(projectName, projectVersion, parsedOpamDependencies, opamFile);
     }
 
     public Map<String, String> parseData(List<String> lines) {
@@ -62,16 +68,21 @@ public class OpamFileParser {
 
         for (String line : lines) {
             line = line.trim();
+            // if the line contains os or system level dependencies skip them
             if (line.isEmpty() || line.startsWith("#") || line.contains("arch") || line.contains("win") ||
-                    line.contains("cc") || line.contains("os") || line.contains("system") || line.contains("ming")) { // if the line contains os or system level dependencies skip them
+                    line.contains("cc") || line.contains("os") || line.contains("system") || line.contains("ming")) {
                 continue;
             }
 
             if (line.startsWith("version:")) { // parse version
-                output.put(version,line.split(":")[1]);
+                output.put(VERSION, line.split(":")[1]);
             }
 
-            //parse depends section
+            if (line.startsWith("name:")) { // parse version
+                output.put(NAME, line.split(":")[1]);
+            }
+
+            // parse depends section
             // sometimes, depends contains dependencies in one line, so we have to parse them differently
             // than normal opam files. Eg: depends: ["ocaml" "dune"], otherwise all the dependencies are present in different lines
             if (line.startsWith("depends:")) {
@@ -90,8 +101,8 @@ public class OpamFileParser {
         }
 
         if(!dependsSection.isEmpty()) {
-            String dependencies = String.join(", ", dependsSection);
-            output.put(depends, dependencies);
+            String dependencies = String.join(", ", dependsSection); // put dependencies in single line to generate a map
+            output.put(DEPENDS, dependencies);
         }
 
         return output;
@@ -122,7 +133,7 @@ public class OpamFileParser {
         int openIndex = line.indexOf("{"); // used to represent version in opam files
         int closeIndex = line.indexOf("}");
 
-        if (openIndex != -1 && closeIndex == -1) { // check if the version as ended, as sometimes it may span more multiple lines
+        if (openIndex != -1 && closeIndex == -1) { // check if the version line ends, as sometimes it may span across multiple lines
             inVersionSection = true;
         }
 

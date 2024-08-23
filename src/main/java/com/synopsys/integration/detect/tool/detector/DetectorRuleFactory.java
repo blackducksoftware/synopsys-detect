@@ -35,7 +35,7 @@ import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackag
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
-import com.synopsys.integration.detectable.detectables.opam.build.OpamBuildDetectable;
+import com.synopsys.integration.detectable.detectables.opam.buildexe.OpamBuildDetectable;
 import com.synopsys.integration.detectable.detectables.opam.lockfile.OpamLockFileDetectable;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;

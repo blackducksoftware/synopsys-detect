@@ -31,10 +31,12 @@ public class OpamLockFileParser {
     private void readOpamLockFile(File opamFile) {
         try (BufferedReader reader = new BufferedReader(new FileReader(opamFile))) {
             String line;
+            // parse lock file dependencies with package name and version Eg: "package" {="version"}
             Pattern pattern = Pattern.compile("\"([^\"]+)\"\\s*\\{([^}]*)\\}");
             boolean inDependsSection = false;
 
             while ((line = reader.readLine()) != null) {
+                // lock file will have resolved dependencies so there will be no exceptions as regular opam file
                 if(line.trim().isEmpty() || line.startsWith("#")) {
                     continue;
                 }
@@ -48,10 +50,11 @@ public class OpamLockFileParser {
                 if(inDependsSection) {
                     Matcher matcher = pattern.matcher(line);
                     while(matcher.find()) {
+                        // match package and version with the line found
                         String packageName = matcher.group(1);
                         String version = matcher.group(2);
                         if(version.contains("=")) {
-                            version = version.replace("= ","");
+                            version = version.replace("= ",""); // remove = from version
                         }
                         parsedLockedOpamDependencies.put(packageName, version);
                     }

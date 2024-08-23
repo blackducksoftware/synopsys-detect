@@ -25,7 +25,7 @@ public class OpamLockFileExtractor {
         this.opamGraphTransformer = opamGraphTransformer;
     }
 
-    public Extraction extract(List<File> opamFiles, String rootProjectName, OpamLockFileParser opamLockFileParser) throws ExecutableRunnerException {
+    public Extraction extract(List<File> opamFiles, OpamLockFileParser opamLockFileParser) throws ExecutableRunnerException {
         try {
             OpamFileParser opamFileParser = new OpamFileParser();
 
@@ -42,14 +42,13 @@ public class OpamLockFileExtractor {
             List<CodeLocation> codeLocations = new ArrayList<>();
 
             for(OpamParsedResult opamParsedResult: opamParsedResults) {
-                DependencyGraph dependencyGraph = opamGraphTransformer.transform(null, opamParsedResult);
-                codeLocations.add(new CodeLocation(dependencyGraph));
+                codeLocations.add(opamGraphTransformer.transform(null, opamParsedResult)); // get the code locations for lock file
             }
 
             Builder builder = new Builder();
             builder.success(codeLocations);
 
-            Optional<OpamParsedResult> resultWithVersion = Bds.of(opamParsedResults).firstFiltered(result -> !result.getProjectName().equals(rootProjectName));
+            Optional<OpamParsedResult> resultWithVersion = Bds.of(opamParsedResults).firstFiltered(result -> !result.getProjectName().isEmpty());
 
             resultWithVersion.ifPresent(result -> builder.projectName(result.getProjectName()));
             resultWithVersion.ifPresent(result -> builder.projectVersion(result.getProjectVersion()));
