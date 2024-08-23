@@ -49,8 +49,9 @@ public class OpamGraphTransformer {
             for(String dependency: opamParsedResult.getParsedDirectDependencies()) {
                 findTransitiveDependencies(dependency, opamExe, dependencyGraph, new OpamFileParser(), null); // recursively run opam show to get all dependencies
             }
+            // if version is empty, try to find version with opam exe and project name
             if(opamParsedResult.getProjectVersion().isEmpty() && !opamParsedResult.getProjectName().isEmpty()) {
-                opamParsedResult.setProjectVersion(getProjectVersion(opamExe, opamParsedResult.getProjectName())); // if version is empty, try to find version with opam exe and project name
+                opamParsedResult.setProjectVersion(getProjectVersion(opamExe, opamParsedResult.getProjectName()));
             }
         } else {
             addDirectDependenciesToGraph(opamParsedResult, dependencyGraph); // no transitive dependencies will be detected
@@ -58,7 +59,7 @@ public class OpamGraphTransformer {
                 opamParsedResult.setProjectVersion(opamParsedResult.getProjectName());
             }
         }
-
+        // as we are parsing this for each project, we will create id for each project and add it its own code location
         ExternalId projectId = createExternalId(opamParsedResult.getProjectName(), opamParsedResult.getProjectVersion()).getExternalId();
 
         return new CodeLocation(dependencyGraph, projectId, opamParsedResult.getSourceCode());
@@ -102,14 +103,17 @@ public class OpamGraphTransformer {
     }
 
     private void findTransitiveDependencies(String dependency, ExecutableTarget opamExe, DependencyGraph dependencyGraph, OpamFileParser parser, Dependency parentDependency) throws ExecutableRunnerException {
-        Optional<Dependency> visitedDependencyOptional = visitedDependenciesGraph.keySet().stream().filter(dep -> dep.getName().equals(dependency)).findFirst(); // check if the dependency is already been visited first
+        // check if the dependency is already been visited first
+        Optional<Dependency> visitedDependencyOptional = visitedDependenciesGraph.keySet().stream().filter(dep -> dep.getName().equals(dependency)).findFirst();
+
         if(visitedDependencyOptional.isPresent() && visitedDependenciesGraph.containsKey(visitedDependencyOptional.get())) {
             Dependency visitedDependency = visitedDependencyOptional.get();
             if(parentDependency == null) {
                 dependencyGraph.addDirectDependency(visitedDependency);
             }
             dependencyGraph.addParentWithChildren(visitedDependency, visitedDependenciesGraph.get(visitedDependency)); // add child of that dependency in the graph
-            addChildDependencies(dependencyGraph, visitedDependenciesGraph.get(visitedDependency)); // add child dependencies for all the transitives already visited in the graph to skip running show
+            // add child dependencies for all the transitives already visited in the graph to skip running show
+            addChildDependencies(dependencyGraph, visitedDependenciesGraph.get(visitedDependency));
         } else {
             List<String> output = runOpamShow(opamExe, dependency);
 
