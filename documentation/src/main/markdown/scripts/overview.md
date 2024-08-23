@@ -1,4 +1,4 @@
-# Shell script configuration
+# Shell script configuration and environment variables
 
 The [company_name] [solution_name] Bash and PowerShell scripts are configured by setting the environment variables.
 
@@ -42,3 +42,5 @@ Refer to [Running the Synopsys Detect script](../runningdetect/basics/runningscr
 
 Note that proxy environment variables can be provided to the PowerShell script in both 'Bash' and 'PowerShell' formats. For example a given property name can be specified as "PROPERTY_NAME" or "property.name".
 Note that the proxy can only be provided to the PowerShell script as an environment variable.
+
+| BLACKDUCK_UPLOAD_CHUNK_SIZE | Sets the binary upload chunk size in bytes | Default 25,000,000 bytes |  |
