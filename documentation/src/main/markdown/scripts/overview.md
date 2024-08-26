@@ -39,8 +39,7 @@ Refer to [Running the Synopsys Detect script](../runningdetect/basics/runningscr
 | BLACKDUCK_PROXY_PORT (PowerShell only) | Proxy port to use to download detect | | When set, the PowerShell script will use the configured proxy information to download detect. Supports both environment variable styles (see below). |
 | BLACKDUCK_PROXY_USERNAME (PowerShell only) | Proxy username to use to download detect | | When set, the PowerShell script will use the configured proxy information to download detect. Supports both environment variable styles (see below). |
 | BLACKDUCK_PROXY_PASSWORD (PowerShell only) | Proxy password to use to download detect | | When set, the PowerShell script will use the configured proxy information to download detect. Supports both environment variable styles (see below). |
+| BLACKDUCK_UPLOAD_CHUNK_SIZE | Sets the binary upload chunk size in bytes | Default 26,214,400 bytes | Minimum 26,214,400 bytes |
 
-Note that proxy environment variables can be provided to the PowerShell script in both 'Bash' and 'PowerShell' formats. For example a given property name can be specified as "PROPERTY_NAME" or "property.name".
-Note that the proxy can only be provided to the PowerShell script as an environment variable.
+<note type=note"> Proxy environment variables can be provided to the PowerShell script in both 'Bash' and 'PowerShell' formats. For example a given property name can be specified as "PROPERTY_NAME" or "property.name". The proxy can only be provided to the PowerShell script as an environment variable.</note>
 
-| BLACKDUCK_UPLOAD_CHUNK_SIZE | Sets the binary upload chunk size in bytes | Default 26,214,400 bytes | Minimum 26,214,400 |
