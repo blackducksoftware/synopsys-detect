@@ -1854,7 +1854,7 @@ public class DetectProperties {
                     "Refer to the description of property <i>logging.level.detect</i> for additional details.")
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL)
             .setDeprecated(
-                    "This property is being removed. Use property logging.level.detect instead. There is no distinction between the two properties.",
+                    "This property has been deprecated as of version 10.0.0. Use the equivalent logging.level.detect property.",
                     DetectMajorVersion.TEN
                 )
             .build();
