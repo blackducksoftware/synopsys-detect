@@ -18,7 +18,7 @@ exe to be present on your $PATH. You can also override the location for `opam` e
 
 The OPAM Build Detector will work in the following way on your project:
 
-1. [company_name] [solution_name] OPAM Build Detector will `opam --version` to get version of opam on your machine.
+1. [company_name] [solution_name] OPAM Build Detector will run `opam --version` to get version of opam on your machine.
 2. If the version of opam is greater than or equal to 2.2.0, then [company_name] [solution_name] would run `opam tree . --with-test --with-doc --with-dev --recursive`
 to get list of resolved packages installed in the current switch for the project.
 <note type="note">User must have all the pre-requisites for the project already set up on your machine (e.g the opam switch where your packages for project are installed)
@@ -30,7 +30,7 @@ It would be helpful to run `opam install . --with-test --with-doc` commands to h
 
 ## OPAM Lockfile Detector
 
-The OPAM Lockfile Detector will run if HIGH accurate Detectors above cannot be run, and project contains `.opam.locked` and `.opam` file present in the top level directory.
+The OPAM Lockfile Detector will run if HIGH accurate Detectors above cannot be run, and project contains `.opam.locked` and `.opam` files in the top level directory.
 
 OPAM Lockfile Detector will parse both `.opam.` and `.opam.locked` to gather list of direct dependencies of the project. 
 
