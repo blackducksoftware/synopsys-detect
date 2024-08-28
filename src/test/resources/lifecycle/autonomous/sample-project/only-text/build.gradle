@@ -19,7 +19,7 @@ buildscript {
     }
 }
 
-group = 'com.synopsys.integration'
+group = 'com.blackduck.integration'
 
 version = '9.8.0-SIGQA9-SNAPSHOT'
 
@@ -46,7 +46,7 @@ def createBatteryPath() {
     return "${buildDir}/battery/"
 }
 
-def final locatorGroup = "com.synopsys.integration"
+def final locatorGroup = "com.blackduck.integration"
 def final locatorModule = "component-locator"
 final def externalRepoHost = "https://sig-repo.synopsys.com"
 final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
@@ -145,8 +145,8 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:1.2.11'
 
     implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.10'
-    implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
-    implementation 'com.synopsys:method-analyzer-core:0.2.9'
+    implementation "com.blackduck.integration:blackduck-common:${blackDuckCommonVersion}"
+    implementation 'com.blackduck:method-analyzer-core:0.2.9'
     implementation "${locatorGroup}:${locatorModule}:1.1.12"
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
@@ -270,7 +270,7 @@ task publishAirGapZip() {
         def airGapZipLocation = createAirGapZip.ext.airGapPath
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
-                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/blackduck/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
         }
     }
 }
@@ -297,7 +297,7 @@ task publishAirGapZipWithoutDocker() {
         def airGapZipLocation = createAirGapZipWithoutDocker.ext.airGapPath
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
-                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/blackduck/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
         }
     }
 }
