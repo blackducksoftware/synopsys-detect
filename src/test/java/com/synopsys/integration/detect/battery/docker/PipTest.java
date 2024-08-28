@@ -21,13 +21,13 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.exception.IntegrationException;
 
-@Tag("nirav")
+@Tag("integration")
 public class PipTest {
 
-    private static final String[] PIP_VERSIONS_TO_TEST = new String[] { "24.2" };
+    private static final String[] PIP_VERSIONS_TO_TEST = new String[] { "23.1.2", "24.2" };
     public static String ARTIFACTORY_URL = "https://artifactory.internal.synopsys.com:443";
 
-    private static final String PROJECT_NAME = "pip-docker";
+    private static final String PROJECT_NAME = "pip-docker-test-project";
 
     private static Stream<String> providePipVersionsToTest() {
         return Arrays.stream(PIP_VERSIONS_TO_TEST);
@@ -78,8 +78,9 @@ public class PipTest {
     // If ever updating the above test project, ensure to update the component list below accordingly
     private void validateComponentsForSamplePipProject(BlackDuckAssertions blackduckAssertions) throws IntegrationException {
         blackduckAssertions.hasComponents("Jinja");
-        blackduckAssertions.hasComponents("MarkupSafe");
-        blackduckAssertions.hasComponents("pycparser");
         blackduckAssertions.hasComponents("PyYAML");
+        blackduckAssertions.checkComponentVersionExists("MarkupSafe", "2.1.5");
+        blackduckAssertions.checkComponentVersionExists("Packaging", "24.1");
+        blackduckAssertions.checkComponentVersionExists("pycparser", "2.22");
     }
 }
