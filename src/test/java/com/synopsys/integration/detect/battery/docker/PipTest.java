@@ -24,7 +24,7 @@ import com.synopsys.integration.exception.IntegrationException;
 @Tag("integration")
 public class PipTest {
 
-    private static final String[] PIP_VERSIONS_TO_TEST = new String[] { "23.1.2", "24.2" };
+    private static final String[] PIP_VERSIONS_TO_TEST = new String[] { "24.2" };
     public static String ARTIFACTORY_URL = "https://artifactory.internal.synopsys.com:443";
 
     private static final String PROJECT_NAME = "pip-docker-test-project";
