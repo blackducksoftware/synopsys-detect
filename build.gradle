@@ -49,7 +49,7 @@ def createBatteryPath() {
 def final locatorGroup = "com.synopsys.integration"
 def final locatorModule = "component-locator"
 final def externalRepoHost = "https://sig-repo.synopsys.com"
-final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
+final def internalRepoHost = "https://artifactory.internal.synopsys.com"
 
 repositories {
     println "Checking if environment property SNPS_INTERNAL_ARTIFACTORY is configured: ${internalRepoHost}"
@@ -150,7 +150,7 @@ dependencies {
 
     implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.10'
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
-    implementation 'com.synopsys.integration:blackduck-upload-common:1.1.0'
+    implementation 'com.synopsys.integration:blackduck-upload-common:2.0.0'
     implementation 'com.synopsys:method-analyzer-core:0.2.9'
     implementation "${locatorGroup}:${locatorModule}:1.1.13"
 
