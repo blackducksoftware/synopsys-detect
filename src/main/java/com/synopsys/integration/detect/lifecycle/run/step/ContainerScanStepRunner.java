@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.synopsys.blackduck.upload.client.UploaderConfig;
 import com.synopsys.blackduck.upload.client.uploaders.ContainerUploader;
 import com.synopsys.blackduck.upload.client.uploaders.UploaderFactory;
@@ -23,8 +24,6 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
-
-import com.google.gson.JsonObject;
 
 public class ContainerScanStepRunner {
 
@@ -168,30 +167,31 @@ public class ContainerScanStepRunner {
     
     private void multiPartUploadImage() throws IntegrationException {
         String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString());
-        
-        // Create an instance of the ContainerUploader using the UploaderFactory::createContainerUploader passing 
-        // in the url prefix from earlier similar to how you do it with the BinaryUploader, but without the requirement 
-        // of binaryScanRequestData
-        logger.debug("Performing multipart container image upload to storage endpoint: {}", storageServiceEndpoint);
         ContainerUploader containerUploader = uploadFactory.createContainerUploader(storageServiceEndpoint);
         
+        DefaultUploadStatus status;
+        
         try {
-            DefaultUploadStatus status = containerUploader.upload(containerImage.toPath());
-            
-            if (status.isError()) {
-                handleUploadError(status);
-            }
-            
-            logger.debug("Multipart container scan image uploaded to storage service.");
+            logger.debug("Performing multipart container image upload to storage endpoint: {}", storageServiceEndpoint);
+            status = containerUploader.upload(containerImage.toPath());
         } catch (IOException | IntegrationException e) {
             logger.trace("Unable to upload multipart container image.");
-            throw new IntegrationException("Unable to upload multipart container image. " + e.getMessage());
-        }     
+            throw new IntegrationException("Unable to upload multipart container image.", e);
+        }
+            
+        if (status != null && status.isError()) {
+            handleUploadError(status);
+        }
+            
+        logger.debug("Multipart container scan image uploaded to storage service.");     
     }
 
-    private void handleUploadError(DefaultUploadStatus status) {
-        // TODO Auto-generated method stub
-        
+    private void handleUploadError(DefaultUploadStatus status) throws IntegrationException {
+        if (status.getException().isPresent()) {
+            throw status.getException().get();      
+        } else {
+            throw new IntegrationException(String.format("Unable to upload multipart container image. Status code: {}. {}", status.getStatusCode(), status.getStatusMessage()));
+        }  
     }
 
     private void uploadImageMetadataToStorageService() throws IntegrationException, IOException, OperationException {
