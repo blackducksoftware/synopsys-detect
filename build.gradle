@@ -23,7 +23,7 @@ group = 'com.blackduck.integration'
 
 version = '10.0.0-SIGQA4-SNAPSHOT'
 
-apply plugin: 'com.synopsys.integration.solution'
+apply plugin: 'com.blackduck.integration.solution'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -48,7 +48,7 @@ def createBatteryPath() {
 
 def final locatorGroup = "com.blackduck.integration"
 def final locatorModule = "component-locator"
-final def externalRepoHost = "https://sig-repo.synopsys.com"
+final def externalRepoHost = "https://repo.blackduck.com"
 final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
 
 repositories {
@@ -99,7 +99,7 @@ tasks.named("bootJar") {
 subprojects {
     group = rootProject.group
     version = rootProject.version
-    apply plugin: 'com.synopsys.integration.simple'
+    apply plugin: 'com.blackduck.integration.simple'
 }
 
 allprojects {
