@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -20,7 +21,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.exception.IntegrationException;
 
-//@Tag("integration")
+@Tag("integration")
 public class PipenvTest {
 
     private static final String[] PIPENV_VERSIONS_TO_TEST = new String[] { "2024.0.1" };
