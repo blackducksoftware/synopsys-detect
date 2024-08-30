@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -39,7 +38,7 @@ public class PipenvTest {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("pipenv-docker-test   ", "pipenv-docker-test:" + pipenvVersion)) {
 
             Map<String, String> pipenvDockerfileArgs = new HashMap<>();
-            pipenvDockerfileArgs.put("PIPENV_VERSION", pipenvVersion);
+            pipenvDockerfileArgs.put("PIPENV_VERSION_VAL", pipenvVersion);
             pipenvDockerfileArgs.put("ARTIFACTORY_URL", ARTIFACTORY_URL);
 
             BuildDockerImageProvider buildDockerImageProvider = BuildDockerImageProvider.forDockerfilResourceNamed("Pipenv.dockerfile");
@@ -70,13 +69,12 @@ public class PipenvTest {
             dockerAssertions.atLeastOneBdioFile();
 
             // Blackduck specific assertions
-            validateComponentsForSamplePipProject(blackduckAssertions);
+            validateComponentsForSamplePipenvProject(blackduckAssertions);
         }
     }
 
-    // These are all components in the requirements.txt file of the test project "<insert-test-project-link>" that should appear on the BOM on BlackDuck
-    // If ever updating the above test project, ensure to update the component list below accordingly
-    private void validateComponentsForSamplePipProject(BlackDuckAssertions blackduckAssertions) throws IntegrationException {
+    // If updating below components, make sure to refer the test project used by the corresponding dockerfile
+    private void validateComponentsForSamplePipenvProject(BlackDuckAssertions blackduckAssertions) throws IntegrationException {
         blackduckAssertions.checkComponentVersionExists("Jinja", "3.0.3");
         blackduckAssertions.checkComponentVersionExists("urllib3", "1.26.8");
         blackduckAssertions.checkComponentVersionExists("MarkupSafe", "2.0.1");
