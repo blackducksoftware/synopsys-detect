@@ -6,6 +6,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import com.synopsys.integration.detectable.detectables.opam.buildexe.OpamBuildDetectable;
+import com.synopsys.integration.detectable.detectables.opam.buildexe.OpamBuildExtractor;
+import com.synopsys.integration.detectable.detectables.opam.buildexe.parse.OpamTreeParser;
+import com.synopsys.integration.detectable.detectables.opam.lockfile.OpamLockFileDetectable;
+import com.synopsys.integration.detectable.detectables.opam.lockfile.OpamLockFileExtractor;
+import com.synopsys.integration.detectable.detectables.opam.transform.OpamGraphTransformer;
 import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
@@ -37,6 +43,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Python
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SbtResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.OpamResolver;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
@@ -702,6 +709,14 @@ public class DetectableFactory {
         return new SetupToolsBuildlessDetectable(environment, fileFinder, setupToolsExtractor(environment.getDirectory()));
     }
 
+    public OpamBuildDetectable createOpamBuildDetectable(DetectableEnvironment environment, OpamResolver opamResolver) {
+        return new OpamBuildDetectable(environment, fileFinder, opamResolver, opamBuildExtractor(environment.getDirectory()));
+    }
+
+    public OpamLockFileDetectable createOpamLockFileDetectable(DetectableEnvironment environment, OpamResolver opamResolver) {
+        return new OpamLockFileDetectable(environment, fileFinder, opamLockFileExtractor(environment.getDirectory()));
+    }
+
     // Used by three Detectables
     private PackageResolvedExtractor createPackageResolvedExtractor() {
         PackageResolvedParser parser = new PackageResolvedParser(gson);
@@ -1113,6 +1128,23 @@ public class DetectableFactory {
     private SetupToolsExtractor setupToolsExtractor(File sourceDirectory) {
         return new SetupToolsExtractor(setupToolsGraphTransformer(sourceDirectory));
     }
+
+    private OpamGraphTransformer opamGraphTransformer(File sourceDirectory) {
+        return new OpamGraphTransformer(sourceDirectory,externalIdFactory,executableRunner);
+    }
+
+    private OpamTreeParser opamTreeParser(File sourceDirectory) {
+        return new OpamTreeParser(sourceDirectory, externalIdFactory);
+    }
+
+    private OpamBuildExtractor opamBuildExtractor(File sourceDirectory) {
+        return new OpamBuildExtractor(opamGraphTransformer(sourceDirectory), opamTreeParser(sourceDirectory), executableRunner, sourceDirectory);
+    }
+
+    private OpamLockFileExtractor opamLockFileExtractor(File sourceDirectory) {
+        return new OpamLockFileExtractor(opamGraphTransformer(sourceDirectory));
+    }
+
 
     //#endregion Utility
 

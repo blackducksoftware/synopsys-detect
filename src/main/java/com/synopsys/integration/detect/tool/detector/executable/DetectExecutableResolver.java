@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
+
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -32,12 +33,13 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Python
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SbtResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.OpamResolver;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 
 public class DetectExecutableResolver implements
     JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, DartResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver,
     PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
-    DockerResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver, FlutterResolver {
+    DockerResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver, FlutterResolver, OpamResolver {
 
     private final DirectoryExecutableFinder directoryExecutableFinder;
     private final SystemPathExecutableFinder systemPathExecutableFinder;
@@ -228,6 +230,11 @@ public class DetectExecutableResolver implements
     @Nullable
     public ExecutableTarget resolveFlutter() throws DetectableException {
         return ExecutableTarget.forFile(resolveCachedSystemExecutable("flutter", detectExecutableOptions.getFlutterUserPath()));
+    }
+    @Override
+    @Nullable
+    public ExecutableTarget resolveOpam() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("opam", detectExecutableOptions.getOpamUserPath()));
     }
 }
 
