@@ -20,7 +20,7 @@ import java.util.Map;
 @Tag("integration")
 public class GradleNativeInspectorTests {
 
-    public static String ARTIFACTORY_URL = "https://artifactory.internal.synopsys.com:443";
+    public static String ARTIFACTORY_URL = System.getenv().get("SNPS_INTERNAL_ARTIFACTORY");
     public static String PROJECT_NAME = "gradle-rich-version";
     
     @Test
