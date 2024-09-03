@@ -40,6 +40,7 @@ public class ContainerScanStepRunner {
     private String codeLocationName;
     private UploaderFactory uploadFactory;
     private static final BlackDuckVersion MIN_BLACK_DUCK_VERSION = new BlackDuckVersion(2023, 10, 0);
+    private static final BlackDuckVersion MIN_MULTIPART_UPLOAD_VERSION = new BlackDuckVersion(2024, 10, 0);
     private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
     private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
     private static final String STORAGE_IMAGE_METADATA_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-message-1+json";
@@ -57,7 +58,9 @@ public class ContainerScanStepRunner {
         containerImage = operationRunner.getContainerScanImage(gson, binaryRunDirectory);
         containerImageSizeInBytes = containerImage != null && containerImage.exists() ? containerImage.length() : 0;
         
-        initContainerUploadFactory(blackDuckRunData);
+        if (canDoMultiPartUpload()) {
+            initContainerUploadFactory(blackDuckRunData);
+        }
     }
 
     public Optional<UUID> invokeContainerScanningWorkflow() {
@@ -82,15 +85,12 @@ public class ContainerScanStepRunner {
             codeLocationName = createContainerScanCodeLocationName();
             initiateScan();
             logger.info("Container scan initiated. Uploading container scan image.");
-            
-            // Start new area
-            // TODO need a version check, seem to have BlackDuck version information see line 63, so only 
-            // do new stuff on 2024.10 or later
-            //uploadImageToStorageService();
-            
-            multiPartUploadImage();
-            
-            // End new area
+
+            if (canDoMultiPartUpload()) {
+                multiPartUploadImage();
+            } else {
+                uploadImageToStorageService(); 
+            }
             
             uploadImageMetadataToStorageService();
             operationRunner.publishContainerSuccess();
@@ -228,5 +228,10 @@ public class ContainerScanStepRunner {
         
         UploaderConfig uploaderConfig = uploaderConfigBuilder.build();
         uploadFactory = new UploaderFactory(uploaderConfig, new Slf4jIntLogger(logger), new Gson());
+    }
+    
+    private boolean canDoMultiPartUpload() {
+        Optional<BlackDuckVersion> blackDuckVersion = blackDuckRunData.getBlackDuckServerVersion();
+        return blackDuckVersion.isPresent() && blackDuckVersion.get().isAtLeast(MIN_MULTIPART_UPLOAD_VERSION);
     }
 }
