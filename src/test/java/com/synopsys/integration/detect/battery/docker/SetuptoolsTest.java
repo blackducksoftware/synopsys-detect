@@ -79,8 +79,8 @@ public class SetuptoolsTest {
     // If updating below components, make sure to refer the test project used by the corresponding dockerfile
     private void validateComponentsForSampleSetuptoolsProject(BlackDuckAssertions blackduckAssertions) throws IntegrationException {
         blackduckAssertions.hasComponents("onnx");
-        blackduckAssertions.hasComponents("PyYAML");
-        blackduckAssertions.checkComponentVersionExists("rwightman/pytorch-image-models", "1.0.9");
+        blackduckAssertions.hasComponents("yarl");
+        blackduckAssertions.checkComponentVersionExists("PyTZ - Python Time Zone Library", "2024.1");
         blackduckAssertions.checkComponentVersionExists("s3fs", "2023.5.0");
         blackduckAssertions.checkComponentVersionExists("tqdm", "4.66.5");
     }
