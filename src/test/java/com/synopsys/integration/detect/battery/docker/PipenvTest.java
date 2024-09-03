@@ -25,7 +25,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public class PipenvTest {
 
     private static final String[] PIPENV_VERSIONS_TO_TEST = new String[] { "2024.0.1" };
-    public static String ARTIFACTORY_URL = "https://artifactory.internal.synopsys.com:443";
+    public static String ARTIFACTORY_URL = System.getenv().get("SNPS_INTERNAL_ARTIFACTORY");
 
     private static final String PROJECT_NAME = "pipenv-docker-test-project";
 
@@ -36,7 +36,7 @@ public class PipenvTest {
     @ParameterizedTest
     @MethodSource("providePipenvVersionsToTest")
     public void pipenvExecutableTest(String pipenvVersion) throws IntegrationException, IOException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("pipenv-docker-test   ", "pipenv-docker-test:" + pipenvVersion)) {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("pipenv-docker-test", "pipenv-docker-test:" + pipenvVersion)) {
 
             Map<String, String> pipenvDockerfileArgs = new HashMap<>();
             pipenvDockerfileArgs.put("PIPENV_VERSION_VAL", pipenvVersion);
