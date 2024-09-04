@@ -190,7 +190,7 @@ public class ContainerScanStepRunner {
     private void handleUploadError(DefaultUploadStatus status) throws IntegrationException {
         if (status == null) {
             throw new IntegrationException("Unexpected empty response attempting to upload container image.");
-        } if (status.getException().isPresent()) {
+        } else if (status.getException().isPresent()) {
             throw status.getException().get();      
         } else {
             throw new IntegrationException(String.format("Unable to upload multipart container image. Status code: {}. {}", status.getStatusCode(), status.getStatusMessage()));
