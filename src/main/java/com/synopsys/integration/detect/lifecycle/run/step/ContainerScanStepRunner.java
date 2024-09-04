@@ -179,7 +179,7 @@ public class ContainerScanStepRunner {
             throw new IntegrationException("Unable to upload multipart container image.", e);
         }
             
-        if (status != null && status.isError()) {
+        if (status == null || status.isError()) {
             handleUploadError(status);
         }
             
@@ -188,7 +188,9 @@ public class ContainerScanStepRunner {
     }
 
     private void handleUploadError(DefaultUploadStatus status) throws IntegrationException {
-        if (status.getException().isPresent()) {
+        if (status == null) {
+            throw new IntegrationException("Unexpected empty response attempting to upload container image.");
+        } if (status.getException().isPresent()) {
             throw status.getException().get();      
         } else {
             throw new IntegrationException(String.format("Unable to upload multipart container image. Status code: {}. {}", status.getStatusCode(), status.getStatusMessage()));
