@@ -165,7 +165,7 @@ public class ContainerScanStepRunner {
         }
     }
     
-    private void multiPartUploadImage() throws IntegrationException {
+    private DefaultUploadStatus multiPartUploadImage() throws IntegrationException {
         String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString());
         ContainerUploader containerUploader = uploadFactory.createContainerUploader(storageServiceEndpoint);
         
@@ -183,7 +183,8 @@ public class ContainerScanStepRunner {
             handleUploadError(status);
         }
             
-        logger.debug("Multipart container scan image uploaded to storage service.");     
+        logger.debug("Multipart container scan image uploaded to storage service.");
+        return status;
     }
 
     private void handleUploadError(DefaultUploadStatus status) throws IntegrationException {
