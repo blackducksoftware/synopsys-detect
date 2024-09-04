@@ -27,7 +27,7 @@ dependencyManagement {
     }
 }
 
-final def internalRepoHost = "https://artifactory.internal.synopsys.com"
+final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
 
 repositories {
     maven { url "${internalRepoHost}/artifactory/jcenter" }
