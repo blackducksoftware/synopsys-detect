@@ -23,6 +23,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.GoReso
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.LernaResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.MakeResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
@@ -36,7 +37,7 @@ import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 
 public class DetectExecutableResolver implements
     JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, DartResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver,
-    PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
+    PipenvResolver, MavenResolver, NpmResolver, BazelResolver, MakeResolver,
     DockerResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver, SbtResolver, FlutterResolver {
 
     private final DirectoryExecutableFinder directoryExecutableFinder;
@@ -146,6 +147,11 @@ public class DetectExecutableResolver implements
     @Override
     public ExecutableTarget resolveMaven(DetectableEnvironment environment) throws DetectableException {
         return ExecutableTarget.forFile(resolveLocalNonCachedExecutable("mvnw", "mvn", environment, detectExecutableOptions.getMavenUserPath()));
+    }
+
+    @Override
+    public ExecutableTarget resolveMake() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("make", detectExecutableOptions.getMakeUserPath()));
     }
 
     @Override
