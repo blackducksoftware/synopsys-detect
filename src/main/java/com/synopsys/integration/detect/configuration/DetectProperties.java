@@ -46,6 +46,7 @@ import com.synopsys.integration.configuration.property.types.string.StringProper
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
+import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVersion;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTargetType;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.RapidCompareMode;
@@ -1754,36 +1755,26 @@ public class DetectProperties {
             .setExample("workspaces/workspace-a,workspaces/workspace-b")
             .build();
 
-    public static final EnumProperty<LogLevel> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION =
-        EnumProperty.newBuilder("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class)
-            .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
-            .setHelp(
-                "The logging level of Detect.",
-                "To keep the log file size manageable, use INFO level logging for normal use and DEBUG or TRACE for troubleshooting.<p/>" +
-                    "Detect logging uses Spring Boot logging, which uses Logback (https://logback.qos.ch). " +
-                    "The format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
-                    "The property name shown above specifies package <i>com.synopsys.integration</i> because that is the name of Detect's top-level package. " +
-                    "Changing the logging level for that package changes the logging level for all Detect code, as well as Synopsys integration libraries that Detect uses. " +
-                    "Non-Synopsys libraries that Detect uses are not affected. " +
-                    "However, you can use this property to set the logging level for some of the non-Synopsys libraries that Detect uses by using the appropriate package name. " +
-                    "For example, <i>logging.level.org.apache.http=TRACE</i> sets the logging level to TRACE for the Apache HTTP client library. " +
-                    "<p/>" +
-                    "For log message format, a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i> is used. "
-                    +
-                    "You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. " +
-                    "<p/>" +
-                    "Refer to the Spring Boot logging and Logback Project documentation for more details."
-            )
-            .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL)
-            .build();
-
     public static final EnumProperty<LogLevel> LOGGING_LEVEL_DETECT =
         EnumProperty.newBuilder("logging.level.detect", LogLevel.INFO, LogLevel.class)
-            .setInfo("Logging Level Shorthand", DetectPropertyFromVersion.VERSION_5_5_0)
+            .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_5_0)
             .setHelp(
-                "Shorthand for the logging level of detect. Equivalent to setting <i>logging.level.com.synopsys.integration</i>.",
-                "Refer to the description of property <i>logging.level.com.synopsys.integration</i> for additional details."
-            )
+                    "The logging level of Detect.",
+                    "To keep the log file size manageable, use INFO level logging for normal use and DEBUG or TRACE for troubleshooting.<p/>" +
+                        "Detect logging uses Spring Boot logging, which uses Logback (https://logback.qos.ch). " +
+                        "The format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
+                        "The property name shown above specifies package <i>com.synopsys.integration</i> because that is the name of Detect's top-level package. " +
+                        "Changing the logging level for that package changes the logging level for all Detect code, as well as Synopsys integration libraries that Detect uses. " +
+                        "Non-Synopsys libraries that Detect uses are not affected. " +
+                        "However, you can use this property to set the logging level for some of the non-Synopsys libraries that Detect uses by using the appropriate package name. " +
+                        "For example, <i>logging.level.org.apache.http=TRACE</i> sets the logging level to TRACE for the Apache HTTP client library. " +
+                        "<p/>" +
+                        "For log message format, a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i> is used. "
+                        +
+                        "You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. " +
+                        "<p/>" +
+                        "Refer to the Spring Boot logging and Logback Project documentation for more details."
+                )
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL)
             .build();
 
@@ -1865,6 +1856,19 @@ public class DetectProperties {
     //#endregion Active Properties
 
     //#region Deprecated Properties
+    
+    @Deprecated
+    public static final EnumProperty<LogLevel> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION = 
+            EnumProperty.newBuilder("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class)
+            .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
+            .setHelp("Equivalent to setting <i>logging.level.detect</i>.",
+                    "Refer to the description of property <i>logging.level.detect</i> for additional details.")
+            .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL)
+            .setDeprecated(
+                    "This property has been deprecated. Use the equivalent logging.level.detect property.",
+                    DetectMajorVersion.TEN
+                )
+            .build();
 
     // Can't take in the DetectProperty<?> due to an illegal forward reference :(
     private static String createTypeFilterHelpText(String exclusionTypePlural) {

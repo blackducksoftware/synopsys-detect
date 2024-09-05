@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
+import com.synopsys.integration.detectable.detectable.util.SemVerComparator;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
@@ -76,10 +78,30 @@ public class PackageJsonExtractor {
             .map(entry -> entryToDependency(entry.getKey(), entry.getValue()))
             .collect(Collectors.toList());
     }
-
+    
     private Dependency entryToDependency(String key, String value) {
-        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, key, value);
+        String version = extractLowestVersion(value);
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, key, version);
         return new Dependency(externalId);
     }
 
+    private String extractLowestVersion(String value) {
+        SemVerComparator semVerComparator = new SemVerComparator();
+        
+        // Split the value into parts by spaces, "||", or "-".
+        String[] parts = value.split("\\s+|\\|\\||-");
+        String lowestVersion = Arrays.stream(parts)
+             // Replace "x" or "*" with "0"
+            .map(part -> part.replaceAll("x|\\*", "0"))
+            // Remove npm version selection characters that the KB won't match on
+            .map(part -> part.replaceAll("[>=<~^]", ""))
+            // Filter out parts that don't match the version pattern
+            .filter(part -> part.matches("\\d+\\.\\d+\\.\\d+|\\d+\\.\\d+|\\d+"))
+            // Use compareSemVerVersions method to find smallest version in each value
+            .min(semVerComparator)
+            // If no part matches the version pattern, return the original value.
+            .orElse(value);
+
+        return lowestVersion;
+    }
 }

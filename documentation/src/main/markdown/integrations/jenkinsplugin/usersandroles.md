@@ -7,7 +7,7 @@ First you must configure a user/API token in [blackduck_product_name] so that th
 4. Click **Create New Token**. The Create New Token dialog box appears
 5. Type your name in the **Name** field.
 6. Optional: in the **Description** field, you can type a description or definition.
-7. Select **Read Access** and/or **Write Access**.
+7. Select **Read and Write Access**.
 8. Click **Create**. The API token displays in a pop-up window. For security reasons, this is the only time your user API token displays. Please save this token. If the token is lost, you must regenerate it.
 9. Optional: To modify an access token that you created, click the arrow in the same row as the access
 token name to open a drop-down menu and select **Edit**, **Delete**, or **Regenerate**.

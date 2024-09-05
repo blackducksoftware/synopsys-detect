@@ -2,8 +2,6 @@ package com.synopsys.integration.detectable.detectables.npm.packagejson.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashMap;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +17,6 @@ import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.npm.NpmDependencyType;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
@@ -75,6 +72,41 @@ class PackageJsonExtractorTest {
         graphAssert.hasRootDependency(testDevDep1);
         graphAssert.hasRootDependency(testDevDep2);
         graphAssert.hasRootSize(4);
+    }
+    
+    @Test
+    void extractWithNonNumericalCharacters() {
+        CombinedPackageJson packageJson = new CombinedPackageJson();
+        packageJson.getDependencies().put("foo", "1.0.0 - 2.9999.9999");
+        packageJson.getDependencies().put("bar", ">=1.0.2 <2.1.2");
+        packageJson.getDependencies().put("qux", "<1.0.0 || >=2.3.1 <2.4.5 || >=2.5.2 <3.0.0");
+        packageJson.getDependencies().put("asd", "http://asdf.com/asdf.tar.gz");
+        packageJson.getDependencies().put("til", "~1.2");
+        packageJson.getDependencies().put("thr", "3.3.x");
+        packageJson.getDependencies().put("myproject", "1.0.0-SNAPSHOT");
+        
+        Extraction extraction = createExtractor(NpmDependencyType.PEER).extract(packageJson);
+        CodeLocation codeLocation = extraction.getCodeLocations().get(0);
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
+        
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        ExternalId testCharDep1 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "foo", "1.0.0");
+        ExternalId testCharDep2 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "bar", "1.0.2");
+        ExternalId testCharDep3 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "qux", "1.0.0");
+        ExternalId testCharDep4 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "asd", "http://asdf.com/asdf.tar.gz");
+        ExternalId testCharDep5 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "til", "1.2");
+        ExternalId testCharDep6 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "thr", "3.3.0");
+        ExternalId testCharDep7 = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "myproject", "1.0.0");        
+        
+        GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, dependencyGraph);
+        graphAssert.hasRootDependency(testCharDep1);
+        graphAssert.hasRootDependency(testCharDep2);
+        graphAssert.hasRootDependency(testCharDep3);
+        graphAssert.hasRootDependency(testCharDep4);
+        graphAssert.hasRootDependency(testCharDep5);
+        graphAssert.hasRootDependency(testCharDep6);
+        graphAssert.hasRootDependency(testCharDep7);
+        graphAssert.hasRootSize(7);
     }
 
     private CombinedPackageJson createPackageJson() {

@@ -21,7 +21,7 @@ NPM dependency types can be filtered with the [detect.npm.dependency.types.exclu
 
 The NPM shrinkwrap detector uses the [npm-shrinkwrap.json](https://docs.npmjs.com/cli/v7/configuring-npm/npm-shrinkwrap-json) file.
 
-It is the same as a package-lock.json but is a publishable lockfile. Though both have high accuracy, [company_name] [solution_name] prefers shrinkwrap over package lock.
+Is the same as a package-lock.json but is a publishable lockfile. Though both have high accuracy, [company_name] [solution_name] prioritizes shrinkwrap over package lock.
 
 ## NPM package lock
 
@@ -35,7 +35,7 @@ NPM automatically generates the package-lock.json after an *npm install* which s
 
 The NPM CLI detector requires a package.json and an npm executable.
 
-It executes *npm ls -json*, and verifies that it succeeded by ensuring that no messages were written to
+Executes *npm ls -json*, and verifies success by ensuring that no messages were written to
 stderr, and that the exit code was 0. If both conditions are met, it parses the output for dependencies.
 
 If *npm ls -json* does write messages to stderr (for example, lint messages) that you would like
@@ -48,10 +48,9 @@ This detector is only invoked if the more accurateNPM detectors (above) cannot b
 
 This is the least accurate of the NPM detectors.
 
-It requires and parses a package.json file.
+It requires, and parses, a package.json file.
 
 The NPM Package Json Parse detectable is unable to discover transitive dependencies. 
 
-When generating BDIO, the NPM Package Json Parse detectable uses version strings exactly as it finds them in package.json.
-Components whose versions are specified in the package.json using wildcards ("^", etc.) will not match components in the KB
-due to the wildcards.
+When generating BDIO files, the NPM Package Json Parse detectable uses version strings exactly as it finds them in package.json in addition to
+matching components whose versions are specified in the package.json using wildcards ("^", etc.)
