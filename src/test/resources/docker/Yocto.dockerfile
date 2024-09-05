@@ -23,7 +23,7 @@ ENV SRC_DIR=/opt/project/src
 
 # Set up the test project
 RUN mkdir -p ${SRC_DIR}
-RUN git clone -b yocto-4.3.1 --depth 1 https://github.com/yoctoproject/poky.git ${SRC_DIR}
+RUN git clone -b yocto-5.0.2 --depth 1 https://github.com/yoctoproject/poky.git ${SRC_DIR}
 
 RUN cd ${SRC_DIR} \
   && sed -i 's/INHERIT += "sanity"/#INHERIT += "sanity"/g' meta/conf/sanity.conf

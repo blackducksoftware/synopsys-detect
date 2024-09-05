@@ -20,6 +20,7 @@ public class OnlinePhoneHomeManager extends PhoneHomeManager {
     public PhoneHomeResponse phoneHome(Map<String, String> metadata, String... artifactModules) {
         Map<String, String> metaDataToSend = new HashMap<>();
         metaDataToSend.putAll(metadata);
+        metaDataToSend.putAll(detectorTypesMetadata);
         metaDataToSend.putAll(additionalMetaData);
         return blackDuckPhoneHomeHelper.handlePhoneHome("synopsys-detect", detectInfo.getDetectVersion(), metaDataToSend, artifactModules);
     }

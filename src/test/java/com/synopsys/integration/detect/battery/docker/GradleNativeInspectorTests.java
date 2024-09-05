@@ -20,7 +20,7 @@ import java.util.Map;
 @Tag("integration")
 public class GradleNativeInspectorTests {
 
-    public static String ARTIFACTORY_URL = "https://artifactory.internal.synopsys.com:443";
+    public static String ARTIFACTORY_URL = System.getenv().get("SNPS_INTERNAL_ARTIFACTORY");
     public static String PROJECT_NAME = "gradle-rich-version";
     
     @Test
@@ -60,9 +60,9 @@ public class GradleNativeInspectorTests {
     }
 
     @Test
-    void gradleInspector_8_8() throws IOException, InterruptedException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-gradle-native-inspector", "gradle-simple-8-8:1.0.0")) {
-            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle_8_8.dockerfile"));
+    void gradleInspector_8_9() throws IOException, InterruptedException {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-gradle-native-inspector", "gradle-simple-8-9:1.0.0")) {
+            test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("SimpleGradle_8_9.dockerfile"));
 
             DetectCommandBuilder commandBuilder = DetectCommandBuilder.withOfflineDefaults().defaultDirectories(test);
             commandBuilder.property(DetectProperties.DETECT_TOOLS, "DETECTOR");

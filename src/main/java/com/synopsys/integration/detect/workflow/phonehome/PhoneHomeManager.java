@@ -29,6 +29,8 @@ public abstract class PhoneHomeManager {
     protected PhoneHomeResponse currentPhoneHomeResponse;
     protected Map<String, String> additionalMetaData;
     protected List<Operation> operations = new LinkedList<>();
+    protected Map<String, String> detectorTypesMetadata = new HashMap<>();
+    protected Map<String, String> operationsMetadata = new HashMap<>();
 
     protected PhoneHomeManager(Map<String, String> additionalMetaData, DetectInfo detectInfo, EventSystem eventSystem) {
         this.detectInfo = detectInfo;
@@ -44,10 +46,18 @@ public abstract class PhoneHomeManager {
         if (operations.isEmpty()) {
             return;
         }
-        Map<String, String> operationMetadata = new HashMap<>();
-        operations.forEach(operation -> addOperationToMap(operation, operationMetadata));
-        logger.trace("Phoning home {}/{} operations.", operationMetadata.size(), operations.size());
-        safelyPhoneHome(operationMetadata);
+        operations.forEach(operation -> addOperationToMap(operation, operationsMetadata));
+        logger.trace("Phoning home {}/{} operations.", operationsMetadata.size(), operations.size());
+        safelyPhoneHome(operationsMetadata);
+    }
+
+    public void savePhoneHomeDetectorTimes(Map<DetectorType, Long> aggregateTimes) {
+        if (aggregateTimes != null) {
+            String applicableBomToolsString = aggregateTimes.keySet().stream()
+                .map(it -> String.format("%s:%s", it.toString(), aggregateTimes.get(it)))
+                .collect(Collectors.joining(","));
+            detectorTypesMetadata.put("detectorTimes", applicableBomToolsString);
+        }
     }
 
     public abstract PhoneHomeResponse phoneHome(Map<String, String> metadata, String... artifactModules);
