@@ -84,6 +84,11 @@ public class PnpmYamlTransformer {
         }
         for (Map.Entry<String, PnpmPackageInfo> packageEntry : packageMap.entrySet()) {
             String packageId = packageEntry.getKey();
+            
+            if (packageId.contains("vanilla")) {
+                String breakHere = "";
+            }
+            
             Optional<Dependency> pnpmPackage = buildDependencyFromPackageEntry(packageEntry);
             if (!pnpmPackage.isPresent()) {
                 logger.debug(String.format("Could not add package %s to the graph.", packageId));
@@ -235,8 +240,25 @@ public class PnpmYamlTransformer {
     private Optional<Dependency> buildDependencyFromPackageEntry(Map.Entry<String, PnpmPackageInfo> packageEntry) {
         PnpmPackageInfo packageInfo = packageEntry.getValue();
         if (packageInfo.name != null) {
+            // We have the name, this is typical of v6 lock files.
             return Optional.of(Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, packageInfo.name, packageInfo.version));
         }
+        
+        Optional<NameVersion> optNameVersion = parseNameVersionFromId(packageEntry.getKey());
+        if (packageInfo.version != null && optNameVersion.isPresent()) {
+            // We have the version but not the name. This is common in v9 lock files where custom
+            // content has been added to the project via files or URLs. We'll need to parse the 
+            // name only from the key and then use this specific resolved version the lock file is giving us.
+            // The version in the key will be the name of the URL or file and is useless for our purposes
+            // here.
+            NameVersion nameVersion = optNameVersion.get();
+            
+            return Optional.of(Dependency.FACTORY.createNameVersionDependency(Forge.NPMJS, nameVersion.getName(), packageInfo.version));
+        }
+        
+        // We have neither the name or the version specifically stated in the packageInfo structure.
+        // Attempt to parse them out of the key. This is common in v9 lock files for content in 
+        // public repositories.
         return buildDependencyFromPackageId(packageEntry.getKey());
     }
 
