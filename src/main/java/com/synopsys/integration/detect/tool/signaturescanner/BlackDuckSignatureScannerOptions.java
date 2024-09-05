@@ -39,6 +39,7 @@ public class BlackDuckSignatureScannerOptions {
     private final Boolean followSymLinks;
     private final Boolean treatSkippedScansAsSuccess;
     private final Boolean isStateless;
+    private final Boolean integratedMatchingEnabled;
     private final RapidCompareMode bomCompareMode;
 
     public BlackDuckSignatureScannerOptions(
@@ -58,7 +59,8 @@ public class BlackDuckSignatureScannerOptions {
         Boolean followSymLinks,
         Boolean treatSkippedScansAsSuccess,
         Boolean isStateless, 
-        ReducedPersistence reducedPersistence, 
+        ReducedPersistence reducedPersistence,
+        Boolean integratedMatchingEnabled,
         RapidCompareMode bomCompareMode
     ) {
 
@@ -79,6 +81,7 @@ public class BlackDuckSignatureScannerOptions {
         this.treatSkippedScansAsSuccess = treatSkippedScansAsSuccess;
         this.isStateless = isStateless;
         this.reducedPersistence = reducedPersistence;
+        this.integratedMatchingEnabled = integratedMatchingEnabled;
         this.bomCompareMode = bomCompareMode;
     }
 
@@ -150,6 +153,10 @@ public class BlackDuckSignatureScannerOptions {
         return Optional.ofNullable(reducedPersistence);
     }
 
+    public Boolean isIntegratedMatchingEnabled() {
+        return integratedMatchingEnabled;
+    }
+    
     public RapidCompareMode getBomCompareMode() {
         return bomCompareMode;
     }
