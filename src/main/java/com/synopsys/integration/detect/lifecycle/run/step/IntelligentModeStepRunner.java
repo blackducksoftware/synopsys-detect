@@ -139,7 +139,7 @@ public class IntelligentModeStepRunner {
 
         stepHelper.runToolIfIncluded(DetectTool.BINARY_SCAN, "Binary Scanner", () -> {
             BinaryScanStepRunner binaryScanStepRunner = new BinaryScanStepRunner(operationRunner);
-            invokeBinaryScanningWorkflow(binaryScanStepRunner, dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets, scanIdsToWaitFor, codeLocationAccumulator, mustWaitAtBomSummaryLevel);
+            invokeBinaryScanningWorkflow(DetectTool.BINARY_SCAN, binaryScanStepRunner, dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets, scanIdsToWaitFor, codeLocationAccumulator, mustWaitAtBomSummaryLevel);
         });
 
         stepHelper.runToolIfIncluded(
@@ -218,6 +218,7 @@ public class IntelligentModeStepRunner {
     }
 
     private void invokeBinaryScanningWorkflow(
+        DetectTool detectTool,
         BinaryScanStepRunner binaryScanStepRunner,
         DockerTargetData dockerTargetData,
         NameVersion projectNameVersion,
@@ -241,7 +242,7 @@ public class IntelligentModeStepRunner {
                 binaryScanStepRunner.runLegacyBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
 
             if (codeLocationData.isPresent()) {
-                codeLocationAccumulator.addWaitableCodeLocations(codeLocationData.get());
+                codeLocationAccumulator.addWaitableCodeLocations(detectTool, codeLocationData.get());
                 mustWaitAtBomSummaryLevel.set(true);
             }
         }
