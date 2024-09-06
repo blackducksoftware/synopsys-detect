@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -23,33 +22,32 @@ import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.exception.IntegrationException;
 
 @Tag("integration")
-public class GoModTest {
+public class PipenvTest {
 
-    private static final String[] GO_VERSIONS_TO_TEST = new String[] {
-        "1.16.15",
-        "1.22.5"
-    };
+    private static final String[] PIPENV_VERSIONS_TO_TEST = new String[] { "2024.0.1" };
+    public static String ARTIFACTORY_URL = System.getenv().get("SNPS_INTERNAL_ARTIFACTORY");
 
-    private static final String PROJECT_NAME = "go-mod-docker";
+    private static final String PROJECT_NAME = "pipenv-docker-test-project";
 
-    private static Stream<String> provideGoVersionsToTest() {
-        return Arrays.stream(GO_VERSIONS_TO_TEST);
+    private static Stream<String> providePipenvVersionsToTest() {
+        return Arrays.stream(PIPENV_VERSIONS_TO_TEST);
     }
 
     @ParameterizedTest
-    @MethodSource("provideGoVersionsToTest")
-    public void goModSpecificExecutableTest(String goVersion) throws IntegrationException, IOException {
-        try (DetectDockerTestRunner test = new DetectDockerTestRunner("go-mod-executables-test", "go-mod-executables-test:" + goVersion)) {
+    @MethodSource("providePipenvVersionsToTest")
+    public void pipenvExecutableTest(String pipenvVersion) throws IntegrationException, IOException {
+        try (DetectDockerTestRunner test = new DetectDockerTestRunner("pipenv-docker-test", "pipenv-docker-test:" + pipenvVersion)) {
 
-            Map<String, String> goModDockerfileArgs = new HashMap<>();
-            goModDockerfileArgs.put("goVersion", goVersion);
+            Map<String, String> pipenvDockerfileArgs = new HashMap<>();
+            pipenvDockerfileArgs.put("PIPENV_VERSION_VAL", pipenvVersion);
+            pipenvDockerfileArgs.put("ARTIFACTORY_URL", ARTIFACTORY_URL);
 
-            BuildDockerImageProvider buildDockerImageProvider = BuildDockerImageProvider.forDockerfilResourceNamed("GoModExecutables.dockerfile");
-            buildDockerImageProvider.setBuildArgs(goModDockerfileArgs);
+            BuildDockerImageProvider buildDockerImageProvider = BuildDockerImageProvider.forDockerfilResourceNamed("Pipenv.dockerfile");
+            buildDockerImageProvider.setBuildArgs(pipenvDockerfileArgs);
             test.withImageProvider(buildDockerImageProvider);
 
             // Set up blackduck connection and environment
-            String projectVersion = PROJECT_NAME + "-" + goVersion;
+            String projectVersion = PROJECT_NAME + "-" + pipenvVersion;
             BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
             BlackDuckAssertions blackduckAssertions = blackDuckTestConnection.projectVersionAssertions(PROJECT_NAME, projectVersion);
             blackduckAssertions.emptyOnBlackDuck();
@@ -62,26 +60,26 @@ public class GoModTest {
 
             // Set up Detect properties
             commandBuilder.property(DetectProperties.DETECT_TOOLS, DetectTool.DETECTOR.toString());
-            commandBuilder.property(DetectProperties.DETECT_GO_PATH, "/usr/local/go" + goVersion + "/go/bin/go");
+            commandBuilder.property(DetectProperties.DETECT_PIPENV_PATH, "/usr/local/bin/pipenv");
+            commandBuilder.property(DetectProperties.DETECT_PYTHON_PATH, "/usr/bin/python3");
+            commandBuilder.property(DetectProperties.DETECT_ACCURACY_REQUIRED, "NONE");
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             // Detect specific assertions
-            dockerAssertions.successfulDetectorType(DetectorType.GO_MOD.toString());
+            dockerAssertions.successfulDetectorType(DetectorType.PIP.toString());
             dockerAssertions.atLeastOneBdioFile();
 
             // Blackduck specific assertions
-            validateComponentsForSampleGoProject(blackduckAssertions);
+            validateComponentsForSamplePipenvProject(blackduckAssertions);
         }
     }
 
-    // These are all components in the go.mod file of the test project "https://github.com/Masterminds/squirrel.git (v1.5.4)" that should appear on the BOM on BlackDuck
-    // If ever updating the above test project, ensure to update the component list below accordingly
-    private void validateComponentsForSampleGoProject(BlackDuckAssertions blackduckAssertions) throws IntegrationException {
-        blackduckAssertions.hasComponents("Go Testify");
-        blackduckAssertions.hasComponents("go-spew");
-        blackduckAssertions.hasComponents("lann-builder");
-        blackduckAssertions.hasComponents("lann-ps");
-        blackduckAssertions.hasComponents("pmezard-go-difflib");
+    // If updating below components, make sure to refer the test project used by the corresponding dockerfile
+    private void validateComponentsForSamplePipenvProject(BlackDuckAssertions blackduckAssertions) throws IntegrationException {
+        blackduckAssertions.checkComponentVersionExists("Jinja", "3.0.3");
+        blackduckAssertions.checkComponentVersionExists("urllib3", "1.26.8");
+        blackduckAssertions.checkComponentVersionExists("MarkupSafe", "2.0.1");
+        blackduckAssertions.checkComponentVersionExists("idna", "3.3");
+        blackduckAssertions.checkComponentVersionExists("Werkzeug", "2.0.2");
     }
-
 }

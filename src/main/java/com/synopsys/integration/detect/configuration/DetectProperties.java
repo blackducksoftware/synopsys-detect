@@ -1804,6 +1804,17 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO check/adjust from version once we know
+    public static final BooleanProperty DETECT_INTEGRATED_MATCHING_ENABLED =
+        BooleanProperty.newBuilder("detect.blackduck.integrated.matching.enabled", false)
+            .setInfo("Integrated Matching Enabled", DetectPropertyFromVersion.VERSION_9_10_0)
+            .setHelp(
+                "When enabled, Synopsys Detect activates the Black Duck integrated matching capability to enhance match accuracy.",
+                "The integrated matching capability must be present and enabled in your Black Duck server before you enable the integrated matching feature in Synopsys Detect."
+            )
+            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
+            .build();
+
     public static final EnumProperty<RapidCompareMode> DETECT_BLACKDUCK_RAPID_COMPARE_MODE =
         EnumProperty.newBuilder("detect.blackduck.rapid.compare.mode", RapidCompareMode.ALL, RapidCompareMode.class)
             .setInfo("Rapid Compare Mode", DetectPropertyFromVersion.VERSION_7_12_0)
@@ -1854,7 +1865,7 @@ public class DetectProperties {
                     "Refer to the description of property <i>logging.level.detect</i> for additional details.")
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL)
             .setDeprecated(
-                    "This property is being removed. Use property logging.level.detect instead. There is no distinction between the two properties.",
+                    "This property has been deprecated. Use the equivalent logging.level.detect property.",
                     DetectMajorVersion.TEN
                 )
             .build();

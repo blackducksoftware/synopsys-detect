@@ -7,14 +7,14 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
-import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.detector.base.DetectorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +38,7 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
 import com.synopsys.integration.detect.tool.detector.factory.DetectorFactory;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
+import com.synopsys.integration.detect.workflow.blackduck.integratedmatching.ScanCountsPayloadCreator;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.OperationSystem;
 import com.synopsys.integration.util.NameVersion;
@@ -88,9 +89,11 @@ public class DetectRun {
             operationRunner.publishProjectNameVersionChosen(nameVersion);
             BdioResult bdio;
             Boolean forceBdio = bootSingletons.getDetectConfigurationFactory().forceBdio();
+            logger.debug("Integrated Matching Correlation ID: {}", bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId());
+            String correlationId = operationRunner.getDetectConfigurationFactory().isIntegratedMatchingEnabled()? bootSingletons.getDetectRunId().getIntegratedMatchingCorrelationId():null;
             if (!universalToolsResult.getDetectCodeLocations().isEmpty()
                     || (productRunData.shouldUseBlackDuckProduct() && !productRunData.getBlackDuckRunData().isOnline() && forceBdio && !universalToolsResult.didAnyFail() && exitCodeManager.getWinningExitCode().isSuccess())) {
-                bdio = stepRunner.generateBdio(universalToolsResult, nameVersion);
+                bdio = stepRunner.generateBdio(correlationId, universalToolsResult, nameVersion);
             } else {
                 bdio = BdioResult.none();
             }
@@ -110,19 +113,35 @@ public class DetectRun {
 
             if (productRunData.shouldUseBlackDuckProduct()) {
                 BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
+
+                blackDuckRunData.getPhoneHomeManager().ifPresent(
+                    phoneHomeManager -> phoneHomeApplicableDetectorTypes(
+                        phoneHomeManager, universalToolsResult.getApplicableDetectorTypes()
+                    )
+                );
+
                 if (blackDuckRunData.isNonPersistent() && blackDuckRunData.isOnline()) {
-                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), bootSingletons.getDirectoryManager());
-
+                    RapidModeStepRunner rapidModeSteps = new RapidModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson(), correlationId, bootSingletons.getDirectoryManager());
+                    
                     Optional<String> scaaasFilePath = bootSingletons.getDetectConfigurationFactory().getScaaasFilePath();
-
                     rapidModeSteps.runOnline(blackDuckRunData, nameVersion, bdio, universalToolsResult.getDockerTargetData(), scaaasFilePath);
                 } else if (blackDuckRunData.isNonPersistent()) {
                     logger.info("Rapid Scan is offline, nothing to do.");
                 } else if (blackDuckRunData.isOnline()) {
-                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
+                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(
+                            operationRunner, 
+                            stepHelper, 
+                            bootSingletons.getGson(), 
+                            new ScanCountsPayloadCreator(),
+                            correlationId);
                     intelligentModeSteps.runOnline(blackDuckRunData, bdio, nameVersion, productRunData.getDetectToolFilter(), universalToolsResult.getDockerTargetData(), binaryTargets);
                 } else {
-                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(operationRunner, stepHelper, bootSingletons.getGson());
+                    IntelligentModeStepRunner intelligentModeSteps = new IntelligentModeStepRunner(
+                            operationRunner, 
+                            stepHelper, 
+                            bootSingletons.getGson(), 
+                            new ScanCountsPayloadCreator(), 
+                            correlationId);
                     intelligentModeSteps.runOffline(nameVersion, universalToolsResult.getDockerTargetData(), bdio);
                 }
             }
@@ -140,6 +159,11 @@ public class DetectRun {
         } finally {
             operationSystem.ifPresent(OperationSystem::publishOperations);
         }
+    }
+
+    public void phoneHomeApplicableDetectorTypes(PhoneHomeManager phoneHomeManager, Set<DetectorType> applicableDetectorTypes) {
+        Map<DetectorType, Long> detectorTimes = applicableDetectorTypes.stream().collect(Collectors.toMap(detectorType -> detectorType, detectorType -> 0L));
+        phoneHomeManager.savePhoneHomeDetectorTimes(detectorTimes);
     }
 
     private Set<String> getDecidedTools(BootSingletons bootSingletons, Map<DetectTool, Set<String>> scanTypeEvidenceMap) {
