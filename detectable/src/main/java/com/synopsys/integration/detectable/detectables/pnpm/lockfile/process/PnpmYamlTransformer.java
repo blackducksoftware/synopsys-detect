@@ -85,10 +85,6 @@ public class PnpmYamlTransformer {
         for (Map.Entry<String, PnpmPackageInfo> packageEntry : packageMap.entrySet()) {
             String packageId = packageEntry.getKey();
             
-            if (packageId.contains("vanilla")) {
-                String breakHere = "";
-            }
-            
             Optional<Dependency> pnpmPackage = buildDependencyFromPackageEntry(packageEntry);
             if (!pnpmPackage.isPresent()) {
                 logger.debug(String.format("Could not add package %s to the graph.", packageId));
