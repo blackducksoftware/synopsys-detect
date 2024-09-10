@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '10.0.0-SIGQA4-idetect-4475-root-project-name-change'
+version = '10.0.0-SIGQA5-idetect-4475-root-project-name-change'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
