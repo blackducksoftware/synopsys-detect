@@ -261,7 +261,7 @@ task signJar() {
 }
 
 task createAirGapZip(type: JavaExec) {
-    dependsOn signJar
+    //dependsOn signJar
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
