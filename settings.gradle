@@ -1,4 +1,4 @@
-rootProject.name = 'synopsys-detect'
+rootProject.name = 'detect'
 
 include 'detectable'
 include 'detector'
