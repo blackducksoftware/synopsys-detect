@@ -172,6 +172,9 @@ dependencies {
         implementation('org.apache.cxf:cxf-rt-security:4.0.4') {
             because 'previous version has a vulnerability'
         }
+        implementation('com.fasterxml.jackson.core:jackson-core:2.15.0') {
+            because 'previous versions have a vulnerability <insert CVE>'
+        }
         implementation('org.apache.cxf:cxf-rt-rs-client:4.0.4') {
             because 'previous version has a vulnerability'
         }

@@ -110,6 +110,11 @@ allprojects {
     dependencies {
         implementation "com.google.guava:guava:32.1.2-jre"
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0'
+        constraints {
+            implementation('com.fasterxml.jackson.core:jackson-core:2.15.0') {
+                because 'previous versions have a vulnerability <insert CVE>'
+            }
+        }
 
         implementation 'org.freemarker:freemarker:2.3.31'
         implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.14'
