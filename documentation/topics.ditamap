@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
 <map id="detect-user-guide" xml:lang="en-US">
-	<title>Synopsys Detect User Guide</title>
+	<title>Black Duck Detect User Guide</title>
 	<topicmeta>
-		<shortdesc>Synopsys Detect</shortdesc>
+		<shortdesc>Black Duck Detect</shortdesc>
 		<prodinfo>
-			<prodname>Synopsys Detect</prodname>
+			<prodname>Black Duck Detect</prodname>
 			<vrmlist>
-				<vrm version="9.10.0"/>
+				<vrm version="10.0.0"/>
 			</vrmlist>
 		</prodinfo>
 		<!-- zoomin bundle name -->

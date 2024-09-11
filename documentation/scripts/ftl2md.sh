@@ -6,7 +6,7 @@ if [ -d "$templatesDir" ]
 then
   echo "$templatesDir is a directory."
 else
-  echo "$templatesDir is not a directory. You need to run from the root of the Detect project (e.g. src/synopsys-detect)"
+  echo "$templatesDir is not a directory. You need to run from the root of the Detect project (e.g. src/blackduck-detect)"
   exit 1
 fi
 if [ -d "$markdownDir" ]
