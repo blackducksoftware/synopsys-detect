@@ -33,16 +33,6 @@ repositories {
     maven { url "${internalRepoHost}/artifactory/jcenter" }
 }
 
-allprojects {
-    dependencies {
-        constraints {
-            implementation('com.fasterxml.jackson.core:jackson-core:2.15.0') {
-                because 'previous versions have a vulnerability <insert CVE>'
-            }
-        }
-    }
-}
-
 dependencies {
     implementation "org.freemarker:freemarker:2.3.31"
     implementation("com.synopsys.integration:common-gradle-plugin:${managedCgpVersion}") {
