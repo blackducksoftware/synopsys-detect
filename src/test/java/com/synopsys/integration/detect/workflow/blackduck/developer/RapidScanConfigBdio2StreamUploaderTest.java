@@ -14,7 +14,7 @@ import com.synopsys.integration.blackduck.bdio2.model.BdioFileContent;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
-import com.synopsys.integration.detect.Application;
+import com.blackduck.integration.detect.Application;
 import com.synopsys.integration.detect.workflow.blackduck.developer.blackduck.RapidScanConfigBdio2StreamUploader;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;

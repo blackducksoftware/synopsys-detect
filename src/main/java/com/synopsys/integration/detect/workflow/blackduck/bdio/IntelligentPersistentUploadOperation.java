@@ -4,7 +4,7 @@ import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.intelligentpersistence.IntelligentPersistenceService;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
-import com.synopsys.integration.detect.Application;
+import com.blackduck.integration.detect.Application;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class IntelligentPersistentUploadOperation extends BdioUploadOperation {

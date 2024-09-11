@@ -17,7 +17,7 @@ import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.property.types.path.TildeInPathResolver;
 import com.synopsys.integration.configuration.source.PropertySource;
-import com.synopsys.integration.detect.Application;
+import com.blackduck.integration.detect.Application;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;

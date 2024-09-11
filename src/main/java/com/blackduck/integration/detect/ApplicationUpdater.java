@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect;
+package com.blackduck.integration.detect;
 
 import java.io.File;
 import java.io.FileOutputStream;
