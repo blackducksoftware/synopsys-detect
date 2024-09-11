@@ -1,20 +1,20 @@
 # Component Location Analysis LCA
 
-Enable this feature by adding --detect.component.location.analysis.enabled=TRUE to a run of [company_name] [solution_name].
+Enable this feature by adding --detect.component.location.analysis.enabled=TRUE to a run of [detect_product_long].
 
-When enabled, [company_name] [solution_name] creates an output file in the scan subdirectory of the output directory with the name 'components-with-locations.json' which identifies the declaration locations (filepath, line number and column position) of the version of open source components found in the scanned project.
+When enabled, [detect_product_short] creates an output file in the scan subdirectory of the output directory with the name 'components-with-locations.json' which identifies the declaration locations (filepath, line number and column position) of the version of open source components found in the scanned project.
 
-<note type="note">By default, when [company_name] [solution_name] shuts down, it performs cleanup operations which include deleting the component location analysis file. You can disable clean up by setting `--detect.cleanup=false`.</note>
+<note type="note">By default, when [detect_product_short] shuts down, it performs cleanup operations which include deleting the component location analysis file. You can disable clean up by setting `--detect.cleanup=false`.</note>
 
 ## Requirements and Limitations
 
-* Component Location Analysis is available under [company_name] [solution_name] “Limited Customer Availability (LCA)”.
+* Component Location Analysis is available under [detect_product_short] “Limited Customer Availability (LCA)”.
 * A limited subset of Detector Types support this feature.
     * Supported Detectors: NPM, MAVEN, GRADLE, NUGET, GO_MOD, GO_DEP, GO_GRADLE, GO_VENDOR, GO_VNDR, PIP, POETRY, CONDA, and YARN.
 * Supported scan modes: Offline and Rapid/Stateless.
     * Offline mode
-      * When enabled for a scan without [blackduck_product_name] connectivity, all detected open source components will be included in the location analysis results.
-    * Rapid/Stateless Scan mode requires [blackduck_product_name] policies.
+      * When enabled for a scan without [bd_product_short] connectivity, all detected open source components will be included in the location analysis results.
+    * Rapid/Stateless Scan mode requires [bd_product_short] policies.
         * Only components that violate policies will be included in the analysis. If no policies are violated or there are no defined policies, then component location analysis is skipped.
 
 ## Offline Mode Results
@@ -65,4 +65,4 @@ Each component is uniquely identified by a name and version. Components may opti
 
 ## Rapid or Stateless Scan Mode Results
 
-When [company_name] [solution_name] runs a Rapid or Stateless scan, the output file includes policy violation vulnerabilities, component violating policies and remediation guidance (short term, long term and transitive upgrade guidance) when available. This information is contained within the metadata field of each component.
+When [detect_product_short] runs a Rapid or Stateless scan, the output file includes policy violation vulnerabilities, component violating policies and remediation guidance (short term, long term and transitive upgrade guidance) when available. This information is contained within the metadata field of each component.
