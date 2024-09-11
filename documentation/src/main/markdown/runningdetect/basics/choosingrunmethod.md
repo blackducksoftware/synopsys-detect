@@ -21,7 +21,7 @@ this default behavior.
 | 8 | PowerShell | detect8.ps1 |
 
 Instuctions and examples in this documentation that reference the scripts assume you are running
-[detect_product_short] 9, so refer to detect9.sh or detect9.ps1. To run [detect_product_shorte] 8 instead,
+[detect_product_short] 9, so refer to detect9.sh or detect9.ps1. To run [detect_product_short] 8 instead,
 substitute detect8.sh for detect9.sh, or detect8.ps1 for detect9.ps1.
 
 The primary reason to run the [detect_product_short] .jar directly is that this method provides

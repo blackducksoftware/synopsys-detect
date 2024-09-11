@@ -15,7 +15,7 @@ curl -O https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/inte
 java -jar synopsys-detect-5.6.2.jar
 ````
 
-You can use the [detect_product_shorte] Bash script ([bash_script_name]) to download the [detect_product_short] .jar file:
+You can use the [detect_product_short] Bash script ([bash_script_name]) to download the [detect_product_short] .jar file:
 
 ````
 export DETECT_DOWNLOAD_ONLY=1
