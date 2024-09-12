@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '10.0.0-SIGQA11-shanty.IDETECT-4459-upgrade-jackson-core'
+version = '10.0.0-SIGQA12-shanty.IDETECT-4459-upgrade-jackson-core-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
