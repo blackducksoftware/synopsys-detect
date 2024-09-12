@@ -1,7 +1,5 @@
 package com.synopsys.integration.detect.workflow.componentlocationanalysis;
 
-import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
@@ -12,10 +10,10 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.synopsys.integration.componentlocator.ComponentLocator;
-import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
-import com.synopsys.integration.componentlocator.beans.Component;
-import com.synopsys.integration.componentlocator.beans.Input;
+import com.blackduck.integration.componentlocator.ComponentLocator;
+import static com.blackduck.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
+import com.blackduck.integration.componentlocator.beans.Component;
+import com.blackduck.integration.componentlocator.beans.Input;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -56,6 +54,7 @@ public class GenerateComponentLocationAnalysisOperation {
      * @param componentsSet
      * @param scanOutputFolder Detect's output subdirectory where this file will be saved
      * @param projectSrcDir source directory of project being scanned
+     * @return ComponentLocatorResult
      * @throws com.synopsys.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException
      * @throws DetectUserFriendlyException
      */
