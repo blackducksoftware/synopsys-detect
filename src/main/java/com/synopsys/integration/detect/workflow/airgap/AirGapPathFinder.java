@@ -49,7 +49,7 @@ public class AirGapPathFinder {
 
     // This will attempt to guess the relative path to the detect jar, ie what is passed to java -jar {here}
     private String guessJarInvocation() {
-        final String containsDetectJarRegex = ".*synopsys-detect-[^\\\\/]+\\.jar.*";
+        final String containsDetectJarRegex = ".*detect-[^\\\\/]+\\.jar.*";
         String javaClasspath = System.getProperty("java.class.path");
         if (javaClasspath != null && javaClasspath.matches(containsDetectJarRegex)) {
             for (String classpathChunk : javaClasspath.split(System.getProperty("path.separator"))) {
