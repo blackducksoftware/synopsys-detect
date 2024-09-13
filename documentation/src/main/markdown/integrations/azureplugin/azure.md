@@ -27,7 +27,7 @@ It is recommended to invoke [detect_product_short] from the CI (build) pipeline.
 Using [detect_product_short] to analyze your code in Azure involves the following basic steps:
 
 1. Make sure you satisfy system and other requirements.
-1. Download and configure the [cdetect_product_shorte] extension in Azure.
+1. Download and configure the [detect_product_short] extension in Azure.
 1. Configure build agent and pipeline.
 1. Configure [bd_product_short] connection.
 1. Configure [detect_product_short] arguments.

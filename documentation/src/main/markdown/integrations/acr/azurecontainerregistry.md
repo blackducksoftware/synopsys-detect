@@ -65,7 +65,7 @@ Start in **Pipelines > Library** inside Azure DevOps.
 
 2\. Create a variable group for your [bd_product_short] instance:
 
-- blackduck.url (value is the url of your [bd_product_shorte] instance).
+- blackduck.url (value is the url of your [bd_product_short] instance).
 
 - blackduck.api.token (value is your generated API token, secret).
 
@@ -95,7 +95,7 @@ Start in **Pipelines > Library** inside Azure DevOps.
 #Log in to ACR using the configured Variable Group
 docker login <registryname>.azurecr.io -u $(acr.username) -p $(acr.password)
 #Call Detect, passing the Docker Image location
-bash <(curl -s -L https:‎ //detect.synopsys.com/detect9.sh) \
+bash <(curl -s -L https:‎ //detect.blackduck.com/detect9.sh) \
 --blackduck.url=$(blackduck.url) \
 --blackduck.api.token=$(blackduck.api.token) \ 
 --detect.docker.image=<registryname>.azurecr.io/<containername>:$(Build.BuildId) \ 
