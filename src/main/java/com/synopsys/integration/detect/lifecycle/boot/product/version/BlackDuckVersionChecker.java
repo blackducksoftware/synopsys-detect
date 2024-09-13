@@ -32,7 +32,7 @@ public class BlackDuckVersionChecker {
         for (BlackDuckMinimumVersionCheck blackDuckMinimumVersionCheck : blackDuckMinimumVersionChecks.get()) {
             if (blackDuckMinimumVersionCheck.getTest().test(blackDuckVersionSensitiveOptions) && !actualBlackDuckVersion.get()
                 .isAtLeast(blackDuckMinimumVersionCheck.getMinimumBlackDuckVersion())) {
-                String msg = String.format("%s requires at least Black Duck version %s; the connected server is only %s",
+                String msg = String.format("%s requires at least Black Duck version %s but the connected server is %s.",
                     blackDuckMinimumVersionCheck.getDescription(), blackDuckMinimumVersionCheck.getMinimumBlackDuckVersion(),
                     actualBlackDuckVersion.get()
                 );
