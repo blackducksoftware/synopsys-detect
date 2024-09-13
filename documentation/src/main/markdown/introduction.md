@@ -1,4 +1,4 @@
-# Introduction to [company_name] [solution_name]
+# Introduction to [detect_product_long]
 
 [detect_product_long] is an intelligent scan client that analyzes code in your projects and associated folders to perform compositional analysis. [detect_product_short] can be configured to send scan results to [bd_product_long], which generates risk analysis when identifying open-source components, licenses, and security vulnerabilities.
 
@@ -40,7 +40,7 @@
 
 <note type="note">Some scan types require specific feature licenses to execute. Contact your [var_company_name] representative for further information.</note>
 
-## How [company_name] [solution_name] functions.   
+## How [detect_product_short] functions.   
 
 When looking at vulnerabilities in open source and third-party software, [detect_product_short] performs the following basic steps:
 

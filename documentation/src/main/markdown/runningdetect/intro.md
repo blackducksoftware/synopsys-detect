@@ -1,4 +1,4 @@
-# Planning and Running [detect_product_short]
+# Planning and Running [detect_product_long]
 
 This section describes the basics of planning your installation, configuring your workflow, and running [detect_product_long].
 
