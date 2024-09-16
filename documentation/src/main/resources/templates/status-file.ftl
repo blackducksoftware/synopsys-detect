@@ -94,7 +94,7 @@ For those detectors that support it (currently, only CLANG), a list of file path
 ## Code Locations
 ````
 {
-"codeLocationName": The name of a code location produced by this run of  [detect_product_short].
+"codeLocationName": The name of a code location produced by this run of [detect_product_short].
 "scanType": The type of scan that was performed, DETECTOR, BINARY_SCAN, SIGNATURE_SCAN, or CONTAINER_SCAN.
 "scanId": The UUID for the scan.
 }
