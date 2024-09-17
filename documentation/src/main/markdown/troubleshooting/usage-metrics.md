@@ -1,13 +1,13 @@
 # Usage metrics collection
 
-[company_name] [solution_name] uses Google Analytics to collect anonymized usage metrics through a mechanism called *phone home*.
-[company_name] uses this data to help set engineering priorities.
+[detect_product_long] uses Google Analytics to collect anonymized usage metrics through a mechanism called *phone home*.
+[var_company_name] uses this data to help set engineering priorities.
 
 In a network where access to outside servers is limited, this mechanism may fail, and those failures
-may be visible in the log. This is a harmless failure; [company_name] [solution_name] will continue to function
+may be visible in the log. This is a harmless failure; [detect_product_short] will continue to function
 normally.
 
-To disable this mechanism for [company_name] [solution_name] runs executed from one environment,
-set the environment variable *SYNOPSYS_SKIP_PHONE_HOME* to *true*.
-To disable this mechanism for all [company_name] [solution_name] runs against a specific [blackduck_product_name]
-server, refer to the [blackduck_product_name] documentation for information on disabling analytics.
+To disable this mechanism for [detect_product_short] runs executed from one environment,
+set the environment variable *BLACKDUCK_SKIP_PHONE_HOME* to *true*.
+To disable this mechanism for all [detect_product_short] runs against a specific [bd_product_short]
+server, refer to the [bd_product_short] documentation for information on disabling analytics.

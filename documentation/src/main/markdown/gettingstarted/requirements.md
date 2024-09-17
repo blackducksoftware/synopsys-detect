@@ -2,7 +2,7 @@
 
 ## General requirements
 
-* Typically, access to the internet is required to download and run [company_name] [solution_name] and components from GitHub and other locations. For running without internet access,
+* Typically, access to the internet is required to download and run [detect_product_short] and components from GitHub and other locations. For running without internet access,
 refer to [Air Gap Mode](../downloadingandinstalling/airgap.md).
 * Minimum 8GB RAM.
 * Java: OpenJDK 64-bit version 8, 11, 13, 14, 15, 16, or 17. If using Java 11: 11.0.5 or higher is required.
@@ -11,14 +11,14 @@ refer to [Air Gap Mode](../downloadingandinstalling/airgap.md).
 * If using [powershell_script_name]: PowerShell versions 4.0 or higher.
 * The tools required to build your project source code.
 
-## [blackduck_product_name] integration requirements
+## [bd_product_long] integration requirements
 
-* Licensed installation of the current version of [blackduck_product_name] with access credentials.
-Visit the [Black Duck release page](https://github.com/blackducksoftware/hub/releases) to determine the current version of [blackduck_product_name].
-* For information about additional compatible versions of [blackduck_product_name], consult the
-<xref href="Black-Duck-Release-Compatibility.dita" scope="peer"> [blackduck_product_name] Release Compatibility.<data name="facets" value="pubname=blackduck-compatibility"/>
-* The [blackduck_product_name] notifications module must be enabled.
-* A [blackduck_product_name] user with the [required roles](usersandroles.md).
+* Licensed installation of the current version of [bd_product_short] with access credentials.
+Visit the [Black Duck release page](https://github.com/blackducksoftware/hub/releases) to determine the current version of [bd_product_short].
+* For information about additional compatible versions of [bd_product_short], consult the
+<xref href="Black-Duck-Release-Compatibility.dita" scope="peer"> [bd_product_short] Release Compatibility.<data name="facets" value="pubname=blackduck-compatibility"/>
+* The [bd_product_short] notifications module must be enabled.
+* A [bd_product_short] user with the [required roles](usersandroles.md).
 * On Alpine Linux you will also need to override the Java installation used by the [blackduck_signature_scanner_name] as
 described [here](../troubleshooting/solutions.md#black-duck-signature-scanner-fails-on-alpine-linux).
 
@@ -40,5 +40,5 @@ The risk report requires that the following fonts are installed:
 
 ## Supported [company_name] [solution_name] versions and Service duration
 
-* For information about support and service durations for [company_name] [solution_name] versions, consult the
+* For information about support and service durations for [detect_product_short] versions, consult the
 <xref href="Support-and-Service-Schedule.dita" scope="peer"> Support and Service Schedule.<data name="facets" value="pubname=blackduck-compatibility"/>

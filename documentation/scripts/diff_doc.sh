@@ -1,5 +1,7 @@
 #!/bin/bash
-#
+
+# TODO - update URLs for Black Duck
+
 # Generate diffs showing what changed in doc between two Detect versions
 #
 if [ "$#" -ne 2 ]; then
