@@ -12,6 +12,7 @@
 * Support for Maven has been extended to 3.9.9.
 * Support for pnpm has been extended to 9.0.
 * Support for BitBake has been extended to 2.8.0. Yocto support has been extended to 5.0.3.
+* Support for Nuget has been extended to 6.11.
 
 ### Changed features
 
