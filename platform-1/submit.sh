@@ -13,6 +13,10 @@ docker tag ${TARGET_REPO}/${TARGET_IMAGE}:${TARGET_IMAGE_TAG} ${INTERNAL_DOCKER_
 docker push ${INTERNAL_DOCKER_REGISTRY}/${TARGET_REPO}/${TARGET_IMAGE}:${TARGET_IMAGE_TAG}
 docker tag ${INTERNAL_DOCKER_REGISTRY}/${TARGET_REPO}/${TARGET_IMAGE}:${TARGET_IMAGE_TAG} ${TARGET_REPO}/${TARGET_IMAGE}:${TARGET_IMAGE_TAG}
 
+# clean up docker images after pushing
+docker rmi ${INTERNAL_DOCKER_REGISTRY}/${TARGET_REPO}/${TARGET_IMAGE}:${TARGET_IMAGE_TAG}
+docker rmi ${TARGET_REPO}/${TARGET_IMAGE}:${TARGET_IMAGE_TAG}
+
 # upload to artifactory
 zip_sha=$(echo $(sha256sum detect-${RELEASE_VERSION}-air-gap.zip) | cut -d' ' -f 1)
 
