@@ -24,5 +24,5 @@ To accomplish the first two:
 1. Run [detect_product_short] as shown in this example:
 
 ````
-java -jar {airgap dir}/blackduck-detect-{version}.jar --detect.blackduck.signature.scanner.local.path={scan.cli-yourBlackDuckVersion dir}
+java -jar {airgap dir}/detect-{version}.jar --detect.blackduck.signature.scanner.local.path={scan.cli-yourBlackDuckVersion dir}
 ````
