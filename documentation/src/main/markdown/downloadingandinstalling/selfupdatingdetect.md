@@ -37,7 +37,7 @@ For further [bd_product_short] configuration information, refer to the documenta
 Downgrade to prior version blocked:  
 
 ``` 
-2023-05-05 12:20:57 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎ .com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.   
+2023-05-05 12:20:57 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎.com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.   
 
 2023-05-05 12:21:03 EDT WARN  \[main] - Detect-Self-Updater:  The Detect version 8.7.0 mapped at Black Duck server is not eligible for downgrade as it lacks the self-update feature. The self-update feature is available from 8.9.0 onwards.
 ```
@@ -45,7 +45,7 @@ Downgrade to prior version blocked:
 Update to version allowed (8.9.0+):   
 
 ```
-2023-05-05 12:33:52 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎ .com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.  
+2023-05-05 12:33:52 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎.com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.  
 
 2023-05-05 12:33:53 EDT WARN  \[main] - Detect-Self-Updater:  The Detect version 8.9.2 mapped at Black Duck server is eligible for downgrade from the current version of 8.10.0. The self-update feature is available from 8.9.0 onwards.
 
@@ -55,7 +55,7 @@ Update to version allowed (8.9.0+):
 Current version of [detect_product_short] matches the mapped version or there is no mapped version in [bd_product_short]:   
 
 ```
-2023-05-05 12:33:52 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎ .com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.  
+2023-05-05 12:33:52 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎.com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.  
 
 2023-05-05 12:33:53 EDT INFO  \[main] - Detect-Self-Updater:  Present Detect installation is up to date - skipping download.
 ```
