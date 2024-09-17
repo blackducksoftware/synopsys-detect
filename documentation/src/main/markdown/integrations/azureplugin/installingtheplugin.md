@@ -1,10 +1,10 @@
 # Installing the Azure DevOps plugin
-From the Azure Pipelines page, add the [company_name] [solution_name] plug-in for ADO.
+From the Azure Pipelines page, add the [detect_product_long] plug-in for ADO.
 
-**Install the [company_name] [solution_name] extension for Azure DevOps**
+**Install the [detect_product_short] extension for Azure DevOps**
 
 1. Click the plus sign (**+**) under Tasks for Agent Job
-1. Search for the [company_name] [solution_name] plugin and click **Add** to add it to your pipeline.
+1. Search for the [detect_product_short] plugin and click **Add** to add it to your pipeline.
 
 
    <figure>

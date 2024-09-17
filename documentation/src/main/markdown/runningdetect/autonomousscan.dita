@@ -3,8 +3,7 @@
   PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
 <topic id="autonomous-scanning">
     <title>Autonomous Scanning</title>
-    <shortdesc>Autonomous Scanning allows for <keyword keyref="company_name"/>
-        <keyword keyref="solution_name"/> to run scans with a minimum amount of user provided
+    <shortdesc>Autonomous Scanning allows for <keyword keyref="detect_product_long"/> to run scans with a minimum amount of user provided
         parameters. Autonomous scans store configuration and related parameters in a .json file that
         will be reused when working with the same code. This reduces the user input required
         to effectively analyze source code and binary files, along with simplifying repeat analysis
@@ -15,39 +14,33 @@
         <p>The scan settings file name is a hash generated from the scanned folder(s). An initial
             scan with user provided parameters will populate this file and subsequent scans of the
             same folder structure will update it. After the initial scan, unless you wish to
-            override previous scan parameters, <keyword keyref="company_name"/>
-            <keyword keyref="solution_name"/> can be run in Autonomous mode by simply providing the
+            override previous scan parameters, <keyword keyref="detect_product_short"/> can be run in Autonomous mode by simply providing the
                 <codeph>--detect.autonomous.scan.enabled=true</codeph> parameter.</p>
-        <p><keyword keyref="company_name"/>
-            <keyword keyref="solution_name"/> properties, environment variables, or Spring
+        <p><keyword keyref="detect_product_short"/> properties, environment variables, or Spring
             configurations enabled at run time will take precedence over values stored in the scan
             settings file.</p>
         <p>
             <note type="warning">The scan settings json file is generated and updated automatically and should not be manually modified.</note>
         </p>
-        <p><keyword keyref="company_name"/>
-            <keyword keyref="solution_name"/> will determine appropriate tools and/or Detectors to run
+        <p><keyword keyref="detect_product_short"/> will determine appropriate tools and/or Detectors to run
             given the content of the target path or run folder if no path is provided. The
             determining factor for scan types include the file type, and whether the pre-requisites
             of the appropriate Detector types are met. If prerequisites for package manager or
             binary scanning are not met, but files are available in the target folder, a signature
-            scan will be run. <keyword keyref="company_name"/>
-            <keyword keyref="solution_name"/> will follow the <xref href="detectorcascade.md" format="markdown" >Detector Cascade</xref> processing order.</p>
+            scan will be run. <keyword keyref="detect_product_short"/> will follow the <xref href="detectorcascade.md" format="markdown" >Detector Cascade</xref> processing order.</p>
     </body>
     <topic id="initial-scan-workflow">
         <title>Initial Scan Workflow</title>
         <body>
             <ol>
                 <li>
-                    <p>Run <keyword keyref="company_name"/>
-                        <keyword keyref="solution_name"/> in Autonomous mode by providing the
+                    <p>Run <keyword keyref="detect_product_short"/> in Autonomous mode by providing the
                             <codeph>--detect.autonomous.scan.enabled=true</codeph> parameter and any
                         other supported parameters that you require. (See limitations section for
                         parameters that are not supported in Autonomous mode.)</p>
                 </li>
                 <li>
-                    <p><keyword keyref="company_name"/>
-                        <keyword keyref="solution_name"/> will determine which tools and detectors are
+                    <p><keyword keyref="detect_product_short"/> will determine which tools and detectors are
                         appropriate and available to run, including Package Manager, Signature, and
                         Binary Scanning.</p>
                 </li>
@@ -57,7 +50,7 @@
                 </li>
                 <li>
                     <p>Once complete, scan findings can be viewed in the BDIO file produced, or in
-                        the <keyword keyref="blackduck_product_name"/> UI if <keyword keyref="blackduck_product_name"/> has been configured.</p>
+                        the <keyword keyref="bd_product_short"/> UI if <keyword keyref="bd_product_short"/> has been configured.</p>
                 </li>
             </ol>
         </body>
@@ -67,19 +60,17 @@
         <body>
             <ol>
                 <li>
-                    <p>Run <keyword keyref="company_name"/>
-                        <keyword keyref="solution_name"/> by providing the
+                    <p>Run <keyword keyref="detect_product_short"/> by providing the
                             <codeph>--detect.autonomous.scan.enabled=true</codeph> parameter.</p>
                 </li>
                 <li>
-                    <p><keyword keyref="company_name"/>
-                        <keyword keyref="solution_name"/> will determine if any user provided arguments
+                    <p><keyword keyref="detect_product_short"/> will determine if any user provided arguments
                         or properties should take precedence over values in the existing scan
                         settings file, and run the appropriate available tools and detectors.</p>
                 </li>
                 <li>
                     <p>Once complete, scan findings can be viewed in the BDIO file produced, or in
-                        the <keyword keyref="blackduck_product_name"/> UI if <keyword keyref="blackduck_product_name"/> has been configured.</p>
+                        the <keyword keyref="bd_product_short"/> UI if <keyword keyref="bd_product_short"/> has been configured.</p>
                 </li>
             </ol>
         </body>
@@ -89,16 +80,16 @@
         <body>
             <ul>
                 <li>
-                    <p><xref href="../properties/configuration/blackduck-server.md" format="markdown">ONLINE mode</xref>: With <keyword keyref="blackduck_product_name"/> configuration or proxy configuration
+                    <p><xref href="../properties/configuration/blackduck-server.md" format="markdown">ONLINE mode</xref>: With <keyword keyref="bd_product_short"/> configuration or proxy configuration
                         set and <codeph>blackduck.offline.mode</codeph> not set to true, or overridden
                         as false in the scan settings file, the scan will run online.</p>
                     <ul>
                         <li>
-                            <p><xref href="rapidscan.md" format="markdown">Rapid</xref>: Will run if <keyword keyref="blackduck_product_name"/> is configured and <keyword keyref="solution_name"/> Scan Mode <codeph>--detect.blackduck.scan.mode</codeph> is set to RAPID.</p>
+                            <p><xref href="rapidscan.md" format="markdown">Rapid</xref>: Will run if <keyword keyref="bd_product_short"/> is configured and <keyword keyref="detect_product_short"/> Scan Mode <codeph>--detect.blackduck.scan.mode</codeph> is set to RAPID.</p>
                         </li>
                         <li>
                             <p><xref href="statelessscan.md" format="markdown">Stateless</xref>:
-                                Will run if <keyword keyref="blackduck_product_name"/> is configured and <codeph>--detect.blackduck.scan.mode</codeph> is set to
+                                Will run if <keyword keyref="bd_product_short"/> is configured and <codeph>--detect.blackduck.scan.mode</codeph> is set to
                                 STATELESS.</p>
                         </li>
                         <li>
@@ -110,19 +101,19 @@
                 </li>
                 <li>
                     <p><xref href="../properties/configuration/blackduck-server.md#offline-mode" format="markdown">OFFLINE mode</xref>: When
-                            <codeph>--blackduck.offline.mode</codeph> is true or there is no <keyword keyref="blackduck_product_name"/> url or <keyword keyref="blackduck_product_name"/> proxy information provided. (Warning
+                            <codeph>--blackduck.offline.mode</codeph> is true or there is no <keyword keyref="bd_product_short"/> url or <keyword keyref="bd_product_short"/> proxy information provided. (Warning
                         messages will be logged for binary and signature scans if applicable tools
                         are not available or related parameters not set.)</p>
                     <ul>
                         <li>
-                            <p><xref href="https://sig-product-docs.synopsys.com/bundle/bd-hub/page/BinaryAnalysis/Overview.html" format="html" scope="external">Binary scan</xref>: Will run if
-                                one or more binary files exist in the scan directory and <keyword keyref="blackduck_product_name"/> configuration is
+                            <p><xref href="https://documentation.blackduck.com/bundle/bd-hub/page/BinaryAnalysis/Overview.html" format="html" scope="external">Binary scan</xref>: Will run if
+                                one or more binary files exist in the scan directory and <keyword keyref="bd_product_short"/> configuration is
                                 completed.</p>
                         </li>
                         <li>
                             <p>Signature scan: Will run against source files if scan cli is
-                                available. If <xref href="https://sig-product-docs.synopsys.com/bundle/bd-hub/page/ComponentDiscovery/DownloadAndInstall.html" format="html" scope="external">scan cli</xref> is not locally
-                                available, it will need to be downloaded from <keyword keyref="blackduck_product_name"/>.</p>
+                                available. If <xref href="https://documentation.blackduck.com/bundle/bd-hub/page/ComponentDiscovery/DownloadAndInstall.html" format="html" scope="external">scan cli</xref> is not locally
+                                available, it will need to be downloaded from <keyword keyref="bd_product_short"/>.</p>
                         </li>
                     </ul>
                 </li>
@@ -257,11 +248,11 @@
             <body>
                 <ul>
                     <li>
-                        <p>Scans require local network connectivity when used with <keyword keyref="blackduck_product_name"/> or if the scan location is remote,
+                        <p>Scans require local network connectivity when used with <keyword keyref="bd_product_short"/> or if the scan location is remote,
                             remote network connectivity is required.</p>
                     </li>
                     <li>
-                        <p><keyword keyref="blackduck_product_name"/> must be configured for binary
+                        <p><keyword keyref="bd_product_short"/> must be configured for binary
                             scans.</p>
                     </li>
                 </ul>
@@ -275,12 +266,11 @@
                         <p>Autonomous scanning does not support flags.</p>
                     </li>
                     <li>
-                        <p><keyword keyref="blackduck_product_name"/> Snippet scans are not
+                        <p><keyword keyref="bd_product_short"/> Snippet scans are not
                             supported.</p>
                     </li>
                     <li>
-                        <p>The following settings will not be persisted by <keyword keyref="company_name"/>
-                            <keyword keyref="solution_name"/> when running in Autonomous mode:</p>
+                        <p>The following settings will not be persisted by <keyword keyref="detect_product_short"/> when running in Autonomous mode:</p>
                                 <p>--blackduck.api.token</p>
                                 <p>--blackduck.proxy.password</p>
                                 <p>--detect.diagnostic</p>
@@ -296,16 +286,16 @@
         </topic>
     </topic>
     <topic id="invocation-without-blackduck-product-name">
-        <title>Invocation without <keyword keyref="blackduck_product_name"/></title>
-        <shortdesc>To invoke an Autonomous scan without <keyword keyref="blackduck_product_name"/>
+        <title>Invocation without <keyword keyref="bd_product_short"/></title>
+        <shortdesc>To invoke an Autonomous scan without <keyword keyref="bd_product_short"/>
             integration, the following must be provided at a minimum:</shortdesc>
         <body>
             <codeblock xml:space="preserve">--detect.autonomous.scan.enabled=true</codeblock>
         </body>
     </topic>
     <topic id="invocation-with-blackduck-product-name">
-        <title>Invocation with <keyword keyref="blackduck_product_name"/></title>
-        <shortdesc>To invoke an Autonomous scan with <keyword keyref="blackduck_product_name"/>, the
+        <title>Invocation with <keyword keyref="bd_product_short"/></title>
+        <shortdesc>To invoke an Autonomous scan with <keyword keyref="bd_product_short"/>, the
             following must be provided at a minimum:</shortdesc>
         <body>
             <codeblock xml:space="preserve">--detect.autonomous.scan.enabled=true
@@ -315,16 +305,15 @@
     </topic>
     <topic id="results">
         <title>Results</title>
-        <shortdesc>Autonomous scan findings will be stored in a <xref href="../properties/configuration/paths.html#ariaid-title4" format="html">BDIO</xref> file when run without <keyword keyref="blackduck_product_name"/>.</shortdesc>
+        <shortdesc>Autonomous scan findings will be stored in a <xref href="../properties/configuration/paths.html#ariaid-title4" format="html">BDIO</xref> file when run without <keyword keyref="bd_product_short"/>.</shortdesc>
         <body>
-            <p>Autonomous scan findings will appear in the <keyword keyref="blackduck_product_name"/>
-                user interface if <keyword keyref="blackduck_product_name"/> is configured.</p>
+            <p>Autonomous scan findings will appear in the <keyword keyref="bd_product_short"/>
+                user interface if <keyword keyref="bd_product_short"/> is configured.</p>
         </body>
     </topic>
     <topic id="debug-logging">
         <title>Debug Logging</title>
-        <shortdesc>Run <keyword keyref="company_name"/>
-            <keyword keyref="solution_name"/> with <codeph>--logging.level.detect=DEBUG</codeph> to
+        <shortdesc>Run <keyword keyref="detect_product_short"/> with <codeph>--logging.level.detect=DEBUG</codeph> to
             view the parameters being applied during Autonomous scans.</shortdesc>
         <body/>
     </topic>
