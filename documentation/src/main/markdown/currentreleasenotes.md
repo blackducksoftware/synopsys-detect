@@ -9,4 +9,4 @@
 
 ### Changed features
 
-* The `logging.level.com.synopsys.integration` property that was deprecated in [company_name] [solution_name] 9.x, has been removed. Use `logging.level.detect` instead.
+* The `logging.level.com.synopsys.integration` property that was deprecated in [detect_product_long] 9.x, has been removed. Use `logging.level.detect` instead.
