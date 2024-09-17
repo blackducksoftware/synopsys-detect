@@ -1,8 +1,8 @@
-# Running the [company_name] [solution_name] .jar
+# Running the [detect_product_long] .jar
 
-Recent versions of the [company_name] [solution_name] .jar file are available for download from the location specified in [download locations](../../downloadingandinstalling/downloadlocations.md).
+Recent versions of the [detect_product_short] .jar file are available for download from the location specified in [download locations](../../downloadingandinstalling/downloadlocations.md).
 
-To run [company_name] [solution_name] by invoking the .jar file:
+To run [detect_product_short] by invoking the .jar file:
 
 ````
 java -jar {path to .jar file}
@@ -15,7 +15,7 @@ curl -O https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/inte
 java -jar synopsys-detect-5.6.2.jar
 ````
 
-You can use the [company_name] [solution_name] Bash script ([bash_script_name]) to download the [company_name] [solution_name] .jar file:
+You can use the [detect_product_short] Bash script ([bash_script_name]) to download the [detect_product_short] .jar file:
 
 ````
 export DETECT_DOWNLOAD_ONLY=1

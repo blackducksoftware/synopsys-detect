@@ -6,7 +6,7 @@
 
 ## Overview
 
-[company_name] [solution_name] has two detectors for Swift:
+[detect_product_short] detectors for Swift and Xcode:
 
 * Swift CLI detector
 * Swift Package Resolved detector
@@ -23,7 +23,7 @@ The Swift CLI detector applies to directories containing a `Package.swift` file.
 
 This detector requires a `swift` executable to run a command `swift package show-dependencies` to create a dependency graph of Swift packages.
 
-All packages of the root node are considered direct dependencies in the BlackDuck BOM.
+All packages of the root node are considered direct dependencies in the [bd_product_short] BOM.
 
 Packages found with a version of `unspecified` will appear in the BOM without a version.
 
@@ -33,7 +33,7 @@ The Swift Package Resolved detector discovers dependencies of projects utilizing
 
 The Swift Package Resolved detector applies to directories containing either a `Package.swift` file or `Package.resolved` file.
 
-All packages of the packages are considered direct dependencies in the BlackDuck BOM.
+All packages of the packages are considered direct dependencies in the [bd_product_short] BOM.
 
 Packages found with a version of `unspecified` will appear in the BOM without a version.
 
@@ -44,12 +44,12 @@ The Xcode Workspace detector discovers dependencies of Xcode projects utilizing 
 
 The Xcode Workspace detector applies to directories matching the `*.xcworkspace` filename pattern within bounds of the *detect.detector.search.depth* property.
 
-When [company_name] [solution_name] finds a matching directory, the Xcode Workspace detector then searches for a `Package.resolved` file inside your `*.xcworkspace` directory at `*.xcworkspace/xcshareddata/swiftpm/Package.resolved` and extracts those dependencies.
+When [detect_product_short] finds a matching directory, the Xcode Workspace detector then searches for a `Package.resolved` file inside your `*.xcworkspace` directory at `*.xcworkspace/xcshareddata/swiftpm/Package.resolved` and extracts those dependencies.
 
-Additionally, the Xcode Workspace detector will analyze the contents of the `*.xcworkspace/contents.xcworkspacedata` XML file to determine Xcode Workspace reference locations. This ignores the *detect.detector.search.depth* property as [company_name] [solution_name] is no longer searching, but be directed to a specific location.
+Additionally, the Xcode Workspace detector will analyze the contents of the `*.xcworkspace/contents.xcworkspacedata` XML file to determine Xcode Workspace reference locations. This ignores the *detect.detector.search.depth* property as [detect_product_short] is no longer searching, but be directed to a specific location.
 
 Today supported Workspace reference locations are directories and Xcode Projects.
-Any referenced locations that are not found currently trigger a failure of [company_name] [solution_name]
+Any referenced locations that are not found currently trigger a failure of [detect_product_short]
 - Xcode Projects are identified with by the suffix `*.xcodeproj`. 
   - Example `location = "group:src/my-project.xcodeproj">`
 
@@ -74,7 +74,7 @@ This detector does not require any executables to run, but the Xcode Workspace m
 This file forms the basis for dependency extraction for most of the Swift and Xcode detectors.
 
 The `Package.resolved` is a JSON file containing a flat list of Swift packages required by the project.
-This file can be empty if the project has no dependencies, in which case [company_name] [solution_name] will create an empty code-location for the Xcode project.
+This file can be empty if the project has no dependencies, in which case [detect_product_short] will create an empty code-location for the Xcode project.
 
 Example `Package.resolved` file contents:
 ````
@@ -97,21 +97,21 @@ Example `Package.resolved` file contents:
 ````
 
 ### Extraction method
-[company_name] [solution_name] is capable of extracting component name and versions from the JSON content within the `Package.resolved` file.
+[detect_product_short] is capable of extracting component name and versions from the JSON content within the `Package.resolved` file.
 
 #### Forge
-Currently, all packages are assumed to come from GitHub. For support of additional public repositories, please contact the [company_name] [solution_name] support team.
+Currently, all packages are assumed to come from GitHub. For support of additional public repositories, please contact the [detect_product_short] support team.
 
 #### Component Name
 The component name is derived from the **repositoryURL** field.
 ````
 "repositoryURL": "https://github.com/apple/swift-argument-parser.git"
 ````
-[company_name] [solution_name] will parse the path of the url to remove the host and `.git` extensions.
+[detect_product_short] will parse the path of the url to remove the host and `.git` extensions.
 In the above example, this produces a component name of `apple/swift-argument-parser`.
 
 #### Component Version
-[company_name] [solution_name] will use the **state.version** field to identify the component version.
+[detect_product_short] will use the **state.version** field to identify the component version.
 ````
 "state": {
     "branch": null,

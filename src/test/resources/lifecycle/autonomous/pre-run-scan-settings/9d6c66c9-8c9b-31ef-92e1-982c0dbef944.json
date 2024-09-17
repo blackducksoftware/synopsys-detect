@@ -44,7 +44,6 @@
     "detect.timeout": "300",
     "detect.tools.excluded": "SIGNATURE_SCAN",
     "detect.wait.for.results": "false",
-    "logging.level.com.synopsys.integration": "INFO",
     "logging.level.detect": "INFO"
   },
   "detectorTypes": [

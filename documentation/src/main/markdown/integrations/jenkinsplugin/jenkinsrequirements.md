@@ -1,6 +1,6 @@
-# Requirements for [company_name] [solution_name] for Jenkins
+# Requirements for [detect_product_short] for Jenkins
 
-Requirements for [company_name] [solution_name] for Jenkins which may be in addition to those for [company_name] [solution_name].
+Requirements for [detect_product_short] for Jenkins which may be in addition to those for [detect_product_short].
 
 * Access to the internet is required to download components from GitHub and other locations.
 * Minimum 8GB RAM.

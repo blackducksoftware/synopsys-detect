@@ -46,7 +46,7 @@ installed packages.
 
 The following steps are performed back on the host when the request to the image inspector service returns:
 
-1. Returns the output files (BDIO and signature and binary scan targets) to [company_name] [solution_name] by copying them to the output directory.
+1. Returns the output files (BDIO and signature and binary scan targets) to [detect_product_short] by copying them to the output directory.
 1. Stops/removes the image inspector container.  Note that this can be disabled.
 
 ### Container mode
@@ -59,7 +59,7 @@ base URLs that you provide:
 
 In container mode you must provide the target image in a .tar file with one of the supported formats; you cannot specify that target image by repo:tag.
 
-[company_name] [solution_name] invokes [docker_inspector_name], which
+[detect_product_short] invokes [docker_inspector_name], which
 requests the dependency graph (in BDIO format) and signature/binary scan targets using HTTP from the default image inspector service using a 
 base URL that you have provided.
 
@@ -70,15 +70,15 @@ The following steps are performed inside the image inspector container:
 1. Runs the image inspector's Linux package manager on the target image package manager database to get details of the installed packages.
 1. Produces and returns a BDIO1 (.jsonld) file consisting of a graph of target image packages and, optionally, the container filesystem.
 
-The following steps are performed by [docker_inspector_name]/[company_name] [solution_name] back in the [company_name] [solution_name]  container when the request to the image inspector service returns:
+The following steps are performed by [docker_inspector_name]/[detect_product_short] back in the [detect_product_short] container when the request to the image inspector service returns:
 
-1. [docker_inspector_name] returns the output files (BDIO and signature and binary scan targets) to [company_name] [solution_name] by copying them to the output directory.
-1. [company_name] [solution_name] converts the BDIO to BDIO2, adjusts the project, project version, and codelocation names, and uploads it to [blackduck_product_name].
-1. [company_name] [solution_name] performs [blackduck_signature_scan_act] and [blackduck_binary_scan_capability] on the scan targets.
+1. [docker_inspector_name] returns the output files (BDIO and signature and binary scan targets) to [detect_product_short] by copying them to the output directory.
+1. [detect_product_short] converts the BDIO to BDIO2, adjusts the project, project version, and codelocation names, and uploads it to [bd_product_short].
+1. [detect_product_short] performs [blackduck_signature_scan_act] and [bdba_product_short] on the scan targets.
 
 #### Deploying in container mode
 
 Deploying in container mode is challenging and requires expertise in the container platform on which you will deploy.
-We recommend engaging Synopsys [professional_services] for a solution tailored to your environment. 
+We recommend engaging [professional_services] for a solution tailored to your environment. 
 
 You can find several container mode deployment examples on the [deployment page](deployment.md).

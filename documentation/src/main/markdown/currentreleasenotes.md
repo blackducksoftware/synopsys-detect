@@ -10,3 +10,6 @@
 	* Correlation between scanning methods increases accuracy and provides for more comprehensive scan results.
 	See the [detect.blackduck.integrated.matching.enabled](properties/configuration/general.html#integrated-matching-enabled) property for more information
 
+### Changed features
+
+* The `logging.level.com.synopsys.integration` property that was deprecated in [detect_product_long] 9.x, has been removed. Use `logging.level.detect` instead.

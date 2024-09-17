@@ -14,8 +14,8 @@ involved in deploying [docker_inspector_name]. They are not intended to be used 
 You should understand the code before you use it. They do not represent the only way to deploy in each environment.
 At a minimum, before using a sample, you should update it to the latest versions of the software it uses.
 
-Your deployment approach is the same whether you are invoking [docker_inspector_name] directly, or invoking it using [company_name] [solution_name].
-Most of the sample deployments use [company_name] [solution_name] simply because that is the most common use case.
+Your deployment approach is the same whether you are invoking [docker_inspector_name] directly, or invoking it using [detect_product_short].
+Most of the sample deployments use [detect_product_short] simply because that is the most common use case.
 
 ## Using host mode on a server or VM with Docker
 
@@ -43,8 +43,8 @@ three container-based services which you must start. These four containers must:
 Because in this mode you (not [docker_inspector_name]) are deploying the image inspector services,
 you must ensure that you deploy the correct version of the image inspector images for the
 version of [docker_inspector_name] that you run. This is easier if you explicitly control the version of
-[docker_inspector_name], rather than letting [company_name] [solution_name] auto-update [docker_inspector_name].
-See the [company_name] [solution_name] for details.
+[docker_inspector_name], rather than letting [detect_product_short] auto-update [docker_inspector_name].
+See the [detect_product_short] for details.
  
 ## Image Inspector Services
 
@@ -54,7 +54,7 @@ and three image inspector services.
 The required Docker operations, if any, are performed by the command line utility, while the image inspector services
 perform the work of unpacking the target Docker image, extracting the Linux package manager database,
 and running the Linux package manager against that database to extract installed packages
-and translate them to components which are actually externalIDs for Black Duck. If the image inspector service
+and translate them to components which are actually externalIDs for [bd_product_short]. If the image inspector service
 finds in the target image a package manager database that is incompatible with its own package manager utility; for example, 
 when you run [docker_inspector_name] on an Alpine image, but the request goes to the
 Ubuntu image inspector service, the image inspector service redirects the request to the appropriate
@@ -148,11 +148,11 @@ so any of the other methods (properties, system properties, system environment) 
 
 If you choose to use environment variables, and you are calling [docker_inspector_name] from [company_name] [solution_name],
 you must prefix the environment variable names with *DETECT_DOCKER_PASSTHROUGH_* to
-instruct [company_name] [solution_name] to pass them on to [docker_inspector_name].
+instruct [detect_product_short] to pass them on to [docker_inspector_name].
 In that scenario, instead of *export SOMENAME=value*, use *export DETECT_DOCKER_PASSTHROUGH_SOMENAME=value*.
 
 If you choose to use system properties which are normally set using *java -D*,
-and you are calling [docker_inspector_name] from [company_name] [solution_name], you must
+and you are calling [docker_inspector_name] from [detect_product_short], you must
 put the properties in a file; for example, *mydockerproperties.properties*, and use 
 ```
 --detect.docker.passthrough.system.properties.path=mydockerproperties.properties

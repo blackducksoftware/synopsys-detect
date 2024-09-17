@@ -6,7 +6,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.componentlocator.beans.Component;
+import com.blackduck.integration.componentlocator.beans.Component;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
