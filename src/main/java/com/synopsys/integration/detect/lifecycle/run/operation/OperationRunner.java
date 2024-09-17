@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
-import static com.synopsys.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
+import static com.blackduck.integration.componentlocator.ComponentLocator.SUPPORTED_DETECTORS;
 import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.OPERATION_NAME;
 import static com.synopsys.integration.detect.workflow.componentlocationanalysis.GenerateComponentLocationAnalysisOperation.SUPPORTED_DETECTORS_LOG_MSG;
 
@@ -61,7 +61,7 @@ import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.componentlocator.beans.Component;
+import com.blackduck.integration.componentlocator.beans.Component;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;

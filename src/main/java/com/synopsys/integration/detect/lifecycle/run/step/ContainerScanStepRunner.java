@@ -165,19 +165,12 @@ public class ContainerScanStepRunner {
         }
     }
     
-    private DefaultUploadStatus multiPartUploadImage() throws IntegrationException {
+    private DefaultUploadStatus multiPartUploadImage() throws IntegrationException, IOException {
         String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString());
         ContainerUploader containerUploader = uploadFactory.createContainerUploader(storageServiceEndpoint);
         
-        DefaultUploadStatus status;
-        
-        try {
-            logger.debug("Performing multipart container image upload to storage endpoint: {}", storageServiceEndpoint);
-            status = containerUploader.upload(containerImage.toPath());
-        } catch (IOException | IntegrationException e) {
-            logger.trace("Unable to upload multipart container image.");
-            throw new IntegrationException("Unable to upload multipart container image.", e);
-        }
+        logger.debug("Performing multipart container image upload to storage endpoint: {}", storageServiceEndpoint);
+        DefaultUploadStatus status = containerUploader.upload(containerImage.toPath());
             
         if (status == null || status.isError()) {
             handleUploadError(status);

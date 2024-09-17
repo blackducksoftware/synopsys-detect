@@ -12,7 +12,7 @@ public class ApplicationUpdaterTest {
     
     private final String[] successArgs = new String[] {
             "-jar",
-            "/fake/path/to/synopsys-detect-n.n.n.jar",
+            "/fake/path/to/detect-n.n.n.jar",
             "--blackduck.url=".concat(fakeUrl), 
             "--blackduck.trust.cert=true", 
             "--blackduck.api.token=dummyToken",
@@ -20,14 +20,14 @@ public class ApplicationUpdaterTest {
     
     private final String[] failureArgs = new String[] {
             "-jar",
-            "/fake/path/to/synopsys-detect-n.n.n.jar",
+            "/fake/path/to/detect-n.n.n.jar",
             "--blackduck.trust.cert=true", 
             "--blackduck.api.token=dummyToken",
             "--detect.tools=DETECTOR"};
     
     private final String[] successArgsWithValidProxy = new String[] {
             "-jar",
-            "/fake/path/to/synopsys-detect-n.n.n.jar",
+            "/fake/path/to/detect-n.n.n.jar",
             "--blackduck.url=".concat(fakeUrl),
             "--blackduck.trust.cert=true", 
             "--blackduck.api.token=dummyToken",
@@ -37,7 +37,7 @@ public class ApplicationUpdaterTest {
     
     private final String[] successArgsWithInvalidProxy = new String[] {
             "-jar",
-            "/fake/path/to/synopsys-detect-n.n.n.jar",
+            "/fake/path/to/detect-n.n.n.jar",
             "--blackduck.url=".concat(fakeUrl),
             "--blackduck.trust.cert=true", 
             "--blackduck.api.token=dummyToken",
@@ -46,7 +46,7 @@ public class ApplicationUpdaterTest {
     
     private final String[] alreadySelfUpdatedArgs = new String[] {
             "-jar",
-            "/fake/path/to/synopsys-detect-n.n.n.jar",
+            "/fake/path/to/detect-n.n.n.jar",
             "--blackduck.url=".concat(fakeUrl), 
             "--blackduck.trust.cert=true", 
             "--blackduck.api.token=dummyToken",
@@ -55,7 +55,7 @@ public class ApplicationUpdaterTest {
     
     private final String[] successArgsWithSpringBootCertValue = new String[] {
             "-jar",
-            "/fake/path/to/synopsys-detect-n.n.n.jar",
+            "/fake/path/to/detect-n.n.n.jar",
             "--blackduck.url=".concat(fakeUrl), 
             "--blackduck.api.token=dummyToken",
             "--detect.tools=DETECTOR"};
