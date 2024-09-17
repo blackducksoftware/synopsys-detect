@@ -19,7 +19,7 @@ buildscript {
     }
 }
 
-group = 'com.synopsys.integration'
+group = 'com.blackduck.integration'
 
 version = '10.0.0-SIGQA13-SNAPSHOT'
 
