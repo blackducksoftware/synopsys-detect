@@ -57,7 +57,7 @@ public class DetectCommandBuilder {
 
     public DetectCommandBuilder defaults() {
         property(DetectProperties.DETECT_CLEANUP, "false");
-        property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG"); //Needed to assert on operations in the logs.
+        property(DetectProperties.LOGGING_LEVEL_DETECT, "DEBUG"); //Needed to assert on operations in the logs.
         return this;
     }
 
@@ -99,6 +99,6 @@ public class DetectCommandBuilder {
     }
 
     public void debug() {
-        property(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "TRACE");
+        property(DetectProperties.LOGGING_LEVEL_DETECT, "TRACE");
     }
 }

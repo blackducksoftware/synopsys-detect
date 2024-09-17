@@ -1856,19 +1856,6 @@ public class DetectProperties {
     //#endregion Active Properties
 
     //#region Deprecated Properties
-    
-    @Deprecated
-    public static final EnumProperty<LogLevel> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION = 
-            EnumProperty.newBuilder("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class)
-            .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
-            .setHelp("Equivalent to setting <i>logging.level.detect</i>.",
-                    "Refer to the description of property <i>logging.level.detect</i> for additional details.")
-            .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL)
-            .setDeprecated(
-                    "This property has been deprecated. Use the equivalent logging.level.detect property.",
-                    DetectMajorVersion.TEN
-                )
-            .build();
 
     // Can't take in the DetectProperty<?> due to an illegal forward reference :(
     private static String createTypeFilterHelpText(String exclusionTypePlural) {
