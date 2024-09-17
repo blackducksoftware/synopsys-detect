@@ -4,24 +4,24 @@
 
 ### Symptom
 
-detect9.sh fails with: DETECT_SOURCE was not set or computed correctly, please check your configuration and environment.
+detect10.sh fails with: DETECT_SOURCE was not set or computed correctly, please check your configuration and environment.
 
 ### Possible cause
 
-detect9.sh is trying to execute this command:
+detect10.sh is trying to execute this command:
 ````
-curl --silent --header \"X-Result-Detail: info\" https://sig-repo.synopsys.com/api/storage/bds-integrations-release/com/synopsys/integration/synopsys-detect?properties=DETECT_LATEST
+curl --silent --header \"X-Result-Detail: info\" https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect?properties=DETECT_LATEST
 ````
 The response to this command should be similar to the following:
 ```
 {
 "properties" : {
-"DETECT_LATEST" : [ "https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect/5.6.1/synopsys-detect-5.6.1.jar" ]
+"DETECT_LATEST" : [ "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect/10.0.0/detect-10.0.0.jar" ]
 },
-"uri" : "https://sig-repo.synopsys.com/api/storage/bds-integrations-release/com/synopsys/integration/synopsys-detect"
+"uri" : "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect"
 }
 ```
-When that command does not successfully return a value for property DETECT_LATEST, detect9.sh reports:
+When that command does not successfully return a value for property DETECT_LATEST, detect10.sh reports:
 ````
 DETECT_SOURCE was not set or computed correctly, please check your configuration and environment.
 ````

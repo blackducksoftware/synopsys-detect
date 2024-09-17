@@ -10,19 +10,21 @@ The primary reason to run one of the [detect_product_short] scripts is that the 
 By default, they always
 run the latest version of the [detect_product_short] .jar file within a specific major version; downloading it for you if necessary.
 When you run [detect_product_short] via one of the provided scripts, you automatically pick up fixes and new features as they are released.
-Each script limits itself to a specific [detect_product_short] major version (for example, 9.y.z, or 8.y.z), unless you override
+Each script limits itself to a specific [detect_product_short] major version (for example, 10.y.z, or 8.y.z), unless you override
 this default behavior.
 
 | [detect_product_short] version | Script Type | Script Name |
 |---| --- |-------------|
+| 10 | Bash | detect10.sh  |
+| 10 | PowerShell | detect10.ps1 |
 | 9 | Bash | detect9.sh  |
 | 9 | PowerShell | detect9.ps1 |
 | 8 | Bash | detect8.sh  |
 | 8 | PowerShell | detect8.ps1 |
 
 Instuctions and examples in this documentation that reference the scripts assume you are running
-[detect_product_short] 9, so refer to detect9.sh or detect9.ps1. To run [detect_product_short] 8 instead,
-substitute detect8.sh for detect9.sh, or detect8.ps1 for detect9.ps1.
+[detect_product_short] 10, so refer to detect10.sh or detect10.ps1. To run [detect_product_short] 9 instead,
+substitute detect9.sh and detect9.ps1.
 
 The primary reason to run the [detect_product_short] .jar directly is that this method provides
 direct control over the exact [detect_product_short] version;

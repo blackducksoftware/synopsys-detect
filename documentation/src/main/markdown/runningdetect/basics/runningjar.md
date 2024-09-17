@@ -19,5 +19,5 @@ You can use the [detect_product_short] Bash script ([bash_script_name]) to downl
 
 ````
 export DETECT_DOWNLOAD_ONLY=1
-./detect9.sh
+./detect10.sh
 ````
