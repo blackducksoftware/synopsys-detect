@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.zeroturnaround.zip.commons.FileUtils;
 
-import com.synopsys.integration.detect.commontest.FileUtil;
+import com.blackduck.integration.detect.commontest.FileUtil;
 import com.synopsys.integration.util.ResourceUtil;
 
 import freemarker.template.Configuration;

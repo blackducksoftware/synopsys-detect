@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.commontest;
+package com.blackduck.integration.detect.commontest;
 
 import java.io.File;
 import java.net.URISyntaxException;

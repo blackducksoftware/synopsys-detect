@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detect.commontest.FileUtil;
+import com.blackduck.integration.detect.commontest.FileUtil;
 import com.synopsys.integration.util.ResourceUtil;
 
 public class FunctionalTestFiles {
