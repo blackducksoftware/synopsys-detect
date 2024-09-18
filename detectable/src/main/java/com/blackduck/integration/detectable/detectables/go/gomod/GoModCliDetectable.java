@@ -13,7 +13,7 @@ import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
 import com.google.gson.JsonSyntaxException;
 import com.blackduck.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
+import com.blackduck.integration.detectable.detectable.executable.resolver.GoResolver;
 
 @DetectableInfo(name = "GoMod CLI", language = "Golang", forge = "Go Modules", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "File: go.mod. Executable: go.")
 public class GoModCliDetectable extends Detectable {

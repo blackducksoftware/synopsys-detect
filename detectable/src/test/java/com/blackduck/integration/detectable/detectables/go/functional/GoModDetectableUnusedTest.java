@@ -14,7 +14,7 @@ import com.blackduck.integration.detectable.Detectable;
 import com.blackduck.integration.detectable.DetectableEnvironment;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
+import com.blackduck.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.blackduck.integration.detectable.detectables.go.gomod.GoModCliDetectableOptions;
 import com.blackduck.integration.detectable.detectables.go.gomod.GoModDependencyType;
 import com.blackduck.integration.detectable.extraction.Extraction;

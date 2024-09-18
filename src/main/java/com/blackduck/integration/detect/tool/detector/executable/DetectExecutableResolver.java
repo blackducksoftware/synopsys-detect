@@ -19,7 +19,7 @@ import com.blackduck.integration.detectable.detectable.executable.resolver.DartR
 import com.blackduck.integration.detectable.detectable.executable.resolver.DockerResolver;
 import com.blackduck.integration.detectable.detectable.executable.resolver.FlutterResolver;
 import com.blackduck.integration.detectable.detectable.executable.resolver.GitResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
+import com.blackduck.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.blackduck.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.blackduck.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.blackduck.integration.detectable.detectable.executable.resolver.LernaResolver;

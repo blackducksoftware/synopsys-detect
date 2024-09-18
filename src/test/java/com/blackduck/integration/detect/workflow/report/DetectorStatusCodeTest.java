@@ -16,7 +16,7 @@ public class DetectorStatusCodeTest {
 
     @Test
     public void ensureDetectorResultsPresentInStatusLookup() {
-        Set<? extends Class<?>> classes = getClasses("detector/src/main/java/com/synopsys/integration/detector/result", "com.synopsys.integration.detector.result");
+        Set<? extends Class<?>> classes = getClasses("detector/src/main/java/com/blackduck/integration/detector/result", "com.blackduck.integration.detector.result");
         classes.remove(DetectorResult.class); //Need to remove the base class as it shouldn't be mapped.
         assertAllPresent(classes);
     }
@@ -24,8 +24,8 @@ public class DetectorStatusCodeTest {
     @Test
     public void ensureDetectableResultsPresentInStatusLookup() {
         Set<? extends Class<?>> classes = getClasses(
-            "detectable/src/main/java/com/synopsys/integration/detectable/detectable/result",
-            "com.synopsys.integration.detectable.detectable.result"
+            "detectable/src/main/java/com/blackduck/integration/detectable/detectable/result",
+            "com.blackduck.integration.detectable.detectable.result"
         );
         classes.remove(DetectableResult.class);//Need to remove the base class as it shouldn't be mapped.
         assertAllPresent(classes);
