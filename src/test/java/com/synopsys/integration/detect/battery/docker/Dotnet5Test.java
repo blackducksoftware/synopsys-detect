@@ -25,7 +25,7 @@ public class Dotnet5Test {
 
             dockerAssertions.successfulDetectorType("NUGET");
             dockerAssertions.atLeastOneBdioFile();
-            dockerAssertions.logContainsPattern("https://sig-repo.synopsys.com/.*bds-integrations-release/com/synopsys/integration/detect-nuget-inspector/"); // Verify we are using the EXTERNAL artifactory to download the inspector.
+            dockerAssertions.logContainsPattern("https://repo.blackduck.com/.*bds-integrations-release/com/blackduck/integration/detect-nuget-inspector/"); // Verify we are using the EXTERNAL artifactory to download the inspector.
         }
     }
 

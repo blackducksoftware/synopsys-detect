@@ -1,11 +1,11 @@
 ## Overview
 
-Synopsys Detect scans code bases in your projects and folders to perform compositional analysis and functions as an intelligent scan client for Black Duck and other Synopsys SCA products. Synopsys Detect can send scan results to Black Duck, which generates risk analysis when identifying open source components, licenses, and security vulnerabilities.
+Black Duck Detect scans code bases in your projects and folders to perform compositional analysis and functions as an intelligent scan client for Black Duck SCA products. Black Duck Detect can send scan results to Black Duck, which generates risk analysis when identifying open source components, licenses, and security vulnerabilities.
 
 ## Build
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.synopsys.integration%3Asynopsys-detect&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.synopsys.integration%3Asynopsys-detect)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.blackduck.integration%3Adetect&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.blackduck.integration%3Adetect)
 
 ## Where can I get the latest release?
 
@@ -28,7 +28,7 @@ powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://d
 
 For scripts, please see [Detect Scripts](https://github.com/synopsys-sig/synopsys-detect-scripts).
 
-For AirGap, please use our [Artifactory](https://sig-repo.synopsys.com/webapp/#/artifacts/browse/tree/General/bds-integrations-release/com/synopsys/integration/synopsys-detect).
+For AirGap, please use our [Artifact Repository](https://repo.blackduck.com/webapp/#/artifacts/browse/tree/General/bds-integrations-release/com/blackduck/integration/detect).
 
 ## Documentation
 
@@ -39,4 +39,4 @@ The latest full documentation and archived documentation in PDF format is [here]
 ## Getting help
 
 Additional information and help is available from the
-[Synopsys Software Integrity Community](https://community.synopsys.com/s/).
+[Black Duck Software Community](https://community.blackduck.com/s/ ).
