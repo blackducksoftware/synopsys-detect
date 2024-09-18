@@ -28,7 +28,7 @@ powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://d
 
 For scripts, please see [Detect Scripts](https://github.com/synopsys-sig/synopsys-detect-scripts).
 
-For AirGap, please use our [Artifactory](https://repo.blackduck.com/webapp/#/artifacts/browse/tree/General/bds-integrations-release/com/blackduck/integration/detect).
+For AirGap, please use our [Artifact Repository](https://repo.blackduck.com/webapp/#/artifacts/browse/tree/General/bds-integrations-release/com/blackduck/integration/detect).
 
 ## Documentation
 
