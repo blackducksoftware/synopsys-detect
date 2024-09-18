@@ -11,7 +11,7 @@ import com.github.dockerjava.api.command.BuildImageCmd;
 import com.github.dockerjava.api.command.BuildImageResultCallback;
 import com.blackduck.integration.common.util.Bds;
 import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
-import com.synopsys.integration.detect.commontest.FileUtil;
+import com.blackduck.integration.detect.commontest.FileUtil;
 
 public class BuildDockerImageProvider implements DockerImageProvider {
     private final String dockerfileResourceName;
