@@ -11,8 +11,8 @@ java -jar {path to .jar file}
 For example:
 
 ````
-curl -O https://sig-repo.synopsys.com/bds-integrations-release/com/blackduck/integration/detect/10.0.0/detect-10.0.0.jar
-java -jar synopsys-detect-10.0.0.jar
+curl -O https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect/10.0.0/detect-10.0.0.jar
+java -jar detect-10.0.0.jar
 ````
 
 You can use the [detect_product_short] Bash script ([bash_script_name]) to download the [detect_product_short] .jar file:
