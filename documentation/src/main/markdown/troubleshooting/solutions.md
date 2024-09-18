@@ -16,9 +16,9 @@ The response to this command should be similar to the following:
 ```
 {
 "properties" : {
-"DETECT_LATEST" : [ "https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect/5.6.1/synopsys-detect-5.6.1.jar" ]
+"DETECT_LATEST" : [ "https://sig-repo.synopsys.com/bds-integrations-release/com/blackduck/integration/detect/10.0.0/detect-10.0.0.jar" ]
 },
-"uri" : "https://sig-repo.synopsys.com/api/storage/bds-integrations-release/com/synopsys/integration/synopsys-detect"
+"uri" : "https://sig-repo.synopsys.com/api/storage/bds-integrations-release/com/blackduck/integration/detect"
 }
 ```
 When that command does not successfully return a value for property DETECT_LATEST, detect9.sh reports:
