@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.synopsys.integration.common.util.finder.SimpleFileFinder;
+import com.blackduck.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.bitbake.collect.BuildFileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.data.BitbakeEnvironment;

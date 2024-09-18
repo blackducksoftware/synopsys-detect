@@ -18,7 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.synopsys.integration.common.util.finder.SimpleFileFinder;
+import com.blackduck.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 
 public class ExclusionPatternCreatorTest {

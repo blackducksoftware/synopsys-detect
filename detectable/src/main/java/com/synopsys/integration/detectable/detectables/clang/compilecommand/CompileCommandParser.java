@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.common.util.parse.CommandParser;
+import com.blackduck.integration.common.util.parse.CommandParser;
 
 public class CompileCommandParser {
     private final CommandParser commandParser;

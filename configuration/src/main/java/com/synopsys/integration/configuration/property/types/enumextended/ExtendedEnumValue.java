@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.util.Assert;
 
-import com.synopsys.integration.common.util.Bdo;
+import com.blackduck.integration.common.util.Bdo;
 
 public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
     @Nullable

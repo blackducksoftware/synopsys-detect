@@ -12,7 +12,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.common.util.finder.FileFinder;
+import com.blackduck.integration.common.util.finder.FileFinder;
 
 public class ExclusionPatternCreator {
     private final Logger logger = LoggerFactory.getLogger(ExclusionPatternCreator.class);
