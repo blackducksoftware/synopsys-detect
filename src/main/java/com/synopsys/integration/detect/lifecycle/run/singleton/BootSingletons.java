@@ -2,7 +2,7 @@ package com.synopsys.integration.detect.lifecycle.run.singleton;
 
 import com.google.gson.Gson;
 import com.blackduck.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.blackduck.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;

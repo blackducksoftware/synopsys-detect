@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.blackduck.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
-import com.synopsys.integration.configuration.property.types.path.PathResolver;
-import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
-import com.synopsys.integration.configuration.property.types.path.TildeInPathResolver;
-import com.synopsys.integration.configuration.source.PropertySource;
+import com.blackduck.integration.configuration.config.PropertyConfiguration;
+import com.blackduck.integration.configuration.help.PropertyConfigurationHelpContext;
+import com.blackduck.integration.configuration.property.types.path.PathResolver;
+import com.blackduck.integration.configuration.property.types.path.SimplePathResolver;
+import com.blackduck.integration.configuration.property.types.path.TildeInPathResolver;
+import com.blackduck.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.Application;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;

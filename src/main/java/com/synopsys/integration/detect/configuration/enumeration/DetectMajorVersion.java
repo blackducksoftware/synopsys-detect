@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.configuration.enumeration;
 
-import com.synopsys.integration.configuration.util.ProductMajorVersion;
+import com.blackduck.integration.configuration.util.ProductMajorVersion;
 
 public class DetectMajorVersion extends ProductMajorVersion {
     public static final DetectMajorVersion ONE = new DetectMajorVersion(1);

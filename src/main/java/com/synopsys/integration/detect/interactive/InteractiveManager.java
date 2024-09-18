@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.interactive;
 
-import com.synopsys.integration.configuration.source.MapPropertySource;
+import com.blackduck.integration.configuration.source.MapPropertySource;
 
 public class InteractiveManager {
     private final InteractivePropertySourceBuilder propertySourceBuilder;

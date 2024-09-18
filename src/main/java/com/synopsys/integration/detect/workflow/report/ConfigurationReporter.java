@@ -3,8 +3,8 @@ package com.synopsys.integration.detect.workflow.report;
 import java.util.HashMap;
 import java.util.SortedMap;
 
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
+import com.blackduck.integration.configuration.config.PropertyConfiguration;
+import com.blackduck.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 

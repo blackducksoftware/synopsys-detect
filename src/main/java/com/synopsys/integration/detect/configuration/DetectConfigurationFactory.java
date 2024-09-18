@@ -25,11 +25,11 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
-import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
-import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
-import com.synopsys.integration.configuration.property.types.enumallnone.list.NoneEnumList;
-import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
+import com.blackduck.integration.configuration.property.types.enumallnone.list.AllEnumList;
+import com.blackduck.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
+import com.blackduck.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
+import com.blackduck.integration.configuration.property.types.enumallnone.list.NoneEnumList;
+import com.blackduck.integration.configuration.property.types.enumextended.ExtendedEnumValue;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;

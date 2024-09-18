@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.blackduck.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;

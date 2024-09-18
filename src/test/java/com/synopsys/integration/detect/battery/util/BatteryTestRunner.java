@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 
-import com.synopsys.integration.configuration.property.Property;
+import com.blackduck.integration.configuration.property.Property;
 import com.synopsys.integration.detect.battery.util.assertions.BatteryBdioAssert;
 import com.synopsys.integration.detect.battery.util.executable.ResourceCopyingExecutableCreator;
 import com.synopsys.integration.executable.ExecutableRunnerException;

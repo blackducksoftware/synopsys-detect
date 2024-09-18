@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.configuration.source.PropertySource;
+import com.blackduck.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;

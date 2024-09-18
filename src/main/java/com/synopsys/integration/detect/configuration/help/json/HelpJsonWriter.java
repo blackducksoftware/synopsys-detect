@@ -13,9 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.configuration.property.Property;
-import com.synopsys.integration.configuration.property.deprecation.PropertyRemovalDeprecationInfo;
-import com.synopsys.integration.configuration.util.Group;
+import com.blackduck.integration.configuration.property.Property;
+import com.blackduck.integration.configuration.property.deprecation.PropertyRemovalDeprecationInfo;
+import com.blackduck.integration.configuration.util.Group;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonData;
 import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDetectorRule;
