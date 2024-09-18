@@ -23,7 +23,7 @@ group = 'com.blackduck.integration'
 
 version = '10.0.0-SIGQA14-SNAPSHOT'
 
-apply plugin: 'com.synopsys.integration.solution'
+apply plugin: 'com.blackduck.integration.solution'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -66,7 +66,7 @@ repositories {
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
-        url = uri("${externalRepoHost}/artifactory/bds-integration-placeholder-release")
+        url = uri("${externalRepoHost}/bds-integration-placeholder-release")
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
@@ -99,7 +99,7 @@ tasks.named("bootJar") {
 subprojects {
     group = rootProject.group
     version = rootProject.version
-    apply plugin: 'com.synopsys.integration.simple'
+    apply plugin: 'com.blackduck.integration.simple'
 }
 
 allprojects {
