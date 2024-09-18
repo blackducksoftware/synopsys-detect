@@ -7,25 +7,25 @@ The best practice for resilience is to add [detect_product_short] on the path, a
 ## Basic Manual Installation Steps
 
 1. Download Java and make sure it is on your PATH
-2. Download the version of [detect_product_short] you want to use from https://sig-repo.synopsys.com/bds-integrations-release/com/blackduck/integration/detect/
+2. Download the version of [detect_product_short] you want to use from https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect/
     * You should download the air-gap zip if you do not want [detect_product_short] to download Inspectors at runtime
 3. Put the [detect_product_short] jar/zip somewhere you can manage it
     * Examples: 
-    *    Mac/Linux: 	$HOME/synopsys-detect/download/synopsys-detect-X.X.X.jar
-    *    Windows:	   C:\Program Files\synopsys-detect\download\synopsys-detect-X.X.X.jar
+    *    Mac/Linux: 	$HOME/detect/download/detect-X.X.X.jar
+    *    Windows:	   C:\Program Files\detect\download\detect-X.X.X.jar
 4. You can now run [detect_product_short]
-    * Example: java -jar $HOME/synopsys-detect/download/synopsys-detect-X.X.X.jar --help
+    * Example: java -jar $HOME/detect/download/detect-X.X.X.jar --help
 
 ## Mac/Linux Best Practice Installation Steps for Resilience  
 
 1. Download Java and make sure it is on your PATH
-2. Download the version of [detect_product_short] you want to use from https://sig-repo.synopsys.com/bds-integrations-release/com/blackduck/integration/detect/
+2. Download the version of [detect_product_short] you want to use from https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect/
    * You should download the air-gap zip if you do not want [detect_product_short] to download Inspectors at runtime
 3. Create a symlink for the [detect_product_short] jar
-   *     ln -s $HOME/synopsys-detect/download/synopsys-detect-X.X.X.jar $HOME/synopsys-detect/download/latest-detect.jar
+   *     ln -s $HOME/detect/download/detect-X.X.X.jar $HOME/detect/download/latest-detect.jar
 4. Create a bash script named "detect" with the following content.
    *     #!/bin/bash
-   *     java -jar $HOME/synopsys-detect/download/latest-detect.jar "$@"
+   *     java -jar $HOME/detect/download/latest-detect.jar "$@"
 5. Add the script to your PATH variable
    *     export PATH=${PATH}:${path_to_folder_containing_detect_script}
 6. OR instead of altering your PATH you can place the script in a directory that is already on your PATH
@@ -36,16 +36,16 @@ The best practice for resilience is to add [detect_product_short] on the path, a
 ## Windows Best Practice Installation Steps for Resilience 
 
 1. Download Java and make sure it is on your PATH
-2. Download the version of [detect_product_short] you want to use from https://sig-repo.synopsys.com/bds-integrations-release/com/blackduck/integration/detect/
+2. Download the version of [detect_product_short] you want to use from https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect/
    * You should download the air-gap zip if you do not want [detect_product_short] to download Inspectors at runtime
 3. Create a symbolic link for the [detect_product_short] jar, called latest-detect.jar
    * Start a command prompt in the folder you downloaded detect.
-   * Run the following: mklink latest-detect.jar synopsys-detect-X.X.X.jar
+   * Run the following: mklink latest-detect.jar detect-X.X.X.jar
 4. Create a bat script named "detect.cmd" in the same folder with the following content
-   *     @java -jar "C:\Program Files\synopsys-detect\download\latest-detect.jar" %*
+   *     @java -jar "C:\Program Files\detect\download\latest-detect.jar" %*
 5. Add the script to your PATH variable
    * In File Explorer right-click on the This PC (or Computer) icon, then click Properties -> Advanced System Settings -> Environment Variables
    * Under System Variables select Path, then click Edit
-   * Add an entry with the path to the folder containing the script "C:\Program Files\synopsys-detect\download\"
+   * Add an entry with the path to the folder containing the script "C:\Program Files\detect\download\"
 7. You can now run [detect_product_short]
    * Example: detect --help

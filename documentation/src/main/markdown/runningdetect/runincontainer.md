@@ -18,7 +18,7 @@ To run a container built from a [detect_product_short] image, use the Docker CLI
 
 Find available images [here](https://hub.docker.com/repository/docker/blackducksoftware/detect).
 
-Find the source for them (Dockerfiles) [here](https://github.com/blackducksoftware/synopsys-detect-docker).
+Find the source for them (Dockerfiles) [here](https://github.com/blackducksoftware/detect-docker).
 
 The format of image names is: `blackducksoftware/detect:[detect_version]-[package_manager]-[package_manager_version]`
 
