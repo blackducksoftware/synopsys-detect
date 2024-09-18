@@ -1,6 +1,6 @@
 package com.synopsys.integration.detector.rule;
 
-import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
+import com.blackduck.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detector.base.DetectableCreatable;
 
 public class DetectableDefinition {

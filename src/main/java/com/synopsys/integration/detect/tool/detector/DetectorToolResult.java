@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 

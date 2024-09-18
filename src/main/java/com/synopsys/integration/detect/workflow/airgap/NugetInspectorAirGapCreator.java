@@ -12,7 +12,7 @@ import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.tool.detector.inspector.nuget.AirgapNugetInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspector.nuget.ArtifactoryNugetInspectorInstaller;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 
 public class NugetInspectorAirGapCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

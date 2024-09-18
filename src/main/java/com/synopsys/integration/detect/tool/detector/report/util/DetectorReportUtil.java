@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.synopsys.integration.detectable.detectable.explanation.Explanation;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.blackduck.integration.detectable.detectable.explanation.Explanation;
+import com.blackduck.integration.detectable.detectable.result.DetectableResult;
 
 public class DetectorReportUtil {
     public static List<Explanation> combineExplanations(DetectableResult... results) {

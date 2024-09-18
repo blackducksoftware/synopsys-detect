@@ -8,10 +8,10 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detectable.detectable.explanation.Explanation;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.blackduck.integration.detectable.detectable.explanation.Explanation;
+import com.blackduck.integration.detectable.detectable.result.DetectableResult;
+import com.blackduck.integration.detectable.extraction.Extraction;
+import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.rule.DetectableDefinition;
 
 // TODO(Detector):Might want a builder

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.ProjectInspectorExecutableLocator;
 import com.synopsys.integration.detect.util.DetectZipUtil;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 
 public class LocalProjectInspectorInstaller implements ProjectInspectorInstaller {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

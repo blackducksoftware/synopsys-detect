@@ -15,9 +15,9 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
-import com.synopsys.integration.detectable.extraction.Extraction;
+import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
+import com.blackduck.integration.detectable.detectables.docker.DockerExtractor;
+import com.blackduck.integration.detectable.extraction.Extraction;
 
 public class CodeLocationConverter {
     public static final Forge DETECT_FORGE = new Forge("/", "Detect");

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detectable.detectables.go.gomod.GoModDependencyType;
+import com.blackduck.integration.detectable.detectables.go.gomod.GoModDependencyType;
 
 @Tag("battery")
 public class GoBattery {

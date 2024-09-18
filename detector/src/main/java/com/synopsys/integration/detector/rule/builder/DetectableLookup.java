@@ -6,9 +6,9 @@ import java.util.Arrays;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.synopsys.integration.detectable.Detectable;
-import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
+import com.blackduck.integration.detectable.Detectable;
+import com.blackduck.integration.detectable.DetectableEnvironment;
+import com.blackduck.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detector.base.DetectableCreatable;
 import com.synopsys.integration.detector.rule.DetectableDefinition;
 

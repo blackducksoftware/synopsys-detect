@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.blackduck.integration.detectable.detectable.result.DetectableResult;
 
 public class DetectableToolResult {
     private enum DetectableToolResultType {

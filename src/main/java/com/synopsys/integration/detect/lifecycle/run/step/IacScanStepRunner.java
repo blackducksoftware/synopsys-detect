@@ -22,7 +22,7 @@ import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.iac.IacScanCodeLocationData;
 import com.synopsys.integration.detect.tool.iac.IacScanReport;
 import com.synopsys.integration.detect.workflow.bdio.AggregateCodeLocation;
-import com.synopsys.integration.detectable.util.ExternalIdCreator;
+import com.blackduck.integration.detectable.util.ExternalIdCreator;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 

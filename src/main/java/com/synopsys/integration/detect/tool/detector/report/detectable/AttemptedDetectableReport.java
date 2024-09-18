@@ -6,9 +6,9 @@ import java.util.List;
 
 import com.synopsys.integration.detect.tool.detector.report.DetectorStatusUtil;
 import com.synopsys.integration.detect.tool.detector.report.util.DetectorReportUtil;
-import com.synopsys.integration.detectable.detectable.explanation.Explanation;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.extraction.Extraction;
+import com.blackduck.integration.detectable.detectable.explanation.Explanation;
+import com.blackduck.integration.detectable.detectable.result.DetectableResult;
+import com.blackduck.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detector.base.DetectorStatusCode;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectableDefinition;

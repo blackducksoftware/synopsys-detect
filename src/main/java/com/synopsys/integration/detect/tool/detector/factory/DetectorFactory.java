@@ -33,14 +33,14 @@ import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
-import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
-import com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
-import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
-import com.synopsys.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
-import com.synopsys.integration.detectable.factory.DetectableFactory;
+import com.blackduck.integration.detectable.detectable.inspector.GradleInspectorResolver;
+import com.blackduck.integration.detectable.detectable.inspector.PipInspectorResolver;
+import com.blackduck.integration.detectable.detectable.inspector.ProjectInspectorResolver;
+import com.blackduck.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
+import com.blackduck.integration.detectable.detectables.docker.DockerInspectorResolver;
+import com.blackduck.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
+import com.blackduck.integration.detectable.detectables.projectinspector.ProjectInspectorOptions;
+import com.blackduck.integration.detectable.factory.DetectableFactory;
 
 import freemarker.template.Configuration;
 

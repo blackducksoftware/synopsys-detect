@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
+import com.blackduck.integration.detectable.detectables.gradle.inspection.GradleConfigurationType;
 
 @Tag("battery")
 public class GradleBattery {

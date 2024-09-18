@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detectable.Detectable;
+import com.blackduck.integration.detectable.Detectable;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.DetectableDefinition;
 import com.synopsys.integration.detector.rule.EntryPoint;

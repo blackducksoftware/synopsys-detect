@@ -10,7 +10,7 @@ import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.inspector.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.ProjectInspectorExecutableLocator;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.OperatingSystemType;
 

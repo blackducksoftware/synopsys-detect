@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detectable.Detectable;
+import com.blackduck.integration.detectable.Detectable;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;

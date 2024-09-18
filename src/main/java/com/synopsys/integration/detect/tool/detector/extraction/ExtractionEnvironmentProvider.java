@@ -4,7 +4,7 @@ import java.io.File;
 
 import com.synopsys.integration.detect.tool.detector.DetectExtractionEnvironment;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.base.DetectorType;
 
 public class ExtractionEnvironmentProvider {

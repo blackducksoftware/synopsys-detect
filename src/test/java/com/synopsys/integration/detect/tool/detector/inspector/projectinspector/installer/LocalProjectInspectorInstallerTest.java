@@ -13,7 +13,7 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.ProjectInspectorExecutableLocator;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.util.OperatingSystemType;
 
 public class LocalProjectInspectorInstallerTest {

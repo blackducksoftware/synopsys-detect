@@ -4,9 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detect.workflow.report.ExceptionUtil;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.extraction.Extraction;
+import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
+import com.blackduck.integration.detectable.detectable.result.DetectableResult;
+import com.blackduck.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detector.base.DetectorResultStatusCodeLookup;
 import com.synopsys.integration.detector.base.DetectorStatusCode;
 import com.synopsys.integration.detector.result.DetectorResult;

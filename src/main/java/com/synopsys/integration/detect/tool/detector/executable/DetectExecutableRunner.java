@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
+import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunner;

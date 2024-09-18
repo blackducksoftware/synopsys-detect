@@ -1,6 +1,6 @@
 package com.synopsys.integration.detector.accuracy.entrypoint;
 
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.blackduck.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.EntryPoint;
 

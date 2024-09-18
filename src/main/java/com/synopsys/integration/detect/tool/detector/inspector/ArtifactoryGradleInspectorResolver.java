@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
+import com.blackduck.integration.detectable.detectable.exception.DetectableException;
+import com.blackduck.integration.detectable.detectable.inspector.GradleInspectorResolver;
+import com.blackduck.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
+import com.blackduck.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 
 import freemarker.template.Configuration;
 
