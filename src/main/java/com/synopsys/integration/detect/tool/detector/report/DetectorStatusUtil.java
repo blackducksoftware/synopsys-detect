@@ -7,9 +7,9 @@ import com.synopsys.integration.detect.workflow.report.ExceptionUtil;
 import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.blackduck.integration.detectable.detectable.result.DetectableResult;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detector.base.DetectorResultStatusCodeLookup;
-import com.synopsys.integration.detector.base.DetectorStatusCode;
-import com.synopsys.integration.detector.result.DetectorResult;
+import com.blackduck.integration.detector.base.DetectorResultStatusCodeLookup;
+import com.blackduck.integration.detector.base.DetectorStatusCode;
+import com.blackduck.integration.detector.result.DetectorResult;
 
 public class DetectorStatusUtil {
     private static final int SUBPROCESS_EXIT_CODE_OOM = 137;

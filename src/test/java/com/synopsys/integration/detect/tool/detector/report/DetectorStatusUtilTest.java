@@ -2,7 +2,7 @@ package com.synopsys.integration.detect.tool.detector.report;
 
 import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detector.base.DetectorStatusCode;
+import com.blackduck.integration.detector.base.DetectorStatusCode;
 
 import org.mockito.Mockito;
 import org.junit.jupiter.api.Test;

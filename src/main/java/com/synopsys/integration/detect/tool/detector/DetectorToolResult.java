@@ -13,7 +13,7 @@ import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryRep
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorToolResult {

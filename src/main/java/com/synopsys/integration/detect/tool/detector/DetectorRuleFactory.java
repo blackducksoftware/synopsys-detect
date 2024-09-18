@@ -54,9 +54,9 @@ import com.blackduck.integration.detectable.detectables.swift.lock.SwiftPackageR
 import com.blackduck.integration.detectable.detectables.xcode.XcodeProjectDetectable;
 import com.blackduck.integration.detectable.detectables.xcode.XcodeWorkspaceDetectable;
 import com.blackduck.integration.detectable.detectables.yarn.YarnLockDetectable;
-import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.rule.DetectorRuleSet;
-import com.synopsys.integration.detector.rule.builder.DetectorRuleSetBuilder;
+import com.blackduck.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.rule.DetectorRuleSet;
+import com.blackduck.integration.detector.rule.builder.DetectorRuleSetBuilder;
 
 public class DetectorRuleFactory {
 

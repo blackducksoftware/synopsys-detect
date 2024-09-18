@@ -18,7 +18,7 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.status.Operation;
 import com.synopsys.integration.detect.workflow.status.StatusType;
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 import com.synopsys.integration.phonehome.PhoneHomeResponse;
 
 public abstract class PhoneHomeManager {

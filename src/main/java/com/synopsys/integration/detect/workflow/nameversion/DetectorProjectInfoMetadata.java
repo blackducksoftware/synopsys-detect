@@ -2,7 +2,7 @@ package com.synopsys.integration.detect.workflow.nameversion;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 
 public class DetectorProjectInfoMetadata {
     @NotNull

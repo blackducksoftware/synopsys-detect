@@ -9,7 +9,7 @@ import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryRep
 import com.synopsys.integration.detect.tool.detector.report.rule.EvaluatedDetectorRuleReport;
 import com.synopsys.integration.detect.workflow.report.util.ReporterUtils;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detector.rule.DetectorRule;
+import com.blackduck.integration.detector.rule.DetectorRule;
 
 public class SearchSummaryReporter {
     public void print(ReportWriter writer, List<DetectorDirectoryReport> reports) {

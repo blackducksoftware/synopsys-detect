@@ -7,7 +7,7 @@ import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 
 public class UniversalToolsResult {
     private final boolean anyFailed;

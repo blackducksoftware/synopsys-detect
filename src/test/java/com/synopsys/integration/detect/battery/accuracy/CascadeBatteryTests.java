@@ -9,7 +9,7 @@ import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.battery.util.assertions.FormattedDetectorAssert;
 import com.synopsys.integration.detect.battery.util.assertions.FormattedOutputAssert;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detector.base.DetectorStatusCode;
+import com.blackduck.integration.detector.base.DetectorStatusCode;
 
 @Tag("battery")
 class CascadeBatteryTests {

@@ -42,7 +42,7 @@ import com.blackduck.integration.detectable.detectable.result.ExceptionDetectabl
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
 import com.blackduck.integration.detectable.util.CycleDetectedException;
-import com.synopsys.integration.detector.base.DetectableCreatable;
+import com.blackduck.integration.detector.base.DetectableCreatable;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.util.NameVersion;
 

@@ -3,7 +3,7 @@ package com.synopsys.integration.detect.battery.util.assertions;
 import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.detect.workflow.report.output.FormattedDetectorOutput;
-import com.synopsys.integration.detector.base.DetectorStatusCode;
+import com.blackduck.integration.detector.base.DetectorStatusCode;
 
 public class FormattedDetectorAssert {
     private final FormattedDetectorOutput detector;

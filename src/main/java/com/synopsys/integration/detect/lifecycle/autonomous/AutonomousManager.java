@@ -20,7 +20,7 @@ import java.util.HashSet;
 
 import com.synopsys.integration.detect.lifecycle.autonomous.model.PackageManagerType;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanType;
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;

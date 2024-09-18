@@ -9,9 +9,9 @@ import com.synopsys.integration.detect.tool.detector.report.util.DetectorReportU
 import com.blackduck.integration.detectable.detectable.explanation.Explanation;
 import com.blackduck.integration.detectable.detectable.result.DetectableResult;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detector.base.DetectorStatusCode;
-import com.synopsys.integration.detector.result.DetectorResult;
-import com.synopsys.integration.detector.rule.DetectableDefinition;
+import com.blackduck.integration.detector.base.DetectorStatusCode;
+import com.blackduck.integration.detector.result.DetectorResult;
+import com.blackduck.integration.detector.rule.DetectableDefinition;
 
 public class AttemptedDetectableReport { //Tosses some info from failed extractions (metaData, unrecognizedpaths, relevant files, may be worth it to keep? might be easier to hold onto the extraction? a passed extraction is kept (see ExtractedDetectableReport)
     private final DetectableDefinition detectable;

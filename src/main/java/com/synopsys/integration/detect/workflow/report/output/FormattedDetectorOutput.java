@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
-import com.synopsys.integration.detector.base.DetectorStatusCode;
+import com.blackduck.integration.detector.base.DetectorStatusCode;
 
 //throw in the Success (only see the success) or All failures
 //throw in the Attempted (thats what is missing)

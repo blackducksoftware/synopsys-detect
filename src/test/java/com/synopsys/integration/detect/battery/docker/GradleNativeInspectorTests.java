@@ -8,7 +8,7 @@ import com.synopsys.integration.detect.battery.docker.util.DetectDockerTestRunne
 import com.synopsys.integration.detect.battery.docker.util.DockerAssertions;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 import com.synopsys.integration.exception.IntegrationException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

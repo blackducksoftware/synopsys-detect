@@ -13,12 +13,12 @@ import com.synopsys.integration.detect.tool.detector.report.detectable.Extracted
 import com.synopsys.integration.detect.tool.detector.report.rule.EvaluatedDetectorRuleReport;
 import com.synopsys.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;
 import com.synopsys.integration.detect.tool.detector.report.rule.NotFoundDetectorRuleReport;
-import com.synopsys.integration.detector.accuracy.detectable.DetectableEvaluationResult;
-import com.synopsys.integration.detector.accuracy.directory.DirectoryEvaluation;
-import com.synopsys.integration.detector.accuracy.entrypoint.DetectorRuleEvaluation;
-import com.synopsys.integration.detector.accuracy.entrypoint.EntryPointFoundResult;
-import com.synopsys.integration.detector.base.DetectorEvaluationUtil;
-import com.synopsys.integration.detector.rule.DetectableDefinition;
+import com.blackduck.integration.detector.accuracy.detectable.DetectableEvaluationResult;
+import com.blackduck.integration.detector.accuracy.directory.DirectoryEvaluation;
+import com.blackduck.integration.detector.accuracy.entrypoint.DetectorRuleEvaluation;
+import com.blackduck.integration.detector.accuracy.entrypoint.EntryPointFoundResult;
+import com.blackduck.integration.detector.base.DetectorEvaluationUtil;
+import com.blackduck.integration.detector.rule.DetectableDefinition;
 
 public class DetectorReporter {
     private static final String DETECTOR_ERROR_MESSAGE = "Something has gone wrong in the detector system, please contact support.";

@@ -7,7 +7,7 @@ import com.synopsys.integration.detect.battery.util.DetectOutput;
 import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.battery.util.assertions.FormattedOutputAssert;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detector.base.DetectorStatusCode;
+import com.blackduck.integration.detector.base.DetectorStatusCode;
 
 @Tag("battery")
 class CascadeNestingBatteryTests { //TODO(detector-tests): Way too much noise in the test setup, name should be optional, prefix should be optional. Tools value assumed, directory auto-generated.

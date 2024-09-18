@@ -33,8 +33,8 @@ import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.blackduck.integration.detectable.detectable.explanation.Explanation;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detector.base.DetectorStatusCode;
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorStatusCode;
+import com.blackduck.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class FormattedOutputManager {

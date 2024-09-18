@@ -3,7 +3,7 @@ package com.synopsys.integration.detect.workflow.profiling;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 
 public class DetectorTimings {
     private final Map<DetectorType, Long> aggregateTimings;

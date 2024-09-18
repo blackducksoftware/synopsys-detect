@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.detect.workflow.report.output.FormattedDetectorOutput;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOutput;
-import com.synopsys.integration.detector.base.DetectorStatusCode;
+import com.blackduck.integration.detector.base.DetectorStatusCode;
 
 public class FormattedOutputAssert {
     private final FormattedOutput statusJson;

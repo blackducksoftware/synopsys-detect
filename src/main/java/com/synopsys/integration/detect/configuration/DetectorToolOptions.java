@@ -2,7 +2,7 @@ package com.synopsys.integration.detect.configuration;
 
 import java.util.List;
 
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 
 public class DetectorToolOptions {
     private final String projectBomTool;

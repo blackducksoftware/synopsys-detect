@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.tool.detector.extraction;
 
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 
 public class ExtractionId {
     private final Integer id;

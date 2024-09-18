@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
 import com.synopsys.integration.detect.workflow.profiling.Timing;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 
 public class ProfilingReporter {
     private static final int PADDING_LENGTH = 30;

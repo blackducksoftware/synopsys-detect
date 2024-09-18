@@ -8,7 +8,7 @@ import com.blackduck.integration.detectable.detectable.explanation.Explanation;
 import com.blackduck.integration.detectable.detectable.result.DetectableResult;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
-import com.synopsys.integration.detector.rule.DetectableDefinition;
+import com.blackduck.integration.detector.rule.DetectableDefinition;
 
 public class ExtractedDetectableReport {
     private final DetectableDefinition detectable;

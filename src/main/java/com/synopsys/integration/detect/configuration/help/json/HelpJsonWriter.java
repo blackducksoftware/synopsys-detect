@@ -23,7 +23,7 @@ import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDet
 import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonExitCode;
 import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonOption;
 import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonOptionDeprecatedValue;
-import com.synopsys.integration.detector.base.DetectorStatusCode;
+import com.blackduck.integration.detector.base.DetectorStatusCode;
 
 public class HelpJsonWriter {
     private final Logger logger = LoggerFactory.getLogger(HelpJsonWriter.class);

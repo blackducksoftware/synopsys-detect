@@ -3,7 +3,7 @@ package com.synopsys.integration.detect;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 
 public class DetectorTypeTest {
     @Test

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.synopsys.integration.detect.tool.detector.report.detectable.AttemptedDetectableReport;
 import com.synopsys.integration.detect.tool.detector.report.detectable.ExtractedDetectableReport;
-import com.synopsys.integration.detector.rule.DetectorRule;
+import com.blackduck.integration.detector.rule.DetectorRule;
 
 public class ExtractedDetectorRuleReport extends EvaluatedDetectorRuleReport {
     private final ExtractedDetectableReport extractedDetectable;

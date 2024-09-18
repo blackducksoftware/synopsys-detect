@@ -6,7 +6,7 @@ import java.util.Set;
 
 import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationNamesResult;
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 
 public class BdioResult {
     private final List<UploadTarget> uploadTargets;

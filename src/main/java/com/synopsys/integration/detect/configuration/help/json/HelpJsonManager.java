@@ -11,10 +11,10 @@ import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonDet
 import com.synopsys.integration.detect.configuration.help.json.model.HelpJsonSearchRule;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.factory.DetectDetectableFactory;
-import com.synopsys.integration.detector.rule.DetectableDefinition;
-import com.synopsys.integration.detector.rule.DetectorRule;
-import com.synopsys.integration.detector.rule.DetectorRuleSet;
-import com.synopsys.integration.detector.rule.EntryPoint;
+import com.blackduck.integration.detector.rule.DetectableDefinition;
+import com.blackduck.integration.detector.rule.DetectorRule;
+import com.blackduck.integration.detector.rule.DetectorRuleSet;
+import com.blackduck.integration.detector.rule.EntryPoint;
 
 public class HelpJsonManager {
     private final Gson gson;

@@ -19,8 +19,8 @@ import com.synopsys.integration.detect.tool.detector.report.detectable.Extracted
 import com.synopsys.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;
 import com.blackduck.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.rule.DetectorRule;
+import com.blackduck.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.rule.DetectorRule;
 
 class DetectorGitProjectInfoDeciderTest {
     private static final int ROOT_LEVEL = 0;

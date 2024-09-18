@@ -38,15 +38,15 @@ import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.blackduck.integration.detectable.detectable.DetectableAccuracyType;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detector.accuracy.directory.DirectoryEvaluation;
-import com.synopsys.integration.detector.accuracy.directory.DirectoryEvaluator;
-import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.finder.DirectoryFindResult;
-import com.synopsys.integration.detector.finder.DirectoryFinder;
-import com.synopsys.integration.detector.finder.DirectoryFinderOptions;
-import com.synopsys.integration.detector.rule.DetectableDefinition;
-import com.synopsys.integration.detector.rule.DetectorRule;
-import com.synopsys.integration.detector.rule.DetectorRuleSet;
+import com.blackduck.integration.detector.accuracy.directory.DirectoryEvaluation;
+import com.blackduck.integration.detector.accuracy.directory.DirectoryEvaluator;
+import com.blackduck.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.finder.DirectoryFindResult;
+import com.blackduck.integration.detector.finder.DirectoryFinder;
+import com.blackduck.integration.detector.finder.DirectoryFinderOptions;
+import com.blackduck.integration.detector.rule.DetectableDefinition;
+import com.blackduck.integration.detector.rule.DetectorRule;
+import com.blackduck.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorTool {

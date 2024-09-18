@@ -64,9 +64,9 @@ import com.synopsys.integration.detect.workflow.blackduck.project.options.Projec
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
-import com.synopsys.integration.detector.accuracy.search.SearchOptions;
-import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.finder.DirectoryFinderOptions;
+import com.blackduck.integration.detector.accuracy.search.SearchOptions;
+import com.blackduck.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.finder.DirectoryFinderOptions;
 import com.synopsys.integration.rest.credentials.Credentials;
 import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;

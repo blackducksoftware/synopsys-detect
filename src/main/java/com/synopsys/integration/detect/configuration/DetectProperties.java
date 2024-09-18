@@ -67,7 +67,7 @@ import com.blackduck.integration.detectable.detectables.pipenv.parse.PipenvDepen
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.blackduck.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.blackduck.integration.detectable.detectables.yarn.YarnDependencyType;
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
 
 // java:S1192: Sonar wants constants defined for fromVersion when setting property info.

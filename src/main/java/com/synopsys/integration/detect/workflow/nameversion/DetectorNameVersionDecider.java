@@ -21,7 +21,7 @@ import com.synopsys.integration.detect.workflow.nameversion.decision.PreferredDe
 import com.synopsys.integration.detect.workflow.nameversion.decision.TooManyPreferredDetectorTypesFoundDecision;
 import com.synopsys.integration.detect.workflow.nameversion.decision.UniqueDetectorDecision;
 import com.synopsys.integration.detect.workflow.nameversion.decision.UniqueDetectorNotFoundDecision;
-import com.synopsys.integration.detector.base.DetectorType;
+import com.blackduck.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorNameVersionDecider {
