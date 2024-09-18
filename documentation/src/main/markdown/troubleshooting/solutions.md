@@ -16,9 +16,9 @@ The response to this command should be similar to the following:
 ```
 {
 "properties" : {
-"DETECT_LATEST" : [ "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect/10.0.0/detect-10.0.0.jar" ]
+"DETECT_LATEST_10" : [ "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect/10.0.0/detect-10.0.0.jar" ]
 },
-"uri" : "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect"
+"uri" : "https://repo.blackduck.com/api/storage/bds-integrations-release/com/blackduck/integration/detect"
 }
 ```
 When that command does not successfully return a value for property DETECT_LATEST, detect10.sh reports:
