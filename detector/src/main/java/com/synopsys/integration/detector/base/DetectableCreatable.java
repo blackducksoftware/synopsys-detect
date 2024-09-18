@@ -1,7 +1,7 @@
 package com.synopsys.integration.detector.base;
 
-import com.synopsys.integration.detectable.Detectable;
-import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.blackduck.integration.detectable.Detectable;
+import com.blackduck.integration.detectable.DetectableEnvironment;
 
 @FunctionalInterface
 public interface DetectableCreatable {

@@ -17,8 +17,8 @@ import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.synopsys.integration.detect.tool.detector.report.detectable.ExtractedDetectableReport;
 import com.synopsys.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;
-import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
-import com.synopsys.integration.detectable.extraction.Extraction;
+import com.blackduck.integration.detectable.detectables.git.cli.GitCliExtractor;
+import com.blackduck.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.DetectorRule;
 

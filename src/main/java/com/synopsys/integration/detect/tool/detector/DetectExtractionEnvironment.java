@@ -3,7 +3,7 @@ package com.synopsys.integration.detect.tool.detector;
 import java.io.File;
 
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionId;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
 
 public class DetectExtractionEnvironment extends ExtractionEnvironment {
     private final ExtractionId extractionId;

@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
+import com.blackduck.integration.detectable.ExecutableTarget;
+import com.blackduck.integration.detectable.detectable.exception.DetectableException;
+import com.blackduck.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 
 public class OnlineNugetInspectorResolver implements NugetInspectorResolver {
     private static final String INSPECTOR_NAME = "detect-nuget-inspector";

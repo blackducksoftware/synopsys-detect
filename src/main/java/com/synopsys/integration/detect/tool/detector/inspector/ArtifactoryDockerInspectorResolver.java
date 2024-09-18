@@ -18,10 +18,10 @@ import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
-import com.synopsys.integration.detectable.detectables.docker.DockerInspectorInfo;
-import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
+import com.blackduck.integration.detectable.detectable.exception.DetectableException;
+import com.blackduck.integration.detectable.detectables.docker.DockerDetectableOptions;
+import com.blackduck.integration.detectable.detectables.docker.DockerInspectorInfo;
+import com.blackduck.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolver {

@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
-import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
+import com.blackduck.integration.detectable.ExecutableTarget;
+import com.blackduck.integration.detectable.detectable.exception.DetectableException;
+import com.blackduck.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.util.OperatingSystemType;
 
 public class AirgapNugetInspectorResolver implements NugetInspectorResolver {

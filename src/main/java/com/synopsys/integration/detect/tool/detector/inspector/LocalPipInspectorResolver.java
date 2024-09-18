@@ -9,8 +9,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
+import com.blackduck.integration.detectable.detectable.exception.DetectableException;
+import com.blackduck.integration.detectable.detectable.inspector.PipInspectorResolver;
 
 public class LocalPipInspectorResolver implements PipInspectorResolver {
     public static final String INSPECTOR_NAME = "pip-inspector.py";

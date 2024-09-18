@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.accuracy.detectable.DetectableEvaluationResult;
 import com.synopsys.integration.detector.accuracy.entrypoint.DetectorRuleEvaluation;
 import com.synopsys.integration.detector.accuracy.entrypoint.DetectorRuleEvaluator;

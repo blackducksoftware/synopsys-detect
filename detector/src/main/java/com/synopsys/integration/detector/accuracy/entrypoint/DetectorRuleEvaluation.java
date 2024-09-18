@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.blackduck.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectorRuleEvaluation {

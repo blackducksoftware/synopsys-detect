@@ -15,12 +15,12 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.ExecutableUtils;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
+import com.blackduck.integration.detectable.DetectableEnvironment;
+import com.blackduck.integration.detectable.ExecutableTarget;
+import com.blackduck.integration.detectable.ExecutableUtils;
+import com.blackduck.integration.detectable.detectable.exception.DetectableException;
+import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.blackduck.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 

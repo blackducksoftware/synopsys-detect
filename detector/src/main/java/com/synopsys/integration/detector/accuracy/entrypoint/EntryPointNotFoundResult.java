@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.blackduck.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.EntryPoint;
 

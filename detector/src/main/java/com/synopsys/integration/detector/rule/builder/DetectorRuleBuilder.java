@@ -3,7 +3,7 @@ package com.synopsys.integration.detector.rule.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.synopsys.integration.detectable.Detectable;
+import com.blackduck.integration.detectable.Detectable;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.EntryPoint;

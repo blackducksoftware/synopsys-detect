@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.tool.detector.inspector.projectinspector
 
 import java.io.File;
 
+import com.blackduck.integration.detectable.detectable.inspector.ProjectInspectorResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,10 +10,10 @@ import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.tool.detector.inspector.projectinspector.installer.ProjectInspectorInstaller;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.blackduck.integration.detectable.ExecutableTarget;
+import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 
-public class OnlineProjectInspectorResolver implements com.synopsys.integration.detectable.detectable.inspector.ProjectInspectorResolver {
+public class OnlineProjectInspectorResolver implements ProjectInspectorResolver {
     private static final String INSTALLED_TOOL_JSON_KEY = "project-inspector";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

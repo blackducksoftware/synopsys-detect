@@ -10,7 +10,7 @@ import com.synopsys.integration.detect.tool.detector.extraction.ExtractionId;
 import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 
 public class CodeLocationReporter {
     public void writeCodeLocationReport(

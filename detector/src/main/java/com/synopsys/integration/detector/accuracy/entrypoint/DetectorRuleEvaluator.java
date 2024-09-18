@@ -8,10 +8,10 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.Detectable;
-import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.blackduck.integration.detectable.Detectable;
+import com.blackduck.integration.detectable.DetectableEnvironment;
+import com.blackduck.integration.detectable.detectable.result.DetectableResult;
+import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.accuracy.detectable.DetectableEvaluationResult;
 import com.synopsys.integration.detector.accuracy.detectable.DetectableEvaluator;
 import com.synopsys.integration.detector.accuracy.search.SearchEnvironment;

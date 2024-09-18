@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
-import com.synopsys.integration.detectable.extraction.Extraction;
+import com.blackduck.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 

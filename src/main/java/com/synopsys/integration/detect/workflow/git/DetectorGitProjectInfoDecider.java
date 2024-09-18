@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
 import com.synopsys.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.synopsys.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;
-import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
+import com.blackduck.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detector.base.DetectorType;
 
 public class DetectorGitProjectInfoDecider {

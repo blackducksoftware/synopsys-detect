@@ -10,9 +10,9 @@ import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.ExecutableUtils;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
+import com.blackduck.integration.detectable.ExecutableTarget;
+import com.blackduck.integration.detectable.ExecutableUtils;
+import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.Executable;
 

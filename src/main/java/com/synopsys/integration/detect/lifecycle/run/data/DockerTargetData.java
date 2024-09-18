@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
-import com.synopsys.integration.detectable.extraction.Extraction;
+import com.blackduck.integration.detectable.detectables.docker.DockerExtractor;
+import com.blackduck.integration.detectable.extraction.Extraction;
 
 public class DockerTargetData {
 
