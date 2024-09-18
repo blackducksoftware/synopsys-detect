@@ -1,5 +1,5 @@
-import com.synopsys.integration.detect.battery.UpdateBatteryTask
-import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
+import com.blackduck.integration.detect.battery.UpdateBatteryTask
+import com.blackduck.integration.detect.verification.VerifyBlackDuckDetectTask
 
 
 buildscript {
@@ -91,7 +91,7 @@ tasks.named("bootJar") {
     version = rootProject.version
     manifest {
         attributes 'Main-Class': "org.springframework.boot.loader.JarLauncher"
-        attributes 'Start-Class': "com.synopsys.integration.detect.Application"
+        attributes 'Start-Class': "com.blackduck.integration.detect.Application"
     }
     classpath sourceSets.main.runtimeClasspath
 }
@@ -209,7 +209,7 @@ dependencies {
     testImplementation 'com.github.docker-java:docker-java-transport-httpclient5:3.3.0'
 }
 
-springBoot { mainClass = 'com.synopsys.integration.detect.Application' }
+springBoot { mainClass = 'com.blackduck.integration.detect.Application' }
 
 if (project.tasks.findByName('testBattery')) {
     tasks['testBattery'].doFirst {
@@ -228,7 +228,7 @@ task runDetect(type: JavaExec) {
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
-    main = 'com.synopsys.integration.detect.Application'
+    main = 'com.blackduck.integration.detect.Application'
     args = ['--detect.risk.report.pdf=true']
 }
 
@@ -266,7 +266,7 @@ task createAirGapZip(type: JavaExec) {
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
-    main = 'com.synopsys.integration.detect.Application'
+    main = 'com.blackduck.integration.detect.Application'
     args = [findGradle(), "--detect.output.path=${buildDir}/libs/", '-z']
     standardOutput = new ByteArrayOutputStream()
     doLast {
@@ -292,7 +292,7 @@ task createAirGapZipWithoutDocker(type: JavaExec) {
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
-    main = 'com.synopsys.integration.detect.Application'
+    main = 'com.blackduck.integration.detect.Application'
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZipWithoutDocker.ext.airGapPath = parseAirGapZipPath(standardOutput)
@@ -329,7 +329,7 @@ task helpJson(type: JavaExec) {
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
-    main = 'com.synopsys.integration.detect.Application'
+    main = 'com.blackduck.integration.detect.Application'
     args = ['--helpjson']
 }
 

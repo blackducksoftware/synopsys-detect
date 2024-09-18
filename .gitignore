@@ -23,7 +23,7 @@ swip.yml
 .swip/
 .swip-Coverity-2018.12.zip
 
-synopsys-detect-*-help.json
+detect-*-help.json
 
 docker-test/
 *.hprof
