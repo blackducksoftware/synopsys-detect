@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.blackduck.integration.detectable.annotations.UnitTest;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipFreeze;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipFreezeEntry;
-import com.blackduck.integration.detectable.detectables.pipenv.build.parser.PipenvFreezeParser;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.model.PipFreeze;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.model.PipFreezeEntry;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.parser.PipenvFreezeParser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

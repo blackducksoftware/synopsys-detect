@@ -3,7 +3,7 @@ package com.blackduck.integration.detectable.detectables.pip.inspector.functiona
 import java.io.IOException;
 import java.nio.file.Path;
 
-import com.blackduck.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.PipenvDetectableOptions;
 import com.blackduck.integration.detectable.functional.DetectableFunctionalTest;
 import com.blackduck.integration.detectable.util.graph.NameVersionGraphAssert;
 import org.jetbrains.annotations.NotNull;

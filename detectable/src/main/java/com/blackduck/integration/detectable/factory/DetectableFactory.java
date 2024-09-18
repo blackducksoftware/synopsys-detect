@@ -59,12 +59,12 @@ import com.blackduck.integration.detectable.detectables.npm.lockfile.parse.NpmLo
 import com.blackduck.integration.detectable.detectables.nuget.parse.NugetInspectorParser;
 import com.blackduck.integration.detectable.detectables.packagist.parse.PackagistParser;
 import com.blackduck.integration.detectable.detectables.pip.inspector.parser.PipInspectorTreeParser;
-import com.blackduck.integration.detectable.detectables.pipenv.build.PipenvDetectable;
-import com.blackduck.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
-import com.blackduck.integration.detectable.detectables.pipenv.build.PipenvExtractor;
-import com.blackduck.integration.detectable.detectables.pipenv.build.parser.PipEnvJsonGraphParser;
-import com.blackduck.integration.detectable.detectables.pipenv.build.parser.PipenvFreezeParser;
-import com.blackduck.integration.detectable.detectables.pipenv.build.parser.PipenvTransformer;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.PipenvDetectable;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.PipenvDetectableOptions;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.PipenvExtractor;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.parser.PipEnvJsonGraphParser;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.parser.PipenvFreezeParser;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.parser.PipenvTransformer;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.process.PnpmLockYamlParserInitial;
 import com.blackduck.integration.detectable.detectables.poetry.parser.PoetryLockParser;
 import com.blackduck.integration.detectable.detectables.poetry.parser.ToolPoetrySectionParser;
@@ -76,7 +76,7 @@ import com.blackduck.integration.detectable.detectables.rubygems.gemspec.Gemspec
 import com.blackduck.integration.detectable.detectables.rubygems.gemspec.GemspecParseExtractor;
 import com.blackduck.integration.detectable.detectables.rubygems.gemspec.parse.GemspecLineParser;
 import com.blackduck.integration.detectable.detectables.rubygems.gemspec.parse.GemspecParser;
-import com.blackduck.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
+import com.blackduck.integration.detectable.detectables.setuptools.buildexe.SetupToolsBuildDetectable;
 import com.blackduck.integration.detectable.detectables.setuptools.buildless.SetupToolsBuildlessDetectable;
 import com.blackduck.integration.detectable.detectables.setuptools.transform.SetupToolsGraphTransformer;
 import com.blackduck.integration.detectable.detectables.swift.cli.SwiftCliDetectable;

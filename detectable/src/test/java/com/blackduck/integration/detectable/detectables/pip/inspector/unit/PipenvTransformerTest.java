@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.blackduck.integration.detectable.annotations.UnitTest;
-import com.blackduck.integration.detectable.detectables.pipenv.build.parser.PipenvTransformer;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.parser.PipenvTransformer;
 import com.blackduck.integration.detectable.util.graph.NameVersionGraphAssert;
 import org.junit.jupiter.api.Test;
 
@@ -13,11 +13,11 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipFreeze;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipFreezeEntry;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipenvGraph;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipenvGraphDependency;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipenvGraphEntry;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.model.PipFreeze;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.model.PipFreezeEntry;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.model.PipenvGraph;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.model.PipenvGraphDependency;
+import com.blackduck.integration.detectable.detectables.pipenv.buildexe.model.PipenvGraphEntry;
 
 @UnitTest
 public class PipenvTransformerTest {
