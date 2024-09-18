@@ -10,7 +10,7 @@ detect10.sh fails with: DETECT_SOURCE was not set or computed correctly, please 
 
 detect10.sh is trying to execute this command:
 ````
-curl --silent --header \"X-Result-Detail: info\" https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect?properties=DETECT_LATEST
+curl --silent --header \"X-Result-Detail: info\" https://repo.blackduck.com/api/storage/bds-integrations-release/com/blackduck/integration/detect?properties=DETECT_LATEST_10
 ````
 The response to this command should be similar to the following:
 ```
