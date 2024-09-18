@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.blackduck.integration'
 
-version = '10.0.0-SIGQA13-SNAPSHOT'
+version = '10.0.0-SIGQA14-SNAPSHOT'
 
 apply plugin: 'com.blackduck.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -54,15 +54,15 @@ final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
 repositories {
     println "Checking if environment property SNPS_INTERNAL_ARTIFACTORY is configured: ${internalRepoHost}"
     maven {
-        url = uri("${internalRepoHost}/artifactory/bds-integrations-release")
+        url = uri("${internalRepoHost}/artifactory/bds-integrations-release-not-mirrored")
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
-        url = uri("${internalRepoHost}/artifactory/bds-integrations-snapshot")
+        url = uri("${internalRepoHost}/artifactory/bds-integrations-snapshot-not-mirrored")
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
-        url = uri("${internalRepoHost}/artifactory/bds-integration-placeholder-release")
+        url = uri("${internalRepoHost}/artifactory/bds-integration-placeholder-release-not-mirrored")
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
