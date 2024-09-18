@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.common.util.Bdo;
+import com.blackduck.integration.common.util.Bdo;
 
 // TODO: Finish testing this class.
 class BdoTest {

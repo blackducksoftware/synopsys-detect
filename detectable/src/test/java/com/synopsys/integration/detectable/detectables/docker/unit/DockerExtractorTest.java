@@ -21,7 +21,7 @@ import org.mockito.Mockito;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.common.util.finder.FileFinder;
+import com.blackduck.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;

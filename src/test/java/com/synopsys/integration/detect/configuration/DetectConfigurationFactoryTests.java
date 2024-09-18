@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.common.util.Bdo;
+import com.blackduck.integration.common.util.Bdo;
 import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorSearchExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;

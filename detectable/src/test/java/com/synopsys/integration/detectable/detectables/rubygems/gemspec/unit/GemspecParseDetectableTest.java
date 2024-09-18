@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.common.util.finder.FileFinder;
+import com.blackduck.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;

@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
-import com.synopsys.integration.common.util.finder.FileFinder;
+import com.blackduck.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;

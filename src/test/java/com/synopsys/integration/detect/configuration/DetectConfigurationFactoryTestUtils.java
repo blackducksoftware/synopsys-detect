@@ -9,7 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.mockito.Mockito;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.common.util.Bds;
+import com.blackduck.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;

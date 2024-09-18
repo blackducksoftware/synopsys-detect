@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.BuildImageCmd;
 import com.github.dockerjava.api.command.BuildImageResultCallback;
-import com.synopsys.integration.common.util.Bds;
+import com.blackduck.integration.common.util.Bds;
 import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.commontest.FileUtil;
 

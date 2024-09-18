@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.jetbrains.annotations.NotNull;
 
-import com.synopsys.integration.common.util.finder.FileFinder;
+import com.blackduck.integration.common.util.finder.FileFinder;
 
 public class MockFileFinder implements FileFinder {
 

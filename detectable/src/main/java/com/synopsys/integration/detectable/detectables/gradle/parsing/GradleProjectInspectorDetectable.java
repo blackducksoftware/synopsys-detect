@@ -3,7 +3,7 @@ package com.synopsys.integration.detectable.detectables.gradle.parsing;
 import java.io.IOException;
 import java.util.Collections;
 
-import com.synopsys.integration.common.util.finder.FileFinder;
+import com.blackduck.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;

@@ -20,7 +20,7 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
-import com.synopsys.integration.common.util.Bdo;
+import com.blackduck.integration.common.util.Bdo;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.synopsys.integration.exception.IntegrationException;

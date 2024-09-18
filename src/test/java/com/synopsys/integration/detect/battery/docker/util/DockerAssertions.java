@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.Set;
 
-import com.synopsys.integration.common.util.Bds;
+import com.blackduck.integration.common.util.Bds;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.PackageManagerType;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanSettings;
 import com.synopsys.integration.detect.lifecycle.autonomous.model.ScanType;

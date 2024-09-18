@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.common.util.Bds;
+import com.blackduck.integration.common.util.Bds;
 import com.synopsys.integration.configuration.property.Property;
 
 @Disabled // For now these tests are not actually helping anyone. Will be tagged with "lint" in the future.

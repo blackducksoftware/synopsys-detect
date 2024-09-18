@@ -1,6 +1,6 @@
 package com.synopsys.integration.detectable.detectables.conan.cli;
 
-import com.synopsys.integration.common.util.finder.FileFinder;
+import com.blackduck.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.DetectableAccuracyType;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;

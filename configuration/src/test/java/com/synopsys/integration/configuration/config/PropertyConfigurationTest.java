@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.common.util.Bds;
+import com.blackduck.integration.common.util.Bds;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.parse.ValueParser;
 import com.synopsys.integration.configuration.property.Property;

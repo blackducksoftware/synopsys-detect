@@ -11,8 +11,8 @@ import com.synopsys.integration.detectable.detectables.maven.parsing.MavenProjec
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.common.util.Bds;
-import com.synopsys.integration.common.util.parse.CommandParser;
+import com.blackduck.integration.common.util.Bds;
+import com.blackduck.integration.common.util.parse.CommandParser;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;

@@ -1,7 +1,7 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import com.google.gson.JsonSyntaxException;
-import com.synopsys.integration.common.util.finder.FileFinder;
+import com.blackduck.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;

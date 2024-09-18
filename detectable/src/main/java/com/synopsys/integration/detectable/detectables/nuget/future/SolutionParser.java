@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.common.util.Bds;
+import com.blackduck.integration.common.util.Bds;
 
 public class SolutionParser {
     public List<ParsedProject> projectsFromSolution(List<String> solutionLines) {

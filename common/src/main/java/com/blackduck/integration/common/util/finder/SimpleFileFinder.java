@@ -1,4 +1,4 @@
-package com.synopsys.integration.common.util.finder;
+package com.blackduck.integration.common.util.finder;
 
 import java.io.File;
 import java.io.IOException;

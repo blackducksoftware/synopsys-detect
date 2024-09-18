@@ -1,4 +1,4 @@
-package com.synopsys.integration.common.util.parse;
+package com.blackduck.integration.common.util.parse;
 
 import java.util.ArrayList;
 import java.util.List;

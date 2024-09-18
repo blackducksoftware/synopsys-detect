@@ -3,14 +3,13 @@ package com.synopsys.integration.detectable.detectables.poetry.unit;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.common.util.finder.SimpleFileFinder;
+import com.blackduck.integration.common.util.finder.FileFinder;
+import com.blackduck.integration.common.util.finder.SimpleFileFinder;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;

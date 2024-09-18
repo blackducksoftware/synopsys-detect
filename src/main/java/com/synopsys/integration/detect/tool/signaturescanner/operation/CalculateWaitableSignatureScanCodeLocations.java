@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
-import com.synopsys.integration.common.util.Bds;
+import com.blackduck.integration.common.util.Bds;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerCodeLocationResult;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerReport;

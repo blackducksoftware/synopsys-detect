@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.common.util.parse.CommandParser;
+import com.blackduck.integration.common.util.parse.CommandParser;
 
 public class MavenCliExtractorOptions {
     private final static String[] THREAD_SPECIFYING_ARGUMENT_PREFIXES = {

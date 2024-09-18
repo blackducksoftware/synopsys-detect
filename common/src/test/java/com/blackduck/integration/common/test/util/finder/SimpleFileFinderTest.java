@@ -1,4 +1,4 @@
-package com.synopsys.integration.common.test.util.finder;
+package com.blackduck.integration.common.test.util.finder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
-import com.synopsys.integration.common.util.finder.SimpleFileFinder;
+import com.blackduck.integration.common.util.finder.SimpleFileFinder;
 
 public class SimpleFileFinderTest {
 
