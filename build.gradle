@@ -48,7 +48,7 @@ def createBatteryPath() {
 
 def final locatorGroup = "com.blackduck.integration"
 def final locatorModule = "component-locator"
-final def externalRepoHost = "https://sig-repo.synopsys.com"
+final def externalRepoHost = "https://repo.blackduck.com"
 final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
 
 repositories {
