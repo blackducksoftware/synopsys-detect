@@ -2,7 +2,7 @@ package com.synopsys.integration.detect.configuration.validation;
 
 import java.util.List;
 
-import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueUsage;
+import com.blackduck.integration.configuration.property.deprecation.DeprecatedValueUsage;
 
 public class ValueDeprecation {
     private final String propertyKey;

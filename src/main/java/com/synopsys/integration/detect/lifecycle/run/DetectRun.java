@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
+import com.blackduck.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.autonomous.AutonomousManager;

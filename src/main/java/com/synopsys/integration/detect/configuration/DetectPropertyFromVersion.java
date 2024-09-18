@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.configuration;
 
-import com.synopsys.integration.configuration.property.PropertyVersion;
+import com.blackduck.integration.configuration.property.PropertyVersion;
 
 public enum DetectPropertyFromVersion implements PropertyVersion {
     VERSION_3_0_0("3.0.0"),

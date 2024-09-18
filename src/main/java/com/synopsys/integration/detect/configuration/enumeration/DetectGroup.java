@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.util.Group;
+import com.blackduck.integration.configuration.util.Group;
 
 public enum DetectGroup implements Group {
     //Super Groups

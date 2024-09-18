@@ -12,10 +12,10 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
-import com.synopsys.integration.configuration.source.MapPropertySource;
-import com.synopsys.integration.configuration.source.PropertySource;
+import com.blackduck.integration.configuration.config.PropertyConfiguration;
+import com.blackduck.integration.configuration.property.types.path.SimplePathResolver;
+import com.blackduck.integration.configuration.source.MapPropertySource;
+import com.blackduck.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 
 public class DetectConfigurationTest {

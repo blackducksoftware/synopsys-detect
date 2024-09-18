@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.configuration.property.Property;
-import com.synopsys.integration.configuration.source.MapPropertySource;
+import com.blackduck.integration.configuration.property.Property;
+import com.blackduck.integration.configuration.source.MapPropertySource;
 
 public class InteractivePropertySourceBuilder {
     private final Map<Property, InteractiveOption> propertyToOptionMap = new HashMap<>();

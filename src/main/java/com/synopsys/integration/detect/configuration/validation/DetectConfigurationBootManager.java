@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
-import com.synopsys.integration.configuration.property.base.TypedProperty;
-import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueUsage;
+import com.blackduck.integration.configuration.config.PropertyConfiguration;
+import com.blackduck.integration.configuration.help.PropertyConfigurationHelpContext;
+import com.blackduck.integration.configuration.property.base.TypedProperty;
+import com.blackduck.integration.configuration.property.deprecation.DeprecatedValueUsage;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;

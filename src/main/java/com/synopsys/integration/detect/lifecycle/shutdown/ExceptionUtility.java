@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
 import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
-import com.synopsys.integration.configuration.config.InvalidPropertyException;
+import com.blackduck.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.OperationException;

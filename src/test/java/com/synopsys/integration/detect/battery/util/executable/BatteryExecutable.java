@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.battery.util.executable;
 
-import com.synopsys.integration.configuration.property.Property;
+import com.blackduck.integration.configuration.property.Property;
 
 public class BatteryExecutable {
     public Property detectProperty = null;

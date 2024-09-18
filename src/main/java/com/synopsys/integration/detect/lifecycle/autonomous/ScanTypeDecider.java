@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.lifecycle.autonomous;
 
-import com.synopsys.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
+import com.blackduck.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;

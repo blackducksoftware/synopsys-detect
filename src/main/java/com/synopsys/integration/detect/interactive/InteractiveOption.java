@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.interactive;
 
-import com.synopsys.integration.configuration.property.Property;
+import com.blackduck.integration.configuration.property.Property;
 
 public class InteractiveOption {
     private Property detectProperty;

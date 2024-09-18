@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.configuration.help.yaml;
 
-import com.synopsys.integration.configuration.property.Property;
+import com.blackduck.integration.configuration.property.Property;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;

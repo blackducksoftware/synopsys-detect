@@ -8,8 +8,8 @@ import java.io.File;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.util.ConfigTestUtils;
+import com.blackduck.integration.configuration.config.PropertyConfiguration;
+import com.blackduck.integration.configuration.util.ConfigTestUtils;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;

@@ -13,18 +13,18 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Collections;
 
-import com.synopsys.integration.configuration.property.types.enumallnone.list.AllEnumList;
-import com.synopsys.integration.configuration.property.types.path.PathValue;
+import com.blackduck.integration.configuration.property.types.enumallnone.list.AllEnumList;
+import com.blackduck.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.help.yaml.HelpYamlWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
-import com.synopsys.integration.configuration.source.MapPropertySource;
-import com.synopsys.integration.configuration.source.PropertySource;
+import com.blackduck.integration.configuration.config.PropertyConfiguration;
+import com.blackduck.integration.configuration.property.types.path.SimplePathResolver;
+import com.blackduck.integration.configuration.source.MapPropertySource;
+import com.blackduck.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectPropertyConfiguration;

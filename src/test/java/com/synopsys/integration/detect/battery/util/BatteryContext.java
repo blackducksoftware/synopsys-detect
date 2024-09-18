@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.zeroturnaround.zip.ZipUtil;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.configuration.property.Property;
+import com.blackduck.integration.configuration.property.Property;
 import com.synopsys.integration.detect.battery.util.executable.BatteryExecutable;
 import com.synopsys.integration.detect.battery.util.executable.BatteryExecutableInfo;
 import com.synopsys.integration.detect.battery.util.executable.ExitCodeExecutableCreator;

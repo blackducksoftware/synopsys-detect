@@ -3,7 +3,7 @@ package com.synopsys.integration.detect.battery.accuracy;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
+import com.blackduck.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
 import com.synopsys.integration.detect.battery.util.DetectOutput;
 import com.synopsys.integration.detect.battery.util.DetectorBatteryTestRunner;
 import com.synopsys.integration.detect.battery.util.assertions.FormattedDetectorAssert;

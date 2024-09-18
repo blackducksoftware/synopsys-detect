@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.configuration.property.Property;
-import com.synopsys.integration.configuration.property.deprecation.DeprecatedValueInfo;
-import com.synopsys.integration.configuration.util.Group;
+import com.blackduck.integration.configuration.property.Property;
+import com.blackduck.integration.configuration.property.deprecation.DeprecatedValueInfo;
+import com.blackduck.integration.configuration.util.Group;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 
 public class HelpPrinter {

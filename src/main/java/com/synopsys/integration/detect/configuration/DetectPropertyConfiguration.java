@@ -9,15 +9,15 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.property.base.NullableProperty;
-import com.synopsys.integration.configuration.property.base.PassthroughProperty;
-import com.synopsys.integration.configuration.property.base.TypedProperty;
-import com.synopsys.integration.configuration.property.base.ValuedProperty;
-import com.synopsys.integration.configuration.property.types.path.NullablePathProperty;
-import com.synopsys.integration.configuration.property.types.path.PathListProperty;
-import com.synopsys.integration.configuration.property.types.path.PathProperty;
-import com.synopsys.integration.configuration.property.types.path.PathResolver;
+import com.blackduck.integration.configuration.config.PropertyConfiguration;
+import com.blackduck.integration.configuration.property.base.NullableProperty;
+import com.blackduck.integration.configuration.property.base.PassthroughProperty;
+import com.blackduck.integration.configuration.property.base.TypedProperty;
+import com.blackduck.integration.configuration.property.base.ValuedProperty;
+import com.blackduck.integration.configuration.property.types.path.NullablePathProperty;
+import com.blackduck.integration.configuration.property.types.path.PathListProperty;
+import com.blackduck.integration.configuration.property.types.path.PathProperty;
+import com.blackduck.integration.configuration.property.types.path.PathResolver;
 
 public class DetectPropertyConfiguration {
     private final PropertyConfiguration propertyConfiguration;

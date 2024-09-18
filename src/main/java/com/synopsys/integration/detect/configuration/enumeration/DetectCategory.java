@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.configuration.enumeration;
 
-import com.synopsys.integration.configuration.util.Category;
+import com.blackduck.integration.configuration.util.Category;
 
 public class DetectCategory extends Category {
     public static final DetectCategory Advanced = new DetectCategory("advanced");

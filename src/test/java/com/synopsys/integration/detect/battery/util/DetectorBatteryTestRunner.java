@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.configuration.property.Property;
+import com.blackduck.integration.configuration.property.Property;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 
 public final class DetectorBatteryTestRunner extends BatteryTestRunner {
