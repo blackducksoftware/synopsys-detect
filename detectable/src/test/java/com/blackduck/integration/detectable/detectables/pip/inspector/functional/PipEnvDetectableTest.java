@@ -11,7 +11,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.blackduck.integration.detectable.Detectable;
 import com.blackduck.integration.detectable.DetectableEnvironment;
 import com.blackduck.integration.detectable.ExecutableTarget;
-import com.blackduck.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.PipenvDetectableOptions;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.functional.DetectableFunctionalTest;
 import com.blackduck.integration.detectable.util.graph.NameVersionGraphAssert;

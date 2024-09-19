@@ -42,7 +42,7 @@ import com.blackduck.integration.detectable.detectables.pear.PearCliDetectableOp
 import com.blackduck.integration.detectable.detectables.pear.PearDependencyType;
 import com.blackduck.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions;
 import com.blackduck.integration.detectable.detectables.pip.parser.RequirementsFileDetectableOptions;
-import com.blackduck.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.PipenvDetectableOptions;
 import com.blackduck.integration.detectable.detectables.pipenv.parse.PipenvDependencyType;
 import com.blackduck.integration.detectable.detectables.pipenv.parse.PipfileLockDetectableOptions;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.PnpmLockOptions;

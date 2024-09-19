@@ -48,7 +48,7 @@ import com.blackduck.integration.detectable.detectables.packagist.ComposerLockDe
 import com.blackduck.integration.detectable.detectables.pear.PearCliDetectable;
 import com.blackduck.integration.detectable.detectables.pip.inspector.PipInspectorDetectable;
 import com.blackduck.integration.detectable.detectables.pip.parser.RequirementsFileDetectable;
-import com.blackduck.integration.detectable.detectables.pipenv.build.PipenvDetectable;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.PipenvDetectable;
 import com.blackduck.integration.detectable.detectables.pipenv.parse.PipfileLockDetectable;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.PnpmLockDetectable;
 import com.blackduck.integration.detectable.detectables.poetry.PoetryDetectable;
@@ -56,7 +56,7 @@ import com.blackduck.integration.detectable.detectables.rebar.RebarDetectable;
 import com.blackduck.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.blackduck.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
 import com.blackduck.integration.detectable.detectables.sbt.SbtDetectable;
-import com.blackduck.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
+import com.blackduck.integration.detectable.detectables.setuptools.tbuild.SetupToolsBuildDetectable;
 import com.blackduck.integration.detectable.detectables.setuptools.buildless.SetupToolsBuildlessDetectable;
 import com.blackduck.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
 import com.blackduck.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;

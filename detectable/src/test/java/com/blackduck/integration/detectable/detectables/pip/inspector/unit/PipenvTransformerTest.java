@@ -11,12 +11,12 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.annotations.UnitTest;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipFreeze;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipFreezeEntry;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipenvGraph;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipenvGraphDependency;
-import com.blackduck.integration.detectable.detectables.pipenv.build.model.PipenvGraphEntry;
-import com.blackduck.integration.detectable.detectables.pipenv.build.parser.PipenvTransformer;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.model.PipFreeze;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.model.PipFreezeEntry;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.model.PipenvGraph;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.model.PipenvGraphDependency;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.model.PipenvGraphEntry;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.parser.PipenvTransformer;
 import com.blackduck.integration.detectable.util.graph.NameVersionGraphAssert;
 
 @UnitTest

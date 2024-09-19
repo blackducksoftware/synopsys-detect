@@ -220,12 +220,12 @@ import com.blackduck.integration.detectable.detectables.pip.parser.RequirementsF
 import com.blackduck.integration.detectable.detectables.pip.parser.RequirementsFileDetectable;
 import com.blackduck.integration.detectable.detectables.pip.parser.RequirementsFileDetectableOptions;
 import com.blackduck.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
-import com.blackduck.integration.detectable.detectables.pipenv.build.PipenvDetectable;
-import com.blackduck.integration.detectable.detectables.pipenv.build.PipenvDetectableOptions;
-import com.blackduck.integration.detectable.detectables.pipenv.build.PipenvExtractor;
-import com.blackduck.integration.detectable.detectables.pipenv.build.parser.PipEnvJsonGraphParser;
-import com.blackduck.integration.detectable.detectables.pipenv.build.parser.PipenvFreezeParser;
-import com.blackduck.integration.detectable.detectables.pipenv.build.parser.PipenvTransformer;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.PipenvDetectable;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.PipenvDetectableOptions;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.PipenvExtractor;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.parser.PipEnvJsonGraphParser;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.parser.PipenvFreezeParser;
+import com.blackduck.integration.detectable.detectables.pipenv.tbuild.parser.PipenvTransformer;
 import com.blackduck.integration.detectable.detectables.pipenv.parse.PipfileLockDependencyTransformer;
 import com.blackduck.integration.detectable.detectables.pipenv.parse.PipfileLockDependencyVersionParser;
 import com.blackduck.integration.detectable.detectables.pipenv.parse.PipfileLockDetectable;
@@ -264,7 +264,7 @@ import com.blackduck.integration.detectable.detectables.sbt.dot.SbtGraphParserTr
 import com.blackduck.integration.detectable.detectables.sbt.dot.SbtPluginFinder;
 import com.blackduck.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;
 import com.blackduck.integration.detectable.detectables.setuptools.SetupToolsExtractor;
-import com.blackduck.integration.detectable.detectables.setuptools.build.SetupToolsBuildDetectable;
+import com.blackduck.integration.detectable.detectables.setuptools.tbuild.SetupToolsBuildDetectable;
 import com.blackduck.integration.detectable.detectables.setuptools.buildless.SetupToolsBuildlessDetectable;
 import com.blackduck.integration.detectable.detectables.setuptools.transform.SetupToolsGraphTransformer;
 import com.blackduck.integration.detectable.detectables.swift.cli.SwiftCliDetectable;
