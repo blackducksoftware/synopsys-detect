@@ -162,7 +162,7 @@ maven_install repository rule:
 ````
 git clone https://github.com/bazelbuild/rules_jvm_external
 cd rules_jvm_external/
-bash <(curl -s -L https://detect.synopsys.com/detect10.sh) --detect.bazel.target='//tests/integration:ArtifactExclusionsTest'
+bash <(curl -s -L https://detect.blackduck.com/detect10.sh) --detect.bazel.target='//tests/integration:ArtifactExclusionsTest'
 ````
 
 ### haskell_cabal_library rule example
