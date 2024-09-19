@@ -1,7 +1,7 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "basic-multiproject/0.0.0-SNAPSHOT/com.synopsys.integration/basic-multiproject/0.0.0-SNAPSHOT gradle/bom",
+    "spdx:name": "basic-multiproject/0.0.0-SNAPSHOT/com.blackduck.integration/basic-multiproject/0.0.0-SNAPSHOT gradle/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.9.1",
@@ -16,11 +16,11 @@
   {
     "name": "basic-multiproject",
     "revision": "0.0.0-SNAPSHOT",
-    "@id": "http:maven/com.synopsys.integration/basic-multiproject/0.0.0-SNAPSHOT",
+    "@id": "http:maven/com.blackduck.integration/basic-multiproject/0.0.0-SNAPSHOT",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
-      "externalId": "com.synopsys.integration:basic-multiproject:0.0.0-SNAPSHOT",
+      "externalId": "com.blackduck.integration:basic-multiproject:0.0.0-SNAPSHOT",
       "externalIdMetaData": {
         "forge": {
           "name": "maven",
@@ -30,7 +30,7 @@
           "basic-multiproject",
           "0.0.0-SNAPSHOT"
         ],
-        "prefix": "com.synopsys.integration"
+        "prefix": "com.blackduck.integration"
       }
     },
     "relationship": [

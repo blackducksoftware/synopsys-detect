@@ -1,7 +1,6 @@
 dependencies {
     api "com.blackduck.integration:blackduck-common:${blackDuckCommonVersion}"
 
-    //implementation "com.blackduck.integration:integration-common"
-    implementation files("/Users/gopanna/Downloads/integration-common-27.0.1.jar")
+    implementation "com.blackduck.integration:integration-common"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
 }

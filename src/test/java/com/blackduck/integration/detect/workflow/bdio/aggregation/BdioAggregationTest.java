@@ -40,7 +40,7 @@ class BdioAggregationTest {
         gson = new Gson();
         bdioTransformer = new BdioTransformer();
         List<String> inputBdioFilenames = Arrays.asList(
-            "basic_multiproject_0_0_0_SNAPSHOT_com_synopsys_integration_basic_multiproject_0_0_0_SNAPSHOT_gradle_bom.jsonld",
+            "basic_multiproject_0_0_0_SNAPSHOT_com_blackduck_integration_basic_multiproject_0_0_0_SNAPSHOT_gradle_bom.jsonld",
             "basic_multiproject_0_0_0_SNAPSHOT_subprojectone_basic_multiproject_subprojectone_unspecified_gradle_bom.jsonld",
             "basic_multiproject_0_0_0_SNAPSHOT_subprojecttwo_basic_multiproject_subprojecttwo_unspecified_gradle_bom.jsonld"
         );
