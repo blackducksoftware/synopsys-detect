@@ -62,7 +62,7 @@ repositories {
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
-        url = uri("${internalRepoHost}/artifactory/bds-integration-placeholder-release-not-mirrored")
+        url = uri("${internalRepoHost}/artifactory/bds-integration-placeholder-release")
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
