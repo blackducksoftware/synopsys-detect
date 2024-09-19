@@ -3,7 +3,7 @@
 The primary function of the [detect_product_long] scripts is to download and execute the [detect_product_short] .jar file.
 Several aspects of script functionality can be configured, including:
 
-* The [company_name] [solution_name] version to download/run; by default, the latest version.
+* The [detect_product_short] version to download/run; by default, the latest version.
 * The download location.
 * Where to find Java.
 

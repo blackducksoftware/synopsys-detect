@@ -13,7 +13,7 @@ Azure Container Registry Scanning requires a fully configured instance of [detec
    
 For prerequisite information refer to [Requirements and release information](../../gettingstarted/requirements.md)
 	
-## [company_name] [solution_name] ACR scanning on a local workstation
+## [detect_product_short] ACR scanning on a local workstation
 
 Before you can scan images in ACR using [detect_product_short], ensure that you satisfy the following requirements:
 

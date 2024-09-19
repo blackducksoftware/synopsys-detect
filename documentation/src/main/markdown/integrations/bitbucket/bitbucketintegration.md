@@ -20,7 +20,7 @@ The recommended way of configuring [detect_product_short] with a Bitbucket pipe
     <figcaption>Creating the access token</figcaption>
     </figure>
 	
-## Configuring [company_name] [solution_name] for Bitbucket with an API token
+## Configuring [detect_product_short] for Bitbucket with an API token
 
 This section describes how to run [detect_product_short] with Bitbucket pipelines using an API token. 
 
@@ -66,9 +66,9 @@ pipelines:
         artifacts:
           - target/**
     - step:
-        name: synopsys-detect
+        name: detect
         script:
-          - bash <(curl -s -L https://detect.synopsys.com/detect10.sh) --blackduck.url="${BLACKDUCK_URL}" --blackduck.api.token="${BLACKDUCK_TOKEN} --blackduck.trust.cert=true"
+          - bash <(curl -s -L https://detect.blackduck.com/detect10.sh) --blackduck.url="${BLACKDUCK_URL}" --blackduck.api.token="${BLACKDUCK_TOKEN} --blackduck.trust.cert=true"
 ```
 
 <note type="important">Configure [detect_product_short] as a command after the code-build step as it relies on access to the code tree and the build environment.</note>

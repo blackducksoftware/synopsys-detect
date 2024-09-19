@@ -13,7 +13,7 @@ Using the [detect_product_short] Extension for Azure DevOps together with [bd_pr
 
 **Note:** The Azure plugin currently supports [detect_product_short] 9.X.
 
-## Invoking [company_name] [solution_name]
+## Invoking [detect_product_short]
 It is recommended to invoke [detect_product_short] from the CI (build) pipeline. Scanning during CI enables [detect_product_short] to break your application build, which is effective for enforcing policies like preventing the use of disallowed or vulnerable components.
 
    <figure>

@@ -1,6 +1,6 @@
 # Running with [bd_product_long]
 
-[detect_product_long] can be used with multiple Synopsys platforms and [bd_product_short] to perform Software Composition Analysis (SCA).
+[detect_product_long] can be used with multiple [bd_product_short] platforms to perform Software Composition Analysis (SCA).
 
 ## Overview
 
