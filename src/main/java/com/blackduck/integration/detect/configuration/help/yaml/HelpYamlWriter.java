@@ -4,7 +4,7 @@ import com.blackduck.integration.configuration.property.Property;
 import com.blackduck.integration.detect.configuration.DetectInfoUtility;
 import com.blackduck.integration.detect.configuration.DetectProperties;
 import com.blackduck.integration.detect.configuration.enumeration.DetectCategory;
-import com.synopsys.integration.util.ResourceUtil;
+import com.blackduck.integration.util.ResourceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

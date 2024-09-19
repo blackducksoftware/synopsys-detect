@@ -14,13 +14,13 @@ import org.mockito.Mockito;
 import org.zeroturnaround.zip.commons.FileUtils;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.blackduck.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.workflow.DetectRunId;
 import com.blackduck.integration.detect.workflow.blackduck.developer.RapidModeGenerateJsonOperation;
 import com.blackduck.integration.detect.workflow.file.DirectoryManager;
 import com.blackduck.integration.detect.workflow.file.DirectoryOptions;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class RapidModeGenerateJsonOperationTest {
 

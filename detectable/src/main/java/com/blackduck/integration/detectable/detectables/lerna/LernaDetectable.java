@@ -18,7 +18,7 @@ import com.blackduck.integration.detectable.detectables.npm.lockfile.NpmShrinkwr
 import com.blackduck.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 @DetectableInfo(name = "Lerna CLI", language = "Node JS", forge = "npmjs", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "File: lerna.json, " + LernaDetectable.PACKAGE_JSON
     + ", Executable: Lerna, and one of the following: "

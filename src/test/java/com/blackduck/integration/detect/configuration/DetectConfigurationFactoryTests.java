@@ -25,7 +25,7 @@ import com.blackduck.integration.detect.configuration.enumeration.DefaultDetecto
 import com.blackduck.integration.detect.configuration.enumeration.DetectTool;
 import com.blackduck.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.blackduck.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
-import com.synopsys.integration.rest.credentials.Credentials;
+import com.blackduck.integration.rest.credentials.Credentials;
 
 public class DetectConfigurationFactoryTests {
 

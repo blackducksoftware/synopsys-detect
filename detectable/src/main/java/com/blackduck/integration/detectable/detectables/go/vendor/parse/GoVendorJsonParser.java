@@ -5,12 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.graph.BasicDependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.detectables.go.vendor.model.PackageData;
 import com.blackduck.integration.detectable.detectables.go.vendor.model.VendorJson;
 

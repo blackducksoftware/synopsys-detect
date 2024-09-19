@@ -13,15 +13,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadOutput;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.blackduck.version.BlackDuckVersion;
+import com.blackduck.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadOutput;
+import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadBatchOutput;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 import com.blackduck.integration.detect.configuration.enumeration.DetectTool;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -45,9 +45,9 @@ import com.blackduck.integration.detect.workflow.result.DetectResult;
 import com.blackduck.integration.detect.workflow.result.ReportDetectResult;
 import com.blackduck.integration.detect.workflow.status.FormattedCodeLocation;
 import com.blackduck.integration.detect.workflow.status.OperationType;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.rest.HttpUrl;
+import com.blackduck.integration.util.NameVersion;
 
 public class IntelligentModeStepRunner {
     private final OperationRunner operationRunner;

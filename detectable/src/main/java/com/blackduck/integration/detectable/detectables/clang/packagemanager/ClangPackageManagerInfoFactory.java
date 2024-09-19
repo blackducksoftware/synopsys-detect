@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectables.clang.packagemanager;
 
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.Forge;
 
 public class ClangPackageManagerInfoFactory {
 

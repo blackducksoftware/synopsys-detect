@@ -8,10 +8,10 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.ExecutableUtils;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
@@ -22,9 +22,9 @@ import com.blackduck.integration.detectable.detectables.pear.parse.PearPackageDe
 import com.blackduck.integration.detectable.detectables.pear.parse.PearPackageXmlParser;
 import com.blackduck.integration.detectable.detectables.pear.transform.PearDependencyGraphTransformer;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.util.NameVersion;
 
 public class PearCliExtractor {
     private static final String PACKAGE_XML_FILENAME = "package.xml";

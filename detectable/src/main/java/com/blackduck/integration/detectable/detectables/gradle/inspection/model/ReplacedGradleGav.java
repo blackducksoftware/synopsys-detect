@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.bdio.graph.builder.LazyId;
+import com.blackduck.integration.bdio.graph.builder.LazyId;
 
 public class ReplacedGradleGav implements GradleGavId {
     private final String group;

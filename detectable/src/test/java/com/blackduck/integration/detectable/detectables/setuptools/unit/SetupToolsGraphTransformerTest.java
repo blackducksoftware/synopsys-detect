@@ -11,17 +11,17 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.blackduck.integration.detectable.detectables.setuptools.parse.SetupToolsParsedResult;
 import com.blackduck.integration.detectable.detectables.setuptools.transform.SetupToolsGraphTransformer;
 import com.blackduck.integration.detectable.python.util.PythonDependency;
 import com.blackduck.integration.detectable.util.graph.NameVersionGraphAssert;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class SetupToolsGraphTransformerTest {
     @Test

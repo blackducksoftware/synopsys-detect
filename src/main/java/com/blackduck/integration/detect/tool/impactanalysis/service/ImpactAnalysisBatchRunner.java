@@ -7,10 +7,10 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
-import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.log.IntLogger;
+import com.blackduck.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.blackduck.integration.blackduck.exception.BlackDuckIntegrationException;
+import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
+import com.blackduck.integration.log.IntLogger;
 
 public class ImpactAnalysisBatchRunner {
     private final IntLogger logger;

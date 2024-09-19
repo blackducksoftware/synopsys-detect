@@ -12,7 +12,7 @@ import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.functional.DetectableFunctionalTest;
-import com.synopsys.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableOutput;
 
 public class GitCliDetectableTest extends DetectableFunctionalTest {
     public GitCliDetectableTest() throws IOException {

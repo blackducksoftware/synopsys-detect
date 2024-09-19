@@ -10,7 +10,7 @@ import com.blackduck.integration.detectable.detectable.executable.ExecutableFail
 import com.blackduck.integration.detectable.detectables.swift.cli.model.SwiftPackage;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableOutput;
 
 public class SwiftExtractor {
     private final DetectableExecutableRunner executableRunner;

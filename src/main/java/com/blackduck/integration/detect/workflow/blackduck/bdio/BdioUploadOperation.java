@@ -3,17 +3,17 @@ package com.blackduck.integration.detect.workflow.blackduck.bdio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadOutput;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.blackduck.integration.blackduck.codelocation.Result;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadBatch;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadBatchOutput;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadOutput;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadTarget;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
 import com.blackduck.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.blackduck.integration.detect.workflow.bdio.BdioResult;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public abstract class BdioUploadOperation { //TODO: Could use Functional Interface.
     private final Logger logger = LoggerFactory.getLogger(BdioUploadOperation.class);

@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackduck.integration.detect.util.DetectZipUtil;
 import com.blackduck.integration.detect.workflow.ArtifactResolver;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class ArtifactoryZipInstaller {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

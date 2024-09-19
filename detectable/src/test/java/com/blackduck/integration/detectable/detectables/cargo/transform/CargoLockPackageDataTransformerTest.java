@@ -15,7 +15,7 @@ import com.blackduck.integration.detectable.detectables.cargo.model.CargoLockPac
 import com.blackduck.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
 import com.blackduck.integration.detectable.detectables.cargo.transform.CargoLockPackageDataTransformer;
 import com.blackduck.integration.detectable.util.NameOptionalVersion;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 class CargoLockPackageDataTransformerTest {
 

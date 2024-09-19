@@ -3,7 +3,7 @@ package com.blackduck.integration.detectable.detectables.bazel.pipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.blackduck.integration.detectable.detectables.bazel.pipeline.step.FinalStep;

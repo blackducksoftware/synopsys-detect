@@ -1,12 +1,12 @@
 package com.blackduck.integration.detectable.detectables.yarn;
 
-import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
-import com.synopsys.integration.bdio.graph.builder.LazyBuilderMissingExternalIdHandler;
-import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
-import com.synopsys.integration.bdio.graph.builder.LazyId;
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.graph.BasicDependencyGraph;
+import com.blackduck.integration.bdio.graph.builder.LazyBuilderMissingExternalIdHandler;
+import com.blackduck.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.blackduck.integration.bdio.graph.builder.LazyId;
+import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;

@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
 import com.blackduck.integration.detectable.util.ExternalIdCreator;
 
 public class NpmDependency extends Dependency {

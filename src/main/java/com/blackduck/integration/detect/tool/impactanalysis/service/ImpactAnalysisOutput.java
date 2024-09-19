@@ -3,11 +3,11 @@ package com.blackduck.integration.detect.tool.impactanalysis.service;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationOutput;
-import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.response.Response;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationOutput;
+import com.blackduck.integration.blackduck.codelocation.Result;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.rest.response.Response;
+import com.blackduck.integration.util.NameVersion;
 
 public class ImpactAnalysisOutput extends CodeLocationOutput {
     @Nullable

@@ -8,12 +8,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.blackducksoftware.bdio2.Bdio;
-import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.blackduck.bdio2.Bdio2FileUploadService;
-import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
+import com.blackduck.integration.bdio.graph.ProjectDependencyGraph;
+import com.blackduck.integration.bdio.model.dependency.ProjectDependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.blackduck.bdio2.Bdio2FileUploadService;
+import com.blackduck.integration.blackduck.bdio2.model.GitInfo;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadTarget;
 import com.blackduck.integration.detect.Application;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -23,8 +23,8 @@ import com.blackduck.integration.detect.tool.iac.IacScanCodeLocationData;
 import com.blackduck.integration.detect.tool.iac.IacScanReport;
 import com.blackduck.integration.detect.workflow.bdio.AggregateCodeLocation;
 import com.blackduck.integration.detectable.util.ExternalIdCreator;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 public class IacScanStepRunner {
 

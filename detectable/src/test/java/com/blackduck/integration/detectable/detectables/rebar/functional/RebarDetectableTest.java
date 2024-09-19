@@ -8,7 +8,7 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.Forge;
 import com.blackduck.integration.detectable.Detectable;
 import com.blackduck.integration.detectable.DetectableEnvironment;
 import com.blackduck.integration.detectable.ExecutableTarget;
@@ -16,7 +16,7 @@ import com.blackduck.integration.detectable.detectable.executable.resolver.Rebar
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.functional.DetectableFunctionalTest;
 import com.blackduck.integration.detectable.util.graph.NameVersionGraphAssert;
-import com.synopsys.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableOutput;
 
 public class RebarDetectableTest extends DetectableFunctionalTest {
     public RebarDetectableTest() throws IOException {

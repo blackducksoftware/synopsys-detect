@@ -3,10 +3,10 @@ package com.blackduck.integration.detect.workflow.phonehome;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
+import com.blackduck.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
 import com.blackduck.integration.detect.configuration.DetectInfo;
 import com.blackduck.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.phonehome.PhoneHomeResponse;
+import com.blackduck.integration.phonehome.PhoneHomeResponse;
 
 public class OnlinePhoneHomeManager extends PhoneHomeManager {
     private final BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper;

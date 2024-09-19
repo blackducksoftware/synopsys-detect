@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.util;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
 
 public class CycleDetectedException extends Exception {
     private static final long serialVersionUID = -6549724080144281634L;

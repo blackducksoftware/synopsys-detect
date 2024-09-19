@@ -70,7 +70,7 @@ import com.blackduck.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.blackduck.integration.detect.workflow.event.EventSystem;
 import com.blackduck.integration.detect.workflow.file.DirectoryManager;
 import com.blackduck.integration.detect.workflow.profiling.DetectorProfiler;
-import com.synopsys.integration.util.OperatingSystemType;
+import com.blackduck.integration.util.OperatingSystemType;
 
 import freemarker.template.Configuration;
 

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.gson.annotations.SerializedName;
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class ConanLockfileNode extends Stringable {
     private final String path;

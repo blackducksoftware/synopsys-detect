@@ -13,15 +13,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.DependencyGraphUtil;
-import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.graph.DependencyGraphUtil;
+import com.blackduck.integration.bdio.graph.ProjectDependencyGraph;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.dependency.ProjectDependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackduck.integration.detect.workflow.codelocation.FileNameUtils;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class FullAggregateGraphCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

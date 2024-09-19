@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public abstract class NameVersionDecision {
     @Nullable

@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import com.synopsys.integration.blackduck.api.manual.view.ProjectView;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.BufferedIntLogger;
-import com.synopsys.integration.log.LogLevel;
+import com.blackduck.integration.blackduck.api.manual.view.ProjectView;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.log.BufferedIntLogger;
+import com.blackduck.integration.log.LogLevel;
 
 @ExtendWith(BlackDuckParametersExtension.class)
 public class BlackDuckTest {

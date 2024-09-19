@@ -8,7 +8,7 @@ import org.apache.commons.text.matcher.StringMatcherFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class CommandParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

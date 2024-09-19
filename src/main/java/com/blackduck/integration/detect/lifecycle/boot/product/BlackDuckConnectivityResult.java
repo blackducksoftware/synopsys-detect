@@ -1,7 +1,7 @@
 package com.blackduck.integration.detect.lifecycle.boot.product;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
 
 public class BlackDuckConnectivityResult {
     private final boolean successfullyConnected;

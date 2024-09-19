@@ -12,7 +12,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
@@ -26,9 +26,9 @@ import com.blackduck.integration.detectable.detectables.go.gomod.parse.GoModWhyP
 import com.blackduck.integration.detectable.detectables.go.gomod.parse.GoVersionParser;
 import com.blackduck.integration.detectable.detectables.go.gomod.process.GoModGraphGenerator;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.executable.Executable;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.Executable;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 @Disabled("Questionable value. Should be tested via Detectable tests. Having issues with Mockito. JM-01/2022")
 public class GoModCliExtractorTest {

@@ -6,16 +6,16 @@ import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.blackduck.integration.blackduck.bdio2.model.GitInfo;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.detectables.git.GitUrlParser;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.extraction.ExtractionMetadata;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.executable.ExecutableRunnerException;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.log.Slf4jIntLogger;
 
 public class GitCliExtractor {
     public static final ExtractionMetadata<GitInfo> EXTRACTION_METADATA_KEY = new ExtractionMetadata<>("gitInfo", GitInfo.class);

@@ -7,7 +7,7 @@ import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.detectables.lerna.model.LernaPackage;
 import com.blackduck.integration.detectable.detectables.lerna.model.LernaResult;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class LernaExtractor {
     private final LernaPackageDiscoverer lernaPackageDiscoverer;

@@ -14,8 +14,8 @@ import org.jetbrains.annotations.Nullable;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 public class PnpmLockYamlParser {
     private static final Predicate<String> isNodeRoot = "."::equals;

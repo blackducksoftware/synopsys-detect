@@ -22,7 +22,7 @@ import com.blackduck.integration.detect.workflow.nameversion.decision.TooManyPre
 import com.blackduck.integration.detect.workflow.nameversion.decision.UniqueDetectorDecision;
 import com.blackduck.integration.detect.workflow.nameversion.decision.UniqueDetectorNotFoundDecision;
 import com.blackduck.integration.detector.base.DetectorType;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class DetectorNameVersionDecider {
     private final Logger logger = LoggerFactory.getLogger(getClass());

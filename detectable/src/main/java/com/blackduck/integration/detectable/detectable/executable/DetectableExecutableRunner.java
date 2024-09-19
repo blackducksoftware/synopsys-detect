@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.synopsys.integration.executable.Executable;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.Executable;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 //This is essentially temporary as we migrate to Integration commons executable runner and allow detectables to throw exceptions.
 public interface DetectableExecutableRunner {

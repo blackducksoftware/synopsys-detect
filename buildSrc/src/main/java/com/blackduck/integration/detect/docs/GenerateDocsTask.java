@@ -34,7 +34,7 @@ import com.blackduck.integration.detect.docs.pages.DeprecatedPropertyTablePage;
 import com.blackduck.integration.detect.docs.pages.DetectorCascadePage;
 import com.blackduck.integration.detect.docs.pages.ExitCodePage;
 import com.blackduck.integration.detect.docs.pages.SimplePropertyTablePage;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;

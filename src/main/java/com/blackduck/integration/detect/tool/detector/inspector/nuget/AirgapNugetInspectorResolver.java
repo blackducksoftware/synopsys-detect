@@ -10,7 +10,7 @@ import com.blackduck.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 import com.blackduck.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
-import com.synopsys.integration.util.OperatingSystemType;
+import com.blackduck.integration.util.OperatingSystemType;
 
 public class AirgapNugetInspectorResolver implements NugetInspectorResolver {
     public static final String LINUX_DIR = "linux";

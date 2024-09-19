@@ -6,21 +6,21 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 
-import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
-import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
-import com.synopsys.integration.blackduck.bdio2.model.BdioFileContent;
-import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.blackduck.service.request.BlackDuckRequestBuilderEditor;
-import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
+import com.blackduck.integration.blackduck.api.core.BlackDuckPath;
+import com.blackduck.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.blackduck.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.blackduck.integration.blackduck.bdio2.model.BdioFileContent;
+import com.blackduck.integration.blackduck.exception.BlackDuckIntegrationException;
+import com.blackduck.integration.blackduck.http.BlackDuckRequestBuilder;
+import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
+import com.blackduck.integration.blackduck.service.request.BlackDuckRequestBuilderEditor;
+import com.blackduck.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.blackduck.integration.detect.Application;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.rest.response.Response;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.rest.HttpUrl;
+import com.blackduck.integration.rest.response.Response;
 
 public class RapidScanConfigBdio2StreamUploader {
     // IDETECT-2756

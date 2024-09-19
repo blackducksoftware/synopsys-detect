@@ -18,7 +18,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
 import com.blackduck.integration.common.util.finder.FileFinder;
 import com.blackduck.integration.common.util.finder.SimpleFileFinder;
 import com.blackduck.integration.configuration.source.PropertySource;

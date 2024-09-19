@@ -2,15 +2,15 @@ package com.blackduck.integration.detect.tool.impactanalysis.service;
 
 import java.util.Set;
 
-import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
-import com.synopsys.integration.blackduck.api.manual.response.BlackDuckResponseResponse;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
-import com.synopsys.integration.util.NoThreadExecutorService;
+import com.blackduck.integration.blackduck.api.core.BlackDuckPath;
+import com.blackduck.integration.blackduck.api.manual.response.BlackDuckResponseResponse;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationService;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.blackduck.service.model.NotificationTaskRange;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
+import com.blackduck.integration.util.NoThreadExecutorService;
 
 public class ImpactAnalysisUploadService {
     public static final BlackDuckPath<BlackDuckResponseResponse> IMPACT_ANALYSIS_PATH = new BlackDuckPath<>(

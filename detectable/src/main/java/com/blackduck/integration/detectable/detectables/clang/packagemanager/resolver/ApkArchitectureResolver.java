@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.blackduck.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class ApkArchitectureResolver {
     private Optional<String> architecture = Optional.empty();

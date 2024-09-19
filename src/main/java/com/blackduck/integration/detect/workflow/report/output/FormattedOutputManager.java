@@ -35,7 +35,7 @@ import com.blackduck.integration.detectable.detectable.explanation.Explanation;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detector.base.DetectorStatusCode;
 import com.blackduck.integration.detector.base.DetectorType;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class FormattedOutputManager {
     private final Set<FormattedCodeLocation> codeLocations = new HashSet<>();

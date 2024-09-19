@@ -3,7 +3,7 @@ package com.blackduck.integration.detectable.detectables.conan.graph;
 import java.util.List;
 import java.util.Optional;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class ConanNode<T> extends Stringable {
     // if rootNode: conanfile.{txt,py}[ (projectname/version)]

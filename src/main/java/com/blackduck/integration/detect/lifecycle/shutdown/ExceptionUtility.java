@@ -3,15 +3,15 @@ package com.blackduck.integration.detect.lifecycle.shutdown;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
-import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
+import com.blackduck.integration.blackduck.exception.BlackDuckApiException;
+import com.blackduck.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import com.blackduck.integration.configuration.config.InvalidPropertyException;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
 import com.blackduck.integration.detect.lifecycle.OperationException;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.exception.IntegrationTimeoutException;
-import com.synopsys.integration.rest.exception.IntegrationRestException;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationTimeoutException;
+import com.blackduck.integration.rest.exception.IntegrationRestException;
 
 public class ExceptionUtility {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

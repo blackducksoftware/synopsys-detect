@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectables.clang.packagemanager;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class PackageDetails extends Stringable {
     private final String packageName;

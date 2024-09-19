@@ -6,11 +6,11 @@ import java.util.Queue;
 import java.util.Set;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.BdioId;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.BdioId;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.util.NameVersion;
 
 // TODO: Only used by an unused class. Also is duplicate class JM-04/2022
 public class DependencyGraphSummarizer {

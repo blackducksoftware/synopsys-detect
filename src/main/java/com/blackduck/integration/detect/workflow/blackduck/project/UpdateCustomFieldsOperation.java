@@ -9,10 +9,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.core.BlackDuckView;
-import com.synopsys.integration.blackduck.api.core.response.LinkMultipleResponses;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.blackduck.integration.blackduck.api.core.BlackDuckView;
+import com.blackduck.integration.blackduck.api.core.response.LinkMultipleResponses;
+import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
+import com.blackduck.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
 import com.blackduck.integration.detect.workflow.blackduck.project.customfields.CustomFieldDocument;
@@ -20,7 +20,7 @@ import com.blackduck.integration.detect.workflow.blackduck.project.customfields.
 import com.blackduck.integration.detect.workflow.blackduck.project.customfields.CustomFieldOperation;
 import com.blackduck.integration.detect.workflow.blackduck.project.customfields.CustomFieldOptionView;
 import com.blackduck.integration.detect.workflow.blackduck.project.customfields.CustomFieldView;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class UpdateCustomFieldsOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

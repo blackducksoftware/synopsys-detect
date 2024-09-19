@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class CargoTomlParser {
     private static final String NAME_KEY = "name";

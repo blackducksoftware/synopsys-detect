@@ -10,8 +10,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 public class LicenseManifestParser {
     private static final String RECIPE_NAME_KEY = "RECIPE NAME";

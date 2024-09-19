@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.graph.BasicDependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
 
 public class RootPruningGraphUtil {
     private RootPruningGraphUtil() {

@@ -1,6 +1,6 @@
 package com.blackduck.integration.detect.verification;
 
-import static com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView.COMPONENTS_LINK;
+import static com.blackduck.integration.blackduck.api.generated.view.ProjectVersionView.COMPONENTS_LINK;
 
 import java.util.List;
 import java.util.Set;
@@ -9,17 +9,17 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
-import com.synopsys.integration.blackduck.api.core.response.LinkMultipleResponses;
-import com.synopsys.integration.blackduck.api.core.response.UrlMultipleResponses;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.dataservice.ProjectService;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.PrintStreamIntLogger;
+import com.blackduck.integration.blackduck.api.core.response.LinkMultipleResponses;
+import com.blackduck.integration.blackduck.api.core.response.UrlMultipleResponses;
+import com.blackduck.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.blackduck.service.dataservice.ProjectService;
+import com.blackduck.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.log.PrintStreamIntLogger;
 
 public class VerifyBlackDuckDetectTask extends DefaultTask {
     @TaskAction
@@ -34,7 +34,7 @@ public class VerifyBlackDuckDetectTask extends DefaultTask {
         });
 
         BlackDuckServerConfig blackDuckServerConfig = blackDuckServerConfigBuilder.build();
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new PrintStreamIntLogger(System.out, com.synopsys.integration.log.LogLevel.INFO));
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new PrintStreamIntLogger(System.out, com.blackduck.integration.log.LogLevel.INFO));
         BlackDuckApiClient blackDuckService = blackDuckServicesFactory.getBlackDuckApiClient();
         ProjectService projectService = blackDuckServicesFactory.createProjectService();
 

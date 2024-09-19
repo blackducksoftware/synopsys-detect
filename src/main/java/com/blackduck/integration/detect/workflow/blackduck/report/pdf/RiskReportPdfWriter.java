@@ -20,8 +20,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import com.blackduck.integration.detect.workflow.blackduck.report.BomComponent;
 import com.blackduck.integration.detect.workflow.blackduck.report.ReportData;
 import com.blackduck.integration.detect.workflow.blackduck.report.service.RiskReportException;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.util.IntegrationEscapeUtil;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.util.IntegrationEscapeUtil;
 
 public class RiskReportPdfWriter {
     public static String BASIC_RED = "#b52b24";

@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.blackduck.integration.detect.configuration.enumeration.RapidCompareMode;
 
 public class BlackDuckSignatureScannerOptions {

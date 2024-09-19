@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
+import com.blackduck.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 
 public class BlackDuckPostOptions {
     private final boolean waitForResults;

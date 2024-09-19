@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.blackduck.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -19,7 +19,7 @@ import com.blackduck.integration.detect.workflow.blackduck.project.options.Proje
 import com.blackduck.integration.detect.workflow.blackduck.project.options.ProjectGroupOptions;
 import com.blackduck.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseFindResult;
 import com.blackduck.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseOptions;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class BlackDuckProjectVersionStepRunner {
     private final OperationRunner operationRunner;

@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import com.blackduck.integration.detectable.detectables.bitbake.data.BitbakeRecipe;
 import com.blackduck.integration.detectable.detectables.bitbake.data.ShowRecipesResults;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.log.Slf4jIntLogger;
 
 public class BitbakeRecipesParser {
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));

@@ -1,8 +1,8 @@
 package com.blackduck.integration.detectable.util;
 
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class ExternalIdCreator {
     public static ExternalIdFactory sharedFactory = new ExternalIdFactory();

@@ -10,8 +10,8 @@ import com.blackduck.integration.detect.configuration.DetectInfo;
 import com.blackduck.integration.detect.tool.detector.inspector.ArtifactoryZipInstaller;
 import com.blackduck.integration.detect.workflow.ArtifactoryConstants;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.OperatingSystemType;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.OperatingSystemType;
 
 public class ArtifactoryNugetInspectorInstaller {
     private final DetectInfo detectInfo;

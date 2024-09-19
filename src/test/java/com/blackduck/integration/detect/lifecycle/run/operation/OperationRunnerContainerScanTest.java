@@ -16,8 +16,8 @@ import com.blackduck.integration.detect.configuration.enumeration.BlackduckScanM
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.blackduck.integration.detect.testutils.ContainerScanTestUtils;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 public class OperationRunnerContainerScanTest {
     private static final Gson gson = new Gson();

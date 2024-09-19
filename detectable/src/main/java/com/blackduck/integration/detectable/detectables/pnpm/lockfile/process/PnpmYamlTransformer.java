@@ -13,11 +13,11 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.graph.BasicDependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 import com.blackduck.integration.detectable.detectable.util.EnumListFilter;
@@ -26,8 +26,8 @@ import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.Pnpm
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackage;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 public class PnpmYamlTransformer {
     private static final String LINKED_PACKAGE_PREFIX = "link:";

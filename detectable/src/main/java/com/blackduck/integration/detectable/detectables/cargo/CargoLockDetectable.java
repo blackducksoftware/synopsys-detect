@@ -3,7 +3,7 @@ package com.blackduck.integration.detectable.detectables.cargo;
 import java.io.File;
 import java.io.IOException;
 
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
+import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
 import com.blackduck.integration.common.util.finder.FileFinder;
 import com.blackduck.integration.detectable.Detectable;
 import com.blackduck.integration.detectable.DetectableEnvironment;

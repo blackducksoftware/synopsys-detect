@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.blackduck.integration.blackduck.bdio2.model.GitInfo;
 import com.blackduck.integration.common.util.finder.FileFinder;
 import com.blackduck.integration.detect.configuration.ExcludeIncludeEnumFilter;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
@@ -47,7 +47,7 @@ import com.blackduck.integration.detector.finder.DirectoryFinderOptions;
 import com.blackduck.integration.detector.rule.DetectableDefinition;
 import com.blackduck.integration.detector.rule.DetectorRule;
 import com.blackduck.integration.detector.rule.DetectorRuleSet;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class DetectorTool {
     private static final String THREE_TABS = "\t\t\t";

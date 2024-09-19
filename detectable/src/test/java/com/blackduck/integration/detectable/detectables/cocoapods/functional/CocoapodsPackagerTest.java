@@ -5,9 +5,9 @@ import java.io.IOException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.annotations.FunctionalTest;
 import com.blackduck.integration.detectable.detectables.cocoapods.parser.PodlockParser;
 import com.blackduck.integration.detectable.util.FunctionalTestFiles;

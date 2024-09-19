@@ -17,14 +17,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
-import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
+import com.blackduck.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.blackduck.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
+import com.blackduck.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.blackduck.integration.configuration.property.types.enumallnone.list.AllEnumList;
 import com.blackduck.integration.configuration.property.types.enumallnone.list.AllNoneEnumCollection;
 import com.blackduck.integration.configuration.property.types.enumallnone.list.AllNoneEnumList;
@@ -67,10 +67,10 @@ import com.blackduck.integration.detect.workflow.project.ProjectNameVersionOptio
 import com.blackduck.integration.detector.accuracy.search.SearchOptions;
 import com.blackduck.integration.detector.base.DetectorType;
 import com.blackduck.integration.detector.finder.DirectoryFinderOptions;
-import com.synopsys.integration.rest.credentials.Credentials;
-import com.synopsys.integration.rest.credentials.CredentialsBuilder;
-import com.synopsys.integration.rest.proxy.ProxyInfo;
-import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
+import com.blackduck.integration.rest.credentials.Credentials;
+import com.blackduck.integration.rest.credentials.CredentialsBuilder;
+import com.blackduck.integration.rest.proxy.ProxyInfo;
+import com.blackduck.integration.rest.proxy.ProxyInfoBuilder;
 
 public class DetectConfigurationFactory {
     private final DetectPropertyConfiguration detectConfiguration;

@@ -6,12 +6,12 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.exception.IntegrationTimeoutException;
-import com.synopsys.integration.rest.HttpMethod;
-import com.synopsys.integration.rest.client.IntHttpClient;
-import com.synopsys.integration.rest.response.Response;
-import com.synopsys.integration.wait.ResilientJob;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationTimeoutException;
+import com.blackduck.integration.rest.HttpMethod;
+import com.blackduck.integration.rest.client.IntHttpClient;
+import com.blackduck.integration.rest.response.Response;
+import com.blackduck.integration.wait.ResilientJob;
 
 public class BdbaRapidScanWaitJob implements ResilientJob<BdbaStatusScanView>{
     

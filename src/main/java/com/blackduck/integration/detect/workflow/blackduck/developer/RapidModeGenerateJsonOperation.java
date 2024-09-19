@@ -9,14 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.blackduck.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
 import com.blackduck.integration.detect.workflow.file.DetectFileUtils;
 import com.blackduck.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.log.Slf4jIntLogger;
-import com.synopsys.integration.util.IntegrationEscapeUtil;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.util.IntegrationEscapeUtil;
+import com.blackduck.integration.util.NameVersion;
 
 public class RapidModeGenerateJsonOperation { //TODO: extends Operation<File>
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

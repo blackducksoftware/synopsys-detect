@@ -15,12 +15,12 @@ import com.blackduck.integration.detect.workflow.event.Event;
 import com.blackduck.integration.detect.workflow.event.EventSystem;
 import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.executable.Executable;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunner;
-import com.synopsys.integration.executable.ExecutableRunnerException;
-import com.synopsys.integration.executable.ProcessBuilderRunner;
-import com.synopsys.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.executable.Executable;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunner;
+import com.blackduck.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ProcessBuilderRunner;
+import com.blackduck.integration.log.Slf4jIntLogger;
 
 public class DetectExecutableRunner implements DetectableExecutableRunner {
     private final Logger logger;

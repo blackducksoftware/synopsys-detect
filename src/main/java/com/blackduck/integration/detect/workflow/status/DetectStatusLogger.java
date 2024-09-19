@@ -11,7 +11,7 @@ import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
 import com.blackduck.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.blackduck.integration.detect.lifecycle.autonomous.ScanSettingsSerializer;
 import com.blackduck.integration.detect.workflow.result.DetectResult;
-import com.synopsys.integration.log.IntLogger;
+import com.blackduck.integration.log.IntLogger;
 
 public class DetectStatusLogger {
 

@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.blackduck.integration.blackduck.codelocation.Result;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
 import com.blackduck.integration.detect.battery.docker.integration.BlackDuckTestConnection;
 import com.blackduck.integration.detect.tool.impactanalysis.GenerateImpactAnalysisOperation;
 import com.blackduck.integration.detect.tool.impactanalysis.ImpactAnalysisNamingOperation;
@@ -22,11 +22,11 @@ import com.blackduck.integration.detect.tool.impactanalysis.service.ImpactAnalys
 import com.blackduck.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.BufferedIntLogger;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.util.NameVersion;
-import com.synopsys.integration.util.NoThreadExecutorService;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.log.BufferedIntLogger;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.util.NameVersion;
+import com.blackduck.integration.util.NoThreadExecutorService;
 
 @Tag("integration")
 public class ImpactAnalysisTestIT {

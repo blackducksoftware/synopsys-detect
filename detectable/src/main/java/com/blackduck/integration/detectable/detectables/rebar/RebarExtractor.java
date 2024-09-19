@@ -14,7 +14,7 @@ import com.blackduck.integration.detectable.detectables.rebar.model.RebarParseRe
 import com.blackduck.integration.detectable.detectables.rebar.parse.Rebar3TreeParser;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.executable.Executable;
+import com.blackduck.integration.executable.Executable;
 
 public class RebarExtractor {
     private final DetectableExecutableRunner executableRunner;

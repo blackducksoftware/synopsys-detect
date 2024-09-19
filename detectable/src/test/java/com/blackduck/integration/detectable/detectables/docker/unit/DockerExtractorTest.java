@@ -19,8 +19,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.BdioTransformer;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.BdioTransformer;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.common.util.finder.FileFinder;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
@@ -31,9 +31,9 @@ import com.blackduck.integration.detectable.detectables.docker.ImageIdentifierGe
 import com.blackduck.integration.detectable.detectables.docker.model.DockerInspectorResults;
 import com.blackduck.integration.detectable.detectables.docker.parser.DockerInspectorResultsFileParser;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.executable.Executable;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.Executable;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class DockerExtractorTest {
     private static File fakeContainerFileSystemFile;

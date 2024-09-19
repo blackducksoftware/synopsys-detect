@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.detectables.npm.lockfile.NpmDependencyConverter;
 import com.blackduck.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.blackduck.integration.detectable.detectables.npm.lockfile.model.PackageLockPackage;

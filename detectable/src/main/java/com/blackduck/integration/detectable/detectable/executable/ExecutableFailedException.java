@@ -1,8 +1,8 @@
 package com.blackduck.integration.detectable.detectable.executable;
 
-import com.synopsys.integration.executable.Executable;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.Executable;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class ExecutableFailedException extends Exception {
     private static final long serialVersionUID = -4117278710469900787L;

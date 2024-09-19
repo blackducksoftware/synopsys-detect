@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
+import com.blackduck.integration.blackduck.service.model.NotificationTaskRange;
 
 public class CodeLocationWaitCalculator {
     public CodeLocationWaitData calculateWaitData(List<WaitableCodeLocationData> codeLocationCreationDatas) {

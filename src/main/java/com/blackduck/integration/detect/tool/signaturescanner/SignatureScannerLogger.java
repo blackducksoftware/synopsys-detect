@@ -2,8 +2,8 @@ package com.blackduck.integration.detect.tool.signaturescanner;
 
 import org.slf4j.Logger;
 
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.log.LogLevel;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.log.LogLevel;
 
 public class SignatureScannerLogger extends IntLogger {
 

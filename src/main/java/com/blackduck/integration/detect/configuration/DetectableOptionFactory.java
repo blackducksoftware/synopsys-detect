@@ -54,8 +54,8 @@ import com.blackduck.integration.detectable.detectables.rubygems.gemspec.Gemspec
 import com.blackduck.integration.detectable.detectables.sbt.SbtDetectableOptions;
 import com.blackduck.integration.detectable.detectables.yarn.YarnDependencyType;
 import com.blackduck.integration.detectable.detectables.yarn.YarnLockOptions;
-import com.synopsys.integration.log.LogLevel;
-import com.synopsys.integration.rest.proxy.ProxyInfo;
+import com.blackduck.integration.log.LogLevel;
+import com.blackduck.integration.rest.proxy.ProxyInfo;
 
 public class DetectableOptionFactory {
 

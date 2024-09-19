@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.blackduck.integration.detectable.detectables.dart.PubSpecYamlNameVersionParser;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class PubSpecYamlNameVersionParserTest {
     @Test

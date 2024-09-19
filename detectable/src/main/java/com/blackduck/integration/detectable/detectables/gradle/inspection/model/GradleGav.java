@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectables.gradle.inspection.model;
 
-import com.synopsys.integration.bdio.graph.builder.LazyId;
+import com.blackduck.integration.bdio.graph.builder.LazyId;
 
 public class GradleGav implements GradleGavId {
     private final String name;

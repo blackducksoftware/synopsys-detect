@@ -3,7 +3,7 @@ package com.blackduck.integration.detectable.detectables.go.vendor.model;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class VendorJson extends Stringable {
     private final String comment;

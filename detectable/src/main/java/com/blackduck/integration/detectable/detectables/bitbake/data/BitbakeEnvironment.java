@@ -2,7 +2,7 @@ package com.blackduck.integration.detectable.detectables.bitbake.data;
 
 import java.util.Optional;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class BitbakeEnvironment extends Stringable {
     private final String machineArch;

@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.BdioId;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.BdioId;
 
 // TODO: Remove this unused class? JM-04/2022
 public class DependencyGraphResourceTestUtil {

@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectables.clang.packagemanager.resolver;
 
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class NotOwnedByAnyPkgException extends IntegrationException {
 

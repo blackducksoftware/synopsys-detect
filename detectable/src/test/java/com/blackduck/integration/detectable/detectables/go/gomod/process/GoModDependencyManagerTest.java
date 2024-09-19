@@ -10,8 +10,8 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.detectables.go.gomod.model.GoListAllData;
 import com.blackduck.integration.detectable.detectables.go.gomod.model.ReplaceData;
 import com.blackduck.integration.detectable.detectables.go.gomod.process.GoModDependencyManager;

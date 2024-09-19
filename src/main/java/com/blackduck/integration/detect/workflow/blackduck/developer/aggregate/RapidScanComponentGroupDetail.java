@@ -4,10 +4,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.synopsys.integration.blackduck.api.generated.component.*;
+import com.blackduck.integration.blackduck.api.generated.component.*;
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.blackduck.integration.blackduck.api.generated.view.DeveloperScansScanView;
 
 public class RapidScanComponentGroupDetail {
     

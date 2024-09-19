@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.MultipleFailuresError;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectable.util.EnumListFilter;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
@@ -21,8 +21,8 @@ import com.blackduck.integration.detectable.detectables.pnpm.lockfile.process.Pn
 import com.blackduck.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.blackduck.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.blackduck.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 public class PnpmLockYamlParserTest {
 

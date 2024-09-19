@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.ExecutableUtils;
 import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class GitCommandRunner {
     private static final String TAG_TOKEN = "tag: ";

@@ -2,7 +2,7 @@ package com.blackduck.integration.detect;
 
 import com.blackduck.integration.detect.ApplicationUpdater;
 import com.blackduck.integration.detect.ApplicationUpdaterUtility;
-import com.synopsys.integration.rest.proxy.ProxyInfo;
+import com.blackduck.integration.rest.proxy.ProxyInfo;
 import freemarker.template.Version;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

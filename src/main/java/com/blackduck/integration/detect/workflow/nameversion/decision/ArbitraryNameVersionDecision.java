@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 
 import com.blackduck.integration.detect.configuration.DetectProperties;
 import com.blackduck.integration.detect.workflow.nameversion.DetectorProjectInfo;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class ArbitraryNameVersionDecision extends NameVersionDecision {
     private final DetectorProjectInfo chosenDetector;

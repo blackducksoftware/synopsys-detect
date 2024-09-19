@@ -41,7 +41,7 @@ import com.blackduck.integration.detect.workflow.bdio.BdioResult;
 import com.blackduck.integration.detect.workflow.blackduck.integratedmatching.ScanCountsPayloadCreator;
 import com.blackduck.integration.detect.workflow.report.util.ReportConstants;
 import com.blackduck.integration.detect.workflow.status.OperationSystem;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class DetectRun {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

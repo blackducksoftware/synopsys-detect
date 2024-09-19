@@ -3,7 +3,7 @@ package com.blackduck.integration.detect.workflow.nameversion;
 import org.jetbrains.annotations.NotNull;
 
 import com.blackduck.integration.detector.base.DetectorType;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class DetectorProjectInfo {
     @NotNull

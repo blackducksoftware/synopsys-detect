@@ -2,9 +2,9 @@ package com.blackduck.integration.detect.workflow.blackduck.project.options;
 
 import java.util.List;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
-import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
+import com.blackduck.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.blackduck.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
+import com.blackduck.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 
 public class ProjectSyncOptions {
     private final ProjectVersionPhaseType projectVersionPhase;

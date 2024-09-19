@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
-import com.synopsys.integration.blackduck.codelocation.CodeLocationBatchOutput;
-import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationBatchOutput;
+import com.blackduck.integration.blackduck.exception.BlackDuckIntegrationException;
 
 public class ImpactAnalysisBatchOutput extends CodeLocationBatchOutput<ImpactAnalysisOutput> {
     public ImpactAnalysisBatchOutput(List<ImpactAnalysisOutput> outputs) {

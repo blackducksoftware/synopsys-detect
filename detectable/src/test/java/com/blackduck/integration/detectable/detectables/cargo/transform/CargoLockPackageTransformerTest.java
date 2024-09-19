@@ -8,16 +8,16 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
+import com.blackduck.integration.bdio.model.Forge;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 import com.blackduck.integration.detectable.detectables.cargo.model.CargoLockPackage;
 import com.blackduck.integration.detectable.detectables.cargo.transform.CargoLockPackageTransformer;
 import com.blackduck.integration.detectable.util.CycleDetectedException;
 import com.blackduck.integration.detectable.util.NameOptionalVersion;
 import com.blackduck.integration.detectable.util.graph.NameVersionGraphAssert;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class CargoLockPackageTransformerTest {
 

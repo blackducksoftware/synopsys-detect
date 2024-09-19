@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.ExecutableUtils;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
@@ -19,9 +19,9 @@ import com.blackduck.integration.detectable.detectable.executable.DetectableExec
 import com.blackduck.integration.detectable.detectables.dart.PubSpecYamlNameVersionParser;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.util.NameVersion;
 
 public class PubDepsExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

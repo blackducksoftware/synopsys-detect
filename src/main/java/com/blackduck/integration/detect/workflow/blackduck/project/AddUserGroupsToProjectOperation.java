@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.service.dataservice.ProjectUsersService;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.blackduck.service.dataservice.ProjectUsersService;
+import com.blackduck.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class AddUserGroupsToProjectOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

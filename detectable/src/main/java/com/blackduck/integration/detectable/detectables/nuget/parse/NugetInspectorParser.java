@@ -8,9 +8,9 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectables.nuget.model.NugetContainer;
 import com.blackduck.integration.detectable.detectables.nuget.model.NugetContainerType;

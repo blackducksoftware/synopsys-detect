@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.Nullable;
 
 import com.blackduck.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.util.OperatingSystemType;
+import com.blackduck.integration.util.OperatingSystemType;
 
 // Finds an executable in a directory.
 public class DirectoryExecutableFinder {

@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.rest.proxy.ProxyInfo;
+import com.blackduck.integration.rest.proxy.ProxyInfo;
 
 public class ConnectionDetails {
     private final Gson gson;

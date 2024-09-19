@@ -20,7 +20,7 @@ import com.blackduck.integration.detect.workflow.report.output.FormattedDetector
 import com.blackduck.integration.detect.workflow.report.output.FormattedOperationOutput;
 import com.blackduck.integration.detect.workflow.report.output.FormattedOutput;
 import com.blackduck.integration.detect.workflow.report.output.FormattedStatusOutput;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class DockerAssertions {
     private final DockerDetectResult dockerDetectResult;

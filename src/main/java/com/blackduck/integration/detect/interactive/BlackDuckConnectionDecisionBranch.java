@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.blackduck.integration.configuration.config.PropertyConfiguration;
 import com.blackduck.integration.configuration.property.types.path.SimplePathResolver;
 import com.blackduck.integration.configuration.source.MapPropertySource;
@@ -16,7 +16,7 @@ import com.blackduck.integration.detect.configuration.DetectPropertyConfiguratio
 import com.blackduck.integration.detect.configuration.connection.BlackDuckConfigFactory;
 import com.blackduck.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
 import com.blackduck.integration.detect.lifecycle.boot.product.BlackDuckConnectivityResult;
-import com.synopsys.integration.log.SilentIntLogger;
+import com.blackduck.integration.log.SilentIntLogger;
 
 public class BlackDuckConnectionDecisionBranch implements DecisionTree {
     public static final String SHOULD_TEST_CONNECTION = "Would you like to test the Black Duck connection now?";

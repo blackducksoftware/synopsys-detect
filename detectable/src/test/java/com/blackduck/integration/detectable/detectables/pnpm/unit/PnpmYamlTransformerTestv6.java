@@ -11,8 +11,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectable.util.EnumListFilter;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyInfo;
@@ -24,8 +24,8 @@ import com.blackduck.integration.detectable.detectables.pnpm.lockfile.process.Pn
 import com.blackduck.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.blackduck.integration.detectable.detectables.yarn.packagejson.PackageJsonReader;
 import com.blackduck.integration.detectable.util.graph.NameVersionGraphAssert;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 public class PnpmYamlTransformerTestv6 {
     NameVersion projectNameVersion = new NameVersion("name", "version");

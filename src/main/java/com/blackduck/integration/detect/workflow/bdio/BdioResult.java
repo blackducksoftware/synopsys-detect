@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadTarget;
 import com.blackduck.integration.detect.workflow.codelocation.DetectCodeLocationNamesResult;
 import com.blackduck.integration.detector.base.DetectorType;
 

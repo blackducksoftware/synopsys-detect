@@ -8,14 +8,14 @@ import java.util.concurrent.Callable;
 import org.apache.http.HttpHeaders;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
-import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
-import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.rest.response.Response;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.blackduck.integration.blackduck.exception.BlackDuckApiException;
+import com.blackduck.integration.blackduck.http.BlackDuckRequestBuilder;
+import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
+import com.blackduck.integration.blackduck.service.request.BlackDuckResponseRequest;
+import com.blackduck.integration.rest.HttpUrl;
+import com.blackduck.integration.rest.response.Response;
+import com.blackduck.integration.util.NameVersion;
 
 public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
     private final Gson gson;

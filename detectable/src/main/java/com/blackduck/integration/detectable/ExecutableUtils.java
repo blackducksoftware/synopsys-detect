@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.executable.Executable;
+import com.blackduck.integration.executable.Executable;
 
 public class ExecutableUtils {
     public static Executable createFromTarget(File directory, ExecutableTarget target, String... commands) {

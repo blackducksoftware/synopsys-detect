@@ -2,7 +2,7 @@ package com.blackduck.integration.detectable.detectables.cran.parse;
 
 import java.util.List;
 
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class PackratDescriptionFileParser {
     private static final String PACKAGE_TOKEN = "Package:";

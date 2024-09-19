@@ -1,7 +1,7 @@
 package com.blackduck.integration.detectable.detectables.conan.lockfile.parser.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class ConanLockfileData extends Stringable {
     @SerializedName("graph_lock")

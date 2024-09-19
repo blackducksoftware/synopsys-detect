@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.blackduck.integration.blackduck.bdio2.model.GitInfo;
 import com.blackduck.integration.detectable.detectables.git.GitUrlParser;
 import com.blackduck.integration.detectable.detectables.git.parsing.model.GitConfig;
 import com.blackduck.integration.detectable.detectables.git.parsing.model.GitConfigResult;
@@ -21,9 +21,9 @@ import com.blackduck.integration.detectable.detectables.git.parsing.parse.GitCon
 import com.blackduck.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
 import com.blackduck.integration.detectable.detectables.git.parsing.parse.GitFileParser;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.function.ThrowingFunction;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.function.ThrowingFunction;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.log.Slf4jIntLogger;
 
 public class GitParseExtractor {
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));

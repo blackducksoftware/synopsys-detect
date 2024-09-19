@@ -3,8 +3,8 @@ package com.blackduck.integration.detect.util.filter;
 import java.util.Set;
 
 import com.blackduck.integration.detect.configuration.help.DetectArgumentState;
-import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
-import com.synopsys.integration.util.TokenizerUtils;
+import com.blackduck.integration.util.ExcludedIncludedWildcardFilter;
+import com.blackduck.integration.util.TokenizerUtils;
 
 public class DetectOverrideableFilter extends ExcludedIncludedWildcardFilter implements DetectFilter {
     public static DetectOverrideableFilter createArgumentValueFilter(DetectArgumentState detectArgumentState) {

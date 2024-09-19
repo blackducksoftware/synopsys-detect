@@ -3,7 +3,7 @@ package com.blackduck.integration.detectable.detectables.dart;
 import java.util.List;
 import java.util.Optional;
 
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class PubSpecYamlNameVersionParser {
     private static final String NAME_KEY = "name:";

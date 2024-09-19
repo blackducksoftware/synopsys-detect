@@ -19,7 +19,7 @@ import com.blackduck.integration.detect.workflow.event.EventSystem;
 import com.blackduck.integration.detect.workflow.status.Operation;
 import com.blackduck.integration.detect.workflow.status.StatusType;
 import com.blackduck.integration.detector.base.DetectorType;
-import com.synopsys.integration.phonehome.PhoneHomeResponse;
+import com.blackduck.integration.phonehome.PhoneHomeResponse;
 
 public abstract class PhoneHomeManager {
     private final Logger logger = LoggerFactory.getLogger(PhoneHomeManager.class);

@@ -8,9 +8,9 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.service.dataservice.IacScanUploadService;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.response.Response;
+import com.blackduck.integration.blackduck.service.dataservice.IacScanUploadService;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.rest.response.Response;
 
 public class UploadIacScanResultsOperation {
     Logger logger = LoggerFactory.getLogger(this.getClass());

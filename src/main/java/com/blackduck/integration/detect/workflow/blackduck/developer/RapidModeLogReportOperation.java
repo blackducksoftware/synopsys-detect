@@ -6,7 +6,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.blackduck.integration.blackduck.api.generated.view.DeveloperScansScanView;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
@@ -14,7 +14,7 @@ import com.blackduck.integration.detect.lifecycle.shutdown.ExitCodePublisher;
 import com.blackduck.integration.detect.workflow.blackduck.developer.aggregate.RapidScanAggregateResult;
 import com.blackduck.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultAggregator;
 import com.blackduck.integration.detect.workflow.blackduck.developer.aggregate.RapidScanResultSummary;
-import com.synopsys.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.log.Slf4jIntLogger;
 
 public class RapidModeLogReportOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

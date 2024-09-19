@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.Forge;
 import com.blackduck.integration.detectable.detectables.clang.linux.LinuxDistro;
 import com.blackduck.integration.detectable.detectables.clang.packagemanager.ClangPackageManager;
 

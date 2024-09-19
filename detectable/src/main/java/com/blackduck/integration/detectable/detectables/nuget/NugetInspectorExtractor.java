@@ -24,10 +24,10 @@ import com.blackduck.integration.detectable.detectable.executable.DetectableExec
 import com.blackduck.integration.detectable.detectables.nuget.parse.NugetInspectorParser;
 import com.blackduck.integration.detectable.detectables.nuget.parse.NugetParseResult;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.executable.Executable;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.executable.Executable;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.util.NameVersion;
 
 public class NugetInspectorExtractor {
     public static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";

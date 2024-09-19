@@ -16,7 +16,7 @@ import com.blackduck.integration.detect.tool.detector.inspector.projectinspector
 import com.blackduck.integration.detect.tool.detector.inspector.projectinspector.installer.LocalProjectInspectorInstaller;
 import com.blackduck.integration.detect.tool.detector.inspector.projectinspector.installer.ProjectInspectorInstaller;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.util.OperatingSystemType;
+import com.blackduck.integration.util.OperatingSystemType;
 
 public class LocalProjectInspectorInstallerTest {
 

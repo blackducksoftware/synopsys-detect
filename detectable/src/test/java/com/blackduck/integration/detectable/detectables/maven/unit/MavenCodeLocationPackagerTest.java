@@ -6,11 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.Forge;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.annotations.UnitTest;
 import com.blackduck.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
 import com.blackduck.integration.detectable.detectables.maven.cli.ScopedDependency;

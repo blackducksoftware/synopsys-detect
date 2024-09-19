@@ -13,22 +13,22 @@ import org.apache.commons.compress.utils.FileNameUtils;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
-import com.synopsys.integration.blackduck.bdio2.Bdio2StreamUploader;
-import com.synopsys.integration.blackduck.bdio2.model.BdioFileContent;
-import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
-import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.blackduck.service.DataService;
-import com.synopsys.integration.blackduck.service.request.BlackDuckRequestBuilderEditor;
+import com.blackduck.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.blackduck.integration.blackduck.bdio2.Bdio2StreamUploader;
+import com.blackduck.integration.blackduck.bdio2.model.BdioFileContent;
+import com.blackduck.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadTarget;
+import com.blackduck.integration.blackduck.exception.BlackDuckIntegrationException;
+import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
+import com.blackduck.integration.blackduck.service.DataService;
+import com.blackduck.integration.blackduck.service.request.BlackDuckRequestBuilderEditor;
 import com.blackduck.integration.detect.configuration.enumeration.RapidCompareMode;
 import com.blackduck.integration.detect.util.DetectZipUtil;
 import com.blackduck.integration.detect.workflow.blackduck.developer.RapidScanOptions;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.rest.HttpUrl;
+import com.blackduck.integration.util.NameVersion;
 
 public class RapidScanUploadService extends DataService {
     private static final String FILE_NAME_BDIO_HEADER_JSONLD = "bdio-header.jsonld";

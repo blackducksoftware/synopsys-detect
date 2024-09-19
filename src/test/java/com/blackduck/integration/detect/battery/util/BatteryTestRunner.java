@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import com.blackduck.integration.configuration.property.Property;
 import com.blackduck.integration.detect.battery.util.assertions.BatteryBdioAssert;
 import com.blackduck.integration.detect.battery.util.executable.ResourceCopyingExecutableCreator;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 import freemarker.template.TemplateException;
 

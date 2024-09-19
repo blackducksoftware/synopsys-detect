@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.ExecutableUtils;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
@@ -14,8 +14,8 @@ import com.blackduck.integration.detectable.detectable.executable.DetectableExec
 import com.blackduck.integration.detectable.detectables.cpan.parse.CpanListParser;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class CpanCliExtractor {
     private final CpanListParser cpanListParser;

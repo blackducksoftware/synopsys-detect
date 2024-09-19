@@ -1,12 +1,12 @@
 package com.blackduck.integration.detect.workflow.blackduck;
 
-import com.synopsys.integration.blackduck.api.generated.view.BomStatusScanView;
-import com.synopsys.integration.blackduck.api.generated.enumeration.BomStatusScanStatusType;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.exception.IntegrationTimeoutException;
-import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.wait.ResilientJob;
+import com.blackduck.integration.blackduck.api.generated.view.BomStatusScanView;
+import com.blackduck.integration.blackduck.api.generated.enumeration.BomStatusScanStatusType;
+import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationTimeoutException;
+import com.blackduck.integration.rest.HttpUrl;
+import com.blackduck.integration.wait.ResilientJob;
 
 public class DetectBomScanWaitJob implements ResilientJob<BomStatusScanView> {
     private final BlackDuckApiClient blackDuckApiClient;

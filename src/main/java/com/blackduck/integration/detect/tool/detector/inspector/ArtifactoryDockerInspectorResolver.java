@@ -22,7 +22,7 @@ import com.blackduck.integration.detectable.detectable.exception.DetectableExcep
 import com.blackduck.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.blackduck.integration.detectable.detectables.docker.DockerInspectorInfo;
 import com.blackduck.integration.detectable.detectables.docker.DockerInspectorResolver;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolver {
     private static final String IMAGE_INSPECTOR_FAMILY = "blackduck-imageinspector";

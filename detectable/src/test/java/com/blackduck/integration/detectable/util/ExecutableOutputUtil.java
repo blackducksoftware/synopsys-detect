@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.util;
 
-import com.synopsys.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableOutput;
 
 public class ExecutableOutputUtil {
     public static ExecutableOutput success(String line) {

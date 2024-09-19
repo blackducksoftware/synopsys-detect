@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.blackduck.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 public class HaskellCabalLibraryJsonProtoParserTest {
 

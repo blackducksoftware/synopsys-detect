@@ -2,7 +2,7 @@ package com.blackduck.integration.detectable.detectables.setuptools;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectables.setuptools.parse.SetupToolsParsedResult;

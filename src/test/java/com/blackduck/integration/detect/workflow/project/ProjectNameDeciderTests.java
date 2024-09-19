@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.blackduck.integration.detect.workflow.nameversion.DetectorNameVersionDecider;
 import com.blackduck.integration.detect.workflow.nameversion.DetectorProjectInfo;
 import com.blackduck.integration.detector.base.DetectorType;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class ProjectNameDeciderTests {
 

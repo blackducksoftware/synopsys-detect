@@ -9,8 +9,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.BdioTransformer;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.BdioTransformer;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.common.util.finder.FileFinder;
 import com.blackduck.integration.common.util.parse.CommandParser;
 import com.blackduck.integration.detectable.DetectableEnvironment;

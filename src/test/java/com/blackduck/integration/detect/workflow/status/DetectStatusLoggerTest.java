@@ -25,8 +25,8 @@ import com.blackduck.integration.detect.workflow.status.Operation;
 import com.blackduck.integration.detect.workflow.status.OperationType;
 import com.blackduck.integration.detect.workflow.status.Status;
 import com.blackduck.integration.detect.workflow.status.StatusType;
-import com.synopsys.integration.log.BufferedIntLogger;
-import com.synopsys.integration.log.LogLevel;
+import com.blackduck.integration.log.BufferedIntLogger;
+import com.blackduck.integration.log.LogLevel;
 
 public class DetectStatusLoggerTest {
     @Test

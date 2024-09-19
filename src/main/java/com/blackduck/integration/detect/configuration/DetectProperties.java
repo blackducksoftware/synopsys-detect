@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
-import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
+import com.blackduck.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
+import com.blackduck.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.blackduck.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
+import com.blackduck.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.ReducedPersistence;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.blackduck.integration.configuration.property.Properties;
 import com.blackduck.integration.configuration.property.Property;
 import com.blackduck.integration.configuration.property.base.PassthroughProperty;
@@ -69,7 +69,7 @@ import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.Pnpm
 import com.blackduck.integration.detectable.detectables.rubygems.GemspecDependencyType;
 import com.blackduck.integration.detectable.detectables.yarn.YarnDependencyType;
 import com.blackduck.integration.detector.base.DetectorType;
-import com.synopsys.integration.log.LogLevel;
+import com.blackduck.integration.log.LogLevel;
 
 // java:S1192: Sonar wants constants defined for fromVersion when setting property info.
 // java:S1123: Warning about deprecations not having Java doc.

@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectables.yarn.parse.entry;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class YarnLockEntryId extends Stringable {
     private final String name;

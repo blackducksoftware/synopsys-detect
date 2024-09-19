@@ -1,6 +1,6 @@
 package com.blackduck.integration.detect.lifecycle.run.singleton;
 
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detect.configuration.connection.ConnectionDetails;
 import com.blackduck.integration.detect.lifecycle.run.step.utility.OperationWrapper;
 import com.blackduck.integration.detect.tool.detector.executable.DetectExecutableResolver;

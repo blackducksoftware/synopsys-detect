@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.blackduck.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
@@ -21,7 +21,7 @@ import com.blackduck.integration.detect.lifecycle.boot.product.version.BlackDuck
 import com.blackduck.integration.detect.lifecycle.run.data.ProductRunData;
 import com.blackduck.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.blackduck.integration.detect.workflow.blackduck.analytics.AnalyticsSetting;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class ProductBootTest {
     @Test

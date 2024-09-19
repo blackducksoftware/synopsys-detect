@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 import com.blackduck.integration.detectable.detectables.sbt.dot.SbtDotGraphNodeParser;
 import com.blackduck.integration.detectable.detectables.sbt.dot.SbtRootNodeFinder;

@@ -17,17 +17,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.BdioReader;
-import com.synopsys.integration.bdio.BdioTransformer;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.SimpleBdioDocument;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.dependency.ProjectDependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.BdioReader;
+import com.blackduck.integration.bdio.BdioTransformer;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.SimpleBdioDocument;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.dependency.ProjectDependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
 import com.blackduck.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
 import com.blackduck.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 class BdioAggregationTest {
     private static Gson gson;
@@ -59,7 +59,7 @@ class BdioAggregationTest {
         );
 
         assertEquals(3, aggregatedGraph.getDirectDependencies().size());
-        assertTrue(aggregatedGraph.getDirectDependencies().contains(genProjectDependency("com.synopsys.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
+        assertTrue(aggregatedGraph.getDirectDependencies().contains(genProjectDependency("com.blackduck.integration", "basic-multiproject", "0.0.0-SNAPSHOT")));
         assertTrue(aggregatedGraph.getDirectDependencies().contains(genProjectDependency("basic-multiproject", "subprojectone", "unspecified")));
         assertTrue(aggregatedGraph.getDirectDependencies().contains(genProjectDependency("basic-multiproject", "subprojecttwo", "unspecified")));
 

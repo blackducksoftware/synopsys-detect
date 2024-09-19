@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Optional;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.common.util.finder.FileFinder;
 import com.blackduck.integration.detect.configuration.DetectInfo;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;

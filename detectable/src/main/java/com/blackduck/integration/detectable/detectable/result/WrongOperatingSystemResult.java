@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectable.result;
 
-import com.synopsys.integration.util.OperatingSystemType;
+import com.blackduck.integration.util.OperatingSystemType;
 
 public class WrongOperatingSystemResult extends FailedDetectableResult {
     private final OperatingSystemType currentOperatingSystem;

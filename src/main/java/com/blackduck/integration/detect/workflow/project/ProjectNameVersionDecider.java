@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackduck.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class ProjectNameVersionDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

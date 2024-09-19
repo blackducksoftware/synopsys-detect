@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.blackduck.integration.detectable.detectables.conan.ConanExternalIdVersionGenerator;
 import com.blackduck.integration.detectable.detectables.conan.graph.ConanNode;
 import com.blackduck.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class ConanExternalIdVersionGeneratorTest {
 

@@ -54,7 +54,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.blackduck.integration.blackduck.bdio2.model.GitInfo;
 import com.blackduck.integration.detect.configuration.DetectInfo;
 import com.blackduck.integration.detect.tool.detector.DetectorToolResult;
 import com.blackduck.integration.detect.workflow.event.Event;

@@ -9,7 +9,7 @@ import org.zeroturnaround.zip.ZipUtil;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
 import com.blackduck.integration.detect.tool.detector.inspector.DockerInspectorInstaller;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class DockerAirGapCreator {
     private final DockerInspectorInstaller dockerInspectorInstaller;

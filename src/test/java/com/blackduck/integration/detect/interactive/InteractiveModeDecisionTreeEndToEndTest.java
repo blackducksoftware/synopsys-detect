@@ -45,7 +45,7 @@ import com.blackduck.integration.detect.interactive.InteractiveModeDecisionTree;
 import com.blackduck.integration.detect.interactive.InteractivePropertySourceBuilder;
 import com.blackduck.integration.detect.interactive.InteractiveWriter;
 import com.blackduck.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
-import com.synopsys.integration.util.OperatingSystemType;
+import com.blackduck.integration.util.OperatingSystemType;
 
 public class InteractiveModeDecisionTreeEndToEndTest {
     public static final String YES = "y";

@@ -3,15 +3,15 @@ package com.blackduck.integration.detect.workflow.blackduck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.generated.view.BomStatusScanView;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.Slf4jIntLogger;
-import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.wait.ResilientJobConfig;
-import com.synopsys.integration.wait.ResilientJobExecutor;
-import com.synopsys.integration.wait.tracker.WaitIntervalTracker;
-import com.synopsys.integration.wait.tracker.WaitIntervalTrackerFactory;
+import com.blackduck.integration.blackduck.api.generated.view.BomStatusScanView;
+import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.rest.HttpUrl;
+import com.blackduck.integration.wait.ResilientJobConfig;
+import com.blackduck.integration.wait.ResilientJobExecutor;
+import com.blackduck.integration.wait.tracker.WaitIntervalTracker;
+import com.blackduck.integration.wait.tracker.WaitIntervalTrackerFactory;
 
 public class BomScanWaitOperation {
     

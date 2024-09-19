@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gson.annotations.SerializedName;
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class ConanGraphInfoGraphNode extends Stringable {
     

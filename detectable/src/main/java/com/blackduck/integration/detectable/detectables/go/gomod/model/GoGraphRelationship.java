@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectables.go.gomod.model;
 
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class GoGraphRelationship {
     private final NameVersion parent;

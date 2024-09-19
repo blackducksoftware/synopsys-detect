@@ -15,7 +15,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.python.util.PythonDependency;

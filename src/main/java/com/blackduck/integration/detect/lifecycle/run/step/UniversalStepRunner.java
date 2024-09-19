@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.bdio2.Bdio;
-import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
+import com.blackduck.integration.bdio.graph.ProjectDependencyGraph;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadTarget;
 import com.blackduck.integration.detect.configuration.enumeration.DetectTool;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
@@ -30,7 +30,7 @@ import com.blackduck.integration.detect.workflow.bdio.BdioResult;
 import com.blackduck.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackduck.integration.detect.workflow.codelocation.DetectCodeLocationNamesResult;
 import com.blackduck.integration.detect.workflow.report.util.ReportConstants;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class UniversalStepRunner {
     private final OperationRunner operationRunner;

@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
 import com.blackduck.integration.detectable.detectables.dart.pubspec.PubSpecLockParser;
 import com.blackduck.integration.detectable.util.graph.NameVersionGraphAssert;
 

@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectables.go.vendor.model;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class PackageData extends Stringable {
 

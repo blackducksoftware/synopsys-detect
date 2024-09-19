@@ -2,15 +2,15 @@ package com.blackduck.integration.detect.battery.docker.integration;
 
 import org.junit.jupiter.api.Assertions;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.dataservice.ProjectService;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.blackduck.service.dataservice.ProjectService;
 import com.blackduck.integration.detect.workflow.blackduck.report.service.ReportService;
-import com.synopsys.integration.log.BufferedIntLogger;
-import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.util.IntegrationEscapeUtil;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.log.BufferedIntLogger;
+import com.blackduck.integration.rest.HttpUrl;
+import com.blackduck.integration.util.IntegrationEscapeUtil;
+import com.blackduck.integration.util.NameVersion;
 
 public class BlackDuckTestConnection {
     public static final String BLACKDUCK_URL = "BLACKDUCK_URL";

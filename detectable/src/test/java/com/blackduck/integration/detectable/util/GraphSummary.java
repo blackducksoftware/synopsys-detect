@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.synopsys.integration.bdio.model.BdioId;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.bdio.model.BdioId;
+import com.blackduck.integration.util.NameVersion;
 
 public class GraphSummary {
     public Set<BdioId> rootExternalDataIds = new HashSet<>();

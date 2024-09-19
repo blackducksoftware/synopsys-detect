@@ -1,7 +1,7 @@
 package com.blackduck.integration.detect.tool.impactanalysis.service;
 
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationRequest;
-import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationRequest;
+import com.blackduck.integration.blackduck.exception.BlackDuckIntegrationException;
 
 public class ImpactAnalysisCodeLocationCreationRequest extends CodeLocationCreationRequest<ImpactAnalysisBatchOutput> {
     private final ImpactAnalysisBatchRunner impactAnalysisBatchRunner;

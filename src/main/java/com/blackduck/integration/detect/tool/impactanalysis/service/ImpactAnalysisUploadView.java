@@ -3,10 +3,10 @@ package com.blackduck.integration.detect.tool.impactanalysis.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.synopsys.integration.blackduck.api.core.BlackDuckView;
-import com.synopsys.integration.blackduck.api.core.response.LinkBlackDuckResponse;
-import com.synopsys.integration.blackduck.api.core.response.LinkSingleResponse;
-import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
+import com.blackduck.integration.blackduck.api.core.BlackDuckView;
+import com.blackduck.integration.blackduck.api.core.response.LinkBlackDuckResponse;
+import com.blackduck.integration.blackduck.api.core.response.LinkSingleResponse;
+import com.blackduck.integration.blackduck.api.generated.view.CodeLocationView;
 
 public class ImpactAnalysisUploadView extends BlackDuckView {
     protected static final Map<String, LinkBlackDuckResponse<?>> links = new HashMap<>();

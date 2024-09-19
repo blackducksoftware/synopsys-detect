@@ -1,9 +1,9 @@
 package com.blackduck.integration.detect.workflow.componentlocationanalysis;
 
 import com.google.gson.JsonObject;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
 import com.blackduck.integration.detect.workflow.bdio.BdioResult;
 import com.blackduck.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackduck.integration.componentlocator.beans.Component;

@@ -7,9 +7,9 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.blackduck.api.generated.component.RiskProfileCountsView;
-import com.synopsys.integration.blackduck.api.generated.enumeration.RiskPriorityType;
-import com.synopsys.integration.blackduck.api.generated.view.RiskProfileView;
+import com.blackduck.integration.blackduck.api.generated.component.RiskProfileCountsView;
+import com.blackduck.integration.blackduck.api.generated.enumeration.RiskPriorityType;
+import com.blackduck.integration.blackduck.api.generated.view.RiskProfileView;
 import com.blackduck.integration.detect.workflow.blackduck.report.BomComponent;
 import com.blackduck.integration.detect.workflow.blackduck.report.ReportData;
 

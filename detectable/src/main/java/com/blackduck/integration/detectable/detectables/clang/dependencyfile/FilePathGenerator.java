@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.blackduck.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.blackduck.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
-import com.synopsys.integration.executable.Executable;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.Executable;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class FilePathGenerator {
     private static final String COMPILER_OUTPUT_FILE_OPTION = "-o";

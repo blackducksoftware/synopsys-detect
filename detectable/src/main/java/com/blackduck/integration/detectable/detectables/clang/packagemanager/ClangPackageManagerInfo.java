@@ -3,7 +3,7 @@ package com.blackduck.integration.detectable.detectables.clang.packagemanager;
 import java.util.List;
 import java.util.Optional;
 
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.Forge;
 
 public class ClangPackageManagerInfo {
     private final String pkgMgrName;

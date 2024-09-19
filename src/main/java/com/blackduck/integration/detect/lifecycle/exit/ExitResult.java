@@ -1,7 +1,7 @@
 package com.blackduck.integration.detect.lifecycle.exit;
 
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class ExitResult extends Stringable {
     private final ExitCodeType exitCodeType;

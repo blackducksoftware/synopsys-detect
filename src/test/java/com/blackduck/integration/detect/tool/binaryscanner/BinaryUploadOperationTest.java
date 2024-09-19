@@ -32,7 +32,7 @@ import com.blackduck.integration.detect.tool.binaryscanner.BinaryScanFindMultipl
 import com.blackduck.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.blackduck.integration.detect.util.finder.DetectDirectoryFileFilter;
 import com.blackduck.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class BinaryUploadOperationTest {
     @Test

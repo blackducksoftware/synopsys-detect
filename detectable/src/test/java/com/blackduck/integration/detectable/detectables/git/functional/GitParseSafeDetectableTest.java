@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.blackduck.integration.blackduck.bdio2.model.GitInfo;
 import com.blackduck.integration.detectable.Detectable;
 import com.blackduck.integration.detectable.DetectableEnvironment;
 import com.blackduck.integration.detectable.extraction.Extraction;

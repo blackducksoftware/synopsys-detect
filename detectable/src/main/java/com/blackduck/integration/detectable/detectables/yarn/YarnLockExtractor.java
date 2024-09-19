@@ -22,7 +22,7 @@ import com.blackduck.integration.detectable.detectables.yarn.parse.YarnLockParse
 import com.blackduck.integration.detectable.detectables.yarn.workspace.YarnWorkspace;
 import com.blackduck.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
+import com.blackduck.integration.util.ExcludedIncludedWildcardFilter;
 
 public class YarnLockExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

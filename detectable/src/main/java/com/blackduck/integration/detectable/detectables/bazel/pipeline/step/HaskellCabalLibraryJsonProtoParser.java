@@ -12,7 +12,7 @@ import com.blackduck.integration.detectable.detectables.bazel.pipeline.step.mode
 import com.blackduck.integration.detectable.detectables.bazel.pipeline.step.model.Proto;
 import com.blackduck.integration.detectable.detectables.bazel.pipeline.step.model.ResultItem;
 import com.blackduck.integration.detectable.detectables.bazel.pipeline.step.model.Target;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class HaskellCabalLibraryJsonProtoParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

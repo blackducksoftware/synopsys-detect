@@ -1,7 +1,7 @@
 package com.blackduck.integration.detect.workflow.blackduck.integratedmatching.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class ScanCounts extends Stringable {
 

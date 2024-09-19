@@ -20,7 +20,7 @@ import com.blackduck.integration.detectable.detectable.executable.DetectableExec
 import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableOutput;
 
 public class MavenCliExtractor {
     private final DetectableExecutableRunner executableRunner;

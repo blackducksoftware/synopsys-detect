@@ -2,9 +2,9 @@ package com.blackduck.integration.detect.workflow.bdio;
 
 import java.io.File;
 
-import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
-import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.bdio.graph.ProjectDependencyGraph;
+import com.blackduck.integration.blackduck.bdio2.model.GitInfo;
+import com.blackduck.integration.util.NameVersion;
 
 public class AggregateCodeLocation {
     private final File aggregateFile;

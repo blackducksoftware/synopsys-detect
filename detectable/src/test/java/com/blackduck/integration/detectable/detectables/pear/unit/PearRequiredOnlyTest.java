@@ -7,15 +7,15 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.detectable.util.EnumListFilter;
 import com.blackduck.integration.detectable.detectables.pear.model.PackageDependency;
 import com.blackduck.integration.detectable.detectables.pear.parse.PearListParser;
 import com.blackduck.integration.detectable.detectables.pear.parse.PearPackageDependenciesParser;
 import com.blackduck.integration.detectable.detectables.pear.transform.PearDependencyGraphTransformer;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class PearRequiredOnlyTest {
 

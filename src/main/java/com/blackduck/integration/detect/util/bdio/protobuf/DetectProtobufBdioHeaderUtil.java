@@ -10,7 +10,7 @@ import java.util.zip.ZipOutputStream;
 import com.blackducksoftware.bdio.proto.ProtobufBdioWriter;
 import com.blackducksoftware.bdio.proto.api.BdioHeader;
 import com.blackduck.integration.detect.util.DetectZipUtil;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class DetectProtobufBdioHeaderUtil {
     private final String scanId;

@@ -8,19 +8,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.blackduck.upload.client.UploaderConfig;
-import com.synopsys.blackduck.upload.client.model.BinaryScanRequestData;
-import com.synopsys.blackduck.upload.client.uploaders.BinaryUploader;
-import com.synopsys.blackduck.upload.client.uploaders.UploaderFactory;
-import com.synopsys.blackduck.upload.rest.status.BinaryUploadStatus;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScan;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatch;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanOutput;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanUploadService;
-import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
+import com.blackduck.blackduck.upload.client.UploaderConfig;
+import com.blackduck.blackduck.upload.client.model.BinaryScanRequestData;
+import com.blackduck.blackduck.upload.client.uploaders.BinaryUploader;
+import com.blackduck.blackduck.upload.client.uploaders.UploaderFactory;
+import com.blackduck.blackduck.upload.rest.status.BinaryUploadStatus;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.blackduck.integration.blackduck.codelocation.Result;
+import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScan;
+import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScanBatch;
+import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
+import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScanOutput;
+import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScanUploadService;
+import com.blackduck.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -28,9 +28,9 @@ import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameMa
 import com.blackduck.integration.detect.workflow.status.Status;
 import com.blackduck.integration.detect.workflow.status.StatusEventPublisher;
 import com.blackduck.integration.detect.workflow.status.StatusType;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.Slf4jIntLogger;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.util.NameVersion;
 
 public class BinaryUploadOperation {
     private static final String STATUS_KEY = "BINARY_SCAN";

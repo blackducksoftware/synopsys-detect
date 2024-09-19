@@ -11,11 +11,11 @@ import java.util.Map.Entry;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmPackageInfo;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.process.PnpmLinkedPackageResolver;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.process.PnpmYamlTransformer;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class PnpmYamlTransformerTestv9 {
     PnpmYamlTransformer instance = new PnpmYamlTransformer(null, "9");

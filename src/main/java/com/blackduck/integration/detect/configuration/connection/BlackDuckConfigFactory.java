@@ -3,16 +3,16 @@ package com.blackduck.integration.detect.configuration.connection;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import com.blackduck.integration.common.util.ProxyUtil;
 import com.blackduck.integration.detect.configuration.DetectInfo;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.log.SilentIntLogger;
-import com.synopsys.integration.rest.proxy.ProxyInfo;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.log.SilentIntLogger;
+import com.blackduck.integration.rest.proxy.ProxyInfo;
+import com.blackduck.integration.util.NameVersion;
 
 public class BlackDuckConfigFactory {
     private final BlackDuckConnectionDetails blackDuckConnectionDetails;

@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchBuilder;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.ScanBatch;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.ScanBatchBuilder;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
 import com.blackduck.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -16,7 +16,7 @@ import com.blackduck.integration.detect.tool.signaturescanner.BlackDuckSignature
 import com.blackduck.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackduck.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class CreateScanBatchOperation {
     private final BlackDuckSignatureScannerOptions signatureScannerOptions;

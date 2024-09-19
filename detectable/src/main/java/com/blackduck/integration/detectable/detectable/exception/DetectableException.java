@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectable.exception;
 
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class DetectableException extends IntegrationException {
     private static final long serialVersionUID = 1L;

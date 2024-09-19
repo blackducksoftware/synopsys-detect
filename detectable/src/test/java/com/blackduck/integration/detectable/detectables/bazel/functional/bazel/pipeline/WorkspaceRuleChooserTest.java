@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.blackduck.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.blackduck.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 class WorkspaceRuleChooserTest {
 

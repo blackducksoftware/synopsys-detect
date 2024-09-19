@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.blackduck.api.generated.component.*;
+import com.blackduck.integration.blackduck.api.generated.component.*;
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.blackduck.integration.blackduck.api.generated.view.DeveloperScansScanView;
 
 public class RapidScanResultAggregator {
     

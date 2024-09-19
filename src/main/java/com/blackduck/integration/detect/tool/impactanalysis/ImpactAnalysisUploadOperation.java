@@ -5,12 +5,12 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.blackduck.integration.detect.tool.impactanalysis.service.ImpactAnalysis;
 import com.blackduck.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
 import com.blackduck.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 public class ImpactAnalysisUploadOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

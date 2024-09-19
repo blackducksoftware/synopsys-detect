@@ -17,8 +17,8 @@ import com.blackduck.integration.detectable.detectables.clang.packagemanager.Pac
 import com.blackduck.integration.detectable.detectables.clang.packagemanager.resolver.ApkArchitectureResolver;
 import com.blackduck.integration.detectable.detectables.clang.packagemanager.resolver.ApkPackageManagerResolver;
 import com.blackduck.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class ApkPackageManagerTest {
     @Test

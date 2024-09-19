@@ -30,7 +30,7 @@ import java.nio.file.Paths;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.Forge;
 import com.blackduck.integration.detectable.Detectable;
 import com.blackduck.integration.detectable.DetectableEnvironment;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;

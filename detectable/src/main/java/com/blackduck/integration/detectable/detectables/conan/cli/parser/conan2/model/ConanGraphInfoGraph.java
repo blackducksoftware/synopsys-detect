@@ -3,7 +3,7 @@ package com.blackduck.integration.detectable.detectables.conan.cli.parser.conan2
 import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class ConanGraphInfoGraph extends Stringable {
     @SerializedName("nodes")

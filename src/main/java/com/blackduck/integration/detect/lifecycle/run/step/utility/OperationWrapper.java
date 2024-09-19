@@ -6,11 +6,11 @@ import java.util.function.Consumer;
 import com.blackduck.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException;
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.blackduck.exception.BlackDuckApiException;
+import com.blackduck.integration.blackduck.exception.BlackDuckApiException;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.workflow.status.Operation;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class OperationWrapper {
 

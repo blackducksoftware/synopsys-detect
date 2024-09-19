@@ -7,17 +7,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.service.dataservice.ProjectService;
-import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.blackduck.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.blackduck.integration.blackduck.service.dataservice.ProjectService;
+import com.blackduck.integration.blackduck.service.model.ProjectSyncModel;
+import com.blackduck.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.workflow.blackduck.project.options.CloneFindResult;
 import com.blackduck.integration.detect.workflow.blackduck.project.options.ProjectGroupFindResult;
 import com.blackduck.integration.detect.workflow.blackduck.project.options.ProjectSyncOptions;
 import com.blackduck.integration.detect.workflow.blackduck.project.options.ProjectVersionLicenseFindResult;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 public class SyncProjectOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

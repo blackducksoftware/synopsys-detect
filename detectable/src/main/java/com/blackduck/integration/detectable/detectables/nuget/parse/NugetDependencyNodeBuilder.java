@@ -3,10 +3,10 @@ package com.blackduck.integration.detectable.detectables.nuget.parse;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.graph.BasicDependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
 import com.blackduck.integration.detectable.detectables.nuget.model.NugetPackageId;
 import com.blackduck.integration.detectable.detectables.nuget.model.NugetPackageSet;
 

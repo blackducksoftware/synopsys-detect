@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
-import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
-import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.blackduck.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
+import com.blackduck.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
+import com.blackduck.integration.blackduck.service.model.ProjectSyncModel;
+import com.blackduck.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.blackduck.integration.detect.battery.docker.integration.BlackDuckTestConnection;
 import com.blackduck.integration.detect.workflow.blackduck.report.service.ReportService;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 @Tag("integration")
 public class RiskReportServiceTestIT {

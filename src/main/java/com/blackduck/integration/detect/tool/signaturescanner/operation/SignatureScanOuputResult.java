@@ -1,6 +1,6 @@
 package com.blackduck.integration.detect.tool.signaturescanner.operation;
 
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 
 public class SignatureScanOuputResult {
     private final ScanBatchOutput scanBatchOutput;

@@ -23,8 +23,8 @@ import com.blackduck.integration.detectable.detectables.gradle.inspection.parse.
 import com.blackduck.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.rest.proxy.ProxyInfo;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.rest.proxy.ProxyInfo;
+import com.blackduck.integration.util.NameVersion;
 
 public class GradleInspectorExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

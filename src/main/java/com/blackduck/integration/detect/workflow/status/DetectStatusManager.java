@@ -10,7 +10,7 @@ import com.blackduck.integration.detect.lifecycle.autonomous.AutonomousManager;
 import com.blackduck.integration.detect.workflow.event.Event;
 import com.blackduck.integration.detect.workflow.event.EventSystem;
 import com.blackduck.integration.detect.workflow.result.DetectResult;
-import com.synopsys.integration.log.IntLogger;
+import com.blackduck.integration.log.IntLogger;
 
 public class DetectStatusManager {
     private final List<Status> statusSummaries = new ArrayList<>();

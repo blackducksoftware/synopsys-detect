@@ -9,7 +9,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.Forge;
 import com.blackduck.integration.detectable.detectables.clang.ForgeChooser;
 import com.blackduck.integration.detectable.detectables.clang.LinuxDistroToForgeMapper;
 import com.blackduck.integration.detectable.detectables.clang.linux.LinuxDistro;

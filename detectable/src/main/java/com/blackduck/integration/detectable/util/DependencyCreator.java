@@ -1,7 +1,7 @@
 package com.blackduck.integration.detectable.util;
 
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
 
 public class DependencyCreator {
     private DependencyCreator() {

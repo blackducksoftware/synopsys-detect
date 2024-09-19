@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 
-import com.synopsys.integration.blackduck.api.generated.view.RiskProfileView;
+import com.blackduck.integration.blackduck.api.generated.view.RiskProfileView;
 
 public class BomComponent {
     private String policyStatus;

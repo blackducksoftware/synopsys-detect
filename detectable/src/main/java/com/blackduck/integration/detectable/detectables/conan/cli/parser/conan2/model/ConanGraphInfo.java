@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectables.conan.cli.parser.conan2.model;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class ConanGraphInfo extends Stringable {
     private final ConanGraphInfoGraph graph;

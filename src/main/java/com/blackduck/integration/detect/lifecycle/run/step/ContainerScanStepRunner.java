@@ -10,20 +10,20 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.synopsys.blackduck.upload.client.UploaderConfig;
-import com.synopsys.blackduck.upload.client.uploaders.ContainerUploader;
-import com.synopsys.blackduck.upload.client.uploaders.UploaderFactory;
-import com.synopsys.blackduck.upload.rest.status.DefaultUploadStatus;
-import com.synopsys.integration.blackduck.version.BlackDuckVersion;
+import com.blackduck.blackduck.upload.client.UploaderConfig;
+import com.blackduck.blackduck.upload.client.uploaders.ContainerUploader;
+import com.blackduck.blackduck.upload.client.uploaders.UploaderFactory;
+import com.blackduck.blackduck.upload.rest.status.DefaultUploadStatus;
+import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.blackduck.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.Slf4jIntLogger;
-import com.synopsys.integration.rest.response.Response;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.rest.response.Response;
+import com.blackduck.integration.util.NameVersion;
 
 public class ContainerScanStepRunner {
 

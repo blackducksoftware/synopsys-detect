@@ -8,12 +8,12 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadBatch;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadTarget;
 import com.blackduck.integration.detect.workflow.bdio.BdioResult;
 import com.blackduck.integration.detect.workflow.blackduck.developer.blackduck.DetectRapidScanService;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.HttpUrl;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.rest.HttpUrl;
 
 public class RapidModeUploadOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

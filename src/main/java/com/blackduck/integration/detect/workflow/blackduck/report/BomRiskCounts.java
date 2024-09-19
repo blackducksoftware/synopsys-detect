@@ -1,11 +1,11 @@
 package com.blackduck.integration.detect.workflow.blackduck.report;
 
-import static com.synopsys.integration.blackduck.api.generated.enumeration.RiskPriorityType.CRITICAL;
-import static com.synopsys.integration.blackduck.api.generated.enumeration.RiskPriorityType.HIGH;
-import static com.synopsys.integration.blackduck.api.generated.enumeration.RiskPriorityType.LOW;
-import static com.synopsys.integration.blackduck.api.generated.enumeration.RiskPriorityType.MEDIUM;
+import static com.blackduck.integration.blackduck.api.generated.enumeration.RiskPriorityType.CRITICAL;
+import static com.blackduck.integration.blackduck.api.generated.enumeration.RiskPriorityType.HIGH;
+import static com.blackduck.integration.blackduck.api.generated.enumeration.RiskPriorityType.LOW;
+import static com.blackduck.integration.blackduck.api.generated.enumeration.RiskPriorityType.MEDIUM;
 
-import com.synopsys.integration.blackduck.api.generated.component.RiskProfileCountsView;
+import com.blackduck.integration.blackduck.api.generated.component.RiskProfileCountsView;
 
 public class BomRiskCounts {
     private int critical;

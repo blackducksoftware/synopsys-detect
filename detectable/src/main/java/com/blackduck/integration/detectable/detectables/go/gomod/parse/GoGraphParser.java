@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackduck.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class GoGraphParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

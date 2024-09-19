@@ -13,7 +13,7 @@ import com.blackduck.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.blackduck.integration.detect.workflow.event.Event;
 import com.blackduck.integration.detect.workflow.event.EventSystem;
 import com.blackduck.integration.detect.workflow.status.DetectStatusManager;
-import com.synopsys.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.log.Slf4jIntLogger;
 
 public class ExitManager {
     private final Logger logger = LoggerFactory.getLogger(ExitManager.class);

@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.springframework.lang.Nullable;
 
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class CodeLocationNameManager {
     private final CodeLocationNameGenerator codeLocationNameGenerator;

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.Forge;
 
 // This might move into the libraries; it's also used by by hub-imageinspector-lib
 public class LinuxDistroToForgeMapper {

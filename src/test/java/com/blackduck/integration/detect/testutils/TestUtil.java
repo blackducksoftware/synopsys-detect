@@ -13,7 +13,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.util.ResourceUtil;
+import com.blackduck.integration.util.ResourceUtil;
 
 public class TestUtil {
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();

@@ -1,6 +1,6 @@
 package com.blackduck.integration.detect.lifecycle.exit;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class ExitOptions extends Stringable {
     private final long startTime;

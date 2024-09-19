@@ -12,9 +12,9 @@ import com.blackduck.integration.detect.tool.cache.InstalledToolLocator;
 import com.blackduck.integration.detect.tool.cache.InstalledToolManager;
 import com.blackduck.integration.detect.workflow.ArtifactResolver;
 import com.blackduck.integration.detect.workflow.ArtifactoryConstants;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.Slf4jIntLogger;
-import com.synopsys.integration.util.CommonZipExpander;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.util.CommonZipExpander;
 
 public class DetectFontInstaller {
     private static final String FONTS_ZIP_KEY = "fonts";

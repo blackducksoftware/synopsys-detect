@@ -20,12 +20,12 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.annotations.UnitTest;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectable.util.EnumListFilter;
@@ -42,8 +42,8 @@ import com.blackduck.integration.detectable.detectables.yarn.parse.entry.YarnLoc
 import com.blackduck.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 import com.blackduck.integration.detectable.detectables.yarn.workspace.YarnWorkspace;
 import com.blackduck.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
-import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.ExcludedIncludedWildcardFilter;
+import com.blackduck.integration.util.NameVersion;
 
 @UnitTest
 class YarnTransformerTest {

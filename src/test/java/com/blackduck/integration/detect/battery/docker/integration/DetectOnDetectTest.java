@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.blackduck.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.blackduck.integration.detect.battery.docker.provider.BuildDockerImageProvider;
 import com.blackduck.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.blackduck.integration.detect.battery.docker.util.DetectDockerTestRunner;
@@ -26,7 +26,7 @@ import com.blackduck.integration.detect.battery.docker.util.DockerAssertions;
 import com.blackduck.integration.detect.configuration.DetectProperties;
 import com.blackduck.integration.detect.configuration.enumeration.DetectTool;
 import com.blackduck.integration.detect.workflow.blackduck.report.service.ReportService;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 @Tag("integration")
 public class DetectOnDetectTest {

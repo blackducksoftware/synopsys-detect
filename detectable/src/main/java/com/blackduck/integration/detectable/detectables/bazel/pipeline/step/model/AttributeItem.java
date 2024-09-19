@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectables.bazel.pipeline.step.model;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class AttributeItem extends Stringable {
     private String name;

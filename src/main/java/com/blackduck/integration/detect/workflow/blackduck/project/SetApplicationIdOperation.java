@@ -3,11 +3,11 @@ package com.blackduck.integration.detect.workflow.blackduck.project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.manual.view.ProjectView;
-import com.synopsys.integration.blackduck.service.dataservice.ProjectMappingService;
+import com.blackduck.integration.blackduck.api.manual.view.ProjectView;
+import com.blackduck.integration.blackduck.service.dataservice.ProjectMappingService;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class SetApplicationIdOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

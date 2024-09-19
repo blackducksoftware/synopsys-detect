@@ -12,8 +12,8 @@ import com.blackduck.integration.detectable.detectables.swift.lock.data.PackageS
 import com.blackduck.integration.detectable.detectables.swift.lock.data.ResolvedPackage;
 import com.blackduck.integration.detectable.detectables.swift.lock.data.v2.PackageResolvedV2;
 import com.blackduck.integration.detectable.detectables.swift.lock.parse.PackageResolvedDataChecker;
-import com.synopsys.integration.log.BufferedIntLogger;
-import com.synopsys.integration.log.LogLevel;
+import com.blackduck.integration.log.BufferedIntLogger;
+import com.blackduck.integration.log.LogLevel;
 
 class PackageResolvedDataCheckerTest {
 

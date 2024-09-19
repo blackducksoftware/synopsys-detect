@@ -4,14 +4,14 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
+import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
 import com.blackduck.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.blackduck.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.blackduck.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
-import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.ExcludedIncludedWildcardFilter;
+import com.blackduck.integration.util.NameVersion;
 
 public class YarnPackager {
     private final YarnTransformer yarnTransformer;

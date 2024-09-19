@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.log.IntLogger;
+import com.blackduck.integration.log.IntLogger;
 
 public class ProxyUtil {
     /**

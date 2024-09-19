@@ -2,7 +2,7 @@ package com.blackduck.integration.detectable.detectables.packagist.model;
 
 import java.util.List;
 
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class PackagistPackage {
     private final NameVersion nameVersion;

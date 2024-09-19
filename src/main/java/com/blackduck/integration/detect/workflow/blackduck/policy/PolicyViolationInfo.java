@@ -1,7 +1,7 @@
 package com.blackduck.integration.detect.workflow.blackduck.policy;
 
-import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
+import com.blackduck.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
+import com.blackduck.integration.blackduck.api.generated.view.ProjectVersionComponentVersionView;
 
 public class PolicyViolationInfo {
     private final ProjectVersionComponentVersionView projectVersionComponentVersionView;

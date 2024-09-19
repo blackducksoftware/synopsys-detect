@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.codelocation.CodeLocationOutput;
-import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationOutput;
+import com.blackduck.integration.blackduck.codelocation.Result;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.blackduck.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.blackduck.integration.detect.tool.signaturescanner.SignatureScannerReport;
 import com.blackduck.integration.detect.tool.signaturescanner.enums.SignatureScanStatusType;

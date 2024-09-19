@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackduck.integration.common.util.Bds;
-import com.synopsys.integration.util.OperatingSystemType;
-import com.synopsys.integration.util.ResourceUtil;
+import com.blackduck.integration.util.OperatingSystemType;
+import com.blackduck.integration.util.ResourceUtil;
 
 public class DetectInfoUtility {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

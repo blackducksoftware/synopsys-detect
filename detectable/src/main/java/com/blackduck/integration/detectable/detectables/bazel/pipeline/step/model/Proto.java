@@ -2,7 +2,7 @@ package com.blackduck.integration.detectable.detectables.bazel.pipeline.step.mod
 
 import java.util.List;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 // Model for output produced by: bazel cquery ... --output jsonproto
 public class Proto extends Stringable {

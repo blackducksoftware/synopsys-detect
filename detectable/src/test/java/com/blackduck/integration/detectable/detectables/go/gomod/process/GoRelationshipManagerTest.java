@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import com.blackduck.integration.detectable.detectables.go.gomod.model.GoGraphRelationship;
 import com.blackduck.integration.detectable.detectables.go.gomod.process.GoRelationshipManager;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 class GoRelationshipManagerTest {
     static NameVersion parent = new NameVersion("parent", "v1");

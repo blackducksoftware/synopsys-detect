@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.detectables.nuget.model.NugetContainer;
 import com.blackduck.integration.detectable.detectables.nuget.model.NugetContainerType;
 import com.blackduck.integration.detectable.detectables.nuget.model.NugetInspection;

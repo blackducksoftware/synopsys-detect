@@ -12,8 +12,8 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.moandjiezana.toml.Toml;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 import com.blackduck.integration.detectable.detectables.cargo.data.CargoLockData;
@@ -22,7 +22,7 @@ import com.blackduck.integration.detectable.detectables.cargo.parse.CargoTomlPar
 import com.blackduck.integration.detectable.detectables.cargo.transform.CargoLockPackageDataTransformer;
 import com.blackduck.integration.detectable.detectables.cargo.transform.CargoLockPackageTransformer;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class CargoExtractor {
     private final CargoTomlParser cargoTomlParser;

@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 
 import com.blackduck.integration.detectable.annotations.UnitTest;
 import com.blackduck.integration.detectable.detectables.pear.parse.PearPackageXmlParser;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 @UnitTest
 class PearPackageXmlParserTest {

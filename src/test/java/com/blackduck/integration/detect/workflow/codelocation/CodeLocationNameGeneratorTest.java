@@ -10,13 +10,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameType;
 import com.blackduck.integration.detect.workflow.codelocation.DetectCodeLocation;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class CodeLocationNameGeneratorTest {
     @Test

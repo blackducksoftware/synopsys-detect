@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.blackduck.integration.blackduck.bdio2.model.GitInfo;
 import com.blackduck.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.blackduck.integration.detect.tool.detector.report.detectable.ExtractedDetectableReport;
 import com.blackduck.integration.detect.tool.detector.report.rule.ExtractedDetectorRuleReport;

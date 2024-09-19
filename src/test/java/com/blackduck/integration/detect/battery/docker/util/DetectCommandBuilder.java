@@ -13,7 +13,7 @@ import com.blackduck.integration.detect.battery.docker.integration.BlackDuckAsse
 import com.blackduck.integration.detect.battery.docker.integration.BlackDuckTestConnection;
 import com.blackduck.integration.detect.configuration.DetectProperties;
 import com.blackduck.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class DetectCommandBuilder {
     Map<String, String> properties = new HashMap<>();

@@ -12,7 +12,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import com.blackduck.integration.detectable.util.XmlUtil;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class PearPackageXmlParser {
     public NameVersion parse(InputStream packageXmlInputStream)

@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.blackduck.integration.detect.workflow.file.DetectFileUtils;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class CodeLocationNameGenerator {
     private static final int MAXIMUM_CODE_LOCATION_NAME_LENGTH = 250;

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.synopsys.integration.executable.Executable;
+import com.blackduck.integration.executable.Executable;
 
 //TODO: Used because Executable can't be put in a map. Change when INTCMN-471 resolved.
 public class FunctionalExecutable {

@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectable.result.FailedDetectableResult;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class Extraction {
     private final List<CodeLocation> codeLocations;

@@ -20,8 +20,8 @@ import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.Pnpm
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlBase;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv5;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYaml;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 /**
  * This class does initial parsing and determines if we are dealing with a v5 lock file or something newer.

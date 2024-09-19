@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
@@ -35,7 +35,7 @@ import com.blackduck.integration.detectable.detectables.bitbake.transform.Bitbak
 import com.blackduck.integration.detectable.detectables.bitbake.transform.BitbakeGraphTransformer;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class BitbakeExtractor {
     public static final String DEFAULT_BUILD_DIR_NAME = "build";

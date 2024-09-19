@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 
-import com.synopsys.integration.log.LogLevel;
+import com.blackduck.integration.log.LogLevel;
 
 public class DockerDetectableOptions {
 

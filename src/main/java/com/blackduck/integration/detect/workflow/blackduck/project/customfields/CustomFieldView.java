@@ -2,7 +2,7 @@ package com.blackduck.integration.detect.workflow.blackduck.project.customfields
 
 import java.util.List;
 
-import com.synopsys.integration.blackduck.api.core.BlackDuckView;
+import com.blackduck.integration.blackduck.api.core.BlackDuckView;
 
 public class CustomFieldView extends BlackDuckView {
     private int position;

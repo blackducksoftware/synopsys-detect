@@ -2,9 +2,9 @@ package com.blackduck.integration.detect.lifecycle.run.data;
 
 import java.util.Optional;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.version.BlackDuckVersion;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 import com.blackduck.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.blackduck.integration.detect.lifecycle.boot.product.BlackDuckConnectivityResult;
 import com.blackduck.integration.detect.lifecycle.boot.product.version.BlackDuckVersionParser;

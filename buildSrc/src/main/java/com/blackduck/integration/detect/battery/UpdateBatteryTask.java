@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 // Occasionally changes to BDIO or other integral systems require mass changes to the battery. This facilitates that work.
 public class UpdateBatteryTask extends DefaultTask {

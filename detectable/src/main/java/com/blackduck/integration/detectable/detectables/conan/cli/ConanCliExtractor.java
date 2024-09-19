@@ -13,8 +13,8 @@ import com.blackduck.integration.detectable.detectables.conan.cli.parser.conan1.
 import com.blackduck.integration.detectable.detectables.conan.cli.process.ConanCommandRunner;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class ConanCliExtractor {
     private static final String UNABLE_TO_PARSE_VERSION_EXCEPTION_MESSAGE = "Unable to parse Conan version command output";

@@ -1,6 +1,6 @@
 package com.blackduck.integration.detect.workflow.componentlocationanalysis;
 
-import com.synopsys.integration.blackduck.api.generated.component.*;
+import com.blackduck.integration.blackduck.api.generated.component.*;
 
 import java.util.List;
 

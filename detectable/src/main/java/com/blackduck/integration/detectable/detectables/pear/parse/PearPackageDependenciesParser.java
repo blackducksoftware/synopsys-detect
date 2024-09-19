@@ -7,7 +7,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.blackduck.integration.detectable.detectables.pear.model.PackageDependency;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class PearPackageDependenciesParser {
     private static final String START_TOKEN = "=========";

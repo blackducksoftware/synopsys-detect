@@ -4,18 +4,18 @@ import org.apache.http.entity.ContentType;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
-import com.synopsys.integration.blackduck.api.core.BlackDuckResponse;
-import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
-import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.blackduck.service.DataService;
-import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
+import com.blackduck.integration.blackduck.api.core.BlackDuckPath;
+import com.blackduck.integration.blackduck.api.core.BlackDuckResponse;
+import com.blackduck.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.blackduck.integration.blackduck.http.BlackDuckRequestBuilder;
+import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
+import com.blackduck.integration.blackduck.service.DataService;
+import com.blackduck.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.blackduck.integration.detect.workflow.blackduck.integratedmatching.model.ScanCountsPayload;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.rest.response.Response;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.rest.HttpUrl;
+import com.blackduck.integration.rest.response.Response;
 
 public class CorrelatedScanCountUploadService extends DataService {
     // TODO: This feature is being developed before the Black Duck endpoint is released, so this code

@@ -3,7 +3,7 @@ package com.blackduck.integration.detect.tool.impactanalysis;
 import java.io.File;
 
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class ImpactAnalysisNamingOperation {
     private final CodeLocationNameManager codeLocationNameManager;

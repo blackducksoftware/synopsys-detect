@@ -5,8 +5,8 @@ import java.util.Arrays;
 import org.slf4j.LoggerFactory;
 
 import com.blackduck.integration.detectable.detectables.swift.lock.data.v2.PackageResolvedV2;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.log.Slf4jIntLogger;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.log.Slf4jIntLogger;
 
 // The concern is Path packages and anything new Apple introduces: https://developer.apple.com/documentation/swift_packages/package/dependency/3197884-package
 public class PackageResolvedDataChecker {

@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphElement;
 import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.graph.BasicDependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
 
 public class SbtGraphParserTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

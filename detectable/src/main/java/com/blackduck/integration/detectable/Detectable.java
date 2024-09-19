@@ -7,14 +7,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 import com.google.gson.JsonSyntaxException;
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
+import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
 import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.blackduck.integration.detectable.detectable.result.DetectableResult;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
 import com.blackduck.integration.detectable.util.CycleDetectedException;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public abstract class Detectable {
     protected DetectableEnvironment environment;

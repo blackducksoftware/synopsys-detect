@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmLockYamlv5;
 import com.blackduck.integration.detectable.detectables.pnpm.lockfile.model.PnpmProjectPackagev5;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 public class PnpmLockYamlParserv5 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

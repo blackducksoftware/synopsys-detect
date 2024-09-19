@@ -10,7 +10,7 @@ import com.blackduck.integration.detect.battery.docker.provider.BuildDockerImage
 import com.blackduck.integration.detect.battery.docker.util.DetectCommandBuilder;
 import com.blackduck.integration.detect.battery.docker.util.DetectDockerTestRunner;
 import com.blackduck.integration.detect.battery.docker.util.DockerAssertions;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 @Tag("integration")
 public class DetectOnAlertTest {

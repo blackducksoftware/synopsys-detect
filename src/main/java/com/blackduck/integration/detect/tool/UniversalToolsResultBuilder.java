@@ -5,14 +5,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.blackduck.integration.blackduck.bdio2.model.GitInfo;
 import com.blackduck.integration.detect.configuration.enumeration.DetectTool;
 import com.blackduck.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.blackduck.integration.detect.tool.detector.DetectorToolResult;
 import com.blackduck.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackduck.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.blackduck.integration.detector.base.DetectorType;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class UniversalToolsResultBuilder {
     private DockerTargetData dockerTargetData = null;

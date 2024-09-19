@@ -75,7 +75,7 @@ public class DiagnosticSystem {
 
     public Map<String, String> getAdditionalDockerProperties() {
         Map<String, String> properties = new HashMap<>();
-        properties.put("logging.level.com.synopsys", "TRACE");
+        properties.put("logging.level.com.blackduck", "TRACE");
         return properties;
     }
 

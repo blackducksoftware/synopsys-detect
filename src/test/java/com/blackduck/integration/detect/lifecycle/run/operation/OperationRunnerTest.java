@@ -12,7 +12,7 @@ import com.blackduck.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.blackduck.integration.detect.lifecycle.run.singleton.EventSingletons;
 import com.blackduck.integration.detect.lifecycle.run.singleton.UtilitySingletons;
 import com.blackduck.integration.detect.tool.detector.factory.DetectDetectableFactory;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class OperationRunnerTest {
     private static OperationRunner operationRunner;

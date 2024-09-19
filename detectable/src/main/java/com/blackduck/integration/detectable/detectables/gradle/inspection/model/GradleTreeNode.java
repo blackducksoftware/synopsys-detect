@@ -2,7 +2,7 @@ package com.blackduck.integration.detectable.detectables.gradle.inspection.model
 
 import java.util.Optional;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class GradleTreeNode extends Stringable {
     public GradleTreeNode(NodeType nodeType, int level, GradleGav gav, String projectName) {

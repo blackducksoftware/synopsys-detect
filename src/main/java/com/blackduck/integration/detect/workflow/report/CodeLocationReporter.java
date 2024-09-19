@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.detect.tool.detector.DetectExtractionEnvironment;
 import com.blackduck.integration.detect.tool.detector.extraction.ExtractionId;
 import com.blackduck.integration.detect.tool.detector.report.DetectorDirectoryReport;

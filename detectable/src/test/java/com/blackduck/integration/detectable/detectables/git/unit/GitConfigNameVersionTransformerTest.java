@@ -17,8 +17,8 @@ import com.blackduck.integration.detectable.detectables.git.parsing.model.GitCon
 import com.blackduck.integration.detectable.detectables.git.parsing.model.GitConfigRemote;
 import com.blackduck.integration.detectable.detectables.git.parsing.model.GitConfigResult;
 import com.blackduck.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 class GitConfigNameVersionTransformerTest {
 

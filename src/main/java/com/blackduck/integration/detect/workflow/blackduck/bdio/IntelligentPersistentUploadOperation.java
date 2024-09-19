@@ -1,11 +1,11 @@
 package com.blackduck.integration.detect.workflow.blackduck.bdio;
 
-import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.codelocation.intelligentpersistence.IntelligentPersistenceService;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadBatchOutput;
+import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.blackduck.integration.blackduck.codelocation.intelligentpersistence.IntelligentPersistenceService;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadBatch;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadBatchOutput;
 import com.blackduck.integration.detect.Application;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class IntelligentPersistentUploadOperation extends BdioUploadOperation {
     private final IntelligentPersistenceService intelligentPersistenceService;

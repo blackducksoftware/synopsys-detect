@@ -2,7 +2,7 @@ package com.blackduck.integration.detectable.detectables.bazel.pipeline.step.mod
 
 import java.util.List;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class Results extends Stringable {
     private List<ResultItem> resultItems;

@@ -3,8 +3,8 @@ package com.blackduck.integration.detectable.detectable.codelocation;
 import java.io.File;
 import java.util.Optional;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
 
 public class CodeLocation {
     private final File sourcePath;

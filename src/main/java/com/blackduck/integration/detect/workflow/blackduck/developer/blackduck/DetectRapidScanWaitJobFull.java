@@ -6,18 +6,18 @@ import java.util.List;
 
 import org.apache.http.HttpStatus;
 
-import com.synopsys.integration.blackduck.api.generated.view.DeveloperScansScanView;
-import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
-import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.blackduck.service.request.BlackDuckMultipleRequest;
-import com.synopsys.integration.blackduck.service.request.BlackDuckResponseRequest;
+import com.blackduck.integration.blackduck.api.generated.view.DeveloperScansScanView;
+import com.blackduck.integration.blackduck.exception.BlackDuckIntegrationException;
+import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
+import com.blackduck.integration.blackduck.service.request.BlackDuckMultipleRequest;
+import com.blackduck.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.blackduck.integration.detect.configuration.enumeration.BlackduckScanMode;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.exception.IntegrationTimeoutException;
-import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.rest.exception.IntegrationRestException;
-import com.synopsys.integration.rest.response.Response;
-import com.synopsys.integration.wait.ResilientJob;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationTimeoutException;
+import com.blackduck.integration.rest.HttpUrl;
+import com.blackduck.integration.rest.exception.IntegrationRestException;
+import com.blackduck.integration.rest.response.Response;
+import com.blackduck.integration.wait.ResilientJob;
 
 public class DetectRapidScanWaitJobFull implements ResilientJob<List<DeveloperScansScanView>> {
     private final BlackDuckApiClient blackDuckApiClient;

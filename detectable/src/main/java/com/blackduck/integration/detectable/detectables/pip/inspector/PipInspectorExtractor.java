@@ -17,7 +17,7 @@ import com.blackduck.integration.detectable.detectables.pip.inspector.model.Name
 import com.blackduck.integration.detectable.detectables.pip.inspector.parser.PipInspectorTreeParser;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class PipInspectorExtractor {
     private final DetectableExecutableRunner executableRunner;

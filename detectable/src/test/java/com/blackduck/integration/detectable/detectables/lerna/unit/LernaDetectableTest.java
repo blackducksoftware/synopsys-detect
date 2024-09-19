@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Assertions;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.Forge;
 import com.blackduck.integration.detectable.Detectable;
 import com.blackduck.integration.detectable.DetectableEnvironment;
 import com.blackduck.integration.detectable.ExecutableTarget;
@@ -29,8 +29,8 @@ import com.blackduck.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.functional.DetectableFunctionalTest;
 import com.blackduck.integration.detectable.util.graph.NameVersionGraphAssert;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.util.NameVersion;
 
 public class LernaDetectableTest extends DetectableFunctionalTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();

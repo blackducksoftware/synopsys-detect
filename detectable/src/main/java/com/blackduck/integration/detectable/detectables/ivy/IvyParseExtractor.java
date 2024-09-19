@@ -12,14 +12,14 @@ import javax.xml.parsers.SAXParser;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.SAXException;
 
-import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.graph.BasicDependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectables.ivy.parse.IvyDependenciesSaxHandler;
 import com.blackduck.integration.detectable.detectables.ivy.parse.IvyProjectNameParser;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class IvyParseExtractor {
     private final SAXParser saxParser;

@@ -1,6 +1,6 @@
 package com.blackduck.integration.detect.workflow.blackduck.analytics;
 
-import com.synopsys.integration.blackduck.api.core.BlackDuckResponse;
+import com.blackduck.integration.blackduck.api.core.BlackDuckResponse;
 
 public class AnalyticsSetting extends BlackDuckResponse {
     private final String name;

@@ -13,7 +13,7 @@ import com.blackduck.integration.detectable.detectable.executable.resolver.Cpanm
 import com.blackduck.integration.detectable.detectable.result.DetectableResult;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 @DetectableInfo(name = "Cpan CLI", language = "Perl", forge = "CPAN", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "File: Makefile.PL. Executables: cpan, and cpanm.")
 public class CpanCliDetectable extends Detectable {

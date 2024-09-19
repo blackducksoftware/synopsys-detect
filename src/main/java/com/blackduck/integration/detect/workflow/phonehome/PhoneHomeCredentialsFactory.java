@@ -3,12 +3,12 @@ package com.blackduck.integration.detect.workflow.phonehome;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.blackduck.integration.detect.configuration.DetectInfoUtility;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.SilentIntLogger;
-import com.synopsys.integration.rest.HttpMethod;
-import com.synopsys.integration.rest.client.IntHttpClient;
-import com.synopsys.integration.rest.proxy.ProxyInfo;
-import com.synopsys.integration.rest.response.Response;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.log.SilentIntLogger;
+import com.blackduck.integration.rest.HttpMethod;
+import com.blackduck.integration.rest.client.IntHttpClient;
+import com.blackduck.integration.rest.proxy.ProxyInfo;
+import com.blackduck.integration.rest.response.Response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.HttpUriRequest;

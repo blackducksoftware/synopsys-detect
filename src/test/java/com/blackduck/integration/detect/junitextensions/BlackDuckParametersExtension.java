@@ -5,13 +5,13 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigKeys;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.builder.BuilderStatus;
-import com.synopsys.integration.log.IntLogger;
-import com.synopsys.integration.log.SilentIntLogger;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfigKeys;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.builder.BuilderStatus;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.log.SilentIntLogger;
 
 public class BlackDuckParametersExtension implements ParameterResolver {
     @Override

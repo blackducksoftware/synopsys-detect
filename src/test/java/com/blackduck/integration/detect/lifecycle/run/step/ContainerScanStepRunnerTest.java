@@ -18,17 +18,17 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.google.gson.Gson;
-import com.synopsys.blackduck.upload.client.uploaders.ContainerUploader;
-import com.synopsys.blackduck.upload.client.uploaders.UploaderFactory;
-import com.synopsys.blackduck.upload.rest.status.DefaultUploadStatus;
-import com.synopsys.integration.blackduck.version.BlackDuckVersion;
+import com.blackduck.blackduck.upload.client.uploaders.ContainerUploader;
+import com.blackduck.blackduck.upload.client.uploaders.UploaderFactory;
+import com.blackduck.blackduck.upload.rest.status.DefaultUploadStatus;
+import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.blackduck.integration.detect.lifecycle.run.step.ContainerScanStepRunner;
 import com.blackduck.integration.detect.workflow.blackduck.project.options.ProjectGroupOptions;
 import com.blackduck.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.util.NameVersion;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ContainerScanStepRunnerTest {

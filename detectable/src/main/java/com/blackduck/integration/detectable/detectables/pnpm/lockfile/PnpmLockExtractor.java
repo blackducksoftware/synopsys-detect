@@ -13,7 +13,7 @@ import com.blackduck.integration.detectable.detectables.pnpm.lockfile.process.Pn
 import com.blackduck.integration.detectable.detectables.yarn.packagejson.NullSafePackageJson;
 import com.blackduck.integration.detectable.detectables.yarn.packagejson.PackageJsonFiles;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class PnpmLockExtractor {
     private final PnpmLockYamlParserInitial pnpmLockYamlParser;

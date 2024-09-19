@@ -2,7 +2,7 @@ package com.blackduck.integration.detect.workflow.blackduck.developer.aggregate;
 
 import java.util.List;
 
-import com.synopsys.integration.log.IntLogger;
+import com.blackduck.integration.log.IntLogger;
 
 public class RapidScanAggregateResult {
     

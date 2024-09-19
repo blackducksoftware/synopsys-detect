@@ -10,11 +10,11 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 import com.blackduck.integration.detect.tool.detector.report.DetectorDirectoryReport;
-import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.blackduck.integration.blackduck.bdio2.model.GitInfo;
 import com.blackduck.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detector.base.DetectorType;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class DetectorToolResult {
     @Nullable

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackduck.integration.common.util.finder.FileFinder;
 import com.blackduck.integration.detectable.detectables.bitbake.data.BitbakeEnvironment;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class BuildFileFinder {
     private static final String TASK_DEPENDS_FILE_NAME = "task-depends.dot";

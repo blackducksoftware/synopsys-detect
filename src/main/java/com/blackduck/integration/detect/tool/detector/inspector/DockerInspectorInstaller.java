@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.workflow.ArtifactResolver;
 import com.blackduck.integration.detect.workflow.ArtifactoryConstants;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class DockerInspectorInstaller {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

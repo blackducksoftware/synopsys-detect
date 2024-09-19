@@ -3,7 +3,7 @@ package com.blackduck.integration.detect.tool.signaturescanner;
 import java.io.File;
 import java.util.Optional;
 
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 
 public class ScanBatchRunnerUserResult {
     private final ScanBatchRunner scanBatchRunner;

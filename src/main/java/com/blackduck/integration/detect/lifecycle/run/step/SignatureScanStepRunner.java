@@ -15,10 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
-import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.ScanBatch;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
+import com.blackduck.integration.blackduck.service.model.NotificationTaskRange;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -31,7 +31,7 @@ import com.blackduck.integration.detect.tool.signaturescanner.SignatureScannerRe
 import com.blackduck.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.blackduck.integration.detect.tool.signaturescanner.operation.SignatureScanResult;
 import com.blackduck.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class SignatureScanStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

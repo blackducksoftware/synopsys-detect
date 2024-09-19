@@ -3,10 +3,10 @@ package com.blackduck.integration.detectable.detectables.go.gogradle;
 import java.io.File;
 import java.io.IOException;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class GoGradleExtractor {
     private final GoGradleLockParser goGradleLockParser;

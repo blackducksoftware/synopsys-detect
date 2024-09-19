@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.blackduck.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.blackduck.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseValuesFromXml;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 public class IntermediateStepParseValuesFromXmlTest {
 

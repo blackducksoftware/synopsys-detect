@@ -3,9 +3,9 @@ package com.blackduck.integration.detect.lifecycle.boot.product;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
 import com.blackduck.integration.detect.configuration.DetectConfigurationFactory;
 import com.blackduck.integration.detect.configuration.DetectInfo;
 import com.blackduck.integration.detect.configuration.DetectUserFriendlyException;
@@ -15,7 +15,7 @@ import com.blackduck.integration.detect.workflow.event.EventSystem;
 import com.blackduck.integration.detect.workflow.phonehome.OnlinePhoneHomeManager;
 import com.blackduck.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.blackduck.integration.detect.workflow.phonehome.PhoneHomeCredentials;
-import com.synopsys.integration.log.SilentIntLogger;
+import com.blackduck.integration.log.SilentIntLogger;
 
 public class ProductBootFactory {
     private final DetectInfo detectInfo;

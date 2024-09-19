@@ -1,7 +1,7 @@
 package com.blackduck.integration.detect.tool.detector.executable;
 
-import com.synopsys.integration.executable.Executable;
-import com.synopsys.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.Executable;
+import com.blackduck.integration.executable.ExecutableOutput;
 
 public class ExecutedExecutable {
     private final ExecutableOutput output;

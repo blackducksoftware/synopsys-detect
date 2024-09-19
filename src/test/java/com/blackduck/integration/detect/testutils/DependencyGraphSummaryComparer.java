@@ -3,8 +3,8 @@ package com.blackduck.integration.detect.testutils;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.BdioId;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.BdioId;
 
 public class DependencyGraphSummaryComparer {
     private final DependencyGraphSummarizer dependencyGraphSummarizer;

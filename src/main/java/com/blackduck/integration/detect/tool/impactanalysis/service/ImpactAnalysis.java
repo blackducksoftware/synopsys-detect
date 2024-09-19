@@ -2,7 +2,7 @@ package com.blackduck.integration.detect.tool.impactanalysis.service;
 
 import java.nio.file.Path;
 
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class ImpactAnalysis {
     private final Path impactAnalysisPath;

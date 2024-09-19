@@ -6,10 +6,10 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 import com.moandjiezana.toml.Toml;
-import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.graph.BasicDependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
 import com.blackduck.integration.detectable.detectables.go.godep.model.GoLock;
 import com.blackduck.integration.detectable.detectables.go.godep.model.Project;
 

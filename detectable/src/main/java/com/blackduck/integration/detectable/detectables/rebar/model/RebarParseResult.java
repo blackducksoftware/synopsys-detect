@@ -3,7 +3,7 @@ package com.blackduck.integration.detectable.detectables.rebar.model;
 import java.util.Optional;
 
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class RebarParseResult {
     private final Optional<NameVersion> projectNameVersion;

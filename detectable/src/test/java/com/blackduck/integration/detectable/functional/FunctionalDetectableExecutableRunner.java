@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.executable.Executable;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.Executable;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class FunctionalDetectableExecutableRunner implements DetectableExecutableRunner {
     private final Map<FunctionalExecutable, ExecutableOutput> executableExecutableOutputMap = new HashMap<>();

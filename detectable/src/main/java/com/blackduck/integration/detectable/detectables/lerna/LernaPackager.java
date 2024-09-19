@@ -29,8 +29,8 @@ import com.blackduck.integration.detectable.detectables.yarn.packagejson.Package
 import com.blackduck.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.blackduck.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.blackduck.integration.detectable.detectables.yarn.workspace.YarnWorkspaces;
-import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.ExcludedIncludedWildcardFilter;
+import com.blackduck.integration.util.NameVersion;
 
 public class LernaPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

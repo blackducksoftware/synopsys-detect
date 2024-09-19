@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.blackduck.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
 import com.blackduck.integration.detectable.detectables.clang.packagemanager.PackageDetails;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class DpkgPkgDetailsResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

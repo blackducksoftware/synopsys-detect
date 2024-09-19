@@ -10,11 +10,11 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 import org.tomlj.TomlTable;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectables.poetry.parser.PoetryLockParser;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class PoetryExtractor {
     private static final String NAME_KEY = "name";

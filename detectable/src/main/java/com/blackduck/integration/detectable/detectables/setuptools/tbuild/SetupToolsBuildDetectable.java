@@ -9,7 +9,7 @@ import org.tomlj.TomlParseResult;
 import org.xml.sax.SAXException;
 
 import com.google.gson.JsonSyntaxException;
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
+import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
 import com.blackduck.integration.common.util.finder.FileFinder;
 import com.blackduck.integration.detectable.Detectable;
 import com.blackduck.integration.detectable.DetectableEnvironment;
@@ -32,7 +32,7 @@ import com.blackduck.integration.detectable.detectables.setuptools.parse.SetupTo
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
 import com.blackduck.integration.detectable.util.CycleDetectedException;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 @DetectableInfo(name = "Setuptools Pip", language = "Python", forge = "Pypi", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "A pyproject.toml file and the pip executable.")
 public class SetupToolsBuildDetectable extends Detectable {

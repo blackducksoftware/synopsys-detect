@@ -1,6 +1,6 @@
 package com.blackduck.integration.detect.configuration;
 
-import com.synopsys.integration.util.OperatingSystemType;
+import com.blackduck.integration.util.OperatingSystemType;
 
 public class DetectInfo {
     private final OperatingSystemType currentOs;

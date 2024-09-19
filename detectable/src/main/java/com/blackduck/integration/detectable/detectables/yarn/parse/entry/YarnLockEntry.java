@@ -3,7 +3,7 @@ package com.blackduck.integration.detectable.detectables.yarn.parse.entry;
 import java.util.List;
 
 import com.blackduck.integration.detectable.detectables.yarn.parse.YarnLockDependency;
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class YarnLockEntry extends Stringable {
     private final boolean metadataEntry;

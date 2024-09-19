@@ -16,8 +16,8 @@ import com.blackduck.integration.detectable.detectables.pipenv.tbuild.parser.Pip
 import com.blackduck.integration.detectable.detectables.pipenv.tbuild.parser.PipenvFreezeParser;
 import com.blackduck.integration.detectable.detectables.pipenv.tbuild.parser.PipenvTransformer;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 
 public class PipenvExtractor {

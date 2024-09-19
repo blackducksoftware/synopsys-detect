@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.blackduck.integration.detect.configuration.DetectInfo;
 import com.blackduck.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.util.OperatingSystemType;
+import com.blackduck.integration.util.OperatingSystemType;
 
 public class ProjectInspectorExecutableLocator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

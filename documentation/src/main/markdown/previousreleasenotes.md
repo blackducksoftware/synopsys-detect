@@ -5,7 +5,7 @@
 
 ### Changed features
 
-* The `logging.level.com.synopsys.integration` property has been deprecated in favor of `logging.level.detect` and will be removed in 10.0.0. 
+* The `logging.level.com.blackduck.integration` property has been deprecated in favor of `logging.level.detect` and will be removed in 10.0.0. 
     <note type="note">There is no functional difference between the two properties.</note>
 
 * Support for GoLang is now extended to Go 1.22.5.

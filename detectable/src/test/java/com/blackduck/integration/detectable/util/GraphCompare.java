@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Assertions;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.BdioId;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.BdioId;
 
 public class GraphCompare {
     public static void assertEqualsResource(String expectedResourceFile, DependencyGraph actualGraph) {

@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
+import com.blackduck.integration.blackduck.service.model.NotificationTaskRange;
 
 public class CodeLocationWaitData {
     @Nullable

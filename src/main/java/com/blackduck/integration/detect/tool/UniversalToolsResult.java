@@ -3,7 +3,7 @@ package com.blackduck.integration.detect.tool;
 import java.util.List;
 import java.util.Set;
 
-import com.synopsys.integration.blackduck.bdio2.model.GitInfo;
+import com.blackduck.integration.blackduck.bdio2.model.GitInfo;
 import com.blackduck.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.blackduck.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackduck.integration.detect.workflow.project.DetectToolProjectInfo;

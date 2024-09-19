@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.detectable.detectables.go.godep.parse.GoLockParser;
 import com.blackduck.integration.detectable.util.FunctionalTestFiles;
 

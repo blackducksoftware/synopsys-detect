@@ -9,15 +9,15 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
-import com.synopsys.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadBatch;
-import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.blackduck.integration.blackduck.api.generated.discovery.ApiDiscovery;
+import com.blackduck.integration.blackduck.bdio2.util.Bdio2ContentExtractor;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadBatch;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadTarget;
+import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
 import com.blackduck.integration.detect.workflow.blackduck.developer.RapidScanOptions;
 import com.blackduck.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.HttpUrl;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.rest.HttpUrl;
 
 public class DetectRapidScanService {
     public static final String CONTENT_TYPE = "application/vnd.blackducksoftware.developer-scan-1-ld-2+json";

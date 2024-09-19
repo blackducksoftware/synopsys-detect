@@ -10,19 +10,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
-import com.synopsys.integration.bdio.graph.builder.LazyId;
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.blackduck.integration.bdio.graph.builder.LazyId;
+import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectable.util.EnumListFilter;
 import com.blackduck.integration.detectable.detectables.packagist.PackagistDependencyType;
 import com.blackduck.integration.detectable.detectables.packagist.model.PackagistPackage;
 import com.blackduck.integration.detectable.detectables.packagist.model.PackagistParseResult;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class PackagistParser {
     private final Logger logger = LoggerFactory.getLogger(PackagistParser.class);

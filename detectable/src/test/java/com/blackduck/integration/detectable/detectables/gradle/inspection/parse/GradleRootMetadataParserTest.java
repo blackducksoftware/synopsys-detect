@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.blackduck.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 class GradleRootMetadataParserTest {
 

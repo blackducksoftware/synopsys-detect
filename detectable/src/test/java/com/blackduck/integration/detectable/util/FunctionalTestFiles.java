@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.blackduck.integration.detect.commontest.FileUtil;
-import com.synopsys.integration.util.ResourceUtil;
+import com.blackduck.integration.util.ResourceUtil;
 
 public class FunctionalTestFiles {
     private static final String RESOURCE_PREFIX = "/detectables/functional";

@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.version.BlackDuckVersion;
+import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 
 public class BlackDuckVersionChecker {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

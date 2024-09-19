@@ -1,6 +1,6 @@
 package com.blackduck.integration.detectable.detectables.swift.lock.data;
 
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 public class PackageResolvedFormat extends Stringable {
     public static final PackageResolvedFormat V_1 = new PackageResolvedFormat("1");

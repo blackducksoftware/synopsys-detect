@@ -25,7 +25,7 @@ import com.blackduck.integration.detectable.detectables.npm.packagejson.Combined
 import com.blackduck.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
-import com.synopsys.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableOutput;
 
 public class NpmCliExtractor {
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";

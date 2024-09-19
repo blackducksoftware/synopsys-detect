@@ -4,23 +4,23 @@ import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.*;
-import com.synopsys.integration.blackduck.version.BlackDuckVersion;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.*;
+import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
-import com.synopsys.integration.blackduck.http.client.SignatureScannerClient;
-import com.synopsys.integration.blackduck.keystore.KeyStoreHelper;
-import com.synopsys.integration.blackduck.service.dataservice.BlackDuckRegistrationService;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.blackduck.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.blackduck.integration.blackduck.http.client.BlackDuckHttpClient;
+import com.blackduck.integration.blackduck.http.client.SignatureScannerClient;
+import com.blackduck.integration.blackduck.keystore.KeyStoreHelper;
+import com.blackduck.integration.blackduck.service.dataservice.BlackDuckRegistrationService;
 import com.blackduck.integration.detect.tool.signaturescanner.SignatureScannerLogger;
-import com.synopsys.integration.util.CleanupZipExpander;
-import com.synopsys.integration.util.IntEnvironmentVariables;
-import com.synopsys.integration.util.OperatingSystemType;
+import com.blackduck.integration.util.CleanupZipExpander;
+import com.blackduck.integration.util.IntEnvironmentVariables;
+import com.blackduck.integration.util.OperatingSystemType;
 
-import static com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ToolsApiScannerInstaller.MIN_BLACK_DUCK_VERSION;
+import static com.blackduck.integration.blackduck.codelocation.signaturescanner.command.ToolsApiScannerInstaller.MIN_BLACK_DUCK_VERSION;
 
 public class CreateScanBatchRunnerWithBlackDuck {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

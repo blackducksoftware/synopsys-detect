@@ -15,7 +15,7 @@ import com.blackduck.integration.detect.workflow.status.FormattedCodeLocation;
 import com.blackduck.integration.detect.workflow.status.Operation;
 import com.blackduck.integration.detect.workflow.status.Status;
 import com.blackduck.integration.detect.workflow.status.UnrecognizedPaths;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class Event {
     public static final EventType<DetectorToolResult> DetectorsComplete = new EventType<>(DetectorToolResult.class);

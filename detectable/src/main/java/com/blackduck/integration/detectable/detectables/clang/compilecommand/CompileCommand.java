@@ -1,7 +1,7 @@
 package com.blackduck.integration.detectable.detectables.clang.compilecommand;
 
 import com.google.gson.annotations.SerializedName;
-import com.synopsys.integration.util.Stringable;
+import com.blackduck.integration.util.Stringable;
 
 // Loaded from json via Gson
 public class CompileCommand extends Stringable {

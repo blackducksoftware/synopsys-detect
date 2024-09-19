@@ -18,7 +18,7 @@ import com.blackduck.integration.detectable.detectables.clang.packagemanager.Cla
 import com.blackduck.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 import com.blackduck.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
 import com.blackduck.integration.detectable.detectables.clang.packagemanager.resolver.RpmPackageManagerResolver;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.executable.ExecutableRunnerException;
 
 public class RpmPackageManagerTest {
 

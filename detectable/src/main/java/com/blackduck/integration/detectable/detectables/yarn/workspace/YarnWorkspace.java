@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.builder.LazyId;
+import com.blackduck.integration.bdio.graph.builder.LazyId;
 import com.blackduck.integration.detectable.detectables.yarn.YarnTransformer;
 import com.blackduck.integration.detectable.detectables.yarn.packagejson.WorkspacePackageJson;
 import com.blackduck.integration.detectable.detectables.yarn.parse.YarnLockDependency;

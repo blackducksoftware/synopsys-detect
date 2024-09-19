@@ -2,10 +2,10 @@ package com.blackduck.integration.detect.tool.signaturescanner.operation;
 
 import java.io.File;
 
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
-import com.synopsys.integration.util.IntEnvironmentVariables;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.ScanCommandRunner;
+import com.blackduck.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
+import com.blackduck.integration.util.IntEnvironmentVariables;
 
 public class CreateScanBatchRunnerWithLocalInstall { //TODO: Should this even exist as a class?
     private final IntEnvironmentVariables intEnvironmentVariables;

@@ -2,9 +2,9 @@ package com.blackduck.integration.detectable.util.graph;
 
 import org.junit.jupiter.api.Assertions;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.Forge;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
 
 public class NameVersionGraphAssert extends GraphAssert {
     public NameVersionGraphAssert(Forge forge, DependencyGraph graph) {

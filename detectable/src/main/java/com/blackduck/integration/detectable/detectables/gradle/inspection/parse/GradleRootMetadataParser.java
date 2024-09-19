@@ -7,7 +7,7 @@ import static com.blackduck.integration.detectable.detectables.gradle.inspection
 
 import java.util.List;
 
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class GradleRootMetadataParser {
     public NameVersion parseRootProjectNameVersion(List<String> rootProjectMetadataLines) {

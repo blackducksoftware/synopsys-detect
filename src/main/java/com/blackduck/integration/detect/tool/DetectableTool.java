@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import com.google.gson.JsonSyntaxException;
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
+import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
 import com.blackduck.integration.detect.configuration.enumeration.DetectTool;
 import com.blackduck.integration.detect.configuration.enumeration.ExitCodeType;
 import com.blackduck.integration.detect.lifecycle.run.data.DockerTargetData;
@@ -43,8 +43,8 @@ import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
 import com.blackduck.integration.detectable.util.CycleDetectedException;
 import com.blackduck.integration.detector.base.DetectableCreatable;
-import com.synopsys.integration.executable.ExecutableRunnerException;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.util.NameVersion;
 
 public class DetectableTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

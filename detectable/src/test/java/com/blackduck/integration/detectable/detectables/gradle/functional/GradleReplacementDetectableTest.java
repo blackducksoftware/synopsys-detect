@@ -19,8 +19,8 @@ import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.functional.DetectableFunctionalTest;
 import com.blackduck.integration.detectable.util.ExtractionUtil;
 import com.blackduck.integration.detectable.util.graph.MavenGraphAssert;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.rest.proxy.ProxyInfo;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.rest.proxy.ProxyInfo;
 
 public class GradleReplacementDetectableTest extends DetectableFunctionalTest {
 

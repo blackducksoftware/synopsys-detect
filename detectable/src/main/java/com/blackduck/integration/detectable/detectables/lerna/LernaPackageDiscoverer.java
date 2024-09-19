@@ -13,9 +13,9 @@ import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.ExecutableUtils;
 import com.blackduck.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.blackduck.integration.detectable.detectables.lerna.model.LernaPackage;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
-import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
+import com.blackduck.integration.executable.ExecutableOutput;
+import com.blackduck.integration.executable.ExecutableRunnerException;
+import com.blackduck.integration.util.ExcludedIncludedWildcardFilter;
 
 // TODO: Split into separate parser and command runner
 public class LernaPackageDiscoverer {

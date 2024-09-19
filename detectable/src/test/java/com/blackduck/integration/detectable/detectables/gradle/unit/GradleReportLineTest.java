@@ -3,9 +3,9 @@ package com.blackduck.integration.detectable.detectables.gradle.unit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.model.dependency.Dependency;
+import com.blackduck.integration.bdio.model.externalid.ExternalId;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.detectables.gradle.inspection.model.GradleGav;
 import com.blackduck.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
 import com.blackduck.integration.detectable.detectables.gradle.inspection.parse.GradleReportLineParser;

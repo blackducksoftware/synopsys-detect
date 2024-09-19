@@ -20,7 +20,7 @@ import com.blackduck.integration.detect.tool.signaturescanner.BlackDuckSignature
 import com.blackduck.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.blackduck.integration.detect.workflow.blackduck.ExclusionPatternCreator;
 import com.blackduck.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class CalculateScanPathsOperation {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -13,8 +13,8 @@ import com.blackduck.integration.detect.workflow.file.DirectoryManager;
 import com.blackduck.integration.detectable.ExecutableTarget;
 import com.blackduck.integration.detectable.ExecutableUtils;
 import com.blackduck.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.executable.Executable;
+import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.executable.Executable;
 
 public class IacScanOperation {
     private final DirectoryManager directoryManager;

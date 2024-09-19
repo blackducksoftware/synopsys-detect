@@ -11,11 +11,11 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectables.dart.PubSpecYamlNameVersionParser;
 import com.blackduck.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class PubSpecExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

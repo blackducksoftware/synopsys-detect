@@ -10,8 +10,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.blackduck.integration.bdio.graph.DependencyGraph;
+import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.annotations.FunctionalTest;
 import com.blackduck.integration.detectable.detectable.util.EnumListFilter;
 import com.blackduck.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
@@ -20,7 +20,7 @@ import com.blackduck.integration.detectable.detectables.conan.cli.config.ConanDe
 import com.blackduck.integration.detectable.detectables.conan.lockfile.parser.ConanLockfileParser;
 import com.blackduck.integration.detectable.util.FunctionalTestFiles;
 import com.blackduck.integration.detectable.util.GraphCompare;
-import com.synopsys.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationException;
 
 @FunctionalTest
 public class ConanLockfileParserFunctionalTest {

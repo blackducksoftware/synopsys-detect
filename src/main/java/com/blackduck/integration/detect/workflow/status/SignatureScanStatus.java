@@ -1,6 +1,6 @@
 package com.blackduck.integration.detect.workflow.status;
 
-import com.synopsys.integration.blackduck.codelocation.Result;
+import com.blackduck.integration.blackduck.codelocation.Result;
 
 public class SignatureScanStatus extends Status {
     public SignatureScanStatus(String scanTargetPath, Result result) {

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.blackduck.integration.detect.tool.detector.report.DetectorDirectoryReport;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detector.base.DetectorType;
-import com.synopsys.integration.util.NameVersion;
+import com.blackduck.integration.util.NameVersion;
 
 public class DetectorEvaluationNameVersionDecider {
     private final DetectorNameVersionDecider detectorNameVersionDecider;
