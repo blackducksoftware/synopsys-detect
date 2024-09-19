@@ -109,7 +109,7 @@ public class DetectProperties {
             .setInfo("Bypass Proxy Hosts", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
                 "A comma separated list of regular expression host patterns that should not use the proxy.",
-                "This property accepts Java regular expressions. Refer to the <i>Configuring Detect</i> > <i>Java regular expression support</i> page for more details."
+                "This property accepts Java regular expressions. Refer to the <i>Configuring Black Duck Detect</i> > <i>Java regular expression support</i> page for more details."
             )
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
@@ -317,7 +317,7 @@ public class DetectProperties {
         StringListProperty.newBuilder("detect.binary.scan.file.name.patterns", emptyList())
             .setInfo("Binary Scan Filename Patterns", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp(
-                "If specified, files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. Directories specified via property detect.excluded.directories are excluded from the file search. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "If specified, files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. Directories specified via property detect.excluded.directories are excluded from the file search. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH)
             .setExample("*.jar")
             .build();
@@ -838,7 +838,7 @@ public class DetectProperties {
             .setInfo("Gradle Exclude Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of Gradle configurations to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -849,7 +849,7 @@ public class DetectProperties {
             .setInfo("Gradle Exclude Projects", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of Gradle subprojects to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subprojects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subprojects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -860,7 +860,7 @@ public class DetectProperties {
             .setInfo("Gradle Exclude Subproject Paths", DetectPropertyFromVersion.VERSION_7_12_0)
             .setHelp(
                 "A comma-separated list of Gradle subproject paths to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subproject whose path matches one of the values passed via this property. Run 'gradle projects' to see the paths to your subprojects. Subproject paths have the form ':subproject:subsubproject' and are unique. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subproject whose path matches one of the values passed via this property. Run 'gradle projects' to see the paths to your subprojects. Subproject paths have the form ':subproject:subsubproject' and are unique. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -871,7 +871,7 @@ public class DetectProperties {
             .setInfo("Gradle Include Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of Gradle configurations to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -893,7 +893,7 @@ public class DetectProperties {
             .setInfo("Gradle Include Projects", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of Gradle subprojects to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -904,7 +904,7 @@ public class DetectProperties {
             .setInfo("Gradle Include Project Paths", DetectPropertyFromVersion.VERSION_7_12_0)
             .setHelp(
                 "A comma-separated list of Gradle subproject paths to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
