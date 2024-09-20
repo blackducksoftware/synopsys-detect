@@ -28,12 +28,12 @@ We reserve the right to disclose your personally identifiable information as req
 
 CHOICE AND OPT-OUT
 
-If you do not want us to gather your personally identifiable information in connection with your use of our Products and Services, you may opt-out by submitting your request to us at privacy@synopsys.com. Please note that other data recipients have their own data privacy policies, which may differ from ours and you would have to contact them separately with respect to opt-out requests. You also should understand that having a business relationship with us is voluntary, but it may be impossible to work with you without processing some personal data about you such as your contact information.
+If you do not want us to gather your personally identifiable information in connection with your use of our Products and Services, you may opt-out by submitting your request to us at dataprivacy@blackduck.com. Please note that other data recipients have their own data privacy policies, which may differ from ours and you would have to contact them separately with respect to opt-out requests. You also should understand that having a business relationship with us is voluntary, but it may be impossible to work with you without processing some personal data about you such as your contact information.
 
 Security
 
 Transmissions over the Internet are never 100% secure or error-free. However, security of your personal information is important to us. We follow generally accepted industry standards to protect the personal information submitted to us, both during transmission and once we receive it.
-It is your responsibility to safeguard any password and User ID you use to access our Products and Services and to notify us at privacy@synopsys.com if you ever suspect that this password or User ID has been compromised. You are solely responsible for any unauthorized use of our Products and Services conducted via your password and User ID.
+It is your responsibility to safeguard any password and User ID you use to access our Products and Services and to notify us at dataprivacy@blackduck.com if you ever suspect that this password or User ID has been compromised. You are solely responsible for any unauthorized use of our Products and Services conducted via your password and User ID.
 
 Changes in this Privacy Policy
 
@@ -41,4 +41,4 @@ We reserve the right to modify this privacy statement at any time. When you use 
 
 Contact Us 
 
-If you have any questions or suggestions regarding our privacy policy, please contact us at  privacy@synopsys.com.
+If you have any questions or suggestions regarding our privacy policy, please contact us at  dataprivacy@blackduck.com.
