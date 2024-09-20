@@ -8,11 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.blackduck.blackduck.upload.client.UploaderConfig;
-import com.blackduck.blackduck.upload.client.model.BinaryScanRequestData;
-import com.blackduck.blackduck.upload.client.uploaders.BinaryUploader;
-import com.blackduck.blackduck.upload.client.uploaders.UploaderFactory;
-import com.blackduck.blackduck.upload.rest.status.BinaryUploadStatus;
+import com.blackduck.integration.sca.upload.client.UploaderConfig;
+import com.blackduck.integration.sca.upload.client.model.BinaryScanRequestData;
+import com.blackduck.integration.sca.upload.client.uploaders.BinaryUploader;
+import com.blackduck.integration.sca.upload.client.uploaders.UploaderFactory;
+import com.blackduck.integration.sca.upload.rest.status.BinaryUploadStatus;
 import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.blackduck.integration.blackduck.codelocation.Result;
 import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScan;

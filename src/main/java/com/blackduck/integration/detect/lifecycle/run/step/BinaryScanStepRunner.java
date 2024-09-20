@@ -9,8 +9,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackduck.blackduck.upload.rest.model.response.BinaryFinishResponseContent;
-import com.blackduck.blackduck.upload.rest.status.BinaryUploadStatus;
+import com.blackduck.integration.sca.upload.rest.model.response.BinaryFinishResponseContent;
+import com.blackduck.integration.sca.upload.rest.status.BinaryUploadStatus;
 import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.blackduck.integration.detect.lifecycle.OperationException;

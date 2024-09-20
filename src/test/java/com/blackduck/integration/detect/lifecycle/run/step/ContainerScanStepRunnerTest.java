@@ -18,9 +18,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.google.gson.Gson;
-import com.blackduck.blackduck.upload.client.uploaders.ContainerUploader;
-import com.blackduck.blackduck.upload.client.uploaders.UploaderFactory;
-import com.blackduck.blackduck.upload.rest.status.DefaultUploadStatus;
+import com.blackduck.integration.sca.upload.client.uploaders.ContainerUploader;
+import com.blackduck.integration.sca.upload.client.uploaders.UploaderFactory;
+import com.blackduck.integration.sca.upload.rest.status.DefaultUploadStatus;
 import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;

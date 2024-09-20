@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.blackduck.blackduck.upload.client.UploaderConfig;
-import com.blackduck.blackduck.upload.client.uploaders.ContainerUploader;
-import com.blackduck.blackduck.upload.client.uploaders.UploaderFactory;
-import com.blackduck.blackduck.upload.rest.status.DefaultUploadStatus;
+import com.blackduck.integration.sca.upload.client.UploaderConfig;
+import com.blackduck.integration.sca.upload.client.uploaders.ContainerUploader;
+import com.blackduck.integration.sca.upload.client.uploaders.UploaderFactory;
+import com.blackduck.integration.sca.upload.rest.status.DefaultUploadStatus;
 import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;

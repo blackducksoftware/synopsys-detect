@@ -9,8 +9,8 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import com.blackduck.blackduck.upload.rest.model.response.BinaryFinishResponseContent;
-import com.blackduck.blackduck.upload.rest.status.BinaryUploadStatus;
+import com.blackduck.integration.sca.upload.rest.model.response.BinaryFinishResponseContent;
+import com.blackduck.integration.sca.upload.rest.status.BinaryUploadStatus;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.blackduck.integration.detect.lifecycle.run.step.BinaryScanStepRunner;
 
