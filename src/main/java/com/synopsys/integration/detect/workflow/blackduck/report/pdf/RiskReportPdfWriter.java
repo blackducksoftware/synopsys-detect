@@ -33,6 +33,8 @@ public class RiskReportPdfWriter {
     private final String LOW_RISK = "Low Risk";
     private final String NO_RISK = "No Risk";
 
+    private final int TABLE_PADDING_X = 10;
+
     private final IntLogger logger;
     private final FontLoader fontLoader;
     private final FontLoader boldFontLoader;
@@ -97,8 +99,8 @@ public class RiskReportPdfWriter {
 
     private PDRectangle writeHeader(float pageWidth, float startingHeight) throws IOException, URISyntaxException {
         PDRectangle logoRectangle = pdfManager.drawRectangle(0, startingHeight - 100, pageWidth, 100, Color.WHITE);
-        pdfManager.drawImage(30, logoRectangle.getLowerLeftY() + 27.5F, 203, 45, "/riskreport/web/images/Synopsys_logo.png");
-        PDRectangle titleRectangle = pdfManager.drawRectangle(0, logoRectangle.getLowerLeftY() - 80, pageWidth - 35, 80, new Color(110, 50, 155).darker());
+        pdfManager.drawImage(30, logoRectangle.getLowerLeftY() + 27.5F, 291, 45, "/riskreport/images/BlackDuckLogo.png");
+        PDRectangle titleRectangle = pdfManager.drawRectangle(0, logoRectangle.getLowerLeftY() - 80, pageWidth - 35, 80, new Color(154, 115, 184).darker());
         pdfManager.writeText(35, titleRectangle.getLowerLeftY() + 32F, "Black Duck Risk Report", boldFont, 20, Color.WHITE);
         logger.trace("Finished writing the pdf header.");
         return titleRectangle;
@@ -200,7 +202,7 @@ public class RiskReportPdfWriter {
         PDRectangle rectangle = pdfManager.writeText(30, height, "BOM Entries " + reportData.getTotalComponents(), font, fontSize, textColor);
 
         // header row
-        PDRectangle rowRectangle = pdfManager.drawRectangle(10, rectangle.getLowerLeftY() - 22, pageWidth - 20, 18, new Color(221, 221, 221));
+        PDRectangle rowRectangle = pdfManager.drawRectangle(TABLE_PADDING_X, rectangle.getLowerLeftY() - 22, pageWidth - TABLE_PADDING_X * 2, 18, new Color(221, 221, 221));
         float rowY = rowRectangle.getLowerLeftY() + 5;
         pdfManager.writeText(50, rowY, "Component", boldFont, 12, textColor);
         pdfManager.writeText(190, rowY, "Version", boldFont, 12, textColor);
@@ -253,7 +255,7 @@ public class RiskReportPdfWriter {
         }
 
         Color rowColor = (isOdd) ? new Color(221, 221, 221) : Color.WHITE;
-        PDRectangle rowRectangle = pdfManager.drawRectangle(10, y - rowHeight, pageWidth - 20, rowHeight, rowColor);
+        PDRectangle rowRectangle = pdfManager.drawRectangle(TABLE_PADDING_X, y - rowHeight, pageWidth - TABLE_PADDING_X * 2, rowHeight, rowColor);
 
         float rowUpperY = rowRectangle.getUpperRightY();
         if (StringUtils.isNotBlank(component.getPolicyStatus()) && component.getPolicyStatus().equalsIgnoreCase("IN_VIOLATION")) {
@@ -286,7 +288,8 @@ public class RiskReportPdfWriter {
 
         Risk operationalRisk = getOperationalRisk(component, rowColor);
 
-        pdfManager.drawRectangle(545, rowRectangle.getLowerLeftY(), 60, rowHeight, operationalRisk.riskColor);
+        int operationalRiskRectangleX = 545;
+        pdfManager.drawRectangle(operationalRiskRectangleX, rowRectangle.getLowerLeftY(), pageWidth - operationalRiskRectangleX - TABLE_PADDING_X, rowHeight, operationalRisk.riskColor);
         pdfManager.writeTextCentered(575, rowUpperY, rowHeight, operationalRisk.riskShortString, boldFont, 12, textColor);
 
         return rowRectangle;
