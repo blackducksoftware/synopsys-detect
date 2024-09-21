@@ -38,7 +38,7 @@ dependencies {
     implementation("com.blackduck.integration:common-gradle-plugin:${managedCgpVersion}") {
         exclude group: 'org.springframework', module: 'spring-core'
     }
-    implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
+    implementation "com.blackduck.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'org.springframework:spring-core:5.3.34'
     implementation gradleApi()
 }

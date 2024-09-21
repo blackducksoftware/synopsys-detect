@@ -1,4 +1,4 @@
-import com.synopsys.integration.detect.docs.GenerateDocsTask
+import com.blackduck.integration.detect.docs.GenerateDocsTask
 
 File generatedDir = new File(buildDir, "generated")
 File ditaSiteDir = new File(buildDir, "ditasite")
