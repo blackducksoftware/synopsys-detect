@@ -177,7 +177,7 @@ public class DetectProperties {
             .setInfo("Detector Accuracy Requirements", DetectPropertyFromVersion.VERSION_7_13_0)
             .setHelp(
                 "Detector types from which HIGH accuracy results are required when a detector of that type applies.",
-                "The value of this property only affects detector types which apply to the source project. If a detector type applies, and is one of the accuracy-required detector types indicated by the value of this property, low accuracy results for that detector type are treated as a failure.  Refer to the <i>Downloading and Running Detect</i> > <i>Detector search and accuracy</i> page for more details."
+                "The value of this property only affects detector types which apply to the source project. If a detector type applies, and is one of the accuracy-required detector types indicated by the value of this property, low accuracy results for that detector type are treated as a failure.  Refer to the <i>Downloading and Running Black Duck Detect</i> > <i>Detector search and accuracy</i> page for more details."
             )
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .setExample("ALL,NONE")
@@ -640,7 +640,7 @@ public class DetectProperties {
             .setInfo("Detector Search Continue", DetectPropertyFromVersion.VERSION_3_2_0)
             .setHelp(
                 "By default, nesting rules limit which detectors can run on a subdirectory based on which detectors applied on any parent directory. Setting this property to true disables nesting rules.",
-                "Refer to the 'Downloading and Running Detect' > 'Detector search and accuracy' page for more information on nesting rules."
+                "Refer to the 'Downloading and Running Black Duck Detect' > 'Detector search and accuracy' page for more information on nesting rules."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -651,7 +651,7 @@ public class DetectProperties {
             .setInfo("Diagnostic Mode", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp(
                 "When enabled, diagnostic mode collects files valuable for troubleshooting (logs, BDIO file, extraction files, reports, etc.), writes them to a zip file, and logs the path to the zip file.",
-                "See the following for more <xref href=\"https://documentation%2Eblackduck%2Ecom/bundle/detect/page/troubleshooting/diagnosticmode%2Ehtml\" scope=\"external\" format=\"html\" target=\"_blank\">Diagnostic Mode information.</xref>")
+                "See the following for more <xref href=\"https://documentation%2Eblackduck%2Ecom/bundle/integrations%2Ddetect/page/troubleshooting/diagnosticmode%2Ehtml\" scope=\"external\" format=\"html\" target=\"_blank\">Diagnostic Mode information.</xref>")
             .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
             .build(); 
 
@@ -941,7 +941,7 @@ public class DetectProperties {
             .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "If false, Detect will exclude the default directory names. See the detailed help for more information. Caution should be exercised when including this parameter on Windows, as the commmand length generated may exceed OS limitations.",
-                "If false, the following directories will be excluded by Detect when searching for detectors: __MACOX, bin, build, .git, .gradle, .yarn, node_modules, out, packages, target, .blackduck, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, gradle, node_modules, .blackduck."
+                "If false, the following directories will be excluded by Detect when searching for detectors: __MACOX, bin, build, .git, .gradle, .yarn, node_modules, out, packages, target, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, gradle, node_modules."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1762,7 +1762,7 @@ public class DetectProperties {
                     "To keep the log file size manageable, use INFO level logging for normal use and DEBUG or TRACE for troubleshooting.<p/>" +
                         "Detect logging uses Spring Boot logging, which uses Logback (https://logback.qos.ch). " +
                         "The format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
-                        "The property name shown above specifies package <i>com.synopsys.integration</i> because that is the name of Detect's top-level package. " +
+                        "The property name shown above specifies package <i>com.blackduck.integration</i> because that is the name of Detect's top-level package. " +
                         "Changing the logging level for that package changes the logging level for all Detect code, as well as Black Duck integration libraries that Detect uses. " +
                         "Non-Black Duck libraries that Detect uses are not affected. " +
                         "However, you can use this property to set the logging level for some of the non-Black Duck libraries that Detect uses by using the appropriate package name. " +
