@@ -131,7 +131,7 @@ public class ApplicationUpdater extends URLClassLoader {
     
     private final ApplicationUpdaterUtility utility;
     
-    public ApplicationUpdater(ApplicationUpdaterUtility utility, String[] args) {
+    public ApplicationUpdater(ApplicationUpdaterUtility utility, String[] args, IntHttpClient intHttpClient) {
         super(new URL[] {}, Thread.currentThread().getContextClassLoader());
         this.utility = utility;
         proxyProperties = new HashMap<>(7);
@@ -158,10 +158,10 @@ public class ApplicationUpdater extends URLClassLoader {
         return Collections.emptyMap();
     }
     
-    protected boolean selfUpdate() {
+    protected boolean selfUpdate() { // TOME entry
         if (canSelfUpdate()) {
             try {
-                final String jarDownloadPath = determineJarDownloadPath();
+                final String jarDownloadPath = determineJarDownloadPath(); // TOME /Users/shanty/tmp
                 final File newDetectJar = installOrUpdateScanner(jarDownloadPath);
                 if (newDetectJar != null) {
                     /* If self-update feature already updated Detect once, 
@@ -204,7 +204,7 @@ public class ApplicationUpdater extends URLClassLoader {
             return null;
         }
         
-        final HttpUrl downloadUrl = buildDownloadUrl();
+        final HttpUrl downloadUrl = buildDownloadUrl(); // TOME https://synopsys.com/api/tools/detect
         final String currentInstalledVersion = determineInstalledVersion().orElse("");
         return download(installDirectory, downloadUrl, currentInstalledVersion);
     }
@@ -248,7 +248,7 @@ public class ApplicationUpdater extends URLClassLoader {
         return sb.toString();
     }
     
-    private File validateDownloadedJar(File newJarFile) throws IntegrationException {
+    private File validateDownloadedJar(File newJarFile) throws IntegrationException { // TOME maybe requires more validation here?
         if (newJarFile.setExecutable(true)) {
             logger.info("{} Centrally managed version of Detect was downloaded successfully and is ready to be run: {}", LOG_PREFIX, newJarFile.getAbsolutePath());
             return newJarFile;
@@ -289,7 +289,7 @@ public class ApplicationUpdater extends URLClassLoader {
                 }
             }
             final Class<?> jarFileArchiveClass = classMap.get("org.springframework.boot.loader.archive.JarFileArchive");
-            final Constructor<?> jarFileArchiveConstructor = jarFileArchiveClass.getConstructor(File.class);
+            final Constructor<?> jarFileArchiveConstructor = jarFileArchiveClass.getConstructor(File.class); // TOME throws NPE here?
             final Object jarFileArchive = jarFileArchiveConstructor.newInstance(new File(pathToJar));
             final Class<?> archiveClass = classMap.get("org.springframework.boot.loader.archive.Archive");
             final Class<?> mainClass = classMap.get("org.springframework.boot.loader.JarLauncher");
@@ -621,7 +621,7 @@ public class ApplicationUpdater extends URLClassLoader {
         ProxyInfo proxyInfo = getProxyInfo();
         final IntHttpClient intHttpClient = getIntHttpClient(proxyInfo);
         try (final Response response = intHttpClient.execute(request)) {
-            return handleResponse(response, currentVersion, installDirectory, downloadUrl);
+            return handleResponse(response, currentVersion, installDirectory, downloadUrl); // TOME response is 404, need to mock this response. Isolate the server calls ...so you can test our responding functionality
         }
     }
     

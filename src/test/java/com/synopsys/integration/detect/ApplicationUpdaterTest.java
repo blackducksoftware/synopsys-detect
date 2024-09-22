@@ -5,6 +5,10 @@ import freemarker.template.Version;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class ApplicationUpdaterTest {
     
@@ -59,7 +63,21 @@ public class ApplicationUpdaterTest {
             "--blackduck.url=".concat(fakeUrl), 
             "--blackduck.api.token=dummyToken",
             "--detect.tools=DETECTOR"};
-    
+
+    @Test
+    public void testNPE() {
+        // Mock IntHttpClient
+
+        ApplicationUpdaterUtility utility = new ApplicationUpdaterUtility();
+        try(ApplicationUpdater updater = new ApplicationUpdater(utility, successArgs)) {
+            boolean selfUpdated = updater.selfUpdate();
+            updater.closeUpdater();
+        } catch (IOException ex) {
+            Logger staticLogger = LoggerFactory.getLogger(Application.class);
+            staticLogger.warn("There was a problem running the Self-Update feature.");
+            staticLogger.debug("Reason: ", ex);
+        }
+    }
     @Test
     public void testCanSelfUpdate() {
         Assertions.assertTrue(new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).canSelfUpdate());
