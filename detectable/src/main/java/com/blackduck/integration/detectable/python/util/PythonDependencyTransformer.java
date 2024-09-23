@@ -21,10 +21,6 @@ public class PythonDependencyTransformer {
         List<PythonDependency> dependencies = new LinkedList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(requirementsFile))) {
             for (String line; (line = bufferedReader.readLine()) != null; ) {
-                if (line.contains("\u0000")) {
-                    line = line.replaceAll("\u0000", "");
-                }
-                
                 PythonDependency requirementsFileDependency = transformLine(line);
                 
                 if (requirementsFileDependency != null) {
@@ -112,6 +108,9 @@ public class PythonDependencyTransformer {
     }
 
     public String formatLine(String line) {
+        if (line.contains("\u0000")) {
+            line = line.replaceAll("\u0000", "");
+        }
         int ignoreAfterIndex;
         String formattedLine = line.trim();
 
