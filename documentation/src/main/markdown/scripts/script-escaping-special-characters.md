@@ -105,7 +105,7 @@ For example:
 ```
 # name: Project,Test
 [Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https:/
-/detect.blackduck.com/detec10.ps1?$(Get-Random) | iex; detect --detect.project.name=Project`,Test
+/detect.blackduck.com/detect10.ps1?$(Get-Random) | iex; detect --detect.project.name=Project`,Test
 
 # name: Project, Test
 [Net.ServicePointManager]::SecurityProtocol = 'tls12'; $Env:DETECT_EXIT_CODE_PASSTHRU=1; irm https:/
