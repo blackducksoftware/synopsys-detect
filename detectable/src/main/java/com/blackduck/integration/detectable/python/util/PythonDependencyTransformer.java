@@ -21,6 +21,9 @@ public class PythonDependencyTransformer {
         List<PythonDependency> dependencies = new LinkedList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(requirementsFile))) {
             for (String line; (line = bufferedReader.readLine()) != null; ) {
+                if (line.contains("\u0000")) {
+                    line = line.replaceAll("\u0000", "");
+                }
                 
                 PythonDependency requirementsFileDependency = transformLine(line);
                 
