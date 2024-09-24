@@ -109,4 +109,4 @@ For further remediation and transitive dependency upgrade guidance, please consu
 
 You can configure Rapid Scan to return only the difference in policy violations between the current scan and previous Persistent Scans using the same configuration. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
 
-BOM compare mode settings determine which policies are considered and how they behave when violations are present. See the [bd_product_short] documentation for futher details on<a href="https://documentation.blackduck.com/bundle/bd-hub/page/ComponentDiscovery/RapidScanning.html" target="_blank">Rapid Scanning.</a>
+BOM compare mode settings determine which policies are considered and how they behave when violations are present. See the [bd_product_short] documentation for futher details on<a href="https://documentation.blackduck.com/bundle/bd-hub/page/ComponentDiscovery/RapidScanning.html" target="_blank"> Rapid Scanning.</a>
