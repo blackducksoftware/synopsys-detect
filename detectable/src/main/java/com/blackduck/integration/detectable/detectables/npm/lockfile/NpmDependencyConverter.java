@@ -111,9 +111,8 @@ public class NpmDependencyConverter {
         Set<String> packagesToRemove = new HashSet<>();
         
         if (packageLock.packages == null) {
-            // This shouldn't happen if the repo is using an appropriately versioned 
-            // lock or shrinkwrap file (version 2 or later). Still, guard against this 
-            // in case users run Detect on older not updated projects.
+            // The linkage phase is only necessary for v2/v3 lockfiles. v1 lockfiles
+            // have redundant information in the dependencies object that removes the need for this step.
             return;
         }
                 
