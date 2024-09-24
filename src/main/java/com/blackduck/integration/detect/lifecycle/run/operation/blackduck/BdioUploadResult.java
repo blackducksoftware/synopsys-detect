@@ -1,0 +1,18 @@
+package com.blackduck.integration.detect.lifecycle.run.operation.blackduck;
+
+import java.util.Optional;
+
+import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.blackduck.integration.blackduck.codelocation.upload.UploadBatchOutput;
+
+public class BdioUploadResult { //TODO: Static creation with success/failure?
+    private final CodeLocationCreationData<UploadBatchOutput> uploadOutput;
+
+    public BdioUploadResult(CodeLocationCreationData<UploadBatchOutput> uploadOutput) {
+        this.uploadOutput = uploadOutput;
+    }
+
+    public Optional<CodeLocationCreationData<UploadBatchOutput>> getUploadOutput() {
+        return Optional.ofNullable(uploadOutput);
+    }
+}

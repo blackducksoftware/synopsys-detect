@@ -1,8 +1,8 @@
 dependencies {
     implementation project(':common')
 
-    implementation 'com.synopsys.integration:integration-bdio'
-    implementation 'com.synopsys.integration:integration-rest'
+    implementation 'com.blackduck.integration:integration-bdio'
+    implementation 'com.blackduck.integration:integration-rest'
 
     implementation 'org.tomlj:tomlj:1.0.0'
     implementation 'com.moandjiezana.toml:toml4j:0.7.2'
