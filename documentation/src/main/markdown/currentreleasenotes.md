@@ -21,3 +21,8 @@
 
 * The `logging.level.com.synopsys.integration` property deprecated in [detect_product_short] 9.x, has been removed. Use `logging.level.detect` instead.
 * The FULL_SNIPPET_MATCHING and FULL_SNIPPET_MATCHING_ONLY options for the `detect.blackduck.signature.scanner.snippet.matching` property deprecated in [detect_product_short] 9.x, have been removed.
+
+### Dependency updates
+
+* Updated jackson-core library to version 2.15.0 to resolve a security vulnerability.
+
