@@ -89,7 +89,7 @@ public class DetectProperties {
         BooleanProperty.newBuilder("blackduck.offline.mode", false)
             .setInfo("Offline Mode", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
-                "This can disable Black Duck communication - if set to true, Synopsys Detect will not upload BDIO files, or check policies, and it will not download and install the signature scanner. Note that the path to a local instance of the scanner can be provided using the -detect.blackduck.signature.scanner.local.path parameter.")
+                "This can disable Black Duck communication - if set to true, Detect will not upload BDIO files, or check policies, and it will not download and install the signature scanner. Note that the path to a local instance of the scanner can be provided using the -detect.blackduck.signature.scanner.local.path parameter.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT)
             .build();
 
@@ -109,7 +109,7 @@ public class DetectProperties {
             .setInfo("Bypass Proxy Hosts", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
                 "A comma separated list of regular expression host patterns that should not use the proxy.",
-                "This property accepts Java regular expressions. Refer to the <i>Configuring Synopsys Detect</i> > <i>Java regular expression support</i> page for more details."
+                "This property accepts Java regular expressions. Refer to the <i>Configuring Black Duck Detect</i> > <i>Java regular expression support</i> page for more details."
             )
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced)
@@ -177,7 +177,7 @@ public class DetectProperties {
             .setInfo("Detector Accuracy Requirements", DetectPropertyFromVersion.VERSION_7_13_0)
             .setHelp(
                 "Detector types from which HIGH accuracy results are required when a detector of that type applies.",
-                "The value of this property only affects detector types which apply to the source project. If a detector type applies, and is one of the accuracy-required detector types indicated by the value of this property, low accuracy results for that detector type are treated as a failure.  Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Detector search and accuracy</i> page for more details."
+                "The value of this property only affects detector types which apply to the source project. If a detector type applies, and is one of the accuracy-required detector types indicated by the value of this property, low accuracy results for that detector type are treated as a failure.  Refer to the <i>Downloading and Running Black Duck Detect</i> > <i>Detector search and accuracy</i> page for more details."
             )
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .setExample("ALL,NONE")
@@ -317,7 +317,7 @@ public class DetectProperties {
         StringListProperty.newBuilder("detect.binary.scan.file.name.patterns", emptyList())
             .setInfo("Binary Scan Filename Patterns", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp(
-                "If specified, files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. Directories specified via property detect.excluded.directories are excluded from the file search. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details.")
+                "If specified, files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. Search depth is controlled by property detect.binary.scan.search.depth. Directories specified via property detect.excluded.directories are excluded from the file search. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH)
             .setExample("*.jar")
             .build();
@@ -513,7 +513,7 @@ public class DetectProperties {
                 )
                 .setInfo("Reduced Persistence", DetectPropertyFromVersion.VERSION_8_3_0)
                 .setHelp(
-                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to <xref href=\"https://sig%2Dproduct%2Ddocs%2Esynopsys%2Ecom/bundle/bd%2Dhub/page/ComponentDiscovery/about%5Freduced%5Fpersistence%5Fsignature%5Fscanning%2Ehtml\" scope=\"external\" outputclass=\"external\" format=\"html\" target=\"_blank\">about reduced persistence signature scanning.</xref>")
+                    "Use this value to control how unmatched files from signature scans are stored. For a full explanation, please refer to <xref href=\"https://documentation%2Eblackduck%2Ecom/bundle/bd%2Dhub/page/ComponentDiscovery/about%5Freduced%5Fpersistence%5Fsignature%5Fscanning%2Ehtml\" scope=\"external\" outputclass=\"external\" format=\"html\" target=\"_blank\">about reduced persistence signature scanning.</xref>")
                 .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
                 .build();
 
@@ -640,7 +640,7 @@ public class DetectProperties {
             .setInfo("Detector Search Continue", DetectPropertyFromVersion.VERSION_3_2_0)
             .setHelp(
                 "By default, nesting rules limit which detectors can run on a subdirectory based on which detectors applied on any parent directory. Setting this property to true disables nesting rules.",
-                "Refer to the 'Downloading and Running Synopsys Detect' > 'Detector search and accuracy' page for more information on nesting rules."
+                "Refer to the 'Downloading and Running Black Duck Detect' > 'Detector search and accuracy' page for more information on nesting rules."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -651,7 +651,7 @@ public class DetectProperties {
             .setInfo("Diagnostic Mode", DetectPropertyFromVersion.VERSION_6_5_0)
             .setHelp(
                 "When enabled, diagnostic mode collects files valuable for troubleshooting (logs, BDIO file, extraction files, reports, etc.), writes them to a zip file, and logs the path to the zip file.",
-                "See the following for more <xref href=\"https://sig%2Dproduct%2Ddocs%2Esynopsys%2Ecom/bundle/integrations%2Ddetect/page/troubleshooting/diagnosticmode%2Ehtml\" scope=\"external\" format=\"html\" target=\"_blank\">Diagnostic Mode information.</xref>")
+                "See the following for more <xref href=\"https://documentation%2Eblackduck%2Ecom/bundle/integrations%2Ddetect/page/troubleshooting/diagnosticmode%2Ehtml\" scope=\"external\" format=\"html\" target=\"_blank\">Diagnostic Mode information.</xref>")
             .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
             .build(); 
 
@@ -837,7 +837,7 @@ public class DetectProperties {
             .setInfo("Gradle Exclude Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of Gradle configurations to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -848,7 +848,7 @@ public class DetectProperties {
             .setInfo("Gradle Exclude Projects", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of Gradle subprojects to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subprojects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subprojects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -859,7 +859,7 @@ public class DetectProperties {
             .setInfo("Gradle Exclude Subproject Paths", DetectPropertyFromVersion.VERSION_7_12_0)
             .setHelp(
                 "A comma-separated list of Gradle subproject paths to exclude.",
-                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subproject whose path matches one of the values passed via this property. Run 'gradle projects' to see the paths to your subprojects. Subproject paths have the form ':subproject:subsubproject' and are unique. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle subproject whose path matches one of the values passed via this property. Run 'gradle projects' to see the paths to your subprojects. Subproject paths have the form ':subproject:subsubproject' and are unique. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -870,7 +870,7 @@ public class DetectProperties {
             .setInfo("Gradle Include Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of Gradle configurations to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -892,7 +892,7 @@ public class DetectProperties {
             .setInfo("Gradle Include Projects", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of Gradle subprojects to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -903,7 +903,7 @@ public class DetectProperties {
             .setInfo("Gradle Include Project Paths", DetectPropertyFromVersion.VERSION_7_12_0)
             .setHelp(
                 "A comma-separated list of Gradle subproject paths to include.",
-                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those subprojects whose path matches this property. Gradle project paths usually take the form ':parent:child' and are unique. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -928,7 +928,7 @@ public class DetectProperties {
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "A comma-separated list of names, name patterns, relative paths, or path patterns of directories that Detect should exclude. Caution should be exercised when including this parameter on Windows, as the command length generated may exceed OS limitations.",
-                "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, will not be searched to find files for binary scanning when property detect.binary.scan.file.name.patterns is set, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Synopsys Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
+                "Subdirectories whose name or path is resolved from the patterns in this list will not be searched when determining which detectors to run, will not be searched to find files for binary scanning when property detect.binary.scan.file.name.patterns is set, and will be excluded from signature scan using the Scan CLI '--exclude' flag. Refer to the <i>Downloading and Running Black Duck Detect</i> > <i>Including and Excluding Tools, Detectors, Directories, etc.</i> page for more details."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -941,7 +941,7 @@ public class DetectProperties {
             .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "If false, Detect will exclude the default directory names. See the detailed help for more information. Caution should be exercised when including this parameter on Windows, as the commmand length generated may exceed OS limitations.",
-                "If false, the following directories will be excluded by Detect when searching for detectors: __MACOX, bin, build, .git, .gradle, .yarn, node_modules, out, packages, target, .synopsys, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, gradle, node_modules, .synopsys."
+                "If false, the following directories will be excluded by Detect when searching for detectors: __MACOX, bin, build, .git, .gradle, .yarn, node_modules, out, packages, target, and the following directories will be excluded from signature scan using the Scan CLI '--exclude' flag: .git, .gradle, gradle, node_modules."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -978,7 +978,7 @@ public class DetectProperties {
             .setInfo("Component Location Analysis Enabled", DetectPropertyFromVersion.VERSION_8_11_0)
             .setHelp(
                     "If set to true, Detect will save an output file named 'components-with-locations.json' in the Scan subdirectory detailing where in the project's source code OSS components are declared.",
-                    "All components will be included when using Synopsys Detect in offline mode. Only policy violating components will be included for Rapid and Stateless Scan modes.")
+                    "All components will be included when using Detect in offline mode. Only policy violating components will be included for Rapid and Stateless Scan modes.")
             .setGroups(DetectGroup.GENERAL)
             .build();
 
@@ -1014,7 +1014,7 @@ public class DetectProperties {
             .setInfo("Lerna Packages Excluded", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "A comma-separated list of Lerna packages to exclude.",
-                "As Detect parses the output of lerna ls --all --json, Detect will exclude any Lerna packages specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect parses the output of lerna ls --all --json, Detect will exclude any Lerna packages specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.LERNA, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1025,7 +1025,7 @@ public class DetectProperties {
             .setInfo("Lerna Packages Included", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "A comma-separated list of Lerna packages to include.",
-                "As Detect parses the output of lerna ls --all --json2, if this property is set, Detect will include only those Lerna packages specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect parses the output of lerna ls --all --json2, if this property is set, Detect will include only those Lerna packages specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.LERNA, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1061,7 +1061,7 @@ public class DetectProperties {
             .setInfo("Maven Modules Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of Maven modules (subprojects) to exclude.",
-                "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1072,7 +1072,7 @@ public class DetectProperties {
             .setInfo("Maven Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of Maven modules (subprojects) to include.",
-                "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1090,7 +1090,7 @@ public class DetectProperties {
             .setInfo("Dependency Scope Included", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp(
                 "A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).",
-                "If set, Detect will include only dependencies of the given Maven scope. This property accepts filename globbing-style wildcards. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "If set, Detect will include only dependencies of the given Maven scope. This property accepts filename globbing-style wildcards. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1100,7 +1100,7 @@ public class DetectProperties {
             .setInfo("Dependency Scope Excluded", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp(
                 "A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).",
-                "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
@@ -1431,7 +1431,7 @@ public class DetectProperties {
     public static final StringListProperty DETECT_PROJECT_TAGS =
         StringListProperty.newBuilder("detect.project.tags", emptyList())
             .setInfo("Project Tags", DetectPropertyFromVersion.VERSION_5_6_0)
-            .setHelp("A comma-separated list of tags to add to the project. This property is not supported when using Synopsys Detect in offline mode.")
+            .setHelp("A comma-separated list of tags to add to the project. This property is not supported when using Detect in offline mode.")
             .setExample("Critical")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced)
@@ -1648,7 +1648,7 @@ public class DetectProperties {
         NullablePathProperty.newBuilder("detect.iac.scanner.local.path")
             .setInfo("IaC Scanner Local Path", DetectPropertyFromVersion.VERSION_7_14_0)
             .setHelp("Use this property to specify the path to a local IaC Scanner.",
-					"If you are running in an Air Gap environment you may need to download the IaC Scanner(Sigma) binary from Artifactory. See the Downloading and Running Synopsys Detect page for download location."
+					"If you are running in an Air Gap environment you may need to download the IaC Scanner(Sigma) binary from Artifactory. See the Downloading and Running Black Duck Detect page for download location."
 			)
             .setGroups(DetectGroup.IAC_SCAN, DetectGroup.GLOBAL)
             .build();
@@ -1735,7 +1735,7 @@ public class DetectProperties {
             .setInfo("Yarn Exclude Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "A comma-separated list of Yarn workspaces (specified by the workspace directory's relative path) to exclude.",
-                "By default, Detect includes all workspaces, but will skip any Yarn workspaces specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "By default, Detect includes all workspaces, but will skip any Yarn workspaces specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1747,7 +1747,7 @@ public class DetectProperties {
             .setInfo("Yarn Include Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
             .setHelp(
                 "A comma-separated list of Yarn workspaces (specified by the workspace directory's relative path) to include.",
-                "By default, Detect includes all workspaces. If workspaces are excluded or included, Detect will include any workspace included by this property that is not excluded. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Synopsys Detect</i> > <i>Property wildcard support</i> page for more details."
+                "By default, Detect includes all workspaces. If workspaces are excluded or included, Detect will include any workspace included by this property that is not excluded. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Configuring Black Duck Detect</i> > <i>Property wildcard support</i> page for more details."
             )
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced)
@@ -1762,10 +1762,10 @@ public class DetectProperties {
                     "To keep the log file size manageable, use INFO level logging for normal use and DEBUG or TRACE for troubleshooting.<p/>" +
                         "Detect logging uses Spring Boot logging, which uses Logback (https://logback.qos.ch). " +
                         "The format of this property name is <i>logging.level.{package}[.{class}]</i>. " +
-                        "The property name shown above specifies package <i>com.synopsys.integration</i> because that is the name of Detect's top-level package. " +
-                        "Changing the logging level for that package changes the logging level for all Detect code, as well as Synopsys integration libraries that Detect uses. " +
-                        "Non-Synopsys libraries that Detect uses are not affected. " +
-                        "However, you can use this property to set the logging level for some of the non-Synopsys libraries that Detect uses by using the appropriate package name. " +
+                        "The property name shown above specifies package <i>com.blackduck.integration</i> because that is the name of Detect's top-level package. " +
+                        "Changing the logging level for that package changes the logging level for all Detect code, as well as Black Duck integration libraries that Detect uses. " +
+                        "Non-Black Duck libraries that Detect uses are not affected. " +
+                        "However, you can use this property to set the logging level for some of the non-Black Duck libraries that Detect uses by using the appropriate package name. " +
                         "For example, <i>logging.level.org.apache.http=TRACE</i> sets the logging level to TRACE for the Apache HTTP client library. " +
                         "<p/>" +
                         "For log message format, a default value of <i>%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}</i> is used. "
@@ -1780,7 +1780,7 @@ public class DetectProperties {
     public static final BooleanProperty DETECT_WAIT_FOR_RESULTS =
         BooleanProperty.newBuilder("detect.wait.for.results", false)
             .setInfo("Wait For Results", DetectPropertyFromVersion.VERSION_5_5_0)
-            .setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.timeout is exceeded.")
+            .setHelp("If set to true, Detect will wait for Black Duck products until results are available or the detect.timeout is exceeded.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .build();
 
@@ -1807,8 +1807,8 @@ public class DetectProperties {
         BooleanProperty.newBuilder("detect.blackduck.integrated.matching.enabled", false)
             .setInfo("Integrated Matching Enabled", DetectPropertyFromVersion.VERSION_10_0_0)
             .setHelp(
-                "When enabled, Synopsys Detect activates the Black Duck integrated matching capability to enhance match accuracy.",
-                "The integrated matching capability must be present and enabled in your Black Duck server before you enable the integrated matching feature in Synopsys Detect."
+                "When enabled, Detect activates the Black Duck integrated matching capability to enhance match accuracy.",
+                "The integrated matching capability must be present and enabled in your Black Duck server before you enable the integrated matching feature in Detect."
             )
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .build();

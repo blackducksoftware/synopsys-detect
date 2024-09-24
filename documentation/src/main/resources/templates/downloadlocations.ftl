@@ -10,5 +10,6 @@ The following are download locations for the current version of [detect_product_
 
 **Note:** For certain types of projects, [detect_product_short] automatically downloads one or more [inspectors](../components/inspectors.md) as needed.
 * In air-gap environments you may need to download the [var_product_sigma] scanner via artifactory at the following location: [Sigma](${binary_repo_url_sigma})
-* Downloads of binaries and source code for NuGet Inspector are available at the following repo locations: [Binary files](https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/blackduck/integration/detect-nuget-inspector/) and [Source code](https://github.com/blackducksoftware/detect-nuget-inspector)
+
+* Downloads of binaries and source code for NuGet Inspector are available at the following repo locations: [Binary files](https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect/) and [Source code](https://github.com/blackducksoftware/detect-nuget-inspector)
 

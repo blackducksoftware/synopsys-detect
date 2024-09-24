@@ -30,4 +30,4 @@ To specify custom fonts when using the [detect_product_short] air gap zip, you m
 
 Example
 
-* ```synopsys-detect-detect_version-air-gap/fonts/custom-regular/my-custom-regular-font.ttf```
+* ```detect-detect_version-air-gap/fonts/custom-regular/my-custom-regular-font.ttf```

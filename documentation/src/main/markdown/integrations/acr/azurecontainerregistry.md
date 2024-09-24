@@ -13,7 +13,7 @@ Azure Container Registry Scanning requires a fully configured instance of [detec
    
 For prerequisite information refer to [Requirements and release information](../../gettingstarted/requirements.md)
 	
-## [company_name] [solution_name] ACR scanning on a local workstation
+## [detect_product_short] ACR scanning on a local workstation
 
 Before you can scan images in ACR using [detect_product_short], ensure that you satisfy the following requirements:
 
@@ -42,7 +42,7 @@ The *az acr login* command generates an authentication token and authenticates w
 
 **[detect_product_short] - Scanning Images**   
 ```
-bash <(curl -s -L https:‎ //detect.blackduck.com/detect9.sh) \
+bash <(curl -s -L https:‎ //detect.blackduck.com/detect10.sh) \
 --blackduck.url=<URL> \
 --blackduck.api.token=<token> \
 --detect.docker.image=<Image URI> \
@@ -95,7 +95,7 @@ Start in **Pipelines > Library** inside Azure DevOps.
 #Log in to ACR using the configured Variable Group
 docker login <registryname>.azurecr.io -u $(acr.username) -p $(acr.password)
 #Call Detect, passing the Docker Image location
-bash <(curl -s -L https:‎ //detect.blackduck.com/detect9.sh) \
+bash <(curl -s -L https:‎ //detect.blackduck.com/detect10.sh) \
 --blackduck.url=$(blackduck.url) \
 --blackduck.api.token=$(blackduck.api.token) \ 
 --detect.docker.image=<registryname>.azurecr.io/<containername>:$(Build.BuildId) \ 

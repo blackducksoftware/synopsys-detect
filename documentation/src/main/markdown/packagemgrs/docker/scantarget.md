@@ -1,4 +1,4 @@
-# [company_name] [solution_name]'s scan target
+# [detect_product_long]'s scan target
 
 When a Docker image is run; for example, using a docker run command, a container is created that has an initial file system. This initial container file system can be determined in advance from the image without running the actual image. Since the target image is not yet trusted, Docker Inspector does not run the image; that is, it does not create a container from the image, but it does construct the initial container file system.
 

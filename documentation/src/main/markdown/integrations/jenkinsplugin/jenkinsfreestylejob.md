@@ -11,5 +11,5 @@ In a FreeStyle job, you can use post-build actions.
 <figure>
     <img src="../jenkinsplugin/images/JenkinsFreestyleJob.png" width="10%"
          alt="Jenkins Freestyle Job">
-    <figcaption>A simple build command with a Synopsys Detect post-build action.</figcaption>
+    <figcaption>A simple build command with a Detect post-build action.</figcaption>
 </figure>

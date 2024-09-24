@@ -1,6 +1,6 @@
 # Running with [bd_product_long]
 
-[detect_product_long] can be used with multiple Synopsys platforms and [bd_product_short] to perform Software Composition Analysis (SCA).
+[detect_product_long] can be used with multiple [bd_product_short] platforms to perform Software Composition Analysis (SCA).
 
 ## Overview
 
@@ -40,9 +40,13 @@ Download the latest [detect_product_short] version:
  
 *Choose one of the following to download.*
 
-**Version 8.7 and later**   
-`synopsys-detect-X.X.X-air-gap-no-docker.zip` includes scanning for Gradle and Nuget no Docker
-`synopsys-detect-X.X.X-air-gap.zip` includes scanning for Gradle, Nuget, or Docker
+**Version 10.0.0 or later**   
+`detect-X.X.X-air-gap.zip` includes scanning for Gradle, Nuget, and Docker.
+`detect-X.X.X-air-gap-no-docker.zip` includes scanning for Gradle and Nuget. No Docker scanning.
+
+**Version 8.7 to 9.10.0**   
+`synopsys-detect-X.X.X-air-gap.zip` includes scanning for Gradle, Nuget, and Docker.
+`synopsys-detect-X.X.X-air-gap-no-docker.zip` includes scanning for Gradle and Nuget. No Docker scanning.
 
 Download the Signature Scanner from your [bd_product_short] server:
 https://{blackduckserver}/download/scan.cli.zip
@@ -58,7 +62,7 @@ If using air-gap zip archive files, [see air gap mode](../../downloadingandinsta
 
 [detect_product_short] Scan Command example:
 ```
-java -jar  synopsys-detect-x.x.x.jar --blackduck.url= --blackduck.api.token= --detect.project.name= --detect.project.version.name= --blackduck.offline.mode=true --detect.scan.output.path= --detect.output.path= --detect.blackduck.signature.scanner.local.path=
+java -jar  detect-x.x.x.jar --blackduck.url= --blackduck.api.token= --detect.project.name= --detect.project.version.name= --blackduck.offline.mode=true --detect.scan.output.path= --detect.output.path= --detect.blackduck.signature.scanner.local.path=
 ```
       
 Upload Scan results via the [bd_product_short] UI:
@@ -78,5 +82,5 @@ The following are the locations of the scan files if the following [detect_produ
 
 ## BDIO format
 
-[detect_product_short] produces dependency information for [bd_product_short], and other Synopsys products and platforms, in [bd_product_short] Input Output (BDIO) format files.
+[detect_product_short] produces dependency information for [bd_product_short], and other products and platforms, in [bd_product_short] Input Output (BDIO) format files.
 [detect_product_short] supports generating BDIO version 2 documents.

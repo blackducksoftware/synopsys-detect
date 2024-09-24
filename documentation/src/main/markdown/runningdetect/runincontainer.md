@@ -32,7 +32,7 @@ The format of "simple" image names is: `blackducksoftware/detect:[detect_version
 
 * If you want an image with the latest supported release for a major version of [detect_product_short], such images are named in the following format: `blackducksoftware/detect:[detect_major_version]`
 
-#### [company_name] [solution_name] Buildless Images
+#### [detect_product_short] Buildless Images
 
 There also exist "buildless" [detect_product_short] images.  These images automatically pass the argument --detect.accuracy.required=NONE when running to make [detect_product_short] as resilient as possible (it will evaluate all applicable detectors, regardless of their accuracy, in order to get results).
 
@@ -40,7 +40,7 @@ The format of "buildless" image names is: `blackducksoftware/detect:[detect_vers
 
 * If you want a buildless image with the latest supported release for a major version of [detect_product_short], such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-buildless`
 
-#### [company_name] [solution_name] IaC Images
+#### [detect_product_short] IaC Images
 
 If you wish to perform an IaC Scan via [detect_product_short] in a Docker container, there exist "iac" [detect_product_short] images.  The scanner that [detect_product_short] uses to perform IaC scans is not supported in other [detect_product_short] images.
 
@@ -52,7 +52,7 @@ The format of "iac" image names is: `blackducksoftware/detect:[detect_version]-i
 
 `docker run -it --rm -v [/path/to/source]:/source -v [/path/to/outputDir]:/output blackducksoftware/detect:[detect_image_tag] [detect_arguments]`
 
-`docker run -it --rm -v /home/my/gradle/project:/source -v /home/for/detect/output/files:/output blackducksoftware/detect:9.6.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
+`docker run -it --rm -v /home/my/gradle/project:/source -v /home/for/detect/output/files:/output blackducksoftware/detect:10.0.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 
 `docker run -it --rm -v /home/my/maven/project:/source -v /home/for/detect/output/files:/output blackducksoftware/detect:9 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 

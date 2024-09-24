@@ -28,7 +28,7 @@ the target image. All component discovery (including package manager discovery
 and signature scanning) is based on this file system. In order to construct the file
 system accurately, the [detect_product_short] user must have permission to create symbolic links.
 
-## A Docker bug may affect [company_name] [solution_name] during clean up
+## A Docker bug may affect [detect_product_short] during clean up
 
 For important information on a Docker for Windows bug that might affect [detect_product_short], refer to the
 [troubleshooting page](../../troubleshooting/solutions.md#on-windows-error-trying-cleanup).
