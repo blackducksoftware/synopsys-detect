@@ -11,7 +11,8 @@ String findDita() {
     return System.getProperty("os.name").toLowerCase().contains("windows") ? 'dita.bat' : 'dita';
 }
 
-// Requires Synopsys-configured dita:
+// Requires Black Duck-configured dita:
+// Note this url will soon change
 // 1. git clone https://sig-gitlab.internal.synopsys.com/doc/docs-dita-tools.git
 // 2. Add docs-dita-tools/dita-ot/bin to your PATH
 task ditasite() {
