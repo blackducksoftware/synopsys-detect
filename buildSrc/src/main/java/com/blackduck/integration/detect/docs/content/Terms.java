@@ -13,7 +13,7 @@ public class Terms {
         termMap.put("binary_repo_url_project", "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect");
         termMap.put("binary_repo_ui_url_project", "https://repo.blackduck.com/bds-integrations-release/com/blackduck/integration/detect");
 	termMap.put("binary_repo_jenkins_url_project", "https://repo.blackduck.com/bds-integrations-release/com/blackducksoftware/integration/blackduck-detect/");
-	termMap.put("binary_repo_url_sigma", "https://repo.blackduck.com/sigma-release-trial/2024.9.0/");
+	termMap.put("binary_repo_url_sigma", "https://repo.blackduck.com/sigma-release-trial/2022.6.0/");
     }
 
     public String put(String termKey, String replacementString) {
