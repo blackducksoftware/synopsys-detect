@@ -37,27 +37,27 @@ For further [bd_product_short] configuration information, refer to the documenta
 Downgrade to prior version blocked:  
 
 ``` 
-2023-05-05 12:20:57 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎.com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.   
+2024-10-31 12:20:57 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎.com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.   
 
-2023-05-05 12:21:03 EDT WARN  \[main] - Detect-Self-Updater:  The Detect version 8.7.0 mapped at Black Duck server is not eligible for downgrade as it lacks the self-update feature. The self-update feature is available from 8.9.0 onwards.
+2024-10-31 12:21:03 EDT WARN  \[main] - Detect-Self-Updater:  The Detect version 8.7.0 mapped at Black Duck server is not eligible for downgrade as it lacks the self-update feature. The self-update feature is available from 8.9.0 onwards.
 ```
 
 Update to version allowed (8.9.0+):   
 
 ```
-2023-05-05 12:33:52 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎.com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.  
+2024-10-31 12:33:52 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎.com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.  
 
-2023-05-05 12:33:53 EDT WARN  \[main] - Detect-Self-Updater:  The Detect version 8.9.2 mapped at Black Duck server is eligible for downgrade from the current version of 8.10.0. The self-update feature is available from 8.9.0 onwards.
+2024-10-31 12:33:53 EDT WARN  \[main] - Detect-Self-Updater:  The Detect version 10.0.0 mapped at Black Duck server is eligible for downgrade from the current version of 10.0.1. The self-update feature is available from 8.9.0 onwards.
 
-2023-05-05 12:33:53 EDT INFO  \[main] - Detect-Self-Updater:  Centrally managed version of Detect was downloaded successfully and is ready to be run: /Users/testuser/tmp/synopsys-detect-8.9.2.jar.
+2024-10-31 12:33:53 EDT INFO  \[main] - Detect-Self-Updater:  Centrally managed version of Detect was downloaded successfully and is ready to be run: /Users/testuser/tmp/detect-10.0.0.jar.
 ```
 
 Current version of [detect_product_short] matches the mapped version or there is no mapped version in [bd_product_short]:   
 
 ```
-2023-05-05 12:33:52 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎.com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.  
+2024-10-31 12:33:52 EDT INFO  \[main] - Detect-Self-Updater:  Checking https://test1.blackduck‎.com/api/tools/detect API for centrally managed Detect version to download to /Users/testuser/tmp.  
 
-2023-05-05 12:33:53 EDT INFO  \[main] - Detect-Self-Updater:  Present Detect installation is up to date - skipping download.
+2024-10-31 12:33:53 EDT INFO  \[main] - Detect-Self-Updater:  Present Detect installation is up to date - skipping download.
 ```
 <!-- Variables do not resolve when in a note format hence the hardcoding below -->
 <note type="important">

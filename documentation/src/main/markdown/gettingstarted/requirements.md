@@ -38,7 +38,7 @@ The risk report requires that the following fonts are installed:
 * Helvetica
 * Helvetica bold
 
-## Supported [company_name] [solution_name] versions and Service duration
+## Supported [detect_product_short] versions and Service duration
 
 * For information about support and service durations for [detect_product_short] versions, consult the
 <xref href="Support-and-Service-Schedule.dita" scope="peer"> Support and Service Schedule.<data name="facets" value="pubname=blackduck-compatibility"/>

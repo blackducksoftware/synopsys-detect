@@ -13,7 +13,7 @@ Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties
     * Rapid Scan only reports components that violate policies. 
     * If no policies are violated or there are no defined policies, then no components are returned.
  * Rapid Scan does not support ```detect.policy.check.fail.on.severities```
-    * [company_name] [solution_name] will fail with FAILURE_POLICY_VIOLATION if any component violates [bd_product_short] polices with a CRITICAL or BLOCKER severity. 
+    * [detect_product_short] will fail with FAILURE_POLICY_VIOLATION if any component violates [bd_product_short] polices with a CRITICAL or BLOCKER severity. 
     * See the [bd_product_short] documentation for a list of policy conditions that are supported by Rapid Scan. 
  * Rapid Scan does not support ```detect.policy.check.fail.on.names```
  * Rapid Scan cannot create a Risk or Notices report.

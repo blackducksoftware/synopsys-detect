@@ -1,4 +1,4 @@
-# [company_name] [solution_name] workflow
+# [detect_product_long] workflow
 
 When running [detect_product_long] on a Docker image, you'll probably want to
 set *detect.target.type* to *IMAGE*.
@@ -24,6 +24,6 @@ This scan creates another code location.
 
 [detect_product_short] by default
 runs [bdba_product_short] on the container file system.
-Refer to [Synopsys Detect's scan target](#synopsys-detects-scan-target) for more details.
+Refer to [Detect's scan target](#black-duck-detects-scan-target) for more details.
 This also creates a code location.
 

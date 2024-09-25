@@ -1,6 +1,6 @@
 dependencies {
-    api "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
+    api "com.blackduck.integration:blackduck-common:${blackDuckCommonVersion}"
 
-    implementation "com.synopsys.integration:integration-common"
+    implementation "com.blackduck.integration:integration-common"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
 }

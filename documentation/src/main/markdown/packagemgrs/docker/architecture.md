@@ -54,7 +54,7 @@ The following steps are performed back on the host when the request to the image
 In container mode, you start four containers in such a way that they share a mounted volume and can reach each other through HTTP GET operations using
 base URLs that you provide:
 
-* One container for [company_name] [solution_name] / [docker_inspector_name].
+* One container for [detect_product_short] / [docker_inspector_name].
 * One container for each of the three image inspector services: Alpine, CentOS, and Ubuntu.
 
 In container mode you must provide the target image in a .tar file with one of the supported formats; you cannot specify that target image by repo:tag.

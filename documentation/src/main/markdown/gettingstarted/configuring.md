@@ -1,8 +1,8 @@
 # Configuration Overview
 
-What [company_name] [solution_name] looks at and how it performs its analysis depends on how you configure [company_name] [solution_name].
+What [detect_product_long] looks at and how it performs its analysis depends on how you configure [detect_product_short].
 
-> For accurate SCA analysis, [company_name] [solution_name] should be executed as a post-build step typically in the native build environment.
+> For accurate SCA analysis, [detect_product_short] should be executed as a post-build step typically in the native build environment.
 
 Using properties, you can configure the following:
 

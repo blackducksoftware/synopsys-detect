@@ -235,7 +235,7 @@ When *use.platform.default.docker.host* is set to true (the default value) *and*
 on Windows, [docker_inspector_name] overrides only the DOCKER_HOST value
 (setting it to "npipe:////./pipe/docker_engine").
 
-## Running [company_name] [solution_name] on a project directory that exists within a Docker image
+## Running [detect_product_short] on a project directory that exists within a Docker image
 
 When you want to run [detect_product_short] on a directory that exists within a Docker image, you can use the following approach:
 1. Run [detect_product_short] on the image to generate the container filesystem for the image.
@@ -268,7 +268,7 @@ Include the following [docker_inspector_name] properties:
 3. cd into the directory within the untared container file system that you want to scan.
 4. Invoke [detect_product_short] there.
 
-## Excluding files/directories from the returned container file system which excludes them from [company_name] [solution_name]'s signature scan
+## Excluding files/directories from the returned container file system which excludes them from [detect_product_short]'s signature scan
 
 To exclude certain files and/or directories from the returned file system, you can
 specify that list of directories with the property *--output.containerfilesystem.excluded.paths*.

@@ -2,7 +2,7 @@
 
 To troubleshoot issues with [docker_inspector_name], run with DEBUG logging enabled:
 
-    --logging.level.com.synopsys=DEBUG
+    --logging.level.detect=DEBUG
 
 ## Considerations when running on Windows
 

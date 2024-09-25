@@ -120,7 +120,7 @@ Deployment notes:
 
 Download: curl -O [source_raw_content_url_base]/[source_repo_organization]/[docker_inspector_project_name]/master/deployment/circleci/config.yml
 
-## Deployment sample for Docker with [company_name] [solution_name] running in a container
+## Deployment sample for Docker with [detect_product_short] running in a container
 
 Approach: Toolkit
 
@@ -146,7 +146,7 @@ and [docker_inspector_name] for your Docker registry, refer to the configuration
 [docker_inspector_name] does not override any of the configuration settings in the code,
 so any of the other methods (properties, system properties, system environment) work.
 
-If you choose to use environment variables, and you are calling [docker_inspector_name] from [company_name] [solution_name],
+If you choose to use environment variables, and you are calling [docker_inspector_name] from [detect_product_short],
 you must prefix the environment variable names with *DETECT_DOCKER_PASSTHROUGH_* to
 instruct [detect_product_short] to pass them on to [docker_inspector_name].
 In that scenario, instead of *export SOMENAME=value*, use *export DETECT_DOCKER_PASSTHROUGH_SOMENAME=value*.
