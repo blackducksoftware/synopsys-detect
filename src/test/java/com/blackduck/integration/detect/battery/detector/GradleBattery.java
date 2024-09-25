@@ -43,7 +43,7 @@ public class GradleBattery {
         test.executableSourceFileThatCopiesFiles("gradlew.bat", "gradlew", RESOURCE_FOLDER)
             .onWindows(5, "")
             .onLinux(3, "-DGRADLEEXTRACTIONDIR=");
-        test.sourceDirectoryNamed("synopsys-detect");
+        test.sourceDirectoryNamed("detect");
         test.sourceFileNamed("build.gradle");
         test.property(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED, GradleConfigurationType.UNRESOLVED.name());
         test.git("https://github.com/blackducksoftware/synopsys-detect", "master");

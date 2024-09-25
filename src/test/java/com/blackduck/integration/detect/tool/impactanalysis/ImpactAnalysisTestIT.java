@@ -40,7 +40,7 @@ public class ImpactAnalysisTestIT {
     @Test
     public void testImpactAnalysisForDetect() throws IOException, IntegrationException {
         BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-        NameVersion projectNameVersion = new NameVersion("synopsys-detect-junit", "impact-analysis");
+        NameVersion projectNameVersion = new NameVersion("detect-junit", "impact-analysis");
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckTestConnection.getBlackDuckServicesFactory();
 
         File toScan = new File("./");

@@ -39,7 +39,7 @@ public class BlackDuckConfigFactory {
 
         blackDuckServerConfigBuilder.setProperties(blackDuckConnectionDetails.getBlackduckProperties().entrySet());
         blackDuckServerConfigBuilder.setProperty(BLACK_DUCK_SERVER_CONFIG_BUILDER_TIMEOUT_KEY, blackDuckConnectionDetails.getConnectionDetails().getTimeout().toString());
-        blackDuckServerConfigBuilder.setSolutionDetails(new NameVersion("synopsys_detect", detectInfo.getDetectVersion()));
+        blackDuckServerConfigBuilder.setSolutionDetails(new NameVersion("detect", detectInfo.getDetectVersion()));
         Optional<Boolean> shouldIgnore = blackDuckConnectionDetails.getBlackDuckUrl()
             .map(blackduckUrl -> ProxyUtil.shouldIgnoreUrl(blackduckUrl, connectionDetails.getIgnoredProxyHostPatterns(), logger));
         if (shouldIgnore.isPresent() && Boolean.TRUE.equals(shouldIgnore.get())) {

@@ -9,7 +9,7 @@ public class DiagnosticLogUtil {
     }
 
     public static ch.qos.logback.classic.Logger getOurLogger() {
-        return getLogger("com.synopsys.integration");
+        return getLogger("com.blackduck.integration");
     }
 
     public static ch.qos.logback.classic.Logger getRootLogger() {

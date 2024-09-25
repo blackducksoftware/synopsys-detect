@@ -18,7 +18,7 @@ class GradleRootMetadataParserTest {
         GradleRootMetadataParser parser = new GradleRootMetadataParser();
 
         NameVersion nameVersion = parser.parseRootProjectNameVersion(lines);
-        assertEquals("synopsys-detect", nameVersion.getName());
-        assertEquals("7.5.0", nameVersion.getVersion());
+        assertEquals("detect", nameVersion.getName());
+        assertEquals("10.0.0", nameVersion.getVersion());
     }
 }

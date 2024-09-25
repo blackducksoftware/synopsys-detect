@@ -64,7 +64,7 @@ public class DetectOnDetectTest {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect-dryrun", "detect-7.1.0:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
-            String projectName = "synopsys-detect-junit";
+            String projectName = "detect-junit";
             String projectVersionName = "dryrun-scan";
             BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
             BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions(projectName, projectVersionName);
@@ -89,7 +89,7 @@ public class DetectOnDetectTest {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
             BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
-            BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions("synopsys-detect-junit", "risk-report-default");
+            BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions("detect-junit", "risk-report-default");
             blackDuckAssertions.emptyOnBlackDuck();
 
             DetectCommandBuilder commandBuilder = new DetectCommandBuilder().defaults().defaultDirectories(test);
@@ -100,7 +100,7 @@ public class DetectOnDetectTest {
             commandBuilder.tools(DetectTool.DETECTOR);
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
-            dockerAssertions.resultProducedAtLocation("/opt/project/src/synopsys_detect_junit_risk_report_default_BlackDuck_RiskReport.pdf");
+            dockerAssertions.resultProducedAtLocation("/opt/project/src/detect_junit_risk_report_default_BlackDuck_RiskReport.pdf");
         }
     }
 
@@ -113,7 +113,7 @@ public class DetectOnDetectTest {
             BlackDuckTestConnection blackDuckTestConnection = BlackDuckTestConnection.fromEnvironment();
             ReportService reportService = blackDuckTestConnection.createReportService();
 
-            BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions("synopsys-detect-junit", "risk-report-custom");
+            BlackDuckAssertions blackDuckAssertions = blackDuckTestConnection.projectVersionAssertions("detect-junit", "risk-report-custom");
             ProjectVersionWrapper projectVersionWrapper = blackDuckAssertions.emptyOnBlackDuck();
 
             String reportDirectoryImagePath = "/opt/report";
@@ -131,7 +131,7 @@ public class DetectOnDetectTest {
             commandBuilder.tools(DetectTool.DETECTOR);
 
             DockerAssertions dockerAssertions = test.run(commandBuilder);
-            dockerAssertions.resultProducedAtLocation("/opt/report/synopsys_detect_junit_risk_report_custom_BlackDuck_RiskReport.pdf");
+            dockerAssertions.resultProducedAtLocation("/opt/report/detect_junit_risk_report_custom_BlackDuck_RiskReport.pdf");
 
             List<File> pdfFiles = getPdfFiles(reportDirectory);
             assertEquals(1, pdfFiles.size());

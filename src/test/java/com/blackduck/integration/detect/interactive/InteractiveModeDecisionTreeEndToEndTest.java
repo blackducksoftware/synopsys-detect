@@ -262,7 +262,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
     }
 
     public void testTraverse(Map<String, String> callToResponse, Map<Property, String> expectedProperties) {
-        DetectInfo detectInfo = new DetectInfo("synopsys_detect", OperatingSystemType.LINUX, "unknown");
+        DetectInfo detectInfo = new DetectInfo("detect", OperatingSystemType.LINUX, "unknown");
         InteractiveModeDecisionTree decisionTree = new InteractiveModeDecisionTree(detectInfo, new BlackDuckConnectivityChecker(), new ArrayList<>(), new Gson());
 
         InteractiveWriter mockWriter = mockWriter(callToResponse);

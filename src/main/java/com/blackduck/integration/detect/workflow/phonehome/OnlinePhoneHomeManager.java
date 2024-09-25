@@ -22,7 +22,7 @@ public class OnlinePhoneHomeManager extends PhoneHomeManager {
         metaDataToSend.putAll(metadata);
         metaDataToSend.putAll(detectorTypesMetadata);
         metaDataToSend.putAll(additionalMetaData);
-        return blackDuckPhoneHomeHelper.handlePhoneHome("synopsys-detect", detectInfo.getDetectVersion(), metaDataToSend, artifactModules);
+        return blackDuckPhoneHomeHelper.handlePhoneHome("detect", detectInfo.getDetectVersion(), metaDataToSend, artifactModules);
     }
 
 }

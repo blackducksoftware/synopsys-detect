@@ -55,7 +55,7 @@ public class GenerateComponentLocationAnalysisOperation {
      * @param scanOutputFolder Detect's output subdirectory where this file will be saved
      * @param projectSrcDir source directory of project being scanned
      * @return ComponentLocatorResult
-     * @throws com.synopsys.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException
+     * @throws com.blackduck.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException
      * @throws DetectUserFriendlyException
      */
     public ComponentLocatorResult locateComponents(Set<Component> componentsSet, File scanOutputFolder, File projectSrcDir) throws ComponentLocatorException, DetectUserFriendlyException {
@@ -90,7 +90,7 @@ public class GenerateComponentLocationAnalysisOperation {
     /**
      * A ComponentLocatorException should be thrown in all cases where the output file is not created so that the
      * appropriate status can be logged for the requested {@link GenerateComponentLocationAnalysisOperation}.
-     * @throws com.synopsys.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException
+     * @throws com.blackduck.integration.detect.workflow.componentlocationanalysis.ComponentLocatorException
      */
     public void failComponentLocationAnalysisOperation() throws ComponentLocatorException {
         publishComponentLocatorFailureIfEnabled();

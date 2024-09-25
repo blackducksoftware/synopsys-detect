@@ -29,7 +29,7 @@ public class DiagnosticLogSystem {
         //Capture whatever is written to Sys Out regardless of actual logging level.
         //Set the our code's CONSOLE output to the level of DEBUG.
         //Also capture our logs written to TRACE, DEBUG and INFO into separate log files.
-        //Our logs refers to com.synopsys.integration
+        //Our logs refers to com.blackduck.integration
 
         this.logDirectory = logDirectory;
 
@@ -37,7 +37,7 @@ public class DiagnosticLogSystem {
         diagnosticSysOutCapture = new DiagnosticSysOutCapture(logFileNamed("sysout"));
         diagnosticSysOutCapture.startCapture();
 
-        logger.info("Attempting to set 'com.synopsys.integration' logging level.");
+        logger.info("Attempting to set 'com.blackduck.integration' logging level.");
         DiagnosticLogUtil.getOurLogger().setLevel(Level.ALL);
 
         logger.info("Attempting to capture additional log messages to files.");

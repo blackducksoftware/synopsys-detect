@@ -9,7 +9,8 @@ public enum DefaultSignatureScannerExcludedDirectories {
     DOT_GRADLE(".gradle"),
     NODE_MODULES("node_modules"),
     GIT(".git"),
-    SYNOPSYS(".synopsys");
+    SYNOPSYS(".synopsys"),
+    BLACKDUCK(".blackduck");
 
     private final String directoryName;
 

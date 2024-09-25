@@ -47,7 +47,7 @@ public class GenerateDocsTask extends DefaultTask {
     public void generateDocs() throws IOException, TemplateException, IntegrationException {
         Project docsProject = getProject();
 
-        File helpJsonFile = new File(docsProject.getBuildDir(), "synopsys-detect-" + docsProject.getVersion() + "-help.json");
+        File helpJsonFile = new File(docsProject.getBuildDir(), "detect-" + docsProject.getVersion() + "-help.json");
         Reader reader = new FileReader(helpJsonFile);
         HelpJsonData helpJson = new Gson().fromJson(reader, HelpJsonData.class);
 
