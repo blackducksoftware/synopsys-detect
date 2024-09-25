@@ -41,12 +41,12 @@ Download the latest [detect_product_short] version:
 *Choose one of the following to download.*
 
 **Version 10.0.0 or later**   
-`detect-X.X.X-air-gap-no-docker.zip` includes scanning for Gradle and Nuget no Docker
-`detect-X.X.X-air-gap.zip` includes scanning for Gradle, Nuget, or Docker
+`detect-X.X.X-air-gap.zip` includes scanning for Gradle, Nuget, and Docker.
+`detect-X.X.X-air-gap-no-docker.zip` includes scanning for Gradle and Nuget. No Docker scanning.
 
 **Version 8.7 to 9.10.0**   
-`synopsys-detect-X.X.X-air-gap-no-docker.zip` includes scanning for Gradle and Nuget no Docker
-`synopsys-detect-X.X.X-air-gap.zip` includes scanning for Gradle, Nuget, or Docker
+`synopsys-detect-X.X.X-air-gap.zip` includes scanning for Gradle, Nuget, and Docker.
+`synopsys-detect-X.X.X-air-gap-no-docker.zip` includes scanning for Gradle and Nuget. No Docker scanning.
 
 Download the Signature Scanner from your [bd_product_short] server:
 https://{blackduckserver}/download/scan.cli.zip
