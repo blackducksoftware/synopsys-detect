@@ -50,11 +50,14 @@ public class PipInspectorTreeParserTest {
     }
 
     @Test
-    public void packagesNotFoundTest() {
+    public void packageNotFoundTest() {
         List<String> pipInspectorOutput = Arrays.asList(
             "--scikit-learn",
-            "--Werkzeug",
-            "n?==v?"
+            "projectName==projectVersionName",
+            "   with-dashes==1.0.0",
+            "   Uppercase==2.0.0",
+            "      child==3.0.0",
+            "   test==4.0.0"
         );
 
         Optional<NameVersionCodeLocation> result = parser.parse(pipInspectorOutput, "");
