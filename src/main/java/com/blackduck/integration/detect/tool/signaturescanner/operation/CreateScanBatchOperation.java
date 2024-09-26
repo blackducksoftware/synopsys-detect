@@ -17,8 +17,11 @@ import com.blackduck.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackduck.integration.detect.workflow.file.DirectoryManager;
 import com.blackduck.integration.util.NameVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CreateScanBatchOperation {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BlackDuckSignatureScannerOptions signatureScannerOptions;
     private final DirectoryManager directoryManager;
     private final CodeLocationNameManager codeLocationNameManager;
@@ -65,8 +68,13 @@ public class CreateScanBatchOperation {
 
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
         scanJobBuilder.cleanupOutput(false);
-
-        signatureScannerOptions.getSnippetMatching().ifPresent(scanJobBuilder::snippetMatching);
+        if (signatureScannerOptions.getSnippetMatching().isPresent()) {
+            if (signatureScannerOptions.isIntegratedMatchingEnabled()) {
+                logger.warn("Snippet matching is not compatible with integrated matching feature and will be skipped. Please re-run snippet matching with integrated matching disabled.");
+            } else {
+                scanJobBuilder.snippetMatching(signatureScannerOptions.getSnippetMatching().get());
+            }
+        }
         scanJobBuilder.uploadSource(signatureScannerOptions.getUploadSource());
         scanJobBuilder.licenseSearch(signatureScannerOptions.getLicenseSearch());
         scanJobBuilder.copyrightSearch(signatureScannerOptions.getCopyrightSearch());
