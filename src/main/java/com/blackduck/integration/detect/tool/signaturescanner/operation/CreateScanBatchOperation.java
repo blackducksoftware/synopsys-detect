@@ -17,6 +17,7 @@ import com.blackduck.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackduck.integration.detect.workflow.file.DirectoryManager;
 import com.blackduck.integration.util.NameVersion;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,16 +69,16 @@ public class CreateScanBatchOperation {
 
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
         scanJobBuilder.cleanupOutput(false);
-        if (signatureScannerOptions.getSnippetMatching().isPresent()) {
-            if (signatureScannerOptions.isIntegratedMatchingEnabled()) {
-                logger.warn("Snippet matching is not compatible with integrated matching feature and will be skipped. Please re-run snippet matching with integrated matching disabled.");
-            } else {
-                scanJobBuilder.snippetMatching(signatureScannerOptions.getSnippetMatching().get());
-            }
+        if (conditionalCorrelationFilter(signatureScannerOptions.getSnippetMatching().isPresent(), "Snippet matching")) {
+            scanJobBuilder.snippetMatching(signatureScannerOptions.getSnippetMatching().get());
         }
         scanJobBuilder.uploadSource(signatureScannerOptions.getUploadSource());
-        scanJobBuilder.licenseSearch(signatureScannerOptions.getLicenseSearch());
-        scanJobBuilder.copyrightSearch(signatureScannerOptions.getCopyrightSearch());
+        if (conditionalCorrelationFilter(signatureScannerOptions.getLicenseSearch(), "License search")) {
+            scanJobBuilder.licenseSearch(signatureScannerOptions.getLicenseSearch());
+        }
+        if (conditionalCorrelationFilter(signatureScannerOptions.getCopyrightSearch(), "Copyright search")) {
+            scanJobBuilder.copyrightSearch(signatureScannerOptions.getCopyrightSearch());
+        }
         signatureScannerOptions.getAdditionalArguments().ifPresent(scanJobBuilder::additionalScanArguments);
         
         scanJobBuilder.rapid(signatureScannerOptions.getIsStateless());
@@ -123,6 +124,17 @@ public class CreateScanBatchOperation {
         } catch (IllegalArgumentException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
+    }
+    
+    private boolean conditionalCorrelationFilter(boolean toCheck, String toWarn) {
+        if (toCheck) {
+            if (signatureScannerOptions.isIntegratedMatchingEnabled()) {
+                logger.warn("{} is not compatible with Integrated Matching feature and will be skipped. Please re-run {} with integrated matching disabled.", toWarn, toWarn.toLowerCase());
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
