@@ -32,7 +32,7 @@ public class AutonomousManagerTest {
     private static DetectPropertyConfiguration detectPropertyConfigurationMock;
 
     private static String TEST_DETECT_SOURCE_PATH = "/Users/username/detect";
-    private static String TEST_HASHED_SCAN_SETTINGS_FILE_NAME = "9d6c66c9-8c9b-31ef-92e1-982c0dbef944.json";
+    private static String TEST_HASHED_SCAN_SETTINGS_FILE_NAME = "a0678131-f7df-358f-814d-9b99e36906e4.json";
     private static File postRunScanSettingsTestFile;
 
     public AutonomousManagerTest() {
