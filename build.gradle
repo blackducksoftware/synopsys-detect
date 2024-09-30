@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.blackduck.integration'
 
-version = '10.0.0-SIGQA15-correlation-conditional-scan-type-filter'
+version = '10.0.0-SIGQA16-correlation-conditional-scan-type-filter-SNAPSHOT'
 
 apply plugin: 'com.blackduck.integration.solution'
 apply plugin: 'org.springframework.boot'
