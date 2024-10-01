@@ -15,6 +15,7 @@ public class Terms {
 		//No UI for repo.blackduck.com as of 2024-09-25
 		termMap.put("binary_repo_jenkins_url_project", "https://repo.blackduck.com/bds-integrations-release/com/blackducksoftware/integration/blackduck-detect/");
 		termMap.put("binary_repo_url_sigma", "https://repo.blackduck.com/sigma-release-trial/2022.6.0/");
+
     }
 
     public String put(String termKey, String replacementString) {
