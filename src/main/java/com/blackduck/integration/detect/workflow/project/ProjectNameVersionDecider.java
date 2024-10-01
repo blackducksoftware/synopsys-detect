@@ -37,7 +37,7 @@ public class ProjectNameVersionDecider {
         String decidedProjectVersionName;
         if (StringUtils.isNotBlank(projectVersionOptions.overrideProjectVersionName)) {
             decidedProjectVersionName = projectVersionOptions.overrideProjectVersionName;
-        } else if (chosenToolVersion.isPresent() && !chosenToolVersion.get().isBlank()) {
+        } else if (chosenToolVersion.isPresent() && !chosenToolVersion.get().trim().isEmpty()) {
             decidedProjectVersionName = chosenToolVersion.get();
         } else {
             logger.debug("A project version name could not be decided. Using the default version text.");
