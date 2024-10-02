@@ -59,7 +59,8 @@ public class DetectOnDetectTest {
     private static final long HALF_MILLION_BYTES = 500_000;
 
     @Test
-    public void testDryRunScanWithSnippetMatching() throws Exception {
+    @ExtendWith(TempDirectory.class)
+    public void testDryRunScanWithSnippetMatching(@TempDirectory.TempDir Path tempOutputDirectory) throws Exception {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("detect-on-detect-dryrun", "detect-7.1.0:1.0.0")) {
             test.withImageProvider(BuildDockerImageProvider.forDockerfilResourceNamed("Detect-7.1.0.dockerfile"));
 
