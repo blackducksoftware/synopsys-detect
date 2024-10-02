@@ -31,8 +31,10 @@ public class NpmLockfileGraphTransformer {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
 
         logger.debug("Processing project.");
-        if (packageLock.packages != null) {
-            logger.debug(String.format("Found %d packages in the lockfile.", packageLock.packages.size()));
+        // TODO need to handle dependencies
+        if (packageLock.packages != null || packageLock.dependencies != null) {
+            logger.debug(String.format("Found %d packages in the lockfile.", 
+                    packageLock.packages != null ? packageLock.packages.size() : packageLock.dependencies.size()));
 
             //First we will recreate the graph from the resolved npm dependencies
             for (NpmDependency resolved : project.getResolvedDependencies()) {
