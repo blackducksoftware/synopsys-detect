@@ -183,7 +183,7 @@ public class IntelligentModeStepRunner {
             codeLocationAccumulator.addNonWaitableCodeLocation(threatIntelScanCodeLocations);
         });
 
-        if (operationRunner.createBlackDuckPostOptions().isIntegratedMatchingEnabled()) {
+        if (operationRunner.createBlackDuckPostOptions().isCorrelatedScanningEnabled()) {
             stepHelper.runAsGroup("Upload Correlated Scan Counts", OperationType.INTERNAL, () -> {
                 uploadCorrelatedScanCounts(blackDuckRunData, codeLocationAccumulator, detectRunUuid);
             });

@@ -6,12 +6,12 @@ import com.blackduck.integration.detect.configuration.enumeration.BlackduckScanM
 public class BlackDuckVersionSensitiveOptions {
     private final DetectToolFilter detectToolFilter;
     private final BlackduckScanMode blackDuckScanMode;
-    private final boolean integratedMatchingEnabled;
+    private final boolean correlatedScanningEnabled;
 
-    public BlackDuckVersionSensitiveOptions(final DetectToolFilter detectToolFilter, final BlackduckScanMode blackDuckScanMode, boolean integratedMatchingEnabled) {
+    public BlackDuckVersionSensitiveOptions(final DetectToolFilter detectToolFilter, final BlackduckScanMode blackDuckScanMode, boolean correlatedScanningEnabled) {
         this.detectToolFilter = detectToolFilter;
         this.blackDuckScanMode = blackDuckScanMode;
-        this.integratedMatchingEnabled = integratedMatchingEnabled;
+        this.correlatedScanningEnabled = correlatedScanningEnabled;
     }
 
     public DetectToolFilter getDetectToolFilter() {
@@ -22,7 +22,7 @@ public class BlackDuckVersionSensitiveOptions {
         return blackDuckScanMode;
     }
 
-    public boolean isIntegratedMatchingEnabled() {
-        return integratedMatchingEnabled;
+    public boolean isCorrelatedScanningEnabled() {
+        return correlatedScanningEnabled;
     }
 }

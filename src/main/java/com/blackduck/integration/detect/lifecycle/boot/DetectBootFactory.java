@@ -219,7 +219,7 @@ public class DetectBootFactory {
 
     public ProductBoot createProductBoot(DetectConfigurationFactory detectConfigurationFactory, DetectToolFilter detectToolFilter, BlackduckScanMode blackduckScanMode) {
         BlackDuckVersionChecker blackDuckVersionChecker = new BlackDuckVersionChecker(new BlackDuckVersionParser(),
-            new BlackDuckMinimumVersionChecks(), new BlackDuckVersionSensitiveOptions(detectToolFilter, blackduckScanMode, detectConfigurationFactory.isIntegratedMatchingEnabled())
+            new BlackDuckMinimumVersionChecks(), new BlackDuckVersionSensitiveOptions(detectToolFilter, blackduckScanMode, detectConfigurationFactory.isCorrelatedScanningEnabled())
         );
 
         ProductBootOptions productBootOptions = detectConfigurationFactory.createProductBootOptions();
