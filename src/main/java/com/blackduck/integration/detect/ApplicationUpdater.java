@@ -180,7 +180,8 @@ public class ApplicationUpdater extends URLClassLoader {
                             | InstantiationException 
                             | NoSuchMethodException 
                             | InvocationTargetException
-                            | IOException ex) {
+                            | IOException
+                            | NullPointerException ex) {
                 logger.error("{} Self-Update of Detect failed due to the following exception. "
                         + "Detect will now continue with existing version.", 
                         LOG_PREFIX, ex);
@@ -265,7 +266,8 @@ public class ApplicationUpdater extends URLClassLoader {
             IllegalArgumentException, 
             InvocationTargetException, 
             IOException,
-            ClassNotFoundException {
+            ClassNotFoundException,
+            NullPointerException {
         logger.debug("{} Ready to run the downloaded Detect JAR at {} with the same arguments.", LOG_PREFIX, jarPath);
         try {
             String pathToJar = jarPath.toAbsolutePath().toString();
