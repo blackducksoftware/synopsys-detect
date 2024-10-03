@@ -31,7 +31,6 @@ public class NpmLockfileGraphTransformer {
         DependencyGraph dependencyGraph = new BasicDependencyGraph();
 
         logger.debug("Processing project.");
-        // TODO need to handle dependencies
         if (packageLock.packages != null || packageLock.dependencies != null) {
             logger.debug(String.format("Found %d packages in the lockfile.", 
                     packageLock.packages != null ? packageLock.packages.size() : packageLock.dependencies.size()));
@@ -62,7 +61,7 @@ public class NpmLockfileGraphTransformer {
 
             logger.debug(String.format("Found %d root dependencies.", dependencyGraph.getRootDependencies().size()));
         } else {
-            logger.debug("Lock file did not have a 'packages' section.");
+            logger.debug("Lock file did not have a 'packages' or 'dependencies' section.");
         }
 
         return dependencyGraph;
