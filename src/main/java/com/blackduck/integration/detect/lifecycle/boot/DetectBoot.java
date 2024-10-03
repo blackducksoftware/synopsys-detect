@@ -110,13 +110,13 @@ public class DetectBoot {
 
         if (detectArgumentState.isHelpJsonDocument()) {
             HelpJsonManager helpJsonManager = detectBootFactory.createHelpJsonManager();
-            helpJsonManager.createHelpJsonDocument(String.format("synopsys-detect-%s-help.json", detectVersion));
+            helpJsonManager.createHelpJsonDocument(String.format("detect-%s-help.json", detectVersion));
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources, Collections.emptySortedMap())));
         }
 
         if (detectArgumentState.isHelpYamlDocument()) {
             HelpYamlWriter helpYamlWriter = new HelpYamlWriter();
-            helpYamlWriter.createHelpYamlDocument(String.format("synopsys-detect-%s-template-application.yml", detectVersion));
+            helpYamlWriter.createHelpYamlDocument(String.format("detect-%s-template-application.yml", detectVersion));
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources, Collections.emptySortedMap())));
         }
 
