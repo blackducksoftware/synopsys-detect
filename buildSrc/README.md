@@ -9,4 +9,4 @@
 
 # Documentation
 
-All documentation is located on our public [Black Duck Confluence]()
+All documentation is located on our public [Black Duck Documentation Portal](https://documentation.blackduck.com/)

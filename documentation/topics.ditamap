@@ -11,7 +11,7 @@
 			</vrmlist>
 		</prodinfo>
 		<!-- zoomin bundle name -->
-		<othermeta name="bundle" content="integrations-detect"/>
+		<othermeta name="bundle" content="detect"/>
 	</topicmeta>
 	<!-- link to zoomin classification map -->
 	<topicref processing-role="resource-only" format="xml" type="xml" href="integrations-classification.xml" outputclass="classmapdata" scope="local"/>
