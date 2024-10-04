@@ -257,7 +257,7 @@ public class ApplicationUpdater extends URLClassLoader {
         }
     }
     
-    protected boolean runMainClass(Path jarPath)
+    private boolean runMainClass(Path jarPath)
             throws 
             NoSuchMethodException, 
             InstantiationException, 
@@ -641,7 +641,7 @@ public class ApplicationUpdater extends URLClassLoader {
         return proxyInfo;
     }
 
-    protected File download(File installDirectory, HttpUrl downloadUrl, String currentVersion) throws IntegrationException, IOException {
+    private File download(File installDirectory, HttpUrl downloadUrl, String currentVersion) throws IntegrationException, IOException {
         logger.info("{} Checking {} API for centrally managed Detect version to download to {}.", LOG_PREFIX, downloadUrl, installDirectory.getAbsolutePath());
         final Map <String, String> headers = new HashMap<>();
         headers.put(DOWNLOAD_VERSION_HEADER, currentVersion);
