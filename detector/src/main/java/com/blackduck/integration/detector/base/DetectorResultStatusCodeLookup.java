@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.google.gson.JsonSyntaxException;
 import com.blackduck.integration.detectable.detectable.result.CargoLockfileNotFoundDetectableResult;
 import com.blackduck.integration.detectable.detectable.result.CartfileResolvedNotFoundDetectableResult;
 import com.blackduck.integration.detectable.detectable.result.ExceptionDetectableResult;
@@ -19,7 +18,6 @@ import com.blackduck.integration.detectable.detectable.result.GivenFileNotFoundD
 import com.blackduck.integration.detectable.detectable.result.GoPkgLockfileNotFoundDetectableResult;
 import com.blackduck.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.blackduck.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
-import com.blackduck.integration.detectable.detectable.result.NpmPackagesObjectNotFoundDetectableResult;
 import com.blackduck.integration.detectable.detectable.result.PackageResolvedNotFoundDetectableResult;
 import com.blackduck.integration.detectable.detectable.result.PassedDetectableResult;
 import com.blackduck.integration.detectable.detectable.result.PipfileLockNotFoundDetectableResult;
@@ -77,7 +75,6 @@ public class DetectorResultStatusCodeLookup {
         map.put(NotNestableBeneathDetectorResult.class, DetectorStatusCode.NOT_NESTABLE_BENEATH);
         map.put(NotNestableBeneathDetectableDetectorResult.class, DetectorStatusCode.NOT_NESTABLE_BENEATH);
         map.put(NpmNodeModulesNotFoundDetectableResult.class, DetectorStatusCode.NPM_NODE_MODULES_NOT_FOUND);
-        map.put(NpmPackagesObjectNotFoundDetectableResult.class, DetectorStatusCode.NPM_PACKAGES_OBJECT_NOT_FOUND);
         map.put(PassedDetectorResult.class, DetectorStatusCode.PASSED);
         map.put(PassedDetectableResult.class, DetectorStatusCode.PASSED);
         map.put(PipfileLockNotFoundDetectableResult.class, DetectorStatusCode.PIPFILE_LOCK_NOT_FOUND);
