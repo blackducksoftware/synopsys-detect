@@ -61,7 +61,7 @@ public class ApplicationUpdaterTest {
             "--blackduck.url=".concat(fakeUrl), 
             "--blackduck.api.token=dummyToken",
             "--detect.tools=DETECTOR"};
-    
+
     @Test
     public void testCanSelfUpdate() {
         Assertions.assertTrue(new ApplicationUpdater(new ApplicationUpdaterUtility(), successArgs).canSelfUpdate());

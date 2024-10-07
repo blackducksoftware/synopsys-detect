@@ -257,7 +257,7 @@ public class ApplicationUpdater extends URLClassLoader {
         }
     }
     
-    private boolean runMainClass(Path jarPath) 
+    private boolean runMainClass(Path jarPath)
             throws 
             NoSuchMethodException, 
             InstantiationException, 
@@ -289,13 +289,41 @@ public class ApplicationUpdater extends URLClassLoader {
                 }
             }
             final Class<?> jarFileArchiveClass = classMap.get("org.springframework.boot.loader.archive.JarFileArchive");
+            if (jarFileArchiveClass == null) {
+                logger.warn("{} Server response or download may be corrupted. Unable to find org.springframework.boot.loader.archive.JarFileArchive class.", LOG_PREFIX);
+                return false;
+            }
             final Constructor<?> jarFileArchiveConstructor = jarFileArchiveClass.getConstructor(File.class);
+            if (jarFileArchiveConstructor == null) {
+                logger.warn("{} Server response or download may be corrupted. Unable to find the constructor of org.springframework.boot.loader.archive.JarFileArchive class.", LOG_PREFIX);
+                return false;
+            }
             final Object jarFileArchive = jarFileArchiveConstructor.newInstance(new File(pathToJar));
             final Class<?> archiveClass = classMap.get("org.springframework.boot.loader.archive.Archive");
+            if (archiveClass == null) {
+                logger.warn("{} Server response or download may be corrupted. Unable to find org.springframework.boot.loader.archive.Archive class.", LOG_PREFIX);
+                return false;
+            }
             final Class<?> mainClass = classMap.get("org.springframework.boot.loader.JarLauncher");
+            if (mainClass == null) {
+                logger.warn("{} Server response or download may be corrupted. Unable to find org.springframework.boot.loader.JarLauncher class.", LOG_PREFIX);
+                return false;
+            }
             final Constructor<?> jarLauncherConstructor = mainClass.getDeclaredConstructor(archiveClass);
+            if (jarLauncherConstructor == null) {
+                logger.warn("{} Server response or download may be corrupted. Unable to find the declared constructor of org.springframework.boot.loader.archive.Archive class.", LOG_PREFIX);
+                return false;
+            }
             final Class<?> launcherClass = 	classMap.get("org.springframework.boot.loader.Launcher");
+            if (launcherClass == null) {
+                logger.warn("{} Server response or download may be corrupted. Unable to find org.springframework.boot.loader.Launcher class.", LOG_PREFIX);
+                return false;
+            }
             final Method launchMethod = launcherClass.getDeclaredMethod("launch", String[].class);
+            if (launchMethod == null) {
+                logger.warn("{} Server response or download may be corrupted. Unable to find the declared constructor of org.springframework.boot.loader.Launcher class.", LOG_PREFIX);
+                return false;
+            }
             setAccessibilityOf(jarLauncherConstructor, launchMethod);
             final Object jarLauncher = jarLauncherConstructor.newInstance(jarFileArchive);
             checkEnvironmentProperties();
