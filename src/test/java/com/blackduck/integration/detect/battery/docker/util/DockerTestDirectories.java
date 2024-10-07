@@ -73,8 +73,10 @@ public class DockerTestDirectories {
 
     public void cleanup() throws IOException {
         File rootTestDir = testDirectory.getParentFile();
-        FileUtils.cleanDirectory(rootTestDir);
-        FileUtils.deleteDirectory(rootTestDir);
+        if (rootTestDir.exists()) {
+            FileUtils.cleanDirectory(rootTestDir);
+            FileUtils.deleteDirectory(rootTestDir);
+        }
     }
 
     public Bind[] getBindings() {
