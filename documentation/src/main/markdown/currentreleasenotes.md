@@ -1,5 +1,12 @@
 # Current Release notes
 
+## Version 9.10.1
+
+### New features
+
+* Adds logic to pull necessary artifacts from the repo.blackduck.com artifactory. If this is not accessible then artifacts will be downloaded from the sig-repo.synopsys.com repository. 
+Note: The repo.blackduck.com artifactory should be added to firewall allow lists to ensure continued operation of [solution_name]. sig-repo.synopsys.com will be sunset February 2025.
+
 ## Version 9.10.0
 
 ### Changed features
