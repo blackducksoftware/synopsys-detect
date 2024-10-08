@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class DetectRunId {
     private final String id;
-    private final String integratedMatchingCorrelationId;
+    private String integratedMatchingCorrelationId;
 
     public static DetectRunId createDefault() {
         return new DetectRunId(
@@ -31,5 +31,9 @@ public class DetectRunId {
 
     public String getIntegratedMatchingCorrelationId() {
         return integratedMatchingCorrelationId;
+    }
+    
+    public void stripCorrelationiD(String reason) {
+        integratedMatchingCorrelationId = "";
     }
 }

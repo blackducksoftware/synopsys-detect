@@ -242,5 +242,9 @@ public class DetectBootFactory {
         InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(detectInfo, blackDuckConnectivityChecker, propertySources, gson);
         return new InteractiveManager(propertySourceBuilder, writer, interactiveModeDecisionTree);
     }
+    
+    public void stripCorrelationiD(String reason) {
+        detectRunId.stripCorrelationiD(reason);
+    }
 
 }
