@@ -243,8 +243,8 @@ public class DetectBootFactory {
         return new InteractiveManager(propertySourceBuilder, writer, interactiveModeDecisionTree);
     }
     
-    public void stripCorrelationiD() {
-        detectRunId.stripCorrelationiD();
+    public void stripCorrelationId() {
+        detectRunId.stripCorrelationId();
     }
 
 }
