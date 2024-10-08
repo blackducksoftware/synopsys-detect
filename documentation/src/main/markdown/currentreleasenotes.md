@@ -16,7 +16,7 @@
 * Support for GoLang is now extended to Go 1.22.7.
 * Correlated Scanning is a new Match as a Service (MaaS) feature which correlates match results from Package Manager (Detector), and Signature scans when running [solution_name] with [blackduck_product_name] 2024.10.0 or later.
 	* Correlation between scanning methods increases accuracy and provides for more comprehensive scan results.
-	See the [detect.blackduck.integrated.matching.enabled](properties/configuration/general.html#integrated-matching-enabled) property for more information
+	See the [detect.blackduck.correlated.scanning.enabled](properties/configuration/general.html#correlated-scanning-enabled) property for more information
 	<note type="note">Correlated Scanning support is available for persistent Package Manager and Signature Scanning only.</note>
 
 ### Changed features

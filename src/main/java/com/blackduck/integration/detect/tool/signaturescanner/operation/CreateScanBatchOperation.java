@@ -17,8 +17,12 @@ import com.blackduck.integration.detect.tool.signaturescanner.SignatureScanPath;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackduck.integration.detect.workflow.file.DirectoryManager;
 import com.blackduck.integration.util.NameVersion;
+import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CreateScanBatchOperation {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BlackDuckSignatureScannerOptions signatureScannerOptions;
     private final DirectoryManager directoryManager;
     private final CodeLocationNameManager codeLocationNameManager;
@@ -65,11 +69,16 @@ public class CreateScanBatchOperation {
 
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
         scanJobBuilder.cleanupOutput(false);
-
-        signatureScannerOptions.getSnippetMatching().ifPresent(scanJobBuilder::snippetMatching);
+        if (conditionalCorrelationFilter(signatureScannerOptions.getSnippetMatching().isPresent(), "Snippet matching")) {
+            scanJobBuilder.snippetMatching(signatureScannerOptions.getSnippetMatching().get());
+        }
         scanJobBuilder.uploadSource(signatureScannerOptions.getUploadSource());
-        scanJobBuilder.licenseSearch(signatureScannerOptions.getLicenseSearch());
-        scanJobBuilder.copyrightSearch(signatureScannerOptions.getCopyrightSearch());
+        if (conditionalCorrelationFilter(signatureScannerOptions.getLicenseSearch(), "License search")) {
+            scanJobBuilder.licenseSearch(signatureScannerOptions.getLicenseSearch());
+        }
+        if (conditionalCorrelationFilter(signatureScannerOptions.getCopyrightSearch(), "Copyright search")) {
+            scanJobBuilder.copyrightSearch(signatureScannerOptions.getCopyrightSearch());
+        }
         signatureScannerOptions.getAdditionalArguments().ifPresent(scanJobBuilder::additionalScanArguments);
         
         scanJobBuilder.rapid(signatureScannerOptions.getIsStateless());
@@ -88,7 +97,7 @@ public class CreateScanBatchOperation {
 
         // Someday the integrated matching enabled option will (we think) go away, and we'll always provide
         // detectRunUuid as correlationId, but for now it's optional.
-        if (signatureScannerOptions.isIntegratedMatchingEnabled()) {
+        if (signatureScannerOptions.isCorrelatedScanningEnabled()) {
             scanJobBuilder.correlationId(detectRunUuid);
         }
 
@@ -115,6 +124,17 @@ public class CreateScanBatchOperation {
         } catch (IllegalArgumentException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
+    }
+    
+    private boolean conditionalCorrelationFilter(boolean toCheck, String toWarn) {
+        if (toCheck) {
+            if (signatureScannerOptions.isCorrelatedScanningEnabled()) {
+                logger.warn("{} is not compatible with Integrated Matching feature and will be skipped. Please re-run {} with integrated matching disabled.", toWarn, toWarn.toLowerCase());
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

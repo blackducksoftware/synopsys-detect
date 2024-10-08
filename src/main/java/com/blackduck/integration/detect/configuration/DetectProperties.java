@@ -1803,12 +1803,12 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
-    public static final BooleanProperty DETECT_INTEGRATED_MATCHING_ENABLED =
-        BooleanProperty.newBuilder("detect.blackduck.integrated.matching.enabled", false)
-            .setInfo("Integrated Matching Enabled", DetectPropertyFromVersion.VERSION_10_0_0)
+    public static final BooleanProperty DETECT_CORRELATED_SCANNING_ENABLED =
+        BooleanProperty.newBuilder("detect.blackduck.correlated.scanning.enabled", false)
+            .setInfo("Correlated Scanning Enabled", DetectPropertyFromVersion.VERSION_10_0_0)
             .setHelp(
-                "When enabled, Detect activates the Black Duck integrated matching capability to enhance match accuracy.",
-                "The integrated matching capability must be present and enabled in your Black Duck server before you enable the integrated matching feature in Detect."
+                "When enabled, Detect activates the Black Duck correlated scanning capability to enhance match accuracy.",
+                "The correlated scanning capability must be present and enabled in your Black Duck server before you enable the correlated scanning feature in Detect."
             )
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .build();
