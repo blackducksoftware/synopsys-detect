@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.blackduck.integration'
 
-version = '10.0.0-SIGQA21-idetect-4503-skip-correlation-of-rapid-and-offline-scans'
+version = '10.0.0-SIGQA22-idetect-4503-skip-correlation-of-rapid-and-offline-scans-SNAPSHOT'
 
 apply plugin: 'com.blackduck.integration.solution'
 apply plugin: 'org.springframework.boot'
