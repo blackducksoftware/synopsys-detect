@@ -7,33 +7,33 @@ import java.util.UUID;
 
 public class DetectRunId {
     private final String id;
-    private String integratedMatchingCorrelationId;
+    private String correlationId;
 
     public static DetectRunId createDefault() {
         return new DetectRunId(
             DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS").withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC)),
-            generateIntegratedMatchingCorrelationId()
+            correlationId()
         );
     }
 
-    public static String generateIntegratedMatchingCorrelationId() {
+    public static String correlationId() {
         return UUID.randomUUID().toString();
     }
 
-    public DetectRunId(String id, String integratedMatchingCorrelationId) {
+    public DetectRunId(String id, String correlationId) {
         this.id = id;
-        this.integratedMatchingCorrelationId = integratedMatchingCorrelationId;
+        this.correlationId = correlationId;
     }
 
     public String getRunId() {
         return this.id;
     }
 
-    public String getIntegratedMatchingCorrelationId() {
-        return integratedMatchingCorrelationId;
+    public String getCorrelationId() {
+        return correlationId;
     }
     
     public void stripCorrelationiD(String reason) {
-        integratedMatchingCorrelationId = "";
+        correlationId = "";
     }
 }
