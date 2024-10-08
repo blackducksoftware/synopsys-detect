@@ -6,9 +6,9 @@ package com.blackduck.integration.detect.interactive;
  *
  * Implementers should be constructed with any data that they need outside of
  * the properties that are populated within the
- * {@link com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder}
+ * {@link com.blackduck.integration.detect.interactive.InteractivePropertySourceBuilder}
  * and only ever implement
- * {@link com.synopsys.integration.detect.interactive.DecisionTree#traverse}
+ * {@link com.blackduck.integration.detect.interactive.DecisionTree#traverse}
  * to mutate it as creating multiple methods within a DecisionTree defeats the
  * point of the interface.
  */

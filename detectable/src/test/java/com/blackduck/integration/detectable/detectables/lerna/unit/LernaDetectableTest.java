@@ -77,7 +77,7 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
             "       },",
             "       \"node_modules/peer-example\": {",
             "           \"version\": \"1.0.0\",",
-            "           \"resolved\": \"https://synopsys.com/404/peer-example-1.0.0.tgz\",",
+            "           \"resolved\": \"https://blackduck.com/404/peer-example-1.0.0.tgz\",",
             "           \"integrity\": \"sha1-5Hlr13/Wjfd5OnMDajug1UBdR3c=\",",
             "           \"peer\": true",
             "       }",

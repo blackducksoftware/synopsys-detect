@@ -21,7 +21,7 @@ public class DetectProtobufBdioHeaderUtil {
     private final String publisherName;
     private final String publisherVersion;
     private final String publisherComment;
-    private static final String CREATOR_NAME = "SYNOPSYS_DETECT";
+    private static final String CREATOR_NAME = "DETECT";
     private final Instant creationTime;
     private final String sourceRepository;
     private final String sourceBranch;

@@ -55,7 +55,7 @@ public class NpmLockDetectableTest extends DetectableFunctionalTest {
             "       },",
             "       \"node_modules/peer-example\": {",
             "           \"version\": \"1.0.0\",",
-            "           \"resolved\": \"https://synopsys.com/404/peer-example.tgz\",",
+            "           \"resolved\": \"https://blackduck.com/404/peer-example.tgz\",",
             "           \"integrity\": \"sha1-1Klr13/Wjfd5OnMDajug1UBdR3s=\",",
             "           \"peer\": true",
             "       }",

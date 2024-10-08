@@ -182,7 +182,7 @@ public class DetectStatusLogger {
     private Optional<String> getAdvice(ExitCodeType exitCode) {
         if (!doNotRequireAdvice.contains(exitCode)) {
             return Optional.of(
-                "If you need help troubleshooting this problem, generate a diagnostic zip file by adding '-d' to the command line, and provide it to Synopsys Technical Support. See 'Diagnostic Mode' in the Detect documentation for more information.");
+                "If you need help troubleshooting this problem, generate a diagnostic zip file by adding '-d' to the command line, and provide it to Black Duck Technical Support. See 'Diagnostic Mode' in the Detect documentation for more information.");
         }
         return Optional.empty();
     }

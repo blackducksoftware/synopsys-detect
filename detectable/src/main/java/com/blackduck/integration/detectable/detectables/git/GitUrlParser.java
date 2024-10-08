@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
 
 public class GitUrlParser {
-    // Parses urls such as: https://github.com/blackducksoftware/synopsys-detect
+    // Parses urls such as: https://github.com/blackducksoftware/detect
     public String getRepoName(String remoteUrlString) throws MalformedURLException {
         String[] pieces = remoteUrlString.split("[/:]");
         if (pieces.length >= 2) {
@@ -23,7 +23,7 @@ public class GitUrlParser {
     /**
      * Strip out credentials if the string is a URI and contains credentials.
      * 
-     * For example, a URL such as https://user:pass@synopsys.com/some/repo will become https://synopsys.com/some/repo
+     * For example, a URL such as https://user:pass@blackduck.com/some/repo will become https://blackduck.com/some/repo
      * 
      * @param remoteUrlString
      * @return sanitized URI or original string

@@ -69,7 +69,7 @@ public class BatteryDetectRunner {
         List<String> shellArguments = new ArrayList<>();
         shellArguments.add("-s");
         shellArguments.add("-L");
-        shellArguments.add("https://detect.synopsys.com/detect.sh");
+        shellArguments.add("https://detect.blackduck.com/detect.sh");
         shellArguments.add("-o");
         shellArguments.add(target.toString());
 
@@ -83,7 +83,7 @@ public class BatteryDetectRunner {
         String target = "";
         if (SystemUtils.IS_OS_WINDOWS) {
             target = "powershell";
-            shellArguments.add("\"[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect\"");
+            shellArguments.add("\"[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.blackduck.com/detect.ps1?$(Get-Random) | iex; detect\"");
         } else {
             File scriptTarget = new File(scriptDirectory, "detect.sh");
             if (scriptTarget.exists()) {

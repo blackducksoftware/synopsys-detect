@@ -1,13 +1,13 @@
 /*
- * Copyright (C) 2023 Synopsys Inc.
- * http://www.synopsys.com/
+ * Copyright (C) 2024 Black Duck Software Inc.
+ * http://www.blackduck.com/
  * All rights reserved.
  *
  * This software is the confidential and proprietary information of
- * Synopsys ("Confidential Information"). You shall not
+ * Black Duck Software ("Confidential Information"). You shall not
  * disclose such Confidential Information and shall use it only in
  * accordance with the terms of the license agreement you entered into
- * with Synopsys.
+ * with Black Duck Software.
  */
 package com.blackduck.integration.detect.workflow.bdba;
 

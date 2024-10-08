@@ -10,7 +10,7 @@ import org.mockito.Mockito;
 
 public class ApplicationUpdaterTest {
     
-    private final String fakeUrl = "https://synopsys.com";
+    private final String fakeUrl = "https://blackduck.com";
     
     private final String[] successArgs = new String[] {
             "-jar",

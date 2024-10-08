@@ -40,7 +40,7 @@ public class GoVendorDetectableTest extends DetectableFunctionalTest {
             "           \"revision\": \"f2ed9e40e245cdeec72c4b642d27ed4553f90667\"",
             "       }",
             "   ],",
-            "   \"rootPath\": \"synopsys.com/integration/hello\"",
+            "   \"rootPath\": \"blackduck.com/integration/hello\"",
             "}"
         );
     }

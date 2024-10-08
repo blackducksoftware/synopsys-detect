@@ -16,7 +16,7 @@ import ch.qos.logback.core.FileAppender;
 public class DiagnosticLogger {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String LOGBACK_LOGGER_NAME = "com.synopsys.integration";
+    private static final String LOGBACK_LOGGER_NAME = "com.blackduck.integration";
     private FileAppender<ILoggingEvent> fileAppender;
     private final File logFile;
     private final Level level;
