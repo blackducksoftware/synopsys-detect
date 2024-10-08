@@ -232,7 +232,8 @@ public class DetectBoot {
             BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
             BlackduckScanMode blackduckScanMode = decideScanMode(blackDuckConnectionDetails, scanTypeEvidenceMap, blackduckScanModeSpecified, detectConfigurationFactory, autonomousScanEnabled, detectConfiguration);
             if (offline || !blackduckScanMode.equals(BlackduckScanMode.INTELLIGENT)) {
-                detectBootFactory.stripCorrelationiD("Correlated Scanning is not available for Rapid/Stateless scan mode or offline scanning. A correlation ID will not be set.");
+                logger.warn("Correlated Scanning is not available for Rapid/Stateless scan mode or offline scanning. A correlation ID will not be set.");
+                detectBootFactory.stripCorrelationiD();
             }
             autonomousManager.setBlackDuckScanMode(blackduckScanMode.toString());
             ProductDecider productDecider = new ProductDecider(autonomousScanEnabled, blackduckUrlSpecified, blackduckOfflineModeSpecified);

@@ -33,7 +33,7 @@ public class DetectRunId {
         return correlationId;
     }
     
-    public void stripCorrelationiD(String reason) {
+    public void stripCorrelationiD() {
         correlationId = "";
     }
 }
