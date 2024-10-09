@@ -8,9 +8,13 @@ import org.slf4j.LoggerFactory;
 
 public class ArtifactoryConstantsHelper {
     private static final Logger logger = LoggerFactory.getLogger(ArtifactoryConstantsHelper.class);
+    private static Boolean isBlackDuckUrlAccessible;
     
     public static String getArtifactoryUrl() {
-    	return isBlackDuckUrlAccessible(ArtifactoryConstants.ARTIFACTORY_URL) ? ArtifactoryConstants.ARTIFACTORY_URL : ArtifactoryConstants.ARTIFACTORY_FALLBACK_URL;
+        if (isBlackDuckUrlAccessible == null) {
+            isBlackDuckUrlAccessible = isBlackDuckUrlAccessible(ArtifactoryConstants.ARTIFACTORY_URL);
+        }
+        return isBlackDuckUrlAccessible ? ArtifactoryConstants.ARTIFACTORY_URL : ArtifactoryConstants.ARTIFACTORY_FALLBACK_URL;
     }
     
     public static boolean isBlackDuckUrlAccessible(String targetUrl) {
