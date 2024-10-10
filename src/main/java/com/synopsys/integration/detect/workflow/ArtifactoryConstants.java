@@ -1,10 +1,11 @@
 package com.synopsys.integration.detect.workflow;
 
-public class ArtifactoryConstants {
-    public static final String ARTIFACTORY_URL = "https://sig-repo.synopsys.com/";
+public class ArtifactoryConstants {	
+    public static final String ARTIFACTORY_URL = "https://repo.blackduck.com/";
+    public static final String ARTIFACTORY_FALLBACK_URL = "https://sig-repo.synopsys.com/";
     public static final String VERSION_PLACEHOLDER = "<VERSION>";
 
-    public static final String GRADLE_INSPECTOR_MAVEN_REPO = ARTIFACTORY_URL + "bds-integration-public-cache/";
+    public static final String GRADLE_INSPECTOR_MAVEN_REPO = "bds-integration-public-cache/";
 
     public static final String NUGET_INSPECTOR_PROPERTY_REPO = "bds-integrations-release/com/synopsys/integration/synopsys-detect";
     public static final String NUGET_INSPECTOR_MAC_PROPERTY = "NUGET_INSPECTOR_MAC_LATEST_1";

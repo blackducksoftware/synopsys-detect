@@ -47,7 +47,8 @@ def createBatteryPath() {
 
 def final locatorGroup = "com.synopsys.integration"
 def final locatorModule = "component-locator"
-final def externalRepoHost = "https://sig-repo.synopsys.com"
+final def externalRepoHost = "https://repo.blackduck.com"
+final def externalRepoFallbackHost = "https://sig-repo.synopsys.com"
 final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
 
 repositories {
@@ -70,6 +71,14 @@ repositories {
     }
     maven { 
         url "${externalRepoHost}/bds-bdio-release"
+        content { excludeModule(locatorGroup, locatorModule) }
+    }
+        maven { 
+        url = uri("${externalRepoFallbackHost}/artifactory/bds-integration-placeholder-release") 
+        content { includeModule(locatorGroup, locatorModule) }
+    }
+    maven { 
+        url "${externalRepoFallbackHost}/bds-bdio-release"
         content { excludeModule(locatorGroup, locatorModule) }
     }
 }

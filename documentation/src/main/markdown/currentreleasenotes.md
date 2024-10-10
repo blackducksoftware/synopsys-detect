@@ -1,5 +1,12 @@
 # Current Release notes
 
+## Version 8.11.2
+
+### Changed features
+
+* Adds logic to pull necessary artifacts from the repo.blackduck.com repository. If this is not accessible then artifacts will be downloaded from the sig-repo.synopsys.com repository. 
+Note: The repo.blackduck.com repository should be added to firewall allow lists to ensure continued operation of [solution_name].
+
 ## Version 8.11.0
 
 ### New features

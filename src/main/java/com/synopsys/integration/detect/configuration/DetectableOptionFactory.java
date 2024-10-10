@@ -8,6 +8,7 @@ import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
+import com.synopsys.integration.detect.workflow.ArtifactoryConstantsHelper;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
@@ -148,7 +149,7 @@ public class DetectableOptionFactory {
         List<String> includedProjectPaths = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INCLUDED_PROJECT_PATHS);
         List<String> excludedConfigurationNames = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS);
         List<String> includedConfigurationNames = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
-        String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
+        String customRepository = ArtifactoryConstantsHelper.getArtifactoryUrl() + ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
 
         Set<GradleConfigurationType> excludedConfigurationTypes = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED).representedValueSet();
         EnumListFilter<GradleConfigurationType> dependencyTypeFilter = EnumListFilter.fromExcluded(excludedConfigurationTypes);
