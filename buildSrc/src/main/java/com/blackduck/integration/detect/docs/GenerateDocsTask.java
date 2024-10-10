@@ -67,7 +67,7 @@ public class GenerateDocsTask extends DefaultTask {
 
         // Metadata that Zoomin needs
         FileUtils.copyFileToDirectory(new File(docsProjectDir, "custom.properties"), outputDir);
-        FileUtils.copyFileToDirectory(new File(docsProjectDir, "integrations-classification.xml"), outputDir);
+        FileUtils.copyFileToDirectory(new File(docsProjectDir, "classification.xml"), outputDir);
 
         File templatesDir = new File(docsSrcMainResourcesDir, "templates");
         TemplateProvider templateProvider = new TemplateProvider(templatesDir, docsProject.getVersion().toString());
