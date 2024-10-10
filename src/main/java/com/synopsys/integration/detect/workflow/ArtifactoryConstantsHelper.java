@@ -27,11 +27,11 @@ public class ArtifactoryConstantsHelper {
             if (200 <= responseCode && responseCode <= 399) {
             	return true;
             } else {
-            	logger.warn(String.format("https://repo.blackduck.com responded with unanticipated code {}. Please allow access through your firewall as https://sig-repo.synopsys.com will be shutdown at the end of February 2025."), responseCode);
+            	logger.warn(String.format("{} responded with unanticipated code {}."), targetUrl, responseCode);
             	return false;
             }
         } catch (Exception e) {
-        	logger.warn("https://repo.blackduck.com is inaccessible from this machine. Please allow access through your firewall as https://sig-repo.synopsys.com will be shutdown at the end of February 2025.");
+        	logger.warn(String.format("{} is inaccessible from this machine. Please allow access through your firewall."), targetUrl);
             return false;
         } finally {
             if (connection != null) {
