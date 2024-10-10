@@ -12,6 +12,7 @@ import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
 import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
+import com.synopsys.integration.detect.workflow.ArtifactoryConstantsHelper;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.CommonZipExpander;
@@ -33,7 +34,7 @@ public class DetectFontInstaller {
         try {
             logger.info("Determining the location of the fonts bundle.");
             String location = artifactResolver.resolveArtifactLocation(
-                ArtifactoryConstants.ARTIFACTORY_URL,
+            	ArtifactoryConstantsHelper.getArtifactoryUrl(),
                 ArtifactoryConstants.FONTS_REPO,
                 ArtifactoryConstants.FONTS_PROPERTY,
                 "",
