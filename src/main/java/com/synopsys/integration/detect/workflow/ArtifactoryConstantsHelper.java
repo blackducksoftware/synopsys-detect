@@ -31,7 +31,7 @@ public class ArtifactoryConstantsHelper {
             	return false;
             }
         } catch (Exception e) {
-        	logger.warn(String.format("{} is inaccessible from this machine. Please allow access through your firewall.", targetUrl));
+        	logger.warn(String.format("{} is inaccessible from this machine. Please allow access through your firewall."), targetUrl);
             return false;
         } finally {
             if (connection != null) {
