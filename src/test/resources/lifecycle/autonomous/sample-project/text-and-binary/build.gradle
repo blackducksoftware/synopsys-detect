@@ -70,7 +70,7 @@ repositories {
         url = uri("${externalRepoHost}/artifactory/bds-integration-placeholder-release")
         content { includeModule(locatorGroup, locatorModule) }
     }
-        maven {
+    maven {
         url = uri("${externalRepoFallbackHost}/artifactory/bds-integration-placeholder-release")
         content { includeModule(locatorGroup, locatorModule) }
     }
@@ -90,7 +90,7 @@ repositories {
         url "${externalRepoHost}/bds-bdio-release"
         content { excludeModule(locatorGroup, locatorModule) }
     }
-        maven {
+    maven {
         url "${externalRepoFallbackHost}/bds-bdio-release"
         content { excludeModule(locatorGroup, locatorModule) }
     }
