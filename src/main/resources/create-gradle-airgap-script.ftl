@@ -1,5 +1,8 @@
 repositories {
     maven {
+        url 'https://repo.blackduck.com/bds-integration-public-cache/'
+    }
+    maven {
         url 'https://sig-repo.synopsys.com/bds-integration-public-cache/'
     }
 }
