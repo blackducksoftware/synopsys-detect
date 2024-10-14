@@ -34,6 +34,6 @@ public class DetectRunId {
     }
     
     public void stripCorrelationId() {
-        correlationId = "";
+        correlationId = null;
     }
 }
