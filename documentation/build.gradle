@@ -20,7 +20,7 @@ task ditasite() {
     dependsOn generateDocs
 
     doLast {
-        String docsDitaTools = System.getenv('docs-dita-tools')
+        String docsDitaTools = System.getenv('DOCS_DITA_TOOLS')
         String webhelpString = '-Dwebhelp.publishing.template=' + docsDitaTools + '/templates/bd-webhelp'
         ByteArrayOutputStream stdOut = new ByteArrayOutputStream()
         ByteArrayOutputStream stdError = new ByteArrayOutputStream()
