@@ -21,7 +21,7 @@ task ditasite() {
 
     doLast {
         def docsDitaTools = System.getenv('docs-dita-tools')
-        def webhelpString = '-Dwebhelp.publishing.template=' + ${docsDitaTools} + '/templates/bd-webhelp'
+        def webhelpString = "-Dwebhelp.publishing.template=${docsDitaTools}/templates/bd-webhelp"
         ByteArrayOutputStream stdOut = new ByteArrayOutputStream()
         ByteArrayOutputStream stdError = new ByteArrayOutputStream()
         exec {
