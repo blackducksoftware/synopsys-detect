@@ -4,7 +4,7 @@
 [var_company_name] uses this data to help set engineering priorities.
 
 In a network where access to outside servers is limited, this mechanism may fail, and those failures
-may be visible in the log. This is a harmless failure; [detect_product_short] will continue to function
+may be visible in the log. These are harmless failures; [detect_product_short] will continue to function
 normally.
 
 To disable this mechanism for [detect_product_short] runs executed from one environment,
