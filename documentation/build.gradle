@@ -21,10 +21,11 @@ task ditasite() {
 
     doLast {
         def docsDitaTools = System.getenv('docs-dita-tools')
+        def webhelpString = '-Dwebhelp.publishing.template=' + ${docsDitaTools} + '/templates/bd-webhelp'
         ByteArrayOutputStream stdOut = new ByteArrayOutputStream()
         ByteArrayOutputStream stdError = new ByteArrayOutputStream()
         exec {
-            commandLine findDita(), '-v', '--input=detect.ditamap', '--format=webhelp-responsive', '-output', '../ditasite', '-Dwebhelp.publishing.template=${docsDitaTools}/templates/bd-webhelp', '-Dwebhelp.publishing.template.descriptor=bd-tiles.opt'
+            commandLine findDita(), '-v', '--input=detect.ditamap', '--format=webhelp-responsive', '-output', '../ditasite', ${webhelpString}, '-Dwebhelp.publishing.template.descriptor=bd-tiles.opt'
             workingDir generatedDir
             standardOutput = stdOut
             errorOutput = stdError
