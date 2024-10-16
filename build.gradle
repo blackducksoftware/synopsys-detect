@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.blackduck.integration'
 
-version = '10.0.0-SIGQA29-dita-issue'
+version = '10.0.0-SIGQA30-dita-issue'
 
 apply plugin: 'com.blackduck.integration.solution'
 apply plugin: 'org.springframework.boot'
