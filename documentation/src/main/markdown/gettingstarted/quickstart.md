@@ -6,7 +6,7 @@ The following is a simple example to help you get started using [detect_product_
 
 ## Step 1: Locate or acquire a source code project on which you will run [detect_product_short].
 
-To run [detect_product_short] on junit4, which is an open source project written in Java and built with Maven, you can acquire it by doing the following:
+To run [detect_product_short] on junit4, which is an open source project written in Java and built with Maven, you can acquire junit4 by running the following commands:
 ```
 git clone https://github.com/junit-team/junit4.git
 cd junit4
