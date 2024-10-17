@@ -6,15 +6,13 @@ The following is a simple example to help you get started using [detect_product_
 
 ## Step 1: Locate or acquire a source code project on which you will run [detect_product_short].
 
-To run [detect_product_short] on junit4, which is an open source project written in Java and built with Maven, you could acquire
-it by doing the following:
+To run [detect_product_short] on junit4, which is an open source project written in Java and built with Maven, you can acquire junit4 by running the following commands:
 ```
 git clone https://github.com/junit-team/junit4.git
 cd junit4
 ```
 
-To understand what [detect_product_short] does, it can be helpful to think about what you would do if you wanted to discover this
-project's dependencies without using [detect_product_short]. You might do the following:
+To understand what [detect_product_short] does, it can be helpful to think about what you would do if you wanted to discover a project's dependencies without using [detect_product_short]. You might do the following:
 
 1. Look in the project directory (junit4) for hints about how dependencies are managed. In this case, the *mvnw* and *pom.xml* files are hints that dependencies are managed using Maven.
 1. Since it's a Maven project, you would likely run `./mvnw dependency:tree` to reveal the project's dependencies; both direct and transitive.
