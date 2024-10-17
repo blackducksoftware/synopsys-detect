@@ -4,16 +4,20 @@ import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
 
-public class PackageLock {
-    @SerializedName("name")
-    public String name;
-
+public class PackageLockDependency {
     @SerializedName("version")
     public String version;
-    
-    @SerializedName("packages")
-    public Map<String, PackageLockPackage> packages;
-    
+
+    @SerializedName("dev")
+    public Boolean dev;
+
+    @SerializedName("peer")
+    public Boolean peer;
+
+    @SerializedName("requires")
+    public Map<String, String> requires;
+
     @SerializedName("dependencies")
     public Map<String, PackageLockDependency> dependencies;
+
 }

@@ -1,14 +1,10 @@
 package com.blackduck.integration.detectable.detectables.npm.lockfile;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.blackduck.integration.common.util.finder.FileFinder;
 import com.blackduck.integration.detectable.Detectable;
 import com.blackduck.integration.detectable.DetectableEnvironment;
@@ -16,11 +12,7 @@ import com.blackduck.integration.detectable.detectable.DetectableAccuracyType;
 import com.blackduck.integration.detectable.detectable.Requirements;
 import com.blackduck.integration.detectable.detectable.annotation.DetectableInfo;
 import com.blackduck.integration.detectable.detectable.result.DetectableResult;
-import com.blackduck.integration.detectable.detectable.result.ExceptionDetectableResult;
-import com.blackduck.integration.detectable.detectable.result.NpmPackagesObjectNotFoundDetectableResult;
 import com.blackduck.integration.detectable.detectable.result.PassedDetectableResult;
-import com.blackduck.integration.detectable.detectable.result.PoorlyFormattedJson;
-import com.blackduck.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -33,7 +25,6 @@ public class NpmPackageLockDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final NpmLockfileExtractor npmLockfileExtractor;
 
-    private Gson gson;
     private File lockfile;
     private File packageJson;
 
@@ -41,7 +32,6 @@ public class NpmPackageLockDetectable extends Detectable {
         super(environment);
         this.fileFinder = fileFinder;
         this.npmLockfileExtractor = npmLockfileExtractor;
-        gson = new Gson();
     }
 
     @Override
@@ -57,20 +47,7 @@ public class NpmPackageLockDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() {
-        try {
-            String lockFileText = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
-            PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
-
-            if (packageLock.packages != null) {
-                return new PassedDetectableResult();
-            } else {
-                return new NpmPackagesObjectNotFoundDetectableResult();
-            }
-        } catch (JsonSyntaxException e) {
-            return new PoorlyFormattedJson(lockfile.toString());
-        } catch (Exception e) {
-            return new ExceptionDetectableResult(e);
-        }
+        return new PassedDetectableResult();
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.blackduck.integration.detectable.detectables.npm.lockfile.model.NpmDe
 import com.blackduck.integration.detectable.detectables.npm.lockfile.model.NpmProject;
 import com.blackduck.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
 import com.blackduck.integration.detectable.detectables.npm.lockfile.model.PackageLock;
+import com.blackduck.integration.detectable.detectables.npm.lockfile.model.PackageLockDependency;
 import com.blackduck.integration.detectable.detectables.npm.lockfile.model.PackageLockPackage;
 import com.blackduck.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 
@@ -34,7 +35,10 @@ public class NpmDependencyConverter {
         List<NpmDependency> resolvedDependencies = new ArrayList<>();
 
         if (packageLock.packages != null) {
-            List<NpmDependency> children = convertPackageMapToDependencies(null, packageLock.packages);
+            List<NpmDependency> children = convertLockPackagesToNpmDependencies(null, packageLock.packages);
+            resolvedDependencies.addAll(children);
+        } else if (packageLock.dependencies != null) {
+            List<NpmDependency> children = convertLockDependenciesToNpmDependencies(null, packageLock.dependencies);
             resolvedDependencies.addAll(children);
         }
 
@@ -58,7 +62,7 @@ public class NpmDependencyConverter {
         return new NpmProject(packageLock.name, packageLock.version, declaredDevDependencies, declaredPeerDependencies, declaredDependencies, resolvedDependencies);
     }
 
-    public List<NpmDependency> convertPackageMapToDependencies(NpmDependency parent, Map<String, PackageLockPackage> packages) {
+    public List<NpmDependency> convertLockPackagesToNpmDependencies(NpmDependency parent, Map<String, PackageLockPackage> packages) {
         List<NpmDependency> children = new ArrayList<>();
 
         if (packages == null || packages.size() == 0) {
@@ -76,7 +80,31 @@ public class NpmDependencyConverter {
             List<NpmRequires> requires = convertNameVersionMapToRequires(packageLockDependency.dependencies);
             dependency.addAllRequires(requires);
 
-            List<NpmDependency> grandChildren = convertPackageMapToDependencies(dependency, packageLockDependency.packages);
+            List<NpmDependency> grandChildren = convertLockPackagesToNpmDependencies(dependency, packageLockDependency.packages);
+            dependency.addAllDependencies(grandChildren);
+        }
+        return children;
+    }
+    
+    public List<NpmDependency> convertLockDependenciesToNpmDependencies(NpmDependency parent, Map<String, PackageLockDependency> packageLockDependencyMap) {
+        List<NpmDependency> children = new ArrayList<>();
+
+        if (packageLockDependencyMap == null || packageLockDependencyMap.size() == 0) {
+            return children;
+        }
+
+        for (Map.Entry<String, PackageLockDependency> packageEntry : packageLockDependencyMap.entrySet()) {
+            String packageName = packageEntry.getKey();
+            PackageLockDependency packageLockDependency = packageEntry.getValue();
+
+            NpmDependency dependency = createNpmDependency(packageName, packageLockDependency.version, packageLockDependency.dev, packageLockDependency.peer);
+            dependency.setParent(parent);
+            children.add(dependency);
+
+            List<NpmRequires> requires = convertNameVersionMapToRequires(packageLockDependency.requires);
+            dependency.addAllRequires(requires);
+
+            List<NpmDependency> grandChildren = convertLockDependenciesToNpmDependencies(dependency, packageLockDependency.dependencies);
             dependency.addAllDependencies(grandChildren);
         }
         return children;
@@ -111,9 +139,8 @@ public class NpmDependencyConverter {
         Set<String> packagesToRemove = new HashSet<>();
         
         if (packageLock.packages == null) {
-            // This shouldn't happen if the repo is using an appropriately versioned 
-            // lock or shrinkwrap file (version 2 or later). Still, guard against this 
-            // in case users run Detect on older not updated projects.
+            // The linkage phase is only necessary for v2/v3 lockfiles. v1 lockfiles
+            // have redundant information in the dependencies object that removes the need for this step.
             return;
         }
                 
