@@ -35,4 +35,5 @@
 
 * Updated jackson-core library to version 2.15.0 to resolve a security vulnerability.
 * Upgraded and released Nuget Inspector version 2.0.0.
+* Upgraded and released [detect_product_short] Docker Inspector version 11.0.1
 
