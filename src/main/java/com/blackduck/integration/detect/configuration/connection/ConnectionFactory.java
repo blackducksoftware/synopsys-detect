@@ -1,0 +1,42 @@
+package com.blackduck.integration.detect.configuration.connection;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import com.blackduck.integration.common.util.ProxyUtil;
+import com.blackduck.integration.log.IntLogger;
+import com.blackduck.integration.log.SilentIntLogger;
+import com.blackduck.integration.rest.client.IntHttpClient;
+import com.blackduck.integration.rest.proxy.ProxyInfo;
+
+public class ConnectionFactory {
+    private final ConnectionDetails connectionDetails;
+
+    public ConnectionFactory(ConnectionDetails connectionDetails) {
+        this.connectionDetails = connectionDetails;
+    }
+
+    public IntHttpClient createConnection(@NotNull String url, @Nullable IntLogger logger) {
+        if (logger == null) {
+            logger = new SilentIntLogger();
+        }
+        if (ProxyUtil.shouldIgnoreUrl(url, connectionDetails.getIgnoredProxyHostPatterns(), logger)) {
+            return new IntHttpClient(
+                logger,
+                connectionDetails.getGson(),
+                Math.toIntExact(connectionDetails.getTimeout()),
+                connectionDetails.getAlwaysTrust(),
+                ProxyInfo.NO_PROXY_INFO
+            );
+        } else {
+            return new IntHttpClient(
+                logger,
+                connectionDetails.getGson(),
+                Math.toIntExact(connectionDetails.getTimeout()),
+                connectionDetails.getAlwaysTrust(),
+                connectionDetails.getProxyInformation()
+            );
+        }
+    }
+
+}

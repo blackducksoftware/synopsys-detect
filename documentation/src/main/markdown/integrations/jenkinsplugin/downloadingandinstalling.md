@@ -1,24 +1,24 @@
 # Downloading, Installing, and Updating the Plugin
-To install the [company_name] [solution_name] for Jenkins plugin, perform the following steps:
+To install the [detect_product_short] for Jenkins plugin, perform the following steps:
 
 1. Navigate to **Manage Jenkins** > **Manage Plugins**.
 1. Select the **Available** tab.  (Note that if the plugin is already installed, it does not appear in the **Available** list.)
-1. Select **Synopsys Detect**.
-1. Click **Download now and install after restart**. This is the Synopsys recommendation for installing the plugin.
+1. Select **Blackduck Detect**.
+1. Click **Download now and install after restart**. This is the recommendation for installing the plugin.
 1. After restarting Jenkins, confirm that the plugin is successfully installed by navigating to **Manage Jenkins** > **Manage Plugins > Installed**, and verify that **[company_name] [solution_name]** displays in the list.
 
-[company_name] [solution_name] plugin for Jenkins GitHub page [jenkinsci](https://github.com/jenkinsci/synopsys-detect-plugin).
+[detect_product_short] plugin for Jenkins GitHub page [jenkinsci](https://github.com/jenkinsci/synopsys-detect-plugin).
 Additional download locations listed in [Download locations](../../downloadingandrunning/downloadlocations.html).
 
-## Updating the [company_name] [solution_name] for Jenkins plugin
-You can update the [company_name] [solution_name] for Jenkins plugin when new versions are released.
+## Updating the [detect_product_short] for Jenkins plugin
+You can update the [detect_product_short] for Jenkins plugin when new versions are released.
 
 **To update the Jenkins plugin:**
 
 1. Navigate to **Manage Jenkins** > **Manage Plugins**.
 1. Click the **Updates** tab.
-1. Select **Synopsys Detect**
-   1. If there are updates for the [company_name] [solution_name] for Jenkins plugin, the updates display in the list.  If there is not an available update, the [company_name] [solution_name] for Jenkins plugin does not display in this list.
+1. Select **Blackduck Detect**
+   1. If there are updates for the [detect_product_short] for Jenkins plugin, the updates display in the list.  If there is not an available update, the [detect_product_short] for Jenkins plugin does not display in this list.
    1. Alternatively, you can force Jenkins to check for plugin updates by clicking **Check now** on the **Updates** tab.
 1. If there are updates, select the one you want, and click **Download now and install after restart**.
 

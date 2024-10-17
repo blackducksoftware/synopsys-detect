@@ -1,6 +1,6 @@
 # Rapid Scan
 
-Rapid Scan or Rapid Scan Mode is a way of running [company_name] [solution_name] with Black Duck that is designed to be as fast as possible and does not persist any data on Black Duck. Rapid Scan Mode has a unique set of restrictions, mode of configuration and set of results.  
+Rapid Scan or Rapid Scan Mode is a way of running [detect_product_long] with [bd_product_long] that is designed to be as fast as possible and does not persist any data on [bd_product_short]. Rapid Scan Mode has a unique set of restrictions, mode of configuration and set of results.  
 
 Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties/configuration/blackduck-server.md#detect-scan-mode-advanced) to a run of Detect.
 
@@ -9,25 +9,25 @@ Enable this feature by adding [--detect.blackduck.scan.mode=RAPID](../properties
  * A limited subset of Tools can be run. 
      * The currently supported tools are: DETECTOR and DOCKER. 
      * All other tools are disabled when running in Rapid Scan mode.
- * Rapid Scan requires Black Duck policies. 
+ * Rapid Scan requires [bd_product_short] policies. 
     * Rapid Scan only reports components that violate policies. 
     * If no policies are violated or there are no defined policies, then no components are returned.
  * Rapid Scan does not support ```detect.policy.check.fail.on.severities```
-    * [company_name] [solution_name] will fail with FAILURE_POLICY_VIOLATION if any component violates Black Duck polices with a CRITICAL or BLOCKER severity. 
-    * See the Black Duck documentation for a list of policy conditions that are supported by Rapid Scan. 
+    * [detect_product_short] will fail with FAILURE_POLICY_VIOLATION if any component violates [bd_product_short] polices with a CRITICAL or BLOCKER severity. 
+    * See the [bd_product_short] documentation for a list of policy conditions that are supported by Rapid Scan. 
  * Rapid Scan does not support ```detect.policy.check.fail.on.names```
  * Rapid Scan cannot create a Risk or Notices report.
- * Rapid Scan will not create a Project or Version on Black Duck.
+ * Rapid Scan will not create a Project or Version on [bd_product_short].
 
 ## Configuration
 
 Rapid scan policy overrides can be provided in a file named '.bd-rapid-scan.yaml' in the source directory. The file name must match exactly.
 
-[company_name] [solution_name] will automatically upload the config file during a rapid scan when present.
+[detect_product_short] will automatically upload the config file during a rapid scan when present.
 
 The file is a YAML file intended to be checked-in to SCM alongside other build config files.
 
-**NOTE:** this file format is dependent on Black Duck and in the future, different versions of Black Duck may require a different file format.
+**NOTE:** this file format is dependent on [bd_product_short] and in the future, different versions of Black Duck may require a different file format.
 
 ```
 version: 1.0
@@ -48,12 +48,12 @@ Each policy override must apply to a list of specific components, on a specific 
 
 ## Results
 
-Unlike persistent scans, no data is stored on Black Duck and all scans are done transiently. These scans are primarily intended to be fast.
+Unlike persistent scans, no data is stored on [bd_product_short] and all scans are done transiently. These scans are primarily intended to be fast.
 
 The results are saved to a json file named 'name_version_BlackDuck_DeveloperMode_Result.json' in the Scan Output directory, where name and version are the project's name and version.
 
 **NOTE:**
- * The format of this results file is dependent on Black Duck and in the future, different versions of Black Duck may produce a different file format.
+ * The format of this results file is dependent on [bd_product_short] and in the future, different versions of [bd_product_short] may produce a different file format.
 
 The results are also printed in the logs:
 ```
@@ -83,7 +83,7 @@ The results are also printed in the logs:
 2021-07-20 13:25:18 EDT INFO  [main] --- 		Components with Policy Violation Warnings:
 2021-07-20 13:25:18 EDT INFO  [main] --- 			Acorn 5.5.3 (npmjs:acorn/5.5.3)
 ```
-For [company_name] [solution_name] version 8.7.0 and later, with [blackduck_product_name] 2023.1.2, Rapid Scan output now reports upgrade guidance for transitive dependencies with known vulnerabilities. The output gives information as to the direct dependency upgrade options and the transitive dependencies affected. This output is given in the results section which appears near the end of the [company_name] [solution_name] run and appears as follows:
+For [detect_product_short] version 8.7.0 and later, with [bd_product_short] 2023.1.2, Rapid Scan output now reports upgrade guidance for transitive dependencies with known vulnerabilities. The output gives information as to the direct dependency upgrade options and the transitive dependencies affected. This output is given in the results section which appears near the end of the [detect_product_short] run and appears as follows:
 ```
 2023-03-09 13:01:56 EST INFO  [main] --- ===== Transitive Guidance =====
 2023-03-09 13:01:56 EST INFO  [main] --- 
@@ -102,11 +102,11 @@ For [company_name] [solution_name] version 8.7.0 and later, with [blackduck_prod
 2023-03-09 13:01:56 EST INFO  [main] --- ===============================
 ```
 
-For further remediation and transitive dependency upgrade guidance, please consult the documentation provided by [blackduck_product_name] under the topic:<xref href="RiskGuidance.dita" scope="peer"> Getting remediation guidance for components with security vulnerabilities.
+For further remediation and transitive dependency upgrade guidance, please consult the documentation provided by [bd_product_short] under the topic:<xref href="RiskGuidance.dita" scope="peer"> Getting remediation guidance for components with security vulnerabilities.
 <data name="facets" value="pubname=bd-hub"/>
 
 ## Rapid Scan Compare Mode
 
 You can configure Rapid Scan to return only the difference in policy violations between the current scan and previous Persistent Scans using the same configuration. To return only the difference in policy violations, configure detect.blackduck.rapid.compare.mode to BOM_COMPARE or BOM_COMPARE_STRICT.
 
-BOM compare mode settings determine which policies are considered and how they behave when violations are present. See the [blackduck_product_name] documentation for futher details on<a href="https://sig-product-docs.synopsys.com/bundle/bd-hub/page/ComponentDiscovery/RapidScanning.html" target="_blank">Rapid Scanning.</a>
+BOM compare mode settings determine which policies are considered and how they behave when violations are present. See the [bd_product_short] documentation for futher details on<a href="https://documentation.blackduck.com/bundle/bd-hub/page/ComponentDiscovery/RapidScanning.html" target="_blank"> Rapid Scanning.</a>

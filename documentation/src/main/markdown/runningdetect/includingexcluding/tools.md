@@ -3,7 +3,7 @@
 By default, all detection tools are eligible to run; the set of tools that will run
 depends on your configuration, type of files you are scanning, and the properties you set.   
 
-When no `--detect.tools=` parameter or the `--detect.tools=ALL` parameter is provided, [company_name] [solution_name] will attempt to run all tools for which the tool itself is available, the configuration parameters are set, and any required dependencies are met. The existence of applicable file types (for scanning), will also determine whether tools return results when they run.   
+When no `--detect.tools=` parameter or the `--detect.tools=ALL` parameter is provided, [detect_product_long] will attempt to run all tools for which the tool itself is available, the configuration parameters are set, and any required dependencies are met. The existence of applicable file types (for scanning), will also determine whether tools return results when they run.   
 
 If you wish to specifically determine which tools are run, use the following command to list the tools:
 
@@ -23,4 +23,4 @@ Refer to [Tools](../../components/tools.md) for the list of tool names.
 
 Refer to [Properties](../../properties/all-properties.md) for additional details.
 
-<note type="note">Some [company_name] [solution_name] tools may be appropriate to run independantly of others for reporting purposes, or require a specific [blackduck_product_name] license.</note>
+<note type="note">Some [detect_product_short] tools may be appropriate to run independantly of others for reporting purposes, or require a specific [bd_product_short] license.</note>

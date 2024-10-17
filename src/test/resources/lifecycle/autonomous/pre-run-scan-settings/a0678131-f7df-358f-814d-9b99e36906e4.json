@@ -1,0 +1,111 @@
+{
+  "globalDetectProperties": {
+    "blackduck.offline.mode": "false",
+    "blackduck.offline.mode.force.bdio": "false",
+    "blackduck.trust.cert": "false",
+    "blackduck.url": "https://test-hub.com/",
+    "detect.autonomous.scan.enabled": "true",
+    "detect.bazel.workspace.rules": "NONE",
+    "detect.blackduck.rapid.compare.mode": "ALL",
+    "detect.blackduck.scan.mode": "INTELLIGENT",
+    "detect.blackduck.signature.scanner.copyright.search": "false",
+    "detect.blackduck.signature.scanner.dry.run": "false",
+    "detect.blackduck.signature.scanner.individual.file.matching": "NONE",
+    "detect.blackduck.signature.scanner.license.search": "false",
+    "detect.blackduck.signature.scanner.memory": "4096",
+    "detect.blackduck.signature.scanner.reduced.persistence": "DEFAULT",
+    "detect.blackduck.signature.scanner.snippet.matching": "NONE",
+    "detect.blackduck.signature.scanner.upload.source.mode": "false",
+    "detect.cleanup": "true",
+    "detect.clone.project.version.latest": "false",
+    "detect.component.location.analysis.enabled": "false",
+    "detect.component.location.analysis.status": "false",
+    "detect.excluded.directories.defaults.disabled": "false",
+    "detect.excluded.directories.search.depth": "4",
+    "detect.follow.symbolic.links": "true",
+    "detect.force.success": "false",
+    "detect.force.success.on.skip": "false",
+    "detect.ignore.connection.failures": "false",
+    "detect.impact.analysis.enabled": "false",
+    "detect.notices.report": "false",
+    "detect.parallel.processors": "1",
+    "detect.policy.check.fail.on.severities": "NONE",
+    "detect.project.clone.categories": "ALL",
+    "detect.project.codelocation.unmap": "false",
+    "detect.project.level.adjustments": "true",
+    "detect.project.tool": "DOCKER,DETECTOR,BAZEL",
+    "detect.project.version.distribution": "EXTERNAL",
+    "detect.project.version.phase": "DEVELOPMENT",
+    "detect.project.version.update": "false",
+    "detect.pub.dependency.types.excluded": "NONE",
+    "detect.risk.report.pdf": "false",
+    "detect.target.type": "SOURCE",
+    "detect.test.connection": "false",
+    "detect.timeout": "300",
+    "detect.tools.excluded": "SIGNATURE_SCAN",
+    "detect.wait.for.results": "false",
+    "logging.level.detect": "INFO"
+  },
+  "detectorTypes": [
+    {
+      "detectorTypeName": "GRADLE",
+      "detectorProperties": {
+        "detect.gradle.configuration.types.excluded": "NONE"
+      },
+      "detectorScanTargets": [
+        "/Users/username/project-name",
+        "/Users/username/project-name/common",
+        "/Users/username/project-name/common-test",
+        "/Users/username/project-name/configuration",
+        "/Users/username/project-name/detectable",
+        "/Users/username/project-name/detector",
+        "/Users/username/project-name/documentation"
+      ]
+    },
+    {
+      "detectorTypeName": "MAVEN",
+      "detectorProperties": {
+        "detect.gradle.configuration.types.excluded": "NONE"
+      },
+      "detectorScanTargets": [
+        "/Users/username/project-name",
+        "/Users/username/project-name/common",
+        "/Users/username/project-name/detector"
+      ]
+    }
+  ],
+  "scanTypes": [
+    {
+      "scanTypeName": "BINARY_SCAN",
+      "scanProperties": {
+        "detect.binary.scan.search.depth": "4"
+      },
+      "scanTargets": [
+        "/Users/username/project-name/binary1.exe",
+        "/Users/username/project-name/binary2.exe",
+        "/Users/username/project-name/binary3.exe",
+        "/Users/username/project-name/binary4.exe"
+]
+    },
+    {
+      "scanTypeName": "DETECTOR",
+      "scanProperties": {
+        "detect.accuracy.required": "ALL",
+        "detect.detector.search.continue": "false",
+        "detect.detector.search.depth": "0",
+        "detect.excluded.detector.types": "NONE",
+        "detect.included.detector.types": "ALL"
+      },
+      "scanTargets": [
+        "/Users/username/project-name"
+      ]
+    },
+    {
+      "scanTypeName": "SIGNATURE_SCAN",
+      "scanProperties": {},
+      "scanTargets": [
+        "/Users/username/project-name"
+      ]
+    }
+  ]
+}
