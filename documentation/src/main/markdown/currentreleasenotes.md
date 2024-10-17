@@ -23,7 +23,7 @@
 	* Correlation between scanning methods increases accuracy and provides for more comprehensive scan results.
 	See the [detect.blackduck.correlated.scanning.enabled](properties/configuration/general.html#correlated-scanning-enabled) property for more information
 	<note type="note">Correlated Scanning support is available for persistent Package Manager and Signature Scanning only.</note>
-* [solution_name] now supports container scanning of large files via a chunking method employed during upload.
+* [detect_product_short] now supports container scanning of large files via a chunking method employed during upload.
     <note type="note">This feature requires [blackduck_product_name] 2024.10.0 or later.</note>
 
 ### Changed features
