@@ -44,6 +44,18 @@ public class NpmDependencyConverterTest {
         String lockFileText = FunctionalTestFiles.asString("/npm/packages-linkage-test/package-lock-wildcards-and-relative.json");
         validatePackageLinkage(lockFileText);
     }
+
+    @Test
+    public void testLinkPackagesDependenciesExtraneousDependencies() {
+        String lockFileText = FunctionalTestFiles.asString("/npm/packages-linkage-test/package-lock-extraneous.json");
+        lockFileText = packager.removePathInfoFromPackageName(lockFileText);
+        PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
+        converter.linkPackagesDependencies(packageLock);
+        
+        PackageLockPackage extraneousPackage = packageLock.packages.get("extraneouspackage");
+        
+        Assertions.assertNull(extraneousPackage);;
+    }
     
     @Test
     public void testAllDependenciesAddedToDependencies() {

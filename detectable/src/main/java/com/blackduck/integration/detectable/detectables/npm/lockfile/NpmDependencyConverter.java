@@ -161,6 +161,16 @@ public class NpmDependencyConverter {
                 // The parent will be the portion of the package name up to and not including the final *.
                 PackageLockPackage parentPackage = 
                         packageLock.packages.get(packageName.substring(0, packageName.lastIndexOf("*")));
+
+                // `parentPackage` should never be null, in case it's extraneous packages, we'll just skip it.
+                // `Extraneous` packages are those present in the node_modules folder that are not listed as any package's dependency list.
+                // At this point, the `parentPackage` might is not present in the packages object, so we can't link it to the child.
+                // Resulting in the `parentPackage` == null.
+                // These packages are not part of the dependency tree and are not needed for the graph construction.
+                // Can suggest running npm prune to remove them. https://docs.npmjs.com/cli/v7/commands/npm-prune
+                if (parentPackage == null && packageLock.packages.get(packageName) != null && packageLock.packages.get(packageName).extraneous) {
+                    continue;
+                }
                 
                 if (parentPackage.packages == null) {
                     parentPackage.packages = new HashMap<String, PackageLockPackage>();
