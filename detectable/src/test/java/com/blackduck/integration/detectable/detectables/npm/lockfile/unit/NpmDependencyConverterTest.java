@@ -52,9 +52,11 @@ public class NpmDependencyConverterTest {
         PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
         converter.linkPackagesDependencies(packageLock);
         
-        PackageLockPackage extraneousPackage = packageLock.packages.get("extraneouspackage");
         
-        Assertions.assertNull(extraneousPackage);;
+        Assertions.assertNull(packageLock.packages.get("testpackage"));;
+        Assertions.assertNull(packageLock.packages.get("extraneouspackage"));;
+        Assertions.assertNull(packageLock.packages.get("testpackage*extraneouspackage"));
+        Assertions.assertNull(packageLock.packages.get("node_modules/testpackage/node_modules/extraneouspackage"));
     }
     
     @Test

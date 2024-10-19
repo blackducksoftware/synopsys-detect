@@ -169,6 +169,7 @@ public class NpmDependencyConverter {
                 // These packages are not part of the dependency tree and are unnecessary for graph construction.
                 // It's recommended to run `npm prune` to remove them: https://docs.npmjs.com/cli/v7/commands/npm-prune
                 if (parentPackage == null && packageLock.packages.get(packageName) != null && packageLock.packages.get(packageName).extraneous) {
+                    packagesToRemove.add(packageName);
                     continue;
                 }
                 
