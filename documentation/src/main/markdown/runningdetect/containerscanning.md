@@ -1,12 +1,12 @@
 # Container Scan
 
-Container Scan is a way of running [company_name] [solution_name] against any type of container image (including any non-Linux, non-Docker image) and providing component risk details for each layer of the image.
+Container Scan is a way of running [detect_product_long] against any type of container image (including any non-Linux, non-Docker image) and providing component risk details for each layer of the image.
 
-[company_name] [solution_name] will accept either a user provided local file path, or remote HTTP/HTTPS URL to fetch a container image for scanning.
+[detect_product_short] will accept either a user provided local file path, or remote HTTP/HTTPS URL to fetch a container image for scanning.
 
-Container scan supports both persistent (Intelligent) and Stateless scan modes in [blackduck_product_name], but must be run independently of other scan types.
+Container scan supports both persistent (Intelligent) and Stateless scan modes in [bd_product_short], but must be run independently of other scan types.
 
-Execute Container Scan by adding the following to a run of [company_name] [solution_name]:
+Execute Container Scan by adding the following to a run of [bd_product_short]:
 ````
 --detect.tools=CONTAINER_SCAN
 --detect.container.scan.file.path=<Path to local or HTTP/HTTPS URL for remote image>
@@ -15,10 +15,10 @@ Execute Container Scan by adding the following to a run of [company_name] [solut
 ## Requirements and Limitations
 
 ### General Requirements
- * Your [blackduck_product_name] server must have [blackduck_product_name] Secure Container (BDSC) licensed and enabled.
- * Must have Match as a Service (MaaS) licensed, and enabled within [blackduck_product_name].
+ * Your [bd_product_short] server must have [bd_product_short] Secure Container (BDSC) licensed and enabled.
+ * Must have Match as a Service (MaaS) licensed, and enabled within [bd_product_short].
  * A unique project version must be provided, or the scan service will respond with an error.
- * Must be running [blackduck_product_name] 2023.10.0 or greater.
+ * Must be running [bd_product_short] 2023.10.0 or greater.
  * URL provided for a remote container image must use the HTTP(S) protocol.
  
 ### Limitations
@@ -41,11 +41,8 @@ Execute Container Scan by adding the following to a run of [company_name] [solut
 
 ## Results
 
-Container scan findings will appear in the [blackduck_product_name] user interface unless the scan is executed in Stateless mode, please consult the documentation provided by [blackduck_product_name].
-<!-- TBD Reference link directly to [blackduck_product_name] Docs once they are available
-<xref href="ContainerScans.dita" scope="peer">Container scans
-<data name="facets" value="pubname=bd-hub"/>
--->
+Container scan findings will appear in the [bd_product_short] user interface unless the scan is executed in Stateless mode, please consult the documentation provided by [bd_product_short].
+
 <figure>
     <img src="images/containerscan.png"
          alt="Container Scan Results">

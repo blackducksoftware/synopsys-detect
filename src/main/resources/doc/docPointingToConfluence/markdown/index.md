@@ -1,3 +1,3 @@
 # <b>Documentation</b>
 
-The Synopsys Detect documentation is located [here](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/introduction.html).
+The Black Duck Detect documentation is located [here](https://documentation.blackduck.com/bundle/detect/page/introduction.html).

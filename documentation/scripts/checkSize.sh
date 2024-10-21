@@ -5,7 +5,7 @@ if [ -d "$markdownDir" ]
 then
   echo "$markdownDir is a directory."
 else
-  echo "$markdownDir is not a directory. You need to run from the root of the Detect project (e.g. src/synopsys-detect)"
+  echo "$markdownDir is not a directory. You need to run from the root of the Black Duck Detect project (e.g. src/blackduck-detect)"
   exit 1
 fi
 
