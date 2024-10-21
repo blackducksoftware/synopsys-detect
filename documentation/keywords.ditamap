@@ -2,32 +2,47 @@
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
 <map id="detect-keywords" xml:lang="en-US">
 
-  <keydef keys="company_name"><topicmeta><keywords><keyword>Synopsys</keyword></keywords></topicmeta></keydef>
-  <keydef keys="division_name"><topicmeta><keywords><keyword>SIG</keyword></keywords></topicmeta></keydef>
+<!-- new keydefs as Black Duck-->
+  <keydef keys="var_company_name"><topicmeta><keywords><keyword>Black Duck Software, Inc.</keyword></keywords></topicmeta></keydef>
+  <keydef keys="var_company_short"><topicmeta><keywords><keyword>Black Duck</keyword></keywords></topicmeta></keydef>
+  <keydef keys="detect_product_long"><topicmeta><keywords><keyword>Black Duck® Detect</keyword></keywords></topicmeta></keydef>
+  <keydef keys="detect_product_short"><topicmeta><keywords><keyword>Detect</keyword></keywords></topicmeta></keydef>
+  <keydef keys="bd_product_long"><topicmeta><keywords><keyword>Black Duck® SCA</keyword></keywords></topicmeta></keydef>
+  <keydef keys="bd_product_short"><topicmeta><keywords><keyword>Black Duck</keyword></keywords></topicmeta></keydef>
+  <keydef keys="bdba_product_short"><topicmeta><keywords><keyword>Black Duck Binary Analysis</keyword></keywords></topicmeta></keydef>
+  <keydef keys="var_product_sigma"><topicmeta><keywords><keyword>Sigma</keyword></keywords></topicmeta></keydef>
+  <keydef keys="cov"><topicmeta><keywords><keyword>Coverity</keyword></keywords></topicmeta></keydef>
+  <keydef keys="var_community"><topicmeta><keywords><keyword>Black Duck Community</keyword></keywords></topicmeta></keydef>
+  <keydef keys="var_company_support"><topicmeta><keywords><keyword>Technical Support</keyword></keywords></topicmeta></keydef>
+  <keydef keys="var_bu_name"><topicmeta><keywords><keyword>Black Duck</keyword></keywords></topicmeta></keydef>
   <keydef keys="binary_repo_type"><topicmeta><keywords><keyword>Artifactory</keyword></keywords></topicmeta></keydef>
-  <keydef keys="solution_name"><topicmeta><keywords><keyword>Detect</keyword></keywords></topicmeta></keydef>
   <keydef keys="threat_intel"><topicmeta><keywords><keyword>ReversingLabs</keyword></keywords></topicmeta></keydef>
-  <keydef keys="source_project_name"><topicmeta><keywords><keyword>synopsys-detect</keyword></keywords></topicmeta></keydef>
-  <keydef keys="bash_script_name"><topicmeta><keywords><keyword>detect9.sh</keyword></keywords></topicmeta></keydef>
-  <keydef keys="powershell_script_name"><topicmeta><keywords><keyword>detect9.ps1</keyword></keywords></topicmeta></keydef>
-  <keydef keys="blackduck_product_name"><topicmeta><keywords><keyword>Black Duck</keyword></keywords></topicmeta></keydef>
-  <keydef keys="coverity_product_name"><topicmeta><keywords><keyword>Coverity</keyword></keywords></topicmeta></keydef>
+  <keydef keys="source_project_name"><topicmeta><keywords><keyword>blackduck-detect</keyword></keywords></topicmeta></keydef>
+  <keydef keys="bash_script_name"><topicmeta><keywords><keyword>detect10.sh</keyword></keywords></topicmeta></keydef>
+  <keydef keys="powershell_script_name"><topicmeta><keywords><keyword>detect10.ps1</keyword></keywords></topicmeta></keydef>
   <keydef keys="blackduck_signature_scanner_name"><topicmeta><keywords><keyword>Black Duck Signature Scanner</keyword></keywords></topicmeta></keydef>
   <keydef keys="blackduck_signature_scan_act"><topicmeta><keywords><keyword>Black Duck signature scan</keyword></keywords></topicmeta></keydef>
-  <keydef keys="blackduck_binary_scan_capability"><topicmeta><keywords><keyword>Black Duck - Binary Analysis</keyword></keywords></topicmeta></keydef>
   <keydef keys="dockerinspector_name"><topicmeta><keywords><keyword>Black Duck Docker Inspector</keyword></keywords></topicmeta></keydef>
   <keydef keys="blackduck_kb"><topicmeta><keywords><keyword>Black Duck KnowledgeBase</keyword></keywords></topicmeta></keydef>
   <keydef keys="impact_analysis_name"><topicmeta><keywords><keyword>Vulnerability Impact Analysis Tool</keyword></keywords></topicmeta></keydef>
-  <keydef keys="professional_services"><topicmeta><keywords><keyword>Software Integrity Group Client Services</keyword></keywords></topicmeta></keydef>
-  <keydef keys="support"><topicmeta><keywords><keyword>Technical Support</keyword></keywords></topicmeta></keydef>
+  <keydef keys="professional_services"><topicmeta><keywords><keyword>Professional Services</keyword></keywords></topicmeta></keydef>
+  <keydef keys="var_company_support"><topicmeta><keywords><keyword>Black Duck Support</keyword></keywords></topicmeta></keydef>
   <keydef keys="docker_inspector_name"><topicmeta><keywords><keyword>Detect Docker Inspector</keyword></keywords></topicmeta></keydef>
   <keydef keys="docker_inspector_project_name"><topicmeta><keywords><keyword>detect-docker-inspector</keyword></keywords></topicmeta></keydef>
   <keydef keys="image_repo_organization"><topicmeta><keywords><keyword>blackducksoftware</keyword></keywords></topicmeta></keydef>
   <keydef keys="source_raw_content_url_base"><topicmeta><keywords><keyword>https://raw.githubusercontent.com</keyword></keywords></topicmeta></keydef>
   <keydef keys="imageinspector_image_name_base"><topicmeta><keywords><keyword>blackduck-imageinspector</keyword></keywords></topicmeta></keydef>
   <keydef keys="source_repo_organization"><topicmeta><keywords><keyword>blackducksoftware</keyword></keywords></topicmeta></keydef>
-
   <keydef keys="detector_cascade"><topicmeta><keywords><keyword>Detector cascade</keyword></keywords></topicmeta></keydef>
+  
+<!-- Previous keydefs used for old release notes -->
+  <keydef keys="company_name"><topicmeta><keywords><keyword>Synopsys</keyword></keywords></topicmeta></keydef>
+  <keydef keys="division_name"><topicmeta><keywords><keyword>SIG</keyword></keywords></topicmeta></keydef>
+  <keydef keys="solution_name"><topicmeta><keywords><keyword>Detect</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_product_name"><topicmeta><keywords><keyword>Black Duck</keyword></keywords></topicmeta></keydef>
+  <keydef keys="coverity_product_name"><topicmeta><keywords><keyword>Coverity</keyword></keywords></topicmeta></keydef>
+  <keydef keys="blackduck_binary_scan_capability"><topicmeta><keywords><keyword>Black Duck - Binary Analysis</keyword></keywords></topicmeta></keydef>
+  <keydef keys="support"><topicmeta><keywords><keyword>Technical Support</keyword></keywords></topicmeta></keydef>
 
 </map>
 

@@ -1,22 +1,22 @@
 # Status File
 
-[company_name] [solution_name] creates an output status file in the run folder with the name "status.json" which contains a summary of the [company_name] [solution_name] run in a machine readable format.
+[detect_product_long] creates an output status file in the run folder with the name "status.json" which contains a summary of the [detect_product_short] run in a machine readable format.
 
 The file includes status codes, issues encountered and results produced. As additional processes consume this file, additional information will be added. The format is intended to evolve over time.
 
-* As [company_name] [solution_name] shuts down, by default, it performs cleanup operations which include deleting the status file.  You can disable clean up by setting ```--detect.cleanup=false```.
+* As [detect_product_short] shuts down, by default, it performs cleanup operations which include deleting the status file.  You can disable clean up by setting ```--detect.cleanup=false```.
 
 ## Body
 ```
 {
 "formatVersion": The version of the status file format. Will change as new features are introduced.
-"detectVersion": The version of Synopsys Detect that created the status file.
+"detectVersion": The version of [detect_product_short] that created the status file.
 "projectName": The project name.
 "projectVersion": The project version.
 "detectors": [ List of Detectors, see details below. ]
 "status": [ List of Status, see details below. ]
 "issues": [ List of Issues, see details below. ]
-"overallStatus: [ List the overall exit status and detailed message on exit of Synopsys Detect. ]
+"overallStatus: [ List the overall exit status and detailed message on exit of [detect_product_short]. ]
 "results": [ List of Results, see details below. ]
 "unrecognizedPaths": [ List of Unrecognized Paths, see details below. ]
 "codeLocations": [ List of code locations produced, see details below. ]
@@ -72,7 +72,7 @@ The file includes status codes, issues encountered and results produced. As addi
 
 ## Results
 
-A result is a URL, file path to output, or messages produced by the [company_name] [solution_name] run: a [blackduck_product_name] Bill Of Materials, Risk Report, Notices Report, Air Gap zip, or Rapid Scan results.
+A result is a URL, file path to output, or messages produced by the [detect_product_short] run: a [bd_product_long] Bill Of Materials, Risk Report, Notices Report, Air Gap zip, or Rapid Scan results.
 ```
 {
 "location": The path to the result.
@@ -94,14 +94,14 @@ For those detectors that support it (currently, only CLANG), a list of file path
 ## Code Locations
 ````
 {
-"codeLocationName": The name of a code location produced by this run of Synopsys Detect.
+"codeLocationName": The name of a code location produced by this run of [detect_product_short].
 "scanType": The type of scan that was performed, DETECTOR, BINARY_SCAN, SIGNATURE_SCAN, or CONTAINER_SCAN.
 "scanId": The UUID for the scan.
 }
 ````
 ## Property Values
 
-A map of every property key to it's string value that [company_name] [solution_name] found. These are only properties to which [company_name] [solution_name] has a known key,
+A map of every property key to it's string value that [detect_product_short] found. These are only properties to which [detect_product_short] has a known key,
 so pass-through properties like Docker and dynamic properties like custom fields are not included. Passwords and other sensitive fields are masked.
 
 ````
@@ -112,8 +112,8 @@ so pass-through properties like Docker and dynamic properties like custom fields
 ````
 
 ## Operations
-A list of information regarding internal execution of [company_name] [solution_name] to describe when portions of [company_name] [solution_name] run and what their status is.
-This information is intended to be used when [company_name] [solution_name] fails and the reason(s) for a [company_name] [solution_name] failure.
+A list of information regarding internal execution of [detect_product_short] to describe when portions of [detect_product_short] run and what their status is.
+This information is intended to be used when [detect_product_short] fails and the reason(s) for a [detect_product_short]] failure.
 ````
   "operations": {
     "startTimestamp": A formatted UTC timestamp when the execution started.

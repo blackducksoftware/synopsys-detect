@@ -1,0 +1,15 @@
+package com.blackduck.integration.detect.workflow.blackduck.integratedmatching.model;
+
+import com.blackduck.integration.util.Stringable;
+
+public class ScanCountsPayload extends Stringable {
+    private final ScanCounts scanCounts;
+
+    public ScanCountsPayload(ScanCounts scanCounts) {
+        this.scanCounts = scanCounts;
+    }
+
+    public ScanCounts getScanCounts() {
+        return scanCounts;
+    }
+}

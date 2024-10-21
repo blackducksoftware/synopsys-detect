@@ -1,8 +1,8 @@
 # Tools
 
-Each [company_name] [solution_name] run consists of running any applicable [company_name] [solution_name] tools.
+Each [detect_product_long] run consists of running any applicable [detect_product_short] tools.
 
-The available [company_name] [solution_name] tools in order of potential execution, with the corresponding [detect tools property](../properties/configuration/paths.md#detect-tools-included)
+The available [detect_product_short] tools in order of potential execution, with the corresponding [detect tools property](../properties/configuration/paths.md#detect-tools-included)
 value specified in parentheses are:
 
 * [Docker Inspector](../packagemgrs/docker/intro.md) (--detect.tools=DOCKER)

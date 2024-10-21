@@ -1,6 +1,6 @@
 DETECT META DATA START
-rootProjectDirectory:some_path/synopsys-detect
+rootProjectDirectory:some_path/detect
 rootProjectGroup:
-rootProjectName:synopsys-detect
-rootProjectVersion:7.5.0
+rootProjectName:detect
+rootProjectVersion:10.0.0
 DETECT META DATA END
