@@ -5,7 +5,6 @@ The following are download locations for the current version of [detect_product_
 * [detect_product_short] Bash script: [Bash script](${script_repo_url_bash})
 * The [detect_product_short] PowerShell script: [PowerShell script](${script_repo_url_powershell})
 * The [detect_product_short] binary repository (.jar and air gap zip files): [Binary files](${binary_repo_url_project})
-* The [detect_product_short] binary repository user interface view (properties, etc.): [Release Artifacts Repository UI](${binary_repo_ui_url_project})
 * The [detect_product_short] repository for the Jenkins plugin: [Release Artifacts Repository](${binary_repo_jenkins_url_project})
 
 **Note:** For certain types of projects, [detect_product_short] automatically downloads one or more [inspectors](../components/inspectors.md) as needed.
