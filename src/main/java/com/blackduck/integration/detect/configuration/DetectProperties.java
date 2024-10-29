@@ -438,6 +438,13 @@ public class DetectProperties {
             .setHelp("When set to true, user will be able to scan and discover copyright names in Black Duck. Corresponding Signature Scanner CLI Argument: --copyright-search.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .build();
+    
+    public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_CSV_ARCHIVE =
+            BooleanProperty.newBuilder("detect.blackduck.signature.scanner.csv.archive", false)
+            .setInfo("Signature Scanner CSV Archive Output", DetectPropertyFromVersion.VERSION_10_2_0)
+            .setHelp("When set to true Signature Scanner output will be in CSV format. Corresponding Signature Scanner CLI Argument: --outputFormat for offline mode, --uploadCSV for online mode.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER)
+            .build();
 
     public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN =
         BooleanProperty.newBuilder("detect.blackduck.signature.scanner.dry.run", false)
