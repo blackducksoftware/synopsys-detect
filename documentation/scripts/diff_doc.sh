@@ -40,7 +40,7 @@ chmod +x ${diffOneScript}
 mkdir ${oldVersion}
 cd ${oldVersion}
 git clone https://github.com/blackducksoftware/detect.git
-cd synopsys-detect
+cd detect
 git checkout tags/${oldVersion}
 
 # Write the header
@@ -55,7 +55,7 @@ cd "${workingDir}"
 mkdir ${newVersion}
 cd ${newVersion}
 git clone https://github.com/blackducksoftware/detect.git
-cd synopsys-detect
+cd detect
 git checkout tags/${newVersion}
 
 # Write the header
