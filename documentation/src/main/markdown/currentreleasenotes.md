@@ -19,19 +19,22 @@
 * Support for BitBake is now extended to 2.8.0 (Yocto 5.0.3)
 * Support for Nuget has been extended to 6.11.
 * Support for GoLang is now extended to Go 1.22.7.
-* Correlated Scanning is a new Match as a Service (MaaS) feature which correlates match results from Package Manager (Detector), and Signature scans when running [solution_name] with [blackduck_product_name] 2024.10.0 or later.
+* Correlated Scanning is a new Match as a Service (MaaS) feature which correlates match results from Package Manager (Detector), and Signature scans when running [detect_product_short] with [bd_product_long] 2024.10.0 or later.
 	* Correlation between scanning methods increases accuracy and provides for more comprehensive scan results.
 	See the [detect.blackduck.correlated.scanning.enabled](properties/configuration/general.html#correlated-scanning-enabled) property for more information
 	<note type="note">Correlated Scanning support is available for persistent Package Manager and Signature Scanning only.</note>
 * [detect_product_short] now supports container scanning of large files via a chunking method employed during upload.
-    <note type="note">This feature requires [blackduck_product_name] 2024.10.0 or later.</note>
+    <note type="note">This feature requires [bd_product_long] 2024.10.0 or later.</note>
 
 ### Changed features
 
 * The `logging.level.com.synopsys.integration` property deprecated in [detect_product_short] 9.x, has been removed. Use `logging.level.detect` instead.
 * The FULL_SNIPPET_MATCHING and FULL_SNIPPET_MATCHING_ONLY options for the `detect.blackduck.signature.scanner.snippet.matching` property deprecated in [detect_product_short] 9.x, have been removed.
+* The `.blackduck` temporary folder has been added to the default exclusion list.
 
 ### Dependency updates
 
 * Updated jackson-core library to version 2.15.0 to resolve a security vulnerability.
+* Upgraded and released Nuget Inspector version 2.0.0.
+* Upgraded and released [detect_product_short] Docker Inspector version 11.0.1
 
