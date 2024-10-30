@@ -64,7 +64,7 @@
 * (IDETECT-2216) Resolved an issue that prevented non-ASCII filenames from being correctly transmitted to Black Duck during a binary scan file upload.
 * (IDETECT-2227) Resolved an issue where Nuget Inspectors would parse source files for assembly version.
 * (IDETECT-2281) Resolved an issue that included golang dependencies that were not linked in the compiled go
-  application. [241](https://github.com/blackducksoftware/synopsys-detect/issues/241)
+  application. [241](https://github.com/blackducksoftware/detect/issues/241)
 * (IDETECT-2294) Resolved an issue where Git credentials could be logged when reading the remote URL.
 * (IDETECT-2296) Resolved an issue wherein the Pip Inspector would cease parsing a requirements file if it encountered a dependency which it could not resolve.
 * (IDETECT-2276) Resolved an issue that caused the CLANG detector to omit components for which multiple architectures are installed.
@@ -233,7 +233,7 @@
 * Resolved an issue where the download URL for [solution_name] was being set to an internal URL upon release (IDETECT-1847).
 * Resolved an issue where all transitive dependencies found by the Pip inspector were being reported as direct dependencies (IDETECT-1893).
 * Resolved an issue where using pip version 20+ with the Pip inspector caused a failure to import a
-  dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
+  dependency. [GitHub PR](https://github.com/blackducksoftware/detect/pull/107) (IDETECT-1868)
 * Resolved the following vulnerabilities (IDETECT-1872):
 * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where [solution_name] had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).

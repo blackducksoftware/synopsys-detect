@@ -11,10 +11,10 @@ class GitUrlParserTest {
     @Test
     void sshUrl() throws MalformedURLException {
         GitUrlParser gitUrlParser = new GitUrlParser();
-        final String remoteUrl = "ssh://user@synopsys.com:12345/blackducksoftware/synopsys-detect";
+        final String remoteUrl = "ssh://user@synopsys.com:12345/blackducksoftware/detect";
         String repoName = gitUrlParser.getRepoName(remoteUrl);
 
-        Assertions.assertEquals("blackducksoftware/synopsys-detect", repoName);
+        Assertions.assertEquals("blackducksoftware/detect", repoName);
     }
 
     @Test
@@ -29,27 +29,27 @@ class GitUrlParserTest {
     @Test
     void gitAtUrl() throws MalformedURLException {
         GitUrlParser gitUrlParser = new GitUrlParser();
-        final String remoteUrl = "git@github.com:blackducksoftware/synopsys-detect.git";
+        final String remoteUrl = "git@github.com:blackducksoftware/detect.git";
         String repoName = gitUrlParser.getRepoName(remoteUrl);
 
-        Assertions.assertEquals("blackducksoftware/synopsys-detect", repoName);
+        Assertions.assertEquals("blackducksoftware/detect", repoName);
     }
 
     @Test
     void httpsUrl() throws MalformedURLException {
         GitUrlParser gitUrlParser = new GitUrlParser();
-        final String remoteUrl = "https://github.com/blackducksoftware/synopsys-detect";
+        final String remoteUrl = "https://github.com/blackducksoftware/detect";
         String repoName = gitUrlParser.getRepoName(remoteUrl);
 
-        Assertions.assertEquals("blackducksoftware/synopsys-detect", repoName);
+        Assertions.assertEquals("blackducksoftware/detect", repoName);
     }
 
     @Test
     void httpsEncodedUsernamePasswordUrl() throws MalformedURLException {
         GitUrlParser gitUrlParser = new GitUrlParser();
-        final String remoteUrl = "https://USERNAME:PASSWORD@SERVER/test/path/to/blackducksoftware/synopsys-detect.git";
+        final String remoteUrl = "https://USERNAME:PASSWORD@SERVER/test/path/to/blackducksoftware/detect.git";
         String repoName = gitUrlParser.getRepoName(remoteUrl);
 
-        Assertions.assertEquals("blackducksoftware/synopsys-detect", repoName);
+        Assertions.assertEquals("blackducksoftware/detect", repoName);
     }
 }

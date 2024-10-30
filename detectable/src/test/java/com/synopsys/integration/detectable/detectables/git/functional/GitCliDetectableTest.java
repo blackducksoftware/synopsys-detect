@@ -23,7 +23,7 @@ public class GitCliDetectableTest extends DetectableFunctionalTest {
     public void setup() throws IOException {
         addDirectory(Paths.get(".git"));
 
-        String gitRemoteUrlOutput = "https://github.com/blackducksoftware/synopsys-detect";
+        String gitRemoteUrlOutput = "https://github.com/blackducksoftware/detect";
         ExecutableOutput gitConfigExecutableOutput = new ExecutableOutput(0, gitRemoteUrlOutput, "");
         addExecutableOutput(gitConfigExecutableOutput, "git", "config", "--get", "remote.origin.url");
 
@@ -52,7 +52,7 @@ public class GitCliDetectableTest extends DetectableFunctionalTest {
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(0, extraction.getCodeLocations().size(), "Git should not produce a dependency graph. It is for project info only.");
-        Assertions.assertEquals("blackducksoftware/synopsys-detect", extraction.getProjectName());
+        Assertions.assertEquals("blackducksoftware/detect", extraction.getProjectName());
         Assertions.assertEquals("branch-version", extraction.getProjectVersion());
     }
 }
