@@ -28,8 +28,8 @@ Project information is extracted from the remote URL for the current branch. The
 --detect.excluded.detector.types=GIT
 ```
 
-For example, for a project with a remote URL of "https://github.com/blackducksoftware/synopsys-detect" and a checked-out branch of "5.5.0",
-[company_name] [solution_name] by default uses the project name "blackducksoftware/synopsys-detect" and project version "5.5.0".
+For example, for a project with a remote URL of "https://github.com/blackducksoftware/detect" and a checked-out branch of "5.5.0",
+[company_name] [solution_name] by default uses the project name "blackducksoftware/detect" and project version "5.5.0".
 
 [company_name] [solution_name] attempts to derive project and version information by running the Git executable. If that is not successful, it attempts to derive
 project and version information by parsing Git files.

@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
 
 public class GitUrlParser {
-    // Parses urls such as: https://github.com/blackducksoftware/synopsys-detect
+    // Parses urls such as: https://github.com/blackducksoftware/detect
     public String getRepoName(String remoteUrlString) throws MalformedURLException {
         String[] pieces = remoteUrlString.split("[/:]");
         if (pieces.length >= 2) {
