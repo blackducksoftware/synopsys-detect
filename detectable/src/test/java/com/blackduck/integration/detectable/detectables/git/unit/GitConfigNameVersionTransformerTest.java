@@ -51,7 +51,7 @@ class GitConfigNameVersionTransformerTest {
      */
     @Test
     void transformDetachedHead() throws MalformedURLException, IntegrationException {
-        GitConfigRemote gitConfigRemote = new GitConfigRemote("origin", "https://github.com/blackducksoftware/synopsys-detect.git", "+refs/heads/*:refs/remotes/origin/");
+        GitConfigRemote gitConfigRemote = new GitConfigRemote("origin", "https://github.com/blackducksoftware/detect.git", "+refs/heads/*:refs/remotes/origin/");
         GitConfigBranch gitConfigBranch = new GitConfigBranch("master", "origin", "refs/heads/master");
         List<GitConfigRemote> gitConfigRemotes = Collections.singletonList(gitConfigRemote);
         List<GitConfigBranch> gitConfigBranches = Collections.singletonList(gitConfigBranch);
@@ -64,9 +64,9 @@ class GitConfigNameVersionTransformerTest {
         GitConfigResult gitConfigResult = gitConfigNameVersionTransformer.transformToProjectInfo(gitConfig, gitHead);
         NameVersion nameVersion = gitConfigResult.getNameVersion();
 
-        assertEquals("blackducksoftware/synopsys-detect", nameVersion.getName());
+        assertEquals("blackducksoftware/detect", nameVersion.getName());
         assertEquals("9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c", nameVersion.getVersion());
-        assertEquals("https://github.com/blackducksoftware/synopsys-detect.git", gitConfigResult.getRemoteUrl());
+        assertEquals("https://github.com/blackducksoftware/detect.git", gitConfigResult.getRemoteUrl());
         assertFalse(gitConfigResult.getBranch().isPresent(), "This test should be testing backups to branches.");
     }
 }

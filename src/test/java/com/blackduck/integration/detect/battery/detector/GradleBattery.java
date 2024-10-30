@@ -46,7 +46,7 @@ public class GradleBattery {
         test.sourceDirectoryNamed("detect");
         test.sourceFileNamed("build.gradle");
         test.property(DetectProperties.DETECT_GRADLE_CONFIGURATION_TYPES_EXCLUDED, GradleConfigurationType.UNRESOLVED.name());
-        test.git("https://github.com/blackducksoftware/synopsys-detect", "master");
+        test.git("https://github.com/blackducksoftware/detect", "master");
         test.expectBdioResources();
         test.run();
     }
