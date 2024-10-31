@@ -133,8 +133,9 @@ def recursively_resolve_dependencies(package_name, history):
         return None
 
     if dependency_node.name not in history:
+        history.append(dependency_node.name)
         for child_name in child_names:
-            child_node = recursively_resolve_dependencies(child_name, history + [dependency_node.name])
+            child_node = recursively_resolve_dependencies(child_name, history)
             if child_node is not None:
                 dependency_node.children = dependency_node.children + [child_node]
 
@@ -161,7 +162,7 @@ try: # attempt to import and rely on importlib.metadata which has been available
                 requirement_name_match_result = match("([A-Z0-9][A-Z0-9._-]*[A-Z0-9]|[A-Z0-9])", requirement, IGNORECASE)
                 if requirement_name_match_result is not None:
                     requirement_names.append(requirement_name_match_result[0])
-        return dependency_node, requirement_names
+        return dependency_node, set(requirement_names)
 except ImportError: # fall back to using deprecated pkg_resources when the newer library is not available
     from pkg_resources import working_set, Requirement
 
