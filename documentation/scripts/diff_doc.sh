@@ -37,7 +37,7 @@ chmod +x ${diffOneScript}
 
 mkdir ${oldVersion}
 cd ${oldVersion}
-git clone https://github.com/blackducksoftware/synopsys-detect.git
+git clone https://github.com/blackducksoftware/detect.git
 cd synopsys-detect
 git checkout tags/${oldVersion}
 
@@ -52,7 +52,7 @@ echo "" >> ${intermediateOutputFilePath}
 cd "${workingDir}"
 mkdir ${newVersion}
 cd ${newVersion}
-git clone https://github.com/blackducksoftware/synopsys-detect.git
+git clone https://github.com/blackducksoftware/detect.git
 cd synopsys-detect
 git checkout tags/${newVersion}
 
