@@ -22,7 +22,7 @@ public class GitCliDetectableCommitHashTest extends DetectableFunctionalTest {
     public void setup() throws IOException {
         addDirectory(Paths.get(".git"));
 
-        addExecutableOutput(ExecutableOutputUtil.success("https://github.com/blackducksoftware/synopsys-detect"), "git", "config", "--get", "remote.origin.url");
+        addExecutableOutput(ExecutableOutputUtil.success("https://github.com/blackducksoftware/detect"), "git", "config", "--get", "remote.origin.url");
 
         addExecutableOutput(ExecutableOutputUtil.success("HEAD"), "git", "rev-parse", "--abbrev-ref", "HEAD");
 
@@ -40,7 +40,7 @@ public class GitCliDetectableCommitHashTest extends DetectableFunctionalTest {
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(0, extraction.getCodeLocations().size(), "Git should not produce a dependency graph. It is for project info only.");
-        Assertions.assertEquals("blackducksoftware/synopsys-detect", extraction.getProjectName());
+        Assertions.assertEquals("blackducksoftware/detect", extraction.getProjectName());
         Assertions.assertEquals("9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c", extraction.getProjectVersion());
     }
 }
