@@ -148,7 +148,7 @@ try: # attempt to import and rely on importlib.metadata which has been available
             return None, None
 
         try:
-            metadata = importlib.metadata.metadata(package_name)
+            metadata = importlib.metadata.metadata(package_name.strip())
         except importlib.metadata.PackageNotFoundError:
             return None, None
 
