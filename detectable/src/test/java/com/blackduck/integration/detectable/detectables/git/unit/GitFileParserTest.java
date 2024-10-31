@@ -33,7 +33,7 @@ class GitFileParserTest {
             "	ignorecase = true",
             "	precomposeunicode = true",
             "[remote \"origin\"]",
-            "	url = https://github.com/blackducksoftware/synopsys-detect.git",
+            "	url = https://github.com/blackducksoftware/detect.git",
             "	fetch = +refs/heads/*:refs/remotes/origin/*",
             "[branch \"master\"]",
             "	remote = origin",

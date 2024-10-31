@@ -26,7 +26,7 @@ class GitConfigNodeTransformerTest {
         GitConfigNode coreNode = new GitConfigNode("core", coreProperties);
 
         Map<String, String> remoteProperties = new HashMap<>();
-        remoteProperties.put("url", "https://github.com/blackducksoftware/synopsys-detect.git");
+        remoteProperties.put("url", "https://github.com/blackducksoftware/detect.git");
         remoteProperties.put("fetch", "+refs/heads/*:refs/remotes/origin/");
         GitConfigNode remoteNode = new GitConfigNode("remote", "origin", remoteProperties);
 
@@ -54,7 +54,7 @@ class GitConfigNodeTransformerTest {
 
         GitConfigRemote gitConfigRemote = gitConfig.getGitConfigRemotes().get(0);
         Assertions.assertEquals("origin", gitConfigRemote.getName());
-        Assertions.assertEquals("https://github.com/blackducksoftware/synopsys-detect.git", gitConfigRemote.getUrl());
+        Assertions.assertEquals("https://github.com/blackducksoftware/detect.git", gitConfigRemote.getUrl());
         Assertions.assertEquals("+refs/heads/*:refs/remotes/origin/", gitConfigRemote.getFetch());
 
         Assertions.assertEquals(2, gitConfig.getGitConfigBranches().size());
