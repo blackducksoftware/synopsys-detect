@@ -300,8 +300,4 @@ public class YarnTransformer {
     private ExternalId generateComponentExternalId(String name, String version) {
         return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
     }
-
-    private ExternalId generateComponentExternalId(LazyId dependencyId) {
-        return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.toString().replace("\\/", "/"));
-    }
 }
