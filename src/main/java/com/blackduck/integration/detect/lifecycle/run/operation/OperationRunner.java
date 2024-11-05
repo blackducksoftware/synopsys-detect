@@ -1218,6 +1218,12 @@ public class OperationRunner {
         statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.BINARY_SCAN, StatusType.FAILURE));
         exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, "BINARY_SCAN");
     }
+    
+    public void publishContainerTimeout(Exception e) {
+        logger.error("Container scan timeout: {}", e.getMessage());
+        statusEventPublisher.publishStatusSummary(Status.forTool(DetectTool.CONTAINER_SCAN, StatusType.FAILURE));
+        exitCodePublisher.publishExitCode(ExitCodeType.FAILURE_TIMEOUT, "CONTAINER_SCAN");
+    }
 
     public void publishContainerFailure(Exception e) {
         logger.error("Container scan failure: {}", e.getMessage());
