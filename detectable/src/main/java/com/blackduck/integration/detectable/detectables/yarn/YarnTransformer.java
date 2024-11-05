@@ -212,12 +212,11 @@ public class YarnTransformer {
             if (externalId.isPresent()) {
                 return externalId.get();
             } else {
-                ExternalId lazilyGeneratedExternalId;
                 Optional<NameVersion> nameVersionOptional;
                 if (!unMatchedDependencies.containsKey(dependencyId)) {
                     String dependencyIdClean = dependencyId.toString().replace("\\/","/");
                     nameVersionOptional = getNameVersion(dependencyIdClean);
-                    logger.warn("Unable to find standard NPM package identification details for '{}' in the yarn.lock file", dependencyIdClean);
+                    logger.warn("No standard NPM package identification details are available for '{}' from the yarn.lock file", dependencyIdClean);
                     unMatchedDependencies.put(dependencyId, nameVersionOptional);
                 } else {
                     nameVersionOptional = unMatchedDependencies.get(dependencyId);
