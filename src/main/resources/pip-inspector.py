@@ -34,7 +34,7 @@ Usage: pip-inspector.py --projectname=<project_name> --requirements=<requirement
 from getopt import getopt, GetoptError
 from os import path
 import sys
-from re import split, match, IGNORECASE
+from re import split
 
 import pip
 pip_major_version = int(pip.__version__.split(".")[0])
@@ -141,29 +141,33 @@ def recursively_resolve_dependencies(package_name, history):
 
     return dependency_node
 
-try: # attempt to import and rely on importlib.metadata which has been available since Python 3.8
-    import importlib.metadata
+use_pip_internal_to_search_packages = True
 
+try:
+    from pip._internal.commands.show import search_packages_info
+except ImportError:
+    try:
+        from pip.commands.show import search_packages_info
+    except ImportError:
+        use_pip_internal_to_search_packages = False
+
+if use_pip_internal_to_search_packages:
     def get_package_by_name(package_name):
         if package_name is None:
             return None, None
 
-        try:
-            metadata = importlib.metadata.metadata(package_name.strip())
-        except importlib.metadata.PackageNotFoundError:
+        package_info = None
+
+        for p in search_packages_info([package_name.strip()]):
+            package_info = p
+
+        if package_info is None:
             return None, None
 
-        dependency_node = DependencyNode(metadata["Name"], metadata["Version"])
-
-        requirement_names = []
-        requirements = importlib.metadata.requires(dependency_node.name)
-        if requirements is not None:
-            for requirement in requirements:
-                requirement_name_match_result = match("([A-Z0-9][A-Z0-9._-]*[A-Z0-9]|[A-Z0-9])", requirement, IGNORECASE)
-                if requirement_name_match_result is not None:
-                    requirement_names.append(requirement_name_match_result[0])
-        return dependency_node, set(requirement_names)
-except ImportError: # fall back to using deprecated pkg_resources when the newer library is not available
+        if type(package_info) == dict: # prior to pip 21.2 search_packages_info results were dicts
+            return DependencyNode(package_info["name"], package_info["version"]), package_info["requires"]
+        return DependencyNode(package_info.name, package_info.version), package_info.requires
+else:
     from pkg_resources import working_set, Requirement
 
     def get_package_by_name(package_name):
