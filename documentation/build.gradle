@@ -11,17 +11,21 @@ String findDita() {
     return System.getProperty("os.name").toLowerCase().contains("windows") ? 'dita.bat' : 'dita';
 }
 
-// Requires Synopsys-configured dita:
-// 1. git clone https://sig-gitlab.internal.synopsys.com/doc/docs-dita-tools.git
+// Requires Black Duck-configured dita:
+// 1. git clone https://gitlab.tools.duckutil.net/doc/docs-dita-tools.git
 // 2. Add docs-dita-tools/dita-ot/bin to your PATH
+// 3. Add DOCS_DITA_TOOLS as an environment variable with the path set to the docs-dita-tools folder
+
 task ditasite() {
     dependsOn generateDocs
 
     doLast {
+        String docsDitaTools = System.getenv('DOCS_DITA_TOOLS')
+        String webhelpString = '-Dwebhelp.publishing.template=' + docsDitaTools + '/templates/bd-webhelp'
         ByteArrayOutputStream stdOut = new ByteArrayOutputStream()
         ByteArrayOutputStream stdError = new ByteArrayOutputStream()
         exec {
-            commandLine findDita(), '-v', '--input=detect.ditamap', '--format=sig-webhelp', '-o', '../ditasite'
+            commandLine findDita(), '-v', '--input=detect.ditamap', '--format=webhelp-responsive', '-output', '../ditasite', webhelpString, '-Dwebhelp.publishing.template.descriptor=bd-tiles.opt'
             workingDir generatedDir
             standardOutput = stdOut
             errorOutput = stdError
@@ -30,9 +34,9 @@ task ditasite() {
             if (outputLine.matches(".*File.*helpJsonFile:.*not found.*")) throw new Exception("dita error: invalid link: " + outputLine)
         }
         for (String outputLine : stdOut.toString().split(System.lineSeparator())) {
-            if (outputLine.matches(".*\\[DOT.*\\].*\\[ERROR\\].*")) throw new Exception("dita error. To run dita by hand: cd documentation/build/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
+            if (outputLine.matches(".*\\[DOT.*\\].*\\[ERROR\\].*")) throw new Exception("dita error. To run dita by hand: cd documentation/build/generated; dita -format webhelp-responsive -input detect.ditamap -output ../ditasite -Dwebhelp.publishing.template==<PATH to docs-dita-tools>/templates/bd-webhelp -Dwebhelp.publishing.template.descriptor=bd-tiles.opt -v\nERROR: " + outputLine)
 
-            if (outputLine.matches(".*\\[keyref\\].*\\[DOTJ047I\\].*")) throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes. To run dita by hand: cd documentation/build/generated; dita --input detect.ditamap --format=sig-webhelp --output=../ditasite -v\nERROR: " + outputLine)
+            if (outputLine.matches(".*\\[keyref\\].*\\[DOTJ047I\\].*")) throw new Exception("dita found invalid key references. Square brackets around doc text must be escaped if not inside back quotes. To run dita by hand: cd documentation/build/generated; dita -format webhelp-responsive -input detect.ditamap -output ../ditasite -Dwebhelp.publishing.template==<PATH TO docs-dita-tools>/templates/bd-webhelp -Dwebhelp.publishing.template.descriptor=bd-tiles.opt -v\nERROR: " + outputLine)
         }
         File indexHtmlFile = new File(project.getBuildDir(), "ditasite/index.html")
         println "To browse the webhelp: Open file://${indexHtmlFile.getAbsolutePath()} in a browser"
@@ -61,7 +65,7 @@ task publishDitaSource() {
         def ditaSourceZipLocation = "${buildDir}/libs/${ditaSourceZipName}"
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
-                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${rootProject.name}/${version}/${ditaSourceZipName}", '-T', "${ditaSourceZipLocation}", '-f'
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/blackduck/integration/${rootProject.name}/${version}/${ditaSourceZipName}", '-T', "${ditaSourceZipLocation}", '-f'
         }
     }
 }
@@ -71,7 +75,7 @@ task helppdf() {
 
     doLast {
         exec {
-            commandLine 'dita', '--input=detect.ditamap', '--format=sig-pdf', "--outputFile.base=${project.name}-${version}-help", '-o', '../../build/libs'
+            commandLine 'dita', '--input=detect.ditamap', '--format=synopsyspdf', "--outputFile.base=${project.name}-${version}-help", '-o', '../../build/libs'
             workingDir generatedDir
         }
     }
