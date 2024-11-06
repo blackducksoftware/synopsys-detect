@@ -100,7 +100,7 @@ public class YarnTransformer {
                 LazyId stringDependencyId = generateComponentDependencyId(dependency.getName(), dependency.getVersion());
 
                 if (yarnDependencyTypeFilter.shouldInclude(YarnDependencyType.NON_PRODUCTION) || !dependency.isOptional()) {
-                    yarnDependencies.put(stringDependencyId, new NameVersion(dependency.getName(), dependency.getVersion()));
+                    yarnDependencies.put(stringDependencyId, new NameVersion(dependency.getName(), entry.getVersion()));
                     graphBuilder.addChildWithParent(stringDependencyId, id);
                 } else {
                     logger.trace("Excluding optional dependency: {}", stringDependencyId);
