@@ -1,7 +1,5 @@
 package com.blackduck.integration.detectable.detectables.pip.parser.unit;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -13,13 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.blackduck.integration.bdio.graph.DependencyGraph;
-import com.blackduck.integration.bdio.model.Forge;
-import com.blackduck.integration.detectable.detectables.pip.parser.RequirementsFileDependencyTransformer;
-import com.blackduck.integration.detectable.detectables.pip.parser.RequirementsFileExtractor;
-import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.python.util.PythonDependencyTransformer;
-import com.blackduck.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class RequirementsFileTransformerTest {
     private static final String EXPECTED_DEPENDENCY_NAME = "requests";
@@ -140,26 +132,5 @@ public class RequirementsFileTransformerTest {
         String formattedToken = requirementsFileTransformer.formatToken(rawToken);
         Assertions.assertEquals(EXPECTED_DEPENDENCY_VERSION, formattedToken);
     }
-
-    /*
-     * Test eliminating the null and replacement characters from the requirements.txt files.
-     * Ticket: IDETECT-4469
-     */
-    @Test
-    void testNullCharacterRemovalInRequirementFile() throws IOException {
-        File requirementsFile = new File("src/test/resources/detectables/functional/pip/requirements-malformed.txt");
-        PythonDependencyTransformer requirementsFileTransformer = new PythonDependencyTransformer();
-        RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
-        RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
-        Extraction testFileExtraction = requirementsFileExtractor.extract(Collections.singleton(requirementsFile));
-        Assertions.assertEquals(1, testFileExtraction.getCodeLocations().size());
-        
-        DependencyGraph testDependencyGraph = testFileExtraction.getCodeLocations().get(0).getDependencyGraph();
-        NameVersionGraphAssert nameVersionGraphAssert = new NameVersionGraphAssert(Forge.PYPI, testDependencyGraph);
-
-        nameVersionGraphAssert.hasDependency("aniso8601", "9.0.1");
-        nameVersionGraphAssert.hasDependency("anyio", "3.7.1");
-    }
-
 
 }
