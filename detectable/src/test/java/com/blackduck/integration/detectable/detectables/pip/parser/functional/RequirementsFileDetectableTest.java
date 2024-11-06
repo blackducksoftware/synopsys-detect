@@ -88,4 +88,24 @@ class RequirementsFileDetectableTest {
         }
 
     }
+
+    /*
+     * Test eliminating the null and replacement characters from the requirements.txt files.
+     * Ticket: IDETECT-4469
+     */
+    @Test
+    void testNullCharacterRemovalInRequirementFile() throws IOException {
+        File requirementsFile = new File("src/test/resources/detectables/functional/pip/requirements-malformed.txt");
+        PythonDependencyTransformer requirementsFileTransformer = new PythonDependencyTransformer();
+        RequirementsFileDependencyTransformer requirementsFileDependencyTransformer = new RequirementsFileDependencyTransformer();
+        RequirementsFileExtractor requirementsFileExtractor = new RequirementsFileExtractor(requirementsFileTransformer, requirementsFileDependencyTransformer);
+        Extraction testFileExtraction = requirementsFileExtractor.extract(Collections.singleton(requirementsFile));
+        Assertions.assertEquals(1, testFileExtraction.getCodeLocations().size());
+        
+        DependencyGraph testDependencyGraph = testFileExtraction.getCodeLocations().get(0).getDependencyGraph();
+        NameVersionGraphAssert nameVersionGraphAssert = new NameVersionGraphAssert(Forge.PYPI, testDependencyGraph);
+
+        nameVersionGraphAssert.hasDependency("aniso8601", "9.0.1");
+        nameVersionGraphAssert.hasDependency("anyio", "3.7.1");
+    }
 }
