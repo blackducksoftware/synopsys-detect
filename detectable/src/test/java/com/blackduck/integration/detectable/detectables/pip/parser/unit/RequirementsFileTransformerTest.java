@@ -133,5 +133,4 @@ public class RequirementsFileTransformerTest {
         Assertions.assertEquals(EXPECTED_DEPENDENCY_VERSION, formattedToken);
     }
 
-
 }
