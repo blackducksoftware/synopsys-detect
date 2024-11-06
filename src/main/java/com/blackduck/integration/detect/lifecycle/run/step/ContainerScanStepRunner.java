@@ -96,13 +96,11 @@ public class ContainerScanStepRunner {
             uploadImageMetadataToStorageService();
             operationRunner.publishContainerSuccess();
             logger.info("Container scan image uploaded successfully.");
+        } catch (IntegrationTimeoutException e) {
+            operationRunner.publishContainerTimeout(e);
+            return Optional.empty();
         } catch (IntegrationException | IOException | OperationException e) {
-            if (e instanceof IntegrationTimeoutException) {
-                operationRunner.publishContainerTimeout(e);
-            } else {
-                operationRunner.publishContainerFailure(e);
-            }
-            
+            operationRunner.publishContainerFailure(e);
             return Optional.empty();
         }
         return Optional.ofNullable(scanId);
