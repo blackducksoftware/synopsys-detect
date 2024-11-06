@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.synopsys.integration'
 
-version = '9.10.1-SIGQA1-shanty.testing-9.10-docs-gradle'
+version = '9.10.1-SIGQA2-shanty.testing-9.10-docs-gradle-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
