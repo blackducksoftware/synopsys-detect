@@ -1,5 +1,9 @@
 # Release Notes for Jenkins Plugin
 
+## **Version 10.0.0**
+
+[company_name] [solution_name] Jenkins Plugin is now the [detect_product_long] Jenkins Plugin.
+
 ## **Version 9.0.0**
 **New features**
 
