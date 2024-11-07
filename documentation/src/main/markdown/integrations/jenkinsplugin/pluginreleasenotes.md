@@ -4,6 +4,10 @@
 
 [company_name] [solution_name] Jenkins Plugin is now the [detect_product_long] Jenkins Plugin.
 
+**Changed features**
+
+* (IDTCTJNKNS-277) Updated to use the new blackduck namespace.
+
 ## **Version 9.0.0**
 **New features**
 
