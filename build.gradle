@@ -255,8 +255,12 @@ task signJar() {
     dependsOn build
     finalizedBy 'verifyJar'
     doLast {
+        println "*** ENV DUMP"
+        environment.each { k, v -> println "${k}:${v}" }
+        
         exec {
-            commandLine 'signing-client', '--usernanme', "qabuild", 'end2end' "${createArtifactName()}"
+            commandLine 'signing-client', '--help'
+            // commandLine 'signing-client', '--usernanme', "qabuild", 'end2end' "${createArtifactName()}"
             // commandLine 'jarsigner', '-tsa', 'http://rfc3161timestamp.globalsign.com/advanced', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
         }
     }
