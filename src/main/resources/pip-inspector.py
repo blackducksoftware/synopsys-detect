@@ -96,9 +96,6 @@ def resolve_project_node(project_name):
 def populate_dependency_tree(project_root_node, requirements_path):
     """Resolves the dependencies of the user-provided requirements.txt and appends them to the dependency tree"""
     try:
-        # This line is pretty much the only reason why we call the internal pip APIs anymore. We should consider if we
-        # can do this with a more generalized approach.
-        # --rotte DEC 2020
         parsed_requirements = parse_requirements(requirements_path, session=PipSession())
         for parsed_requirement in parsed_requirements:
             package_name = None
@@ -156,10 +153,7 @@ if use_pip_internal_to_search_packages:
         if package_name is None:
             return None, None
 
-        package_info = None
-
-        for p in search_packages_info([package_name.strip()]):
-            package_info = p
+        package_info = next(search_packages_info([package_name.strip()]), None)
 
         if package_info is None:
             return None, None
