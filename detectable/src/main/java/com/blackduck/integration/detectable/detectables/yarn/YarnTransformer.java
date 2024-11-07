@@ -15,6 +15,7 @@ import com.blackduck.integration.bdio.graph.builder.LazyBuilderMissingExternalId
 import com.blackduck.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
 import com.blackduck.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo;
 import com.blackduck.integration.bdio.graph.builder.LazyId;
+import com.blackduck.integration.bdio.graph.builder.LazyIdSource;
 import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
 import com.blackduck.integration.bdio.model.Forge;
 import com.blackduck.integration.bdio.model.dependency.Dependency;
@@ -231,6 +232,12 @@ public class YarnTransformer {
             if (yarnLockDependencies.containsKey(dependencyId)) {
                 NameVersion matchedDependency = yarnLockDependencies.get(dependencyId);
                 return generateComponentExternalId(matchedDependency.getName(), matchedDependency.getVersion());
+            } else {
+                Optional<NameVersion> externalDependency = externalDependencies.stream().filter(it -> it.getName().equals(lazyDependencyInfo.getName())).findFirst();
+                Optional<ExternalId> externalId = externalDependency.map(it -> generateComponentExternalId(it.getName(), it.getVersion()));
+                if (externalId.isPresent()) {
+                    return externalId.get();
+                }
             }
             Optional<NameVersion> nameVersionOptional;
             if (!unMatchedDependencies.containsKey(dependencyId)) {
@@ -248,16 +255,16 @@ public class YarnTransformer {
     private Optional<NameVersion> getNameVersion(String dependencyIdString) {
         int start, mid, end;
         String name;
-        if ((start = dependencyIdString.indexOf("STRING\",\"")) > -1
+        if ((start = dependencyIdString.indexOf(LazyIdSource.STRING + "\",\"")) > -1
                 &&  (mid = dependencyIdString.indexOf(":", start)) > -1
                 && (end = dependencyIdString.indexOf("\"]}", mid)) > -1) {
-            name = dependencyIdString.substring(start + "STRING\",\"".length() + 1, mid);
+            name = dependencyIdString.substring(start + (LazyIdSource.STRING + "\",\"").length() + 1, mid);
             String version = dependencyIdString.substring(mid + 1, end);
             return Optional.of(new NameVersion(name, version));
-        } else if ((start = dependencyIdString.indexOf("NAME_VERSION\",\"")) > -1
+        } else if ((start = dependencyIdString.indexOf(LazyIdSource.NAME_VERSION + "\",\"")) > -1
                 && (mid = dependencyIdString.indexOf(":", start)) > -1
                 && (end = dependencyIdString.indexOf("\"]}", mid)) > -1) {
-            name = dependencyIdString.substring(start + "NAME_VERSION\",\"".length() + 1, mid);
+            name = dependencyIdString.substring(start + (LazyIdSource.NAME_VERSION + "\",\"").length() + 1, mid);
             String version = dependencyIdString.substring(mid + 1, end);
             return Optional.of(new NameVersion(name, version));
         }
