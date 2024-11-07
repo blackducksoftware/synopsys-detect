@@ -227,7 +227,6 @@ public class YarnTransformer {
     }
 
     private LazyBuilderMissingExternalIdHandler getLazyBuilderHandler(List<NameVersion> externalDependencies, Map<LazyId, NameVersion> yarnLockDependencies) {
-        logger.info("externalDependencies size:{}, yarnLockDependencies.size:{}", externalDependencies.size(), yarnLockDependencies.values().size());
         return (dependencyId, lazyDependencyInfo) -> {
             if (yarnLockDependencies.containsKey(dependencyId)) {
                 NameVersion matchedDependency = yarnLockDependencies.get(dependencyId);
@@ -247,7 +246,6 @@ public class YarnTransformer {
     }
     
     private Optional<NameVersion> getNameVersion(String dependencyIdString) {
-        logger.info("dependencyIdString:{}", dependencyIdString);
         int start, mid, end;
         String name;
         if ((start = dependencyIdString.indexOf("STRING\",\"")) > -1
