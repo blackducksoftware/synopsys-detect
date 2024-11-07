@@ -8,12 +8,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.blackduck.integration.sca.upload.client.UploaderConfig;
-import com.blackduck.integration.sca.upload.client.uploaders.ContainerUploader;
-import com.blackduck.integration.sca.upload.client.uploaders.UploaderFactory;
-import com.blackduck.integration.sca.upload.rest.status.DefaultUploadStatus;
 import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -21,9 +15,16 @@ import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.blackduck.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationTimeoutException;
 import com.blackduck.integration.log.Slf4jIntLogger;
 import com.blackduck.integration.rest.response.Response;
+import com.blackduck.integration.sca.upload.client.UploaderConfig;
+import com.blackduck.integration.sca.upload.client.uploaders.ContainerUploader;
+import com.blackduck.integration.sca.upload.client.uploaders.UploaderFactory;
+import com.blackduck.integration.sca.upload.rest.status.DefaultUploadStatus;
 import com.blackduck.integration.util.NameVersion;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class ContainerScanStepRunner {
 
@@ -95,6 +96,9 @@ public class ContainerScanStepRunner {
             uploadImageMetadataToStorageService();
             operationRunner.publishContainerSuccess();
             logger.info("Container scan image uploaded successfully.");
+        } catch (IntegrationTimeoutException e) {
+            operationRunner.publishContainerTimeout(e);
+            return Optional.empty();
         } catch (IntegrationException | IOException | OperationException e) {
             operationRunner.publishContainerFailure(e);
             return Optional.empty();
