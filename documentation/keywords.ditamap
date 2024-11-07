@@ -7,6 +7,7 @@
   <keydef keys="var_company_short"><topicmeta><keywords><keyword>Black Duck</keyword></keywords></topicmeta></keydef>
   <keydef keys="detect_product_long"><topicmeta><keywords><keyword>Black Duck® Detect</keyword></keywords></topicmeta></keydef>
   <keydef keys="detect_product_short"><topicmeta><keywords><keyword>Detect</keyword></keywords></topicmeta></keydef>
+  <keydef keys="detect_product_lowercase"><topicmeta><keywords><keyword>detect</keyword></keywords></topicmeta></keydef>
   <keydef keys="bd_product_long"><topicmeta><keywords><keyword>Black Duck® SCA</keyword></keywords></topicmeta></keydef>
   <keydef keys="bd_product_short"><topicmeta><keywords><keyword>Black Duck</keyword></keywords></topicmeta></keydef>
   <keydef keys="bdba_product_short"><topicmeta><keywords><keyword>Black Duck Binary Analysis</keyword></keywords></topicmeta></keydef>
