@@ -6,7 +6,7 @@
 
 **Changed features**
 
-* (IDTCTJNKNS-277) Updated to use the new blackduck namespace.
+* (IDTCTJNKNS-277) Updated to use the new 'blackduck' namespace.
 
 ## **Version 9.0.0**
 **New features**
