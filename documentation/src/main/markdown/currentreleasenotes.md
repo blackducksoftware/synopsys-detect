@@ -12,5 +12,5 @@
 
 ### Resolved issues
 
-* (IDETECT-4517) - [solution_name] now correctly indicates a timeout failure occurred when multipart binary or container scans timeout during an upload.
+* (IDETECT-4517) - [detect_product_short] now correctly indicates a timeout failure occurred when multipart binary or container scans timeout during an upload.
 * (IDETECT-4540) - multipart binary and container scans now correctly retry when authentication errors are received during transmission.
