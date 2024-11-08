@@ -1,9 +1,14 @@
+String repoUrl = "https://repo.blackduck.com/bds-integration-public-cache/"
+
+try {
+    new URL(repoUrl).text
+} catch (Exception e) {
+    repoUrl = "https://sig-repo.synopsys.com/bds-integration-public-cache/"
+}
+
 repositories {
     maven {
-        url 'https://repo.blackduck.com/bds-integration-public-cache/'
-    }
-    maven {
-        url 'https://sig-repo.synopsys.com/bds-integration-public-cache/'
+        url repoUrl
     }
 }
 
