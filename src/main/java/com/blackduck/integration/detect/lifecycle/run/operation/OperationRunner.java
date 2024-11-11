@@ -458,6 +458,21 @@ public class OperationRunner {
         return imageMetadataObject;
     }
 
+    public JsonObject createBinaryScanImageMetadata(UUID scanId, NameVersion projectNameVersion) {
+        String scanPersistence = detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT ? "STATEFUL" : "STATELESS";
+        String projectGroupName = detectConfigurationFactory.createProjectGroupOptions().getProjectGroup();
+
+        JsonObject imageMetadataObject = new JsonObject();
+        imageMetadataObject.addProperty("scanId", scanId.toString());
+        imageMetadataObject.addProperty("scanType", "BINARY");
+        imageMetadataObject.addProperty("scanPersistence", scanPersistence);
+        imageMetadataObject.addProperty("projectName", projectNameVersion.getName());
+        imageMetadataObject.addProperty("projectVersionName", projectNameVersion.getVersion());
+        imageMetadataObject.addProperty("projectGroupName", projectGroupName);
+
+        return imageMetadataObject;
+    }
+    
     // Generic method to POST a file to /api/storage/containers endpoint of storage service
     public Response uploadFileToStorageService(BlackDuckRunData blackDuckRunData, String storageServiceEndpoint, File payloadFile, String postContentType, String operationName)
         throws OperationException {

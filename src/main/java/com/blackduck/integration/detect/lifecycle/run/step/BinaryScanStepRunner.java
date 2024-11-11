@@ -23,11 +23,17 @@ import com.blackduck.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.blackduck.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.rest.response.Response;
 import com.blackduck.integration.util.NameVersion;
+import com.google.gson.JsonObject;
 
 public class BinaryScanStepRunner {
     private final OperationRunner operationRunner;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
+    private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
+    private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
+    private static final String STORAGE_IMAGE_METADATA_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-message-1+json";
 
     public BinaryScanStepRunner(OperationRunner operationRunner) {
         this.operationRunner = operationRunner;
@@ -45,16 +51,79 @@ public class BinaryScanStepRunner {
             // TODO step 1: create scanID like we do for container
             String scanId = initiateScan(projectNameVersion, binaryScanFile.get(), blackDuckRunData);
             
-            // TODO step 2: same step but change to 2 approaches instead of just this old legacy one
-            BinaryUploadStatus status = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData);
+            // TODO step 2: upload
+            // if (signed URL) then SCASS upload
+            // else non-SCASS upload to new endpoint (for now fake container upload with binary file)
+            //BinaryUploadStatus status = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData);
+            try {
+                uploadNonScassFile(scanId, blackDuckRunData, binaryScanFile.get());
+            } catch (IOException e) {
+                throw new IntegrationException("Unable to upload binary file.");
+            }
             
-            // TODO step 3: finish call (send metadata for new IP approach or call /scans/{scanId}/scass-scan-processing for SCASS
+            // TODO step 3: finish call 
+            // (send metadata for new non-SCASS approach to /api/storage/containers/{id}/message
+            // or call /scans/{scanId}/scass-scan-processing for SCASS
+            try {
+                uploadImageMetadataToStorageService(scanId, projectNameVersion, blackDuckRunData);
+            } catch (IOException e) {
+                throw new IntegrationException("Unable to send binary metadata.");
+            }
+            
             return Optional.of(scanId);
         } else {
             return Optional.empty();
         }
     }
     
+    // TODO similar to containerScanStepRunner
+    private void uploadImageMetadataToStorageService(String scanId, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws IntegrationException, IOException, OperationException {
+        String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString(), "/message");
+        String operationName = "Upload binary Scan Image Metadata JSON";
+        logger.debug("Uploading binary image metadata to storage endpoint: {}", storageServiceEndpoint);
+        
+        JsonObject binaryMetadataObject = operationRunner.createBinaryScanImageMetadata(UUID.fromString(scanId), projectNameVersion);
+
+        try (Response response = operationRunner.uploadJsonToStorageService(
+            blackDuckRunData,
+            storageServiceEndpoint,
+            binaryMetadataObject.toString(),
+            STORAGE_IMAGE_METADATA_CONTENT_TYPE,
+            operationName
+        )
+        ) {
+            if (response.isStatusCodeSuccess()) {
+                logger.debug("binary scan image metadata uploaded to storage service.");
+            } else {
+                logger.trace("Unable to upload binary image metadata." + response.getStatusCode() + " " + response.getStatusMessage());
+                throw new IntegrationException(String.join(" ", "Unable to upload binary image metadata. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
+            }
+        }
+    }
+    
+    // TODO very similar to code in container scan step runner
+    private void uploadNonScassFile(String scanId, BlackDuckRunData blackDuckRunData, File binaryFile) throws IOException, OperationException, IntegrationException {
+        String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString());
+        String operationName = "Upload Binary Scan Image";
+        logger.debug("Uploading binary image artifact to storage endpoint: {}", storageServiceEndpoint);
+
+        try (Response response = operationRunner.uploadFileToStorageService(
+            blackDuckRunData,
+            storageServiceEndpoint,
+            binaryFile,
+            STORAGE_IMAGE_CONTENT_TYPE,
+            operationName
+        )
+        ) {
+            if (response.isStatusCodeSuccess()) {
+                logger.debug("Binary scan image uploaded to storage service.");
+            } else {
+                logger.trace("Unable to upload binary image. {} {}", response.getStatusCode(), response.getStatusMessage());
+                throw new IntegrationException(String.join(" ", "Unable to upload binary image. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
+            }
+        }
+    }
+
     public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runLegacyBinaryScan(
         DockerTargetData dockerTargetData,
         NameVersion projectNameVersion,
