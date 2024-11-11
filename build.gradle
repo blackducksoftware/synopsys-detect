@@ -255,11 +255,11 @@ task signJar() {
     dependsOn build
     finalizedBy 'verifyJar'
     doLast {
-        println "*** ENV DUMP"
-        
         exec {
             // commandLine 'signing-client', '--help'
-            commandLine 'signing-client', '--username', "qabuild", 'end2end', "${createArtifactName()}"
+            commandLine 'signing-client', '--username', "qabuild", '--password', System.getenv('SIGNING_TOKEN'), '--server', 'sig-win-signer.internal.synopsys.com', '--port', '8000', '--signer', 'jarsigner', '--output', "${createArtifactName()}"
+
+            // commandLine 'signing-client', '--username', "qabuild", 'end2end', "${createArtifactName()}"
             // commandLine 'jarsigner', '-tsa', 'http://rfc3161timestamp.globalsign.com/advanced', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
         }
     }
