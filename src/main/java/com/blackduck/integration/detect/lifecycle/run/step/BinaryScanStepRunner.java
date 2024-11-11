@@ -1,10 +1,12 @@
 package com.blackduck.integration.detect.lifecycle.run.step;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,8 @@ import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.blackduck.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.blackduck.integration.detect.tool.binaryscanner.BinaryScanOptions;
+import com.blackduck.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
+import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackduck.integration.exception.IntegrationException;
 import com.blackduck.integration.util.NameVersion;
 
@@ -38,8 +42,14 @@ public class BinaryScanStepRunner {
         throws OperationException, IntegrationException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
         if (binaryScanFile.isPresent()) {
+            // TODO step 1: create scanID like we do for container
+            String scanId = initiateScan(projectNameVersion, binaryScanFile.get(), blackDuckRunData);
+            
+            // TODO step 2: same step but change to 2 approaches instead of just this old legacy one
             BinaryUploadStatus status = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData);
-            return extractBinaryScanId(status);
+            
+            // TODO step 3: finish call (send metadata for new IP approach or call /scans/{scanId}/scass-scan-processing for SCASS
+            return Optional.of(scanId);
         } else {
             return Optional.empty();
         }
@@ -114,5 +124,40 @@ public class BinaryScanStepRunner {
             logger.warn("Unexpected response uploading binary, will be unable to wait for scan completion.");
             return Optional.empty();
         }
+    }
+    
+    // TODO very similar to what is in ContainerScanStepRunner
+    private String initiateScan(NameVersion projectNameVersion, File binaryFile, BlackDuckRunData blackDuckRunData) throws OperationException, IntegrationException {
+        String projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
+        
+        CodeLocationNameManager codeLocationNameManager = operationRunner.getCodeLocationNameManager();
+        String codeLocationName =  codeLocationNameManager.createBinaryScanCodeLocationName(binaryFile, projectNameVersion.getName(), projectNameVersion.getVersion());
+        
+        DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(
+            UUID.randomUUID().toString(),
+            "BINARY",
+            projectNameVersion,
+            projectGroupName,
+            codeLocationName,
+            binaryFile.length());
+        
+        File bdioHeaderFile;
+        try {
+            bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(
+                    operationRunner.getDirectoryManager().getBinaryOutputDirectory());
+        } catch (IOException e) {
+            throw new IntegrationException("Unable to obtain binary run directory.");
+        }
+        
+        String operationName = "Upload Binary Scan BDIO Header to Initiate Scan";
+        UUID scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile, operationName);
+        if (scanId == null) {
+            logger.warn("Scan ID was not found in the response from the server.");
+            throw new IntegrationException("Scan ID was not found in the response from the server.");
+        }
+        String scanIdString = scanId.toString();
+        logger.debug("Scan initiated with scan service. Scan ID received: {}", scanIdString);
+        
+        return scanIdString;
     }
 }
