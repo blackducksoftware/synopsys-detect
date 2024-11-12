@@ -7,6 +7,12 @@
 **Changed features**
 
 * (IDTCTJNKNS-277) Updated to use the new 'blackduck' namespace.
+* Updated to use [detect_product_long] 10.x.x for execution.
+* Jenkins version 2.426.3 or later is required.
+
+**Resolved issues**
+
+* The plugin has been built against upgraded Jenkins/Jenkins plugin versions to mitigate known security risks.
 
 ## **Version 9.0.0**
 **New features**
