@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,7 @@ import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScan
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.blackduck.integration.detect.lifecycle.run.data.DockerTargetData;
+import com.blackduck.integration.detect.lifecycle.run.data.ScanCreationResponse;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.blackduck.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.blackduck.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
@@ -25,11 +27,13 @@ import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameMa
 import com.blackduck.integration.exception.IntegrationException;
 import com.blackduck.integration.rest.response.Response;
 import com.blackduck.integration.util.NameVersion;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 public class BinaryScanStepRunner {
     private final OperationRunner operationRunner;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Gson gson;
     
     private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
     private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
@@ -37,6 +41,7 @@ public class BinaryScanStepRunner {
 
     public BinaryScanStepRunner(OperationRunner operationRunner) {
         this.operationRunner = operationRunner;
+        this.gson = new Gson();
     }
 
     public Optional<String> runBinaryScan(
@@ -219,7 +224,19 @@ public class BinaryScanStepRunner {
         }
         
         String operationName = "Upload Binary Scan BDIO Header to Initiate Scan";
-        UUID scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile, operationName);
+        //UUID scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile, operationName);
+        
+        ScanCreationResponse scanCreationResponse 
+            = operationRunner.uploadBdioHeaderToInitiateScassScan(blackDuckRunData, bdioHeaderFile, operationName, gson);
+        
+        String scanId = scanCreationResponse.getScanId();
+        
+        String uploadUrl = scanCreationResponse.getUploadUrl();
+        
+        if (StringUtils.isNotEmpty(uploadUrl)) {
+            // TODO scaas stuff
+        }
+        
         if (scanId == null) {
             logger.warn("Scan ID was not found in the response from the server.");
             throw new IntegrationException("Scan ID was not found in the response from the server.");
