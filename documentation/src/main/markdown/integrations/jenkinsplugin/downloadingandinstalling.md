@@ -7,7 +7,7 @@ To install the [detect_product_short] for Jenkins plugin, perform the following
 1. Click **Download now and install after restart**. This is the recommendation for installing the plugin.
 1. After restarting Jenkins, confirm that the plugin is successfully installed by navigating to **Manage Jenkins** > **Manage Plugins > Installed**, and verify that **[company_name] [solution_name]** displays in the list.
 
-[detect_product_short] plugin for Jenkins GitHub page [jenkinsci](https://github.com/jenkinsci/synopsys-detect-plugin).
+[detect_product_short] plugin for Jenkins GitHub page [jenkinsci](https://github.com/jenkinsci/blackduck-detect-plugin).
 Additional download locations listed in [Download locations](../../downloadingandrunning/downloadlocations.html).
 
 ## Updating the [detect_product_short] for Jenkins plugin
