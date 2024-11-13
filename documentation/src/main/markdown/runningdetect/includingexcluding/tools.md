@@ -5,6 +5,7 @@ depends on your configuration, type of files you are scanning, and the propertie
 
 When no `--detect.tools=` parameter or the `--detect.tools=ALL` parameter is provided, [detect_product_long] will attempt to run all tools for which the tool itself is available, the configuration parameters are set, and any required dependencies are met. The existence of applicable file types (for scanning), will also determine whether tools return results when they run.   
 
+<note type="note">When the `detect.tools=ALL` parameter is specified, some scan types, such as IAC, are not included.</note>   
 If you wish to specifically determine which tools are run, use the following command to list the tools:
 
 ````
@@ -23,4 +24,4 @@ Refer to [Tools](../../components/tools.md) for the list of tool names.
 
 Refer to [Properties](../../properties/all-properties.md) for additional details.
 
-<note type="note">Some [detect_product_short] tools may be appropriate to run independantly of others for reporting purposes, or require a specific [bd_product_short] license.</note>
+<note type="attention">Some [detect_product_short] tools may be appropriate to run independantly of others for reporting purposes, or require a specific [bd_product_short] license.</note>
