@@ -234,7 +234,11 @@ public class BinaryScanStepRunner {
         String uploadUrl = scanCreationResponse.getUploadUrl();
         
         if (StringUtils.isNotEmpty(uploadUrl)) {
-            // TODO scaas stuff
+            // TODO return ScanCreationResponse
+            // then can do scass stuff using library
+            // new SCAUploader(scanId, uploadUrl); in step 2
+        } else {
+            // TODO call new non-scass endpoint or mimic container scan
         }
         
         if (scanId == null) {
