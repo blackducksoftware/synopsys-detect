@@ -39,6 +39,15 @@
 * Upgraded and released Nuget Inspector version 2.0.0.
 * Upgraded and released [detect_product_short] Docker Inspector version 11.0.1
 
+## Version 9.10.1
+
+<note type="notice">`sig-repo.synopsys.com` and `detect.synopsys.com` are being deprecated. Please make use of `repo.blackduck.com` and `detect.blackduck.com` respectively.</note>
+* After February 2025, [detect_product_short] script download details will only be available via detect.blackduck.com.
+* See the [Domain Change FAQ for the deprecation of sig-repo](https://community.blackduck.com/s/question/0D5Uh00000Jq18XKAR/black-duck-sca-and-the-impact-of-decommissioning-of-sigrepo).
+<note type="important">It is essential to update to 9.10.1 before sig-repo is decommissioned.</note>
+
+<note type="note">It is recommended that customers continue to maintain `sig-repo.synopsys.com`, and `repo.blackduck.com` on their allow list until February 2025 when `sig-repo.synopsys.com` will be fully replaced by `repo.blackduck.com`.</note>
+
 ## Version 9.10.0
 
 ### Changed features
@@ -259,6 +268,15 @@
 * Released and Upgraded Project Inspector to version 2021.9.10.
 * Released and Upgraded Nuget Inspector to version 1.1.0.
 * Fixed EsotericSoftware YAMLBeans library version to resolve critical severity [CVE-2023-24621](https://nvd.nist.gov/vuln/detail/CVE-2023-24621)
+
+## Version 8.11.2
+
+<note type="notice">`sig-repo.synopsys.com` and `detect.synopsys.com` are being deprecated. Please make use of `repo.blackduck.com` and `detect.blackduck.com` respectively.</note>
+* After February 2025, [detect_product_short] script download details will only be available via detect.blackduck.com.
+* See the [Domain Change FAQ for the deprecation of sig-repo](https://community.blackduck.com/s/question/0D5Uh00000Jq18XKAR/black-duck-sca-and-the-impact-of-decommissioning-of-sigrepo).
+<note type="important">It is essential to update to 8.11.2 before sig-repo is decommissioned.</note>
+
+<note type="note">It is recommended that customers continue to maintain `sig-repo.synopsys.com`, and `repo.blackduck.com` on their allow list until February 2025 when `sig-repo.synopsys.com` will be fully replaced by `repo.blackduck.com`.</note>
 
 ## Version 8.11.1
 
