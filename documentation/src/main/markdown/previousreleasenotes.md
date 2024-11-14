@@ -48,6 +48,10 @@
 
 <note type="note">It is recommended that customers continue to maintain `sig-repo.synopsys.com`, and `repo.blackduck.com` on their allow list until February 2025 when `sig-repo.synopsys.com` will be fully replaced by `repo.blackduck.com`.</note>
 
+### Changed features
+
+* Adds logic to pull necessary artifacts from the repo.blackduck.com repository. If this is not accessible, artifacts will be downloaded from the sig-repo.synopsys.com repository. 
+
 ## Version 9.10.0
 
 ### Changed features
@@ -277,6 +281,10 @@
 <note type="important">It is essential to update to 8.11.2 before sig-repo is decommissioned.</note>
 
 <note type="note">It is recommended that customers continue to maintain `sig-repo.synopsys.com`, and `repo.blackduck.com` on their allow list until February 2025 when `sig-repo.synopsys.com` will be fully replaced by `repo.blackduck.com`.</note>
+
+### Changed features
+
+* Adds logic to pull necessary artifacts from the repo.blackduck.com repository. If this is not accessible, artifacts will be downloaded from the sig-repo.synopsys.com repository. 
 
 ## Version 8.11.1
 
