@@ -1,10 +1,16 @@
 # Release Notes for Azure DevOps Plugin
 
+## Version 10.0.0
+**New features**
+
+* Updated the plugin to support [detect_product_long] 10.   
+	* [detect_product_long] [Release Notes](../../currentreleasenotes.md)
+
 ## Version 9.0.0
 **New features**
 
 * Updated the plugin to use [company_name] [solution_name] 9.   
-	* [company_name] [solution_name] [Release Note](../../currentreleasenotes.md)
+	* [company_name] [solution_name] [Release Notes](../../currentreleasenotes.md)
 
 **Resolved issues**
 
