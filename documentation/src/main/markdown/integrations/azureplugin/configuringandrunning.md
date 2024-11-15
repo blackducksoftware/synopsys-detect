@@ -17,21 +17,21 @@ Configure your [detect_product_long] for Azure DevOps plugin by adding configura
 1. **Display name:** Type a unique name in this field.  Note that the name you type here displays in the left panel; the default name is **Run [detect_product_short] for your build**.
 1. Click **+ New** to add a new **[bd_product_short] Service Endpoint** and then configure the details.
 1. Click **+ New** to add a new **[bd_product_short] Proxy Service Endpoint** and then configure the details.
-1. **Detect Version**: Version of the [detect_product_short] binary to use. Synopsys recommends using the latest but you can specify a version override if desired.
-1. **Detect Run Mode:** Select the run mode. If you select Use Airgap Mode, a [detect_product_short] Air Gap Jar Directory Path field opens in which you must specify the [detect_product_short] Air Gap Jar Path.
-1. **Detect Arguments**: Here you can include additional [detect_product_short]* arguments; [detect_product_short] picks up your build environment variables and your project variables. Use a new line or space to separate multiple arguments. Use double quotes to escape. You can use environment and build variables.
+1. **[detect_product_short] Version**: Version of the [detect_product_short] binary to use. Synopsys recommends using the latest but you can specify a version override if desired.
+1. **[detect_product_short] Run Mode:** Select the run mode. If you select Use Airgap Mode, a [detect_product_short] Air Gap Jar Directory Path field opens in which you must specify the [detect_product_short] Air Gap Jar Path.
+1. **[detect_product_short] Arguments**: Here you can include additional [detect_product_short]* arguments; [detect_product_short] picks up your build environment variables and your project variables. Use a new line or space to separate multiple arguments. Use double quotes to escape. You can use environment and build variables.
 For more information on [detect_product_short] arguments, refer to [Properties](../../properties/configuration/overview.md).
 
-1. **Detect Folder**: The location to download the Detect jar or the location of an existing Detect jar. The default is the system temp directory.  To specify a different directory, type the directory path and name in the field.
+1. **[detect_product_short] Folder**: The location to download the [detect_product_short] jar or the location of an existing [detect_product_short] jar. The default is the system temp directory.  To specify a different directory, type the directory path and name in the field.
 
-Windows agents require an absolute path when specifying detect download location in the **Detect Folder** field.
+Windows agents require an absolute path when specifying [detect_product_short] download location in the **[detect_product_short] Folder** field.
 
-1. **Add Detect Task Summary**: Click this checkbox to add a summary of the Detect task to the build summary task.
+1. **Add [detect_product_short] Task Summary**: Click this checkbox to add a summary of the [detect_product_short] task to the build summary task.
 
 
 In the user interface, fields with a red asterisk ( **\*** ) are required.  Some default values are provided, such as version.
 
-**Note:** that the following fields belong to Azure DevOps, and are not part of the Detect plugin:
+**Note:** that the following fields belong to Azure DevOps, and are not part of the [detect_product_long] plugin:
 
 - Task version
 - Display name
