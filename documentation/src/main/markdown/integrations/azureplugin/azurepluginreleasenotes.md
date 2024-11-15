@@ -4,12 +4,18 @@
 **Notice**
 
 The [company_name] Software Integrity Group is now [var_company_name]    
-If you are an existing [detect_product_short] user, manually uninstall the [company_name] [detect_product_short] Plugin and install this plugin to receive future updates.    
-If you are a new user, you may proceed with installing the [detect_product_long] Plugin.   
+* As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decomissioned in Feb. 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.    
+* Refer to the [Black Duck Domain Change FAQ](https://community.blackduck.com/s/article/Black-Duck-Domain-Change-FAQ#SDInstru).
+
+If you are an existing [detect_product_short] user, manually uninstall the [company_name] [detect_product_short] Plugin and install the [detect_product_long] Plugin to receive future updates.    
+
+If you are a new user, you may proceed with installing the [detect_product_long] Plugin available at the following [Marketplace location](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect).    
+
+To continuing using the deprecated 9.x plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect).    
 
 **New features**
 
-* Plugin updated to support [detect_product_long] 10.   
+* Plugin updated to support [detect_product_long] 10.
 	* [detect_product_long] [Release Notes](../../currentreleasenotes.md)
 
 ## Version 9.0.0
