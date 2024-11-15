@@ -1,9 +1,15 @@
 # Release Notes for Azure DevOps Plugin
 
 ## Version 10.0.0
+**Notice**
+
+The [company_name] Software Integrity Group is now Black Duck®.   
+If you are an existing Detect user, manually uninstall the [company_name] [detect_product_short] Plugin and install this plugin to receive future updates.   
+If you are a new user, you may proceed with installing the [detect_product_long] Plugin.   
+
 **New features**
 
-* Updated the plugin to support [detect_product_long] 10.   
+* Plugin updated to support [detect_product_long] 10.   
 	* [detect_product_long] [Release Notes](../../currentreleasenotes.md)
 
 ## Version 9.0.0
