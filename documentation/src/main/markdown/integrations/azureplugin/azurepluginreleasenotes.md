@@ -11,7 +11,7 @@ If you are an existing [detect_product_short] user, manually uninstall the [comp
 
 If you are a new user, you may proceed with installing the [detect_product_long] Plugin available at the following [Marketplace location](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect).    
 
-To continuing using the deprecated 9.x plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect).    
+<note type="attention">To continuing using the deprecated 9.x plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect).</note>
 
 **New features**
 
