@@ -3,8 +3,8 @@
 ## Version 10.0.0
 **Notice**
 
-The [company_name] Software Integrity Group is now Black Duck®.   
-If you are an existing Detect user, manually uninstall the [company_name] [detect_product_short] Plugin and install this plugin to receive future updates.   
+The [company_name] Software Integrity Group is now [var_company_name].   
+If you are an existing [detect_product_short] user, manually uninstall the [company_name] [detect_product_short] Plugin and install this plugin to receive future updates.   
 If you are a new user, you may proceed with installing the [detect_product_long] Plugin.   
 
 **New features**
