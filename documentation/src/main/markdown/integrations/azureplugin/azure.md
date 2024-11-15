@@ -15,7 +15,7 @@ Using the [detect_product_short] Extension for Azure DevOps together with [bd_pr
 
 
    <figure>
-    <img src="../azureplugin/images/bd_extension.png"
+    <img src="../azureplugin/images/bd-extension.png"
          alt="Plugin">
     <figcaption>Plugin</figcaption>
 </figure>
