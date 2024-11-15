@@ -27,7 +27,7 @@ It is recommended to invoke [detect_product_short] from the CI (build) pipeline.
    <figure>
     <img src="../azureplugin/images/introscreen.png"
          alt="Intro">
-    <figcaption>Intro screen</figcaption>
+    <figcaption>ADO Tasks screen</figcaption>
 </figure>
 
 ## Basic workflow
