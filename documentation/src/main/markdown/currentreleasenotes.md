@@ -17,6 +17,7 @@
 ### Changed features
 
 * npm version 1 package-lock.json and npm-shrinkwrap.json file parsing has been restored.
+* The `detect.project.codelocation.unmap` property has been deprecated.
 
 ### Resolved issues
 
