@@ -5,7 +5,7 @@ To install the [detect_product_short] for Jenkins plugin, perform the following 
 
 1. Navigate to **Manage Jenkins** > **Manage Plugins**.
 1. Select the **Available** tab. (Note that if the plugin is already installed, it does not appear in the **Available** list.)
-1. Select **Blackduck Detect**.
+1. Select **Blackduck [detect_product_short]**.
 1. Click **Download now and install after restart**. This is the recommendation for installing the plugin.
 1. After restarting Jenkins, confirm that the plugin is successfully installed by navigating to **Manage Jenkins** > **Manage Plugins > Installed**, and verify that **[company_name] [solution_name]** displays in the list.
 
@@ -16,7 +16,9 @@ Additional download locations listed in [Download locations](../../downloadingan
 For existing [company_name] [solution_name] Jenkins plugin users, the [detect_product_long] Jenkins plugin should be considered a fresh installation as the domain has changed.   
 * Before moving from the [detect_product_short] Jenkins plugin to the [detect_product_long] Jenkins plugin, you should take note of your existing system configuration and post-build setup.   
    * Configuration information can be located under your `JENKINS_HOME` directory.   
-* If you are using Air Gap Mode, before upgrading to the new plugin, make sure to save the current tool configuration that you have set in Manage Jenkins > Tools > Detect Air Gap Mode.
+* If you are utilizing a [detect_product_short] Post Build Step, before upgrading to the new plugin, make sure to record the current configuration set in the configurable pipelines.
+* If you are using System Configuration and [bd_product_long], before upgrading to the new plugin, make sure to record the current configuration set for the [bd_product_short] URL and token that you have set in Manage Jenkins > Configure System > [detect_product_long] section.
+* If you are using Air Gap mode, before upgrading to the new plugin, make sure to save the current tool configuration that you have set in Manage Jenkins > Tools > Detect Air Gap mode.
 
 ## Updating the [detect_product_long] for Jenkins plugin
 You can update the [detect_product_short] for Jenkins plugin when new versions are released.
