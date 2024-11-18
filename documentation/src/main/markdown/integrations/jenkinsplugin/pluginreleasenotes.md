@@ -2,7 +2,19 @@
 
 ## **Version 10.0.0**
 
+**Notice**
+
+The [company_name] Software Integrity Group is now [var_company_name]    
+* As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decomissioned in Feb. 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.    
+* Refer to the [Black Duck Domain Change FAQ](https://community.blackduck.com/s/article/Black-Duck-Domain-Change-FAQ#SDInstru).
+
 [company_name] [solution_name] Jenkins Plugin is now the [detect_product_long] Jenkins Plugin.
+
+For existing users, the [detect_product_long] Jenkins Plugin should be considered a fresh installation as the domain has changed. Before moving from the [detect_product_short] Jenkins Plugin to the [detect_product_long] Jenkins Plugin, you should take note of your existing system configuration. Configuration information can be located under your `JENKINS_HOME` directory.
+
+<note type="note">For continued functionality and to receive future updates to the Jenkins Plugin, you must upgrade prior to February 14th, 2025.</note>
+
+If you are a new user, you may proceed with installing the [detect_product_long] Jenkins Plugin.    
 
 **Changed features**
 
