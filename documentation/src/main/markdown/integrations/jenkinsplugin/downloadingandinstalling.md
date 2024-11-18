@@ -12,10 +12,11 @@ To install the [detect_product_short] for Jenkins plugin, perform the following 
 [detect_product_short] plugin for Jenkins GitHub page [jenkinsci](https://github.com/jenkinsci/blackduck-detect-plugin).
 Additional download locations listed in [Download locations](../../downloadingandrunning/downloadlocations.html).
 
-## Updating [company_name] [solution_name] Jenkins Plugin to [detect_product_long]
+## [company_name] [solution_name] Jenkins plugin to [detect_product_long] Jenkins plugin{#updating-existing-jenkins}
 For existing [company_name] [solution_name] Jenkins plugin users, the [detect_product_long] Jenkins plugin should be considered a fresh installation as the domain has changed.   
-Before moving from the [detect_product_short] Jenkins plugin to the [detect_product_long] Jenkins plugin, you should take note of your existing system configuration and post-build setup.   
-Configuration information can be located under your `JENKINS_HOME` directory.   
+* Before moving from the [detect_product_short] Jenkins plugin to the [detect_product_long] Jenkins plugin, you should take note of your existing system configuration and post-build setup.   
+   * Configuration information can be located under your `JENKINS_HOME` directory.   
+* If you are using Air Gap Mode, before upgrading to the new plugin, make sure to save the current tool configuration that you have set in Manage Jenkins > Tools > Detect Air Gap Mode.
 
 ## Updating the [detect_product_long] for Jenkins plugin
 You can update the [detect_product_short] for Jenkins plugin when new versions are released.

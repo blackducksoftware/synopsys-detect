@@ -10,11 +10,12 @@ The [company_name] Software Integrity Group is now [var_company_name]
 
 [company_name] [solution_name] Jenkins plugin is now the [detect_product_long] Jenkins plugin.
 
-For existing users, the [detect_product_long] Jenkins plugin should be considered a fresh installation as the domain has changed. Before moving from the [detect_product_short] Jenkins plugin to the [detect_product_long] Jenkins plugin, you should take note of your existing system configuration and post-build setup. Configuration information can be located under your `JENKINS_HOME` directory.
+For existing users, the [detect_product_long] Jenkins plugin should be considered a fresh installation as the domain has changed.
+Before moving from the [detect_product_short] Jenkins plugin to the [detect_product_long] Jenkins plugin, you should record your existing system configuration. See additional information about upgrading from the [detect_product_short] Jenkins plugin to the [detect_product_long] Jenkins plugin under [Downloading and Installing.](../jenkinsplugin/downloadingandinstalling.md#updating-existing-jenkins)
 
 <note type="note">For continued functionality and to receive future updates to the Jenkins plugin, you must upgrade to [detect_product_long] Jenkins plugin version 10.x prior to February 14th, 2025.</note>
 
-If you are a new user, you may proceed with installing the [detect_product_long] Jenkins plugin.    
+If you are a new user, you may proceed with installing the [detect_product_long] Jenkins plugin as per [Downloading and Installing](../jenkinsplugin/downloadingandinstalling.md).    
 
 **Changed features**
 
