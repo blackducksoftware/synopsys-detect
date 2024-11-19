@@ -16,7 +16,7 @@ Additional download locations listed in [Download locations](../../downloadingan
 For existing [company_name] [solution_name] Jenkins plugin users, the [detect_product_long] Jenkins plugin should be considered a fresh installation as the domain has changed.   
 * Before moving from the [detect_product_short] Jenkins plugin to the [detect_product_long] Jenkins plugin, you should take note of your existing system configuration and post-build setup.   
    * Configuration information can be located under your `JENKINS_HOME` directory.   
-* If you are utilizing a [detect_product_short] Post Build Step, before upgrading to the new plugin, make sure to record the current configuration set in the configurable pipelines.
+* If you are utilizing a [detect_product_short] Post Build Step, before upgrading to the [detect_product_long] plugin, make sure to record the current configuration set in the configurable pipelines.
    * For Groovy, you will need to update the **Pipeline** script; under **Pipelines** > **Pipeline_Name** > **Configuration**, replacing the `synopsys_detect detectProperties:` portion of the script with `blackduck_detect detectProperties:`
    
    Example:
@@ -33,8 +33,8 @@ For existing [company_name] [solution_name] Jenkins plugin users, the [detect_pr
 }
 ```
    
-* For the System Configuration and [bd_product_long], before upgrading to the new plugin, make sure to back up, or record the current configuration set for the [bd_product_short] URL and token that you have set in Manage Jenkins > Configure System > [detect_product_long] section.
-* If you are using Air Gap mode, before upgrading to the new plugin, make sure to save the current tool configuration that you have set in Manage Jenkins > Tools > Detect Air Gap mode.
+* For the System Configuration and [bd_product_long], before upgrading to the [detect_product_long] plugin, make sure to back up, or record the current configuration set for the [bd_product_short] URL and token that you have set in Manage Jenkins > Configure System > [detect_product_long] section.
+* If you are using Air Gap mode, before upgrading to the [detect_product_long] plugin, make sure to save the current tool configuration that you have set in Manage Jenkins > Tools > Detect Air Gap mode.
 
 ## Updating the [detect_product_long] for Jenkins plugin
 You can update the [detect_product_short] for Jenkins plugin when new versions are released.
