@@ -1,22 +1,23 @@
 package com.blackduck.integration.detectable.detectables.yarn;
 
-import com.blackduck.integration.bdio.graph.BasicDependencyGraph;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackduck.integration.bdio.graph.BasicDependencyGraph;
 import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.bdio.graph.builder.LazyBuilderMissingExternalIdHandler;
 import com.blackduck.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
 import com.blackduck.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo;
 import com.blackduck.integration.bdio.graph.builder.LazyId;
-import com.blackduck.integration.bdio.graph.builder.LazyIdSource;
 import com.blackduck.integration.bdio.graph.builder.MissingExternalIdException;
 import com.blackduck.integration.bdio.model.Forge;
 import com.blackduck.integration.bdio.model.dependency.Dependency;
@@ -39,6 +40,7 @@ public class YarnTransformer {
     public static final String STRING_ID_NAME_VERSION_SEPARATOR = "@";
     private final ExternalIdFactory externalIdFactory;
     private final Map<LazyId, Optional<NameVersion>> unMatchedDependencies = new HashMap<>();
+    private final VersionUtility versionUtility = new VersionUtility();
     private final EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter;
 
     public YarnTransformer(ExternalIdFactory externalIdFactory, EnumListFilter<YarnDependencyType> yarnDependencyTypeFilter) {
@@ -61,16 +63,20 @@ public class YarnTransformer {
     public List<CodeLocation> generateCodeLocations(YarnLockResult yarnLockResult, List<NameVersion> externalDependencies, @Nullable ExcludedIncludedWildcardFilter workspaceFilter)
         throws MissingExternalIdException {
         List<CodeLocation> codeLocations = new LinkedList<>();
-        logger.debug("Adding root dependencies for project: {}:{}", yarnLockResult.getRootPackageJson().getNameString(), yarnLockResult.getRootPackageJson().getVersionString());
-        DependencyGraph rootProjectGraph = buildGraphForProjectOrWorkspace(yarnLockResult, yarnLockResult.getRootPackageJson(), externalDependencies);
-        codeLocations.add(new CodeLocation(rootProjectGraph));
-        for (YarnWorkspace workspace : yarnLockResult.getWorkspaceData().getWorkspaces()) {
-            if ((workspaceFilter == null) || workspaceFilter.shouldInclude(workspace.getWorkspacePackageJson().getDirRelativePath())) {
-                logger.debug("Adding root dependencies for workspace: {}", workspace.getWorkspacePackageJson().getDirRelativePath());
-                DependencyGraph workspaceGraph = buildGraphForProjectOrWorkspace(yarnLockResult, workspace.getWorkspacePackageJson().getPackageJson(), externalDependencies);
-                ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspace.getWorkspacePackageJson().getDirRelativePath(), "local");
-                codeLocations.add(new CodeLocation(workspaceGraph, workspaceExternalId));
+        try {
+            logger.debug("Adding root dependencies for project: {}:{}", yarnLockResult.getRootPackageJson().getNameString(), yarnLockResult.getRootPackageJson().getVersionString());
+            DependencyGraph rootProjectGraph = buildGraphForProjectOrWorkspace(yarnLockResult, yarnLockResult.getRootPackageJson(), externalDependencies);
+            codeLocations.add(new CodeLocation(rootProjectGraph));
+            for (YarnWorkspace workspace : yarnLockResult.getWorkspaceData().getWorkspaces()) {
+                if ((workspaceFilter == null) || workspaceFilter.shouldInclude(workspace.getWorkspacePackageJson().getDirRelativePath())) {
+                    logger.debug("Adding root dependencies for workspace: {}", workspace.getWorkspacePackageJson().getDirRelativePath());
+                    DependencyGraph workspaceGraph = buildGraphForProjectOrWorkspace(yarnLockResult, workspace.getWorkspacePackageJson().getPackageJson(), externalDependencies);
+                    ExternalId workspaceExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, workspace.getWorkspacePackageJson().getDirRelativePath(), "local");
+                    codeLocations.add(new CodeLocation(workspaceGraph, workspaceExternalId));
+                }
             }
+        } catch(ArrayIndexOutOfBoundsException | NumberFormatException | NoSuchElementException ex) {
+            logger.error("Encountered a runtime error: {}. Continuing with the scan.", ex.getMessage());
         }
 
         return codeLocations;
@@ -83,22 +89,48 @@ public class YarnTransformer {
     ) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
         addRootDependenciesForProjectOrWorkspace(graphBuilder, projectOrWorkspacePackageJson, yarnLockResult.getWorkspaceData());
-        Map<String, Map<String, String>> resolvedEntryIdVersionMap = new HashMap<>(yarnLockResult.getYarnLock().getEntries().size());
+        Map<String, Map<String, String>> resolvedEntryIdVersionMap = recordAllEntriesAndVersions(yarnLockResult);
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
-            Map<String, String> entryIdsToResolvedVersionMap = new HashMap<>(entry.getIds().size());
             String entryName = entry.getIds().get(0).getName();
             if (shouldInclude(entryName, entry.getVersion())) {
                 // Yarn and patch libraries should not be included in the graph.
                 for (YarnLockEntryId entryId : entry.getIds()) {
-                    entryIdsToResolvedVersionMap.put(entryId.getVersion(), entry.getVersion());
                     LazyId id = generateComponentDependencyId(entryId.getName(), entryId.getVersion());
                     graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), generateComponentExternalId(entryId.getName(), entry.getVersion()));
                     addYarnLockDependenciesToGraph(yarnLockResult, graphBuilder, entry, id);
                 }
-                resolvedEntryIdVersionMap.put(entryName, entryIdsToResolvedVersionMap);
             }
         }
         return graphBuilder.build(getLazyBuilderHandler(externalDependencies, resolvedEntryIdVersionMap));
+    }
+    
+    private Map<String, Map<String, String>> recordAllEntriesAndVersions(YarnLockResult yarnLockResult) {
+        Map<String, Map<String, String>> resolvedEntryIdVersionMap = new HashMap<>();
+        for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
+            String entryName = entry.getIds().get(0).getName();
+            int start;
+            if ((start = entryName.indexOf("@npm:")) > 0) {
+                String parentEntryName = entryName.substring(0, start);
+                recordEntryAndVersionIntoMap(resolvedEntryIdVersionMap, entry, parentEntryName);
+                entryName = entryName.substring(start + "@npm:".length());
+            }
+            recordEntryAndVersionIntoMap(resolvedEntryIdVersionMap, entry, entryName);
+        }
+        return resolvedEntryIdVersionMap;
+    }
+    
+    private void recordEntryAndVersionIntoMap(Map<String, Map<String, String>> resolvedEntryIdVersionMap, YarnLockEntry entry, String entryName) {
+        Map<String, String> entryIdsToResolvedVersionMap = resolvedEntryIdVersionMap.computeIfAbsent(entryName, k -> new HashMap<>());
+        if (shouldInclude(entryName, entry.getVersion())) {
+            // Yarn and patch libraries should not be included in the graph.
+            for (YarnLockEntryId entryId : entry.getIds()) {
+                Optional<String> existingVersionvalue = Optional.ofNullable(entryIdsToResolvedVersionMap.putIfAbsent(entryId.getVersion(), entry.getVersion()));
+                if (existingVersionvalue.isPresent() && !existingVersionvalue.get().equals(entry.getVersion())) {
+                    logger.warn("Invalid data condition detected in the yarn.lock file: {} has the same entry {} mapped to different resolved versions. The later version will be chosen.", entryName, entryId.getVersion());
+                    entryIdsToResolvedVersionMap.put(entryId.getVersion(), entry.getVersion());
+                }
+            }
+        }
     }
 
     private void addYarnLockDependenciesToGraph(YarnLockResult yarnLockResult, LazyExternalIdDependencyGraphBuilder graphBuilder, YarnLockEntry entry, LazyId id) {
@@ -120,20 +152,7 @@ public class YarnTransformer {
             YarnLockResult yarnLockResult
     ) throws MissingExternalIdException {
         BasicDependencyGraph mutableDependencyGraph = new BasicDependencyGraph();
-        int countComponents = 0;
-        Map<String, Map<String, String>> resolvedEntryIdVersionMap = new HashMap<>(yarnLockResult.getYarnLock().getEntries().size());
-        for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
-            countComponents++;
-            Map<String, String> entryIdsToResolvedVersionMap = new HashMap<>(entry.getIds().size());
-            String entryName = entry.getIds().get(0).getName();
-            if (shouldInclude(entryName, entry.getVersion())) {
-                // Yarn and patch libraries should not be included in the graph.
-                for (YarnLockEntryId entryId : entry.getIds()) {
-                    entryIdsToResolvedVersionMap.put(entryId.getVersion(), entry.getVersion());
-                }
-                resolvedEntryIdVersionMap.put(entryName, entryIdsToResolvedVersionMap);
-            }
-        }
+        Map<String, Map<String, String>> resolvedEntryIdVersionMap = recordAllEntriesAndVersions(yarnLockResult);
         
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             String entryName = entry.getIds().get(0).getName();
@@ -219,7 +238,7 @@ public class YarnTransformer {
                 Optional<NameVersion> nameVersionOptional;
                 if (!unMatchedDependencies.containsKey(dependencyId)) {
                     String dependencyIdClean = dependencyId.toString().replace("\\/","/");
-                    nameVersionOptional = getNameVersion(dependencyIdClean);
+                    nameVersionOptional = VersionUtility.getNameVersion(dependencyIdClean);
                     logger.warn("No standard NPM package identification details are available for '{}' from the yarn.lock file", dependencyIdClean);
                     unMatchedDependencies.put(dependencyId, nameVersionOptional);
                 } else {
@@ -233,11 +252,19 @@ public class YarnTransformer {
     private LazyBuilderMissingExternalIdHandler getLazyBuilderHandler(List<NameVersion> externalDependencies, Map<String, Map<String, String>> resolvedEntryIdVersionMap) {
         return (dependencyId, lazyDependencyInfo) -> {
             String dependencyIdClean = dependencyId.toString().replace("\\/","/");
-            Optional<NameVersion> nameVersionOptional = getNameVersion(dependencyIdClean);
-            if (nameVersionOptional.isPresent() && resolvedEntryIdVersionMap.containsKey(nameVersionOptional.get().getName())) {
-                Map<String, String> entryIdVersionMap = resolvedEntryIdVersionMap.get(nameVersionOptional.get().getName());
-                if (entryIdVersionMap.containsKey(nameVersionOptional.get().getVersion())) {
-                    return generateComponentExternalId(nameVersionOptional.get().getName(), entryIdVersionMap.get(nameVersionOptional.get().getVersion()));
+            Optional<NameVersion> nameVersionOptional = VersionUtility.getNameVersion(dependencyIdClean);
+            String name;
+            if (nameVersionOptional.isPresent() && resolvedEntryIdVersionMap.containsKey(name = nameVersionOptional.get().getName())) {
+                Map<String, String> entryIdVersionMap = resolvedEntryIdVersionMap.get(name);
+                String version = nameVersionOptional.get().getVersion();
+                if (entryIdVersionMap.containsKey(version)) {
+                    return generateComponentExternalId(name, entryIdVersionMap.get(version));
+                } else {
+                    List<Version> versionList = entryIdVersionMap.values().stream().map(k -> versionUtility.buildVersion(k)).collect(Collectors.toList());
+                    Optional<String> resolvedVersion = versionUtility.resolveYarnVersion(versionList, name, version);
+                    if (resolvedVersion.isPresent()) {
+                        return generateComponentExternalId(name, resolvedVersion.get());
+                    }
                 }
             } else {
                 Optional<NameVersion> externalDependency = externalDependencies.stream().filter(it -> it.getName().equals(lazyDependencyInfo.getName())).findFirst();
@@ -258,25 +285,6 @@ public class YarnTransformer {
                 return generateComponentExternalId(dependencyId);
             }
         };
-    }
-    
-    private Optional<NameVersion> getNameVersion(String dependencyIdString) {
-        int start, mid, end;
-        String name;
-        if ((start = dependencyIdString.indexOf(LazyIdSource.STRING + "\",\"")) > -1
-                &&  (mid = dependencyIdString.indexOf(":", start)) > -1
-                && (end = dependencyIdString.indexOf("\"]}", mid)) > -1) {
-            name = dependencyIdString.substring(start + (LazyIdSource.STRING + "\",\"").length() + 1, mid);
-            String version = dependencyIdString.substring(mid + 1, end);
-            return Optional.of(new NameVersion(name, version));
-        } else if ((start = dependencyIdString.indexOf(LazyIdSource.NAME_VERSION + "\",\"")) > -1
-                && (mid = dependencyIdString.indexOf(":", start)) > -1
-                && (end = dependencyIdString.indexOf("\"]}", mid)) > -1) {
-            name = dependencyIdString.substring(start + (LazyIdSource.NAME_VERSION + "\",\"").length() + 1, mid);
-            String version = dependencyIdString.substring(mid + 1, end);
-            return Optional.of(new NameVersion(name, version));
-        }
-        return Optional.empty();
     }
     
     private void addRootDependenciesForProject(YarnLockResult yarnLockResult, NullSafePackageJson projectPackageJson, LazyExternalIdDependencyGraphBuilder graphBuilder) throws MissingExternalIdException {

@@ -216,14 +216,14 @@ class YarnTransformerTest {
         }
         rawPackageJson.devDependencies.put("bar", "barFuzzyVersion-1.0");
         if (version.equals(YARN_VERSION.YARN4)) {
-            rawPackageJson.devDependencies.put("@source/fubar@npm", "fubarFuzzyVersion-4.0");
+            rawPackageJson.devDependencies.put("@source/fubar@npm", "npm:fubarFuzzyVersion-4.0");
         }
         NullSafePackageJson packageJson = new NullSafePackageJson(rawPackageJson);
 
         // yarn.lock: foo and bar both depend on yarn
         List<YarnLockEntryId> yarnLockEntryIdsFoo = Collections.singletonList(new YarnLockEntryId("foo", "fooFuzzyVersion-1.0"));
         List<YarnLockEntryId> yarnLockEntryIdsBar = Collections.singletonList(new YarnLockEntryId("bar", "barFuzzyVersion-1.0"));
-        List<YarnLockEntryId> yarnLockEntryIdsFubar = Collections.singletonList(new YarnLockEntryId("@source/fubar@npm", "fubarFuzzyVersion-4.0"));
+        List<YarnLockEntryId> yarnLockEntryIdsFubar = Collections.singletonList(new YarnLockEntryId("@source/fubar@npm", "npm:fubarFuzzyVersion-4.0"));
         List<YarnLockEntryId> yarnLockEntryIdsYarn = Collections.singletonList(new YarnLockEntryId("yarn", "^1.22.4"));
         List<YarnLockDependency> dependencyRefToYarn = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
         List<YarnLockEntry> yarnLockEntries = new LinkedList<>();
@@ -234,7 +234,7 @@ class YarnTransformerTest {
             projectDependencies.add(new YarnLockDependency("foo", "fooFuzzyVersion-1.0", false));
             projectDependencies.add(new YarnLockDependency("bar", "barFuzzyVersion-1.0", false));
             if (version.equals(YARN_VERSION.YARN4)) {
-                projectDependencies.add(new YarnLockDependency("@source/fubar@npm", "fubarFuzzyVersion-4.0", false));
+                projectDependencies.add(new YarnLockDependency("@source/fubar", "npm:fubarFuzzyVersion-4.0", false));
             }
             for (NameVersion workspaceThatIsDependency : workspacesThatAreDependencies) {
                 projectDependencies.add(new YarnLockDependency(workspaceThatIsDependency.getName(), workspaceThatIsDependency.getVersion(), false));
