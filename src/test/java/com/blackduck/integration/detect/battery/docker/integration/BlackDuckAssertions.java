@@ -19,8 +19,6 @@ import com.blackduck.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.blackduck.integration.common.util.Bds;
 import com.blackduck.integration.exception.IntegrationException;
 import com.blackduck.integration.util.NameVersion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class BlackDuckAssertions {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ProjectService projectService;
     private final BlackDuckApiClient blackDuckApiClient;
     private final ProjectBomService projectBomService;
@@ -63,8 +60,6 @@ public class BlackDuckAssertions {
         List<ProjectVersionComponentVersionView> bomComponents = projectBomService.getComponentsForProjectVersion(optionalProjectVersionWrapper.get().getProjectVersionView());
         assertEquals(0, bomComponents.size());
 
-        logger.info("testing info logger");
-        logger.debug("testing debug logger");
         return optionalProjectVersionWrapper.get();
     }
 
