@@ -5,7 +5,7 @@
 **Notice**
 
 The [company_name] Software Integrity Group is now [var_company_name]    
-* As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decomissioned in Feb. 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.    
+* As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decommissioned in Feb. 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.    
 * Refer to the [Black Duck Domain Change FAQ](https://community.blackduck.com/s/article/Black-Duck-Domain-Change-FAQ#SDInstru).
 
 [company_name] [solution_name] Jenkins plugin is now the [detect_product_long] Jenkins plugin.
@@ -13,7 +13,7 @@ The [company_name] Software Integrity Group is now [var_company_name]
 For existing users, the [detect_product_long] Jenkins plugin should be considered a fresh installation as the domain has changed.
 Before moving from the [detect_product_short] Jenkins plugin to the [detect_product_long] Jenkins plugin, you should record your existing system configuration. See additional information about upgrading from the [detect_product_short] Jenkins plugin to the [detect_product_long] Jenkins plugin under [Downloading and Installing.](../jenkinsplugin/downloadingandinstalling.md#updating-existing-jenkins)
 
-<note type="note">For continued functionality and to receive future updates to the Jenkins plugin, you must upgrade to [detect_product_long] Jenkins plugin version 10.x prior to February 14th, 2025.</note>
+<note type="note">For continued functionality and to receive future updates to the Jenkins plugin, you must upgrade to [detect_product_long] Jenkins plugin version 10.0.0 prior to February 14th, 2025.</note>
 
 If you are a new user, you may proceed with installing the [detect_product_long] Jenkins plugin as per [Downloading and Installing](../jenkinsplugin/downloadingandinstalling.md).    
 
