@@ -114,11 +114,7 @@ public class GradleNativeInspectorTests {
             blackduckAssertions.checkComponentVersionNotExists("Apache Log4j", "2.22.1");
             blackduckAssertions.checkComponentVersionExists("graphql-java", "18.2");
             blackduckAssertions.checkComponentVersionNotExists("SLF4J API Module", "2.0.4");
-            try {
-                blackduckAssertions.checkComponentVersionExists("googleguava", "v29.0"); // see it in the UI ??
-            } catch (Throwable t) {
-                dockerAssertions.logContains("definitely not");
-            }
+            blackduckAssertions.checkComponentVersionExists("googleguava", "v29.0");
             blackduckAssertions.checkComponentVersionNotExists("Apache Log4J API", "2.22.1");
 
         }
