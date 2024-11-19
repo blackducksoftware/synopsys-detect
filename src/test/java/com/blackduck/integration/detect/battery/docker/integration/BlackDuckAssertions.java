@@ -108,6 +108,10 @@ public class BlackDuckAssertions {
 
     public void hasComponents(Set<String> componentNames) throws IntegrationException {
         List<ProjectVersionComponentVersionView> bomComponents = getBomComponents();
+        for (ProjectVersionComponentVersionView bomCompo : bomComponents) {
+            System.out.println("About to print out components in BOM: ");
+            System.out.println(bomCompo.getComponentName());
+        }
         componentNames.forEach(componentName -> {
             Optional<ProjectVersionComponentVersionView> blackDuckCommonComponent = bomComponents.stream()
                 .filter(ProjectVersionComponentView -> componentName.equals(ProjectVersionComponentView.getComponentName()))
