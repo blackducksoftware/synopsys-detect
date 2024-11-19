@@ -40,11 +40,11 @@ public class MavenShadedDependenciesTest {
             commandBuilder.property(DetectProperties.DETECT_MAVEN_INCLUDE_SHADED_DEPENDENCIES, String.valueOf(true));
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
-            dockerAssertions.logContains("Maven CLI: SUCCESS");
+            dockerAssertions.logContains("definitely not");
             dockerAssertions.atLeastOneBdioFile();
 
             try {
-                blackduckAssertions.hasComponents("ch.randelshofer:fastdoubleparser");
+                blackduckAssertions.hasComponents("ch.randelshofer:fastdoubleparser"); // fails here, does not have this component
                 blackduckAssertions.hasComponents("Java Concurrency Tools Core Library");
                 blackduckAssertions.hasComponents("Byte Buddy (with dependencies)");
             } catch (Throwable t) {
