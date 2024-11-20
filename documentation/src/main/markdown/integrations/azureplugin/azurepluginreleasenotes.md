@@ -12,7 +12,7 @@ The [company_name] Software Integrity Group is now [var_company_name]
 Prior to upgrading to the [detect_product_short] plugin, you must manually uninstall the [company_name] [detect_product_short] plugin. 
 	* Installing the [detect_product_long] plugin will ensure you receive future plugin updates.   
 
-After uninstalling a previous plugin or if you are a new user, you may proceed with installing the [detect_product_long] plugin available at the following [Marketplace location](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect).    
+After uninstalling a previous [company_name] [detect_product_short] plugin or if you are a new user, you may proceed with installing the [detect_product_long] plugin available at the following [Marketplace location](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect).    
 
 **New features**
 
