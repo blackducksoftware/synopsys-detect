@@ -28,7 +28,8 @@ public class Version implements Comparable<Version> {
         @Override
         public int compareTo(Version o) {
             if (this.major == o.major
-                    && this.minor == o.minor) {
+                    && this.minor == o.minor
+                    && this.patch == o.patch) {
                 return 0;
             } else if (this.major > o.major
                     || (this.major == o.major && this.minor > o.minor)
