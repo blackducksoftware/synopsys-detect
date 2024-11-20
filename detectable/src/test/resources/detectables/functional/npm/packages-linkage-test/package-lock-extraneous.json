@@ -1,0 +1,14 @@
+{
+    "name": "npmworkspace",
+    "version": "1.0.0",
+    "lockfileVersion": 3,
+    "requires": true,
+    "packages": {
+      "node_modules/testpackage/node_modules/extraneouspackage": {
+        "name": "extraneouspackage",
+        "version": "1.0.0",
+        "license": "ISC",
+        "extraneous": true
+      }
+    }
+  }

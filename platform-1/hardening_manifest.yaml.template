@@ -36,8 +36,8 @@ labels:
 
 # List of resources to make available to the offline build context
 resources:
-- filename: synopsys-detect-RELEASE_VERSION-air-gap.zip
-  url: https://sig-repo.synopsys.com/artifactory/blackduck-repo1.dso.mil-generic/blackduck-client/synopsys-detect-RELEASE_VERSION-air-gap.zip
+- filename: detect-RELEASE_VERSION-air-gap.zip
+  url: https://sig-repo.synopsys.com/artifactory/blackduck-repo1.dso.mil-generic/blackduck-client/detect-RELEASE_VERSION-air-gap.zip
   validation:
     type: sha256
     value: ZIP_SHA256_VALUE

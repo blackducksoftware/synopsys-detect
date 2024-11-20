@@ -1,5 +1,7 @@
 #!/bin/bash
-#
+
+# TODO - update URLs for Black Duck
+
 # Generate diffs showing what changed in doc between two Detect versions
 #
 if [ "$#" -ne 2 ]; then
@@ -37,8 +39,8 @@ chmod +x ${diffOneScript}
 
 mkdir ${oldVersion}
 cd ${oldVersion}
-git clone https://github.com/blackducksoftware/synopsys-detect.git
-cd synopsys-detect
+git clone https://github.com/blackducksoftware/detect.git
+cd detect
 git checkout tags/${oldVersion}
 
 # Write the header
@@ -52,8 +54,8 @@ echo "" >> ${intermediateOutputFilePath}
 cd "${workingDir}"
 mkdir ${newVersion}
 cd ${newVersion}
-git clone https://github.com/blackducksoftware/synopsys-detect.git
-cd synopsys-detect
+git clone https://github.com/blackducksoftware/detect.git
+cd detect
 git checkout tags/${newVersion}
 
 # Write the header

@@ -1,0 +1,55 @@
+package com.blackduck.integration.detect.configuration;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Collections;
+
+import org.junit.jupiter.api.Test;
+
+import com.google.gson.Gson;
+import com.blackduck.integration.configuration.config.PropertyConfiguration;
+import com.blackduck.integration.configuration.property.types.path.SimplePathResolver;
+import com.blackduck.integration.configuration.source.MapPropertySource;
+import com.blackduck.integration.configuration.source.PropertySource;
+import com.blackduck.integration.detect.configuration.DetectConfigurationFactory;
+import com.blackduck.integration.detect.configuration.DetectProperties;
+import com.blackduck.integration.detect.configuration.DetectPropertyConfiguration;
+import com.blackduck.integration.detect.workflow.bdio.BdioOptions;
+
+public class DetectConfigurationTest {
+    @Test
+    public void testPhoneHomePassthroughProperties() {
+        final String givenKeyPhoneHomePart = "x.y.z";
+        final String givenKeyFull = "detect.phone.home.passthrough." + givenKeyPhoneHomePart;
+        final String givenValue = "testValue";
+
+        HashMap<String, String> values = new HashMap<>();
+        values.put(givenKeyFull, givenValue);
+        List<PropertySource> propertySources = new ArrayList<>();
+        propertySources.add(new MapPropertySource("test", values));
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources, Collections.emptySortedMap());
+
+        Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH);
+        assertEquals(givenValue, phoneHomePropertiesMap.get(givenKeyPhoneHomePart));
+    }
+
+    @Test
+    public void testGenericProperty() {
+        HashMap<String, String> values = new HashMap<>();
+        values.put(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX.getKey(), "some_prefix");
+        List<PropertySource> propertySources = new ArrayList<>();
+        propertySources.add(new MapPropertySource("test", values));
+        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources, Collections.emptySortedMap());
+        DetectPropertyConfiguration detectPropertyConfiguration = new DetectPropertyConfiguration(propertyConfiguration, new SimplePathResolver());
+        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectPropertyConfiguration, new Gson());
+        BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
+        assertTrue(bdioOptions.getProjectCodeLocationPrefix().isPresent());
+        assertEquals("some_prefix", bdioOptions.getProjectCodeLocationPrefix().get());
+    }
+
+}

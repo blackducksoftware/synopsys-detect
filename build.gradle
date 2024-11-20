@@ -1,5 +1,5 @@
-import com.synopsys.integration.detect.battery.UpdateBatteryTask
-import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
+import com.blackduck.integration.detect.battery.UpdateBatteryTask
+import com.blackduck.integration.detect.verification.VerifyBlackDuckDetectTask
 
 
 buildscript {
@@ -19,11 +19,11 @@ buildscript {
     }
 }
 
-group = 'com.synopsys.integration'
+group = 'com.blackduck.integration'
 
-version = '10.0.0-SIGQA5-SNAPSHOT'
+version = '10.1.0-SIGQA6'
 
-apply plugin: 'com.synopsys.integration.solution'
+apply plugin: 'com.blackduck.integration.solution'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -46,19 +46,19 @@ def createBatteryPath() {
     return "${buildDir}/battery/"
 }
 
-def final locatorGroup = "com.synopsys.integration"
+def final locatorGroup = "com.blackduck.integration"
 def final locatorModule = "component-locator"
-final def externalRepoHost = "https://sig-repo.synopsys.com"
+final def externalRepoHost = "https://repo.blackduck.com"
 final def internalRepoHost = System.getenv('SNPS_INTERNAL_ARTIFACTORY')
 
 repositories {
     println "Checking if environment property SNPS_INTERNAL_ARTIFACTORY is configured: ${internalRepoHost}"
     maven {
-        url = uri("${internalRepoHost}/artifactory/bds-integrations-release")
+        url = uri("${internalRepoHost}/artifactory/bds-integrations-release-not-mirrored")
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
-        url = uri("${internalRepoHost}/artifactory/bds-integrations-snapshot")
+        url = uri("${internalRepoHost}/artifactory/bds-integrations-snapshot-not-mirrored")
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
@@ -66,7 +66,7 @@ repositories {
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
-        url = uri("${externalRepoHost}/artifactory/bds-integration-placeholder-release")
+        url = uri("${externalRepoHost}/bds-integration-placeholder-release")
         content { includeModule(locatorGroup, locatorModule) }
     }
     maven {
@@ -91,7 +91,7 @@ tasks.named("bootJar") {
     version = rootProject.version
     manifest {
         attributes 'Main-Class': "org.springframework.boot.loader.JarLauncher"
-        attributes 'Start-Class': "com.synopsys.integration.detect.Application"
+        attributes 'Start-Class': "com.blackduck.integration.detect.Application"
     }
     classpath sourceSets.main.runtimeClasspath
 }
@@ -99,7 +99,7 @@ tasks.named("bootJar") {
 subprojects {
     group = rootProject.group
     version = rootProject.version
-    apply plugin: 'com.synopsys.integration.simple'
+    apply plugin: 'com.blackduck.integration.simple'
 }
 
 allprojects {
@@ -110,7 +110,9 @@ allprojects {
     dependencies {
         implementation "com.google.guava:guava:32.1.2-jre"
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0'
-
+        implementation 'org.yaml:snakeyaml:2.0'
+        // jackson-core is a transitive dep coming from jackson-dataformat-yaml, earlier versions have vulnerability sonatype-2022-6438
+        implementation('com.fasterxml.jackson.core:jackson-core:2.15.0')
         implementation 'org.freemarker:freemarker:2.3.31'
         implementation 'org.apache.httpcomponents:httpclient-osgi:4.5.14'
 
@@ -149,10 +151,10 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:1.2.13'
 
     implementation 'com.blackducksoftware.bdio:bdio-protobuf:3.2.10'
-    implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
-    implementation 'com.synopsys.integration:blackduck-upload-common:1.1.0'
+    implementation "com.blackduck.integration:blackduck-common:${blackDuckCommonVersion}"
+    implementation 'com.blackduck.integration:blackduck-upload-common:4.1.0'
     implementation 'com.synopsys:method-analyzer-core:0.2.9'
-    implementation "${locatorGroup}:${locatorModule}:1.1.13"
+    implementation "${locatorGroup}:${locatorModule}:2.0.0"
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
 
@@ -167,7 +169,6 @@ dependencies {
     implementation("org.springframework:spring-context:5.3.34")
     implementation("org.springframework.boot:spring-boot")
 
-    implementation 'org.yaml:snakeyaml:2.0'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.apache.pdfbox:pdfbox:2.0.27'
 
@@ -208,7 +209,7 @@ dependencies {
     testImplementation 'com.github.docker-java:docker-java-transport-httpclient5:3.3.0'
 }
 
-springBoot { mainClass = 'com.synopsys.integration.detect.Application' }
+springBoot { mainClass = 'com.blackduck.integration.detect.Application' }
 
 if (project.tasks.findByName('testBattery')) {
     tasks['testBattery'].doFirst {
@@ -227,7 +228,7 @@ task runDetect(type: JavaExec) {
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
-    main = 'com.synopsys.integration.detect.Application'
+    main = 'com.blackduck.integration.detect.Application'
     args = ['--detect.risk.report.pdf=true']
 }
 
@@ -265,7 +266,7 @@ task createAirGapZip(type: JavaExec) {
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
-    main = 'com.synopsys.integration.detect.Application'
+    main = 'com.blackduck.integration.detect.Application'
     args = [findGradle(), "--detect.output.path=${buildDir}/libs/", '-z']
     standardOutput = new ByteArrayOutputStream()
     doLast {
@@ -281,7 +282,7 @@ task publishAirGapZip() {
         def airGapZipLocation = createAirGapZip.ext.airGapPath
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
-                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/blackduck/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
         }
     }
 }
@@ -291,7 +292,7 @@ task createAirGapZipWithoutDocker(type: JavaExec) {
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
-    main = 'com.synopsys.integration.detect.Application'
+    main = 'com.blackduck.integration.detect.Application'
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZipWithoutDocker.ext.airGapPath = parseAirGapZipPath(standardOutput)
@@ -308,7 +309,7 @@ task publishAirGapZipWithoutDocker() {
         def airGapZipLocation = createAirGapZipWithoutDocker.ext.airGapPath
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
-                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
+                    "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/blackduck/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
         }
     }
 }
@@ -328,7 +329,7 @@ task helpJson(type: JavaExec) {
 
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
-    main = 'com.synopsys.integration.detect.Application'
+    main = 'com.blackduck.integration.detect.Application'
     args = ['--helpjson']
 }
 

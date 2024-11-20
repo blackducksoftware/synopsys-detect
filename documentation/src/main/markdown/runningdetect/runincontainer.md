@@ -1,58 +1,58 @@
-# Running [company_name] [solution_name] from within a Docker container
+# Running [detect_product_short] from within a Docker container
 
-[company_name] [solution_name] publishes Docker images which can be used to run [company_name] [solution_name] from within a Docker container.
+[detect_product_long] publishes Docker images which can be used to run [detect_product_short] from within a Docker container.
 
 ## To Use
 
-To run a container built from a [company_name] [solution_name] image, use the Docker CLI's `docker run` command.
+To run a container built from a [detect_product_short] image, use the Docker CLI's `docker run` command.
 
 * Use the -it options to view logs during the container run.
 
-* Use the -v option to create a bind mount that will link a provided path to project source on your host to the /source directory within the container. Do this in place of providing the --detect.source.path property, as you would when running [company_name] [solution_name] via the script or jar.
+* Use the -v option to create a bind mount that will link a provided path to project source on your host to the /source directory within the container. Do this in place of providing the --detect.source.path property, as you would when running [detect_product_short] via the script or jar.
 
-* You may also use the -v option to create a bind mount that will link a provided path to an output directory on your host to the /output directory within the container.  Do this in place of providing the --detect.output.path property, as you would when running [company_name] [solution_name] via the script or jar.
+* You may also use the -v option to create a bind mount that will link a provided path to an output directory on your host to the /output directory within the container.  Do this in place of providing the --detect.output.path property, as you would when running [detect_product_short] via the script or jar.
 
 * Use the --rm option to clean up the container once it exits.
 
-* Provide [company_name] [solution_name] property values as you would when running via the [company_name] [solution_name] script or the [company_name] [solution_name] jar, at the end of the `docker run` command.
+* Provide [detect_product_short] property values as you would when running via the [detect_product_short] script or the [detect_product_short] jar, at the end of the `docker run` command.
 
 Find available images [here](https://hub.docker.com/repository/docker/blackducksoftware/detect).
 
-Find the source for them (Dockerfiles) [here](https://github.com/blackducksoftware/synopsys-detect-docker).
+Find the source for them (Dockerfiles) [here](https://github.com/blackducksoftware/detect-docker).
 
 The format of image names is: `blackducksoftware/detect:[detect_version]-[package_manager]-[package_manager_version]`
 
-* If you want an image with the latest supported release for a major version of [company_name] [solution_name], and the latest supported version of a package manager, such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-[package_manager]`
+* If you want an image with the latest supported release for a major version of [detect_product_short], and the latest supported version of a package manager, such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-[package_manager]`
 
-### [company_name] [solution_name] Basic Images
+### [detect_product_short] Basic Images
 
-If you wish to build your own custom [company_name] [solution_name] image, to run [company_name] [solution_name] in buildless mode, or to run non-detector tools such as the Signature Scanner or Binary Scanner, there also exist "simple" [company_name] [solution_name] images.  These images contain no package manager files or executables.
+If you wish to build your own custom [detect_product_short] image, to run [detect_product_short] in buildless mode, or to run non-detector tools such as the Signature Scanner or Binary Scanner, there also exist "simple" [detect_product_short] images.  These images contain no package manager files or executables.
 
 The format of "simple" image names is: `blackducksoftware/detect:[detect_version]`
 
-* If you want an image with the latest supported release for a major version of [company_name] [solution_name], such images are named in the following format: `blackducksoftware/detect:[detect_major_version]`
+* If you want an image with the latest supported release for a major version of [detect_product_short], such images are named in the following format: `blackducksoftware/detect:[detect_major_version]`
 
-#### [company_name] [solution_name] Buildless Images
+#### [detect_product_short] Buildless Images
 
-There also exist "buildless" [company_name] [solution_name] images.  These images automatically pass the argument --detect.accuracy.required=NONE when running to make [company_name] [solution_name] as resilient as possible (it will evaluate all applicable detectors, regardless of their accuracy, in order to get results).
+There also exist "buildless" [detect_product_short] images.  These images automatically pass the argument --detect.accuracy.required=NONE when running to make [detect_product_short] as resilient as possible (it will evaluate all applicable detectors, regardless of their accuracy, in order to get results).
 
 The format of "buildless" image names is: `blackducksoftware/detect:[detect_version]-buildless`
 
-* If you want a buildless image with the latest supported release for a major version of [company_name] [solution_name], such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-buildless`
+* If you want a buildless image with the latest supported release for a major version of [detect_product_short], such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-buildless`
 
-#### [company_name] [solution_name] IaC Images
+#### [detect_product_short] IaC Images
 
-If you wish to perform an IaC Scan via [company_name] [solution_name] in a Docker container, there exist "iac" [company_name] [solution_name] images.  The scanner that [company_name] [solution_name] uses to perform IaC scans is not supported in other [company_name] [solution_name] images.
+If you wish to perform an IaC Scan via [detect_product_short] in a Docker container, there exist "iac" [detect_product_short] images.  The scanner that [detect_product_short] uses to perform IaC scans is not supported in other [detect_product_short] images.
 
 The format of "iac" image names is: `blackducksoftware/detect:[detect_version]-iac`
 
-* If you want an iac image with the latest supported release for a major version of [company_name] [solution_name], such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-iac`
+* If you want an iac image with the latest supported release for a major version of [detect_product_short], such images are named in the following format: `blackducksoftware/detect:[detect_major_version]-iac`
 
 ### Examples
 
 `docker run -it --rm -v [/path/to/source]:/source -v [/path/to/outputDir]:/output blackducksoftware/detect:[detect_image_tag] [detect_arguments]`
 
-`docker run -it --rm -v /home/my/gradle/project:/source -v /home/for/detect/output/files:/output blackducksoftware/detect:9.6.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
+`docker run -it --rm -v /home/my/gradle/project:/source -v /home/for/detect/output/files:/output blackducksoftware/detect:10.0.0 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 
 `docker run -it --rm -v /home/my/maven/project:/source -v /home/for/detect/output/files:/output blackducksoftware/detect:9 --blackduck.url=https://my.blackduck.url --blackduck.api.token=MyT0kEn`
 

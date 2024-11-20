@@ -1,7 +1,7 @@
 # Risk Report Generation
 
-[company_name] [solution_name] can generate a [blackduck_product_name] risk report in PDF format.
-[company_name] [solution_name] looks for risk report generation details in the properties whose names start with detect.risk.report, including:
+[detect_product_long] can generate a [bd_product_long] risk report in PDF format.
+[detect_product_short] looks for risk report generation details in the properties whose names start with detect.risk.report, including:
 
 * detect.risk.report.pdf (enable report generation by setting to "true")
 * detect.risk.report.pdf.path (path where the generated report will be located)
@@ -24,10 +24,10 @@ When generating the risk report file, non-alphanumeric characters separating por
 
 ### Air Gap
 
-Normally font files used in creating the risk report pdf are downloaded from Artifactory. If you are using the [company_name] [solution_name] air gap, the font files are retrieved from a directory called 'fonts' that is a child to the root of the air gap directory.
+Normally font files used in creating the risk report pdf are downloaded from Artifactory. If you are using the [detect_product_short] air gap, the font files are retrieved from a directory called 'fonts' that is a child to the root of the air gap directory.
 
-To specify custom fonts when using the [company_name] [solution_name] air gap zip, you must unzip the produced airgap zip file and then place a .ttf font file in a directory called "custom-regular" and/or "custom-bold" that is a child to the directory airGapRoot/fonts.
+To specify custom fonts when using the [detect_product_short] air gap zip, you must unzip the produced airgap zip file and then place a .ttf font file in a directory called "custom-regular" and/or "custom-bold" that is a child to the directory airGapRoot/fonts.
 
 Example
 
-* ```synopsys-detect-detect_version-air-gap/fonts/custom-regular/my-custom-regular-font.ttf```
+* ```detect-detect_version-air-gap/fonts/custom-regular/my-custom-regular-font.ttf```
