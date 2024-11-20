@@ -21,7 +21,9 @@ The [company_name] Software Integrity Group is now [var_company_name]
 
 ## Version 9.0.1
 
-<note type="notice">`detect.synopsys.com` is being deprecated in favor of `detect.blackduck.com`. After Feb. 14th 2025, only `detect.blackduck.com` will be available.</note>
+**Notice**
+
+`detect.synopsys.com` is being deprecated in favor of `detect.blackduck.com`. After Feb. 14th 2025, only `detect.blackduck.com` will be available.
 
 <note type="attention">To continuing using the deprecated [company_name] [detect_product_short] plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect) before Feb. 14th 2025.</note>
 **Changed features**
