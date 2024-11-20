@@ -4,19 +4,28 @@
 **Notice**
 
 The [company_name] Software Integrity Group is now [var_company_name]    
-* As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decomissioned in Feb. 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.    
+* As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decomissioned on Feb. 14th 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.    
 * Refer to the [Black Duck Domain Change FAQ](https://community.blackduck.com/s/article/Black-Duck-Domain-Change-FAQ#SDInstru).
+<note type="note">It is recommended that customers continue to maintain `sig-repo.synopsys.com`, and `repo.blackduck.com` on their allow list until February 2025 when `sig-repo.synopsys.com` will be fully replaced by `repo.blackduck.com`.</note>
 
-If you are an existing [detect_product_short] user, manually uninstall the [company_name] [detect_product_short] Plugin and install the [detect_product_long] Plugin to receive future updates.    
+### Upgrading from [company_name] [detect_product_short] plugin to [detect_product_long] plugin
+Prior to upgrading to the [detect_product_short] plugin, manually uninstall the [company_name] [detect_product_short] plugin. Installing the [detect_product_long] plugin will ensure you receive future plugin updates.   
 
-If you are a new user, you may proceed with installing the [detect_product_long] Plugin available at the following [Marketplace location](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect).    
+If you are a new user, you may proceed with installing the [detect_product_long] plugin available at the following [Marketplace location](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect).    
 
-<note type="attention">To continuing using the deprecated 9.0.0 plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect).</note>
+<note type="attention">To continuing using the deprecated plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect).</note>
 
 **New features**
 
 * Plugin updated to support [detect_product_long] 10.
 	* [detect_product_long] [Release Notes](../../currentreleasenotes.md)
+
+## Version 9.0.1
+**Changed features**
+
+* Adds logic to pull the [detect_product_short] jar file. If this is not accessible, the plugin will fall back to the synopsys-detect jar file.
+
+<note type="important">It is essential to update to 9.0.1 before `detect.synopsys.com` is decommissioned on Feb. 14th 2025.</note>
 
 ## Version 9.0.0
 **New features**

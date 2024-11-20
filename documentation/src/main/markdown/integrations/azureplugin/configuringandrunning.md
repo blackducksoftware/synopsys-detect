@@ -23,11 +23,11 @@ Configure your [detect_product_long] for Azure DevOps plugin by adding configura
 
 For more information on [detect_product_short] arguments, refer to [Properties](../../properties/configuration/overview.md).
 
-1. **[detect_product_short] Folder**: The location to download the [detect_product_short] jar or the location of an existing [detect_product_short] jar. The default is the system temp directory. To specify a different directory, type the directory path and name in the field.
+* **[detect_product_short] Folder**: The location to download the [detect_product_short] jar or the location of an existing [detect_product_short] jar. The default is the system temp directory. To specify a different directory, type the directory path and name in the field.
 
 Windows agents require an absolute path when specifying [detect_product_short] download location in the **[detect_product_short] Folder** field.
 
-1. **Add [detect_product_short] Task Summary**: Click this checkbox to add a summary of the [detect_product_short] task to the build summary task.
+* **Add [detect_product_short] Task Summary**: Click this checkbox to add a summary of the [detect_product_short] task to the build summary task.
 
 
 In the user interface, fields with a red asterisk ( **\*** ) are required. Some default values are provided, such as version.
