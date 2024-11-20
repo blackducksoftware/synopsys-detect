@@ -21,7 +21,7 @@ After uninstalling a previous [company_name] [detect_product_short] plugin or if
 
 ## Version 9.0.1
 
-<note type="attention">To continuing using the deprecated plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect).</note>
+<note type="attention">To continuing using the deprecated [company_name] [detect_product_short] plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect).</note>
 
 **Changed features**
 
