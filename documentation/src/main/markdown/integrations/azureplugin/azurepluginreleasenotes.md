@@ -29,7 +29,7 @@ The [company_name] Software Integrity Group is now [var_company_name]
 <note type="attention">To continuing using the deprecated [company_name] [detect_product_short] plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect), before Feb. 14th 2025.</note>
 **Changed features**
 
-* Adds logic to fallback between pulling the [detect_product_short] script from `detect.synopys.com` and `detect.blackduck.com`.
+* Adds logic to fall back between pulling the [detect_product_short] script from `detect.synopys.com` and `detect.blackduck.com`.
 
 ## Version 9.0.0
 **New features**
