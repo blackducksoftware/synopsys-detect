@@ -13,9 +13,8 @@ From the Azure Pipelines page, add the [detect_product_long] plug-in for ADO.
          alt="Adding the plugin">
     <figcaption>Adding the plugin</figcaption>
 </figure>
-
-* Now appears as a pipeline option.   
-
+   
+* Detect now appears as a pipeline option.   
    <figure>
     <img src="../azureplugin/images/installing2.png"
          alt="Pipeline option">

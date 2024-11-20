@@ -9,11 +9,10 @@ The [company_name] Software Integrity Group is now [var_company_name]
 <note type="note">It is recommended that customers continue to maintain `sig-repo.synopsys.com`, and `repo.blackduck.com` on their allow list until February 2025 when `sig-repo.synopsys.com` will be fully replaced by `repo.blackduck.com`.</note>
 
 ### Upgrading from [company_name] [detect_product_short] plugin to [detect_product_long] plugin
-Prior to upgrading to the [detect_product_short] plugin, manually uninstall the [company_name] [detect_product_short] plugin. Installing the [detect_product_long] plugin will ensure you receive future plugin updates.   
+Prior to upgrading to the [detect_product_short] plugin, you must manually uninstall the [company_name] [detect_product_short] plugin. 
+	* Installing the [detect_product_long] plugin will ensure you receive future plugin updates.   
 
-If you are a new user, you may proceed with installing the [detect_product_long] plugin available at the following [Marketplace location](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect).    
-
-<note type="attention">To continuing using the deprecated plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect).</note>
+After uninstalling a previous plugin or if you are a new user, you may proceed with installing the [detect_product_long] plugin available at the following [Marketplace location](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect).    
 
 **New features**
 
@@ -21,6 +20,9 @@ If you are a new user, you may proceed with installing the [detect_product_long]
 	* [detect_product_long] [Release Notes](../../currentreleasenotes.md)
 
 ## Version 9.0.1
+
+<note type="attention">To continuing using the deprecated plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect).</note>
+
 **Changed features**
 
 * Adds logic to pull the [detect_product_short] jar file. If this is not accessible, the plugin will fall back to the synopsys-detect jar file.
