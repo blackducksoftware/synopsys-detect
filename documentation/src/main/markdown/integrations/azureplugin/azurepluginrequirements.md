@@ -15,4 +15,4 @@ The [detect_product_short] plugin for Azure DevOps is supported on the same oper
 For scanning NuGet projects, verify that you have the NuGet tool installer set up in the build job definition.
 For further information see [NuGet tool](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/nuget?view=azure-devops&viewFallbackFrom=vsts%3Fview%3Dvsts)
 
-You can get the [detect_product_short] for Azure DevOps plugin at [VisualStudio Marketplace](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect).
+You can get the [detect_product_short] for Azure DevOps plugin at the [VisualStudio Marketplace](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect).
