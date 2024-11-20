@@ -13,6 +13,7 @@ The [company_name] Software Integrity Group is now [var_company_name]
 	* Installing the [detect_product_long] plugin will ensure you receive future plugin updates.   
 
 * After uninstalling a previous [company_name] [detect_product_short] plugin or if you are a new user, you may proceed with installing the [detect_product_long] plugin available at the following [Marketplace location](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect).    
+	* See the [detect_product_long] plugin [installation instructions](../azureplugin/installingtheplugin.md).    
 
 **New features**
 
