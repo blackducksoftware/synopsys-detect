@@ -21,6 +21,7 @@ If you are a new user, you may proceed with installing the [detect_product_long]
 
 * (IDTCTJNKNS-277) Updated to use the new 'blackduck' namespace.
 * Updated to use [detect_product_long] 10.x.x for execution.
+   * [detect_product_long] [Release Notes](../../currentreleasenotes.md)
 * Jenkins version 2.426.3 or later is required.
 
 **Resolved issues**
