@@ -6,10 +6,10 @@
 The [company_name] Software Integrity Group is now [var_company_name]    
 * As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decomissioned on Feb. 14th 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.    
 * Refer to the [Black Duck Domain Change FAQ](https://community.blackduck.com/s/article/Black-Duck-Domain-Change-FAQ#SDInstru).
-<note type="note">It is recommended that customers continue to maintain `sig-repo.synopsys.com`, and `repo.blackduck.com` on their allow list until February 2025 when `sig-repo.synopsys.com` will be fully replaced by `repo.blackduck.com`.</note>
+<note type="note">It is recommended that customers add both `repo.blackduck.com`, and `detect.blackduck.com`, to their allow list, while also maintaining `sig-repo.synopsys.com`, and `detect.synopsys.com`, until February 2025 when `sig-repo.synopsys.com`, and `detect.synopsys.com`, will be fully replaced by `repo.blackduck.com` and `detect.blackduck.com` respectively.</note>
 
-### Upgrading from [company_name] [detect_product_short] plugin to [detect_product_long] plugin
-* **Before** upgrading to the [detect_product_short] plugin, you must manually uninstall the [company_name] [detect_product_short] plugin. 
+### Migrating from [company_name] [detect_product_short] plugin to [detect_product_long] plugin
+* **Before** moving to the [detect_product_long] plugin, you must manually uninstall the [company_name] [detect_product_short] plugin. 
 	* Installing the [detect_product_long] plugin will ensure you receive future plugin updates.   
 
 * After uninstalling a previous [company_name] [detect_product_short] plugin or if you are a new user, you may proceed with installing the [detect_product_long] plugin available at the following [Marketplace location](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect).    
@@ -24,12 +24,14 @@ The [company_name] Software Integrity Group is now [var_company_name]
 
 **Notice**
 
-`detect.synopsys.com` is being deprecated in favor of `detect.blackduck.com`. After Feb. 14th 2025, only `detect.blackduck.com` will be available.
+For [detect_product_short] script downloads, `detect.synopsys.com` is being deprecated in favor of `detect.blackduck.com`. After Feb. 14th 2025, only `detect.blackduck.com` will be available.
 
 <note type="attention">To continuing using the deprecated [company_name] [detect_product_short] plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect), before Feb. 14th 2025.</note>
 **Changed features**
 
 * Adds logic to fall back between pulling the [detect_product_short] script from `detect.synopys.com` and `detect.blackduck.com`.
+
+<note type="note">It is recommended that customers add both `repo.blackduck.com`, and `detect.blackduck.com`, to their allow list, while also maintaining `sig-repo.synopsys.com`, and `detect.synopsys.com`, until February 2025 when `sig-repo.synopsys.com`, and `detect.synopsys.com`, will be fully replaced by `repo.blackduck.com` and `detect.blackduck.com` respectively.</note>
 
 ## Version 9.0.0
 **New features**
