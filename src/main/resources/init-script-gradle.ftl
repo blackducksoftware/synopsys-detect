@@ -39,14 +39,17 @@ Set<String> projectNameExcludeFilter = convertStringToSet('${excludedProjectName
 Set<String> projectNameIncludeFilter = convertStringToSet('${includedProjectNames}')
 Set<String> projectPathExcludeFilter = convertStringToSet('${excludedProjectPaths}')
 Set<String> projectPathIncludeFilter = convertStringToSet('${includedProjectPaths}')
+Boolean rootOnly = Boolean.parseBoolean("${rootOnlyOption}")
 gradle.allprojects {
     // add a new task to each project to start the process of getting the dependencies
     task gatherDependencies(type: DefaultTask) {
+        println "Adding task now" // done for each subProject. Included projects list comes from the gradle API
         doLast {
             println "Gathering dependencies for " + project.name
         }
     }
     afterEvaluate { project ->
+        println "Entering afterEvaluate..."
         // after a project has been evaluated modify the dependencies task for that project to output to a specific file.
         project.tasks.getByName('dependencies') {
             ext {
@@ -57,9 +60,16 @@ gradle.allprojects {
                 outputDirectoryPath = System.getProperty('GRADLEEXTRACTIONDIR')
             }
             doFirst {
+<#--                //////////////////////////////////////////////////////////////////////////-->
+<#--                // this chunk runs for each and every subProject... even if excluded-->
+                if(rootOnly) { println "root only set" }
+<#--                println "here we already have context of a single project: " + project.name-->
+
                 generateRootProjectMetaData(project, outputDirectoryPath)
+<#--                //////////////////////////////////////////////////////////////////////////-->
 
                 if(shouldInclude(projectNameExcludeFilter, projectNameIncludeFilter, project.name) && shouldInclude(projectPathExcludeFilter, projectPathIncludeFilter, project.path)) {
+<#--                if current project is not excluded -->
                     def dependencyTask = project.tasks.getByName('dependencies')
                     File projectOutputFile = findProjectOutputFile(project, outputDirectoryPath)
                     File projectFile = createProjectOutputFile(projectOutputFile)
@@ -93,6 +103,7 @@ gradle.allprojects {
             }
         }
         // this forces the dependencies task to be run which will write the content to the modified output file
+        println "Dependencies task is actually run for each project even if excluded?"
         project.gatherDependencies.finalizedBy(project.tasks.getByName('dependencies'))
         project.gatherDependencies
     }
@@ -102,6 +113,7 @@ gradle.allprojects {
 <#-- Do not parse with Freemarker because Groovy variable replacement in template strings is the same as Freemarker template syntax. -->
 <#noparse>
 def generateRootProjectMetaData(Project project, String outputDirectoryPath) {
+    println "In method to generate root project meta..."
     File outputDirectory = createTaskOutputDirectory(outputDirectoryPath)
     outputDirectory.mkdirs()
 

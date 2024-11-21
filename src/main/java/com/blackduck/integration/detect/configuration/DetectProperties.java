@@ -916,6 +916,17 @@ public class DetectProperties {
             .setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
             .build();
 
+    public static final BooleanProperty DETECT_GRADLE_ROOT_ONLY =
+            BooleanProperty.newBuilder("detect.gradle.root.only", false)
+                    .setInfo("TODO", DetectPropertyFromVersion.VERSION_7_0_0)
+                    .setHelp(
+                            "TODO",
+                            "TODO"
+                    )
+                    .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
+                    .setCategory(DetectCategory.Advanced)
+                    .build();
+
     public static final NullablePathProperty DETECT_HEX_REBAR3_PATH =
         NullablePathProperty.newBuilder("detect.hex.rebar3.path")
             .setInfo("Rebar3 Executable", DetectPropertyFromVersion.VERSION_3_0_0)
