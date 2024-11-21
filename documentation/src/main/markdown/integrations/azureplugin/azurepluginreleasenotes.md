@@ -7,7 +7,7 @@ The [company_name] Software Integrity Group is now [var_company_name]
 * As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decomissioned on Feb. 14th 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.    
 * Refer to the [Black Duck Domain Change FAQ](https://community.blackduck.com/s/article/Black-Duck-Domain-Change-FAQ#SDInstru).
 <note type="note">It is recommended that customers add both `repo.blackduck.com`, and `detect.blackduck.com`, to their allow list, while also maintaining `sig-repo.synopsys.com`, and `detect.synopsys.com`, until February 2025 when `sig-repo.synopsys.com`, and `detect.synopsys.com`, will be fully replaced by `repo.blackduck.com` and `detect.blackduck.com` respectively.</note>
-[company_name] [solution_name] Azure DevOps plugin is now the [detect_product_long] Azure DevOps plugin.
+* [company_name] [solution_name] Azure DevOps plugin is now the [detect_product_long] Azure DevOps plugin.
 .
 ### Migrating from [company_name] [detect_product_short] plugin to [detect_product_long] plugin
 * **Before** moving to the [detect_product_long] plugin, you must manually uninstall the [company_name] [detect_product_short] plugin. 
