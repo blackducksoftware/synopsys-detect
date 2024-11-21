@@ -444,28 +444,13 @@ public class OperationRunner {
         }
     }
 
-    public JsonObject createContainerScanImageMetadata(UUID scanId, NameVersion projectNameVersion) {
+    public JsonObject createScanMetadata(UUID scanId, NameVersion projectNameVersion, String type) {
         String scanPersistence = detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT ? "STATEFUL" : "STATELESS";
         String projectGroupName = detectConfigurationFactory.createProjectGroupOptions().getProjectGroup();
 
         JsonObject imageMetadataObject = new JsonObject();
         imageMetadataObject.addProperty("scanId", scanId.toString());
-        imageMetadataObject.addProperty("scanType", "CONTAINER");
-        imageMetadataObject.addProperty("scanPersistence", scanPersistence);
-        imageMetadataObject.addProperty("projectName", projectNameVersion.getName());
-        imageMetadataObject.addProperty("projectVersionName", projectNameVersion.getVersion());
-        imageMetadataObject.addProperty("projectGroupName", projectGroupName);
-
-        return imageMetadataObject;
-    }
-
-    public JsonObject createBinaryScanImageMetadata(UUID scanId, NameVersion projectNameVersion) {
-        String scanPersistence = detectConfigurationFactory.createScanMode() == BlackduckScanMode.INTELLIGENT ? "STATEFUL" : "STATELESS";
-        String projectGroupName = detectConfigurationFactory.createProjectGroupOptions().getProjectGroup();
-
-        JsonObject imageMetadataObject = new JsonObject();
-        imageMetadataObject.addProperty("scanId", scanId.toString());
-        imageMetadataObject.addProperty("scanType", "BINARY");
+        imageMetadataObject.addProperty("scanType", type);
         imageMetadataObject.addProperty("scanPersistence", scanPersistence);
         imageMetadataObject.addProperty("projectName", projectNameVersion.getName());
         imageMetadataObject.addProperty("projectVersionName", projectNameVersion.getVersion());

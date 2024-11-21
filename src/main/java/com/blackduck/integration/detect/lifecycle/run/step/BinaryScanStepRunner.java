@@ -87,7 +87,7 @@ public class BinaryScanStepRunner {
         String operationName = "Upload binary Scan Image Metadata JSON";
         logger.debug("Uploading binary image metadata to storage endpoint: {}", storageServiceEndpoint);
         
-        JsonObject binaryMetadataObject = operationRunner.createBinaryScanImageMetadata(UUID.fromString(scanId), projectNameVersion);
+        JsonObject binaryMetadataObject = operationRunner.createScanMetadata(UUID.fromString(scanId), projectNameVersion, "BINARY");
 
         try (Response response = operationRunner.uploadJsonToStorageService(
             blackDuckRunData,

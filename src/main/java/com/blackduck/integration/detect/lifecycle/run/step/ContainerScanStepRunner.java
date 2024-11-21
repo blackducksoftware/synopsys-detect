@@ -199,7 +199,7 @@ public class ContainerScanStepRunner {
         String operationName = "Upload Container Scan Image Metadata JSON";
         logger.debug("Uploading container image metadata to storage endpoint: {}", storageServiceEndpoint);
 
-        JsonObject imageMetadataObject = operationRunner.createContainerScanImageMetadata(scanId, projectNameVersion);
+        JsonObject imageMetadataObject = operationRunner.createScanMetadata(scanId, projectNameVersion, "CONTAINER");
 
         try (Response response = operationRunner.uploadJsonToStorageService(
             blackDuckRunData,
