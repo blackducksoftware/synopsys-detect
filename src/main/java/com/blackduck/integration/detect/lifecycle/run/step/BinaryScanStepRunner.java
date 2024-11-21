@@ -3,7 +3,9 @@ package com.blackduck.integration.detect.lifecycle.run.step;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -12,8 +14,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackduck.integration.sca.upload.client.uploaders.ScassUploader;
 import com.blackduck.integration.sca.upload.rest.model.response.BinaryFinishResponseContent;
 import com.blackduck.integration.sca.upload.rest.status.BinaryUploadStatus;
+import com.blackduck.integration.sca.upload.rest.status.UploadStatus;
 import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.blackduck.integration.detect.lifecycle.OperationException;
@@ -21,6 +25,7 @@ import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.blackduck.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.blackduck.integration.detect.lifecycle.run.data.ScanCreationResponse;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
+import com.blackduck.integration.detect.lifecycle.run.operation.ScassOperationRunner;
 import com.blackduck.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.blackduck.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -53,26 +58,52 @@ public class BinaryScanStepRunner {
         throws OperationException, IntegrationException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
         if (binaryScanFile.isPresent()) {
-            // TODO step 1: create scanID like we do for container
-            String scanId = initiateScan(projectNameVersion, binaryScanFile.get(), blackDuckRunData);
+            // create scanID like we do for container
+            ScanCreationResponse scanCreationResponse = initiateScan(projectNameVersion, binaryScanFile.get(), blackDuckRunData);
             
-            // TODO step 2: upload
-            // if (signed URL) then SCASS upload
-            // else non-SCASS upload to new endpoint (for now fake container upload with binary file)
+            String scanId = scanCreationResponse.getScanId();
+            String uploadUrl = scanCreationResponse.getUploadUrl();
+            
+            // TODO upload, this is hacked up and only handles the new SCASS and non-SCASS flows. Need to
+            // have the original stuff in here for older blackducks at some point.
             //BinaryUploadStatus status = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData);
-            try {
-                uploadNonScassFile(scanId, blackDuckRunData, binaryScanFile.get());
-            } catch (IOException e) {
-                throw new IntegrationException("Unable to upload binary file.");
-            }
-            
-            // TODO step 3: finish call 
-            // (send metadata for new non-SCASS approach to /api/storage/containers/{id}/message
-            // or call /scans/{scanId}/scass-scan-processing for SCASS
-            try {
-                uploadImageMetadataToStorageService(scanId, projectNameVersion, blackDuckRunData);
-            } catch (IOException e) {
-                throw new IntegrationException("Unable to send binary metadata.");
+            if (StringUtils.isNotEmpty(uploadUrl)) {
+                // Do scass stuff using library
+                // TODO declare this in constructor?
+                ScassOperationRunner scassUploadRunner = new ScassOperationRunner(blackDuckRunData);
+                ScassUploader scaasScanUploader = scassUploadRunner.createScaasScanUploader();
+                
+                // TODO hardcode headers for now until we know if we need them
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-type", "application/octet-stream");
+                
+                UploadStatus status = scaasScanUploader.upload(uploadUrl, headers, binaryScanFile.get().toPath());
+                
+                if (status.isError()) {
+                    // TODO obviously improve this
+                }
+                
+                // call /scans/{scanId}/scass-scan-processing
+                try {
+                    scassUploadRunner.notifyUploadComplete(scanId);
+                } catch (IOException e) {
+                    throw new IntegrationException("Unable to notify Black Duck upload of binary file is complete.");
+                }         
+            } else {
+                // TODO call new non-scass endpoint. For now mimic container scan
+                try {
+                    uploadNonScassFile(scanId, blackDuckRunData, binaryScanFile.get());
+                } catch (IOException e) {
+                    throw new IntegrationException("Unable to upload binary file.");
+                }
+                
+                // TODO finish call, still piggybacking on container scan endpoints for now.
+                // (send metadata for new non-SCASS approach to /api/storage/containers/{id}/message
+                try {
+                    uploadImageMetadataToStorageService(scanId, projectNameVersion, blackDuckRunData);
+                } catch (IOException e) {
+                    throw new IntegrationException("Unable to send binary metadata.");
+                }
             }
             
             return Optional.of(scanId);
@@ -201,7 +232,7 @@ public class BinaryScanStepRunner {
     }
     
     // TODO very similar to what is in ContainerScanStepRunner
-    private String initiateScan(NameVersion projectNameVersion, File binaryFile, BlackDuckRunData blackDuckRunData) throws OperationException, IntegrationException {
+    private ScanCreationResponse initiateScan(NameVersion projectNameVersion, File binaryFile, BlackDuckRunData blackDuckRunData) throws OperationException, IntegrationException {
         String projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
         
         CodeLocationNameManager codeLocationNameManager = operationRunner.getCodeLocationNameManager();
@@ -229,17 +260,8 @@ public class BinaryScanStepRunner {
         ScanCreationResponse scanCreationResponse 
             = operationRunner.uploadBdioHeaderToInitiateScassScan(blackDuckRunData, bdioHeaderFile, operationName, gson);
         
+        // TODO likely need to improve error checking, etc here.
         String scanId = scanCreationResponse.getScanId();
-        
-        String uploadUrl = scanCreationResponse.getUploadUrl();
-        
-        if (StringUtils.isNotEmpty(uploadUrl)) {
-            // TODO return ScanCreationResponse
-            // then can do scass stuff using library
-            // new SCAUploader(scanId, uploadUrl); in step 2
-        } else {
-            // TODO call new non-scass endpoint or mimic container scan
-        }
         
         if (scanId == null) {
             logger.warn("Scan ID was not found in the response from the server.");
@@ -248,6 +270,6 @@ public class BinaryScanStepRunner {
         String scanIdString = scanId.toString();
         logger.debug("Scan initiated with scan service. Scan ID received: {}", scanIdString);
         
-        return scanIdString;
+        return scanCreationResponse;
     }
 }
