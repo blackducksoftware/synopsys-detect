@@ -30,7 +30,7 @@ For [detect_product_short] script downloads, `detect.synopsys.com` is being depr
 <note type="attention">To continuing using the deprecated [company_name] [detect_product_short] plugin, it is essential to update to version 9.0.1, available at the [Previous Marketplace location](https://marketplace.visualstudio.com/items?itemName=synopsys-detect.synopsys-detect), before Feb. 14th 2025.</note>
 **Changed features**
 
-* Adds logic to fall back between pulling the [detect_product_short] script from `detect.synopys.com` and `detect.blackduck.com`.
+* Adds logic to fallback between pulling the [detect_product_short] script from `detect.synopys.com` and `detect.blackduck.com`.
 
 <note type="note">It is recommended that customers add both `repo.blackduck.com`, and `detect.blackduck.com`, to their allow list, while also maintaining `sig-repo.synopsys.com`, and `detect.synopsys.com`, until February 2025 when `sig-repo.synopsys.com`, and `detect.synopsys.com`, will be fully replaced by `repo.blackduck.com` and `detect.blackduck.com` respectively.</note>
 
