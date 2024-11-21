@@ -12,7 +12,7 @@ To install the [detect_product_short] for Jenkins plugin, perform the following 
 [detect_product_short] plugin for Jenkins GitHub page [jenkinsci](https://github.com/jenkinsci/blackduck-detect-plugin).
 Additional download locations listed in [Download locations](../../downloadingandrunning/downloadlocations.html).
 
-## [company_name] [solution_name] Jenkins plugin to [detect_product_long] Jenkins plugin{#updating-existing-jenkins}
+## Updating [company_name] [solution_name] Jenkins plugin to [detect_product_long] Jenkins plugin{#updating-existing-jenkins}
 For existing [company_name] [solution_name] Jenkins plugin users, the [detect_product_long] Jenkins plugin should be considered a fresh installation as the domain has changed.   
 * Take note of your existing system configuration and post-build setup before moving from the [detect_product_short] Jenkins plugin to the [detect_product_long] Jenkins plugin. You will need this information when configuring or reconfiguring your pipelines.    
    * Configuration information can be located under your `JENKINS_HOME` directory.   
