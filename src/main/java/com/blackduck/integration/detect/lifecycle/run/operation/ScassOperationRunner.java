@@ -30,7 +30,7 @@ public class ScassOperationRunner {
     
     private static final BlackDuckVersion MIN_SCASS_SCAN_VERSION = new BlackDuckVersion(2025, 1, 0);
     
-    private static final String NOTIFY_URL = "/scans/{}/scass-scan-processing";
+    private static final String NOTIFY_URL = "/api/scans/{}/scass-scan-processing";
 
     public ScassOperationRunner(BlackDuckRunData blackDuckRunData) {
         this.blackDuckRunData = blackDuckRunData;
@@ -75,7 +75,6 @@ public class ScassOperationRunner {
             .buildBlackDuckResponseRequest(postUrl);
 
         try (Response response = blackDuckApiClient.execute(buildBlackDuckResponseRequest)) {
-            String blah = "";
             return response;
         } catch (IntegrationException e) {
             logger.trace("Could not execute JSON upload request to storage service.");
