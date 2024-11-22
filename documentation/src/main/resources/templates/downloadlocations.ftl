@@ -5,7 +5,7 @@ The following are download locations for the current version of [detect_product_
 * [detect_product_short] Bash script: [Bash script](${script_repo_url_bash})
 * The [detect_product_short] PowerShell script: [PowerShell script](${script_repo_url_powershell})
 * The [detect_product_short] binary repository (.jar and air gap zip files): [Binary files](${binary_repo_url_project})
-* The [detect_product_short] repository for the [detect_product_long] Jenkins plugin: [Jenkins Plugins](https://plugins.jenkins.io/blackduck-detect/)
+* The download location for the [detect_product_long] Jenkins plugin: [Jenkins Plugins](https://plugins.jenkins.io/blackduck-detect/)
 * The [detect_product_long] Visual Studio Marketplace for: [Azure DevOps plugin](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect)
 
 **Note:** For certain types of projects, [detect_product_short] automatically downloads one or more [inspectors](../components/inspectors.md) as needed.
