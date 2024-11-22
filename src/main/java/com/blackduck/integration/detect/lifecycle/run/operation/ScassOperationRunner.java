@@ -70,6 +70,7 @@ public class ScassOperationRunner {
         HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(notfyUrl);
 
         BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+            .addHeader("Content-Type", "application/vnd.blackducksoftware.scan-6+json")
             .post()
             .buildBlackDuckResponseRequest(postUrl);
 
