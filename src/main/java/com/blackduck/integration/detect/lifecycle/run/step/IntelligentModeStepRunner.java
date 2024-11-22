@@ -230,6 +230,9 @@ public class IntelligentModeStepRunner {
     )
         throws IntegrationException, OperationException {
 
+        // TODO need a BD version check using our ScassOperationRunner to see if we can do SCASS
+        // then need to separate SCASS flow from legacy multipart flow (which SCASS is now a part of
+        // in this PoC)
         if (isMultipartUploadPossible(blackDuckRunData)) {
             Optional<String> scanId =
                 binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
