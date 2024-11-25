@@ -146,7 +146,7 @@ public class OpamTreeParser {
     }
 
     private Dependency createDependencyExternalId(String name, String version) {
-        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.OPAM, name, version);
         return new Dependency(externalId);
     }
 }

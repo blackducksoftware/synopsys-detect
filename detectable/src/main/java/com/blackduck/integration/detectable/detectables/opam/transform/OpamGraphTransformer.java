@@ -123,7 +123,7 @@ public class OpamGraphTransformer {
 
             Map<String, String> parsedOutput = parser.parseData(output); // parse opam show output
 
-            String version = parsedOutput.get(VERSION);
+            String version = parsedOutput.get(VERSION).trim().replaceAll("\"","");
 
             Dependency createdDependency = createExternalId(dependency, version); // create dependency with name and version
 
@@ -162,7 +162,7 @@ public class OpamGraphTransformer {
     }
 
     private Dependency createExternalId (String name, String version) {
-        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.OPAM, name, version);
         return new Dependency(externalId);
     }
 

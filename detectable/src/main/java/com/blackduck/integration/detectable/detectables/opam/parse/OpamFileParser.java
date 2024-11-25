@@ -78,7 +78,7 @@ public class OpamFileParser {
                 output.put(VERSION, line.split(":")[1]);
             }
 
-            if (line.startsWith("name:")) { // parse version
+            if (line.startsWith("name:")) { // parse package name
                 output.put(NAME, line.split(":")[1]);
             }
 
