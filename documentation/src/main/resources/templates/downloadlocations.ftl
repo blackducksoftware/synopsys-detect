@@ -4,7 +4,8 @@ The following are download locations for the current version of [detect_product_
 
 * [detect_product_short] Bash script: [Bash script](${script_repo_url_bash})
 * The [detect_product_short] PowerShell script: [PowerShell script](${script_repo_url_powershell})
-* The [detect_product_short] binary repository (.jar and air gap zip files): [Binary files](${binary_repo_url_project})
+* The [detect_product_short] binary repository (.jar and air gap zip files) for 10.0.0 and later: [Binary files](${binary_repo_url_project})
+* The [detect_product_short] binary repository (.jar and air gap zip files) for 9.10.1 and earlier: [Binary files](${binary_repo_url_project_old})
 * The download location for the [detect_product_long] Jenkins plugin: [Jenkins Plugins](https://plugins.jenkins.io/blackduck-detect/)
 * The [detect_product_long] Visual Studio Marketplace for: [Azure DevOps plugin](https://marketplace.visualstudio.com/items?itemName=blackduck.blackduck-detect)
 
