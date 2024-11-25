@@ -1411,14 +1411,6 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
-    public static final BooleanProperty DETECT_PROJECT_CODELOCATION_UNMAP =
-        BooleanProperty.newBuilder("detect.project.codelocation.unmap", false)
-            .setInfo("Unmap All Other Scans for Project", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("If set to true, unmaps all other scans mapped to the project version produced by the current run of Detect.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
-            .setCategory(DetectCategory.Advanced)
-            .build();
-
     public static final NullableStringProperty DETECT_PROJECT_DESCRIPTION =
         NullableStringProperty.newBuilder("detect.project.description")
             .setInfo("Project Description", DetectPropertyFromVersion.VERSION_4_0_0)
@@ -1861,6 +1853,18 @@ public class DetectProperties {
     //#endregion Active Properties
 
     //#region Deprecated Properties
+
+    public static final BooleanProperty DETECT_PROJECT_CODELOCATION_UNMAP =
+        BooleanProperty.newBuilder("detect.project.codelocation.unmap", false)
+            .setInfo("Unmap All Other Scans for Project", DetectPropertyFromVersion.VERSION_4_0_0)
+            .setHelp("If set to true, unmaps all other scans mapped to the project version produced by the current run of Detect.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(
+                "This property has been deprecated.",
+                DetectMajorVersion.ELEVEN
+            )
+            .build();
 
     // Can't take in the DetectProperty<?> due to an illegal forward reference :(
     private static String createTypeFilterHelpText(String exclusionTypePlural) {

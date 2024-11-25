@@ -36,7 +36,7 @@ public class GitParseDetectableTest extends DetectableFunctionalTest {
             "	ignorecase = true",
             "	precomposeunicode = true",
             "[remote \"origin\"]",
-            "	url = https://github.com/blackducksoftware/synopsys-detect.git",
+            "	url = https://github.com/blackducksoftware/detect.git",
             "	fetch = +refs/heads/*:refs/remotes/origin/*",
             "[branch \"master\"]",
             "	remote = origin",
@@ -60,7 +60,7 @@ public class GitParseDetectableTest extends DetectableFunctionalTest {
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
         assertEquals(0, extraction.getCodeLocations().size(), "Git should not produce a dependency graph. It is for project info only.");
-        assertEquals("blackducksoftware/synopsys-detect", extraction.getProjectName());
+        assertEquals("blackducksoftware/detect", extraction.getProjectName());
         assertEquals("master", extraction.getProjectVersion());
 
         assertTrue(extraction.hasMetadata(EXTRACTION_METADATA_KEY), "Extraction should include GitInfo as MetaData");
@@ -68,7 +68,7 @@ public class GitParseDetectableTest extends DetectableFunctionalTest {
         assertTrue(metaData.isPresent(), "Extraction reported having the GitInfo key, but the value isn't set.");
 
         assertTrue(metaData.get().getSourceRepository().isPresent(), "Expected a source url to be parsed.");
-        assertEquals("https://github.com/blackducksoftware/synopsys-detect.git", metaData.get().getSourceRepository().get());
+        assertEquals("https://github.com/blackducksoftware/detect.git", metaData.get().getSourceRepository().get());
 
         assertTrue(metaData.get().getSourceBranch().isPresent(), "Expected a branch to be parsed.");
         assertEquals("master", metaData.get().getSourceBranch().get());
