@@ -918,7 +918,7 @@ public class DetectProperties {
 
     public static final BooleanProperty DETECT_GRADLE_ROOT_ONLY =
             BooleanProperty.newBuilder("detect.gradle.root.only", false)
-                    .setInfo("TODO", DetectPropertyFromVersion.VERSION_7_0_0)
+                    .setInfo("TODO", DetectPropertyFromVersion.VERSION_10_1_0)
                     .setHelp(
                             "TODO",
                             "TODO"
