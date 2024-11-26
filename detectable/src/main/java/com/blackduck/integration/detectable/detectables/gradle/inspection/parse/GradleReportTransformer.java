@@ -88,7 +88,7 @@ public class GradleReportTransformer {
     }
     private void processSubprojectAndCreateCodeLocation(GradleTreeNode subProjectNode, List<GradleTreeNode> allTreeNodesInCurrentConfiguration, GradleReport rootReport) {
         logger.debug("Processing subProject node:" + subProjectNode.getProjectName());
-        String subProjectName = subProjectNode.getProjectName().get();
+        String subProjectName = subProjectNode.getProjectName().get(); // todo clean up redundant call
         int subProjectSectionStartIndex = allTreeNodesInCurrentConfiguration.indexOf(subProjectNode);
         int subProjectNodeLevel = subProjectNode.getLevel();
 
@@ -96,10 +96,13 @@ public class GradleReportTransformer {
         DependencyHistory history = new DependencyHistory();
         TreeNodeSkipper treeNodeSkipper = new TreeNodeSkipper();
 
-
         for (int i = subProjectSectionStartIndex+1; i < allTreeNodesInCurrentConfiguration.size(); i++) {
             GradleTreeNode currentNode = allTreeNodesInCurrentConfiguration.get(i);
-            int currentNodeLevelRelativeToSubProject = currentNode.getLevel() - 1;
+            int currentNodeLevelRelativeToSubProject = (currentNode.getLevel() - 1) - subProjectNodeLevel;
+            if (treeNodeSkipper.shouldSkip(currentNode)) {
+                logger.debug("~~~Skipping node: " + currentNode.getGav());
+                continue;
+            }
             if (currentNodeLevelRelativeToSubProject != -1) { // (aka subProjectNodeLevel -1)
                 if (currentNode.getNodeType() == GradleTreeNode.NodeType.GAV) {
                     logger.debug("Adding dependency " + currentNode.getGav() + " for subProject " + subProjectName);
@@ -116,6 +119,8 @@ public class GradleReportTransformer {
                 } else {
                     // current node is either unknown or a nested subproject, todo later
                     logger.debug("Encountered unknown or nested project node while processing subProject");
+                    treeNodeSkipper.skipUntilLineLevel(currentNode.getLevel());
+                    processSubprojectAndCreateCodeLocation(currentNode, allTreeNodesInCurrentConfiguration, rootReport);
                 }
             } else {
                 // the current node is back at 0 so we are done processing subProject section

@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class GradleInspectorRootOnlyTests extends DetectableFunctionalTest {
-    protected GradleInspectorRootOnlyTests() throws IOException {
+public class GradleInspectorRootOnlyTest extends DetectableFunctionalTest {
+    protected GradleInspectorRootOnlyTest() throws IOException {
         super("my-root-only-test-attempt");
     }
 
@@ -81,12 +81,12 @@ public class GradleInspectorRootOnlyTests extends DetectableFunctionalTest {
 
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
-        Assertions.assertEquals(3, extraction.getCodeLocations().size());
+        Assertions.assertEquals(4, extraction.getCodeLocations().size());
 
         CodeLocation root = ExtractionUtil.assertAndGetCodeLocationNamed("simple", extraction);
         CodeLocation subProjectA = ExtractionUtil.assertAndGetCodeLocationNamed("subProjectA", extraction);
         CodeLocation subProjectB = ExtractionUtil.assertAndGetCodeLocationNamed("subProjectB", extraction);
-        // nested subProjectC with dependencies.....--->
+        CodeLocation subProjectC = ExtractionUtil.assertAndGetCodeLocationNamed("subProjectC", extraction);
 
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         // Root dependencies
@@ -96,11 +96,13 @@ public class GradleInspectorRootOnlyTests extends DetectableFunctionalTest {
         // SubProjectA dependencies
         ExternalId blackduck_common = externalIdFactory.createMavenExternalId("com.blackduck.integration", "blackduck-common", "67.0.2");
         ExternalId blackduck_common_api = externalIdFactory.createMavenExternalId("com.blackduck.integration", "blackduck-common-api", "2023.4.2.7");
-
-
+        ExternalId digraph_parser = externalIdFactory.createMavenExternalId("com.paypal.digraph", "digraph-parser", "1.0");
+        // SubProjectC dependencies
+        ExternalId antlr4_runtime = externalIdFactory.createMavenExternalId("org.antlr", "antlr4-runtime", "4.7.2");
 
         NameVersionGraphAssert rootGraphAssert = new NameVersionGraphAssert(Forge.MAVEN, root.getDependencyGraph());
         NameVersionGraphAssert subProjectAGraphAssert = new NameVersionGraphAssert(Forge.MAVEN, subProjectA.getDependencyGraph());
+        NameVersionGraphAssert subProjectCGraphAssert = new NameVersionGraphAssert(Forge.MAVEN, subProjectC.getDependencyGraph());
 
 
         // Root has 2 direct and 1 transitive
@@ -110,11 +112,19 @@ public class GradleInspectorRootOnlyTests extends DetectableFunctionalTest {
         rootGraphAssert.hasRootDependency(commons_text);
         rootGraphAssert.hasParentChildRelationship(logback_classic, logback_core);
 
-        // SubProjectA has 1 direct and 1 transitive
+        // SubProjectA has 2 direct and 1 transitive
         Set<Dependency> subProjectADirectDependencies = subProjectA.getDependencyGraph().getDirectDependencies();
-        Assertions.assertEquals(1, subProjectADirectDependencies.size());
+        Assertions.assertEquals(2, subProjectADirectDependencies.size());
         subProjectAGraphAssert.hasRootDependency(blackduck_common);
         subProjectAGraphAssert.hasParentChildRelationship(blackduck_common, blackduck_common_api);
+        subProjectAGraphAssert.hasRootDependency(digraph_parser);
+        subProjectCGraphAssert.hasRelationshipCount(digraph_parser, 0);
+
+        // Nested SubProjectC has 1 direct and no transitives
+        Set<Dependency> subProjectCDirectDependencies = subProjectC.getDependencyGraph().getDirectDependencies();
+        Assertions.assertEquals(1, subProjectCDirectDependencies.size());
+        subProjectCGraphAssert.hasRootDependency(antlr4_runtime);
+        subProjectCGraphAssert.hasRelationshipCount(antlr4_runtime, 0);
 
         // Empty subProjectB has no dependencies
         Set<Dependency> subProjectBDirectDependencies = subProjectB.getDependencyGraph().getDirectDependencies();

@@ -5,11 +5,13 @@ Root project 'simple'
 
 compileClasspath - Compile classpath for source set 'main'.
 +--- ch.qos.logback:logback-classic:1.2.13
-|    /--- ch.qos.logback:logback-core:1.2.13
+|    \--- ch.qos.logback:logback-core:1.2.13
 +--- project :subProjectA
-|    \--- com.blackduck.integration:blackduck-common:67.0.2
-|         +--- com.blackduck.integration:blackduck-common-api:2023.4.2.7
-|         |    \--- com.blackduck.integration:integration-rest:11.0.1
+|    +--- com.blackduck.integration:blackduck-common:67.0.2
+|    |    \--- com.blackduck.integration:blackduck-common-api:2023.4.2.7
+|    +--- project :subProjectC
+|    |    \--- org.antlr:antlr4-runtime:4.2 -> 4.7.2
+|    \--- com.paypal.digraph:digraph-parser:1.0
 +--- project :subProjectB
 \--- org.apache.commons:commons-text:1.10.0
 
