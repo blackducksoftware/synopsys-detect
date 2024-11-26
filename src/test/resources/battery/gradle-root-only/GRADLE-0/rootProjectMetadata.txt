@@ -1,7 +1,0 @@
-DETECT META DATA START
-rootProjectDirectory:/blah/myTest
-rootProjectPath::
-rootProjectGroup:com.blackduck.integration
-rootProjectName:myTest
-rootProjectVersion:1.0
-DETECT META DATA END

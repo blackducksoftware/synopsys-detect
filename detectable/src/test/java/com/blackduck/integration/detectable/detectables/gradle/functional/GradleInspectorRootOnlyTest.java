@@ -129,7 +129,5 @@ public class GradleInspectorRootOnlyTest extends DetectableFunctionalTest {
         // Empty subProjectB has no dependencies
         Set<Dependency> subProjectBDirectDependencies = subProjectB.getDependencyGraph().getDirectDependencies();
         Assertions.assertEquals(0, subProjectBDirectDependencies.size());
-
-        // TODO SubprojectC is a nested dep within subprojectA, still processed independently
     }
 }

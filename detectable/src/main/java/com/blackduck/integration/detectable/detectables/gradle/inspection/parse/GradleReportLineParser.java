@@ -119,7 +119,7 @@ public class GradleReportLineParser {
             }
         }
 
-        projectName = metadata.getOrDefault(PROJECT_NAME_PREFIX, "orphanProject"); // TOME project name relevant for rich version stuff potentially...
+        projectName = metadata.getOrDefault(PROJECT_NAME_PREFIX, "orphanProject");
         rootProjectName = metadata.getOrDefault(ROOT_PROJECT_NAME_PREFIX, "");
         projectParent = metadata.getOrDefault(PROJECT_PARENT_PREFIX, "null");
 
@@ -179,7 +179,7 @@ public class GradleReportLineParser {
        return false;
     }
 
-    private boolean checkRichVersionUse(String dependencyLine) { // should rename to isUsingRichVersion
+    private boolean checkRichVersionUse(String dependencyLine) {
         return dependencyLine.contains(STRICTLY) || dependencyLine.contains(REJECT) || dependencyLine.contains(REQUIRE) || dependencyLine.contains(PREFER);
     }
 
