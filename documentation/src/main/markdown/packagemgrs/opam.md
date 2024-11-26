@@ -6,14 +6,14 @@
 
 [detect_product_short] has two detectors for Opam:
 
-* OPAM Build Detector
-* OPAM Lockfile Detector
+* OPAM CLI Detector
+* OPAM Lock Detector
 
-## OPAM Build Detector
+## OPAM CLI Detector
 
 * This detectable executes opam commands to discover dependencies of opam projects.
 
-* The OPAM detector will be executed on your project if [detect_product_short] finds `.opam` file in your top level directory. It requires `opam`
+* This OPAM detector will be executed on your project if [detect_product_short] finds `.opam` file in your top level directory. It requires `opam`
 exe to be present on your $PATH. You can also override the location for `opam` exe by the OPAM path property.
 
 The OPAM Build Detector will work in the following way on your project:
@@ -28,10 +28,10 @@ Then for each of the parsed dependencies, it will run `opam show <package-name>`
 <note type="tip">Selecting the switch where all the packages are installed will help speed up the process. 
 It would be helpful to run `opam install . --with-test --with-doc` commands to help store packages in opam cache.</note>
 
-## OPAM Lockfile Detector
+## OPAM Lock Detector
 
-The OPAM Lockfile Detector will run if HIGH accurate Detectors above cannot be run, and project contains `.opam.locked` and `.opam` files in the top level directory.
+The OPAM Lock Detector will run if HIGH accurate Detectors above cannot be run, and project contains `.opam.locked` and `.opam` files in the top level directory.
 
-OPAM Lockfile Detector will parse both `.opam.` and `.opam.locked` to gather list of direct dependencies of the project. 
+OPAM Lock Detector will parse both `.opam.` and `.opam.locked` to gather list of direct dependencies of the project. 
 
 This Detector will not be able to find the transitives for the project, and therefore it will be a LOW accuracy Detector. 
