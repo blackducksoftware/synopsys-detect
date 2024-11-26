@@ -20,7 +20,7 @@ import java.io.File;
 import java.util.List;
 
 
-@DetectableInfo(name = "Opam CLI", language = "OCaml", forge = "opam", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "A .opam file and the opam executable.")
+@DetectableInfo(name = "Opam CLI", language = "OCaml", forge = "opam", accuracy = DetectableAccuracyType.HIGH, requirementsMarkdown = "File: an opam file with .opam extension. Executable: opam.")
 public class OpamBuildDetectable extends Detectable {
 
     private static final String OPAM_FILE = "*.opam";

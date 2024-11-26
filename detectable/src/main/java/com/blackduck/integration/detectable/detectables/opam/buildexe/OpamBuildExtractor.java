@@ -119,10 +119,10 @@ public class OpamBuildExtractor {
 
             // check if version is greater than 2.2.0
             int firstIndex = Integer.parseInt(versionParts[0]);
-            if (firstIndex >= 2) {
+            if (firstIndex == 2) {
                 int secondIndex = Integer.parseInt(versionParts[1]);
                 return secondIndex >= 2;
-            }
+            } else return firstIndex > 2;
         }
         return false;
     }

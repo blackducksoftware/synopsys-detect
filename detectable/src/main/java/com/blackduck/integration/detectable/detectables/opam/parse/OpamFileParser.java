@@ -22,6 +22,7 @@ public class OpamFileParser {
     private static final String VERSION = "version";
     private static final String DEPENDS = "depends";
     private static final String NAME = "name";
+    private boolean inVersionSection = false;
 
     public OpamFileParser() {
     }
@@ -63,14 +64,13 @@ public class OpamFileParser {
         Set<String> dependsSection = new HashSet<>();
         Pattern pattern = Pattern.compile("\"([^\"]+)\"");
         boolean inDependsSection = false;
-        boolean inVersionSection = false;
 
 
         for (String line : lines) {
             line = line.trim();
             // if the line contains os or system level dependencies skip them
             if (line.isEmpty() || line.startsWith("#") || line.contains("arch") || line.contains("win") ||
-                    line.contains("cc") || line.contains("os") || line.contains("system") || line.contains("ming")) {
+                    line.contains("cc") || line.contains("os !=") || line.contains("system") || line.contains("ming")) {
                 continue;
             }
 
@@ -96,7 +96,7 @@ public class OpamFileParser {
             }
 
             if (inDependsSection) {
-                addDependencyToList(line, inVersionSection, dependsSection, pattern); // add dependency to list
+                addDependencyToList(line, dependsSection, pattern); // add dependency to list
             }
         }
 
@@ -129,7 +129,7 @@ public class OpamFileParser {
         }
     }
 
-    private void addDependencyToList(String line, boolean inVersionSection, Set<String> dependsSection, Pattern pattern) {
+    private void addDependencyToList(String line, Set<String> dependsSection, Pattern pattern) {
         int openIndex = line.indexOf("{"); // used to represent version in opam files
         int closeIndex = line.indexOf("}");
 
