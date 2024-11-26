@@ -29,7 +29,7 @@ class DetectorGitProjectInfoDeciderTest {
     private final DetectorGitProjectInfoDecider gitProjectInfoDecider = new DetectorGitProjectInfoDecider();
 
     private final GitInfo rootGitInfo = new GitInfo(
-        "https://github.com/blackducksoftware/synopsys-detect",
+        "https://github.com/blackducksoftware/detect",
         "95ef3bb9ead52be4bb2c766fafe4b8a4fa1c3d3c",
         "master"
     );

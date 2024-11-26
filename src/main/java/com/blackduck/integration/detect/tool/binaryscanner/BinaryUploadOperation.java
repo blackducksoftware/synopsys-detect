@@ -29,6 +29,7 @@ import com.blackduck.integration.detect.workflow.status.Status;
 import com.blackduck.integration.detect.workflow.status.StatusEventPublisher;
 import com.blackduck.integration.detect.workflow.status.StatusType;
 import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.exception.IntegrationTimeoutException;
 import com.blackduck.integration.log.Slf4jIntLogger;
 import com.blackduck.integration.util.NameVersion;
 
@@ -80,7 +81,12 @@ public class BinaryUploadOperation {
             exception = status.getException().get();      
         }
         
-        throw new DetectUserFriendlyException(BINARY_UPLOAD_FAILURE_MESSAGE, exception, ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
+        ExitCodeType type = ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR;
+        if (exception instanceof IntegrationTimeoutException) {
+            type = ExitCodeType.FAILURE_TIMEOUT;
+        }
+        
+        throw new DetectUserFriendlyException(BINARY_UPLOAD_FAILURE_MESSAGE, exception, type);
     }
     
     private BinaryUploader createMultipartBinaryScanUploader(File binaryUpload, NameVersion projectNameVersion,

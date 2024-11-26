@@ -33,7 +33,10 @@ public abstract class FileFormatChecker {
     public abstract void handleUnknownVersion(@Nullable String unknownFileFormat);
 
     protected boolean checkForVersionCompatibility(Supplier<@Nullable String> getFileFormatVersion) {
-        return checkForVersionCompatibility(getFileFormatVersion.get());
+        if(getFileFormatVersion != null) {
+            return checkForVersionCompatibility(getFileFormatVersion.get());
+        }
+        return false;
     }
 
     protected boolean checkForVersionCompatibility(@Nullable String fileFormatVersion) {
