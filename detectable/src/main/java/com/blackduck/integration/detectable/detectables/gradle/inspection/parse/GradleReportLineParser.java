@@ -1,7 +1,6 @@
 package com.blackduck.integration.detectable.detectables.gradle.inspection.parse;
 
 import java.util.Map;
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
@@ -56,7 +55,8 @@ public class GradleReportLineParser {
         if (!line.contains(COMPONENT_PREFIX)) {
             return GradleTreeNode.newUnknown(level);
         } else if (StringUtils.containsAny(line, PROJECT_INDICATORS)) {
-            return GradleTreeNode.newProject(level);
+            String subProjectName = extractSubProjectName(line);
+            return GradleTreeNode.newProject(level, subProjectName);
         } else {
             List<String> gav = parseGav(line, metadata);
             if (gav.size() != 3) {
@@ -71,6 +71,16 @@ public class GradleReportLineParser {
                 String version = gav.get(2);
                 return GradleTreeNode.newGav(level, group, name, version);
             }
+        }
+    }
+
+    private String extractSubProjectName(String line) {
+        // A subProject dependency line looks exactly like: "+--- project :subProjectName"
+        if (line.contains(":")) {
+            String[] parts = line.split(":");
+            return parts[1].trim();
+        } else {
+            return "";
         }
     }
 
@@ -109,7 +119,7 @@ public class GradleReportLineParser {
             }
         }
 
-        projectName = metadata.getOrDefault(PROJECT_NAME_PREFIX, "orphanProject");
+        projectName = metadata.getOrDefault(PROJECT_NAME_PREFIX, "orphanProject"); // TOME project name relevant for rich version stuff potentially...
         rootProjectName = metadata.getOrDefault(ROOT_PROJECT_NAME_PREFIX, "");
         projectParent = metadata.getOrDefault(PROJECT_PARENT_PREFIX, "null");
 
@@ -169,7 +179,7 @@ public class GradleReportLineParser {
        return false;
     }
 
-    private boolean checkRichVersionUse(String dependencyLine) {
+    private boolean checkRichVersionUse(String dependencyLine) { // should rename to isUsingRichVersion
         return dependencyLine.contains(STRICTLY) || dependencyLine.contains(REJECT) || dependencyLine.contains(REQUIRE) || dependencyLine.contains(PREFER);
     }
 
