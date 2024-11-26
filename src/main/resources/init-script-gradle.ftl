@@ -94,7 +94,7 @@ gradle.allprojects {
             }
         }
         // this forces the dependencies task to be run which will write the content to the modified output file
-        project.gatherDependencies.finalizedBy(project.tasks.getByName('dependencies')) // https://docs.gradle.org/current/kotlin-dsl/gradle/org.gradle.api/-task/finalized-by.html meaning dependencies task should run following a gatherDependencies task which should only be done if proj is of interest/included at all
+        project.gatherDependencies.finalizedBy(project.tasks.getByName('dependencies'))
         project.gatherDependencies
     }
 }
