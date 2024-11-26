@@ -43,13 +43,11 @@ Boolean rootOnly = Boolean.parseBoolean("${rootOnlyOption}")
 gradle.allprojects {
     // add a new task to each project to start the process of getting the dependencies
     task gatherDependencies(type: DefaultTask) {
-        println "Adding task now" // done for each subProject. Included projects list comes from the gradle API
         doLast {
             println "Gathering dependencies for " + project.name
         }
     }
     afterEvaluate { project ->
-        println "Entering afterEvaluate..."
         // after a project has been evaluated modify the dependencies task for that project to output to a specific file.
         project.tasks.getByName('dependencies') {
             ext {
@@ -60,16 +58,9 @@ gradle.allprojects {
                 outputDirectoryPath = System.getProperty('GRADLEEXTRACTIONDIR')
             }
             doFirst {
-<#--                //////////////////////////////////////////////////////////////////////////-->
-<#--                // this chunk runs for each and every subProject... even if excluded-->
-                if(rootOnly) { println "root only set" }
-<#--                println "here we already have context of a single project: " + project.name-->
-
                 generateRootProjectMetaData(project, outputDirectoryPath)
-<#--                //////////////////////////////////////////////////////////////////////////-->
 
-                if(shouldInclude(projectNameExcludeFilter, projectNameIncludeFilter, project.name) && shouldInclude(projectPathExcludeFilter, projectPathIncludeFilter, project.path)) {
-<#--                if current project is not excluded -->
+                if((rootOnly && isRoot(project)) || (!rootOnly && shouldInclude(projectNameExcludeFilter, projectNameIncludeFilter, project.name) && shouldInclude(projectPathExcludeFilter, projectPathIncludeFilter, project.path)) ) {
                     def dependencyTask = project.tasks.getByName('dependencies')
                     File projectOutputFile = findProjectOutputFile(project, outputDirectoryPath)
                     File projectFile = createProjectOutputFile(projectOutputFile)
@@ -96,15 +87,14 @@ gradle.allprojects {
             }
 
             doLast {
-                if(shouldInclude(projectNameExcludeFilter, projectNameIncludeFilter, project.name) && shouldInclude(projectPathExcludeFilter, projectPathIncludeFilter, project.path)) {
+                if((rootOnly && isRoot(project)) || (!rootOnly && shouldInclude(projectNameExcludeFilter, projectNameIncludeFilter, project.name) && shouldInclude(projectPathExcludeFilter, projectPathIncludeFilter, project.path))) {
                     File projectFile = findProjectOutputFile(project, outputDirectoryPath)
                     appendProjectMetadata(project, projectFile)
                 }
             }
         }
         // this forces the dependencies task to be run which will write the content to the modified output file
-        println "Dependencies task is actually run for each project even if excluded?"
-        project.gatherDependencies.finalizedBy(project.tasks.getByName('dependencies'))
+        project.gatherDependencies.finalizedBy(project.tasks.getByName('dependencies')) // https://docs.gradle.org/current/kotlin-dsl/gradle/org.gradle.api/-task/finalized-by.html meaning dependencies task should run following a gatherDependencies task which should only be done if proj is of interest/included at all
         project.gatherDependencies
     }
 }
@@ -112,8 +102,12 @@ gradle.allprojects {
 // ## START methods invoked by tasks above
 <#-- Do not parse with Freemarker because Groovy variable replacement in template strings is the same as Freemarker template syntax. -->
 <#noparse>
+def isRoot(Project project) {
+    Project rootProject = project.gradle.rootProject;
+    return project.name.equals(rootProject.name)
+}
+
 def generateRootProjectMetaData(Project project, String outputDirectoryPath) {
-    println "In method to generate root project meta..."
     File outputDirectory = createTaskOutputDirectory(outputDirectoryPath)
     outputDirectory.mkdirs()
 
