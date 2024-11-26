@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Comparator;
 
+import com.blackduck.integration.detectable.detectables.gradle.inspection.model.GradleReport;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class GradleInspectorExtractor {
         this.toolVersionLogger = toolVersionLogger;
     }
 
-    public Extraction extract(File directory, ExecutableTarget gradleExe, @Nullable String gradleCommand, ProxyInfo proxyInfo, File gradleInspector, File outputDirectory)
+    public Extraction extract(File directory, ExecutableTarget gradleExe, @Nullable String gradleCommand, ProxyInfo proxyInfo, File gradleInspector, File outputDirectory, boolean rootOnly)
         throws ExecutableFailedException {
         try {
             toolVersionLogger.log(directory, gradleExe);
@@ -66,12 +67,24 @@ public class GradleInspectorExtractor {
             reportFiles.toArray(files);
             List<File> reportFilesSorted = Arrays.asList(sortFilesByDepth(files));
 
-            reportFilesSorted.stream()
-                .map(gradleReportParser::parseReport)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(gradleReportTransformer::transform)
-                .forEach(codeLocations::add);
+            if (rootOnly) {
+                logger.debug("Gradle Inspector root only option selected. Will process root dependency graph only.");
+                Optional<GradleReport> rootReport = gradleReportParser.parseReport(reportFilesSorted.get(0));
+                if (!rootReport.isPresent()) {
+                    logger.error("No root dependency report to process.");
+                    // TODO error handling: log error or debug something went wrong or if index at 0 is index out of bounds etc. Fail scan if rootOnly is true but could not be processed. report files should be exactly one
+                } else {
+                    List<CodeLocation> allCodeLocationsInRootReport = gradleReportTransformer.transformRootReport(rootReport.get());
+                    codeLocations = allCodeLocationsInRootReport;
+                }
+            } else {
+                reportFilesSorted.stream()
+                        .map(gradleReportParser::parseReport)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .map(gradleReportTransformer::transform)
+                        .forEach(codeLocations::add);
+            }
 
             Optional<NameVersion> projectNameVersion = Optional.empty();
             if (rootProjectMetadataFile != null) {
