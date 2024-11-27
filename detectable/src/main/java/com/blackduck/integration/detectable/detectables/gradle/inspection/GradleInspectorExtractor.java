@@ -68,10 +68,10 @@ public class GradleInspectorExtractor {
             List<File> reportFilesSorted = Arrays.asList(sortFilesByDepth(files));
 
             if (rootOnly) {
-                logger.debug("Gradle Inspector root only option selected. Will process root dependency graph only.");
+                logger.debug("Gradle Inspector root only option selected. Will process root project's dependencies only.");
                 Optional<GradleReport> rootReport = gradleReportParser.parseReport(reportFilesSorted.get(0));
                 if (!rootReport.isPresent()) {
-                    logger.error("No root dependency report to process.");
+                    logger.error("No root dependency report to process."); // TODO fail gradle inspector?
                     // TODO error handling: log error or debug something went wrong or if index at 0 is index out of bounds etc. Fail scan if rootOnly is true but could not be processed. report files should be exactly one
                 } else {
                     List<CodeLocation> allCodeLocationsInRootReport = gradleReportTransformer.transformRootReport(rootReport.get());

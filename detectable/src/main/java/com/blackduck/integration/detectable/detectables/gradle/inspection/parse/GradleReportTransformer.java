@@ -25,6 +25,7 @@ public class GradleReportTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final EnumListFilter<GradleConfigurationType> configurationTypeFilter;
     private final List<CodeLocation> allCodeLocationsWithinRoot = new ArrayList<>();
+    private final Map<String, CodeLocation> subProjectCodeLocationMap = new HashMap<>();
 
     public GradleReportTransformer(EnumListFilter<GradleConfigurationType> configurationTypeFilter) {
         this.configurationTypeFilter = configurationTypeFilter;
@@ -35,7 +36,7 @@ public class GradleReportTransformer {
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
             if (configuration.isResolved() || configurationTypeFilter.shouldInclude(GradleConfigurationType.UNRESOLVED)) {
                 logger.debug("Adding configuration to the graph: {}", configuration.getName());
-                addConfigurationToGraph_rootFlow(rootGraph, configuration, gradleReport);
+                addConfigurationToRootAndSubProjectGraphs(rootGraph, configuration, gradleReport);
             } else {
                 logger.trace("Excluding unresolved configuration from the graph: {}", configuration.getName());
             }
@@ -43,7 +44,7 @@ public class GradleReportTransformer {
 
         ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
         if (StringUtils.isNotBlank(gradleReport.getProjectSourcePath())) {
-            CodeLocation rootCodeLocation = new CodeLocation(rootGraph, projectId, new File(gradleReport.getProjectSourcePath())); /// path for when the only report is root we have: /Users/shanty/blackduck/github-folder/detect
+            CodeLocation rootCodeLocation = new CodeLocation(rootGraph, projectId, new File(gradleReport.getProjectSourcePath()));
             allCodeLocationsWithinRoot.add(rootCodeLocation);
         } else {
             CodeLocation rootCodeLocation = new CodeLocation(rootGraph, projectId);
@@ -54,13 +55,12 @@ public class GradleReportTransformer {
     }
 
 
-    private void addConfigurationToGraph_rootFlow(DependencyGraph rootGraph, GradleConfiguration configuration, GradleReport rootReport) {
+    private void addConfigurationToRootAndSubProjectGraphs(DependencyGraph rootGraph, GradleConfiguration configuration, GradleReport rootReport) {
         DependencyHistory history = new DependencyHistory();
 
         TreeNodeSkipper treeNodeSkipper = new TreeNodeSkipper();
         for (GradleTreeNode currentNode : configuration.getChildren()) {
             if (treeNodeSkipper.shouldSkip(currentNode)) {
-                logger.debug("~~~Skipping node: " + currentNode.getGav());
                 continue;
             }
 
@@ -87,25 +87,24 @@ public class GradleReportTransformer {
         }
     }
     private void processSubprojectAndCreateCodeLocation(GradleTreeNode subProjectNode, List<GradleTreeNode> allTreeNodesInCurrentConfiguration, GradleReport rootReport) {
-        logger.debug("Processing subProject node:" + subProjectNode.getProjectName());
-        String subProjectName = subProjectNode.getProjectName().get(); // todo clean up redundant call
+        String subProjectName = subProjectNode.getProjectName().get();
+        logger.debug("Processing subProject node:" + subProjectName);
         int subProjectSectionStartIndex = allTreeNodesInCurrentConfiguration.indexOf(subProjectNode);
         int subProjectNodeLevel = subProjectNode.getLevel();
 
         DependencyGraph subProjectGraph = new BasicDependencyGraph();
         DependencyHistory history = new DependencyHistory();
         TreeNodeSkipper treeNodeSkipper = new TreeNodeSkipper();
-
+        // Begin processing subProject section
         for (int i = subProjectSectionStartIndex+1; i < allTreeNodesInCurrentConfiguration.size(); i++) {
             GradleTreeNode currentNode = allTreeNodesInCurrentConfiguration.get(i);
             int currentNodeLevelRelativeToSubProject = (currentNode.getLevel() - 1) - subProjectNodeLevel;
             if (treeNodeSkipper.shouldSkip(currentNode)) {
-                logger.debug("~~~Skipping node: " + currentNode.getGav());
                 continue;
             }
-            if (currentNodeLevelRelativeToSubProject != -1) { // (aka subProjectNodeLevel -1)
+            if (currentNodeLevelRelativeToSubProject != -1) {
                 if (currentNode.getNodeType() == GradleTreeNode.NodeType.GAV) {
-                    logger.debug("Adding dependency " + currentNode.getGav() + " for subProject " + subProjectName);
+                    logger.trace("Adding dependency " + currentNode.getGav() + " for subProject " + subProjectName);
                     history.clearDependenciesDeeperThan(currentNodeLevelRelativeToSubProject);
                     Optional<GradleGav> currentNodeGav = currentNode.getGav();
                     if (currentNodeGav.isPresent()) {
@@ -117,30 +116,33 @@ public class GradleReportTransformer {
                         logger.debug("Missing expected GAV from known NodeType. {}", currentNode);
                     }
                 } else {
-                    // current node is either unknown or a nested subproject, todo later
-                    logger.debug("Encountered unknown or nested project node while processing subProject");
+                    // Process nested subproject node
                     treeNodeSkipper.skipUntilLineLevel(currentNode.getLevel());
                     processSubprojectAndCreateCodeLocation(currentNode, allTreeNodesInCurrentConfiguration, rootReport);
                 }
             } else {
-                // the current node is back at 0 so we are done processing subProject section
+                // Current node is back at 0 so we are done processing subProject section
                 break;
             }
         }
 
-        // have we encountered this subProject before?
-        // if not, create new code location
+        if (codeLocationAlreadyCreatedFor(subProjectName)) {
+            // Fetch existing code location for the subProject
+            CodeLocation existingCodeLocation = subProjectCodeLocationMap.get(subProjectName);
+            existingCodeLocation.getDependencyGraph().copyGraphToRoot(subProjectGraph);
+            return;
+        }
         CodeLocation newCodeLocation = createCodeLocationForSubProject(rootReport, subProjectGraph, subProjectName);
+        subProjectCodeLocationMap.put(subProjectName, newCodeLocation);
         allCodeLocationsWithinRoot.add(newCodeLocation);
     }
 
+    private boolean codeLocationAlreadyCreatedFor(String subProjectName) {
+        return subProjectCodeLocationMap.containsKey(subProjectName);
+    }
     private CodeLocation createCodeLocationForSubProject(GradleReport rootReport, DependencyGraph subProjectGraph, String subProjectName) {
         ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(rootReport.getProjectGroup(), subProjectName, rootReport.getProjectVersionName());
-        if (StringUtils.isNotBlank(rootReport.getProjectSourcePath())) {
-            return new CodeLocation(subProjectGraph, projectId, new File(rootReport.getProjectSourcePath() + "/" + subProjectName)); /// path for when the only report is root we have: /Users/shanty/blackduck/github-folder/detect
-        } else {
             return new CodeLocation(subProjectGraph, projectId);
-        }
     }
 
     public CodeLocation transform(GradleReport gradleReport) {

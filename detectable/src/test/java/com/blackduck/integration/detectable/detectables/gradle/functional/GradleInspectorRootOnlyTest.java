@@ -30,7 +30,7 @@ import java.util.Set;
 
 public class GradleInspectorRootOnlyTest extends DetectableFunctionalTest {
     protected GradleInspectorRootOnlyTest() throws IOException {
-        super("my-root-only-test-attempt");
+        super("gradle-inspector-root-only-test");
     }
 
     @Override
@@ -93,32 +93,45 @@ public class GradleInspectorRootOnlyTest extends DetectableFunctionalTest {
         ExternalId logback_classic = externalIdFactory.createMavenExternalId("ch.qos.logback", "logback-classic", "1.2.13");
         ExternalId logback_core = externalIdFactory.createMavenExternalId("ch.qos.logback", "logback-core", "1.2.13");
         ExternalId commons_text = externalIdFactory.createMavenExternalId("org.apache.commons", "commons-text", "1.10.0");
+        ExternalId failure_access = externalIdFactory.createMavenExternalId("com.google.guava", "failureaccess", "1.0.1");
         // SubProjectA dependencies
         ExternalId blackduck_common = externalIdFactory.createMavenExternalId("com.blackduck.integration", "blackduck-common", "67.0.2");
         ExternalId blackduck_common_api = externalIdFactory.createMavenExternalId("com.blackduck.integration", "blackduck-common-api", "2023.4.2.7");
-        ExternalId digraph_parser = externalIdFactory.createMavenExternalId("com.paypal.digraph", "digraph-parser", "1.0");
         // SubProjectC dependencies
         ExternalId antlr4_runtime = externalIdFactory.createMavenExternalId("org.antlr", "antlr4-runtime", "4.7.2");
+        // Overlapping dependencies
+        ExternalId guava = externalIdFactory.createMavenExternalId("com.google.guava", "guava", "32.1.2-jre");
+        ExternalId digraph_parser = externalIdFactory.createMavenExternalId("com.paypal.digraph", "digraph-parser", "1.0");
+
 
         NameVersionGraphAssert rootGraphAssert = new NameVersionGraphAssert(Forge.MAVEN, root.getDependencyGraph());
         NameVersionGraphAssert subProjectAGraphAssert = new NameVersionGraphAssert(Forge.MAVEN, subProjectA.getDependencyGraph());
         NameVersionGraphAssert subProjectCGraphAssert = new NameVersionGraphAssert(Forge.MAVEN, subProjectC.getDependencyGraph());
 
 
-        // Root has 2 direct and 1 transitive
+        // Root has 3 direct and 2 transitive
         Set<Dependency> rootProjectDirectDependencies = root.getDependencyGraph().getDirectDependencies();
-        Assertions.assertEquals(2, rootProjectDirectDependencies.size());
+        Assertions.assertEquals(3, rootProjectDirectDependencies.size());
         rootGraphAssert.hasRootDependency(logback_classic);
         rootGraphAssert.hasRootDependency(commons_text);
+        rootGraphAssert.hasRootDependency(guava);
+        rootGraphAssert.hasRelationshipCount(guava, 1);
         rootGraphAssert.hasParentChildRelationship(logback_classic, logback_core);
+        rootGraphAssert.hasParentChildRelationship(guava, failure_access);
 
-        // SubProjectA has 2 direct and 1 transitive
+        // SubProjectA has 4 direct and 2 transitive
         Set<Dependency> subProjectADirectDependencies = subProjectA.getDependencyGraph().getDirectDependencies();
-        Assertions.assertEquals(2, subProjectADirectDependencies.size());
+        Assertions.assertEquals(3, subProjectADirectDependencies.size());
         subProjectAGraphAssert.hasRootDependency(blackduck_common);
-        subProjectAGraphAssert.hasParentChildRelationship(blackduck_common, blackduck_common_api);
         subProjectAGraphAssert.hasRootDependency(digraph_parser);
-        subProjectCGraphAssert.hasRelationshipCount(digraph_parser, 0);
+        subProjectAGraphAssert.hasRootDependency(guava);
+        // guava transitives are only at the root code location (BDIO unaffected since transitives are aggregated under
+        // a direct dependency regardless of which projects (root or subproject) they stem from)
+        subProjectAGraphAssert.hasRelationshipCount(guava, 0);
+        subProjectAGraphAssert.hasParentChildRelationship(blackduck_common, blackduck_common_api);
+        // Confirms code location relationships for subProjectA got updated when processing a second configuration
+        subProjectAGraphAssert.hasRelationshipCount(digraph_parser, 1);
+        subProjectAGraphAssert.hasParentChildRelationship(digraph_parser, antlr4_runtime);
 
         // Nested SubProjectC has 1 direct and no transitives
         Set<Dependency> subProjectCDirectDependencies = subProjectC.getDependencyGraph().getDirectDependencies();
