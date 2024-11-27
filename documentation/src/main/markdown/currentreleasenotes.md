@@ -13,7 +13,7 @@
 ### New features
 
 * npm lockfile and shrinkwrap detectors now ignore packages flagged as extraneous in the package-lock.json and npm-shrinkwrap.json files.
-* (IDETECT-4441) New GradleNative Inspector option to process root tree only. TODO
+* (IDETECT-4441) New Gradle Native Inspector option to process a Gradle projects root dependencies only. See <link to new property detail page> for more details. 
 
 ### Changed features
 

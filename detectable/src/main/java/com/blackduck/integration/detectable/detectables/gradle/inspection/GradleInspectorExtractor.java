@@ -72,7 +72,6 @@ public class GradleInspectorExtractor {
                 Optional<GradleReport> rootReport = gradleReportParser.parseReport(reportFilesSorted.get(0));
                 if (!rootReport.isPresent()) {
                     logger.error("No root dependency report to process."); // TODO fail gradle inspector?
-                    // TODO error handling: log error or debug something went wrong or if index at 0 is index out of bounds etc. Fail scan if rootOnly is true but could not be processed. report files should be exactly one
                 } else {
                     List<CodeLocation> allCodeLocationsInRootReport = gradleReportTransformer.transformRootReport(rootReport.get());
                     codeLocations = allCodeLocationsInRootReport;
