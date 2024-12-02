@@ -241,6 +241,7 @@ public class OperationRunner {
     private static final String DEVELOPER_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.scan-evidence-1+protobuf";
     private static final String INTELLIGENT_SCAN_ENDPOINT = ApiDiscovery.INTELLIGENT_PERSISTENCE_SCANS_PATH.getPath();
     private static final String INTELLIGENT_SCAN_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-3+protobuf";
+    private static final String INTELLIGENT_SCAN_SCASS_CONTENT_TYPE = "application/vnd.blackducksoftware.intelligent-persistence-scan-4+protobuf-jsonld";
     public static final ImmutableList<Integer> RETRYABLE_AFTER_WAIT_HTTP_EXCEPTIONS = ImmutableList.of(408, 429, 502, 503, 504);
     public static final ImmutableList<Integer> RETRYABLE_WITH_BACKOFF_HTTP_EXCEPTIONS = ImmutableList.of(425, 500);
     private List<File> binaryUserTargets = new ArrayList<>();
@@ -550,7 +551,7 @@ public class OperationRunner {
             String scanServicePostEndpoint = getScanServicePostEndpoint();
             HttpUrl postUrl = blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl().appendRelativeUrl(scanServicePostEndpoint);
 
-            String scanServicePostContentType = getScanServicePostContentType();
+            String scanServicePostContentType = INTELLIGENT_SCAN_SCASS_CONTENT_TYPE;
             BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
                 .postFile(bdioHeaderFile, ContentType.create(scanServicePostContentType))
                 .buildBlackDuckResponseRequest(postUrl);

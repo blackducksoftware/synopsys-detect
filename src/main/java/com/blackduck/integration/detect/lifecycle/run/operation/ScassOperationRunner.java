@@ -61,7 +61,7 @@ public class ScassOperationRunner {
         return uploadFactory.createScassUploader();
     }
 
-    public Response notifyUploadComplete(String scanId) throws IntegrationException, IOException {
+    public Response notifyUploadComplete(String scanId) throws IntegrationException {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
         
@@ -81,7 +81,7 @@ public class ScassOperationRunner {
             throw new IntegrationException("Could not execute SCASS notification request.", e);
         } catch (IOException e) {
             logger.trace("I/O error occurred during SCASS notification request.");
-            throw new IOException("I/O error occurred during SCASS notification request.", e);
+            throw new IntegrationException("I/O error occurred during SCASS notification request.", e);
         }
     }
 }

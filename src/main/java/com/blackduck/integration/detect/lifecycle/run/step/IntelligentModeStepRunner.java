@@ -27,6 +27,7 @@ import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.blackduck.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
+import com.blackduck.integration.detect.lifecycle.run.operation.ScassOperationRunner;
 import com.blackduck.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
 import com.blackduck.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.blackduck.integration.detect.tool.iac.IacScanCodeLocationData;
@@ -229,17 +230,19 @@ public class IntelligentModeStepRunner {
         AtomicBoolean mustWaitAtBomSummaryLevel
     )
         throws IntegrationException, OperationException {
-
-        // TODO need a BD version check using our ScassOperationRunner to see if we can do SCASS
-        // then need to separate SCASS flow from legacy multipart flow (which SCASS is now a part of
-        // in this PoC)
-        if (isMultipartUploadPossible(blackDuckRunData)) {
-            Optional<String> scanId =
-                binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
-
-            if (scanId.isPresent()) {
-                scanIdsToWaitFor.add(scanId.get());
-            }
+        ScassOperationRunner scassUploadRunner = new ScassOperationRunner(blackDuckRunData);
+        Optional<String> scanId = Optional.empty();
+        
+        if (scassUploadRunner.areScassScansPossible()) {
+            scanId = binaryScanStepRunner.runScaasBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets,
+                    scassUploadRunner);
+        } else if (isMultipartUploadPossible(blackDuckRunData)) {
+            scanId = binaryScanStepRunner.runBinaryScan(dockerTargetData, projectNameVersion,
+                    blackDuckRunData, binaryTargets);
+        } 
+        
+        if (scanId.isPresent()) {
+            scanIdsToWaitFor.add(scanId.get());
         } else {
             Optional<CodeLocationCreationData<BinaryScanBatchOutput>> codeLocationData =
                 binaryScanStepRunner.runLegacyBinaryScan(dockerTargetData, projectNameVersion, blackDuckRunData, binaryTargets);
@@ -249,8 +252,6 @@ public class IntelligentModeStepRunner {
                 mustWaitAtBomSummaryLevel.set(true);
             }
         }
-
-
     }
 
     private void pollForBomScanCompletion(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion,

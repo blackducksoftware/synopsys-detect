@@ -14,10 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackduck.integration.sca.upload.client.uploaders.ScassUploader;
-import com.blackduck.integration.sca.upload.rest.model.response.BinaryFinishResponseContent;
-import com.blackduck.integration.sca.upload.rest.status.BinaryUploadStatus;
-import com.blackduck.integration.sca.upload.rest.status.UploadStatus;
 import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.blackduck.integration.detect.lifecycle.OperationException;
@@ -31,6 +27,10 @@ import com.blackduck.integration.detect.util.bdio.protobuf.DetectProtobufBdioHea
 import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackduck.integration.exception.IntegrationException;
 import com.blackduck.integration.rest.response.Response;
+import com.blackduck.integration.sca.upload.client.uploaders.ScassUploader;
+import com.blackduck.integration.sca.upload.rest.model.response.BinaryFinishResponseContent;
+import com.blackduck.integration.sca.upload.rest.status.BinaryUploadStatus;
+import com.blackduck.integration.sca.upload.rest.status.UploadStatus;
 import com.blackduck.integration.util.NameVersion;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -48,29 +48,24 @@ public class BinaryScanStepRunner {
         this.operationRunner = operationRunner;
         this.gson = new Gson();
     }
-
-    public Optional<String> runBinaryScan(
+    
+    public Optional<String> runScaasBinaryScan(
         DockerTargetData dockerTargetData,
         NameVersion projectNameVersion,
         BlackDuckRunData blackDuckRunData,
-        Set<String> binaryTargets
+        Set<String> binaryTargets, 
+        ScassOperationRunner scassUploadRunner
     )
         throws OperationException, IntegrationException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
         if (binaryScanFile.isPresent()) {
-            // create scanID like we do for container
+            // call BlackDuck to create a scanID and determine where to upload the file
             ScanCreationResponse scanCreationResponse = initiateScan(projectNameVersion, binaryScanFile.get(), blackDuckRunData);
             
             String scanId = scanCreationResponse.getScanId();
             String uploadUrl = scanCreationResponse.getUploadUrl();
             
-            // TODO upload, this is hacked up and only handles the new SCASS and non-SCASS flows. Need to
-            // have the original stuff in here for older blackducks at some point.
-            //BinaryUploadStatus status = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData);
             if (StringUtils.isNotEmpty(uploadUrl)) {
-                // Do scass stuff using library
-                // TODO declare this in constructor?
-                ScassOperationRunner scassUploadRunner = new ScassOperationRunner(blackDuckRunData);
                 ScassUploader scaasScanUploader = scassUploadRunner.createScaasScanUploader();
                 
                 // TODO hardcode headers for now until we know if we need them
@@ -80,15 +75,11 @@ public class BinaryScanStepRunner {
                 UploadStatus status = scaasScanUploader.upload(uploadUrl, headers, binaryScanFile.get().toPath());
                 
                 if (status.isError()) {
-                    // TODO obviously improve this
+                    handleUploadError(status);
                 }
                 
-                // call /scans/{scanId}/scass-scan-processing
-                try {
-                    scassUploadRunner.notifyUploadComplete(scanId);
-                } catch (IOException e) {
-                    throw new IntegrationException("Unable to notify Black Duck upload of binary file is complete.");
-                }         
+                // call /scans/{scanId}/scass-scan-processing to notify BlackDuck the file is uploaded
+                scassUploadRunner.notifyUploadComplete(scanId);       
             } else {
                 // TODO call new non-scass endpoint. For now mimic container scan
                 try {
@@ -112,6 +103,17 @@ public class BinaryScanStepRunner {
         }
     }
     
+    // TODO similar to containerScanStepRunner
+    private void handleUploadError(UploadStatus status) throws IntegrationException {
+        if (status == null) {
+            throw new IntegrationException("Unexpected empty response attempting to upload binary image.");
+        } else if (status.getException().isPresent()) {
+            throw status.getException().get();      
+        } else {
+            throw new IntegrationException(String.format("Unable to upload binary image. Status code: {}. {}", status.getStatusCode(), status.getStatusMessage()));
+        }  
+    }
+
     // TODO similar to containerScanStepRunner
     private void uploadImageMetadataToStorageService(String scanId, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws IntegrationException, IOException, OperationException {
         String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString(), "/message");
@@ -157,6 +159,19 @@ public class BinaryScanStepRunner {
                 logger.trace("Unable to upload binary image. {} {}", response.getStatusCode(), response.getStatusMessage());
                 throw new IntegrationException(String.join(" ", "Unable to upload binary image. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
             }
+        }
+    }
+    
+    public Optional<String> runBinaryScan(DockerTargetData dockerTargetData, NameVersion projectNameVersion,
+            BlackDuckRunData blackDuckRunData, Set<String> binaryTargets)
+            throws OperationException, IntegrationException {
+        Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
+        if (binaryScanFile.isPresent()) {
+            BinaryUploadStatus status = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion,
+                    blackDuckRunData);
+            return extractBinaryScanId(status);
+        } else {
+            return Optional.empty();
         }
     }
 
