@@ -1,7 +1,11 @@
 package com.blackduck.integration.detectable.detectables.gradle.inspection.parse;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -58,16 +62,7 @@ public class GradleReportTransformer {
             }
 
             if (currentNode.getNodeType() == GradleTreeNode.NodeType.GAV) {
-                history.clearDependenciesDeeperThan(currentNode.getLevel());
-                Optional<GradleGav> currentNodeGav = currentNode.getGav();
-                if (currentNodeGav.isPresent()) {
-                    addGavToGraph(currentNodeGav.get(), history, rootGraph);
-                }
-                else {
-                    // We know this is a GradleTreeNode.NodeType.GAV
-                    // So if its missing data, something is probably wrong.
-                    logger.debug("Missing expected GAV from known NodeType. {}", currentNode);
-                }
+                addGavToGraph(currentNode, currentNode.getLevel(), history, rootGraph);
             }
             else if (currentNode.getNodeType() == GradleTreeNode.NodeType.PROJECT) {
                 // Let this method skip over the subProject section as usual
@@ -99,16 +94,7 @@ public class GradleReportTransformer {
             if (currentNodeLevelRelativeToSubProject != -1) {
                 if (currentNode.getNodeType() == GradleTreeNode.NodeType.GAV) {
                     logger.trace("Adding dependency " + currentNode.getGav() + " for subProject " + subProjectName);
-                    history.clearDependenciesDeeperThan(currentNodeLevelRelativeToSubProject);
-                    Optional<GradleGav> currentNodeGav = currentNode.getGav();
-                    if (currentNodeGav.isPresent()) {
-                        addGavToGraph(currentNodeGav.get(), history, subProjectGraph);
-                    }
-                    else {
-                        // We know this is a GradleTreeNode.NodeType.GAV
-                        // So if its missing data, something is probably wrong.
-                        logger.debug("Missing expected GAV from known NodeType. {}", currentNode);
-                    }
+                    addGavToGraph(currentNode, currentNodeLevelRelativeToSubProject, history, subProjectGraph);
                 } else {
                     // Process nested subproject node
                     treeNodeSkipper.skipUntilLineLevel(currentNode.getLevel());
@@ -178,29 +164,30 @@ public class GradleReportTransformer {
             }
 
             if (currentNode.getNodeType() == GradleTreeNode.NodeType.GAV) {
-                history.clearDependenciesDeeperThan(currentNode.getLevel());
-                Optional<GradleGav> currentNodeGav = currentNode.getGav();
-                if (currentNodeGav.isPresent()) {
-                    addGavToGraph(currentNodeGav.get(), history, graph);
-                } else {
-                    // We know this is a GradleTreeNode.NodeType.GAV
-                    // So if its missing data, something is probably wrong.
-                    logger.debug("Missing expected GAV from known NodeType. {}", currentNode);
-                }
+                addGavToGraph(currentNode, currentNode.getLevel(), history, graph);
             } else {
                 treeNodeSkipper.skipUntilLineLevel(currentNode.getLevel());
             }
         }
     }
 
-    private void addGavToGraph(GradleGav gav, DependencyHistory history, DependencyGraph graph) {
-        Dependency currentDependency = Dependency.FACTORY.createMavenDependency(gav.getGroup(), gav.getName(), gav.getVersion());
-        if (history.isEmpty()) {
-            graph.addDirectDependency(currentDependency);
+    private void addGavToGraph(GradleTreeNode currentNode, int currentNodeLevel, DependencyHistory history, DependencyGraph graph) {
+        history.clearDependenciesDeeperThan(currentNodeLevel);
+        Optional<GradleGav> currentNodeGavOptional = currentNode.getGav();
+        if (currentNodeGavOptional.isPresent()) {
+            GradleGav gav = currentNodeGavOptional.get();
+            Dependency currentDependency = Dependency.FACTORY.createMavenDependency(gav.getGroup(), gav.getName(), gav.getVersion());
+            if (history.isEmpty()) {
+                graph.addDirectDependency(currentDependency);
+            } else {
+                graph.addChildWithParents(currentDependency, history.getLastDependency());
+            }
+            history.add(currentDependency);
         } else {
-            graph.addChildWithParents(currentDependency, history.getLastDependency());
+            // We know this is a GradleTreeNode.NodeType.GAV
+            // So if its missing data, something is probably wrong.
+            logger.debug("Missing expected GAV from known NodeType. {}", currentNode);
         }
-        history.add(currentDependency);
     }
 
     private static class TreeNodeSkipper {
