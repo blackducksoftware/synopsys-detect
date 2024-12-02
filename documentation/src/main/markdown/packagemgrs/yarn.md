@@ -19,7 +19,7 @@ The yarn.lock file contains necessary details about those
 direct dependencies and their transient dependencies, enabling [detect_product_short]
 to build the complete graph of direct and transient dependencies.
 
-<note type="note">If any definition has a dependency as a non-dev direct or transitive reference, it and any transitives cease to be a dev-only dependencies. If a component is a transitive to a non-dev dependency, it ceases to be a dev-only dependency, irrespective of any explicit references as a dev dependency.</note>
+<note type="note">If any definition has a dependency as a non-dev direct or transitive reference, it and any transitives cease to be dev-only dependencies. If a component is a transitive to a non-dev dependency, it ceases to be a dev-only dependency, irrespective of any explicit references as a dev dependency.</note>
 
 ## Yarn workspace support
 
