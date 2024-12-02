@@ -71,7 +71,7 @@ public class GradleInspectorExtractor {
                 logger.debug("Gradle Inspector root-only option selected. Only processing root project dependencies.");
                 Optional<GradleReport> rootReport = gradleReportParser.parseReport(reportFilesSorted.get(0));
                 if (rootReport.isPresent()) {
-                    List<CodeLocation> allCodeLocationsInRootReport = gradleReportTransformer.transformRootReport(rootReport.get());
+                    List<CodeLocation> allCodeLocationsInRootReport = gradleReportTransformer.transformRootReportOnly(rootReport.get());
                     codeLocations = allCodeLocationsInRootReport;
                 }
             } else {

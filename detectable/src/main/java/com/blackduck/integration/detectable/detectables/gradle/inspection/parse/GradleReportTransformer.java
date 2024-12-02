@@ -31,16 +31,10 @@ public class GradleReportTransformer {
         this.configurationTypeFilter = configurationTypeFilter;
     }
 
-    public List<CodeLocation> transformRootReport(GradleReport gradleReport) {
+    public List<CodeLocation> transformRootReportOnly(GradleReport gradleReport) {
         DependencyGraph rootGraph = new BasicDependencyGraph();
-        for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
-            if (configuration.isResolved() || configurationTypeFilter.shouldInclude(GradleConfigurationType.UNRESOLVED)) {
-                logger.debug("Adding configuration to the graph: {}", configuration.getName());
-                addConfigurationToRootAndSubProjectGraphs(rootGraph, configuration, gradleReport);
-            } else {
-                logger.trace("Excluding unresolved configuration from the graph: {}", configuration.getName());
-            }
-        }
+
+        processConfigurations(gradleReport, rootGraph, true);
 
         ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
         if (StringUtils.isNotBlank(gradleReport.getProjectSourcePath())) {
@@ -53,7 +47,6 @@ public class GradleReportTransformer {
 
         return allCodeLocationsWithinRoot;
     }
-
 
     private void addConfigurationToRootAndSubProjectGraphs(DependencyGraph rootGraph, GradleConfiguration configuration, GradleReport rootReport) {
         DependencyHistory history = new DependencyHistory();
@@ -86,6 +79,7 @@ public class GradleReportTransformer {
             }
         }
     }
+
     private void processSubprojectAndCreateCodeLocation(GradleTreeNode subProjectNode, List<GradleTreeNode> allTreeNodesInCurrentConfiguration, GradleReport rootReport) {
         String subProjectName = subProjectNode.getProjectName().get();
         logger.debug("Processing subProject node:" + subProjectName);
@@ -140,6 +134,7 @@ public class GradleReportTransformer {
     private boolean codeLocationAlreadyCreatedFor(String subProjectName) {
         return subProjectCodeLocationMap.containsKey(subProjectName);
     }
+
     private CodeLocation createCodeLocationForSubProject(GradleReport rootReport, DependencyGraph subProjectGraph, String subProjectName) {
         ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(rootReport.getProjectGroup(), subProjectName, rootReport.getProjectVersionName());
             return new CodeLocation(subProjectGraph, projectId);
@@ -148,20 +143,28 @@ public class GradleReportTransformer {
     public CodeLocation transform(GradleReport gradleReport) {
         DependencyGraph graph = new BasicDependencyGraph();
 
-        for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
-            if (configuration.isResolved() || configurationTypeFilter.shouldInclude(GradleConfigurationType.UNRESOLVED)) {
-                logger.trace("Adding configuration to the graph: {}", configuration.getName());
-                addConfigurationToGraph(graph, configuration);
-            } else {
-                logger.trace("Excluding unresolved configuration from the graph: {}", configuration.getName());
-            }
-        }
+        processConfigurations(gradleReport, graph, false);
 
         ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
         if (StringUtils.isNotBlank(gradleReport.getProjectSourcePath())) {
             return new CodeLocation(graph, projectId, new File(gradleReport.getProjectSourcePath()));
         } else {
             return new CodeLocation(graph, projectId);
+        }
+    }
+
+    private void processConfigurations(GradleReport gradleReport, DependencyGraph graph, boolean rootOnly) {
+        for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
+            if (configuration.isResolved() || configurationTypeFilter.shouldInclude(GradleConfigurationType.UNRESOLVED)) {
+                logger.trace("Adding configuration to the graph: {}", configuration.getName());
+                if (rootOnly) {
+                    addConfigurationToRootAndSubProjectGraphs(graph, configuration, gradleReport);
+                } else {
+                    addConfigurationToGraph(graph, configuration);
+                }
+            } else {
+                logger.trace("Excluding unresolved configuration from the graph: {}", configuration.getName());
+            }
         }
     }
 

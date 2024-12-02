@@ -48,11 +48,11 @@ public class GradleInspectorRootOnlyTest extends DetectableFunctionalTest {
                 "--info"
         );
 
-        List<String> lines = FunctionalTestFiles.asListOfStrings("/gradle/root-only-tests/rootProjectMetadata.txt");
-        addOutputFile(Paths.get("rootProjectMetadata.txt"), lines);
+        List<String> rootProjectMetadataLines = FunctionalTestFiles.asListOfStrings("/gradle/root-only-tests/rootProjectMetadata.txt");
+        addOutputFile(Paths.get("rootProjectMetadata.txt"), rootProjectMetadataLines);
 
-        List<String> newLines = FunctionalTestFiles.asListOfStrings("/gradle/root-only-tests/root_project__simple__depth0_dependencyGraph.txt");
-        addOutputFile(Paths.get("root_dependencyGraph.txt"), newLines);
+        List<String> dependenciesCommandOutputLines = FunctionalTestFiles.asListOfStrings("/gradle/root-only-tests/root_project__simple__depth0_dependencyGraph.txt");
+        addOutputFile(Paths.get("root_dependencyGraph.txt"), dependenciesCommandOutputLines);
     }
 
     @NotNull
