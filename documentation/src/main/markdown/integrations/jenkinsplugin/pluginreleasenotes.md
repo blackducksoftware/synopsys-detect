@@ -6,6 +6,7 @@
 
 The [company_name] Software Integrity Group is now [var_company_name]    
 * As part of this activity, sig-repo.synopsys.com and detect.synopsys.com are being deprecated and will be decommissioned in Feb. 2025. Please make use of repo.blackduck.com and detect.blackduck.com respectively.    
+
 * Refer to the [Black Duck Domain Change FAQ](https://community.blackduck.com/s/article/Detect-Overview-of-Domain-Changes-for-Black-Duck).
 <note type="note">It is recommended that customers add both `repo.blackduck.com`, and `detect.blackduck.com`, to their allow list, while also maintaining `sig-repo.synopsys.com`, and `detect.synopsys.com`, until February 2025 when `sig-repo.synopsys.com`, and `detect.synopsys.com`, will be fully replaced by `repo.blackduck.com` and `detect.blackduck.com` respectively.</note>
 [company_name] [solution_name] Jenkins plugin is now the [detect_product_long] Jenkins plugin.
