@@ -920,8 +920,8 @@ public class DetectProperties {
             BooleanProperty.newBuilder("detect.gradle.root.only", false)
                     .setInfo("Gradle Root Only Enabled", DetectPropertyFromVersion.VERSION_10_1_0)
                     .setHelp(
-                            "If set to true, Gradle Native Inspector will evaluate only the root project's dependencies.",
-                            "This property trumps other inclusion/exclusion rules and therefore should not be combined with detect.gradle.excluded.projects, detect.gradle.excluded.project.paths, detect.gradle.included.projects or detect.gradle.included.project.paths."
+                            "If set to true, Gradle Native Inspector will only evaluate root project dependencies.",
+                            "This property overrides other inclusion/exclusion rules and therefore should not be combined with detect.gradle.excluded.projects, detect.gradle.excluded.project.paths, detect.gradle.included.projects, or detect.gradle.included.project.paths."
                     )
                     .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
                     .setCategory(DetectCategory.Advanced)

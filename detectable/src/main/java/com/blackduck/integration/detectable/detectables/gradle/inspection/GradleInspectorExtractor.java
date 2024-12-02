@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Comparator;
 
-import com.blackduck.integration.detectable.detectables.gradle.inspection.model.GradleReport;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -22,6 +21,7 @@ import com.blackduck.integration.detectable.detectable.executable.ExecutableFail
 import com.blackduck.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.blackduck.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.blackduck.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
+import com.blackduck.integration.detectable.detectables.gradle.inspection.model.GradleReport;
 import com.blackduck.integration.detectable.extraction.Extraction;
 import com.blackduck.integration.detectable.util.ToolVersionLogger;
 import com.blackduck.integration.rest.proxy.ProxyInfo;
@@ -67,12 +67,10 @@ public class GradleInspectorExtractor {
             reportFiles.toArray(files);
             List<File> reportFilesSorted = Arrays.asList(sortFilesByDepth(files));
 
-            if (rootOnly) {
-                logger.debug("Gradle Inspector root only option selected. Will process root project's dependencies only.");
+            if (rootOnly && reportFilesSorted.size()>0) {
+                logger.debug("Gradle Inspector root-only option selected. Only processing root project dependencies.");
                 Optional<GradleReport> rootReport = gradleReportParser.parseReport(reportFilesSorted.get(0));
-                if (!rootReport.isPresent()) {
-                    logger.error("No root dependency report to process."); // TODO fail gradle inspector?
-                } else {
+                if (rootReport.isPresent()) {
                     List<CodeLocation> allCodeLocationsInRootReport = gradleReportTransformer.transformRootReport(rootReport.get());
                     codeLocations = allCodeLocationsInRootReport;
                 }
