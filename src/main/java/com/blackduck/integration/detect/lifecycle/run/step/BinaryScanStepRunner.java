@@ -41,7 +41,9 @@ public class BinaryScanStepRunner {
     private Gson gson;
     
     private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
+    private static final String STORAGE_BDBA_ENDPOINT = "/api/storage/bdba/";
     private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
+    private static final String STORAGE_BDBA_CONTENT_TYPE = "application/vnd.blackducksoftware.bdba-scan-data-1+octet-stream";
     private static final String STORAGE_IMAGE_METADATA_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-message-1+json";
 
     public BinaryScanStepRunner(OperationRunner operationRunner) {
@@ -81,7 +83,6 @@ public class BinaryScanStepRunner {
                 // call /scans/{scanId}/scass-scan-processing to notify BlackDuck the file is uploaded
                 scassUploadRunner.notifyUploadComplete(scanId);       
             } else {
-                // TODO call new non-scass endpoint. For now mimic container scan
                 try {
                     uploadNonScassFile(scanId, blackDuckRunData, binaryScanFile.get());
                 } catch (IOException e) {
@@ -141,7 +142,7 @@ public class BinaryScanStepRunner {
     
     // TODO very similar to code in container scan step runner
     private void uploadNonScassFile(String scanId, BlackDuckRunData blackDuckRunData, File binaryFile) throws IOException, OperationException, IntegrationException {
-        String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString());
+        String storageServiceEndpoint = String.join("", STORAGE_BDBA_ENDPOINT, scanId.toString());
         String operationName = "Upload Binary Scan Image";
         logger.debug("Uploading binary image artifact to storage endpoint: {}", storageServiceEndpoint);
 
@@ -149,7 +150,7 @@ public class BinaryScanStepRunner {
             blackDuckRunData,
             storageServiceEndpoint,
             binaryFile,
-            STORAGE_IMAGE_CONTENT_TYPE,
+            STORAGE_BDBA_CONTENT_TYPE,
             operationName
         )
         ) {
