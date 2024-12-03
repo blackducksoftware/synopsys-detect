@@ -2,7 +2,7 @@
 
 ## Version 11.1.0
 
-### Dependency update
+### Changed features
 
 * Changed [docker_inspector_name]'s JAR signing authority from Synopsys, Inc to Black Duck Software, Inc.
 

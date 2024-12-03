@@ -20,6 +20,7 @@
 
 * npm version 1 package-lock.json and npm-shrinkwrap.json file parsing has been restored.
 * The `detect.project.codelocation.unmap` property has been deprecated.
+* Changed [detect_product_long]'s JAR signing authority from Synopsys, Inc. to Black Duck Software, Inc.
 
 ### Resolved issues
 
@@ -28,5 +29,4 @@
 
 ### Dependency updates
 
-* Changed [detect_product_long]'s JAR signing authority from Synopsys, Inc. to Black Duck Software, Inc.
 * Upgraded and released [docker_inspector_name] to version 11.1.0.
