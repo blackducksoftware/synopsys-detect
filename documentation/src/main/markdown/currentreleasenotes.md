@@ -14,7 +14,7 @@
 ### New features
 
 * npm lockfile and shrinkwrap detectors now ignore packages flagged as extraneous in the package-lock.json and npm-shrinkwrap.json files.
-* Support added for Opam Package Manager via [Opam Detector](../packagemgrs/opam.md) (.
+* Support added for Opam Package Manager via [Opam Detector](../packagemgrs/opam.md).
 
 ### Changed features
 
