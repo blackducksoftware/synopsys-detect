@@ -25,3 +25,7 @@
 
 * (IDETECT-4517) - [detect_product_short] now correctly indicates a timeout failure occurred when multipart binary or container scans timeout during an upload.
 * (IDETECT-4540) - Multipart binary and container scans now correctly retry when authentication errors are received during transmission.
+
+### Dependency updates
+
+* Changed JAR signing authority from Synopsys, Inc to Black Duck Software, Inc.
