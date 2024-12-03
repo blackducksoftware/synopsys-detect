@@ -69,8 +69,7 @@ public class OpamFileParser {
         for (String line : lines) {
             line = line.trim();
             // if the line contains os or system level dependencies skip them
-            if (line.isEmpty() || line.startsWith("#") || line.contains("arch") || line.contains("win") ||
-                    line.contains("cc") || line.contains("os !=") || line.contains("system") || line.contains("ming")) {
+            if (line.isEmpty() || line.startsWith("#") || line.startsWith("{?") || line.contains("cygwin")) {
                 continue;
             }
 
@@ -125,15 +124,21 @@ public class OpamFileParser {
         Matcher matcher = pattern.matcher(line);
         if (matcher.find()) {
             String packageName = matcher.group(1);
-            dependsSection.add(packageName);
+            if(!packageName.equals("cc")) {
+                dependsSection.add(packageName);
+            }
         }
     }
 
     private void addDependencyToList(String line, Set<String> dependsSection, Pattern pattern) {
         int openIndex = line.indexOf("{"); // used to represent version in opam files
         int closeIndex = line.indexOf("}");
+        int openRoundIndex = line.indexOf("(");
+        int closeRoundIndex = line.indexOf(")");
+        int openDoubleRoundIndex = line.indexOf("((");
+        int closeDoubleRoundIndex = line.indexOf("))");
 
-        if (openIndex != -1 && closeIndex == -1) { // check if the version line ends, as sometimes it may span across multiple lines
+        if ((openIndex != -1 && closeIndex == -1) || (openRoundIndex != -1 && closeRoundIndex == -1) || (openDoubleRoundIndex != -1 && closeDoubleRoundIndex == -1)) { // check if the version line ends, as sometimes it may span across multiple lines
             inVersionSection = true;
         }
 
@@ -142,6 +147,14 @@ public class OpamFileParser {
         }
 
         if (inVersionSection && openIndex == -1 && closeIndex != -1) {
+            inVersionSection = false;
+        }
+
+        if (inVersionSection && openRoundIndex == -1 && closeRoundIndex != -1) {
+            inVersionSection = false;
+        }
+
+        if (inVersionSection && openDoubleRoundIndex == -1 && closeDoubleRoundIndex != -1) {
             inVersionSection = false;
         }
     }
