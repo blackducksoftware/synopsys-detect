@@ -29,4 +29,4 @@
 ### Dependency updates
 
 * Changed [detect_product_long]'s JAR signing authority from Synopsys, Inc to Black Duck Software, Inc.
-* Released and Upgraded [docker_inspector_name] to version 11.1.0.
+* Upgraded and released [docker_inspector_name] to version 11.1.0.
