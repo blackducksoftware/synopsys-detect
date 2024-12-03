@@ -20,18 +20,18 @@ For existing [company_name] [solution_name] Jenkins plugin users, the [detect_pr
 * For Groovy, you will need to update the **Pipeline** script; under **Pipelines** > **Pipeline_Name** > **Configuration**, replacing the `synopsys_detect detectProperties:` portion of the script with `blackduck_detect detectProperties:`
    
    Example:
-```
-   node ('built-in') {
+    ```
+    node ('built-in') {
 
-    stage ('Git - Checkout') {
-    git 'https://github.com/yarnpkg/example-yarn-package.git'
+        stage ('Git - Checkout') {
+        git 'https://github.com/yarnpkg/example-yarn-package.git'
+        }
+        stage ('Black Duck - Detect') {
+        blackduck_detect detectProperties: '--blackduck.trust.cert=true --detect.wait.for.results=true', downloadStrategyOverride: [$class: 'ScriptOrJarDownloadStrategy']
+            
+        }
     }
-    stage ('Black Duck - Detect') {
-    blackduck_detect detectProperties: '--blackduck.trust.cert=true --detect.wait.for.results=true', downloadStrategyOverride: [$class: 'ScriptOrJarDownloadStrategy']
-        
-    }
-}
-```
+    ```
    
 * For the System Configuration and [bd_product_long], before upgrading to the [detect_product_long] plugin, make sure to back up, or record the current configuration set for the Global [bd_product_short] URL and token that you have set in Manage Jenkins > Configure System > [detect_product_long] section.
 * If you are using Air Gap mode, before upgrading to the [detect_product_long] plugin, make sure to save the current tool configuration that you have set in Manage Jenkins > Tools > Detect Air Gap mode.
