@@ -1230,7 +1230,7 @@ public class DetectProperties {
 
     public static final NullablePathProperty DETECT_OPAM_PATH =
             NullablePathProperty.newBuilder("detect.opam.path")
-                    .setInfo("Opam Executable", DetectPropertyFromVersion.VERSION_10_0_0)
+                    .setInfo("Opam Executable", DetectPropertyFromVersion.VERSION_10_1_0)
                     .setHelp("The path to the opam executable.")
                     .setGroups(DetectGroup.OPAM, DetectGroup.GLOBAL)
                     .build();
