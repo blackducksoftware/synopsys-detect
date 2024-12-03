@@ -146,7 +146,7 @@ public class NpmDependencyConverter {
                 
         for(String packageName : packageLock.packages.keySet()) {
             if (packageName.isEmpty()) {
-                packagesToRemove.add(packageName);
+                packagesToRemove.add(packageName); // if pkg name is empty, what are we adding here to remove later?
             }
 
             gatherAllDependencies(packageLock, packageName);
@@ -172,16 +172,9 @@ public class NpmDependencyConverter {
                     packagesToRemove.add(packageName);
                     continue;
                 }
-                
-                if (parentPackage.packages == null) {
-                    parentPackage.packages = new HashMap<String, PackageLockPackage>();
+                if (parentPackage != null) {
+                    linkChildBackToParent(parentPackage, packageName, packagesToRemove, packageLock);
                 }
-                
-                // Link the child back to the parent. The child will be the leaf of the overall packageName.
-                String childPackageName = packageName.substring(packageName.lastIndexOf("*") + 1, packageName.length());
-                parentPackage.packages.put(childPackageName, packageLock.packages.get(packageName));
-                
-                packagesToRemove.add(packageName);
             }
         }
             
@@ -189,6 +182,18 @@ public class NpmDependencyConverter {
         // This makes the final packages structure more like the previous dependencies structure so most of the
         // detector code does not need to be altered to support npm 9 and later.
         packageLock.packages.keySet().removeAll(packagesToRemove);
+    }
+
+    private void linkChildBackToParent(PackageLockPackage parentPackage, String packageName,Set<String> packagesToRemove, PackageLock packageLock) {
+        if (parentPackage.packages == null) {
+            parentPackage.packages = new HashMap<String, PackageLockPackage>();
+        }
+
+        // Link the child back to the parent. The child will be the leaf of the overall packageName.
+        String childPackageName = packageName.substring(packageName.lastIndexOf("*") + 1, packageName.length());
+        parentPackage.packages.put(childPackageName, packageLock.packages.get(packageName));
+
+        packagesToRemove.add(packageName);
     }
 
     /**
