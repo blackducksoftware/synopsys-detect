@@ -40,12 +40,9 @@ public class BinaryScanStepRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Gson gson;
     
-    private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
     private static final String STORAGE_BDBA_ENDPOINT = "/api/storage/bdba/";
-    private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
     private static final String STORAGE_BDBA_CONTENT_TYPE = "application/vnd.blackducksoftware.bdba-scan-data-1+octet-stream";
-    private static final String STORAGE_IMAGE_METADATA_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-message-1+json";
-
+    private static final String STORAGE_BDBA_MESSAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.bdba-scan-message-1+json";
     public BinaryScanStepRunner(OperationRunner operationRunner) {
         this.operationRunner = operationRunner;
         this.gson = new Gson();
@@ -68,6 +65,7 @@ public class BinaryScanStepRunner {
             String uploadUrl = scanCreationResponse.getUploadUrl();
             
             if (StringUtils.isNotEmpty(uploadUrl)) {
+                // This is a SCASS capable server server and SCASS is enabled.
                 ScassUploader scaasScanUploader = scassUploadRunner.createScaasScanUploader();
                 
                 // TODO hardcode headers for now until we know if we need them
@@ -83,16 +81,15 @@ public class BinaryScanStepRunner {
                 // call /scans/{scanId}/scass-scan-processing to notify BlackDuck the file is uploaded
                 scassUploadRunner.notifyUploadComplete(scanId);       
             } else {
+                // This is a SCASS capable server server but SCASS is not enabled.
                 try {
                     uploadNonScassFile(scanId, blackDuckRunData, binaryScanFile.get());
                 } catch (IOException e) {
                     throw new IntegrationException("Unable to upload binary file.");
                 }
-                
-                // TODO finish call, still piggybacking on container scan endpoints for now.
-                // (send metadata for new non-SCASS approach to /api/storage/containers/{id}/message
+
                 try {
-                    uploadImageMetadataToStorageService(scanId, projectNameVersion, blackDuckRunData);
+                    uploadMetadataToStorageService(scanId, projectNameVersion, blackDuckRunData);
                 } catch (IOException e) {
                     throw new IntegrationException("Unable to send binary metadata.");
                 }
@@ -116,10 +113,10 @@ public class BinaryScanStepRunner {
     }
 
     // TODO similar to containerScanStepRunner
-    private void uploadImageMetadataToStorageService(String scanId, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws IntegrationException, IOException, OperationException {
-        String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString(), "/message");
-        String operationName = "Upload binary Scan Image Metadata JSON";
-        logger.debug("Uploading binary image metadata to storage endpoint: {}", storageServiceEndpoint);
+    private void uploadMetadataToStorageService(String scanId, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws IntegrationException, IOException, OperationException {
+        String storageServiceEndpoint = String.join("", STORAGE_BDBA_ENDPOINT, scanId.toString(), "/message");
+        String operationName = "Upload binary Scan Metadata JSON";
+        logger.debug("Uploading binary metadata to storage endpoint: {}", storageServiceEndpoint);
         
         JsonObject binaryMetadataObject = operationRunner.createScanMetadata(UUID.fromString(scanId), projectNameVersion, "BINARY");
 
@@ -127,15 +124,15 @@ public class BinaryScanStepRunner {
             blackDuckRunData,
             storageServiceEndpoint,
             binaryMetadataObject.toString(),
-            STORAGE_IMAGE_METADATA_CONTENT_TYPE,
+            STORAGE_BDBA_MESSAGE_CONTENT_TYPE,
             operationName
         )
         ) {
             if (response.isStatusCodeSuccess()) {
-                logger.debug("binary scan image metadata uploaded to storage service.");
+                logger.debug("binary scan metadata uploaded to storage service.");
             } else {
-                logger.trace("Unable to upload binary image metadata." + response.getStatusCode() + " " + response.getStatusMessage());
-                throw new IntegrationException(String.join(" ", "Unable to upload binary image metadata. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
+                logger.trace("Unable to upload binary metadata." + response.getStatusCode() + " " + response.getStatusMessage());
+                throw new IntegrationException(String.join(" ", "Unable to upload binary metadata. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
             }
         }
     }
