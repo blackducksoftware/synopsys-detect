@@ -123,7 +123,7 @@ public class OpamGraphTransformer {
 
             Map<String, String> parsedOutput = parser.parseData(output); // parse opam show output
 
-            String version = parsedOutput.get(VERSION).trim().replaceAll("\"","");
+            String version = parsedOutput.get(VERSION).trim().replace("\"","");
 
             Dependency createdDependency = createExternalId(dependency, version); // create dependency with name and version
 

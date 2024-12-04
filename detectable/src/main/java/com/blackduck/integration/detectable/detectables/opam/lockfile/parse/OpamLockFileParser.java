@@ -19,7 +19,7 @@ public class OpamLockFileParser {
         this.opamLockedFiles = opamLockedFiles;
     }
 
-    public Map<String, String> parse() {
+    public Map<String, String> parse() throws IOException {
 
         for (File lockFile : opamLockedFiles) {
             readOpamLockFile(lockFile);
@@ -28,10 +28,10 @@ public class OpamLockFileParser {
         return parsedLockedOpamDependencies;
     }
 
-    private void readOpamLockFile(File opamFile) {
+    private void readOpamLockFile(File opamFile) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(opamFile))) {
             String line;
-            // parse lock file dependencies with package name and version Eg: "package" {="version"}
+            //parse lock file dependencies with package name and version Eg: "package" { = "version"}
             Pattern pattern = Pattern.compile("\"([^\"]+)\"\\s*\\{([^}]*)\\}");
             boolean inDependsSection = false;
 
@@ -49,20 +49,24 @@ public class OpamLockFileParser {
 
                 if(inDependsSection) {
                     Matcher matcher = pattern.matcher(line);
-                    while(matcher.find()) {
-                        // match package and version with the line found
-                        String packageName = matcher.group(1);
-                        String version = matcher.group(2);
-                        if(version.contains("=")) {
-                            version = version.replace("= ",""); // remove = from version
-                            version = version.replaceAll("\"",""); // remove " from version
-                        }
-                        parsedLockedOpamDependencies.put(packageName, version);
-                    }
+                    matchAndAddDependency(matcher);
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("There was an error while parsing the opam lock file.", e);
+            throw new IOException("There was an error while parsing the opam lock file.", e);
+        }
+    }
+
+    private void matchAndAddDependency(Matcher matcher) {
+        while(matcher.find()) {
+            // match package and version with the line found
+            String packageName = matcher.group(1);
+            String version = matcher.group(2);
+            if(version.contains("=")) {
+                version = version.replace("= ",""); // remove = from version
+                version = version.replace("\"",""); // remove " from version
+            }
+            parsedLockedOpamDependencies.put(packageName, version);
         }
     }
 

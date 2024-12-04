@@ -23,8 +23,10 @@ public class OpamFileParser {
     private static final String DEPENDS = "depends";
     private static final String NAME = "name";
     private boolean inVersionSection = false;
+    private boolean inDependsSection = false;
 
     public OpamFileParser() {
+        // We do not need any variables to be initialized so keeping it default
     }
 
     //have a separate parseData and parse method to use for parsing opam show command, as it gives output in file format
@@ -63,7 +65,6 @@ public class OpamFileParser {
         Map<String, String> output = new HashMap<>();
         Set<String> dependsSection = new HashSet<>();
         Pattern pattern = Pattern.compile("\"([^\"]+)\"");
-        boolean inDependsSection = false;
 
 
         for (String line : lines) {
@@ -81,18 +82,7 @@ public class OpamFileParser {
                 output.put(NAME, line.split(":")[1]);
             }
 
-            // parse depends section
-            // sometimes, depends contains dependencies in one line, so we have to parse them differently
-            // than normal opam files. Eg: depends: ["ocaml" "dune"], otherwise all the dependencies are present in different lines
-            if (line.startsWith("depends:")) {
-                inDependsSection = true;
-                if(line.contains("]")) {
-                    handleSameLineDependencies(line, dependsSection, pattern);
-                    inDependsSection = false;
-                }
-            } else if (inDependsSection && line.startsWith("]")) {
-                inDependsSection = false;
-            }
+            checkDependsSection(line, dependsSection, pattern);
 
             if (inDependsSection) {
                 addDependencyToList(line, dependsSection, pattern); // add dependency to list
@@ -105,6 +95,21 @@ public class OpamFileParser {
         }
 
         return output;
+    }
+
+    private void checkDependsSection(String line, Set<String> dependsSection, Pattern pattern) {
+        // parse depends section
+        // sometimes, depends contains dependencies in one line, so we have to parse them differently
+        // than normal opam files. Eg: depends: ["ocaml" "dune"], otherwise all the dependencies are present in different lines
+        if (line.startsWith("depends:")) {
+            inDependsSection = true;
+            if(line.contains("]")) {
+                handleSameLineDependencies(line, dependsSection, pattern);
+                inDependsSection = false;
+            }
+        } else if (inDependsSection && line.startsWith("]")) {
+            inDependsSection = false;
+        }
     }
 
     //parse the opam depends line as Eg: depends: ["ocaml" "dune"]

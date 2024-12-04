@@ -58,7 +58,7 @@ public class OpamBuildDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableRunnerException {
         List<File> opamFiles = fileFinder.findFiles(environment.getDirectory(),OPAM_FILE);
-        return opamBuildExtractor.extract(opamFiles, opamExe);
+        return opamBuildExtractor.extract(opamFiles, opamExe, extractionEnvironment.getOutputDirectory());
     }
 
 }
