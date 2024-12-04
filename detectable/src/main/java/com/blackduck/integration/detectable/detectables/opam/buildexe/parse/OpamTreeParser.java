@@ -66,8 +66,7 @@ public class OpamTreeParser {
             if(!opamTreeProjectModule.dependencies.isEmpty()) {
                 collectCodeLocations(opamTreeProjectModule.dependencies, null);
             }
-
-        };
+        }
     }
 
     private void collectCodeLocations(List<OpamTreeDependencyModule> dependencyModules, Dependency parentDependency) {
