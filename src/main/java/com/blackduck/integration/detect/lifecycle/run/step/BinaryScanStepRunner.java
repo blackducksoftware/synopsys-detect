@@ -1,50 +1,178 @@
 package com.blackduck.integration.detect.lifecycle.run.step;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackduck.integration.sca.upload.rest.model.response.BinaryFinishResponseContent;
-import com.blackduck.integration.sca.upload.rest.status.BinaryUploadStatus;
 import com.blackduck.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.blackduck.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.blackduck.integration.detect.lifecycle.run.data.DockerTargetData;
+import com.blackduck.integration.detect.lifecycle.run.data.ScanCreationResponse;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
+import com.blackduck.integration.detect.lifecycle.run.operation.ScassOperationRunner;
 import com.blackduck.integration.detect.tool.binaryscanner.BinaryScanOptions;
+import com.blackduck.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
+import com.blackduck.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.rest.response.Response;
+import com.blackduck.integration.sca.upload.client.uploaders.ScassUploader;
+import com.blackduck.integration.sca.upload.rest.model.response.BinaryFinishResponseContent;
+import com.blackduck.integration.sca.upload.rest.status.BinaryUploadStatus;
+import com.blackduck.integration.sca.upload.rest.status.UploadStatus;
 import com.blackduck.integration.util.NameVersion;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class BinaryScanStepRunner {
     private final OperationRunner operationRunner;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    private Gson gson;
+    
+    private static final String STORAGE_BDBA_ENDPOINT = "/api/storage/bdba/";
+    private static final String STORAGE_BDBA_CONTENT_TYPE = "application/vnd.blackducksoftware.bdba-scan-data-1+octet-stream";
+    private static final String STORAGE_BDBA_MESSAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.bdba-scan-message-1+json";
     public BinaryScanStepRunner(OperationRunner operationRunner) {
         this.operationRunner = operationRunner;
+        this.gson = new Gson();
     }
-
-    public Optional<String> runBinaryScan(
+    
+    public Optional<String> runScaasBinaryScan(
         DockerTargetData dockerTargetData,
         NameVersion projectNameVersion,
         BlackDuckRunData blackDuckRunData,
-        Set<String> binaryTargets
+        Set<String> binaryTargets, 
+        ScassOperationRunner scassUploadRunner
     )
         throws OperationException, IntegrationException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
         if (binaryScanFile.isPresent()) {
-            BinaryUploadStatus status = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion, blackDuckRunData);
-            return extractBinaryScanId(status);
+            // call BlackDuck to create a scanID and determine where to upload the file
+            ScanCreationResponse scanCreationResponse = initiateScan(projectNameVersion, binaryScanFile.get(), blackDuckRunData);
+            
+            String scanId = scanCreationResponse.getScanId();
+            String uploadUrl = scanCreationResponse.getUploadUrl();
+            
+            if (StringUtils.isNotEmpty(uploadUrl)) {
+                // This is a SCASS capable server server and SCASS is enabled.
+                ScassUploader scaasScanUploader = scassUploadRunner.createScaasScanUploader();
+                
+                // TODO hardcode headers for now until we know if we need them
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-type", "application/octet-stream");
+                
+                UploadStatus status = scaasScanUploader.upload(uploadUrl, headers, binaryScanFile.get().toPath());
+                
+                if (status.isError()) {
+                    handleUploadError(status);
+                }
+                
+                // call /scans/{scanId}/scass-scan-processing to notify BlackDuck the file is uploaded
+                scassUploadRunner.notifyUploadComplete(scanId);       
+            } else {
+                // This is a SCASS capable server server but SCASS is not enabled.
+                try {
+                    uploadNonScassFile(scanId, blackDuckRunData, binaryScanFile.get());
+                } catch (IOException e) {
+                    throw new IntegrationException("Unable to upload binary file.");
+                }
+
+                try {
+                    uploadMetadataToStorageService(scanId, projectNameVersion, blackDuckRunData);
+                } catch (IOException e) {
+                    throw new IntegrationException("Unable to send binary metadata.");
+                }
+            }
+            
+            return Optional.of(scanId);
         } else {
             return Optional.empty();
         }
     }
     
+    // TODO similar to containerScanStepRunner
+    private void handleUploadError(UploadStatus status) throws IntegrationException {
+        if (status == null) {
+            throw new IntegrationException("Unexpected empty response attempting to upload binary image.");
+        } else if (status.getException().isPresent()) {
+            throw status.getException().get();      
+        } else {
+            throw new IntegrationException(String.format("Unable to upload binary image. Status code: {}. {}", status.getStatusCode(), status.getStatusMessage()));
+        }  
+    }
+
+    // TODO similar to containerScanStepRunner
+    private void uploadMetadataToStorageService(String scanId, NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws IntegrationException, IOException, OperationException {
+        String storageServiceEndpoint = String.join("", STORAGE_BDBA_ENDPOINT, scanId.toString(), "/message");
+        String operationName = "Upload binary Scan Metadata JSON";
+        logger.debug("Uploading binary metadata to storage endpoint: {}", storageServiceEndpoint);
+        
+        JsonObject binaryMetadataObject = operationRunner.createScanMetadata(UUID.fromString(scanId), projectNameVersion, "BINARY");
+
+        try (Response response = operationRunner.uploadJsonToStorageService(
+            blackDuckRunData,
+            storageServiceEndpoint,
+            binaryMetadataObject.toString(),
+            STORAGE_BDBA_MESSAGE_CONTENT_TYPE,
+            operationName
+        )
+        ) {
+            if (response.isStatusCodeSuccess()) {
+                logger.debug("binary scan metadata uploaded to storage service.");
+            } else {
+                logger.trace("Unable to upload binary metadata." + response.getStatusCode() + " " + response.getStatusMessage());
+                throw new IntegrationException(String.join(" ", "Unable to upload binary metadata. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
+            }
+        }
+    }
+    
+    // TODO very similar to code in container scan step runner
+    private void uploadNonScassFile(String scanId, BlackDuckRunData blackDuckRunData, File binaryFile) throws IOException, OperationException, IntegrationException {
+        String storageServiceEndpoint = String.join("", STORAGE_BDBA_ENDPOINT, scanId.toString());
+        String operationName = "Upload Binary Scan Image";
+        logger.debug("Uploading binary image artifact to storage endpoint: {}", storageServiceEndpoint);
+
+        try (Response response = operationRunner.uploadFileToStorageService(
+            blackDuckRunData,
+            storageServiceEndpoint,
+            binaryFile,
+            STORAGE_BDBA_CONTENT_TYPE,
+            operationName
+        )
+        ) {
+            if (response.isStatusCodeSuccess()) {
+                logger.debug("Binary scan image uploaded to storage service.");
+            } else {
+                logger.trace("Unable to upload binary image. {} {}", response.getStatusCode(), response.getStatusMessage());
+                throw new IntegrationException(String.join(" ", "Unable to upload binary image. Response code:", String.valueOf(response.getStatusCode()), response.getStatusMessage()));
+            }
+        }
+    }
+    
+    public Optional<String> runBinaryScan(DockerTargetData dockerTargetData, NameVersion projectNameVersion,
+            BlackDuckRunData blackDuckRunData, Set<String> binaryTargets)
+            throws OperationException, IntegrationException {
+        Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
+        if (binaryScanFile.isPresent()) {
+            BinaryUploadStatus status = operationRunner.uploadBinaryScanFile(binaryScanFile.get(), projectNameVersion,
+                    blackDuckRunData);
+            return extractBinaryScanId(status);
+        } else {
+            return Optional.empty();
+        }
+    }
+
     public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> runLegacyBinaryScan(
         DockerTargetData dockerTargetData,
         NameVersion projectNameVersion,
@@ -114,5 +242,47 @@ public class BinaryScanStepRunner {
             logger.warn("Unexpected response uploading binary, will be unable to wait for scan completion.");
             return Optional.empty();
         }
+    }
+    
+    // TODO very similar to what is in ContainerScanStepRunner
+    private ScanCreationResponse initiateScan(NameVersion projectNameVersion, File binaryFile, BlackDuckRunData blackDuckRunData) throws OperationException, IntegrationException {
+        String projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
+        
+        CodeLocationNameManager codeLocationNameManager = operationRunner.getCodeLocationNameManager();
+        String codeLocationName =  codeLocationNameManager.createBinaryScanCodeLocationName(binaryFile, projectNameVersion.getName(), projectNameVersion.getVersion());
+        
+        DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(
+            UUID.randomUUID().toString(),
+            "BINARY",
+            projectNameVersion,
+            projectGroupName,
+            codeLocationName,
+            binaryFile.length());
+        
+        File bdioHeaderFile;
+        try {
+            bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(
+                    operationRunner.getDirectoryManager().getBinaryOutputDirectory());
+        } catch (IOException e) {
+            throw new IntegrationException("Unable to obtain binary run directory.");
+        }
+        
+        String operationName = "Upload Binary Scan BDIO Header to Initiate Scan";
+        //UUID scanId = operationRunner.uploadBdioHeaderToInitiateScan(blackDuckRunData, bdioHeaderFile, operationName);
+        
+        ScanCreationResponse scanCreationResponse 
+            = operationRunner.uploadBdioHeaderToInitiateScassScan(blackDuckRunData, bdioHeaderFile, operationName, gson);
+        
+        // TODO likely need to improve error checking, etc here.
+        String scanId = scanCreationResponse.getScanId();
+        
+        if (scanId == null) {
+            logger.warn("Scan ID was not found in the response from the server.");
+            throw new IntegrationException("Scan ID was not found in the response from the server.");
+        }
+        String scanIdString = scanId.toString();
+        logger.debug("Scan initiated with scan service. Scan ID received: {}", scanIdString);
+        
+        return scanCreationResponse;
     }
 }
