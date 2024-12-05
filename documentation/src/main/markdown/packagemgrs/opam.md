@@ -21,8 +21,9 @@ exe to be present on your $PATH. You can also override the location for `opam` e
 The OPAM Build Detector will work in the following way on your project:
 
 1. [detect_product_short] OPAM Build Detector will run `opam --version` to get the version of opam on your machine.
-2. If the version of opam is greater than or equal to 2.2.0, then [detect_product_short] would run `opam tree . --with-test --with-doc --with-dev --recursive`
-to get the list of resolved packages installed in the current [switch](https://ocaml.org/docs/opam-switch-introduction#opam-switch-introduction) for the project.
+2. If the version of opam is greater than or equal to 2.2.0, then [detect_product_short] would run `opam tree . --with-test --with-doc --with-dev --recursive --json=JSON_FILE_OUTPUT_PATH`
+to get a json file of resolved packages installed in the current [switch](https://ocaml.org/docs/opam-switch-introduction#opam-switch-introduction) for the project. 
+The JSON file will be present in '{user home directory}/blackduck/{run directory}/extractions'. [detect_product_short] will parse the JSON file to generate the output of the scan.
 <note type="note">You must have all prerequisites for the project set up on your machine (e.g., the opam switch where your packages for the project are installed), before running [detect_product_short].</note>
 3. If the version constraint for 2.2.0 is not satisfied, or the tree commands fails for an unknown reason, [detect_product_short] will parse all dependencies found in the `<pkgname>.opam` files.
    For each of the parsed dependencies, [detect_product_short]  will run `opam show <pkgname>` recursively to find all transitive dependencies of the project.
@@ -31,6 +32,9 @@ to get the list of resolved packages installed in the current [switch](https://o
 
 ## OPAM Lock Detector
 
-The OPAM Lock Detector does not find transitives for the project and is considered a LOW accuracy Detector. OPAM Lock Detector will run if HIGH accuracy Detectors cannot, and the project contains `<pkgname>.opam.locked` and `<pkgname>.opam` files in the top level directory.
+The OPAM Lock Detector is considered a LOW accuracy Detector. OPAM Lock Detector will run if HIGH accuracy Detectors cannot, and the project contains `<pkgname>.opam.locked` and `<pkgname>.opam` files in the top level directory.
 
-OPAM Lock Detector will parse both `<pkgname>.opam.` and `<pkgname>.opam.locked` files to gather the list of direct project dependencies.
+OPAM Lock Detector will parse both `<pkgname>.opam` and `<pkgname>.opam.locked` files to gather the list of dependencies.
+
+OPAM Lock Detector will declare a dependency as direct by checking if the dependency is present in both  `<pkgname>.opam` and `<pkgname>.opam.locked` file. Else the dependency will be deemed as transitive. 
+From this information, [detect_product_short] cannot conclude the position of the transitive dependency in the graph, so [detect_product_short] will place the dependency under a placeholder "component" named *Transitive_Dependencies*.
