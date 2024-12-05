@@ -9,141 +9,105 @@ import com.blackduck.integration.bdio.model.Forge;
 import com.blackduck.integration.bdio.model.externalid.ExternalId;
 import com.blackduck.integration.bdio.model.externalid.ExternalIdFactory;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
-import com.blackduck.integration.detectable.detectable.util.DetectableStringUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Stack;
 import java.io.File;
 
 public class OpamTreeParser {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private int level = 0;
-    private String currentProject;
-    private static final String DIRECT_DEPENDENCY_INDICATOR = "|--"; // direct dependencies usually start with this prefix
-    private static final String[] DEPENDENCY_INDICATOR = new String[] { "|", "|--", "'--" }; // indicates that line contains a dependency
-    private static final String PACKAGE_PREFIX = "-- ";
-    private final List<OpamParsedResult> codeLocations = new ArrayList<>();
+    private List<OpamParsedResult> codeLocations = new ArrayList<>();
     private DependencyGraph currentGraph;
-    private Stack<Dependency> dependencyStack;
     private final File sourceDirectory;
     private final ExternalIdFactory externalIdFactory;
+    private final Gson gson;
 
-    public OpamTreeParser(File sourceDirectory, ExternalIdFactory externalIdFactory) {
+    public OpamTreeParser(Gson gson, File sourceDirectory, ExternalIdFactory externalIdFactory) {
+        this.gson = gson;
         this.sourceDirectory = sourceDirectory;
         this.externalIdFactory = externalIdFactory;
     }
 
-    public List<OpamParsedResult> parseTree(List<String> tree) {
-        currentProject = null;
-        currentGraph = new BasicDependencyGraph();
-        dependencyStack = new Stack<>();
+    public List<OpamParsedResult> parseJsonTreeFile(File outputFile) throws IOException {
+        //Check if there is any issue with the file
+        if(outputFile == null || !outputFile.exists() || !outputFile.isFile()) {
+            logger.warn("The opamTreeOutput.json file does not exist, the file was deleted, or an issue occurred while running the opam tree command.");
+            return codeLocations;
+        }
 
-
-        for(String line: tree) {
-            if(line.isEmpty() || line.startsWith("*") || line.startsWith("=")) {
-                continue;
+        //initialize json reader object
+        try (JsonReader jsonReader = new JsonReader(new FileReader(outputFile))) {
+            //convert the whole JSON file into OpamJsonFileModule PoJo
+            OpamJsonFileModule opamTreeModule = gson.fromJson(jsonReader, OpamJsonFileModule.class);
+            //After getting PoJo, we will loop over the projects which are found in the tree
+            for(OpamTreeProjectModule opamTreeProjectModule: opamTreeModule.opamProjects) {
+                processTreeJsonObject(opamTreeProjectModule);
             }
-
-            // if line starts with none of dependency indicator and starts with alphanumeric it may suggest the start of a new project
-            if(!StringUtils.startsWithAny(line, DEPENDENCY_INDICATOR) && !line.startsWith(" ")) {
-                initializeProject(line);
-                continue;
-            }
-
-            int previousLevel = level;
-            level = parseLevel(line);
-
-            Dependency dependency = parseDependencyLine(line);
-
-            if(dependency != null && currentProject != null) {
-                addDependencyToGraph(dependency, previousLevel);
-            }
-
+        } catch (IOException e) {
+            throw new IOException("There was an error while parsing the JSON file.",e);
         }
 
         return codeLocations;
     }
 
-    private Dependency parseDependencyLine(String line) {
-        String dependencyLine = StringUtils.trimToEmpty(line);
+    public void processTreeJsonObject(OpamTreeProjectModule opamTreeProjectModule){
+        if(opamTreeProjectModule != null) {
+            //this PoJo is OpamTreeProjectModule where it will have name, version and dependencies of one project
+            String projectName = opamTreeProjectModule.name;
+            String projectVersion = opamTreeProjectModule.version;
 
-        //Usually the dependency line will start like this "|-- package.v.e.r [*] (conditional)", so we get the substring after the
-        // package prefix and split it on basis of white space, after that we split on first occurrence of "."
-        dependencyLine = dependencyLine.substring(dependencyLine.indexOf(PACKAGE_PREFIX) + PACKAGE_PREFIX.length());
+            //initialze the project
+            initializeProject(projectName, projectVersion);
 
-        String[] dependencyLineParts = dependencyLine.split(" +");
-        String dependencyString = dependencyLineParts[0];
-
-        String[] dependencyStringParts = dependencyString.split("\\.", 2);
-        if(dependencyStringParts.length == 2) {
-            return createDependencyExternalId(dependencyStringParts[0], dependencyStringParts[1]);
+            if(!opamTreeProjectModule.dependencies.isEmpty()) {
+                collectCodeLocations(opamTreeProjectModule.dependencies, null); //passing as null to distinguish between direct and transitive
+            }
         }
-
-        return null;
     }
 
-    private void addDependencyToGraph(Dependency dependency, int previousLevel) {
-        if(level == 0) { // add direct dependency to graph
-            currentGraph.addDirectDependency(dependency);
-            dependencyStack.clear(); //clear dependency stack for new transitives
-            dependencyStack.push(dependency);
-        } else {
-            if(level == previousLevel) { // indicates a sibling of previous dependency
-                dependencyStack.pop(); // pop the previous dependency and add current to head
-                currentGraph.addChildWithParent(dependency, dependencyStack.peek());
-                dependencyStack.push(dependency);
-            } else if(level > previousLevel) { // a child of dependency at head
-                currentGraph.addChildWithParent(dependency, dependencyStack.peek());
-                dependencyStack.push(dependency);
-            } else { // a child of dependency encountered earlier in the tree
-                while(previousLevel != level) {
-                    dependencyStack.pop();
-                    previousLevel--;
+    private void collectCodeLocations(List<OpamTreeDependencyModule> dependencyModules, Dependency parentDependency) {
+        // recursively loop over the dependencies for each project
+        for(OpamTreeDependencyModule dependencyModule: dependencyModules) {
+            if(dependencyModule != null) {
+                String packageName = dependencyModule.name;
+                String packageVersion = dependencyModule.version;
+
+                Dependency dependency = createDependencyExternalId(packageName, packageVersion);
+
+                //direct dependency
+                if(parentDependency == null) {
+                    currentGraph.addDirectDependency(dependency);
+                } else { //transitive dependency
+                    currentGraph.addChildWithParent(dependency, parentDependency);
                 }
-                currentGraph.addChildWithParent(dependency, dependencyStack.peek());
-                dependencyStack.push(dependency);
+
+                //recursively call this method again if there are any transitives found with current dependency as parent
+                if(!dependencyModule.dependencies.isEmpty()) {
+                    collectCodeLocations(dependencyModule.dependencies, dependency);
+                }
             }
         }
     }
 
-    private int parseLevel(String line) {
-        if(line.startsWith(DIRECT_DEPENDENCY_INDICATOR)) {
-            return 0; // if direct return zero
+    private void initializeProject(String projectName, String projectVersion) {
+        Dependency projectDependency = createDependencyExternalId(projectName, projectVersion); // create a dependency for the project
+        currentGraph = new BasicDependencyGraph();
+        String codeLocationPath = sourceDirectory.getPath();
+        if(!codeLocationPath.endsWith(projectDependency.getName())) { // get the source code for the project using specific opam file
+            codeLocationPath = "/" + projectDependency.getName();
         }
-
-        String modifiedLine = DetectableStringUtils.removeEvery(line, DEPENDENCY_INDICATOR); // this will remove every thing after the start of the dependency
-
-        if(!modifiedLine.startsWith("|") && modifiedLine.startsWith(" ")) {
-            modifiedLine = "|" + modifiedLine;
-        }
-
-        modifiedLine = modifiedLine.replace("     ", "    |"); // replace with "|", if there are extra number of spaces in the middle
-        return StringUtils.countMatches(modifiedLine, "|"); // the number of "|" will be the level of the transitive dependency
+        CodeLocation codeLocation = new CodeLocation(currentGraph, projectDependency.getExternalId(), new File(codeLocationPath));
+        codeLocations.add(new OpamParsedResult(projectName, projectName, codeLocation)); // create a new opam parsed result for the project being initialized
     }
 
-    private void initializeProject(String line) {
-        String[] projectParts = line.split("\\.", 2);
 
-        // Usually the project syntax looks like: reason.3.8.2, so we split on the first occurrence of "."
-        if(projectParts.length == 2) {
-            Dependency projectDependency = createDependencyExternalId(projectParts[0], projectParts[1]); // create a dependency for the project
-            currentGraph = new BasicDependencyGraph();
-            currentProject = projectParts[0];
-            String codeLocationPath = sourceDirectory.getPath();
-            if(!codeLocationPath.endsWith(projectDependency.getName())) { // get the source code for the project using specific opam file
-                codeLocationPath = "/" + projectDependency.getName();
-            }
-            CodeLocation codeLocation = new CodeLocation(currentGraph, projectDependency.getExternalId(), new File(codeLocationPath));
-            codeLocations.add(new OpamParsedResult(projectParts[0], projectParts[1], codeLocation)); // create a new opam parsed result for the project being initialized
-        } else {
-            logger.debug(String.format("%s does not look like a dependency we can parse", line));
-        }
-    }
 
     private Dependency createDependencyExternalId(String name, String version) {
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.OPAM, name, version);

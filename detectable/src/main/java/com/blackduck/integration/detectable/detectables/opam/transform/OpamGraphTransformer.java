@@ -36,6 +36,9 @@ public class OpamGraphTransformer {
     private final ExternalIdFactory externalIdFactory;
     private final DetectableExecutableRunner executableRunner;
     Map<Dependency, Set<Dependency>> visitedDependenciesGraph = new HashMap<>();
+    private static final String ORPHAN_PARENT_NAME = "Additional_Components";
+    private static final String ORPHAN_PARENT_VERSION = "none";
+
     public OpamGraphTransformer(File sourceDirectory, ExternalIdFactory externalIdFactory, DetectableExecutableRunner executableRunner) {
         this.sourceDirectory = sourceDirectory;
         this.externalIdFactory = externalIdFactory;
@@ -92,12 +95,21 @@ public class OpamGraphTransformer {
         List<String> directDependencies = opamParsedResult.getParsedDirectDependencies();
         Map<String, String> opamLockDependencies = opamParsedResult.getLockFileDependencies();
 
+        Dependency orphanParentDependency = createExternalId(ORPHAN_PARENT_NAME, ORPHAN_PARENT_VERSION);
+
         //match direct dependencies found in opam files with all the resolved packages from lock files to generate graph
         for(String dependency: opamLockDependencies.keySet()) {
             if(directDependencies.contains(dependency)) {
                 String packageVersion = opamLockDependencies.get(dependency);
                 Dependency directDependency = createExternalId(dependency, packageVersion); //convert to OPAM dependency
                 dependencyGraph.addDirectDependency(directDependency); //add Dependency to root
+            } else {
+                if(!dependencyGraph.hasDependency(orphanParentDependency)) {
+                    dependencyGraph.addChildrenToRoot(orphanParentDependency);
+                }
+                String packageVersion = opamLockDependencies.get(dependency);
+                Dependency transitiveDependency = createExternalId(dependency, packageVersion);
+                dependencyGraph.addChildWithParent(transitiveDependency, orphanParentDependency);
             }
         }
     }
@@ -123,7 +135,7 @@ public class OpamGraphTransformer {
 
             Map<String, String> parsedOutput = parser.parseData(output); // parse opam show output
 
-            String version = parsedOutput.get(VERSION).trim().replaceAll("\"","");
+            String version = parsedOutput.get(VERSION).trim().replace("\"","");
 
             Dependency createdDependency = createExternalId(dependency, version); // create dependency with name and version
 

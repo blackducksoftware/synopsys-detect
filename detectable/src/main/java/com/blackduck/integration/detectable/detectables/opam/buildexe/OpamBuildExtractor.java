@@ -29,6 +29,7 @@ public class OpamBuildExtractor {
     private final OpamTreeParser opamTreeParser;
     private final DetectableExecutableRunner executableRunner;
     private final File sourceDirectory;
+    private static final String OPAM_TREE_FILE = "/opamTreeOutput.json";
 
     public OpamBuildExtractor(OpamGraphTransformer opamGraphTransformer, OpamTreeParser opamTreeParser, DetectableExecutableRunner executableRunner, File sourceDirectory) {
         this.opamGraphTransformer = opamGraphTransformer;
@@ -37,16 +38,16 @@ public class OpamBuildExtractor {
         this.sourceDirectory = sourceDirectory;
     }
 
-    public Extraction extract(List<File> opamFiles, ExecutableTarget opamExe) throws ExecutableRunnerException {
+    public Extraction extract(List<File> opamFiles, ExecutableTarget opamExe, File outputDirectory) throws ExecutableRunnerException {
       try {
-
           String opamVersion = getOpamVersion(opamExe); // run opam --version command
 
           if(decideOpamVersion(opamVersion)) {
-              List<String> tree = runOpamTree(opamExe); // run opam tree command
+              File fullOutputFileName = new File(outputDirectory.getAbsolutePath()+OPAM_TREE_FILE);
+              List<String> tree = runOpamTree(opamExe, fullOutputFileName); // run opam tree command
 
               if(!tree.isEmpty()) {
-                  List<OpamParsedResult> result = opamTreeParser.parseTree(tree); //parse the tree
+                  List<OpamParsedResult> result = opamTreeParser.parseJsonTreeFile(fullOutputFileName); //parse the tree
 
                   List<CodeLocation> codeLocations = Bds.of(result).map(OpamParsedResult::getCodeLocation).toList();
                   Extraction.Builder treeBuilder = new Extraction.Builder().success(codeLocations);
@@ -94,7 +95,7 @@ public class OpamBuildExtractor {
         }
     }
 
-    public List<String> runOpamTree(ExecutableTarget opamExe) throws ExecutableRunnerException {
+    public List<String> runOpamTree(ExecutableTarget opamExe, File fullOutputFileName) throws ExecutableRunnerException {
         List<String> arguments = new ArrayList<>();
         arguments.add("tree");
         arguments.add(".");
@@ -102,6 +103,7 @@ public class OpamBuildExtractor {
         arguments.add("--with-test");
         arguments.add("--with-doc");
         arguments.add("--recursive");
+        arguments.add("--json=" + fullOutputFileName.getAbsolutePath());
 
         ExecutableOutput executableOutput = executableRunner.execute(ExecutableUtils.createFromTarget(sourceDirectory, opamExe, arguments));
 
