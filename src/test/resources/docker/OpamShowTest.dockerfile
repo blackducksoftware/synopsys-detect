@@ -3,6 +3,8 @@ FROM openjdk:8-jdk
 RUN apt update \
    && apt install -y vim
 
+RUN apt-get install -y patch bubblewrap gcc make
+
 ENV SRC_DIR=/opt/project/src
 
 ENV JAVA_TOOL_OPTIONS="-Dhttps.protocols=TLSv1.2"
