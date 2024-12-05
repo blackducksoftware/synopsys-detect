@@ -37,4 +37,4 @@ The OPAM Lock Detector is considered a LOW accuracy Detector. OPAM Lock Detector
 OPAM Lock Detector will parse both `<pkgname>.opam` and `<pkgname>.opam.locked` files to gather the list of dependencies.
 
 OPAM Lock Detector will declare a dependency as direct if the dependency is present in both `<pkgname>.opam` and `<pkgname>.opam.locked` file. Otherwise, the dependency will be deemed as transitive.
-Based on the information available, [detect_product_short] cannot determine the position of the transitive dependency in the graph, and will note the dependency under a placeholder "component" named *Additional_Components*.
+Based on the information available, [detect_product_short] cannot determine the position of the transitive dependency in the graph, and will note the dependency under a placeholder "parent component" named *Additional_Components*.
