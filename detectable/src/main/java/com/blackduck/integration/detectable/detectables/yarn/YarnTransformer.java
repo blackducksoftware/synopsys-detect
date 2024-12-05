@@ -238,7 +238,7 @@ public class YarnTransformer {
                 Optional<NameVersion> nameVersionOptional;
                 if (!unMatchedDependencies.containsKey(dependencyId)) {
                     String dependencyIdClean = dependencyId.toString().replace("\\/","/");
-                    nameVersionOptional = VersionUtility.getNameVersion(dependencyIdClean);
+                    nameVersionOptional = versionUtility.getNameVersion(dependencyIdClean);
                     logger.warn("No standard NPM package identification details are available for '{}' from the yarn.lock file", dependencyIdClean);
                     unMatchedDependencies.put(dependencyId, nameVersionOptional);
                 } else {
@@ -251,40 +251,44 @@ public class YarnTransformer {
 
     private LazyBuilderMissingExternalIdHandler getLazyBuilderHandler(List<NameVersion> externalDependencies, Map<String, Map<String, String>> resolvedEntryIdVersionMap) {
         return (dependencyId, lazyDependencyInfo) -> {
-            String dependencyIdClean = dependencyId.toString().replace("\\/","/");
-            Optional<NameVersion> nameVersionOptional = VersionUtility.getNameVersion(dependencyIdClean);
-            String name;
-            if (nameVersionOptional.isPresent() && resolvedEntryIdVersionMap.containsKey(name = nameVersionOptional.get().getName())) {
-                Map<String, String> entryIdVersionMap = resolvedEntryIdVersionMap.get(name);
-                String version = nameVersionOptional.get().getVersion();
-                if (entryIdVersionMap.containsKey(version)) {
-                    return generateComponentExternalId(name, entryIdVersionMap.get(version));
-                } else {
-                    List<Version> versionList = entryIdVersionMap.values().stream().map(k -> versionUtility.buildVersion(k)).collect(Collectors.toList());
-                    Optional<String> resolvedVersion = versionUtility.resolveYarnVersion(versionList, name, version);
-                    if (resolvedVersion.isPresent()) {
-                        return generateComponentExternalId(name, resolvedVersion.get());
-                    }
-                }
-            } else {
-                Optional<NameVersion> externalDependency = externalDependencies.stream().filter(it -> it.getName().equals(lazyDependencyInfo.getName())).findFirst();
-                Optional<ExternalId> externalId = externalDependency.map(it -> generateComponentExternalId(it.getName(), it.getVersion()));
-                if (externalId.isPresent()) {
-                    return externalId.get();
-                }
-            }
-            if (!unMatchedDependencies.containsKey(dependencyId)) {
-                logger.warn("No standard NPM package identification details are available for '{}' from the yarn.lock file", dependencyIdClean);
-                unMatchedDependencies.put(dependencyId, nameVersionOptional);
-            } else {
-                nameVersionOptional = unMatchedDependencies.get(dependencyId);
-            }
-            if (nameVersionOptional.isPresent()) {
-                return generateComponentExternalId(nameVersionOptional.get().getName(), nameVersionOptional.get().getVersion());
-            } else {
-                return generateComponentExternalId(dependencyId);
-            }
+            return getExternalIdForEachDependency(dependencyId, lazyDependencyInfo, externalDependencies, resolvedEntryIdVersionMap);
         };
+    }
+    
+    private ExternalId getExternalIdForEachDependency(LazyId dependencyId, LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo, List<NameVersion> externalDependencies, Map<String, Map<String, String>> resolvedEntryIdVersionMap) {
+        String dependencyIdClean = dependencyId.toString().replace("\\/","/");
+        Optional<NameVersion> nameVersionOptional = versionUtility.getNameVersion(dependencyIdClean);
+        if (nameVersionOptional.isPresent() && resolvedEntryIdVersionMap.containsKey(nameVersionOptional.get().getName())) {
+            String name = nameVersionOptional.get().getName();
+            Map<String, String> entryIdVersionMap = resolvedEntryIdVersionMap.get(name);
+            String version = nameVersionOptional.get().getVersion();
+            if (entryIdVersionMap.containsKey(version)) {
+                return generateComponentExternalId(name, entryIdVersionMap.get(version));
+            } else {
+                List<Version> versionList = entryIdVersionMap.values().stream().map(k -> versionUtility.buildVersion(k)).collect(Collectors.toList());
+                Optional<String> resolvedVersion = versionUtility.resolveYarnVersion(versionList, version);
+                if (resolvedVersion.isPresent()) {
+                    return generateComponentExternalId(name, resolvedVersion.get());
+                }
+            }
+        } else {
+            Optional<NameVersion> externalDependency = externalDependencies.stream().filter(it -> it.getName().equals(lazyDependencyInfo.getName())).findFirst();
+            Optional<ExternalId> externalId = externalDependency.map(it -> generateComponentExternalId(it.getName(), it.getVersion()));
+            if (externalId.isPresent()) {
+                return externalId.get();
+            }
+        }
+        if (!unMatchedDependencies.containsKey(dependencyId)) {
+            logger.warn("No standard NPM package identification details are available for '{}' from the yarn.lock file", dependencyIdClean);
+            unMatchedDependencies.put(dependencyId, nameVersionOptional);
+        } else {
+            nameVersionOptional = unMatchedDependencies.get(dependencyId);
+        }
+        if (nameVersionOptional.isPresent()) {
+            return generateComponentExternalId(nameVersionOptional.get().getName(), nameVersionOptional.get().getVersion());
+        } else {
+            return generateComponentExternalId(dependencyId);
+        }
     }
     
     private void addRootDependenciesForProject(YarnLockResult yarnLockResult, NullSafePackageJson projectPackageJson, LazyExternalIdDependencyGraphBuilder graphBuilder) throws MissingExternalIdException {

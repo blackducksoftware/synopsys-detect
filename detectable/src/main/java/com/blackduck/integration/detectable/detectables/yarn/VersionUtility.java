@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public class VersionUtility {
     
+    private static final String ESCAPED_BACKSLASH = "\",\"";
+    
     Version buildVersion(String version) {
         String cleanVersion = version.trim();
         StringBuilder sb = new StringBuilder(cleanVersion.length());
@@ -21,112 +23,143 @@ public class VersionUtility {
         return new Version(sb.toString().split("\\.", 3));
     }
     
-    Optional<String> resolveYarnVersion(List<Version> versionList, String name, String version) {
+    Optional<String> resolveYarnVersion(List<Version> versionList, String version) {
         versionList.sort(Comparator.reverseOrder());
         if (version.contains(" || ")) {
             return Optional.empty();
         } else if (version.startsWith("^")) {
-            // only minor or patch upgrade
-            Version right = buildVersion(version.substring(1).trim());
-            for (Version left : versionList) {
-                if (left.major == right.major) {
-                    return Optional.of(left.toString());
-                }
-            }
+            return minorOrPatchUpgrade(versionList, version);
         } else if (version.startsWith("~")) {
-            // only patch upgrade allowed
-            Version right = buildVersion(version.substring(1).trim());
-            for (Version left : versionList) {
-                if (left.major == right.major && left.minor == right.minor) {
-                    return Optional.of(left.toString());
-                }
-            }
+            return onlyPatchUpgrade(versionList, version);
         } else if (version.startsWith("*")) {
-            // must upgrade
-            Version right = buildVersion(version.substring(1).trim());
-            for (Version left : versionList) {
-                if (left.compareTo(right) == 1) {
-                    return Optional.of(left.toString());
-                }
-            }
+            return mustUpgrade(versionList, version);
         } else if (version.startsWith(">") && !version.startsWith(">=")) {
-            // must upgrade
-            Version right;
-            Optional<Version> ceiling;
-            if (version.contains(" <=")) {
-                right = buildVersion(version.substring(1, version.indexOf(" <=")).trim());
-                ceiling = Optional.of(buildVersion(version.substring(version.indexOf(" <=") + " <=".length()).trim()));
-            } else {
-                right = buildVersion(version.substring(1).trim());
-                ceiling = Optional.empty();
-            }
-            for (Version left : versionList) {
-                if (ceiling.isPresent() && left.compareTo(ceiling.get()) < 1 && (left.compareTo(right) == 1)) {
-                    return Optional.of(left.toString());
-                }
-            }
+            return mustUpgradeGreater(versionList, version);
         } else if (version.startsWith(">=")) {
-            // must upgrade or match
-            Version right;
-            Optional<Version> ceiling;
-            if (version.contains(" <")) {
-                right = buildVersion(version.substring(2, version.indexOf(" <")).trim());
-                ceiling = Optional.of(buildVersion(version.substring(version.indexOf(" <") + " <".length()).trim()));
-            } else {
-                right = buildVersion(version.substring(2).trim());
-                ceiling = Optional.empty();
-            }
-            
-            for (Version left : versionList) {
-                if (ceiling.isPresent() && left.compareTo(ceiling.get()) == -1 && (left.compareTo(right) >= 0)) {
-                    return Optional.of(left.toString());
-                }
-            }
+            return mustUpgradeGreaterOrEqual(versionList, version);
         } else if (version.startsWith("<=")) {
-            // must downgrade or match
-            Version right = buildVersion(version.substring(2).trim());
-            for (Version left : versionList) {
-                if (left.compareTo(right) <= 0) {
-                    return Optional.of(left.toString());
-                }
-            }
+            return mustUpgradeLesser(versionList, version);
         } else if (version.startsWith("<") && !version.startsWith("<=")) {
-            // must downgrade
-            Version right = buildVersion(version.substring(1).trim());
-            for (Version left : versionList) {
-                if (left.compareTo(right) == -1) {
-                    return Optional.of(left.toString());
-                }
-            }
+            return mustUpgradeLesserOrEqual(versionList, version);
         } else {
-            // must match
-            Version right = buildVersion(version.substring(1).trim());
-            for (Version left : versionList) {
-                if (left.compareTo(right) == 0) {
-                    return Optional.of(left.toString());
-                }
+            return mustUpgradeEqual(versionList, version);
+        }
+    }
+    
+    private Optional<String> minorOrPatchUpgrade(List<Version> versionList, String version) {
+        Version right = buildVersion(version.substring(1).trim());
+        for (Version left : versionList) {
+            if (left.major == right.major) {
+                return Optional.of(left.toString());
             }
         }
         return Optional.empty();
     }
     
-    static Optional<NameVersion> getNameVersion(String dependencyIdString) {
+    private Optional<String> onlyPatchUpgrade(List<Version> versionList, String version) {
+        Version right = buildVersion(version.substring(1).trim());
+        for (Version left : versionList) {
+            if (left.major == right.major && left.minor == right.minor) {
+                return Optional.of(left.toString());
+            }
+        }
+        return Optional.empty();
+    }
+    
+    private Optional<String> mustUpgrade(List<Version> versionList, String version) {
+        Version right = buildVersion(version.substring(1).trim());
+        for (Version left : versionList) {
+            if (left.compareTo(right) == 1) {
+                return Optional.of(left.toString());
+            }
+        }
+        return Optional.empty();
+    }
+    
+    private Optional<String> mustUpgradeGreater(List<Version> versionList, String version) {
+        Version right;
+        Optional<Version> ceiling;
+        if (version.contains(" <=")) {
+            right = buildVersion(version.substring(1, version.indexOf(" <=")).trim());
+            ceiling = Optional.of(buildVersion(version.substring(version.indexOf(" <=") + " <=".length()).trim()));
+        } else {
+            right = buildVersion(version.substring(1).trim());
+            ceiling = Optional.empty();
+        }
+        for (Version left : versionList) {
+            if (ceiling.isPresent() && left.compareTo(ceiling.get()) < 1 && (left.compareTo(right) == 1)) {
+                return Optional.of(left.toString());
+            }
+        }
+        return Optional.empty();
+    }
+    
+    private Optional<String> mustUpgradeGreaterOrEqual(List<Version> versionList, String version) {
+        Version right;
+        Optional<Version> ceiling;
+        if (version.contains(" <")) {
+            right = buildVersion(version.substring(2, version.indexOf(" <")).trim());
+            ceiling = Optional.of(buildVersion(version.substring(version.indexOf(" <") + " <".length()).trim()));
+        } else {
+            right = buildVersion(version.substring(2).trim());
+            ceiling = Optional.empty();
+        }
+
+        for (Version left : versionList) {
+            if (ceiling.isPresent() && left.compareTo(ceiling.get()) == -1 && (left.compareTo(right) >= 0)) {
+                return Optional.of(left.toString());
+            }
+        }
+        return Optional.empty();
+    }
+    
+    private Optional<String> mustUpgradeLesser(List<Version> versionList, String version) {
+        Version right = buildVersion(version.substring(2).trim());
+        for (Version left : versionList) {
+            if (left.compareTo(right) <= 0) {
+                return Optional.of(left.toString());
+            }
+        }
+        return Optional.empty();
+    }
+    
+    private Optional<String> mustUpgradeLesserOrEqual(List<Version> versionList, String version) {
+        Version right = buildVersion(version.substring(1).trim());
+        for (Version left : versionList) {
+            if (left.compareTo(right) == -1) {
+                return Optional.of(left.toString());
+            }
+        }
+        return Optional.empty();
+    }
+    
+    private Optional<String> mustUpgradeEqual(List<Version> versionList, String version) {
+        Version right = buildVersion(version.substring(1).trim());
+        for (Version left : versionList) {
+            if (left.compareTo(right) == 0) {
+                return Optional.of(left.toString());
+            }
+        }
+        return Optional.empty();
+    }
+    
+    Optional<NameVersion> getNameVersion(String dependencyIdString) {
         int start, mid, end;
         String name;
-        if ((start = dependencyIdString.indexOf(LazyIdSource.STRING + "\",\"")) > -1
+        if ((start = dependencyIdString.indexOf(LazyIdSource.STRING + ESCAPED_BACKSLASH)) > -1
                 &&  (mid = dependencyIdString.lastIndexOf("@npm:")) > -1
                 && (end = dependencyIdString.indexOf("\"]}", mid)) > -1) {
-            name = dependencyIdString.substring(start + (LazyIdSource.STRING + "\",\"").length(), mid);
+            name = dependencyIdString.substring(start + (LazyIdSource.STRING + ESCAPED_BACKSLASH).length(), mid);
             String version = dependencyIdString.substring(mid + "@npm:".length(), end);
             if ((start = version.indexOf("@")) > -1) {
                 version = version.substring(start);
             }
             return Optional.of(new NameVersion(name, version));
-        } else if ((start = dependencyIdString.indexOf(LazyIdSource.NAME_VERSION + "\",\"")) > -1
-                && (mid = dependencyIdString.indexOf("\",\"npm:", start)) > -1
+        } else if ((start = dependencyIdString.indexOf(LazyIdSource.NAME_VERSION + ESCAPED_BACKSLASH)) > -1
+                && (mid = dependencyIdString.indexOf(ESCAPED_BACKSLASH + "npm:", start)) > -1
                 && (end = dependencyIdString.indexOf("\"]}", mid)) > -1) {
-            name = dependencyIdString.substring(start + (LazyIdSource.NAME_VERSION + "\",\"").length(), mid);
-            String version = dependencyIdString.substring(mid + "\",\"npm:".length(), end);
+            name = dependencyIdString.substring(start + (LazyIdSource.NAME_VERSION + ESCAPED_BACKSLASH).length(), mid);
+            String version = dependencyIdString.substring((mid + ESCAPED_BACKSLASH + "npm:").length(), end);
             if ((start = version.indexOf("@")) > -1) {
                 version = version.substring(start + 1);
             }
