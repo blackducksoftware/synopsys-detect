@@ -75,12 +75,12 @@ public class OpamDetectorTests {
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             // Detect specific assertions
-            dockerAssertions.logContains("OPAM CLI: SUCCESS");
+            dockerAssertions.logContains("Opam CLI: SUCCESS");
             dockerAssertions.atLeastOneBdioFile();
 
             blackduckAssertions.checkComponentVersionExists("menhirCST", "20240715");
-            blackduckAssertions.checkComponentVersionExists("flexdll", "0.4.3");
-            blackduckAssertions.checkComponentVersionExists("fmt", "0.9.0");
+            blackduckAssertions.checkComponentVersionExists("flexdll", "0.43");
+            blackduckAssertions.checkComponentVersionExists("ptime", "1.2.0");
         }
     }
 
@@ -109,7 +109,7 @@ public class OpamDetectorTests {
             DockerAssertions dockerAssertions = test.run(commandBuilder);
 
             // Detect specific assertions
-            dockerAssertions.logContains("OPAM CLI: SUCCESS");
+            dockerAssertions.logContains("Opam CLI: SUCCESS");
             dockerAssertions.atLeastOneBdioFile();
 
             blackduckAssertions.checkComponentVersionExists("mlx", "0.9");
