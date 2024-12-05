@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM openjdk:8-jdk
 
 RUN apt-get install -y patch bubblewrap gcc make
 
