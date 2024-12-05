@@ -38,7 +38,7 @@ public class OpamTreeParser {
 
     public List<OpamParsedResult> parseJsonTreeFile(File outputFile) throws IOException {
         if(outputFile == null || !outputFile.exists() || !outputFile.isFile()) {
-            logger.warn("Opam Tree output json does not exist, there seems to be an issue while running opam tree command.");
+            logger.warn("The opamTreeOutput.json file does not exist, the file was deleted, or an issue occurred while running the opam tree command.");
             return codeLocations;
         }
 

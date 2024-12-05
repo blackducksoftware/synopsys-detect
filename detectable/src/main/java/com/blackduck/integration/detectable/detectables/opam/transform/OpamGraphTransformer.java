@@ -36,7 +36,7 @@ public class OpamGraphTransformer {
     private final ExternalIdFactory externalIdFactory;
     private final DetectableExecutableRunner executableRunner;
     Map<Dependency, Set<Dependency>> visitedDependenciesGraph = new HashMap<>();
-    private static final String ORPHAN_PARENT_NAME = "Transitive_Dependencies";
+    private static final String ORPHAN_PARENT_NAME = "Additional_Components";
     private static final String ORPHAN_PARENT_VERSION = "none";
 
     public OpamGraphTransformer(File sourceDirectory, ExternalIdFactory externalIdFactory, DetectableExecutableRunner executableRunner) {
