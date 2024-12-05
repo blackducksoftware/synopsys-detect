@@ -25,10 +25,6 @@ public class OpamFileParser {
     private boolean inVersionSection = false;
     private boolean inDependsSection = false;
 
-    public OpamFileParser() {
-        // We do not need any variables to be initialized so keeping it default
-    }
-
     //have a separate parseData and parse method to use for parsing opam show command, as it gives output in file format
     public OpamParsedResult parse(File opamFile) {
         List<String> parsedOpamDependencies = new ArrayList<>();
