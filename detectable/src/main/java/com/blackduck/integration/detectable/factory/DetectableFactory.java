@@ -1133,7 +1133,7 @@ public class DetectableFactory {
     }
 
     private OpamTreeParser opamTreeParser(File sourceDirectory) {
-        return new OpamTreeParser(sourceDirectory, externalIdFactory);
+        return new OpamTreeParser(gson, sourceDirectory, externalIdFactory);
     }
 
     private OpamBuildExtractor opamBuildExtractor(File sourceDirectory) {
