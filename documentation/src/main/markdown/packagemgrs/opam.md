@@ -21,7 +21,7 @@ exe to be present on your $PATH. You can also override the location for `opam` e
 The OPAM Build Detector will work in the following way on your project:
 
 1. [detect_product_short] OPAM Build Detector will run `opam --version` to get the version of opam on your machine.
-2. If the version of opam is greater than or equal to 2.2.0, then [detect_product_short] will run the command `opam tree . --with-test --with-doc --with-dev --recursive --json=JSON_FILE_OUTPUT_PATH` if the version of opam is equal to, or greater than 
+2. [detect_product_short] will run the command `opam tree . --with-test --with-doc --with-dev --recursive --json=JSON_FILE_OUTPUT_PATH` if the version of opam is equal to, or greater than 
 2.2.0 to generate an opamTreeOutput.json file of resolved packages installed in the current project [switch](https://opam.ocaml.org/doc/Manual.html#Switches).
 The opamTreeOutput.json file will be stored in {user home directory}/blackduck/{run directory}/extractions and parsed by [detect_product_short] to generate the output of the scan.
 <note type="note">You must have all prerequisites for the project set up on your machine (e.g., the opam switch where your packages for the project are installed), before running [detect_product_short].</note>
