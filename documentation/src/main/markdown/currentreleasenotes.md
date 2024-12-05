@@ -27,6 +27,7 @@
 
 * (IDETECT-4517) - [detect_product_short] now correctly indicates a timeout failure occurred when multipart binary or container scans timeout during an upload.
 * (IDETECT-4540) - Multipart binary and container scans now correctly retry when authentication errors are received during transmission.
+* (IDETECT-4469) - Eliminating null (`\u0000`) and replacement (`\uFFFD`) characters during the processing of Python requirements.txt files to ensure successful extraction of dependency information.
 
 ### Dependency updates
 
