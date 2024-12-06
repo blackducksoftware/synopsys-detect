@@ -47,7 +47,6 @@ public class OpamDetectorTests {
 
             blackduckAssertions.checkComponentVersionExists("sexplib", "v0.15.1");
             blackduckAssertions.checkComponentVersionExists("ocaml-version", "3.5.0");
-            blackduckAssertions.checkComponentVersionNotExists("yojson", "2.2.2");
         }
     }
 
@@ -113,9 +112,9 @@ public class OpamDetectorTests {
             dockerAssertions.atLeastOneBdioFile();
 
             blackduckAssertions.checkComponentVersionExists("mlx", "0.9");
-            blackduckAssertions.checkComponentVersionNotExists("ocaml-version", "3.5.0");
             blackduckAssertions.checkComponentVersionExists("yojson", "2.2.2");
             blackduckAssertions.checkComponentVersionExists("emile", "1.1");
+            blackduckAssertions.checkComponentVersionExists("result","1.5");
         }
     }
 

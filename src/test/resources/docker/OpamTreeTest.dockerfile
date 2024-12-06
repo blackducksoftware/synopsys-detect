@@ -17,9 +17,8 @@ RUN curl -s -L -O https://github.com/ocaml/opam/releases/download/2.3.0/opam-2.3
 
 RUN opam init -y --disable-sandboxing --shell-setup
 
-RUN git clone https://github.com/aantron/dream.git ${SRC_DIR} \
-   && opam switch create dream 5.1.1 \
-   && eval $(opam env --switch=dream) \
-   && opam install . -y --with-test --with-doc
+RUN git clone https://github.com/aantron/dream.git ${SRC_DIR}
+
+RUN opam install . -y --with-test --with-doc
 
 RUN cd ${SRC_DIR}
