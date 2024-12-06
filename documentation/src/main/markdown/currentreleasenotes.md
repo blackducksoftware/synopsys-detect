@@ -15,7 +15,7 @@
 
 * npm lockfile and shrinkwrap detectors now ignore packages flagged as extraneous in the package-lock.json and npm-shrinkwrap.json files.
 * Support added for Opam Package Manager via [Opam Detector](packagemgrs/opam.md).
-* New Gradle Native Inspector option to only process the root dependencies of a Gradle project. See [detect.gradle.root.only](properties/detectors/gradle.md#gradle-root-only-enabled-advanced) for more details.
+* New Gradle Native Inspector option to only process the root dependencies of a Gradle project. See [detect.gradle.root.only](properties/detectors/gradle.md#gradle-root-only-advanced) for more details.
 
 ### Changed features
 
