@@ -70,12 +70,24 @@ public class OpamFileParser {
                 continue;
             }
 
-            if (line.startsWith("version:")) { // parse version
-                output.put(VERSION, line.split(":")[1]);
+            if (line.startsWith("version:")) {
+                //parse version
+                String version = line.split(":")[1];
+                Matcher matcher = pattern.matcher(version);
+                if (matcher.find()) {
+                    version = matcher.group(1);
+                }
+                output.put(VERSION, version);
             }
 
-            if (line.startsWith("name:")) { // parse package name
-                output.put(NAME, line.split(":")[1]);
+            if (line.startsWith("name:")) {
+                // parse package name
+                String name = line.split(":")[1];
+                Matcher matcher = pattern.matcher(name);
+                if (matcher.find()) {
+                    name = matcher.group(1);
+                }
+                output.put(NAME, name);
             }
 
             checkDependsSection(line, dependsSection, pattern);
