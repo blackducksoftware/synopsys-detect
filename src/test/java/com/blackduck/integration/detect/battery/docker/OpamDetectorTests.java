@@ -10,10 +10,12 @@ import com.blackduck.integration.detect.configuration.DetectProperties;
 import com.blackduck.integration.detect.configuration.enumeration.DetectTool;
 import com.blackduck.integration.detector.base.DetectorType;
 import com.blackduck.integration.exception.IntegrationException;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+@Tag("integration")
 public class OpamDetectorTests {
 
     @Test
