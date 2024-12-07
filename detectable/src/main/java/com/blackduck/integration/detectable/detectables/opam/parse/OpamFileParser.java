@@ -72,22 +72,12 @@ public class OpamFileParser {
 
             if (line.startsWith("version:")) {
                 //parse version
-                String version = line.split(":")[1];
-                Matcher matcher = pattern.matcher(version);
-                if (matcher.find()) {
-                    version = matcher.group(1);
-                }
-                output.put(VERSION, version);
+                addProjectNameAndVersion(line, output, pattern, VERSION);
             }
 
             if (line.startsWith("name:")) {
-                // parse package name
-                String name = line.split(":")[1];
-                Matcher matcher = pattern.matcher(name);
-                if (matcher.find()) {
-                    name = matcher.group(1);
-                }
-                output.put(NAME, name);
+                // parse project name
+                addProjectNameAndVersion(line, output, pattern, NAME);
             }
 
             checkDependsSection(line, dependsSection, pattern);
@@ -103,6 +93,22 @@ public class OpamFileParser {
         }
 
         return output;
+    }
+
+    private void addProjectNameAndVersion(String line, Map<String, String> output, Pattern pattern, String parsingValue) {
+        String value = line.split(":")[1];
+        Matcher matcher = pattern.matcher(value);
+        if (matcher.find()) {
+            value = matcher.group(1);
+        }
+
+        if(parsingValue.equals(NAME)) {
+            output.put(NAME, value);
+        } else {
+            output.put(VERSION, value);
+        }
+
+
     }
 
     private void checkDependsSection(String line, Set<String> dependsSection, Pattern pattern) {
