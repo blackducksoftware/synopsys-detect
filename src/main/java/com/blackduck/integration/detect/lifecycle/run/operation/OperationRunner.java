@@ -116,6 +116,7 @@ import com.blackduck.integration.detect.tool.signaturescanner.operation.CreateSi
 import com.blackduck.integration.detect.tool.signaturescanner.operation.PublishSignatureScanReports;
 import com.blackduck.integration.detect.tool.signaturescanner.operation.SignatureScanOperation;
 import com.blackduck.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
+import com.blackduck.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
 import com.blackduck.integration.detect.util.finder.DetectExcludedDirectoryFilter;
 import com.blackduck.integration.detect.workflow.ArtifactResolver;
 import com.blackduck.integration.detect.workflow.bdio.AggregateCodeLocation;
@@ -543,6 +544,10 @@ public class OperationRunner {
         });
     }
     
+    // TODO consider refactoring so that we have just the uploadBdioHeaderToInitiateScan call.
+    // We can add content type to that method and have it return the response
+    // Callers then can determine how to deal with response. We should determine how many callers are impacted.
+    // Not sure if older BlackDuck's return scanId in the body so need to check that.
     public ScanCreationResponse uploadBdioHeaderToInitiateScassScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile, String operationName, Gson gson) throws OperationException {
         return auditLog.namedInternal(operationName, () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
@@ -562,6 +567,45 @@ public class OperationRunner {
             
             return scanCreationResponse;
         });
+    }
+    
+    public ScanCreationResponse initiateScan(NameVersion projectNameVersion, File binaryFile, BlackDuckRunData blackDuckRunData, String type, Gson gson) throws OperationException, IntegrationException {
+        String projectGroupName = calculateProjectGroupOptions().getProjectGroup();
+        
+        CodeLocationNameManager codeLocationNameManager = getCodeLocationNameManager();
+        String codeLocationName =  codeLocationNameManager.createBinaryScanCodeLocationName(binaryFile, projectNameVersion.getName(), projectNameVersion.getVersion());
+        
+        DetectProtobufBdioHeaderUtil detectProtobufBdioHeaderUtil = new DetectProtobufBdioHeaderUtil(
+            UUID.randomUUID().toString(),
+            type,
+            projectNameVersion,
+            projectGroupName,
+            codeLocationName,
+            binaryFile.length());
+        
+        File bdioHeaderFile;
+        try {
+            bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(
+                    getDirectoryManager().getBinaryOutputDirectory());
+        } catch (IOException e) {
+            throw new IntegrationException("Unable to obtain binary run directory.");
+        }
+        
+        String operationName = "Upload Binary Scan BDIO Header to Initiate Scan";
+        
+        ScanCreationResponse scanCreationResponse 
+            = uploadBdioHeaderToInitiateScassScan(blackDuckRunData, bdioHeaderFile, operationName, gson);
+
+        String scanId = scanCreationResponse.getScanId();
+        
+        if (scanId == null) {
+            logger.warn("Scan ID was not found in the response from the server.");
+            throw new IntegrationException("Scan ID was not found in the response from the server.");
+        }
+        String scanIdString = scanId.toString();
+        logger.debug("Scan initiated with scan service. Scan ID received: {}", scanIdString);
+        
+        return scanCreationResponse;
     }
 
     public void uploadBdioEntries(BlackDuckRunData blackDuckRunData, UUID bdScanId) throws IntegrationException, IOException {

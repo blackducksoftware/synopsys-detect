@@ -1,6 +1,9 @@
-package com.blackduck.integration.detect.lifecycle.run.operation;
+package com.blackduck.integration.detect.lifecycle.run.step;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -10,9 +13,7 @@ import com.blackduck.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
 import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
 import com.blackduck.integration.blackduck.service.request.BlackDuckResponseRequest;
-import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.blackduck.integration.detect.lifecycle.run.data.ScanCreationResponse;
 import com.blackduck.integration.exception.IntegrationException;
 import com.blackduck.integration.log.Slf4jIntLogger;
 import com.blackduck.integration.rest.HttpUrl;
@@ -20,33 +21,39 @@ import com.blackduck.integration.rest.response.Response;
 import com.blackduck.integration.sca.upload.client.UploaderConfig;
 import com.blackduck.integration.sca.upload.client.uploaders.ScassUploader;
 import com.blackduck.integration.sca.upload.client.uploaders.UploaderFactory;
+import com.blackduck.integration.sca.upload.rest.status.UploadStatus;
 import com.google.gson.Gson;
 
-public class ScassOperationRunner {
+public class ScassScanStepRunner {
     
     private final BlackDuckRunData blackDuckRunData;
     
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
-    private static final BlackDuckVersion MIN_SCASS_SCAN_VERSION = new BlackDuckVersion(2025, 1, 0);
-    
     private static final String NOTIFY_URL = "/api/scans/{}/scass-scan-processing";
 
-    public ScassOperationRunner(BlackDuckRunData blackDuckRunData) {
+    public ScassScanStepRunner(BlackDuckRunData blackDuckRunData) {
         this.blackDuckRunData = blackDuckRunData;
     }
     
-    public boolean areScassScansPossible() {
-        Optional<BlackDuckVersion> blackDuckVersion = blackDuckRunData.getBlackDuckServerVersion();
-        return blackDuckVersion.isPresent() && blackDuckVersion.get().isAtLeast(MIN_SCASS_SCAN_VERSION);
+    public void runScassScan(Optional<File> scanFile, String scanId, String uploadUrl) throws IntegrationException {        
+        ScassUploader scaasScanUploader = createScaasScanUploader();
+        
+        // TODO hardcode headers for now until we know if we need them
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-type", "application/octet-stream");
+        
+        UploadStatus status = scaasScanUploader.upload(uploadUrl, headers, scanFile.get().toPath());
+        
+        if (status.isError()) {
+            handleUploadError(status);
+        }
+        
+        // call /scans/{scanId}/scass-scan-processing to notify BlackDuck the file is uploaded
+        notifyUploadComplete(scanId);
     }
     
-    public ScanCreationResponse initiateScassScan() {
-        // TODO refactor call
-        return null;
-    }
-    
-    public ScassUploader createScaasScanUploader() throws IntegrationException {
+    private ScassUploader createScaasScanUploader() throws IntegrationException {
         UploaderConfig.Builder uploaderConfigBuilder =  UploaderConfig.createConfigFromEnvironment(
             blackDuckRunData.getBlackDuckServerConfig().getProxyInfo())
             .setBlackDuckTimeoutInSeconds(blackDuckRunData.getBlackDuckServerConfig().getTimeout())
@@ -61,7 +68,7 @@ public class ScassOperationRunner {
         return uploadFactory.createScassUploader();
     }
 
-    public Response notifyUploadComplete(String scanId) throws IntegrationException {
+    private Response notifyUploadComplete(String scanId) throws IntegrationException {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
         
@@ -83,5 +90,15 @@ public class ScassOperationRunner {
             logger.trace("I/O error occurred during SCASS notification request.");
             throw new IntegrationException("I/O error occurred during SCASS notification request.", e);
         }
+    }
+
+    private void handleUploadError(UploadStatus status) throws IntegrationException {
+        if (status == null) {
+            throw new IntegrationException("Unexpected empty response attempting to upload SCASS file.");
+        } else if (status.getException().isPresent()) {
+            throw status.getException().get();      
+        } else {
+            throw new IntegrationException(String.format("Unable to upload SCASS file. Status code: {}. {}", status.getStatusCode(), status.getStatusMessage()));
+        }  
     }
 }
