@@ -32,4 +32,4 @@
 ### Dependency updates
 
 * Upgraded and released [docker_inspector_name] version 11.1.0.
-* Upgraded and released [project_inspector_name] v2024.12.1.
+* Upgraded to [project_inspector_name] v2024.12.1.
