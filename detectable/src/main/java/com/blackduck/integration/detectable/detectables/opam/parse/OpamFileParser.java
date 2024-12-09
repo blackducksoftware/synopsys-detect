@@ -136,7 +136,7 @@ public class OpamFileParser {
         Matcher matcher = pattern.matcher(line);
         if (matcher.find()) {
             String packageName = matcher.group(1);
-            if(!packageName.equals("cc")) {
+            if(!packageName.equals("cc") && !packageName.equals("arm64") && !packageName.equals("win32") && !packageName.equals("x86_64")) {
                 dependsSection.add(packageName);
             }
         }
