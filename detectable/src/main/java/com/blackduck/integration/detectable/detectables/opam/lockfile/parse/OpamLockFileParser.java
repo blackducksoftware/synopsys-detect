@@ -65,6 +65,9 @@ public class OpamLockFileParser {
             if(version.contains("=")) {
                 version = version.replace("= ",""); // remove = from version
                 version = version.substring(version.indexOf("\"") + 1, version.lastIndexOf("\"")); // get version between ""
+                if(version.contains("+")) {
+                    version = version.split("\\+")[0]; // Edge case where version is like this: {"0.7.0+dune"}
+                }
             }
             parsedLockedOpamDependencies.put(packageName, version);
         }
