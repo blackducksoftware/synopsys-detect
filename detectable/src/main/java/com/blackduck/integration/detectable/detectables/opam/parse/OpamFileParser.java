@@ -101,14 +101,7 @@ public class OpamFileParser {
         if (matcher.find()) {
             value = matcher.group(1);
         }
-
-        if(parsingValue.equals(NAME)) {
-            output.put(NAME, value);
-        } else {
-            output.put(VERSION, value);
-        }
-
-
+        output.put(parsingValue, value);
     }
 
     private void checkDependsSection(String line, Set<String> dependsSection, Pattern pattern) {
