@@ -1596,7 +1596,7 @@ public class OperationRunner {
         return this.detectConfigurationFactory;
     }
     
-    public static String computeMD5Base64(File file) throws IOException {
+    public String computeMD5Base64(File file) throws IOException {
         try (FileInputStream fis = new FileInputStream(file)) {
             MessageDigest md = DigestUtils.getMd5Digest();
             byte[] buffer = new byte[8192];
