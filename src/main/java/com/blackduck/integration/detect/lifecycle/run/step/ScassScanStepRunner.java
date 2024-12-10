@@ -14,15 +14,14 @@ import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
 import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
 import com.blackduck.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.blackduck.integration.detect.lifecycle.run.step.utility.MultipartUploaderHelper;
 import com.blackduck.integration.exception.IntegrationException;
-import com.blackduck.integration.log.Slf4jIntLogger;
 import com.blackduck.integration.rest.HttpUrl;
 import com.blackduck.integration.rest.response.Response;
-import com.blackduck.integration.sca.upload.client.UploaderConfig;
 import com.blackduck.integration.sca.upload.client.uploaders.ScassUploader;
 import com.blackduck.integration.sca.upload.client.uploaders.UploaderFactory;
+import com.blackduck.integration.sca.upload.rest.status.DefaultUploadStatus;
 import com.blackduck.integration.sca.upload.rest.status.UploadStatus;
-import com.google.gson.Gson;
 
 public class ScassScanStepRunner {
     
@@ -46,7 +45,7 @@ public class ScassScanStepRunner {
         UploadStatus status = scaasScanUploader.upload(uploadUrl, headers, scanFile.get().toPath());
         
         if (status.isError()) {
-            handleUploadError(status);
+            MultipartUploaderHelper.handleUploadError((DefaultUploadStatus)status);
         }
         
         // call /scans/{scanId}/scass-scan-processing to notify BlackDuck the file is uploaded
@@ -54,16 +53,7 @@ public class ScassScanStepRunner {
     }
     
     private ScassUploader createScaasScanUploader() throws IntegrationException {
-        UploaderConfig.Builder uploaderConfigBuilder =  UploaderConfig.createConfigFromEnvironment(
-            blackDuckRunData.getBlackDuckServerConfig().getProxyInfo())
-            .setBlackDuckTimeoutInSeconds(blackDuckRunData.getBlackDuckServerConfig().getTimeout())
-            .setMultipartUploadTimeoutInMinutes(blackDuckRunData.getBlackDuckServerConfig().getTimeout() /  60)
-            .setAlwaysTrustServerCertificate(blackDuckRunData.getBlackDuckServerConfig().isAlwaysTrustServerCertificate())
-            .setBlackDuckUrl(blackDuckRunData.getBlackDuckServerConfig().getBlackDuckUrl())
-            .setApiToken(blackDuckRunData.getBlackDuckServerConfig().getApiToken().get());
-        
-        UploaderConfig uploaderConfig = uploaderConfigBuilder.build();
-        UploaderFactory uploadFactory = new UploaderFactory(uploaderConfig, new Slf4jIntLogger(logger), new Gson());
+        UploaderFactory uploadFactory = MultipartUploaderHelper.getUploaderFactory(blackDuckRunData);
         
         return uploadFactory.createScassUploader();
     }
@@ -90,15 +80,5 @@ public class ScassScanStepRunner {
             logger.trace("I/O error occurred during SCASS notification request.");
             throw new IntegrationException("I/O error occurred during SCASS notification request.", e);
         }
-    }
-
-    private void handleUploadError(UploadStatus status) throws IntegrationException {
-        if (status == null) {
-            throw new IntegrationException("Unexpected empty response attempting to upload SCASS file.");
-        } else if (status.getException().isPresent()) {
-            throw status.getException().get();      
-        } else {
-            throw new IntegrationException(String.format("Unable to upload SCASS file. Status code: {}. {}", status.getStatusCode(), status.getStatusMessage()));
-        }  
     }
 }
