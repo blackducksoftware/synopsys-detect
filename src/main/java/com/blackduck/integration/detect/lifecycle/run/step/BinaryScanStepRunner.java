@@ -45,7 +45,7 @@ public class BinaryScanStepRunner {
     )
         throws OperationException, IntegrationException {
         Optional<File> binaryScanFile = determineBinaryScanFileTarget(dockerTargetData, binaryTargets);
-        if (binaryScanFile.isPresent()) {
+        if (binaryScanFile.isPresent()) {            
             // call BlackDuck to create a scanID and determine where to upload the file
             ScanCreationResponse scanCreationResponse = operationRunner.initiateScan(projectNameVersion, binaryScanFile.get(), blackDuckRunData,
                     "BINARY", gson);

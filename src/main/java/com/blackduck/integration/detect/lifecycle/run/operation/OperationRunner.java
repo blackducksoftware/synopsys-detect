@@ -6,11 +6,14 @@ import static com.blackduck.integration.detect.workflow.componentlocationanalysi
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +26,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.jetbrains.annotations.Nullable;
@@ -548,7 +552,7 @@ public class OperationRunner {
     // We can add content type to that method and have it return the response
     // Callers then can determine how to deal with response. We should determine how many callers are impacted.
     // Not sure if older BlackDuck's return scanId in the body so need to check that.
-    public ScanCreationResponse uploadBdioHeaderToInitiateScassScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile, String operationName, Gson gson) throws OperationException {
+    public ScanCreationResponse uploadBdioHeaderToInitiateScassScan(BlackDuckRunData blackDuckRunData, File bdioHeaderFile, String operationName, Gson gson, String computedMd5) throws OperationException {
         return auditLog.namedInternal(operationName, () -> {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
@@ -558,6 +562,7 @@ public class OperationRunner {
 
             String scanServicePostContentType = INTELLIGENT_SCAN_SCASS_CONTENT_TYPE;
             BlackDuckResponseRequest buildBlackDuckResponseRequest = new BlackDuckRequestBuilder()
+                .addHeader("X-BASE64-MD5", computedMd5)
                 .postFile(bdioHeaderFile, ContentType.create(scanServicePostContentType))
                 .buildBlackDuckResponseRequest(postUrl);
 
@@ -584,17 +589,22 @@ public class OperationRunner {
             binaryFile.length());
         
         File bdioHeaderFile;
+        String computedMd5;
         try {
             bdioHeaderFile = detectProtobufBdioHeaderUtil.createProtobufBdioHeader(
                     getDirectoryManager().getBinaryOutputDirectory());
+            
+            // TODO this is not a cheap operation as we have to essentially read the entire file and compute the MD5.
+            // IF this file is a zip, and we created that zip, we can in theory compute the MD5 at the same time.
+            computedMd5 = computeMD5Base64(binaryFile);
         } catch (IOException e) {
-            throw new IntegrationException("Unable to obtain binary run directory.");
+            throw new IntegrationException("Unable to perform file computations. Ensure the binary file and output directory are accessible.");
         }
         
         String operationName = "Upload Binary Scan BDIO Header to Initiate Scan";
         
         ScanCreationResponse scanCreationResponse 
-            = uploadBdioHeaderToInitiateScassScan(blackDuckRunData, bdioHeaderFile, operationName, gson);
+            = uploadBdioHeaderToInitiateScassScan(blackDuckRunData, bdioHeaderFile, operationName, gson, computedMd5);
 
         String scanId = scanCreationResponse.getScanId();
         
@@ -1584,5 +1594,18 @@ public class OperationRunner {
     
     public DetectConfigurationFactory getDetectConfigurationFactory() {
         return this.detectConfigurationFactory;
+    }
+    
+    public static String computeMD5Base64(File file) throws IOException {
+        try (FileInputStream fis = new FileInputStream(file)) {
+            MessageDigest md = DigestUtils.getMd5Digest();
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                md.update(buffer, 0, bytesRead);
+            }
+            byte[] md5Bytes = md.digest();
+            return Base64.getEncoder().encodeToString(md5Bytes);
+        }
     }
 }
