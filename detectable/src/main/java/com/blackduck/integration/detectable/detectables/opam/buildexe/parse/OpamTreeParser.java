@@ -104,7 +104,7 @@ public class OpamTreeParser {
             codeLocationPath = "/" + projectDependency.getName();
         }
         CodeLocation codeLocation = new CodeLocation(currentGraph, projectDependency.getExternalId(), new File(codeLocationPath));
-        codeLocations.add(new OpamParsedResult(projectName, projectName, codeLocation)); // create a new opam parsed result for the project being initialized
+        codeLocations.add(new OpamParsedResult(projectName, projectVersion, codeLocation)); // create a new opam parsed result for the project being initialized
     }
 
 

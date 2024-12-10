@@ -3,7 +3,6 @@ package com.blackduck.integration.detectable.detectables.opam.lockfile;
 import com.blackduck.integration.detectable.detectables.opam.lockfile.parse.OpamLockFileParser;
 import com.blackduck.integration.detectable.detectables.opam.parse.OpamFileParser;
 import com.blackduck.integration.detectable.detectables.opam.parse.OpamParsedResult;
-import com.blackduck.integration.bdio.graph.DependencyGraph;
 import com.blackduck.integration.common.util.Bds;
 import com.blackduck.integration.detectable.detectable.codelocation.CodeLocation;
 import com.blackduck.integration.detectable.detectables.opam.transform.OpamGraphTransformer;
