@@ -39,6 +39,11 @@ public class PubSpecLockParser {
                 dependencyName = parseValueFromLine(trimmedLine, NAME_LINE_KEY);
             } else if (inPackages && trimmedLine.startsWith(VERSION_LINE_KEY)) {
                 Optional<String> dependencyVersion = parseValueFromLine(trimmedLine, VERSION_LINE_KEY);
+                if (dependencyName.isPresent() && dependencyVersion.isPresent()) {
+                    dependencyGraph.addChildToRoot(DependencyCreator.nameVersion(Forge.DART, dependencyName.get(), dependencyVersion.get()));
+                    // After process dependency, reset name and version variables
+                    dependencyName = Optional.empty();
+                }
             }
         }
 
