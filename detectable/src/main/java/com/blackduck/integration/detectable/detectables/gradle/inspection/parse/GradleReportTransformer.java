@@ -122,16 +122,39 @@ public class GradleReportTransformer {
     }
 
     private CodeLocation createCodeLocationForSubProject(GradleReport rootReport, DependencyGraph subProjectGraph, String subProjectName) {
-        ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(rootReport.getProjectGroup(), subProjectName, rootReport.getProjectVersionName());
+        ExternalId projectId;
+        if (subProjectName.contains(":")) {
+            String[] nestedSubProjectParts = getProjectGroupAndProjectNameForNestedSubProject(subProjectName);
+            projectId = ExternalId.FACTORY.createMavenExternalId(rootReport.getProjectName() + "." + nestedSubProjectParts[0] + "%2F" + nestedSubProjectParts[1], rootReport.getProjectVersionName());
+        } else {
+            projectId = ExternalId.FACTORY.createMavenExternalId(rootReport.getProjectGroup(), subProjectName, rootReport.getProjectVersionName());
+        // for sub: ("", sub, unspecified)
+        // for sub:foo: (rooted.sub, foo, unspecified)
+        }
+        // project group should be "rooted.sub" instead of "".... project group USUALLY comes from the subProject's build.gradle, can be blank in subproject
+        // or rooted.subtwo.foo
+        // project name should be "foo" instead of "sub:foo"
+        // or "foofoo" instead of "sub:foo:foofoo"
+        // project source path is "/Users/shanty/Downloads/rooted/sub/foo" but e skip this when root only
             return new CodeLocation(subProjectGraph, projectId);
     }
 
+    private String[] getProjectGroupAndProjectNameForNestedSubProject(String fullNestedSubProjectName) {
+        int lastColonIndex = fullNestedSubProjectName.lastIndexOf(":");
+        String projectGroupName = fullNestedSubProjectName.substring(0, lastColonIndex).replace(":", ".");
+        String subProjectName = fullNestedSubProjectName.substring(lastColonIndex + 1);
+
+        String[] projectGroupAndSubProjectName = {projectGroupName, subProjectName};
+        return projectGroupAndSubProjectName;
+
+    }
     public CodeLocation transform(GradleReport gradleReport) {
         DependencyGraph graph = new BasicDependencyGraph();
 
         processConfigurations(gradleReport, graph, false);
 
         ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
+       // for rooted/sub: (rooted, sub, unspecified)
         if (StringUtils.isNotBlank(gradleReport.getProjectSourcePath())) {
             return new CodeLocation(graph, projectId, new File(gradleReport.getProjectSourcePath()));
         } else {

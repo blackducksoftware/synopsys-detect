@@ -75,10 +75,14 @@ public class GradleReportLineParser {
     }
 
     private String extractSubProjectName(String line) {
-        // A subProject dependency line looks exactly like: "+--- project :subProjectName"
+        // A subProject dependency line looks exactly like: "+--- project :subProjectName" ..can also look like "+--- project :subProjectName:nestedSubProjectName"
         if (line.contains(":")) {
-            String[] parts = line.split(":");
-            return parts[1].trim();
+            String[] parts = line.split(" ");
+            String subprojName = parts[2].trim();
+            if (subprojName.startsWith(":")) {
+                subprojName = subprojName.substring(1);
+            }
+            return subprojName;
         } else {
             return "";
         }
