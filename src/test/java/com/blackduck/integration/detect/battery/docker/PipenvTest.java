@@ -75,11 +75,11 @@ import com.blackduck.integration.exception.IntegrationException;
 //    }
 
     // If updating below components, make sure to refer the test project used by the corresponding dockerfile
-    private void validateComponentsForSamplePipenvProject(BlackDuckAssertions blackduckAssertions) throws IntegrationException {
-        blackduckAssertions.checkComponentVersionExists("Jinja", "3.0.3");
-        blackduckAssertions.checkComponentVersionExists("urllib3", "1.26.8");
-        blackduckAssertions.checkComponentVersionExists("MarkupSafe", "2.0.1");
-        blackduckAssertions.checkComponentVersionExists("idna", "3.3");
-        blackduckAssertions.checkComponentVersionExists("Werkzeug", "2.0.2");
-    }
-}
+//    private void validateComponentsForSamplePipenvProject(BlackDuckAssertions blackduckAssertions) throws IntegrationException {
+//        blackduckAssertions.checkComponentVersionExists("Jinja", "3.0.3");
+//        blackduckAssertions.checkComponentVersionExists("urllib3", "1.26.8");
+//        blackduckAssertions.checkComponentVersionExists("MarkupSafe", "2.0.1");
+//        blackduckAssertions.checkComponentVersionExists("idna", "3.3");
+//        blackduckAssertions.checkComponentVersionExists("Werkzeug", "2.0.2");
+//    }
+//}
