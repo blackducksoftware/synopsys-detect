@@ -1,9 +1,12 @@
 FROM openjdk:8-jdk
 
+ARG ARTIFACTORY_URL
+
 RUN apt update \
    && apt install -y vim
 
 RUN apt-get install -y patch bubblewrap gcc make
+RUN apt-get install -y git bash wget unzip
 
 ENV SRC_DIR=/opt/project/src
 
@@ -17,7 +20,9 @@ RUN curl -s -L -O https://github.com/ocaml/opam/releases/download/2.3.0/opam-2.3
 
 RUN opam init -y --disable-sandboxing --shell-setup
 
-RUN git clone https://github.com/aantron/dream.git ${SRC_DIR}
+RUN wget ${ARTIFACTORY_URL}/artifactory/detect-generic-qa-local/dream.zip
+RUN unzip dream.zip -d /opt/project/src
+RUN rm dream.zip
 
 RUN opam install . -y --with-test --with-doc
 

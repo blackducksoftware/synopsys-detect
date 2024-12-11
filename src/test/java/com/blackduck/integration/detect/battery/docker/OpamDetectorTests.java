@@ -14,14 +14,23 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-@Tag("integration")
+//@Tag("integration")
 public class OpamDetectorTests {
+
+    public static String ARTIFACTORY_URL = System.getenv().get("SNPS_INTERNAL_ARTIFACTORY");
 
     @Test
     void opamLockFileDetectorTest() throws IOException, IntegrationException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("opam-lockfile-detector", "opam-lockfile-detector:1.0.0")) {
+
+            Map<String, String> artifactoryArgs = new HashMap<>();
+            artifactoryArgs.put("ARTIFACTORY_URL", ARTIFACTORY_URL);
+
             BuildDockerImageProvider buildDockerImageProvider = BuildDockerImageProvider.forDockerfilResourceNamed("OpamLockFileTest.dockerfile");
+            buildDockerImageProvider.setBuildArgs(artifactoryArgs);
             test.withImageProvider(buildDockerImageProvider);
 
             // Set up blackduck connection and environment
@@ -55,7 +64,12 @@ public class OpamDetectorTests {
     @Test
     void opamShowDetectorTest() throws IOException, IntegrationException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("opam-show-detector", "opam-show-detector:1.0.0")) {
+
+            Map<String, String> artifactoryArgs = new HashMap<>();
+            artifactoryArgs.put("ARTIFACTORY_URL", ARTIFACTORY_URL);
+
             BuildDockerImageProvider buildDockerImageProvider = BuildDockerImageProvider.forDockerfilResourceNamed("OpamShowTest.dockerfile");
+            buildDockerImageProvider.setBuildArgs(artifactoryArgs);
             test.withImageProvider(buildDockerImageProvider);
 
             // Set up blackduck connection and environment
@@ -89,7 +103,11 @@ public class OpamDetectorTests {
     void opamTreeDetectorTest() throws IntegrationException, IOException {
         try (DetectDockerTestRunner test = new DetectDockerTestRunner("opam-tree-detector", "opam-tree-detector:1.0.0")) {
 
+            Map<String, String> artifactoryArgs = new HashMap<>();
+            artifactoryArgs.put("ARTIFACTORY_URL", ARTIFACTORY_URL);
+
             BuildDockerImageProvider buildDockerImageProvider = BuildDockerImageProvider.forDockerfilResourceNamed("OpamTreeTest.dockerfile");
+            buildDockerImageProvider.setBuildArgs(artifactoryArgs);
             test.withImageProvider(buildDockerImageProvider);
 
             // Set up blackduck connection and environment
@@ -113,7 +131,7 @@ public class OpamDetectorTests {
             dockerAssertions.logContains("Opam CLI: SUCCESS");
             dockerAssertions.atLeastOneBdioFile();
 
-            blackduckAssertions.checkComponentVersionExists("mlx", "0.9");
+            blackduckAssertions.checkComponentVersionExists("mirage-time", "3.0.0");
             blackduckAssertions.checkComponentVersionExists("yojson", "2.2.2");
             blackduckAssertions.checkComponentVersionExists("emile", "1.1");
             blackduckAssertions.checkComponentVersionExists("result","1.5");

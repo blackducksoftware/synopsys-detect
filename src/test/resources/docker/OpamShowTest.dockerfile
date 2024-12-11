@@ -1,9 +1,12 @@
 FROM openjdk:8-jdk
 
+ARG ARTIFACTORY_URL
+
 RUN apt update \
    && apt install -y vim
 
 RUN apt-get install -y patch bubblewrap gcc make
+RUN apt-get install -y git bash wget unzip
 
 ENV SRC_DIR=/opt/project/src
 
@@ -17,9 +20,10 @@ RUN curl -s -L -O https://github.com/ocaml/opam/releases/download/2.1.6/opam-2.1
 
 RUN opam init -y --disable-sandboxing --shell-setup
 
-RUN git clone https://github.com/squirrel-prover/squirrel-prover.git ${SRC_DIR} \
-   && opam switch create squirrel-prover 5.1.1 \
-   && eval $(opam env --switch=squirrel) \
-   && opam install . -y --with-test --with-doc
+RUN wget ${ARTIFACTORY_URL}/artifactory/detect-generic-qa-local/squirrel-prover.zip
+RUN unzip squirrel-prover.zip -d /opt/project/src
+RUN rm squirrel-prover.zip
+
+RUN opam install . -y --with-test --with-doc
 
 RUN cd ${SRC_DIR}
