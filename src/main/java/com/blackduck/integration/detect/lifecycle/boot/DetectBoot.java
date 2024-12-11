@@ -182,7 +182,7 @@ public class DetectBoot {
         }
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
-        if (detectArgumentState.isGenerateAirGapZip()) { // option 1
+        if (detectArgumentState.isGenerateAirGapZip()) {
             return generateAirGap(detectConfigurationFactory, freemarkerConfiguration, installedToolLocator, directoryManager, propertyConfiguration, diagnosticSystem);
         }
 

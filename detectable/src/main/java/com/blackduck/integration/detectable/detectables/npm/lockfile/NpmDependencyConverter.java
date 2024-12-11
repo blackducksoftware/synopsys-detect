@@ -146,7 +146,7 @@ public class NpmDependencyConverter {
                 
         for(String packageName : packageLock.packages.keySet()) {
             if (packageName.isEmpty()) {
-                packagesToRemove.add(packageName); // if pkg name is empty, what are we adding here to remove later?
+                packagesToRemove.add(packageName);
             }
 
             gatherAllDependencies(packageLock, packageName);
