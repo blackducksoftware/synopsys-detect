@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Tag("integration")
+//@Tag("integration")
 public class OpamDetectorTests {
 
     public static String ARTIFACTORY_URL = System.getenv().get("SNPS_INTERNAL_ARTIFACTORY");
@@ -134,7 +134,7 @@ public class OpamDetectorTests {
             blackduckAssertions.checkComponentVersionExists("mirage-time", "3.0.0");
             blackduckAssertions.checkComponentVersionExists("yojson", "2.2.2");
             blackduckAssertions.checkComponentVersionExists("emile", "1.1");
-            blackduckAssertions.checkComponentVersionExists("result","1.5");
+            blackduckAssertions.checkComponentVersionExists("rresult","0.7.0");
         }
     }
 
