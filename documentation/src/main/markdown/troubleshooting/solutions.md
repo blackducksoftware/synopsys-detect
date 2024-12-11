@@ -197,7 +197,7 @@ Restarting Docker will force Docker to release the locks, and enable you to remo
 
 ### Symptom
 
-The requirements.txt files created using encoding systems other than UTF-8 cause certain unicode characters in the component names to be unreadable when inspected through the Detect. The system does not recognize these component entries, resulting in unmatched components. 
+`requirements.txt` files created using encoding systems other than UTF-8 cause certain Unicode characters in the component names to be unreadable when inspected through [detect_product_short]. The system does not recognize these component entries, resulting in unmatched components. 
 
 Here is an example:
 ````
@@ -217,6 +217,6 @@ The requirements.txt file was created using encoding systems other than UTF-8.
 
 ### Solution
 
-To resolve this issue, the requirements.txt file must be created using UTF-8 encoding before the Detect inspection is run on the source code.
+To resolve this issue, the requirements.txt file must be created using UTF-8 encoding before the [detect_product_short] inspection is run on the source code.
 
 Note: [PIP uses UTF-8 as the default encoding when creating requirements.txt files](https://pip.pypa.io/en/stable/reference/requirements-file-format/#encoding).
