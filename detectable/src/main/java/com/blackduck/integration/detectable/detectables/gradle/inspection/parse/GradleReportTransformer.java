@@ -77,6 +77,12 @@ public class GradleReportTransformer {
 
     private void processSubprojectAndCreateCodeLocation(GradleTreeNode subProjectNode, List<GradleTreeNode> allTreeNodesInCurrentConfiguration, GradleReport rootReport) {
         String subProjectName = subProjectNode.getProjectName().get();
+        if (subProjectName.isEmpty()) {
+            /** SubProjectName cannot be empty, if it is, it means there was a problem when parsing the dependencies report.
+             * See {@link GradleReportLineParser#extractSubProjectName()}
+             */
+            return;
+        }
         logger.trace("Processing subProject node: " + subProjectName);
         int subProjectSectionStartIndex = allTreeNodesInCurrentConfiguration.indexOf(subProjectNode);
         int subProjectNodeLevel = subProjectNode.getLevel();
