@@ -57,7 +57,7 @@ public class BinaryScanStepRunner {
                 // This is a SCASS capable server server and SCASS is enabled.
                 ScassScanStepRunner scassScanStepRunner = new ScassScanStepRunner(blackDuckRunData);
                 
-                scassScanStepRunner.runScassScan(binaryScanFile, scanId, uploadUrl);       
+                scassScanStepRunner.runScassScan(binaryScanFile, scanCreationResponse);       
             } else {
                 // This is a SCASS capable server server but SCASS is not enabled.
                 BdbaScanStepRunner bdbaScanStepRunner = new BdbaScanStepRunner(operationRunner);

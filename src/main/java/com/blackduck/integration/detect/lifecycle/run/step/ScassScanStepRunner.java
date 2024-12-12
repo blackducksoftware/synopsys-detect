@@ -2,8 +2,6 @@ package com.blackduck.integration.detect.lifecycle.run.step;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -14,8 +12,10 @@ import com.blackduck.integration.blackduck.service.BlackDuckApiClient;
 import com.blackduck.integration.blackduck.service.BlackDuckServicesFactory;
 import com.blackduck.integration.blackduck.service.request.BlackDuckResponseRequest;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.blackduck.integration.detect.lifecycle.run.data.ScanCreationResponse;
 import com.blackduck.integration.detect.lifecycle.run.step.utility.MultipartUploaderHelper;
 import com.blackduck.integration.exception.IntegrationException;
+import com.blackduck.integration.rest.HttpMethod;
 import com.blackduck.integration.rest.HttpUrl;
 import com.blackduck.integration.rest.response.Response;
 import com.blackduck.integration.sca.upload.client.uploaders.ScassUploader;
@@ -35,21 +35,26 @@ public class ScassScanStepRunner {
         this.blackDuckRunData = blackDuckRunData;
     }
     
-    public void runScassScan(Optional<File> scanFile, String scanId, String uploadUrl) throws IntegrationException {        
+    public void runScassScan(Optional<File> scanFile, ScanCreationResponse scanCreationResponse) throws IntegrationException {        
         ScassUploader scaasScanUploader = createScaasScanUploader();
         
-        // TODO hardcode headers for now until we know if we need them
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-type", "application/octet-stream");
-        
-        UploadStatus status = scaasScanUploader.upload(uploadUrl, headers, scanFile.get().toPath());
+        UploadStatus status;
+        try {
+            status = scaasScanUploader.upload(
+                    scanCreationResponse.getUploadUrlData() != null ? HttpMethod.fromMethod(scanCreationResponse.getUploadUrlData().getMethod()) : HttpMethod.POST,
+                    scanCreationResponse.getUploadUrl(), 
+                    scanCreationResponse.getAllHeaders(), 
+                    scanFile.get().toPath());
+        } catch (IOException e) {
+            throw new IntegrationException(e);
+        }
         
         if (status.isError()) {
             MultipartUploaderHelper.handleUploadError((DefaultUploadStatus)status);
         }
         
         // call /scans/{scanId}/scass-scan-processing to notify BlackDuck the file is uploaded
-        notifyUploadComplete(scanId);
+        notifyUploadComplete(scanCreationResponse.getScanId());
     }
     
     private ScassUploader createScaasScanUploader() throws IntegrationException {
