@@ -123,18 +123,16 @@ public class GradleReportTransformer {
     }
 
     private CodeLocation createCodeLocationForSubProject(GradleReport rootReport, DependencyGraph subProjectGraph, String subProjectName) {
-        ExternalId projectId;
-        String subProjectPath;
         String nestedSubProjectPath = "";
         if (subProjectName.contains(":")) { // current project must be a nested subProject
             nestedSubProjectPath = convertGradleProjectPathToRelativeFilepath(subProjectName);
             String isolatedSubProjectName = nestedSubProjectPath.substring(nestedSubProjectPath.lastIndexOf("/") + 1);
             subProjectName = isolatedSubProjectName;
         }
-        projectId = ExternalId.FACTORY.createMavenExternalId(rootReport.getProjectGroup(), subProjectName, rootReport.getProjectVersionName());
+        ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(rootReport.getProjectGroup(), subProjectName, rootReport.getProjectVersionName());
         // add source path
         if (StringUtils.isNotBlank(rootReport.getProjectSourcePath())) {
-            subProjectPath = rootReport.getProjectSourcePath() + "/" + nestedSubProjectPath;
+            String subProjectPath = rootReport.getProjectSourcePath() + "/" + nestedSubProjectPath;
             return new CodeLocation(subProjectGraph, projectId, new File(subProjectPath));
         } else {
             return new CodeLocation(subProjectGraph, projectId);
