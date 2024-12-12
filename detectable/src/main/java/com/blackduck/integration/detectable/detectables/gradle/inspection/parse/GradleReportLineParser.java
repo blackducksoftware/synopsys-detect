@@ -91,7 +91,7 @@ public class GradleReportLineParser {
             return "";
         } catch (IndexOutOfBoundsException e) {
             logger.debug("Could not extract subProject name from Gradle dependency tree report.");
-            return ""; // TODO double check that when root only is false, subproject names never show up in BDIO.
+            return "";
         }
     }
 
