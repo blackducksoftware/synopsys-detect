@@ -146,13 +146,6 @@ public class GradleReportTransformer {
         // This SHOULD correspond to a filesystem path where subprojects are organized in subdirectories
         if (fullNestedSubProjectName == null || fullNestedSubProjectName.isEmpty()) { throw new IllegalArgumentException("Unexpected gradle nested project name ... ");} // TODO make sure this is not possible during report parsing instead of here.
         return fullNestedSubProjectName.replace(":", "/");
-//        int lastColonIndex = fullNestedSubProjectName.lastIndexOf(":");
-//        String projectGroupName = fullNestedSubProjectName.substring(0, lastColonIndex).replace(":", ".");
-//        String subProjectName = fullNestedSubProjectName.substring(lastColonIndex + 1);
-//
-//        String[] projectGroupAndSubProjectName = {projectGroupName, subProjectName};
-//        return projectGroupAndSubProjectName;
-
     }
     public CodeLocation transform(GradleReport gradleReport) {
         DependencyGraph graph = new BasicDependencyGraph();

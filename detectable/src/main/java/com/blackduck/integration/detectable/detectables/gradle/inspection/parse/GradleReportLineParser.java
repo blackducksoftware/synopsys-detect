@@ -81,10 +81,13 @@ public class GradleReportLineParser {
             String[] parts = line.split(PROJECT_INDICATORS[0]);
             String subprojName = parts[1].trim();
             if (subprojName.startsWith(":")) {
-                subprojName = subprojName.substring(1); // TODO until first encountered space char or else things like (*) would be included in name
+                // Drop the leading ":"
+                subprojName = subprojName.substring(1);
+                // In a Gradle dependencies tree, dependencies listed previously will have a " (*)" suffix
+                subprojName = removeSuffixes(subprojName);
                 return subprojName;
             }
-            // unexpected, TODO throw excpetion here also? For sake of logging the same msg as below without duplicating
+            // line didn't look as we expected
             return "";
         } catch (IndexOutOfBoundsException e) {
             logger.debug("Could not extract subProject name from Gradle dependency tree report.");
