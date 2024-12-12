@@ -77,8 +77,9 @@ public class GradleReportLineParser {
     private String extractSubProjectName(String line) {
         // A subProject dependency line looks exactly like: "+--- project :subProjectName" where subProjectName can
         // be a nested subProject (for example  "+--- project :subProjectA:nestedSubProjectB:furtherNestedSubProjectC")
-        try {
-            String[] parts = line.split(PROJECT_INDICATORS[0]);
+        String[] parts = line.split(PROJECT_INDICATORS[0]);
+        if (parts.length == 2) {
+            // line looks as expected
             String subprojName = parts[1].trim();
             if (subprojName.startsWith(":")) {
                 // Drop the leading ":"
@@ -87,12 +88,10 @@ public class GradleReportLineParser {
                 subprojName = removeSuffixes(subprojName);
                 return subprojName;
             }
-            // line didn't look as we expected
-            return "";
-        } catch (IndexOutOfBoundsException e) {
-            logger.debug("Could not extract subProject name from Gradle dependency tree report.");
-            return "";
         }
+        // line didn't look as we expected
+        logger.debug("Could not extract subProject name from Gradle dependency tree report for line: " + line);
+        return "";
     }
 
     private String removeSuffixes(String line) {
