@@ -152,7 +152,6 @@ public class GradleReportTransformer {
         processConfigurations(gradleReport, graph, false);
 
         ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
-       // for rooted/sub: (rooted, sub, unspecified).   for subProjectD its (org.example, subProjectD, 1.0-snap).    for subSubProjectA its (org.example, subSubProjectA) plus source path below somehow ....
         if (StringUtils.isNotBlank(gradleReport.getProjectSourcePath())) {
             return new CodeLocation(graph, projectId, new File(gradleReport.getProjectSourcePath()));
         } else {
