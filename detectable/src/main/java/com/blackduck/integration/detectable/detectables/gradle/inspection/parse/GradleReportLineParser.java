@@ -75,16 +75,20 @@ public class GradleReportLineParser {
     }
 
     private String extractSubProjectName(String line) {
-        // A subProject dependency line looks exactly like: "+--- project :subProjectName" ..can also look like "+--- project :subProjectName:nestedSubProjectName"
-        if (line.contains(":")) {
-            String[] parts = line.split(" ");
-            String subprojName = parts[2].trim();
+        // A subProject dependency line looks exactly like: "+--- project :subProjectName" where subProjectName can
+        // be a nested subProject (for example  "+--- project :subProjectA:nestedSubProjectB:furtherNestedSubProjectC")
+        try {
+            String[] parts = line.split(PROJECT_INDICATORS[0]);
+            String subprojName = parts[1].trim();
             if (subprojName.startsWith(":")) {
-                subprojName = subprojName.substring(1);
+                subprojName = subprojName.substring(1); // TODO until first encountered space char or else things like (*) would be included in name
+                return subprojName;
             }
-            return subprojName;
-        } else {
+            // unexpected, TODO throw excpetion here also? For sake of logging the same msg as below without duplicating
             return "";
+        } catch (IndexOutOfBoundsException e) {
+            logger.debug("Could not extract subProject name from Gradle dependency tree report.");
+            return ""; // TODO double check that when root only is false, subproject names never show up in BDIO.
         }
     }
 

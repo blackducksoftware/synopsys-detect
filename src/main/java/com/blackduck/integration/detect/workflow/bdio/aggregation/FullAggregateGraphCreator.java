@@ -73,9 +73,9 @@ public class FullAggregateGraphCreator {
     }
 
     private Optional<String> createRelativePath(File sourcePath, NameVersion projectNameVersion, DetectCodeLocation codeLocation) {
-        String codeLocationSourcePath = codeLocation.getSourcePath().toString(); //TODO: what happens when docker is present or no source path or no external id!
+        String codeLocationSourcePath = codeLocation.getSourcePath().toString();
         File codeLocationSourceDir = new File(codeLocationSourcePath);
-        String relativePath = FileNameUtils.relativize(sourcePath.getAbsolutePath(), codeLocationSourceDir.getAbsolutePath());
+        String relativePath = FileNameUtils.relativize(sourcePath.getAbsolutePath(), codeLocationSourceDir.getAbsolutePath()); // subProjectA:subSubProjectA
 
         if (StringUtils.isNotBlank(relativePath) && !relativePath.equals(projectNameVersion.getName())) {
             // Adds the relative path only if the project name was not derived from it to avoid duplicate information

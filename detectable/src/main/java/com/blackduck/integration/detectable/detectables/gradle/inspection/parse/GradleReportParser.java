@@ -78,7 +78,7 @@ public class GradleReportParser {
         if (line.startsWith(PROJECT_DIRECTORY_PREFIX)) {
             gradleReport.setProjectSourcePath(line.substring(PROJECT_DIRECTORY_PREFIX.length()).trim());
         } else if (line.startsWith(PROJECT_GROUP_PREFIX)) {
-            gradleReport.setProjectGroup(line.substring(PROJECT_GROUP_PREFIX.length()).trim()); // TOME project group info for an individual report is set here
+            gradleReport.setProjectGroup(line.substring(PROJECT_GROUP_PREFIX.length()).trim()); // TOME project group info for an individual report is set here, originally comes from metadata that the script puts together via gradle. TODO CONFIRM that project group for multi-level dir's come from here
         } else if (line.startsWith(PROJECT_NAME_PREFIX)) {
             String projectName = line.substring(PROJECT_NAME_PREFIX.length()).trim();
             gradleReport.setProjectName(projectName);

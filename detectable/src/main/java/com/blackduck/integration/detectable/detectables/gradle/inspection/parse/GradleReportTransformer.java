@@ -77,8 +77,8 @@ public class GradleReportTransformer {
 
     private void processSubprojectAndCreateCodeLocation(GradleTreeNode subProjectNode, List<GradleTreeNode> allTreeNodesInCurrentConfiguration, GradleReport rootReport) {
         String subProjectName = subProjectNode.getProjectName().get();
-        logger.debug("Processing subProject node:" + subProjectName);
-        int subProjectSectionStartIndex = allTreeNodesInCurrentConfiguration.indexOf(subProjectNode);
+        logger.debug("Processing subProject node: " + subProjectName);
+        int subProjectSectionStartIndex = allTreeNodesInCurrentConfiguration.indexOf(subProjectNode); // TODO: handle -1
         int subProjectNodeLevel = subProjectNode.getLevel();
 
         DependencyGraph subProjectGraph = new BasicDependencyGraph();
@@ -101,51 +101,57 @@ public class GradleReportTransformer {
                     processSubprojectAndCreateCodeLocation(currentNode, allTreeNodesInCurrentConfiguration, rootReport);
                 }
             } else {
-                // Current node is back at 0 so we are done processing subProject section
+                // Current node is back at 0 so we are done processing subProject section // TODO trace level saying done w/ subProject section "Done processing subProject node: + subprojname"
+                logger.debug("Finisshed processing subProject node: " + subProjectName);
                 break;
             }
         }
 
-        if (codeLocationAlreadyCreatedFor(subProjectName)) {
+        if (codeLocationAlreadyCreatedFor(subProjectName)) { // subProjectname at this point is subA:subSubB
             // Fetch existing code location for the subProject
             CodeLocation existingCodeLocation = subProjectCodeLocationMap.get(subProjectName);
             existingCodeLocation.getDependencyGraph().copyGraphToRoot(subProjectGraph);
             return;
         }
         CodeLocation newCodeLocation = createCodeLocationForSubProject(rootReport, subProjectGraph, subProjectName);
-        subProjectCodeLocationMap.put(subProjectName, newCodeLocation);
+        subProjectCodeLocationMap.put(subProjectName, newCodeLocation);// TODO update this with what you choose the key to be ...
         allCodeLocationsWithinRoot.add(newCodeLocation);
     }
 
     private boolean codeLocationAlreadyCreatedFor(String subProjectName) {
-        return subProjectCodeLocationMap.containsKey(subProjectName);
+        return subProjectCodeLocationMap.containsKey(subProjectName); // TODO update this with what you choose the key to be ...
     }
 
     private CodeLocation createCodeLocationForSubProject(GradleReport rootReport, DependencyGraph subProjectGraph, String subProjectName) {
         ExternalId projectId;
-        if (subProjectName.contains(":")) {
-            String[] nestedSubProjectParts = getProjectGroupAndProjectNameForNestedSubProject(subProjectName);
-            projectId = ExternalId.FACTORY.createMavenExternalId(rootReport.getProjectName() + "." + nestedSubProjectParts[0] + "%2F" + nestedSubProjectParts[1], rootReport.getProjectVersionName());
-        } else {
-            projectId = ExternalId.FACTORY.createMavenExternalId(rootReport.getProjectGroup(), subProjectName, rootReport.getProjectVersionName());
-        // for sub: ("", sub, unspecified)
-        // for sub:foo: (rooted.sub, foo, unspecified)
+        String subProjectPath;
+        String nestedSubProjectPath = "";
+        if (subProjectName.contains(":")) { // then we know this is a nested subProject
+            nestedSubProjectPath = convertGradleProjectPathToRelativeFilepath(subProjectName);
+            String isolatedSubProjectName = nestedSubProjectPath.substring(nestedSubProjectPath.lastIndexOf("/") + 1);
+            subProjectName = isolatedSubProjectName;
         }
-        // project group should be "rooted.sub" instead of "".... project group USUALLY comes from the subProject's build.gradle, can be blank in subproject
-        // or rooted.subtwo.foo
-        // project name should be "foo" instead of "sub:foo"
-        // or "foofoo" instead of "sub:foo:foofoo"
-        // project source path is "/Users/shanty/Downloads/rooted/sub/foo" but e skip this when root only
+        projectId = ExternalId.FACTORY.createMavenExternalId(rootReport.getProjectGroup(), subProjectName, rootReport.getProjectVersionName());
+        // add source path
+        if (StringUtils.isNotBlank(rootReport.getProjectSourcePath())) {
+            subProjectPath = rootReport.getProjectSourcePath() + "/" + nestedSubProjectPath;
+            return new CodeLocation(subProjectGraph, projectId, new File(subProjectPath));
+        } else {
             return new CodeLocation(subProjectGraph, projectId);
+        }
     }
 
-    private String[] getProjectGroupAndProjectNameForNestedSubProject(String fullNestedSubProjectName) {
-        int lastColonIndex = fullNestedSubProjectName.lastIndexOf(":");
-        String projectGroupName = fullNestedSubProjectName.substring(0, lastColonIndex).replace(":", ".");
-        String subProjectName = fullNestedSubProjectName.substring(lastColonIndex + 1);
-
-        String[] projectGroupAndSubProjectName = {projectGroupName, subProjectName};
-        return projectGroupAndSubProjectName;
+    private String convertGradleProjectPathToRelativeFilepath(String fullNestedSubProjectName) {
+        // A nested subProject in Gradle looks like ":subProjectA:nestedSubProjectB:furtherNestedSubProjectC" and so on.
+        // This SHOULD correspond to a filesystem path where subprojects are organized in subdirectories
+        if (fullNestedSubProjectName == null || fullNestedSubProjectName.isEmpty()) { throw new IllegalArgumentException("Unexpected gradle nested project name ... ");} // TODO make sure this is not possible during report parsing instead of here.
+        return fullNestedSubProjectName.replace(":", "/");
+//        int lastColonIndex = fullNestedSubProjectName.lastIndexOf(":");
+//        String projectGroupName = fullNestedSubProjectName.substring(0, lastColonIndex).replace(":", ".");
+//        String subProjectName = fullNestedSubProjectName.substring(lastColonIndex + 1);
+//
+//        String[] projectGroupAndSubProjectName = {projectGroupName, subProjectName};
+//        return projectGroupAndSubProjectName;
 
     }
     public CodeLocation transform(GradleReport gradleReport) {
@@ -154,7 +160,7 @@ public class GradleReportTransformer {
         processConfigurations(gradleReport, graph, false);
 
         ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
-       // for rooted/sub: (rooted, sub, unspecified)
+       // for rooted/sub: (rooted, sub, unspecified).   for subProjectD its (org.example, subProjectD, 1.0-snap).    for subSubProjectA its (org.example, subSubProjectA) plus source path below somehow ....
         if (StringUtils.isNotBlank(gradleReport.getProjectSourcePath())) {
             return new CodeLocation(graph, projectId, new File(gradleReport.getProjectSourcePath()));
         } else {
@@ -165,7 +171,7 @@ public class GradleReportTransformer {
     private void processConfigurations(GradleReport gradleReport, DependencyGraph graph, boolean rootOnly) {
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
             if (configuration.isResolved() || configurationTypeFilter.shouldInclude(GradleConfigurationType.UNRESOLVED)) {
-                logger.trace("Adding configuration to the graph: {}", configuration.getName());
+                logger.debug("Adding configuration to the graph: {}", configuration.getName());
                 if (rootOnly) {
                     addConfigurationToRootAndSubProjectGraphs(graph, configuration, gradleReport);
                 } else {
