@@ -77,8 +77,8 @@ public class GradleReportTransformer {
 
     private void processSubprojectAndCreateCodeLocation(GradleTreeNode subProjectNode, List<GradleTreeNode> allTreeNodesInCurrentConfiguration, GradleReport rootReport) {
         String subProjectName = subProjectNode.getProjectName().get();
-        logger.debug("Processing subProject node: " + subProjectName);
-        int subProjectSectionStartIndex = allTreeNodesInCurrentConfiguration.indexOf(subProjectNode); // TODO: handle -1
+        logger.trace("Processing subProject node: " + subProjectName);
+        int subProjectSectionStartIndex = allTreeNodesInCurrentConfiguration.indexOf(subProjectNode);
         int subProjectNodeLevel = subProjectNode.getLevel();
 
         DependencyGraph subProjectGraph = new BasicDependencyGraph();
@@ -101,32 +101,32 @@ public class GradleReportTransformer {
                     processSubprojectAndCreateCodeLocation(currentNode, allTreeNodesInCurrentConfiguration, rootReport);
                 }
             } else {
-                // Current node is back at 0 so we are done processing subProject section // TODO trace level saying done w/ subProject section "Done processing subProject node: + subprojname"
-                logger.debug("Finisshed processing subProject node: " + subProjectName);
+                // Current node is back at 0 so we are done processing subProject section
+                logger.trace("Finished processing subProject node: " + subProjectName);
                 break;
             }
         }
 
-        if (codeLocationAlreadyCreatedFor(subProjectName)) { // subProjectname at this point is subA:subSubB
+        if (codeLocationAlreadyCreatedFor(subProjectName)) {
             // Fetch existing code location for the subProject
             CodeLocation existingCodeLocation = subProjectCodeLocationMap.get(subProjectName);
             existingCodeLocation.getDependencyGraph().copyGraphToRoot(subProjectGraph);
             return;
         }
         CodeLocation newCodeLocation = createCodeLocationForSubProject(rootReport, subProjectGraph, subProjectName);
-        subProjectCodeLocationMap.put(subProjectName, newCodeLocation);// TODO update this with what you choose the key to be ...
+        subProjectCodeLocationMap.put(subProjectName, newCodeLocation);
         allCodeLocationsWithinRoot.add(newCodeLocation);
     }
 
     private boolean codeLocationAlreadyCreatedFor(String subProjectName) {
-        return subProjectCodeLocationMap.containsKey(subProjectName); // TODO update this with what you choose the key to be ...
+        return subProjectCodeLocationMap.containsKey(subProjectName);
     }
 
     private CodeLocation createCodeLocationForSubProject(GradleReport rootReport, DependencyGraph subProjectGraph, String subProjectName) {
         ExternalId projectId;
         String subProjectPath;
         String nestedSubProjectPath = "";
-        if (subProjectName.contains(":")) { // then we know this is a nested subProject
+        if (subProjectName.contains(":")) { // current project must be a nested subProject
             nestedSubProjectPath = convertGradleProjectPathToRelativeFilepath(subProjectName);
             String isolatedSubProjectName = nestedSubProjectPath.substring(nestedSubProjectPath.lastIndexOf("/") + 1);
             subProjectName = isolatedSubProjectName;
@@ -144,7 +144,6 @@ public class GradleReportTransformer {
     private String convertGradleProjectPathToRelativeFilepath(String fullNestedSubProjectName) {
         // A nested subProject in Gradle looks like ":subProjectA:nestedSubProjectB:furtherNestedSubProjectC" and so on.
         // This SHOULD correspond to a filesystem path where subprojects are organized in subdirectories
-        if (fullNestedSubProjectName == null || fullNestedSubProjectName.isEmpty()) { throw new IllegalArgumentException("Unexpected gradle nested project name ... ");} // TODO make sure this is not possible during report parsing instead of here.
         return fullNestedSubProjectName.replace(":", "/");
     }
     public CodeLocation transform(GradleReport gradleReport) {
@@ -164,7 +163,7 @@ public class GradleReportTransformer {
     private void processConfigurations(GradleReport gradleReport, DependencyGraph graph, boolean rootOnly) {
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
             if (configuration.isResolved() || configurationTypeFilter.shouldInclude(GradleConfigurationType.UNRESOLVED)) {
-                logger.debug("Adding configuration to the graph: {}", configuration.getName());
+                logger.trace("Adding configuration to the graph: {}", configuration.getName());
                 if (rootOnly) {
                     addConfigurationToRootAndSubProjectGraphs(graph, configuration, gradleReport);
                 } else {
