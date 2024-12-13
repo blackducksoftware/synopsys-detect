@@ -77,7 +77,13 @@ public class GradleReportTransformer {
 
     private void processSubprojectAndCreateCodeLocation(GradleTreeNode subProjectNode, List<GradleTreeNode> allTreeNodesInCurrentConfiguration, GradleReport rootReport) {
         String subProjectName = subProjectNode.getProjectName().get();
-        logger.debug("Processing subProject node:" + subProjectName);
+        if (subProjectName.isEmpty()) {
+            /** SubProjectName cannot be empty, if it is, it means there was a problem when parsing the dependencies report.
+             * See {@link GradleReportLineParser#extractSubProjectName()}
+             */
+            return;
+        }
+        logger.trace("Processing subProject node: " + subProjectName);
         int subProjectSectionStartIndex = allTreeNodesInCurrentConfiguration.indexOf(subProjectNode);
         int subProjectNodeLevel = subProjectNode.getLevel();
 
@@ -102,6 +108,7 @@ public class GradleReportTransformer {
                 }
             } else {
                 // Current node is back at 0 so we are done processing subProject section
+                logger.trace("Finished processing subProject node: " + subProjectName);
                 break;
             }
         }
@@ -122,10 +129,27 @@ public class GradleReportTransformer {
     }
 
     private CodeLocation createCodeLocationForSubProject(GradleReport rootReport, DependencyGraph subProjectGraph, String subProjectName) {
+        String nestedSubProjectPath = "";
+        if (subProjectName.contains(":")) { // current project must be a nested subProject
+            nestedSubProjectPath = convertGradleProjectPathToRelativeFilepath(subProjectName);
+            String isolatedSubProjectName = nestedSubProjectPath.substring(nestedSubProjectPath.lastIndexOf("/") + 1);
+            subProjectName = isolatedSubProjectName;
+        }
         ExternalId projectId = ExternalId.FACTORY.createMavenExternalId(rootReport.getProjectGroup(), subProjectName, rootReport.getProjectVersionName());
+        // add source path
+        if (StringUtils.isNotBlank(rootReport.getProjectSourcePath())) {
+            String subProjectPath = rootReport.getProjectSourcePath() + "/" + nestedSubProjectPath;
+            return new CodeLocation(subProjectGraph, projectId, new File(subProjectPath));
+        } else {
             return new CodeLocation(subProjectGraph, projectId);
+        }
     }
 
+    private String convertGradleProjectPathToRelativeFilepath(String fullNestedSubProjectName) {
+        // A nested subProject in Gradle looks like ":subProjectA:nestedSubProjectB:furtherNestedSubProjectC" and so on.
+        // This SHOULD correspond to a filesystem path where subprojects are organized in subdirectories
+        return fullNestedSubProjectName.replace(":", "/");
+    }
     public CodeLocation transform(GradleReport gradleReport) {
         DependencyGraph graph = new BasicDependencyGraph();
 
