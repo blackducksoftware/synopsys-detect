@@ -35,4 +35,6 @@ public class PackageLockPackage {
     public Boolean dev;
 
     public Boolean peer;
+
+    public Boolean extraneous;
 }
