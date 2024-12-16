@@ -14,7 +14,6 @@
 * npm version 1 package-lock.json and npm-shrinkwrap.json file parsing has been restored.
 * The `detect.project.codelocation.unmap` property has been deprecated.
 * Changed [detect_product_long]'s JAR signing authority from Synopsys, Inc. to Black Duck Software, Inc.
-* Use of the --detect.yarn.ignore.all.workspaces flag is not required for Yarn 4 projects, thus configuration parameters such as detect.yarn.dependency.types.excluded=NON_PRODUCTION can be employed.
 
 ### Resolved issues
 

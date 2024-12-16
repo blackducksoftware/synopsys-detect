@@ -17,7 +17,7 @@
 
 ### Changed features
 
-* 
+* Use of the --detect.yarn.ignore.all.workspaces flag is not required for Yarn 4 projects, thus configuration parameters such as detect.yarn.dependency.types.excluded=NON_PRODUCTION can be employed.
 
 ### Resolved issues
 
