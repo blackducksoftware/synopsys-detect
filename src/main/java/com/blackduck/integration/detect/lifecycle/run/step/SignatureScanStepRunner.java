@@ -58,14 +58,20 @@ public class SignatureScanStepRunner {
     }
     
     public SignatureScanOuputResult runRapidSignatureScannerOnline(String detectRunUuid, BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData)
-            throws DetectUserFriendlyException, OperationException {
+            throws DetectUserFriendlyException, OperationException, IOException {
             ScanBatchRunner scanBatchRunner = resolveOnlineScanBatchRunner(blackDuckRunData);
 
             List<SignatureScanPath> scanPaths = operationRunner.createScanPaths(projectNameVersion, dockerTargetData);
             ScanBatch scanBatch = operationRunner.createScanBatchOnline(detectRunUuid, scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
 
             SignatureScanOuputResult scanResult =  operationRunner.signatureScan(scanBatch, scanBatchRunner);
-
+            
+            if (scanBatch.isCsvArchive()) {
+                for (ScanCommandOutput output : scanResult.getScanBatchOutput().getOutputs()) {
+                    copyCsvFiles(output.getSpecificRunOutputDirectory(), operationRunner.getDirectoryManager().getCsvOutputDirectory());
+                }
+            }
+            
             // publish report/scan results to status file
             List<SignatureScannerReport> reports = operationRunner.createSignatureScanReport(scanPaths, scanResult.getScanBatchOutput().getOutputs());
             operationRunner.publishSignatureScanReport(reports);

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.blackduck.integration.configuration.config.PropertyConfiguration;
 import com.blackduck.integration.detect.configuration.DetectProperties;
+import com.blackduck.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.blackduck.integration.detect.lifecycle.boot.DetectBootResult;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.blackduck.integration.detect.lifecycle.run.data.ProductRunData;
@@ -36,7 +37,9 @@ public class ShutdownDecider {
             return CleanupDecision.skip();
         }
         boolean dryRun = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN);
-
+        BlackduckScanMode scanMode = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
+        boolean isStateless = scanMode == scanMode.STATELESS;
+        
         boolean offline = false;
         if (productRunData != null && productRunData.shouldUseBlackDuckProduct()) {
             offline = !productRunData.getBlackDuckRunData().isOnline();
@@ -44,7 +47,7 @@ public class ShutdownDecider {
 
         boolean preserveScan = dryRun || offline;
         boolean preserveBdio = offline;
-        boolean preserveCsv = offline && 
+        boolean preserveCsv = (offline || isStateless) && 
                 detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_CSV_ARCHIVE);
         boolean preserveAirGap = airGapZip != null;
         boolean preserveIac = offline;
