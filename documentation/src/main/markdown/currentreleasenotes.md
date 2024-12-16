@@ -9,29 +9,20 @@
 
 <note type="note">It is recommended that customers continue to maintain sig-repo.synopsys.com, and repo.blackduck.com on their allow list until February 2025 when sig-repo.synopsys.com will be fully replaced by repo.blackduck.com.</note>
 
-## Version 10.1.0
+## Version 10.2.0
 
 ### New features
 
-* npm lockfile and shrinkwrap detectors now ignore packages flagged as extraneous in the package-lock.json and npm-shrinkwrap.json files.
-* Support added for Opam Package Manager via [Opam Detector](packagemgrs/opam.md).
-* New Gradle Native Inspector option to only process the root dependencies of a Gradle project. See [detect.gradle.root.only](properties/detectors/gradle.md#gradle-root-only-enabled-advanced) for more details.
+* 
 
 ### Changed features
 
-* npm version 1 package-lock.json and npm-shrinkwrap.json file parsing has been restored.
-* The `detect.project.codelocation.unmap` property has been deprecated.
-* Changed [detect_product_long]'s JAR signing authority from Synopsys, Inc. to Black Duck Software, Inc.
 * Use of the --detect.yarn.ignore.all.workspaces flag is not required for Yarn 4 projects, thus configuration parameters such as detect.yarn.dependency.types.excluded=NON_PRODUCTION can be employed.
 
 ### Resolved issues
 
-* (IDETECT-4517) - [detect_product_short] now correctly indicates a timeout failure occurred when multipart binary or container scans timeout during an upload.
-* (IDETECT-4540) - Multipart binary and container scans now correctly retry when authentication errors are received during transmission.
-* (IDETECT-4469) - Eliminating null (`\u0000`) and replacement (`\uFFFD`) characters during the processing of Python requirements.txt files to ensure successful extraction of dependency information.
 * (IDETECT-4447) - ID strings of detected Yarn project dependencies are now correctly formed. Related warning messages have been improved to identify entries in the yarn.lock file that have not been resolved through package.json files and could not be resolved with any standard NPM packages.
 
 ### Dependency updates
 
-* Upgraded and released [docker_inspector_name] version 11.1.0.
-* Upgraded to [project_inspector_name] v2024.12.1.
+* 
