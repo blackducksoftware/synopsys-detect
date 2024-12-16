@@ -1,6 +1,31 @@
 <!-- Check the support matrix to determine supported, non-current major version releases -->
 # Release notes for previous supported versions
 
+## Version 10.1.0
+
+### New features
+
+* npm lockfile and shrinkwrap detectors now ignore packages flagged as extraneous in the package-lock.json and npm-shrinkwrap.json files.
+* Support added for Opam Package Manager via [Opam Detector](packagemgrs/opam.md).
+* New Gradle Native Inspector option to only process the root dependencies of a Gradle project. See [detect.gradle.root.only](properties/detectors/gradle.md#gradle-root-only-enabled-advanced) for more details.
+
+### Changed features
+
+* npm version 1 package-lock.json and npm-shrinkwrap.json file parsing has been restored.
+* The `detect.project.codelocation.unmap` property has been deprecated.
+* Changed [detect_product_long]'s JAR signing authority from Synopsys, Inc. to Black Duck Software, Inc.
+
+### Resolved issues
+
+* (IDETECT-4517) - [detect_product_short] now correctly indicates a timeout failure occurred when multipart binary or container scans timeout during an upload.
+* (IDETECT-4540) - Multipart binary and container scans now correctly retry when authentication errors are received during transmission.
+* (IDETECT-4469) - Eliminating null (`\u0000`) and replacement (`\uFFFD`) characters during the processing of Python requirements.txt files to ensure successful extraction of dependency information.
+
+### Dependency updates
+
+* Upgraded and released [docker_inspector_name] version 11.1.0.
+* Upgraded to [project_inspector_name] v2024.12.1.
+
 ## Version 10.0.0
 
 [company_name] [solution_name] has been renamed [detect_product_long] with page links, documentation, and other URLs updated accordingly. Update any [detect_product_short] documentation, or other bookmarks you may have. See the [Domain Change FAQ](https://community.blackduck.com/s/article/Black-Duck-Domain-Change-FAQ).
