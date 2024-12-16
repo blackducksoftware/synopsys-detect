@@ -35,26 +35,49 @@ public class ScassScanStepRunner {
         this.blackDuckRunData = blackDuckRunData;
     }
     
-    public void runScassScan(Optional<File> scanFile, ScanCreationResponse scanCreationResponse) throws IntegrationException {        
+    public void runScassScan(Optional<File> scanFile, ScanCreationResponse scanCreationResponse) throws IntegrationException {
+        if (scanFile == null || !scanFile.isPresent()) {
+            throw new IntegrationException("File to scan is not provided.");
+        }
+        if (scanCreationResponse == null) {
+            throw new IntegrationException("Scan creation response is not provided.");
+        }
+
         ScassUploader scaasScanUploader = createScaasScanUploader();
-        
+
+        // Don't upload a file larger than SCASS's capability indicates
+        validateGcpSize(scanFile, scanCreationResponse);
+
         UploadStatus status;
         try {
             status = scaasScanUploader.upload(
                     scanCreationResponse.getUploadUrlData() != null ? HttpMethod.fromMethod(scanCreationResponse.getUploadUrlData().getMethod()) : HttpMethod.POST,
-                    scanCreationResponse.getUploadUrl(), 
-                    scanCreationResponse.getAllHeaders(), 
+                    scanCreationResponse.getUploadUrl(),
+                    scanCreationResponse.getAllHeaders(),
                     scanFile.get().toPath());
         } catch (IOException e) {
             throw new IntegrationException(e);
         }
-        
+
         if (status.isError()) {
-            MultipartUploaderHelper.handleUploadError((DefaultUploadStatus)status);
+            MultipartUploaderHelper.handleUploadError((DefaultUploadStatus) status);
         }
-        
+
         // call /scans/{scanId}/scass-scan-processing to notify BlackDuck the file is uploaded
         notifyUploadComplete(scanCreationResponse.getScanId());
+    }
+    
+    private void validateGcpSize(Optional<File> scanFile, ScanCreationResponse scanCreationResponse)
+            throws IntegrationException {
+        String gcpSizeHeader = scanCreationResponse.getAllHeaders().get("x-goog-content-length-range");
+        if (gcpSizeHeader != null) {
+            Long gcpSize = Long.valueOf(gcpSizeHeader.split(",")[1]);
+
+            File file = scanFile.get();
+            if (file.length() > gcpSize) {
+                throw new IntegrationException(String.format("Unable to upload file as it exceeds GCP's size of %s bytes", gcpSize));
+            }
+        }
     }
     
     private ScassUploader createScaasScanUploader() throws IntegrationException {
