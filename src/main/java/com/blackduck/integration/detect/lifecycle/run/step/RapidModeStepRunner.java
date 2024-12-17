@@ -104,15 +104,16 @@ public class RapidModeStepRunner {
                     invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, containerResultUrls, true, scaaasFilePath.get());
                     processScanResults(containerResultUrls, parsedUrls, formattedCodeLocations, DetectTool.CONTAINER_SCAN.name());
                 } else {
+                    // TOME: ensure there is no chance that SCASS is attempted for rapid mode
                     ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData, gson);
                     logger.debug("Invoking stateless container scan.");
-                    Optional<UUID> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+                    Optional<String> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
                     if (scanId.isPresent()) {
                         String statelessScanEndpoint = operationRunner.getScanServicePostEndpoint();
                         HttpUrl scanServiceUrlToPoll = new HttpUrl(blackDuckUrl + statelessScanEndpoint + "/" + scanId.get());
                         logger.info("Stateless mode container scan URL: {}", scanServiceUrlToPoll);
                         parsedUrls.add(scanServiceUrlToPoll);
-                        formattedCodeLocations.add(new FormattedCodeLocation(containerScanStepRunner.getCodeLocationName(), scanId.get(), DetectTool.CONTAINER_SCAN.name()));
+                        formattedCodeLocations.add(new FormattedCodeLocation(containerScanStepRunner.getCodeLocationName(), UUID.fromString(scanId.get()), DetectTool.CONTAINER_SCAN.name()));
                     }
                 }
             }

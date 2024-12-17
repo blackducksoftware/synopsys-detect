@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.blackduck.integration.detect.lifecycle.run.data.ScanCreationResponse;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.blackduck.integration.detect.lifecycle.run.step.utility.MultipartUploaderHelper;
 import com.blackduck.integration.detect.util.bdio.protobuf.DetectProtobufBdioHeaderUtil;
@@ -37,10 +39,12 @@ public class ContainerScanStepRunner {
     private final File binaryRunDirectory;
     private final File containerImage;
     private final Long containerImageSizeInBytes;
+    private final Gson gson;
     private String codeLocationName;
     private UploaderFactory uploadFactory;
     private static final BlackDuckVersion MIN_BLACK_DUCK_VERSION = new BlackDuckVersion(2023, 10, 0);
     private static final BlackDuckVersion MIN_MULTIPART_UPLOAD_VERSION = new BlackDuckVersion(2024, 10, 0);
+    private static final BlackDuckVersion MIN_SCASS_SCAN_VERSION = new BlackDuckVersion(2025, 1, 0);
     private static final String STORAGE_CONTAINERS_ENDPOINT = "/api/storage/containers/";
     private static final String STORAGE_IMAGE_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-data-1+octet-stream";
     private static final String STORAGE_IMAGE_METADATA_CONTENT_TYPE = "application/vnd.blackducksoftware.container-scan-message-1+json";
@@ -57,19 +61,17 @@ public class ContainerScanStepRunner {
         projectGroupName = operationRunner.calculateProjectGroupOptions().getProjectGroup();
         containerImage = operationRunner.getContainerScanImage(gson, binaryRunDirectory);
         containerImageSizeInBytes = containerImage != null && containerImage.exists() ? containerImage.length() : 0;
-        
-        if (canDoMultiPartUpload()) {
-            initContainerUploadFactory(blackDuckRunData);
-        }
+        this.gson = gson;
     }
 
-    public Optional<UUID> invokeContainerScanningWorkflow() {
+    public Optional<String> invokeContainerScanningWorkflow() {
         try {
             logger.debug("Determining if configuration is valid to run a container scan.");
             if (!isContainerScanEligible()) {
                 logger.info("No container.scan.file.path property was provided. Skipping container scan.");
-                return Optional.ofNullable(scanId);
+                return Optional.empty();
             }
+
             if (!isBlackDuckVersionValid()) {
                 String minBlackDuckVersion = String.join(".",
                     Integer.toString(MIN_BLACK_DUCK_VERSION.getMajor()),
@@ -83,6 +85,12 @@ public class ContainerScanStepRunner {
             }
 
             codeLocationName = createContainerScanCodeLocationName();
+
+            if (areScassScansPossible()) {
+                // TOME: we're inside a big try/catch, so let's see if exception handling can be made more specific
+                return Optional.of(tryScassOrBdba());
+            }
+
             initiateScan();
             logger.info("Container scan initiated. Uploading container scan image.");
 
@@ -95,14 +103,31 @@ public class ContainerScanStepRunner {
             uploadImageMetadataToStorageService();
             operationRunner.publishContainerSuccess();
             logger.info("Container scan image uploaded successfully.");
-        } catch (IntegrationTimeoutException e) {
+        } catch (IntegrationTimeoutException e) { // TOME: figure out whether this can apply to SCASS or new BDBA
             operationRunner.publishContainerTimeout(e);
             return Optional.empty();
         } catch (IntegrationException | IOException | OperationException e) {
             operationRunner.publishContainerFailure(e);
             return Optional.empty();
         }
-        return Optional.ofNullable(scanId);
+        return Optional.ofNullable(scanId.toString());
+    }
+
+    private String tryScassOrBdba() throws OperationException, IntegrationException {
+        //NameVersion projectNameVersion, File binaryFile, BlackDuckRunData blackDuckRunData, String type, Gson gson
+        ScanCreationResponse scanCreationResponse = operationRunner.initiateScan(projectNameVersion, containerImage, blackDuckRunData, "CONTAINER", gson);
+
+        String scanId = scanCreationResponse.getScanId();
+        String uploadUrl = scanCreationResponse.getUploadUrl();
+
+        if (StringUtils.isNotEmpty(uploadUrl)) {
+            ScassScanStepRunner scassScanStepRunner = new ScassScanStepRunner(blackDuckRunData);
+            scassScanStepRunner.runScassScan(Optional.of(containerImage), scanCreationResponse);
+        } else {
+            BdbaScanStepRunner bdbaScanStepRunner = new BdbaScanStepRunner(operationRunner);
+            bdbaScanStepRunner.runBdbaScan(projectNameVersion, blackDuckRunData, Optional.of(containerImage), scanId, "CONTAINER");
+        }
+        return scanId;
     }
 
     public String getCodeLocationName() {
@@ -170,7 +195,7 @@ public class ContainerScanStepRunner {
     
     private DefaultUploadStatus multiPartUploadImage() throws IntegrationException, IOException {
         String storageServiceEndpoint = String.join("", STORAGE_CONTAINERS_ENDPOINT, scanId.toString());
-        ContainerUploader containerUploader = uploadFactory.createContainerUploader(storageServiceEndpoint);
+        ContainerUploader containerUploader = initAndOrGetContainerUploadFactory().createContainerUploader(storageServiceEndpoint);
         
         logger.debug("Performing multipart container image upload to storage endpoint: {}", storageServiceEndpoint);
         DefaultUploadStatus status = containerUploader.upload(containerImage.toPath());
@@ -207,12 +232,20 @@ public class ContainerScanStepRunner {
         }
     }
     
-    private void initContainerUploadFactory(BlackDuckRunData blackDuckRunData) throws IntegrationException {
-        uploadFactory = MultipartUploaderHelper.getUploaderFactory(blackDuckRunData);
+    private UploaderFactory initAndOrGetContainerUploadFactory() throws IntegrationException {
+        if (uploadFactory == null) {
+            uploadFactory = MultipartUploaderHelper.getUploaderFactory(blackDuckRunData);
+        }
+        return uploadFactory;
     }
     
     private boolean canDoMultiPartUpload() {
         Optional<BlackDuckVersion> blackDuckVersion = blackDuckRunData.getBlackDuckServerVersion();
         return blackDuckVersion.isPresent() && blackDuckVersion.get().isAtLeast(MIN_MULTIPART_UPLOAD_VERSION);
+    }
+
+    private boolean areScassScansPossible() {
+        Optional<BlackDuckVersion> blackDuckVersion = blackDuckRunData.getBlackDuckServerVersion();
+        return blackDuckVersion.isPresent() && blackDuckVersion.get().isAtLeast(MIN_SCASS_SCAN_VERSION);
     }
 }
