@@ -146,12 +146,7 @@ public class IntelligentModeStepRunner {
             "Container Scanner",
             () -> {
                 ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData, gson);
-                logger.debug("Invoking intelligent persistent container scan.");
-                Optional<UUID> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
-                scanId.ifPresent(uuid -> scanIdsToWaitFor.add(uuid.toString()));
-                Set<String> containerScanCodeLocations = new HashSet<>();
-                containerScanCodeLocations.add(containerScanStepRunner.getCodeLocationName());
-                codeLocationAccumulator.addNonWaitableCodeLocation(containerScanCodeLocations);
+                invokeContainerScanningWorkflow(containerScanStepRunner, scanIdsToWaitFor, codeLocationAccumulator);
             }
         );
 
@@ -248,6 +243,20 @@ public class IntelligentModeStepRunner {
                 mustWaitAtBomSummaryLevel.set(true);
             }
         }
+    }
+
+    private void invokeContainerScanningWorkflow(
+        ContainerScanStepRunner containerScanStepRunner,
+        Set<String> scanIdsToWaitFor,
+        CodeLocationAccumulator codeLocationAccumulator
+    ) {
+        logger.debug("Invoking intelligent persistent container scan.");
+
+        Optional<String> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+        scanId.ifPresent(id -> scanIdsToWaitFor.add(id));
+        Set<String> containerScanCodeLocations = new HashSet<>();
+        containerScanCodeLocations.add(containerScanStepRunner.getCodeLocationName());
+        codeLocationAccumulator.addNonWaitableCodeLocation(containerScanCodeLocations);
     }
 
     private void pollForBomScanCompletion(BlackDuckRunData blackDuckRunData, ProjectVersionWrapper projectVersion,
