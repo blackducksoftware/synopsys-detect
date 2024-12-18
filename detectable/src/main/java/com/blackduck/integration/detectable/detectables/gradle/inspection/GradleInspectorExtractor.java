@@ -124,7 +124,7 @@ public class GradleInspectorExtractor {
             private int extractDepthNumber(String name) {
                 int i;
                 try {
-                    int s = name.indexOf("depth") + 5; // File name is like project__projectname__depth3_dependencyGraph.txt, we extract the number after depth
+                    int s = name.lastIndexOf("depth") + 5; // File name is like project__projectname__depth3_dependencyGraph.txt, we extract the number after depth
                     int e = name.indexOf("_dependencyGraph");
                     String number = name.substring(s, e);
                     i = Integer.parseInt(number);

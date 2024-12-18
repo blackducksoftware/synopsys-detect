@@ -141,7 +141,7 @@ public class GradleReportLineParser {
 
         // To avoid a bug caused by an edge case where child and parent modules have the same name causing the loop for checking rich version to stuck
         // in an infinite state, we are going to suffix the name of the project with the depth number
-        int s = fileName.indexOf("depth") + 5; // File name is like project__projectname__depth3_dependencyGraph.txt, we extract the number after depth
+        int s = fileName.lastIndexOf("depth") + 5; // File name is like project__projectname__depth3_dependencyGraph.txt, we extract the number after depth
         int e = fileName.indexOf("_dependencyGraph");
         depthNumber = fileName.substring(s, e);
         projectName = projectName+"_"+depthNumber;
@@ -202,9 +202,9 @@ public class GradleReportLineParser {
             relationsMap.putIfAbsent(projectName, parentString+"_"+parentDepth);
         } else if (!projectParent.equals("null") && !projectName.equals(rootProjectName)) {
             // this will be the second case where root project will be the parent
-            relationsMap.putIfAbsent(projectName, rootProjectName);
+            relationsMap.putIfAbsent(projectName, rootProjectName+"_0");
         } else {
-            relationsMap.putIfAbsent(rootProjectName, null);
+            relationsMap.putIfAbsent(rootProjectName+"_0", null);
         }
     }
 
