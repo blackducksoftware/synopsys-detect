@@ -34,7 +34,7 @@ export DETECT_LATEST_RELEASE_VERSION={Detect version}
 bash <(curl -s -L https://detect.blackduck.com/detect10.sh)
 ````
 
-For example, to run [detect_product_short] version 10.0.1:
+For example, to run [detect_product_short] version 9.10.0:
 
 ````
 export DETECT_LATEST_RELEASE_VERSION=9.10.0

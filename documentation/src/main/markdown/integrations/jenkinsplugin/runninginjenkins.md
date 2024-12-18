@@ -33,4 +33,4 @@ Refer to the [freestyle example](../../integrations/jenkinsplugin/jenkinsfreest
 ## DSL considerations
 The [detect_product_short] for Jenkins plugin provides Dynamic DSL for both freestyle steps and pipeline steps. Read more at [Dynamic DSL](https://github.com/jenkinsci/job-dsl-plugin/wiki/Dynamic-DSL).
 
-**Note:** that versions 1.72 and later of the DSL plugin do not support the [detect_product_short] for Jenkins plugin pipeline steps.
+**Note:** that versions 1.83 and later of the DSL plugin do not support the [detect_product_short] for Jenkins plugin pipeline steps.

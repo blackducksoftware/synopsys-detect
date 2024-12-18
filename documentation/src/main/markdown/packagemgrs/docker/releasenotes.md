@@ -1,5 +1,22 @@
 # [docker_inspector_name] Release notes
 
+## Version 11.1.0
+
+### Changed features
+
+* Changed [docker_inspector_name]'s JAR signing authority from Synopsys, Inc to Black Duck Software, Inc.
+
+## Version 11.0.1
+
+### Dependency update
+
+* Upgraded Spring framework transitive dependencies to resolve Spring vulnerabilities
+
+## Version 11.0.0
+
+### Changed features
+* Branding change from Synopsys to Black Duck.
+
 ## Version 10.2.1
 
 ### Dependency update

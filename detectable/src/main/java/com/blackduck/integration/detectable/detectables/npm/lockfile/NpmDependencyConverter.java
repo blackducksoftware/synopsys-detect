@@ -19,6 +19,7 @@ import com.blackduck.integration.detectable.detectables.npm.lockfile.model.NpmDe
 import com.blackduck.integration.detectable.detectables.npm.lockfile.model.NpmProject;
 import com.blackduck.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
 import com.blackduck.integration.detectable.detectables.npm.lockfile.model.PackageLock;
+import com.blackduck.integration.detectable.detectables.npm.lockfile.model.PackageLockDependency;
 import com.blackduck.integration.detectable.detectables.npm.lockfile.model.PackageLockPackage;
 import com.blackduck.integration.detectable.detectables.npm.packagejson.CombinedPackageJson;
 
@@ -34,7 +35,10 @@ public class NpmDependencyConverter {
         List<NpmDependency> resolvedDependencies = new ArrayList<>();
 
         if (packageLock.packages != null) {
-            List<NpmDependency> children = convertPackageMapToDependencies(null, packageLock.packages);
+            List<NpmDependency> children = convertLockPackagesToNpmDependencies(null, packageLock.packages);
+            resolvedDependencies.addAll(children);
+        } else if (packageLock.dependencies != null) {
+            List<NpmDependency> children = convertLockDependenciesToNpmDependencies(null, packageLock.dependencies);
             resolvedDependencies.addAll(children);
         }
 
@@ -58,7 +62,7 @@ public class NpmDependencyConverter {
         return new NpmProject(packageLock.name, packageLock.version, declaredDevDependencies, declaredPeerDependencies, declaredDependencies, resolvedDependencies);
     }
 
-    public List<NpmDependency> convertPackageMapToDependencies(NpmDependency parent, Map<String, PackageLockPackage> packages) {
+    public List<NpmDependency> convertLockPackagesToNpmDependencies(NpmDependency parent, Map<String, PackageLockPackage> packages) {
         List<NpmDependency> children = new ArrayList<>();
 
         if (packages == null || packages.size() == 0) {
@@ -76,7 +80,31 @@ public class NpmDependencyConverter {
             List<NpmRequires> requires = convertNameVersionMapToRequires(packageLockDependency.dependencies);
             dependency.addAllRequires(requires);
 
-            List<NpmDependency> grandChildren = convertPackageMapToDependencies(dependency, packageLockDependency.packages);
+            List<NpmDependency> grandChildren = convertLockPackagesToNpmDependencies(dependency, packageLockDependency.packages);
+            dependency.addAllDependencies(grandChildren);
+        }
+        return children;
+    }
+    
+    public List<NpmDependency> convertLockDependenciesToNpmDependencies(NpmDependency parent, Map<String, PackageLockDependency> packageLockDependencyMap) {
+        List<NpmDependency> children = new ArrayList<>();
+
+        if (packageLockDependencyMap == null || packageLockDependencyMap.size() == 0) {
+            return children;
+        }
+
+        for (Map.Entry<String, PackageLockDependency> packageEntry : packageLockDependencyMap.entrySet()) {
+            String packageName = packageEntry.getKey();
+            PackageLockDependency packageLockDependency = packageEntry.getValue();
+
+            NpmDependency dependency = createNpmDependency(packageName, packageLockDependency.version, packageLockDependency.dev, packageLockDependency.peer);
+            dependency.setParent(parent);
+            children.add(dependency);
+
+            List<NpmRequires> requires = convertNameVersionMapToRequires(packageLockDependency.requires);
+            dependency.addAllRequires(requires);
+
+            List<NpmDependency> grandChildren = convertLockDependenciesToNpmDependencies(dependency, packageLockDependency.dependencies);
             dependency.addAllDependencies(grandChildren);
         }
         return children;
@@ -111,9 +139,8 @@ public class NpmDependencyConverter {
         Set<String> packagesToRemove = new HashSet<>();
         
         if (packageLock.packages == null) {
-            // This shouldn't happen if the repo is using an appropriately versioned 
-            // lock or shrinkwrap file (version 2 or later). Still, guard against this 
-            // in case users run Detect on older not updated projects.
+            // The linkage phase is only necessary for v2/v3 lockfiles. v1 lockfiles
+            // have redundant information in the dependencies object that removes the need for this step.
             return;
         }
                 
@@ -134,16 +161,20 @@ public class NpmDependencyConverter {
                 // The parent will be the portion of the package name up to and not including the final *.
                 PackageLockPackage parentPackage = 
                         packageLock.packages.get(packageName.substring(0, packageName.lastIndexOf("*")));
-                
-                if (parentPackage.packages == null) {
-                    parentPackage.packages = new HashMap<String, PackageLockPackage>();
+
+                // `parentPackage` can be null if the package is marked as `extraneous`, so we'll skip it.
+                // `Extraneous` packages are those present in the node_modules folder but not listed as dependencies in any package's dependency list.
+                // In this case, the `parentPackage` may not be present in the packages object, so we can't link it to the child, 
+                // resulting in `parentPackage == null`.
+                // These packages are not part of the dependency tree and are unnecessary for graph construction.
+                // It's recommended to run `npm prune` to remove them: https://docs.npmjs.com/cli/v7/commands/npm-prune
+                if (parentPackage == null && packageLock.packages.get(packageName) != null && packageLock.packages.get(packageName).extraneous) {
+                    packagesToRemove.add(packageName);
+                    continue;
                 }
-                
-                // Link the child back to the parent. The child will be the leaf of the overall packageName.
-                String childPackageName = packageName.substring(packageName.lastIndexOf("*") + 1, packageName.length());
-                parentPackage.packages.put(childPackageName, packageLock.packages.get(packageName));
-                
-                packagesToRemove.add(packageName);
+                if (parentPackage != null) {
+                    linkChildBackToParent(parentPackage, packageName, packagesToRemove, packageLock);
+                }
             }
         }
             
@@ -151,6 +182,18 @@ public class NpmDependencyConverter {
         // This makes the final packages structure more like the previous dependencies structure so most of the
         // detector code does not need to be altered to support npm 9 and later.
         packageLock.packages.keySet().removeAll(packagesToRemove);
+    }
+
+    private void linkChildBackToParent(PackageLockPackage parentPackage, String packageName,Set<String> packagesToRemove, PackageLock packageLock) {
+        if (parentPackage.packages == null) {
+            parentPackage.packages = new HashMap<String, PackageLockPackage>();
+        }
+
+        // Link the child back to the parent. The child will be the leaf of the overall packageName.
+        String childPackageName = packageName.substring(packageName.lastIndexOf("*") + 1, packageName.length());
+        parentPackage.packages.put(childPackageName, packageLock.packages.get(packageName));
+
+        packagesToRemove.add(packageName);
     }
 
     /**

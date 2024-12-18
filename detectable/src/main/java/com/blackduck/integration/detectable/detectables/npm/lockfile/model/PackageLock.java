@@ -13,4 +13,7 @@ public class PackageLock {
     
     @SerializedName("packages")
     public Map<String, PackageLockPackage> packages;
+    
+    @SerializedName("dependencies")
+    public Map<String, PackageLockDependency> dependencies;
 }

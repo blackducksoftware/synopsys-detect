@@ -183,23 +183,7 @@ public class DetectBoot {
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
-            try {
-                AirGapType airGapType = new AirGapTypeDecider().decide(detectArgumentState);
-                AirGapCreator airGapCreator = detectBootFactory
-                    .createAirGapCreator(
-                        detectConfigurationFactory.createConnectionDetails(),
-                        detectConfigurationFactory.createDetectExecutableOptions(),
-                        freemarkerConfiguration,
-                        installedToolManager,
-                        installedToolLocator
-                    );
-
-                File airGapZip = airGapCreator.createAirGapZip(airGapType, directoryManager.getRunHomeDirectory());
-
-                return Optional.of(DetectBootResult.exit(propertyConfiguration, airGapZip, directoryManager, diagnosticSystem));
-            } catch (DetectUserFriendlyException e) {
-                return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
-            }
+            return generateAirGap(detectConfigurationFactory, freemarkerConfiguration, installedToolLocator, directoryManager, propertyConfiguration, diagnosticSystem);
         }
 
         logger.info("");
@@ -228,8 +212,13 @@ public class DetectBoot {
             boolean blackduckScanModeSpecified = detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
             boolean blackduckUrlSpecified = detectConfiguration.wasPropertyProvided(DetectProperties.BLACKDUCK_URL);
             boolean blackduckOfflineModeSpecified = detectConfiguration.wasPropertyProvided(DetectProperties.BLACKDUCK_OFFLINE_MODE);
+            Boolean offline = detectConfiguration.getValue(DetectProperties.BLACKDUCK_OFFLINE_MODE);
             BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
             BlackduckScanMode blackduckScanMode = decideScanMode(blackDuckConnectionDetails, scanTypeEvidenceMap, blackduckScanModeSpecified, detectConfigurationFactory, autonomousScanEnabled, detectConfiguration);
+            if (offline || !blackduckScanMode.equals(BlackduckScanMode.INTELLIGENT)) {
+                logger.warn("Correlated Scanning is not available for Rapid/Stateless scan mode or offline scanning. A correlation ID will not be set.");
+                detectBootFactory.stripCorrelationId();
+            }
             autonomousManager.setBlackDuckScanMode(blackduckScanMode.toString());
             ProductDecider productDecider = new ProductDecider(autonomousScanEnabled, blackduckUrlSpecified, blackduckOfflineModeSpecified);
             BlackDuckDecision blackDuckDecision = productDecider.decideBlackDuck(
@@ -276,6 +265,30 @@ public class DetectBoot {
         return Optional.of(DetectBootResult.run(bootSingletons, propertyConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
+    private Optional<DetectBootResult> generateAirGap(DetectConfigurationFactory detectConfigurationFactory,
+                                                      Configuration freemarkerConfiguration,
+                                                      InstalledToolLocator installedToolLocator,
+                                                      DirectoryManager directoryManager,
+                                                      PropertyConfiguration propertyConfiguration,
+                                                      DiagnosticSystem diagnosticSystem) {
+        try {
+            AirGapType airGapType = new AirGapTypeDecider().decide(detectArgumentState);
+            AirGapCreator airGapCreator = detectBootFactory
+                    .createAirGapCreator(
+                            detectConfigurationFactory.createConnectionDetails(),
+                            detectConfigurationFactory.createDetectExecutableOptions(),
+                            freemarkerConfiguration,
+                            installedToolManager,
+                            installedToolLocator
+                    );
+
+            File airGapZip = airGapCreator.createAirGapZip(airGapType, directoryManager.getRunHomeDirectory());
+
+            return Optional.of(DetectBootResult.exit(propertyConfiguration, airGapZip, directoryManager, diagnosticSystem));
+        } catch (DetectUserFriendlyException e) {
+            return Optional.of(DetectBootResult.exception(e, propertyConfiguration, directoryManager, diagnosticSystem));
+        }
+    }
     private BlackduckScanMode decideScanMode(BlackDuckConnectionDetails blackDuckConnectionDetails, Map<DetectTool, Set<String>> scanTypeEvidenceMap, boolean blackduckScanModeSpecified, DetectConfigurationFactory detectConfigurationFactory, boolean autonomousScanEnabled, DetectPropertyConfiguration detectConfiguration) {
         if(!blackduckScanModeSpecified && autonomousScanEnabled) {
             Optional<String> scaasFilePath = detectConfigurationFactory.getScaaasFilePath();

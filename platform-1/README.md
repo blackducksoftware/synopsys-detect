@@ -2,7 +2,7 @@
 
 ## Using the Image
 
-blackduck-client is a wrapper of Synopsys Detect, in which an air-gap `.zip` file (containing the latest version of Detect) is stored under the `/opt/` directory.
+blackduck-client is a wrapper of Black Duck Detect, in which an air-gap `.zip` file (containing the latest version of Detect) is stored under the `/opt/` directory.
 
 While running this image as a container, extract the `.zip` file onto your local machine for use. Note that this image is not intended to be used as a persistently running container, nor for running Detect.
 
@@ -15,8 +15,8 @@ Tag example: `9.3.0_ubi8.8`
 ## Documentation
  
 For details on how to run Detect, please see our documentation below: 
-- [Introduction to Synopsys Detect](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/introduction.html)
-- [Running Synopsys Detect in air gap mode](https://sig-product-docs.synopsys.com/bundle/integrations-detect/page/runningdetect/runningairgap.html)
+- [Introduction to Black Duck Detect](https://documentation.blackduck.com/bundle/detect/page/introduction.html)
+- [Running Black Duck Detect in air gap mode](https://documentation.blackduck.com/bundle/detect/page/runningdetect/runningairgap.html)
 
 ## Example of running the image and copying the air-gap .zip to an existing local directory
 

@@ -1,7 +1,6 @@
 package com.blackduck.integration.detectable.detectables.gradle.inspection.parse;
 
 import java.util.Map;
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
@@ -56,7 +55,8 @@ public class GradleReportLineParser {
         if (!line.contains(COMPONENT_PREFIX)) {
             return GradleTreeNode.newUnknown(level);
         } else if (StringUtils.containsAny(line, PROJECT_INDICATORS)) {
-            return GradleTreeNode.newProject(level);
+            String subProjectName = extractSubProjectName(line);
+            return GradleTreeNode.newProject(level, subProjectName);
         } else {
             List<String> gav = parseGav(line, metadata);
             if (gav.size() != 3) {
@@ -72,6 +72,26 @@ public class GradleReportLineParser {
                 return GradleTreeNode.newGav(level, group, name, version);
             }
         }
+    }
+
+    private String extractSubProjectName(String line) {
+        // A subProject dependency line looks exactly like: "+--- project :subProjectName" where subProjectName can
+        // be a nested subProject (for example  "+--- project :subProjectA:nestedSubProjectB:furtherNestedSubProjectC")
+        String[] parts = line.split(PROJECT_INDICATORS[0]);
+        if (parts.length == 2) {
+            // line looks as expected
+            String subprojName = parts[1].trim();
+            if (subprojName.startsWith(":")) {
+                // Drop the leading ":"
+                subprojName = subprojName.substring(1);
+                // In a Gradle dependencies tree, dependencies listed previously will have a " (*)" suffix
+                subprojName = removeSuffixes(subprojName);
+                return subprojName;
+            }
+        }
+        // line didn't look as we expected
+        logger.debug("Could not extract subProject name from Gradle dependency tree report for line: " + line);
+        return "";
     }
 
     private String removeSuffixes(String line) {

@@ -97,8 +97,8 @@ public class GradleReportParser {
     private void parseConfigurationLines(List<String> configurationLines, GradleReport gradleReport) {
         if (configurationLines.size() > 1 && isConfigurationHeader(configurationLines)) {
             String header = configurationLines.get(0);
-            List<String> dependencyTree = configurationLines.stream().skip(1).collect(Collectors.toList());
-            GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyTree, metadata);
+            List<String> dependencyLines = configurationLines.stream().skip(1).collect(Collectors.toList());
+            GradleConfiguration configuration = gradleReportConfigurationParser.parse(header, dependencyLines, metadata);
             gradleReport.getConfigurations().add(configuration);
         }
     }
