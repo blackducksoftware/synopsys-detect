@@ -21,7 +21,7 @@ buildscript {
 
 group = 'com.blackduck.integration'
 
-version = '10.2.0-SIGQA4-dmamidibd-patch-revert-tounblockartifactorychecks'
+version = '10.2.0-SIGQA5-dmamidibd-patch-revert-tounblockartifactorychecks'
 
 apply plugin: 'com.blackduck.integration.solution'
 apply plugin: 'org.springframework.boot'
