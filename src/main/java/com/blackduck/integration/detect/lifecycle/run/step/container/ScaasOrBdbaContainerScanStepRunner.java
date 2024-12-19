@@ -3,8 +3,6 @@ package com.blackduck.integration.detect.lifecycle.run.step.container;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.blackduck.integration.blackduck.version.BlackDuckVersion;
 import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -36,7 +34,7 @@ public class ScaasOrBdbaContainerScanStepRunner extends AbstractContainerScanSte
         String scanId = scanCreationResponse.getScanId();
         String uploadUrl = scanCreationResponse.getUploadUrl();
 
-        if (StringUtils.isNotEmpty(uploadUrl)) {
+        if (uploadUrl != null && !uploadUrl.isEmpty()) {
             ScassScanStepRunner scassScanStepRunner = new ScassScanStepRunner(blackDuckRunData);
             scassScanStepRunner.runScassScan(Optional.of(containerImage), scanCreationResponse);
         } else {
