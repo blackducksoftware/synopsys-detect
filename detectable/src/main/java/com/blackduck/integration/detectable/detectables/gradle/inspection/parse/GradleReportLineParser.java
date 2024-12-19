@@ -41,7 +41,7 @@ public class GradleReportLineParser {
     private final Map<String, Map<String, String>> transitiveRichVersions = new HashMap<>();
 
     // This map is handling all the child-parent relationships which are found in the entire project
-    // with each child as a key and their respective parent as the value.
+    // with each child as a key and their parents (if more than one) in a HashSet .
     private final Map<String, Set<String>> relationsMap = new HashMap<>();
     private boolean richVersionUsed = false;
     // tracks the project where rich version was declared
