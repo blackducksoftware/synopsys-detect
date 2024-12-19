@@ -36,6 +36,7 @@ public class DirectoryManager {
     private enum RunDirectory {
         BDIO("bdio"),
         BINARY("binary"),
+        CSV("csv"),
         EXTRACTION("extractions"),
         IMPACT_ANALYSIS("impact-analysis"),
         LOG("logs"),
@@ -215,6 +216,10 @@ public class DirectoryManager {
 
     public File getIacScanOutputDirectory() {
         return getRunDirectory(RunDirectory.IAC);
+    }
+    
+    public File getCsvOutputDirectory() {
+        return getRunDirectory(RunDirectory.CSV);
     }
 
     public File getRunHomeDirectory() {
