@@ -14,7 +14,7 @@
 ### New features
 
 * The scanCLI `detect.blackduck.signature.scanner.csv.archive` property has been added for generating and uploading CSV files to [bd_product_long] 2025.1.0 or later. If used in offline mode, the generated CSV files will be located in the [detect_product_short] run directory in the csv folder.
-This feature is only available for intelligent persistence scans.
+<note type="note">This feature is only available for intelligent persistence scans.</note>
 
 ### Changed features
 
