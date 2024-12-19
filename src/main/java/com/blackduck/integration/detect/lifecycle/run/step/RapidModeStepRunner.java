@@ -26,6 +26,7 @@ import com.blackduck.integration.detect.lifecycle.OperationException;
 import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.blackduck.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
+import com.blackduck.integration.detect.lifecycle.run.step.container.PreScassContainerScanStepRunner;
 import com.blackduck.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.blackduck.integration.detect.tool.signaturescanner.operation.SignatureScanOuputResult;
 import com.blackduck.integration.detect.tool.signaturescanner.operation.SignatureScanResult;
@@ -104,16 +105,15 @@ public class RapidModeStepRunner {
                     invokeBdbaRapidScan(blackDuckRunData, projectVersion, blackDuckUrl, containerResultUrls, true, scaaasFilePath.get());
                     processScanResults(containerResultUrls, parsedUrls, formattedCodeLocations, DetectTool.CONTAINER_SCAN.name());
                 } else {
-                    // TOME: ensure there is no chance that SCASS is attempted for rapid mode
-                    ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData, gson);
+                    PreScassContainerScanStepRunner containerScanStepRunner = new PreScassContainerScanStepRunner(operationRunner, projectVersion, blackDuckRunData, gson);
                     logger.debug("Invoking stateless container scan.");
-                    Optional<String> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+                    Optional<UUID> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
                     if (scanId.isPresent()) {
                         String statelessScanEndpoint = operationRunner.getScanServicePostEndpoint();
                         HttpUrl scanServiceUrlToPoll = new HttpUrl(blackDuckUrl + statelessScanEndpoint + "/" + scanId.get());
                         logger.info("Stateless mode container scan URL: {}", scanServiceUrlToPoll);
                         parsedUrls.add(scanServiceUrlToPoll);
-                        formattedCodeLocations.add(new FormattedCodeLocation(containerScanStepRunner.getCodeLocationName(), UUID.fromString(scanId.get()), DetectTool.CONTAINER_SCAN.name()));
+                        formattedCodeLocations.add(new FormattedCodeLocation(containerScanStepRunner.getCodeLocationName(), scanId.get(), DetectTool.CONTAINER_SCAN.name()));
                     }
                 }
             }

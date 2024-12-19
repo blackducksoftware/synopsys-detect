@@ -26,6 +26,9 @@ import com.blackduck.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.blackduck.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.blackduck.integration.detect.lifecycle.run.operation.OperationRunner;
 import com.blackduck.integration.detect.lifecycle.run.operation.blackduck.BdioUploadResult;
+import com.blackduck.integration.detect.lifecycle.run.step.container.AbstractContainerScanStepRunner;
+import com.blackduck.integration.detect.lifecycle.run.step.container.PreScassContainerScanStepRunner;
+import com.blackduck.integration.detect.lifecycle.run.step.container.ScaasOrBdbaContainerScanStepRunner;
 import com.blackduck.integration.detect.lifecycle.run.step.utility.StepHelper;
 import com.blackduck.integration.detect.tool.iac.IacScanCodeLocationData;
 import com.blackduck.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
@@ -145,7 +148,9 @@ public class IntelligentModeStepRunner {
             DetectTool.CONTAINER_SCAN,
             "Container Scanner",
             () -> {
-                ContainerScanStepRunner containerScanStepRunner = new ContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData, gson);
+                AbstractContainerScanStepRunner containerScanStepRunner = ScaasOrBdbaContainerScanStepRunner.areScassScansPossible(blackDuckRunData.getBlackDuckServerVersion()) ?
+                    new ScaasOrBdbaContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData, gson) :
+                    new PreScassContainerScanStepRunner(operationRunner, projectNameVersion, blackDuckRunData, gson);
                 invokeContainerScanningWorkflow(containerScanStepRunner, scanIdsToWaitFor, codeLocationAccumulator);
             }
         );
@@ -246,14 +251,14 @@ public class IntelligentModeStepRunner {
     }
 
     private void invokeContainerScanningWorkflow(
-        ContainerScanStepRunner containerScanStepRunner,
+        AbstractContainerScanStepRunner containerScanStepRunner,
         Set<String> scanIdsToWaitFor,
         CodeLocationAccumulator codeLocationAccumulator
     ) {
         logger.debug("Invoking intelligent persistent container scan.");
 
-        Optional<String> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
-        scanId.ifPresent(id -> scanIdsToWaitFor.add(id));
+        Optional<UUID> scanId = containerScanStepRunner.invokeContainerScanningWorkflow();
+        scanId.ifPresent(uuid -> scanIdsToWaitFor.add(uuid.toString()));
         Set<String> containerScanCodeLocations = new HashSet<>();
         containerScanCodeLocations.add(containerScanStepRunner.getCodeLocationName());
         codeLocationAccumulator.addNonWaitableCodeLocation(containerScanCodeLocations);
