@@ -1,10 +1,13 @@
 package com.blackduck.integration.detectable.detectables.gradle.inspection.parse;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -39,7 +42,8 @@ public class GradleReportLineParser {
 
     // This map is handling all the child-parent relationships which are found in the entire project
     // with each child as a key and their respective parent as the value.
-    private final Map<String, String> relationsMap = new HashMap<>();
+    private final Map<String, Set<String>> relationsMap = new HashMap<>();
+    private boolean richVersionUsed = false;
     // tracks the project where rich version was declared
     private String richVersionProject = null;
     // tracks if rich version was declared while parsing the previous line
@@ -134,7 +138,7 @@ public class GradleReportLineParser {
         }
 
         projectName = metadata.getOrDefault(PROJECT_NAME_PREFIX, "orphanProject"); // get project name from metadata
-        rootProjectName = metadata.getOrDefault(ROOT_PROJECT_NAME_PREFIX, ""); // get root project name
+        rootProjectName = metadata.getOrDefault(ROOT_PROJECT_NAME_PREFIX, "")+"_0"; // get root project name
         projectParent = metadata.getOrDefault(PROJECT_PARENT_PREFIX, "null"); // get project parent name
         String fileName = metadata.getOrDefault(FILE_NAME_PREFIX, "");
 
@@ -174,8 +178,10 @@ public class GradleReportLineParser {
 
     private void storeOrUpdateRichVersion(String dependencyGroupName, List<String> gavPieces) {
         // this condition is checking for rich version use for current direct dependency in one of the parent submodule of the current module and updates the current version
-        if (checkParentRichVersion(dependencyGroupName)) {
+        checkParentRichVersion(dependencyGroupName, projectName);
+        if (richVersionUsed) {
             gavPieces.set(2, gradleRichVersions.get(richVersionProject).get(dependencyGroupName));
+            richVersionUsed = false;
         } else if(checkIfTransitiveRichVersion() && transitiveRichVersions.containsKey(richVersionProject) && transitiveRichVersions.get(richVersionProject).containsKey(dependencyGroupName)) {
             // this is checking if we are parsing a transitive dependency and that transitive
             // dependency has already been memoized for the use of rich version
@@ -193,34 +199,33 @@ public class GradleReportLineParser {
     private void addRelation() {
         // add parent-child relationships in the map to keep track of parent and child submodules
         // project parent value will be of two types: one containing "project ':parentName'" or "root project ':rootProjectName'"
+        relationsMap.putIfAbsent(projectName, new HashSet<>());
         if (!projectParent.equals("null") && !projectParent.contains("root project")) {
             // this will be the first case where we extract "parentName" from the value
             String parentString = projectParent.substring(projectParent.lastIndexOf(":") + 1, projectParent.lastIndexOf("'"));
             int depth = Integer.parseInt(depthNumber);
             String parentDepth = String.valueOf(depth-1);
             // for submodules who have different parent than root project, we will suffix current depth - 1 to maintain uniformity, so if child is at depth2 than parent would be at depth1
-            relationsMap.putIfAbsent(projectName, parentString+"_"+parentDepth);
+            relationsMap.get(projectName).add(parentString+"_"+parentDepth);
         } else if (!projectParent.equals("null") && !projectName.equals(rootProjectName)) {
+            relationsMap.get(projectName).add(rootProjectName);
             // this will be the second case where root project will be the parent
-            relationsMap.putIfAbsent(projectName, rootProjectName+"_0");
-        } else {
-            relationsMap.putIfAbsent(rootProjectName+"_0", null);
         }
     }
 
-    private boolean checkParentRichVersion(String dependencyGroupName) {
+    private void checkParentRichVersion(String dependencyGroupName, String currentProject) {
         // this loop checks all the parent modules for the current submodule upto rootProject for the use of the rich version for the current dependency
         // if the rich version is used return true and update the richVersionProject
-        // this loop will stop at the root project since its parent value would be null
-        String currentProject = projectName;
-        while (currentProject != null) {
-            if (gradleRichVersions.containsKey(currentProject) && gradleRichVersions.get(currentProject).containsKey(dependencyGroupName)) {
-                richVersionProject = currentProject;
-                return true;
-            }
-            currentProject = relationsMap.getOrDefault(currentProject, null);
+        // this loop will stop at the root project and traverse all the parents upto root project, the change was done to support all projects which use a project structure where two child submodules with same name
+        if (gradleRichVersions.containsKey(currentProject) && gradleRichVersions.get(currentProject).containsKey(dependencyGroupName)) {
+            richVersionProject = currentProject;
+            richVersionUsed = true;
         }
-       return false;
+        if(!currentProject.equals(rootProjectName)) {
+            for (String project : relationsMap.get(currentProject)) {
+                checkParentRichVersion(dependencyGroupName, project);
+            }
+        }
     }
 
     private boolean checkRichVersionUse(String dependencyLine) {
