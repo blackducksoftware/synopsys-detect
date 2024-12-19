@@ -35,7 +35,7 @@ public class DependencyListFileParser {
         String depsListString = depsMkTextParts[1];
         logger.trace(String.format("dependencies: %s", depsListString));
 
-        depsListString = depsListString.replace("\n", " ");
+        depsListString = depsListString.replaceAll("\n", " ");
         logger.trace(String.format("dependencies, newlines removed: %s", depsListString));
 
         depsListString = depsListString.replace("\\\\", " "); //TODO: This does not work on Windows paths.
