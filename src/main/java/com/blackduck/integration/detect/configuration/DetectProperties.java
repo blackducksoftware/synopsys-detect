@@ -442,7 +442,7 @@ public class DetectProperties {
     public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_CSV_ARCHIVE =
             BooleanProperty.newBuilder("detect.blackduck.signature.scanner.csv.archive", false)
             .setInfo("Signature Scanner CSV Archive Output", DetectPropertyFromVersion.VERSION_10_2_0)
-            .setHelp("When set to true Signature Scanner output will be in CSV format. Corresponding Signature Scanner CLI Argument: --outputFormat for offline mode, --uploadCSV for online mode.")
+            .setHelp("When set to true Signature Scanner output will be in CSV format. Corresponding Signature Scanner CLI Argument: --outputFormat csv for offline mode, --upload-csv for online mode.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .build();
 
