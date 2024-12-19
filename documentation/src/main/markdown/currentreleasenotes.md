@@ -13,7 +13,7 @@
 
 ### New features
 
-* 
+* A new `detect.blackduck.signature.scanner.csv.archive` property has been added that will upload CSV files to [bd_product_long] 2025.1.0 or later. If used in offline mode, the CSV files will be located in the [detect_product_short] run directory in a new csv folder. These features are only available for intelligent persistence scans.
 
 ### Changed features
 
