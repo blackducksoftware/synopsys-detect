@@ -75,9 +75,14 @@ public class ConanGraphInfoGraphNode extends Stringable {
         return nameVersion;
     }
 
-    public Set<Integer> getDirectDependencyIndeces(boolean includeBuild) {
+    public Set<Integer> getDirectDependencyIndeces(boolean includeBuild, boolean includeTest) {
         Set<Integer> indeces = new HashSet<>(dependencies.keySet());
-        indeces.removeIf(i -> !dependencies.get(i).isDirect() || !includeBuild && dependencies.get(i).isBuild());
+        indeces.removeIf(i -> {
+            ConanGraphInfoDependency dep = dependencies.get(i);
+            return !dep.isDirect()
+                || (!includeTest && dep.isTest())
+                || (!includeBuild && dep.isBuild());
+        });
         return indeces;
     }
 }
