@@ -51,7 +51,7 @@ public class ConanGraphInfoParser {
         DependencyGraph graph = new BasicDependencyGraph();
         boolean includeBuild = conanCliOptions.getDependencyTypeFilter().shouldInclude(ConanDependencyType.BUILD);
         boolean includeTest = conanCliOptions.getDependencyTypeFilter().shouldInclude(ConanDependencyType.TEST);
-        populateDependencyGraph(graph, nodeMap, root.getDirectDependencyIndeces(includeBuild, includeTest), null, includeBuild, includeTest);
+        populateDependencyGraph(graph, nodeMap, root.getDirectDependencyIndices(includeBuild, includeTest), null, includeBuild, includeTest);
         CodeLocation codeLocation = new CodeLocation(graph);
 
         return new Extraction.Builder()
@@ -64,12 +64,12 @@ public class ConanGraphInfoParser {
     private void populateDependencyGraph(
         DependencyGraph graph,
         Map<Integer, ConanGraphInfoGraphNode> nodeMap,
-        Set<Integer> nodeIndecesToAdd,
+        Set<Integer> nodeIndicesToAdd,
         Dependency parent,
         boolean includeBuild,
         boolean includeTest) throws DetectableException
     {
-        for (Integer i : nodeIndecesToAdd) {
+        for (Integer i : nodeIndicesToAdd) {
             ConanGraphInfoGraphNode node = nodeMap.get(i);
             if (node == null) {
                 throw new DetectableException("Unexpected dependency reference: " + i);
@@ -86,7 +86,7 @@ public class ConanGraphInfoParser {
             }
 
             if (processChildren) {
-                populateDependencyGraph(graph, nodeMap, node.getDirectDependencyIndeces(includeBuild, includeTest), dependency, includeBuild, includeTest);
+                populateDependencyGraph(graph, nodeMap, node.getDirectDependencyIndices(includeBuild, includeTest), dependency, includeBuild, includeTest);
             }
         }
     }
