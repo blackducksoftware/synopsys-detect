@@ -75,14 +75,11 @@ public class BzlmodBcrExtractor {
     private final Set<ExternalId> resolvedExternalIds = new LinkedHashSet<>();
 
     /**
-     * Backward-compatible constructor with no user query options (used by unit tests).
+     * Production constructor. {@code options} carries the cross-cutting Bazel extraction
+     * settings (detected version, {@code detect.bazel.query.options}, etc.).
      */
-    public BzlmodBcrExtractor(BazelCommandExecutor bazelCmd, BazelVersion bazelVersion, String bazelTarget) {
-        this(bazelCmd, bazelVersion, bazelTarget, Collections.emptyList());
-    }
-
-    public BzlmodBcrExtractor(BazelCommandExecutor bazelCmd, BazelVersion bazelVersion, String bazelTarget, List<String> queryOptions) {
-        this(bazelCmd, bazelVersion, bazelTarget, queryOptions,
+    public BzlmodBcrExtractor(BazelCommandExecutor bazelCmd, String bazelTarget, BazelExtractionOptions options) {
+        this(bazelCmd, bazelTarget, options,
             new GithubUrlParser(),
             new IntermediateStepParseShowRepoToUrlCandidates(),
             new ShowRepoExecutor(bazelCmd));
@@ -91,17 +88,16 @@ public class BzlmodBcrExtractor {
     /**
      * Full-injection constructor. Accepts all collaborators explicitly, enabling unit tests that
      * exercise classification and URL-parsing logic without spawning a real Bazel process.
-     * Production code uses the shorter constructors above, which supply default implementations.
+     * Production code uses the constructor above, which supplies default implementations.
      */
-    public BzlmodBcrExtractor(BazelCommandExecutor bazelCmd, BazelVersion bazelVersion, String bazelTarget,
-                               List<String> queryOptions,
+    public BzlmodBcrExtractor(BazelCommandExecutor bazelCmd, String bazelTarget, BazelExtractionOptions options,
                                GithubUrlParser githubUrlParser,
                                IntermediateStepParseShowRepoToUrlCandidates urlCandidateParser,
                                ShowRepoExecutor showRepoExecutor) {
         this.bazelCmd = bazelCmd;
-        this.bazelVersion = bazelVersion;
+        this.bazelVersion = options.getBazelVersion();
         this.bazelTarget = bazelTarget;
-        this.queryOptions = queryOptions != null ? queryOptions : Collections.emptyList();
+        this.queryOptions = options.getQueryOptions() != null ? options.getQueryOptions() : Collections.emptyList();
         this.githubUrlParser = githubUrlParser;
         this.urlCandidateParser = urlCandidateParser;
         this.showRepoExecutor = showRepoExecutor;
@@ -116,6 +112,21 @@ public class BzlmodBcrExtractor {
     public Set<ExternalId> getResolvedExternalIds() {
         return Collections.unmodifiableSet(resolvedExternalIds);
     }
+
+    /**
+     * Builds the shared prefix for a "non-standard coordinate" WARN: identifies the module and
+     * explains that its {@code _} version marks it as sourced from a non-registry override
+     * (e.g. {@code archive_override}, {@code git_override}, {@code local_path_override}), not the
+     * Bazel Central Registry. Callers append their own outcome-specific sentence(s) after this
+     * prefix so all three "module@_" warning sites stay worded consistently.
+     */
+    private static String nonRegistryOverrideWarningPrefix(ModuleKey parsedKey, String moduleKey) {
+        return String.format(
+                "Module '%s' has a non-standard coordinate ('%s') — it is sourced from a non-registry override " +
+                        "(e.g. archive_override, git_override, local_path_override), not the Bazel Central Registry. ",
+                parsedKey.getName(), moduleKey);
+    }
+
 
     /**
      * Main entry point. Runs the full BCR extraction and returns a {@link DependencyGraph}
@@ -248,13 +259,24 @@ public class BzlmodBcrExtractor {
         for (String moduleKey : moduleKeys) {
             String showRepoOutput = showRepoOutputByKey.get(moduleKey);
             if (showRepoOutput == null || showRepoOutput.trim().isEmpty()) {
-                // Module could not be resolved — likely uses git_override or local_path_override
-                // with a non-standard canonical name, or is not a standard BCR module.
-                // The HTTP_ARCHIVE pipeline may still capture it via bazel query.
-                logger.warn("Module '{}' could not be resolved — it may use a local override. " +
-                    "It will not be included in these scan results. " +
-                    "It may still be found via other scan methods.",
-                    moduleKey);
+                ModuleKey parsedKey = ModuleKey.parse(moduleKey);
+                if (parsedKey.isNonRegistryOverride()) {
+                    // "_" confirms this really is a non-registry override (archive_override,
+                    // git_override, local_path_override, etc.) rather than a guess — show_repo
+                    // gave us nothing to work with at all, so the component will be missing
+                    // from the BOM entirely unless another pipeline (e.g. HTTP_ARCHIVE) finds it.
+                    logger.warn(nonRegistryOverrideWarningPrefix(parsedKey, moduleKey) +
+                        "'bazel mod show_repo' returned no output for it. It will not be included in " +
+                        "these scan results. It may still be found via other scan methods.");
+                } else {
+                    // Module could not be resolved — likely uses git_override or local_path_override
+                    // with a non-standard canonical name, or is not a standard BCR module.
+                    // The HTTP_ARCHIVE pipeline may still capture it via bazel query.
+                    logger.warn("Module '{}' could not be resolved — it may use a local override. " +
+                        "It will not be included in these scan results. " +
+                        "It may still be found via other scan methods.",
+                        moduleKey);
+                }
                 continue;
             }
             Dependency dep = urlOutputToDependency(moduleKey, showRepoOutput);
@@ -283,37 +305,75 @@ public class BzlmodBcrExtractor {
             return null;
         }
 
-        String moduleVersion = BzlmodGraphJsonParser.extractVersion(moduleKey);
+        ModuleKey parsedKey = ModuleKey.parse(moduleKey);
 
         for (String urlCandidate : urlCandidates) {
-            try {
-                String organization = githubUrlParser.parseOrganization(urlCandidate);
-                String repo = githubUrlParser.parseRepo(urlCandidate);
-                String parsedVersion = githubUrlParser.parseVersion(urlCandidate);
-                // Normalize refs/tags/v1.2.3 → v1.2.3 (same logic as FinalStepTransformGithubUrl)
-                if (parsedVersion != null && parsedVersion.startsWith(REFS_TAGS_PREFIX)) {
-                    parsedVersion = parsedVersion.substring(REFS_TAGS_PREFIX.length());
-                }
-                // Prefer the URL-parsed version; fall back to the version in the module key
-                String resolvedVersion = (parsedVersion != null && !parsedVersion.isEmpty())
-                    ? parsedVersion
-                    : moduleVersion;
-                logger.debug("BZLMOD BCR: resolved '{}' → github:{}/{} version:{}", moduleKey, organization, repo, resolvedVersion);
-                return Dependency.FACTORY.createNameVersionDependency(Forge.GITHUB, organization + "/" + repo, resolvedVersion);
-            } catch (MalformedURLException e) {
-                // Not a GitHub URL — try the next candidate
+            Dependency dependency = tryCreateGithubDependency(moduleKey, parsedKey, urlCandidate);
+            if (dependency != null) {
+                return dependency;
             }
         }
 
-        // No GitHub URL found — log all raw URLs so users can investigate
-        if (!urlCandidates.isEmpty()) {
+        logUnresolvedGithubUrl(moduleKey, parsedKey, urlCandidates);
+        return null;
+    }
+
+    /**
+     * Attempts to parse {@code urlCandidate} as a GitHub URL and build a {@link Dependency} from it.
+     * Returns {@code null} if the candidate is not a GitHub URL — the caller tries the next candidate.
+     */
+    private Dependency tryCreateGithubDependency(String moduleKey, ModuleKey parsedKey, String urlCandidate) {
+        try {
+            String organization = githubUrlParser.parseOrganization(urlCandidate);
+            String repo = githubUrlParser.parseRepo(urlCandidate);
+            String resolvedVersion = resolveVersion(githubUrlParser.parseVersion(urlCandidate), parsedKey.getVersion());
+            logger.debug("BZLMOD BCR: resolved '{}' → github:{}/{} version:{}", moduleKey, organization, repo, resolvedVersion);
+            if (parsedKey.isNonRegistryOverride()) {
+                // "_" is Bazel's literal marker for a module governed by a non-registry
+                // override (archive_override/git_override/local_path_override, etc.).
+                // It was never resolved against the Bazel Central Registry, so make sure
+                // this is visible even at default log levels.
+                logger.warn(nonRegistryOverrideWarningPrefix(parsedKey, moduleKey) +
+                    String.format("It will be reported as github:%s/%s version:%s, inferred from its resolved " +
+                        "source URL; this version has not been verified against BCR.", organization, repo, resolvedVersion));
+            }
+            return Dependency.FACTORY.createNameVersionDependency(Forge.GITHUB, organization + "/" + repo, resolvedVersion);
+        } catch (MalformedURLException e) {
+            // Not a GitHub URL — caller tries the next candidate
+            return null;
+        }
+    }
+
+    /**
+     * Normalizes a URL-parsed version: strips the {@code refs/tags/} prefix (same logic as
+     * {@code FinalStepTransformGithubUrl}), and falls back to the module key's version when the
+     * URL itself did not yield one.
+     */
+    private String resolveVersion(String parsedVersion, String moduleVersion) {
+        if (parsedVersion != null && parsedVersion.startsWith(REFS_TAGS_PREFIX)) {
+            parsedVersion = parsedVersion.substring(REFS_TAGS_PREFIX.length());
+        }
+        return (parsedVersion != null && !parsedVersion.isEmpty()) ? parsedVersion : moduleVersion;
+    }
+
+    /**
+     * Logs why {@code moduleKey} could not be resolved into a BOM entry: none of
+     * {@code urlCandidates} was a supported GitHub URL (or no candidate was found at all).
+     */
+    private void logUnresolvedGithubUrl(String moduleKey, ModuleKey parsedKey, List<String> urlCandidates) {
+        if (parsedKey.isNonRegistryOverride()) {
+            String detail = !urlCandidates.isEmpty()
+                ? String.format("Additionally, its source URL is not a supported GitHub URL — it will not appear in " +
+                    "the scan results. Raw URL(s): %s. Consider running a signature scan for this component.", urlCandidates)
+                : "Additionally, no source URL could be extracted — it will not appear in the scan results.";
+            logger.warn(nonRegistryOverrideWarningPrefix(parsedKey, moduleKey) + detail);
+        } else if (!urlCandidates.isEmpty()) {
             logger.warn("Module '{}' was found but its source URL is not a supported GitHub URL — it will not appear in the scan results. " +
                 "Raw URL(s): {}. Consider running a signature scan for this component.",
                 moduleKey, urlCandidates);
         } else {
             logger.warn("Module '{}' was found but no source URL could be extracted — it will not appear in the scan results.", moduleKey);
         }
-        return null;
     }
 
     // -------------------------------------------------------------------------

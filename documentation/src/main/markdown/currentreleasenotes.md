@@ -18,7 +18,7 @@
 * **Deprecation of support for Java versions earlier than 17** - Support for Java versions earlier than 17 has been deprecated in [detect_product_short] 12.0.0 and will be removed in 13.0.0 to align with EU Cyber Resilience Act (CRA) requirements and compliance timelines.
 * **Deprecation of Docker Inspector** - Docker Inspector has been deprecated and will be removed in 13.0.0 release.
 
-## Version 12.1.0
+## Version 12.2.0
 
 ### New features
 
@@ -30,8 +30,8 @@
 
 ### Resolved issues
 
-* (IDETECT-5267) Improved Cargo detector version parsing to more reliably handle pre-release suffixes, malformed, and non-standard version output.
+* 
 
 ### Dependency Updates
 
-* Updated Jackson libraries to version 2.22.2.
+* 
