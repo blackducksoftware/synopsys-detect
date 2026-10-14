@@ -22,7 +22,7 @@ buildscript {
 
 group = 'com.blackduck.integration'
 
-version = '12.2.0-SIGQA5-SNAPSHOT'
+version = '12.2.0-SIGQA5-zahidblackduck.IDETECT-5316-detect-hub-compatibility-check-triage'
 
 apply plugin: 'com.blackduck.integration.solution'
 apply plugin: 'org.springframework.boot'
