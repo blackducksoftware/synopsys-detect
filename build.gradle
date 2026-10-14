@@ -1,7 +1,6 @@
 import com.blackduck.integration.detect.battery.UpdateBatteryTask
 import com.blackduck.integration.detect.verification.VerifyBlackDuckDetectTask
 
-
 buildscript {
     apply from: 'shared-version.properties'
     ext {
