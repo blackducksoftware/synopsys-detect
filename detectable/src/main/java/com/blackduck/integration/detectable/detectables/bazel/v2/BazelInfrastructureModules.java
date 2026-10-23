@@ -100,7 +100,10 @@ public final class BazelInfrastructureModules {
             }
         }
         if (!hasWildcard) {
-            sb.append('$');
+            // Allow an optional Bazel canonical suffix (+/~) so that "protobuf" matches both
+            // "protobuf" and the canonical form "protobuf+" or "protobuf~" that appears in
+            // bazel query output labels.
+            sb.append("[+~]?$");
         }
         return sb.toString();
     }

@@ -356,7 +356,10 @@ public class HttpFamilyProber {
      * Returns true if the repo name is in the list of excluded (non-HTTP) repositories.
      */
     private boolean isExcludedRepo(String repo) {
-        return BazelInfrastructureModules.isExcluded(repo, excludedModules);
+        // Strip Bazel canonical suffix (+/~) so that user patterns like "protobuf" correctly
+        // match canonical repo names like "protobuf+" that appear in bazel query label output.
+        String moduleName = repo.replaceAll("[+~]$", "");
+        return BazelInfrastructureModules.isExcluded(moduleName, excludedModules);
     }
 
     /**
