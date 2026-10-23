@@ -66,6 +66,9 @@ public class BzlmodBcrExtractor {
     // query so it is consistent with the HTTP_ARCHIVE pipeline and HttpFamilyProber, which both honor
     // these options. Keeping the args identical also lets BazelCommandExecutor memoize/reuse the result.
     private final List<String> queryOptions;
+    // User-supplied exclusion patterns from detect.bazel.modules.excluded, appended on top of the
+    // hard-coded exclusion list in BazelInfrastructureModules.
+    private final List<String> excludedModules;
     // Stateless helpers — created by default constructors; can be injected for testing
     private final GithubUrlParser githubUrlParser;
     private final IntermediateStepParseShowRepoToUrlCandidates urlCandidateParser;
@@ -98,6 +101,7 @@ public class BzlmodBcrExtractor {
         this.bazelVersion = options.getBazelVersion();
         this.bazelTarget = bazelTarget;
         this.queryOptions = options.getQueryOptions() != null ? options.getQueryOptions() : Collections.emptyList();
+        this.excludedModules = options.getExcludedModules() != null ? options.getExcludedModules() : Collections.emptyList();
         this.githubUrlParser = githubUrlParser;
         this.urlCandidateParser = urlCandidateParser;
         this.showRepoExecutor = showRepoExecutor;
@@ -216,7 +220,11 @@ public class BzlmodBcrExtractor {
         for (String key : allKeys) {
             String name = BzlmodGraphJsonParser.extractName(key);
             if (isExcludedModuleName(name)) {
-                logger.debug("BZLMOD BCR: skipping '{}' — build infrastructure, not a software component", key);
+                if (BazelInfrastructureModules.isHardExcluded(name)) {
+                    logger.debug("BZLMOD BCR: skipping '{}' — hard-excluded (auto-generated or synthetic repo)", key);
+                } else {
+                    logger.debug("BZLMOD BCR: skipping '{}' — excluded by detect.bazel.modules.excluded", key);
+                }
             } else {
                 keysForResolution.add(key);
             }
@@ -471,7 +479,10 @@ public class BzlmodBcrExtractor {
             // Delegate all label-format complexity to the resolver:
             // suffix detection (+ vs ~), repo_name alias resolution, ++ sub-repo exclusion.
             Optional<String> moduleName = resolver.resolveLabel(label);
-            if (!moduleName.isPresent() || isExcludedModuleName(moduleName.get())) {
+            // Use only the hard-coded exclusion list here — user-configured exclusions (detect.bazel.modules.excluded)
+            // control BOM membership, not target scope. Applying them here would break the scope filter if the
+            // only in-scope module is one the user wants to exclude from the BOM (see Step 1d).
+            if (!moduleName.isPresent() || BazelInfrastructureModules.isHardExcluded(moduleName.get())) {
                 continue;
             }
             moduleNames.add(moduleName.get());
@@ -486,10 +497,11 @@ public class BzlmodBcrExtractor {
 
     /**
      * Returns true if the repo/module name should be excluded from BCR scope checks.
-     * Delegates to the shared {@link BazelInfrastructureModules} source of truth.
+     * Checks the hard-coded list first, then the user-configured patterns from
+     * {@code detect.bazel.modules.excluded}.
      */
     private boolean isExcludedModuleName(String name) {
-        return BazelInfrastructureModules.isInfrastructure(name);
+        return BazelInfrastructureModules.isExcluded(name, excludedModules);
     }
 
     /**
